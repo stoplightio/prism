@@ -34,13 +34,13 @@ if [ -z $LATEST ] ; then
   echo "Error requesting. Download binary from ${URL}"
   exit 1
 else
-  STATUS=$(curl -sL -w %{http_code} -o $SRC $URL)
+  STATUS=$(curl -sL -w %{http_code} -o "$SRC" $URL)
   if [ $STATUS -ge 200 ] & [ $STATUS -le 308 ]; then
-    mv $SRC $DEST
-    chmod +x $DEST
+    mv "$SRC" "$DEST"
+    chmod +x "$DEST"
     echo "Prism installation was successful"
   else
-    rm $SRC
+    rm "$SRC"
     echo "Error requesting. Download binary from ${URL}"
     exit 1
   fi
