@@ -47,6 +47,34 @@ describe('graph', () => {
     expect(customLoaderId).toEqual(123);
   });
 
+  test.skip('custom config function should merge over default config', async () => {
+    const createInstance = factory<any, any, any, any, { id: number }>({
+      config: {
+        mock: true,
+        validate: false,
+      },
+    });
+
+    /**
+     * the user imports createInstance from an implementation (like prism-http)
+     * when creating an instance, the user can override any of the components, and receive the default component
+     * as an argument
+     */
+    const prism = await createInstance({
+      config: () => ({
+        validate: true,
+      }),
+    })({
+      id: 123,
+    });
+
+    // TODO: the resulting config that is used should be merged. not sure how to spy on it, but the below:
+    // {
+    //   mock: true,
+    //   validate: true
+    // }
+  });
+
   test('load calls loader and sets resources', async () => {
     const createInstance = factory<any, any, any, any, { id: number }>({
       loader: {
