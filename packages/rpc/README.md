@@ -1,3 +1,0 @@
-# Prism RPC
-
-POC

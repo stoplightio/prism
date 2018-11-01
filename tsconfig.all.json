@@ -4,7 +4,6 @@
     { "path": "packages/core" },
     { "path": "packages/cli" },
     { "path": "packages/http" },
-    { "path": "packages/http-server" },
-    { "path": "packages/rpc" }
+    { "path": "packages/http-server" }
   ]
 }
