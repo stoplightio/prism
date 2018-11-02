@@ -5,6 +5,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Sensitive configuration files
+.env
+.npmrc
+
 # Coverage directory used by tools like istanbul
 coverage
 

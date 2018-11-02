@@ -1,0 +1,9 @@
+{
+  "branch": "feature/sl-396/release-scripts",
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/npm",
+    "@semantic-release/github"
+  ]
+}
