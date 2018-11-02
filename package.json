@@ -21,7 +21,8 @@
     "test.coverage": "yarn test.coverage.clean && yarn test --coverage",
     "test.watch": "yarn test --watchAll",
     "test.update": "yarn test.fast --updateSnapshot",
-    "release.dry": "source .env && lerna exec -- semantic-release --dry-run -e semantic-release-monorepo --tag-format='${LERNA_PACKAGE_NAME}-v\\${version}'"
+    "release.dry": "source .env && lerna exec -- semantic-release --dry-run -e semantic-release-monorepo --tag-format='${LERNA_PACKAGE_NAME}-v\\${version}'",
+    "release.wet": "source .env && lerna exec -- semantic-release -e semantic-release-monorepo --tag-format='${LERNA_PACKAGE_NAME}-v\\${version}'"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.2.1",
