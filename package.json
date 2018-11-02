@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "setup": "yarn",
+    "commit": "git-cz",
     "fmt": "prettier --write \"packages/*/src/**/*.{ts,js}\"",
     "lint": "tslint packages/*/src/**/*.{ts}",
     "build": "tsc --build tsconfig.all.json",
@@ -23,14 +24,19 @@
     "release.dry": "source .env && lerna exec -- semantic-release --dry-run -e semantic-release-monorepo --tag-format='${LERNA_PACKAGE_NAME}-v\\${version}'"
   },
   "devDependencies": {
+    "@commitlint/cli": "^7.2.1",
+    "@commitlint/config-conventional": "^7.1.2",
     "@stoplight/types": "1.0.x",
     "@types/chance": "1.0.x",
     "@types/jest": "23.3.x",
     "@types/node": "10.12.x",
     "ajv": "6.5.x",
     "chance": "1.0.x",
+    "commitizen": "^3.0.x",
+    "cz-conventional-changelog": "^2.1.x",
+    "husky": "^1.1.3",
     "jest": "^23.6.0",
-    "lerna": "^3.4.3",
+    "lerna": "^3.4.x",
     "oclif": "^1.12.5",
     "semantic-release": "15.9.x",
     "semantic-release-monorepo": "^6.1.1",
@@ -44,5 +50,20 @@
     "printWidth": 100,
     "singleQuote": true,
     "trailingComma": "es5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
