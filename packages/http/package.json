@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "@stoplight/prism-core": "0.0.0",
-    "axios": "^0.18.0",
-    "json-schema-faker": "^0.5.0-rc16",
-    "tslib": "^1.9.3"
+    "axios": "0.18.x",
+    "tslib": "1.9.x",
+    "json-schema-faker": "^0.5.0-rc16"
   }
 }
