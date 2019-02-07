@@ -14,7 +14,6 @@
     "build.clean": "find ./packages -name lib -type d -exec rm -rf {} \\;",
     "build.watch": "yarn build.clean && tsc --build --watch ./packages/tsconfig.build.json",
     "test": "yarn lint && yarn test.fast",
-    "pretest.fast": "yarn build",
     "test.fast": "jest --env=node --maxWorkers=2",
     "test.coverage.clean": "rm -rf coverage",
     "test.coverage": "yarn test.coverage.clean && yarn test --coverage",
