@@ -15,7 +15,7 @@
     "build.watch": "yarn build.clean && tsc --build --watch tsconfig.all.json",
     "test": "yarn lint && yarn test.fast",
     "pretest.fast": "yarn build",
-    "test.fast": "jest --runInBand",
+    "test.fast": "jest --env=node --maxWorkers=2",
     "test.coverage.clean": "rm -rf coverage",
     "test.coverage": "yarn test.coverage.clean && yarn test --coverage",
     "test.watch": "yarn test --watchAll",
