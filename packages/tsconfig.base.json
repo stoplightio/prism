@@ -1,9 +1,6 @@
 {
   "exclude": ["**/node_modules", "**/__tests__", "**/fixtures"],
   "compilerOptions": {
-    "composite": true,
-    "sourceMap": true,
-    "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
     "forceConsistentCasingInFileNames": true,
@@ -17,14 +14,11 @@
     "pretty": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "listFiles": true,
-    "target": "es5",
-    "module": "commonjs",
     "importHelpers": true,
     "lib": ["dom", "es6", "es7"],
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": false,
-    "declaration": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "target": "es5"
   }
 }

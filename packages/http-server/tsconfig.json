@@ -1,19 +1,7 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "lib",
-    "composite": true
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "references": [
-    {
-      "path": "../core"
-    },
-    {
-      "path": "../http"
-    }
-  ]
+    "module":"commonjs",
+    "moduleResolution": "node"
+  }
 }

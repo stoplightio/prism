@@ -1,14 +1,7 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "lib",
-    "target": "es2017"
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "references": [
-    { "path": "../http-server" }
-  ]
+    "module":"commonjs",
+    "moduleResolution": "node"
+  }
 }

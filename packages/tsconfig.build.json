@@ -1,0 +1,31 @@
+{
+  "extends": "./tsconfig.base.json",
+  "exclude": [
+    "**/node_modules",
+    "**/__tests__",
+    "**/fixtures"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "moduleResolution": "node",
+    "target": "es5",
+    "module": "commonjs",
+  },
+  "references": [
+    {
+      "path": "cli/tsconfig.build.json"
+    },
+    {
+      "path": "core/tsconfig.build.json"
+    },
+    {
+      "path": "http/tsconfig.build.json"
+    },
+    {
+      "path": "http-server/tsconfig.build.json"
+    }
+  ]
+}
