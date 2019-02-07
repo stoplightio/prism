@@ -1,6 +1,6 @@
-import { FilesystemLoader } from '../../../../lib';
-jest.mock('../../../../lib/utils/graphFacade');
-import { GraphFacade } from '../../../../lib/utils/graphFacade';
+import { FilesystemLoader } from '../../../../src';
+jest.mock('../../../../src/utils/graphFacade');
+import { GraphFacade } from '../../../../src/utils/graphFacade';
 
 describe('filesystemLoader', () => {
   const fakeHttpOperations = ['a', 'b', 'c'];
