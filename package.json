@@ -15,8 +15,7 @@
     "build.watch": "yarn build.clean && tsc --build --watch ./packages/tsconfig.build.json",
     "test": "yarn lint && yarn test.fast",
     "test.fast": "jest --env=node --maxWorkers=2",
-    "test.coverage.clean": "rm -rf coverage",
-    "test.coverage": "yarn test.coverage.clean && yarn test --coverage",
+    "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
     "test.update": "yarn test.fast --updateSnapshot"
   },
