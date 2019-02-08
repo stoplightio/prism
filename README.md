@@ -4,10 +4,6 @@
 
 <a href="https://codeclimate.com/github/stoplightio/prism/test_coverage"><img src="https://api.codeclimate.com/v1/badges/f5e363a7eb5b8f4e570f/test_coverage" /></a>
 
-## Install
-
-This package makes use of private packages. Make sure to ask your NPM token to your boss.
-
 ## Use cases
 
 ### Run a mock server locally to test requests
