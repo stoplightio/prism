@@ -6,13 +6,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Create .npmrc for the private registry
-          command: |
-            echo "
-              \@stoplight:registry=https://registry.npmjs.org/
-              //registry.npmjs.org/:_authToken=${NPM_TOKEN}
-            " > .npmrc
-      - run:
           name: cc-install
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
