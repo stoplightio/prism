@@ -4,8 +4,8 @@ import { IPrism, IPrismComponents, IPrismConfig, IValidation } from './types';
 export function factory<Resource, Input, Output, Config, LoadOpts>(
   defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
 ): (
-  customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
-) => IPrism<Resource, Input, Output, Config, LoadOpts> {
+    customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
+  ) => IPrism<Resource, Input, Output, Config, LoadOpts> {
   const prism = (
     customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
   ) => {
@@ -36,7 +36,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         // find the correct resource
         let resource: Resource | undefined;
         if (components.router) {
-          resource = await components.router.route(
+          resource = components.router.route(
             { resources, input, config: configObj },
             defaultComponents.router
           );

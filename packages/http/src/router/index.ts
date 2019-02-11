@@ -14,7 +14,7 @@ import { matchPath } from './matchPath';
 import { IMatch, MatchType } from './types';
 
 export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
-  route: async ({ resources, input }) => {
+  route: ({ resources, input }) => {
     const matches = [];
     const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
     const ignoreServers: boolean = requestBaseUrl === undefined;
