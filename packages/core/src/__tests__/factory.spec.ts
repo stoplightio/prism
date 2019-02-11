@@ -102,25 +102,5 @@ describe('graph', () => {
         expect(configMergerStub).toHaveBeenCalledWith(input, defaultConfig);
       });
     });
-
-    // test.skip('calls router to find the resource match', () => {
-    //   // TODO
-    // });
-
-    // test.skip('runs validator on input', () => {
-    //   // TODO
-    // });
-
-    // test.skip('calls mocker if config mock property is truthy', () => {
-    //   // TODO
-    // });
-
-    // test.skip('calls forwarder if config mock property is falsy', () => {
-    //   // TODO
-    // });
-
-    // test.skip('runs validator on output', () => {
-    //   // TODO
-    // });
   });
 });

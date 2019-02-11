@@ -1,4 +1,3 @@
-import { IHttpMethod } from '@stoplight/prism-http';
 import * as axios from 'axios';
 
 import { httpOperations } from '../../__tests__/fixtures';
@@ -31,7 +30,7 @@ describe('HttpForwarder', () => {
         input: {
           validations: { input: [] },
           data: {
-            method: 'post' as IHttpMethod,
+            method: 'post',
             url: { path: '/files' },
             headers: {
               expect: '100-continue',
