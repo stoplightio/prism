@@ -9,7 +9,7 @@
   "scripts": {
     "setup": "yarn",
     "fmt": "prettier --write \"packages/*/src/**/*.{ts,js}\"",
-    "lint": "tslint packages/*/src/**/*.{ts}",
+    "lint": "tslint -p packages/tsconfig.json",
     "build": "tsc --build ./packages/tsconfig.build.json",
     "build.watch": "tsc --build --watch ./packages/tsconfig.build.json",
     "test": "yarn lint && yarn test.fast",
