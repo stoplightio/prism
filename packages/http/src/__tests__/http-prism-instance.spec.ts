@@ -95,4 +95,31 @@ describe('Http Prism Instance function tests', () => {
       output: [],
     });
   });
+
+  test('should route correclty even if no document has been loaded', ()=>{
+    beforeAll(()=>{
+      prism = createInstance();
+    });
+
+    const response = await prism.process({
+      method: 'post',
+      url: {
+        path: '/store/order',
+      },
+      body: {
+        id: 1,
+        petId: 2,
+        quantity: 3,
+        shipDate: '12-01-2018',
+        status: 'placed',
+        complete: true,
+      },
+    });
+    expect(response.validations).toEqual({
+      input: [],
+      output: [],
+    });
+  });
+
+  })
 });

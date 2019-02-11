@@ -1,5 +1,4 @@
 {
-  "exclude": ["**/node_modules", "**/__tests__", "**/fixtures"],
   "compilerOptions": {
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,

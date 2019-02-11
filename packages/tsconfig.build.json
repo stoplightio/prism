@@ -1,4 +1,5 @@
 {
+  "exclude": ["**/__tests__"],
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
