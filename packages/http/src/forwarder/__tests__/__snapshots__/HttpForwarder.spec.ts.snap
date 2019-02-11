@@ -1,11 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HttpForwarder forward() parameters are invalid throws error when resource is missing 1`] = `"Missing spec"`;
-
-exports[`HttpForwarder forward() parameters are invalid throws error when server list is empty 1`] = `"Server list is missing in spec"`;
-
-exports[`HttpForwarder forward() parameters are invalid throws error when server list is missing 1`] = `"Server list is missing in spec"`;
-
 exports[`HttpForwarder forward() parameters are valid server url has no variables proxies request correctly 1`] = `
 Object {
   "body": "[{},{}]",

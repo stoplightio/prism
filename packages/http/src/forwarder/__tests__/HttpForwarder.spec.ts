@@ -11,31 +11,6 @@ describe('HttpForwarder', () => {
   });
 
   describe('forward()', () => {
-    describe('parameters are invalid', () => {
-      it('throws error when resource is missing', async () => {
-        return expect(
-          forwarder.forward({ input: httpRequests[0] })
-        ).rejects.toThrowErrorMatchingSnapshot();
-      });
-
-      it('throws error when server list is missing', async () => {
-        return expect(
-          forwarder.forward({
-            resource: Object.assign({}, httpOperations[0], { servers: undefined }),
-            input: httpRequests[0],
-          })
-        ).rejects.toThrowErrorMatchingSnapshot();
-      });
-
-      it('throws error when server list is empty', async () => {
-        return expect(
-          forwarder.forward({
-            resource: Object.assign({}, httpOperations[0], { servers: [] }),
-            input: httpRequests[0],
-          })
-        ).rejects.toThrowErrorMatchingSnapshot();
-      });
-    });
 
     describe('parameters are valid', () => {
       describe('server url has no variables', () => {
