@@ -35,7 +35,8 @@ describe('HttpForwarder', () => {
 
           expect(axios.default).toHaveBeenCalledWith({
             method: 'get',
-            url: 'http://api.example.com/todos',
+            url: '/todos',
+            baseURL: 'http://api.example.com',
             responseType: 'text',
             validateStatus: expect.any(Function),
           });
@@ -79,7 +80,7 @@ describe('HttpForwarder', () => {
           });
 
           expect(axios.default).toHaveBeenCalledWith(
-            expect.objectContaining({ url: 'http://api.example.com/todos' })
+            expect.objectContaining({ baseURL: 'http://api.example.com', url: '/todos' })
           );
         });
 
@@ -101,7 +102,7 @@ describe('HttpForwarder', () => {
           });
 
           expect(axios.default).toHaveBeenCalledWith(
-            expect.objectContaining({ url: 'http://api.example.com/todos' })
+            expect.objectContaining({ baseURL: 'http://api.example.com', url: '/todos' })
           );
         });
       });
