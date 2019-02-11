@@ -7,21 +7,17 @@ export class HttpForwarder
   implements IForwarder<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   public async forward(opts: {
     resource?: IHttpOperation;
-    // todo: IHttpRequest should be enough
     input: IPrismInput<IHttpRequest>;
   }): Promise<IHttpResponse> {
-    if (!opts.resource) {
-      throw new Error('Missing spec');
-    }
-    if (!opts.resource.servers || opts.resource.servers.length === 0) {
-      throw new Error('Server list is missing in spec');
-    }
-
     const inputData = opts.input.data;
 
     const response = await axios({
       method: inputData.method,
-      url: this.resolveServerUrl(opts.resource.servers[0]) + inputData.url.path,
+      baseURL:
+        opts.resource && opts.resource.servers && opts.resource.servers.length > 0
+          ? this.resolveServerUrl(opts.resource.servers[0])
+          : inputData.url.baseUrl,
+      url: inputData.url.path,
       params: inputData.url.query,
       responseType: 'text',
       data: inputData.body,
