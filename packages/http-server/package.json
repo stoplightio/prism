@@ -16,8 +16,8 @@
     "/lib"
   ],
   "dependencies": {
-    "@stoplight/prism-core": "0.0.0",
-    "@stoplight/prism-http": "0.0.0",
+    "@stoplight/prism-core": "1.0.0",
+    "@stoplight/prism-http": "1.0.0",
     "fastify": "1.12.x",
     "tslib": "1.9.x"
   },

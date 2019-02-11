@@ -16,17 +16,28 @@
     "test.fast": "jest --env=node --maxWorkers=2",
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
-    "test.update": "yarn test.fast --updateSnapshot"
+    "test.update": "yarn test.fast --updateSnapshot",
+    "release.dry": "lerna exec -- semantic-release --dry-run -e semantic-release-monorepo --tag-format='${LERNA_PACKAGE_NAME}-v\\${version}'",
+    "release.wet": "lerna exec -- semantic-release -e semantic-release-monorepo --tag-format='${LERNA_PACKAGE_NAME}-v\\${version}'"
   },
   "devDependencies": {
+    "@commitlint/cli": "7.2.x",
+    "@commitlint/config-conventional": "7.1.x",
+    "@semantic-release/git": "7.0.x",
     "@stoplight/types": "3.x.x",
     "@types/chance": "1.0.x",
     "@types/jest": "23.3.x",
     "@types/node": "10.12.x",
     "ajv": "6.6.x",
     "chance": "1.0.x",
-    "jest": "^23.6.x",
-    "oclif": "^1.12.x",
+    "jest": "23.6.x",
+    "oclif": "1.12.x",
+    "semantic-release-monorepo": "6.1.x",
+    "commitizen": "3.0.x",
+    "cz-conventional-changelog": "2.1.x",
+    "husky": "1.1.x",
+    "lerna": "3.4.x",
+    "semantic-release": "15.9.x",
     "ts-jest": "23.10.x",
     "tslint": "5.11.x",
     "tslint-config-stoplight": "1.1.x",
@@ -40,5 +51,42 @@
   },
   "dependencies": {
     "mobx": "^5.9.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "release": {
+    "branch": "chore/sl-83/prism-packaging-and-binary-deployment",
+    "verifyConditions": [
+      "@semantic-release/git",
+      "@semantic-release/github",
+      "@semantic-release/npm"
+    ],
+    "prepare": [
+      "@semantic-release/git",
+      "@semantic-release/npm"
+    ],
+    "publish": [
+      "@semantic-release/github",
+      "@semantic-release/npm"
+    ],
+    "success": [
+      "@semantic-release/github"
+    ],
+    "fail": [
+      "@semantic-release/github"
+    ]
   }
 }

@@ -10,7 +10,7 @@
     "@oclif/command": "1.x.x",
     "@oclif/config": "1.x.x",
     "@oclif/plugin-help": "2.x.x",
-    "@stoplight/prism-http-server": "0.0.0",
+    "@stoplight/prism-http-server": "1.0.0",
     "tslib": "1.x.x"
   },
   "devDependencies": {

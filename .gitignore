@@ -20,3 +20,7 @@ dist
 # IDE
 .idea
 lib
+
+# Sensitive configuration files
+.env
+.npmrc
