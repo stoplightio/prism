@@ -12,6 +12,33 @@ describe('HttpForwarder', () => {
 
   describe('forward()', () => {
 
+    describe('parameters haven\' been provided', () => {
+      it('proxies request correctly', async () => {
+        jest.spyOn(axios, 'default').mockImplementation(() => ({
+          status: 200,
+          headers: {
+            'Content-type': 'application/json',
+          },
+          data: '[{},{}]',
+          statusText: 'ok',
+        }));
+
+        const request = Object.assign({}, httpRequests[0]);
+        request.data.url.baseUrl = 'http://api.example.com';
+
+        await forwarder.forward({ input: request });
+
+
+        expect(axios.default).toHaveBeenCalledWith({
+          method: 'get',
+          url: '/todos',
+          baseURL: 'http://api.example.com',
+          responseType: 'text',
+          validateStatus: expect.any(Function),
+        });
+      });
+    });
+
     describe('parameters are valid', () => {
       describe('server url has no variables', () => {
         it('proxies request correctly', async () => {
