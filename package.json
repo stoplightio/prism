@@ -71,7 +71,6 @@
     "branch": "chore/sl-83/prism-packaging-and-binary-deployment",
     "verifyConditions": [
       "@semantic-release/git",
-      "@semantic-release/github",
       "@semantic-release/npm"
     ],
     "prepare": [
@@ -79,14 +78,7 @@
       "@semantic-release/npm"
     ],
     "publish": [
-      "@semantic-release/github",
       "@semantic-release/npm"
-    ],
-    "success": [
-      "@semantic-release/github"
-    ],
-    "fail": [
-      "@semantic-release/github"
     ]
   }
 }
