@@ -68,7 +68,7 @@
     }
   },
   "release": {
-    "branch": "chore/sl-83/prism-packaging-and-binary-deployment",
+    "branch": "develop",
     "verifyConditions": [
       "@semantic-release/git",
       "@semantic-release/npm"
