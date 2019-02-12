@@ -11,8 +11,7 @@ describe('HttpForwarder', () => {
   });
 
   describe('forward()', () => {
-
-    describe('parameters haven\' been provided', () => {
+    describe("parameters haven' been provided", () => {
       it('proxies request correctly', async () => {
         jest.spyOn(axios, 'default').mockImplementation(() => ({
           status: 200,
@@ -27,7 +26,6 @@ describe('HttpForwarder', () => {
         request.data.url.baseUrl = 'http://api.example.com';
 
         await forwarder.forward({ input: request });
-
 
         expect(axios.default).toHaveBeenCalledWith({
           method: 'get',
