@@ -15,9 +15,7 @@ describe('server', () => {
     });
   });
 
-  afterAll(async () => {
-    await new Promise(res => server.fastify.close(res));
-  });
+  afterAll(() => new Promise(res => server.fastify.close(res)));
 
   test('should mock back /pet/:petId', async () => {
     const response = await server.fastify.inject({
