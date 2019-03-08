@@ -4,124 +4,105 @@
 
 <a href="https://codeclimate.com/github/stoplightio/prism/test_coverage"><img src="https://api.codeclimate.com/v1/badges/f5e363a7eb5b8f4e570f/test_coverage" /></a>
 
-## What's up?
+Prism is a set of packages that, given an API description, can:
 
-Prism is a set of packages that, given an API Description Document, can
+1. Spin up a mock HTTP server and respond realistically based on your requests
+1. Act as a proxy and forward your request to an upstream server
+1. Validate requests passing through against the provided API description
 
-1. Spin up a mock server and respond according to the provided API Description Document
-2. Act as a proxy and forward your request to an upstream server
-3. Validate all the requests passing through against the provided API Description Document
+Being based on Graphite, Prism supports any description format that Graphite supports:
 
-## How's that?
+- OpenAPI v3.0
+- OpenAPI v2.0 (formerly Swagger)
 
-Prims is a multi-package repository so divided:
+Prims is a multi-package repository:
 
-- `core:` basic interfaces and abstraction for API Description Documents
+- `core:` basic interfaces and abstraction for API descriptions
 - `http:` A Prism implementation to work with HTTP Requests
-- `http-server:` A _Fastify_ instance that uses Prism to validate/mock/respond and forward to http requests
+- `http-server:` A _[Fastify]_ instance that uses Prism to validate/mock/respond and forward to http requests
 - `cli:` A CLI to spin up servers locally easily
 
 Look at the relative repositories' README for the specific documentation.
 
-## Examples
+## Install
 
-### Run a mock server locally to test requests
+Prism is a Node module, and can be installed via NPM or Yarn:
 
-```yml
-  - path: /
-    server: http://x.com/v1
-  - path: /
-    server: http://x.com/v2
-  - path: /a
-    server: http://x.com
-  - path: /b
-    server: .
-```
-
-**w/o server validation**
 ```bash
+$ npm install -g prism
+$ yarn global add prism
+```
 
-prism run --spec spec --port 3000
+_*TODO:* Create an executable which will run without needing to install a node module._
 
-curl localhost:3000/a # - ok
-curl localhost:3000/b # - ok
-curl localhost:3000/v1/ # - error: no such path exists
-curl localhost:3000/v2/ # - error: no such path exists
+## Usage
+
+### CLI
+
+Running Prism on the CLI will create a HTTP server.
+
+```bash
+$ prism serve -s examples/petstore.json
+> http://127.0.0.1:4010
+```
+
+Then in another tab, you can hit the HTTP server with your favorite HTTP client (like [HTTPie]):
+
+```bash
+$ http --json http://127.0.0.1:4010/pet name=Stowford
+```
+
+Responses will be mocked using realistic data that conforms to the type in the description.
+
+#### Request Validation
+
+Requests to operations which expect a request body will be validated, for example: a POST with JSON.
+
+```bash
+$ http --json http://127.0.0.1:4010/pet name=Stowford
+```
+
+This will generate an error:
 
 ```
-**w/ server validation**
+Here is the original validation result instead: [{"path":["body"],"name":"required","summary":"should have required property 'photoUrls'","message":"should have required property 'photoUrls'","severity":"error"}]
+```
 
-`curl localhost:3000/a?__server=http://x.com` - ok
+This error lets us know that we are missing the `photoUrls` property, so lets send that too:
 
-`curl localhost:3000/b` - ?
+```bash
+$ http --json http://127.0.0.1:4010/pet name=bar photoUrls:='["http://fdsf"]'
+```
 
-`curl localhost:3000/v1/?__server=http://x.com/v1` - ok
+#### Server Validation
 
-`curl localhost:3000/v2/?_server=http://x.com/v2` - ok
+The server name (and any base path) are ignored entirely, but if you would like to validate a
+specific server as allowed by the API description you can provide the `__server` query parameter.
 
+```bash
+$ curl localhost:3000/a?__server=http://example.com
+```
 
+This will throw an error if the server being used is not defined in the API description.
 
-`prism run --spec spec --port 3000 --server http://x.com`
+## FAQ
 
+**The API description defines a base path of `/api` (using OpenAPI v2 `basePath` keyword, or in
+OpenAPI v3 using a path in `servers.url`), but requests seem to fail when using it?**
 
-`curl localhost:3000/a` - ok
+Base paths are completely ignored by the Prism HTTP server, so they can be removed from the request.
+If you have a base path of `/api` and your path is defined as `hello`, then a request to
+`http://localhost:4010/hello` would work, but `http://localhost:4010/api/hello` will fail.
 
-`curl localhost:3000/b` - error: no such path exists
+## Testing
 
-`curl localhost:3000/v1/` - error: no such path exists
+```bash
+$ yarn test
+```
 
-`curl localhost:3000/v2/` - error: no such path exists
+## Contributing
 
-### Run a server to mock a public API
-
-**w/o server validation**
-
-`prism run --spec spec --port 3000`
-
-`configure DNS to point http://x.com to "localhost:3000"`
-
-
-`curl http://x.com/a` - ok
-
-`curl http://x.com/b` - ok
-
-`curl http://x.com/` - matches ambigously
-
-`curl http://x.com/v1/` - error: no such path exists ( GET /v1/ does not match any path from spec )
-
-`curl http://x.com/v2/` - error: no such path exists ( GET /v2/ does not match any path from spec )
-
-**w/ server validation**
-
-`prism run --spec spec --port 3000 --server http://x.com`
-
-`prism run --spec spec --port 3001 --server http://x.com/v1`
-
-`prism run --spec spec --port 3002 --server http://x.com/v2`
-
-
-`configure DNS and routing to point http://x.com to "localhost:3000"`
-
-`configure DNS and routing to point http://x.com/v1 to "localhost:3001"`
-
-`configure DNS and routing to point http://x.com/v2 to "localhost:3002"`
-
-
-`curl http://x.com/a` - ok
-
-`curl http://x.com/b` - ok
-
-`curl http://x.com/` - no match
-
-`curl http://x.com/v1/` - ok
-
-`curl http://x.com/v2/` - ok
-
-### Use in code
-
-**To be defined**
-
-## Development
+Please see [CONTRIBUTING] and [CODE_OF_CONDUCT] for details.
 
 ### Common issues
 
@@ -129,3 +110,8 @@ curl localhost:3000/v2/ # - error: no such path exists
 
 - [optional] Install `watchman` as per [documentation](https://facebook.github.io/watchman/docs/install.html#installing-from-source)
 - Modify `fs.inotify.max_user_watches` as per [issue resolution](https://github.com/facebook/jest/issues/3254)
+
+[CODE_OF_CONDUCT]: CODE_OF_CONDUCT.md
+[CONTRIBUTING]: CONTRIBUTING.md
+[Fastify]: https://www.fastify.io/
+[HTTPie]: https://httpie.org/
