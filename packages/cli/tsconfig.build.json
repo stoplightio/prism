@@ -2,7 +2,8 @@
   "extends": "../tsconfig.build.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "lib"
+    "outDir": "lib",
+    "target": "es2017"
   },
   "include": ["src"],
   "references": [
