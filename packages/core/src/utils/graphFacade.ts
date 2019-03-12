@@ -10,6 +10,7 @@ import { createOas2HttpPlugin } from '@stoplight/graphite/plugins/http/oas2';
 import { createOas3HttpPlugin } from '@stoplight/graphite/plugins/http/oas3';
 import { createJsonPlugin } from '@stoplight/graphite/plugins/json';
 import { createOas2Plugin } from '@stoplight/graphite/plugins/oas2';
+import { createYamlPlugin } from '@stoplight/graphite/plugins/yaml';
 import { IHttpOperation } from '@stoplight/types';
 import * as fs from 'fs';
 import { extname, join } from 'path';
@@ -24,6 +25,7 @@ export class GraphFacade {
     const graphite = (this.graphite = createGraphite());
     graphite.registerPlugins(
       createJsonPlugin(),
+      createYamlPlugin(),
       createOas2Plugin(),
       createOas2HttpPlugin(),
       createOas3HttpPlugin()
