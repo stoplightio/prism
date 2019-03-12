@@ -12,7 +12,7 @@
     ]
   },
   "include": [
-    "src"
+    "react-example/src"
   ],
   "compileOnSave": false
 }

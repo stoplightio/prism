@@ -1,4 +1,4 @@
-import { factory } from '@stoplight/prism-core';
+import { factory } from '../../../packages/core/lib/index';
 
 const createPrism = factory<any, any, any, any, any>({
   config: {},
