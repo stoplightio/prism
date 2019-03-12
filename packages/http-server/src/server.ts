@@ -79,6 +79,8 @@ const replyHandler = <LoaderInput>(
         }
 
         if (output.body) {
+          // body is already serialized
+          reply.serializer((payload: any) => payload);
           reply.send(output.body);
         }
       }
