@@ -97,7 +97,7 @@ describe('Http Prism Instance function tests', () => {
     });
   });
 
-  test("should forward the request correclty even if resources haven't been provided", async () => {
+  test("should forward the request correctly even if resources haven't been provided", async () => {
     // Recreate Prism with no loaded document
     prism = createInstance({ forwarder, router: undefined, mocker: undefined });
 
@@ -121,5 +121,14 @@ describe('Http Prism Instance function tests', () => {
       input: [],
       output: [],
     });
+  });
+
+  test('loads spec provided in yaml', async () => {
+    prism = createInstance();
+    await prism.load({
+      path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'petstore.oas2.yaml')),
+    });
+
+    expect(prism.resources).toHaveLength(5);
   });
 });
