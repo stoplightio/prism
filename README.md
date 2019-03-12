@@ -10,9 +10,9 @@ Prism is a set of packages that, given an API description, can:
 1. Act as a proxy and forward your request to an upstream server
 1. Validate requests passing through against the provided API description
 
-Being based on Graphite, Prism supports any description format that Graphite supports:
+Being based on [Graphite], Prism supports any description format that Graphite supports:
 
-- OpenAPI v3.0
+- OpenAPI v3.0 (coming soon)
 - OpenAPI v2.0 (formerly Swagger)
 
 Prims is a multi-package repository:
@@ -49,17 +49,28 @@ $ prism serve -s examples/petstore.json
 Then in another tab, you can hit the HTTP server with your favorite HTTP client (like [HTTPie]):
 
 ```bash
-$ http --json http://127.0.0.1:4010/pet name=Stowford
+$ http GET http://127.0.0.1:4010/pet/123
 ```
 
 Responses will be mocked using realistic data that conforms to the type in the description.
+
+#### Determine Responses
+
+Prism can be forced to return different HTTP responses by specifying the status code in the query
+string:
+
+```bash
+$ http GET http://127.0.0.1:4010/pet/123?__code=404
+```
+
+The body, headers, etc. for this response will be taken from the API description document.
 
 #### Request Validation
 
 Requests to operations which expect a request body will be validated, for example: a POST with JSON.
 
 ```bash
-$ http --json http://127.0.0.1:4010/pet name=Stowford
+$ http --json POST http://127.0.0.1:4010/pet name=Stowford
 ```
 
 This will generate an error:
@@ -68,22 +79,11 @@ This will generate an error:
 Here is the original validation result instead: [{"path":["body"],"name":"required","summary":"should have required property 'photoUrls'","message":"should have required property 'photoUrls'","severity":"error"}]
 ```
 
-This error lets us know that we are missing the `photoUrls` property, so lets send that too:
+This error shows the request is missing the `photoUrls` property:
 
 ```bash
-$ http --json http://127.0.0.1:4010/pet name=bar photoUrls:='["http://fdsf"]'
+$ http --json POST http://127.0.0.1:4010/pet name=bar photoUrls:='["http://fdsf"]'
 ```
-
-#### Server Validation
-
-The server name (and any base path) are ignored entirely, but if you would like to validate a
-specific server as allowed by the API description you can provide the `__server` query parameter.
-
-```bash
-$ curl localhost:3000/a?__server=http://example.com
-```
-
-This will throw an error if the server being used is not defined in the API description.
 
 ## FAQ
 
@@ -93,6 +93,14 @@ OpenAPI v3 using a path in `servers.url`), but requests seem to fail when using 
 Base paths are completely ignored by the Prism HTTP server, so they can be removed from the request.
 If you have a base path of `/api` and your path is defined as `hello`, then a request to
 `http://localhost:4010/hello` would work, but `http://localhost:4010/api/hello` will fail.
+
+## TODO
+
+- [ ] OpenAPI v3.0 support
+- [ ] Server Validation
+- [ ] Security Validation
+- [ ] Dynamic Mocking (use JS to script custom interactions)
+- [ ] Data Persistence (turn Prism into a sandbox server)
 
 ## Testing
 
@@ -114,4 +122,5 @@ Please see [CONTRIBUTING] and [CODE_OF_CONDUCT] for details.
 [CODE_OF_CONDUCT]: CODE_OF_CONDUCT.md
 [CONTRIBUTING]: CONTRIBUTING.md
 [Fastify]: https://www.fastify.io/
+[Graphite]: https://github.com/stoplightio/graphite
 [HTTPie]: https://httpie.org/
