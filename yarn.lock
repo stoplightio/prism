@@ -186,18 +186,21 @@
   resolved "https://registry.yarnpkg.com/@stoplight/fast-safe-stringify/-/fast-safe-stringify-2.1.2.tgz#2811eff4989c3d4c5c9a3789f057e25358db0899"
   integrity sha512-ayw3qQ9KNn2K5q6ggrLclh+rdZsSLwYIUz3uAer1NzaCpalJLR4g32G845ylgq7Xy2AunMHnNfD3FC3s0rUcsA==
 
-"@stoplight/graphite@1.7.x":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-1.7.0.tgz#dae7af056f3ec36c29b6c10ebf30a332b6ef11d1"
-  integrity sha512-8iTkKCCvSNhJrMrLU3xopIRWDgGamxI5hmE+DkEe6hzZ3yipSf828l5C8Y1ehfwYAMZgiTLF8VXOnD85eWkEog==
+"@stoplight/graphite@3.5.x":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-3.5.1.tgz#f5321e3db625f3d97578a27a9e134993893d8678"
+  integrity sha512-56cXCuH01UqnIgarjecuUPAwvyo2ZJOlpdVhX4qV1AaZvIc+ObUBjzMQaW9QaWEYMvHOc7Xk9/KqHSONTvZZxA==
   dependencies:
-    "@stoplight/json" "1.3.x"
+    "@stoplight/json" "1.x.x"
+    "@stoplight/json-ref-resolver" "1.x.x"
     "@stoplight/lifecycle" "1.x.x"
     "@stoplight/markdown" "1.x.x"
+    "@stoplight/spectral" "1.x.x"
     "@stoplight/types" "3.1.x"
     "@stoplight/yaml" "1.x.x"
     "@types/swagger-schema-official" "2.0.x"
     "@types/urijs" "1.15.x"
+    axios "0.18.x"
     diff-match-patch "1.0.x"
     fast-json-patch "2.0.x"
     immer "1.10.0"
@@ -212,10 +215,32 @@
     uuid "3.3.x"
     wolfy87-eventemitter "5.2.x"
 
-"@stoplight/json@1.3.x":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-1.3.0.tgz#98ab07a93de794b69b31937ebe7c2a515196fc3d"
-  integrity sha512-dXyxb/GP0ZTaBDGczs4xZy4fCIL7UzkSoKFzxyUNc/LlTWrxsKEN4pIMxcUyYXSRhmZaN1lZNiUpVqW/f1OnzQ==
+"@stoplight/json-ref-resolver@1.x.x":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/json-ref-resolver/-/json-ref-resolver-1.2.2.tgz#78dda8733aa48e3db2756a03882d2ca53c600392"
+  integrity sha512-sTHHKmipVg/Qt6I0spVMI3L0eJY4VtmOWAVQQPrIBUbbV04wQq557ES2jbigfKBiC8n9TavcqZljiAxeCE9ANw==
+  dependencies:
+    "@stoplight/json" "1.1.x"
+    dependency-graph "0.7.x"
+    fast-memoize "2.x.x"
+    immer "1.x.x"
+    lodash "4.x.x"
+    urijs "1.x.x"
+
+"@stoplight/json@1.1.x":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-1.1.0.tgz#839b10852bdc10d50b08f23898136f561c33980c"
+  integrity sha512-6z+w24hsJP4H2N6A085QAYCsVljgUCcbeVQHXQ3gTY651sIbeaJGT+tr2xmJXjS37Ui2emrTffWs7vrtpdrFHA==
+  dependencies:
+    "@stoplight/fast-safe-stringify" "2.1.2"
+    "@stoplight/types" "2.x.x"
+    json-source-map "0.4.0"
+    lodash "4.x.x"
+
+"@stoplight/json@1.x.x":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-1.5.1.tgz#158e6db0186721781924f270526e47dd882e6133"
+  integrity sha512-3WsP/QZAVEvxzF8nrL0NaFiqo23P5RTLlMJNRpW+2HKd5q6YeikrxPXQhEcmgNpEoAHw9sK+rdLS1UiL7en8cA==
   dependencies:
     "@stoplight/fast-safe-stringify" "2.1.2"
     "@stoplight/types" "3.x.x"
@@ -240,6 +265,22 @@
     remark-stringify "6.0.x"
     unified "7.0.x"
     vfile "3.x.x"
+
+"@stoplight/spectral@1.x.x":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-1.1.1.tgz#f6ab6596910de3a380e26d909cba748d5de6a93f"
+  integrity sha512-wal20A8Kb2FRjyr3SFAkS8Dki3vWL0xexN26MGmPagovOd5Fn0+6ro0IGfWGUyGWVIhGFe7pgGvhe/PZfPocKg==
+  dependencies:
+    "@stoplight/json" "1.x.x"
+    "@stoplight/types" "3.x.x"
+    ajv "6.x.x"
+    jsonpath "git://github.com/stoplightio/jsonpath.git#78140eb1980d4ff385780e2fa12177735685ec3e"
+    lodash ">=4.17.5"
+
+"@stoplight/types@2.x.x":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-2.0.0.tgz#3e78ad980bb0254759506f9201eb1331663d38f8"
+  integrity sha512-oExv0WpTCJCKdtua52R1z0p+UhYys+7ifRuyEidYsUiUkd95pb/olatc8G9S55lnuEMcFiQhBy0lu5DyrIDrOA==
 
 "@stoplight/types@3.1.x":
   version "3.1.0"
@@ -377,6 +418,16 @@ ajv@6.6.x, ajv@^6.1.1:
   version "6.6.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.6.2.tgz#caceccf474bf3fc3ce3b147443711a24063cc30d"
   integrity sha512-FBHEW6Jf5TB9MGBgUUA9XHkTbjXYfAUjY43ACMfmdMRHniyoMHjHjzD50OK8LGDWQwp4rWEsIq5kEqq7rvIM1g==
+  dependencies:
+    fast-deep-equal "^2.0.1"
+    fast-json-stable-stringify "^2.0.0"
+    json-schema-traverse "^0.4.1"
+    uri-js "^4.2.2"
+
+ajv@6.x.x:
+  version "6.10.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.10.0.tgz#90d0d54439da587cd7e843bfb7045f50bd22bdf1"
+  integrity sha512-nffhOpkymDECQyR0mnsUtoCE8RlX38G0rYP+wgLWFyZuUyuuojSSvi/+euOiQBIn63whYwYVIIH1TvE3tu4OEg==
   dependencies:
     fast-deep-equal "^2.0.1"
     fast-json-stable-stringify "^2.0.0"
@@ -614,7 +665,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.8.0.tgz#f0e003d9ca9e7f59c7a508945d7b2ef9a04a542f"
   integrity sha512-ReZxvNHIOv88FlT7rxcXIIC0fPt4KZqZbOlivyWtXLt8ESx84zd3kMC6iK5jVeS2qt+g7ftS7ye4fi06X5rtRQ==
 
-axios@0.x.x:
+axios@0.18.x, axios@0.x.x:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
   integrity sha1-MtU+SFHv3AoRmTts0AB4nXDAUQI=
@@ -1526,6 +1577,11 @@ delegates@^1.0.0:
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
   integrity sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=
 
+dependency-graph@0.7.x:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/dependency-graph/-/dependency-graph-0.7.2.tgz#91db9de6eb72699209d88aea4c1fd5221cac1c49"
+  integrity sha512-KqtH4/EZdtdfWX0p6MGP9jljvxSY6msy/pRUD4jgNwVpv3v1QmNLlsB3LDSSUg79BRVSn7jI1QPRtArGABovAQ==
+
 detect-conflict@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/detect-conflict/-/detect-conflict-1.0.1.tgz#088657a66a961c05019db7c4230883b1c6b4176e"
@@ -1954,6 +2010,11 @@ fast-levenshtein@^2.0.6, fast-levenshtein@~2.0.4:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
+
+fast-memoize@2.x.x:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/fast-memoize/-/fast-memoize-2.5.1.tgz#c3519241e80552ce395e1a32dcdde8d1fd680f5d"
+  integrity sha512-xdmw296PCL01tMOXx9mdJSmWY29jQgxyuZdq0rEHMu+Tpe1eOEtCycoG6chzlcrWsNgpZP7oL8RiQr7+G6Bl6g==
 
 fast-safe-stringify@^1.0.8, fast-safe-stringify@^1.2.3:
   version "1.2.3"
@@ -2538,6 +2599,11 @@ immer@1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
   integrity sha512-O3sR1/opvCDGLEVcvrGTMtLac8GJ5IwZC4puPrLuRj3l7ICKvkmA0vGuU9OW8mV9WIBRnaxp5GJh9IEAaNOoYg==
+
+immer@1.x.x:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-1.12.1.tgz#40c6e5b292c00560836c2993bda3a24379d466f5"
+  integrity sha512-3fmKM6ovaqDt0CdC9daXpNi5x/YCYS3i4cwLdTVkhJdk5jrDXoPs7lCm3IqM3yhfSnz4tjjxbRG2CziQ7m8ztg==
 
 import-local@^1.0.0:
   version "1.0.0"
@@ -3553,6 +3619,15 @@ jsonpath@^1.0.0:
     static-eval "2.0.0"
     underscore "1.7.0"
 
+"jsonpath@git://github.com/stoplightio/jsonpath.git#78140eb1980d4ff385780e2fa12177735685ec3e":
+  version "1.0.0"
+  resolved "git://github.com/stoplightio/jsonpath.git#78140eb1980d4ff385780e2fa12177735685ec3e"
+  dependencies:
+    esprima "1.2.2"
+    jison "0.4.13"
+    static-eval "2.0.0"
+    underscore "1.7.0"
+
 jsprim@^1.2.2:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/jsprim/-/jsprim-1.4.1.tgz#313e66bc1e5cc06e438bc1b7499c2e5c56acb6a2"
@@ -3707,7 +3782,7 @@ lodash.templatesettings@^4.0.0:
   dependencies:
     lodash._reinterpolate "~3.0.0"
 
-lodash@4.x.x, lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.5.1:
+lodash@4.x.x, lodash@>=4.17.5, lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.5.1:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
@@ -6002,7 +6077,7 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-urijs@1.19.x:
+urijs@1.19.x, urijs@1.x.x:
   version "1.19.1"
   resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.1.tgz#5b0ff530c0cbde8386f6342235ba5ca6e995d25a"
   integrity sha512-xVrGVi94ueCJNrBSTjWqjvtgvl3cyOTThp2zaMaFNGp3F542TR6sM3f2o8RqZl+AwteClSVmoCyt0ka4RjQOQg==

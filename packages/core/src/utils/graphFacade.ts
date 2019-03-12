@@ -19,7 +19,6 @@ import compact = require('lodash/compact');
 export class GraphFacade {
   private fsBackend: FileSystemBackend;
   private graphite: IGraphite;
-  private cwd: string;
 
   constructor() {
     const graphite = (this.graphite = createGraphite());
@@ -29,8 +28,7 @@ export class GraphFacade {
       createOas2HttpPlugin(),
       createOas3HttpPlugin()
     );
-    this.cwd = process.cwd();
-    this.fsBackend = createFileSystemBackend(this.cwd, graphite, fs);
+    this.fsBackend = createFileSystemBackend(graphite, fs);
   }
 
   public async createFilesystemNode(fsPath: string | undefined) {
@@ -42,7 +40,7 @@ export class GraphFacade {
         this.graphite.graph.addNode({
           category: NodeCategory.Source,
           type: FilesystemNodeType.Directory,
-          path: fsPath,
+          path: resourceFile,
         });
         this.fsBackend.readdir(fsPath);
       } else if (stat.isFile()) {
@@ -50,17 +48,18 @@ export class GraphFacade {
           category: NodeCategory.Source,
           type: FilesystemNodeType.File,
           subtype,
-          path: fsPath,
+          path: resourceFile,
         });
-        this.fsBackend.readFile(fsPath);
+        this.fsBackend.readFile(resourceFile);
       }
-      return this.graphite.scheduler.drain();
+      await this.graphite.scheduler.drain();
+      return;
     }
     return null;
   }
 
   get httpOperations(): IHttpOperation[] {
-    const nodes = this.graphite.graph.virtualNodes.filter(node => node.type === 'http-operation');
+    const nodes = this.graphite.graph.virtualNodes.filter(node => node.type === 'http_operation');
     return compact(nodes.map<IHttpOperation>(node => node.data as IHttpOperation));
   }
 }
