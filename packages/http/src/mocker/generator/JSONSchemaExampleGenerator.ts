@@ -5,7 +5,7 @@ import { IExampleGenerator } from './IExampleGenerator';
 
 export class JSONSchemaExampleGenerator implements IExampleGenerator<any> {
   public async generate(schema: any, mediaType: string): Promise<string> {
-    const example = await jsf.resolve(schema);
+    const example = await jsf.resolve(JSON.parse(JSON.stringify(schema)));
     return this.transform(mediaType, example);
   }
 
