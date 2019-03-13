@@ -28,9 +28,25 @@ describe('JSONSchemaExampleGenerator', () => {
     });
 
     it('fails when media type is unknown', async () => {
-      expect(
+      return expect(
         jsonSchemaExampleGenerator.generate({}, 'non-existing/media-type')
       ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    it('operates on sealed schema objects', async () => {
+      const schema = {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+        },
+        required: ['name'],
+      };
+
+      Object.defineProperty(schema.properties, 'name', { writable: false });
+
+      return expect(
+        jsonSchemaExampleGenerator.generate(schema, 'application/json')
+      ).resolves.toBeTruthy();
     });
   });
 });
