@@ -50,6 +50,20 @@ Then in another tab, you can hit the HTTP server with your favorite HTTP client 
 
 ```bash
 $ http GET http://127.0.0.1:4010/pet/123
+
+HTTP/1.1 200 OK
+Connection: keep-alive
+content-length: 98
+content-type: application/json
+
+{
+    "name": "ut dolore nulla non ex",
+    "photoUrls": [
+        "aute sed in qui",
+        "magna Excepteur",
+        "tempor dolor"
+    ]
+}
 ```
 
 Responses will be mocked using realistic data that conforms to the type in the description.

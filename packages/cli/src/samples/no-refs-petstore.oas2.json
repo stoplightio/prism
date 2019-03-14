@@ -549,6 +549,18 @@
           },
           "404": {
             "description": "Pet not found"
+          },
+          "418": {
+            "description": "Teapot found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "doggie"
+          }
+              }
+            }
           }
         },
         "security": [
