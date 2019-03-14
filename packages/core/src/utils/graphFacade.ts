@@ -13,7 +13,7 @@ import { createOas2Plugin } from '@stoplight/graphite/plugins/oas2';
 import { createYamlPlugin } from '@stoplight/graphite/plugins/yaml';
 import { IHttpOperation } from '@stoplight/types';
 import * as fs from 'fs';
-import { extname, join } from 'path';
+import { extname, resolve } from 'path';
 
 import compact = require('lodash/compact');
 
@@ -35,7 +35,7 @@ export class GraphFacade {
 
   public async createFilesystemNode(fsPath: string | undefined) {
     if (fsPath) {
-      const resourceFile = join(process.cwd(), fsPath);
+      const resourceFile = resolve(fsPath);
       const subtype = extname(resourceFile).slice(1);
       const stat = fs.lstatSync(resourceFile);
       if (stat.isDirectory()) {
