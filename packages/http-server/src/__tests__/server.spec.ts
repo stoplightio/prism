@@ -41,7 +41,16 @@ describe('server', () => {
       url: '/user/username',
     });
 
-    expect(Object.keys(JSON.parse(response.payload))).toEqual(['id', 'username']);
+    expect(Object.keys(JSON.parse(response.payload))).toEqual([
+      'id',
+      'username',
+      'firstName',
+      'lastName',
+      'email',
+      'password',
+      'phone',
+      'userStatus',
+    ]);
     expect(response.statusCode).toBe(201);
   });
 
