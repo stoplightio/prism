@@ -20,7 +20,7 @@
     "ajv": "6.6.x",
     "ajv-oai": "1.x.x",
     "axios": "0.x.x",
-    "json-schema-faker": "0.5.0-rc16",
+    "json-schema-faker": "stoplightio/json-schema-faker",
     "tslib": "1.9.x"
   }
 }

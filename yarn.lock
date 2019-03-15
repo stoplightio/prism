@@ -3546,10 +3546,9 @@ json-parse-better-errors@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
 
-json-schema-faker@0.5.0-rc16:
+json-schema-faker@stoplightio/json-schema-faker:
   version "0.5.0-rc16"
-  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rc16.tgz#0a0bc4d04819ca38b55e8e9c143b7a0cf870ad03"
-  integrity sha512-pDGpYWf3UjwhEBDfRot8q9eWQdekTb2BmykpX0QCqSV/pkniyIWnRa8+/oUWyK4h+1wRqUKoKx14JqIIrTW9LA==
+  resolved "https://codeload.github.com/stoplightio/json-schema-faker/tar.gz/40534f09c0d347632c8cd67a4d1e40efc65cf9fc"
   dependencies:
     json-schema-ref-parser "^5.0.0"
     jsonpath "^1.0.0"
@@ -3609,17 +3608,7 @@ jsonfile@^4.0.0:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-jsonpath@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/jsonpath/-/jsonpath-1.0.0.tgz#45cd9d4c4d0d6825d90bd7e40f83f1182b13dd07"
-  integrity sha1-Rc2dTE0NaCXZC9fkD4PxGCsT3Qc=
-  dependencies:
-    esprima "1.2.2"
-    jison "0.4.13"
-    static-eval "2.0.0"
-    underscore "1.7.0"
-
-"jsonpath@git://github.com/stoplightio/jsonpath.git#78140eb1980d4ff385780e2fa12177735685ec3e":
+jsonpath@^1.0.0, "jsonpath@git://github.com/stoplightio/jsonpath.git#78140eb1980d4ff385780e2fa12177735685ec3e":
   version "1.0.0"
   resolved "git://github.com/stoplightio/jsonpath.git#78140eb1980d4ff385780e2fa12177735685ec3e"
   dependencies:
