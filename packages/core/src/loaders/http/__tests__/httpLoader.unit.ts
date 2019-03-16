@@ -21,7 +21,7 @@ describe('httpLoader', () => {
 
     const operations = await httpLoader.load({ url: 'a url' });
 
-    expect(axios).toHaveBeenCalledWith({ url: 'a url', responseType: 'text' });
+    expect(axios).toHaveBeenCalledWith({ url: 'a url', transformResponse: expect.any(Function) });
     expect(operations).toBe(fakeHttpOperations);
   });
 });
