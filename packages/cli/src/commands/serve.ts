@@ -49,18 +49,18 @@ export default class Serve extends Command {
     }
   }
 
-  private validateSpecPath(path?: string) {
-    if (!path) {
+  private validateSpecPath(spec?: string) {
+    if (!spec || isHttp(spec)) {
       return;
     }
 
-    if (!existsSync(path)) {
-      this.error(`Non-existing path to spec supplied: ${path}`);
+    if (!existsSync(spec)) {
+      this.error(`Non-existing path to spec supplied: ${spec}`);
       this.exit(0x01);
       return;
     }
 
-    const stats = statSync(path);
+    const stats = statSync(spec);
 
     if (stats.isDirectory()) {
       this.error(`Supplied spec path points to directory. Only files are supported.`);
@@ -71,5 +71,5 @@ export default class Serve extends Command {
 }
 
 function isHttp(spec: string) {
-  return spec.match(/^https?:\/\//);
+  return !!spec.match(/^https?:\/\//);
 }

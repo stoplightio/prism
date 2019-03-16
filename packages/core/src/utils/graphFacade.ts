@@ -68,6 +68,8 @@ export class GraphFacade {
       path: '/',
       data: { raw },
     } as ISourceNode);
+
+    await this.graphite.scheduler.drain();
   }
 
   get httpOperations(): IHttpOperation[] {
