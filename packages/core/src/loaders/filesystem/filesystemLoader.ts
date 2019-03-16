@@ -12,7 +12,7 @@ export class FilesystemLoader {
    * There is no way to filter by a type in runtime :(
    */
   public async load(/*<Resource>*/ _opts?: IFilesystemLoaderOpts): Promise<IHttpOperation[]> {
-    const fsPath = _opts ? _opts.path : DEFAULT_PATH;
+    const fsPath = !_opts || !_opts.path ? DEFAULT_PATH : _opts.path;
     await this.graphFacade.createFilesystemNode(fsPath);
     return this.graphFacade.httpOperations;
   }

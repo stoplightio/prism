@@ -1,6 +1,6 @@
-import { FilesystemLoader } from '../../../../src';
-jest.mock('../../../../src/utils/graphFacade');
-import { GraphFacade } from '../../../../src/utils/graphFacade';
+import { FilesystemLoader } from '../';
+jest.mock('../../../utils/graphFacade');
+import { GraphFacade } from '../../../utils/graphFacade';
 
 describe('filesystemLoader', () => {
   const fakeHttpOperations = ['a', 'b', 'c'];
@@ -11,6 +11,7 @@ describe('filesystemLoader', () => {
     graphFacadeMock = new GraphFacade();
     createFileSystemNodeMock = graphFacadeMock.createFilesystemNode as jest.Mock;
     createFileSystemNodeMock.mockResolvedValue(true);
+
     Object.defineProperty(graphFacadeMock, 'httpOperations', {
       get: jest.fn().mockReturnValue(fakeHttpOperations),
     });

@@ -1,4 +1,5 @@
 import { Command, flags as oflags } from '@oclif/command';
+import { httpLoaderInstance } from '@stoplight/prism-core';
 import { TPrismHttpComponents } from '@stoplight/prism-http';
 import { createServer } from '@stoplight/prism-http-server';
 import { existsSync, statSync } from 'fs';
@@ -28,11 +29,24 @@ export default class Serve extends Command {
 
     await this.validateSpecPath(spec);
 
-    const components: TPrismHttpComponents<any> = !mock ? { config: { mock: false } } : {};
-    const server = createServer({ path: spec }, { components });
+    const server = this.createServer({ spec, mock });
     const address = await server.listen(port as number);
 
     this.log(address);
+  }
+
+  private createServer({ spec, mock }: { spec?: string; mock: boolean }) {
+    const components: TPrismHttpComponents<any> = {};
+    if (!mock) components.config = { mock: false };
+
+    if (spec && isHttp(spec)) {
+      return createServer(
+        { url: spec },
+        { components: { ...components, loader: httpLoaderInstance } }
+      );
+    } else {
+      return createServer({ path: spec }, { components });
+    }
   }
 
   private validateSpecPath(path?: string) {
@@ -54,4 +68,8 @@ export default class Serve extends Command {
       return;
     }
   }
+}
+
+function isHttp(spec: string) {
+  return spec.match(/^https?:\/\//);
 }
