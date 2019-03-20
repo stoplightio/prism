@@ -6,7 +6,7 @@
       "@stoplight/prism-core": ["core/src/index.ts"],
       "@stoplight/prism-cli": ["cli/src/index.ts"],
       "@stoplight/prism-http": ["http/src/index.ts"],
-      "@stoplight/prism-http-server": ["http-server/src/index.ts"],
+      "@stoplight/prism-http-server": ["http-server/src/index.ts"]
     }
   }
 }
