@@ -78,12 +78,12 @@ const replyHandler = <LoaderInput>(
           reply.headers(output.headers);
         }
 
-        if (output.body) {
-          // body is already serialized
-          reply.serializer((payload: any) => payload);
-          reply.send(output.body);
-        }
+        reply.serializer((payload: unknown) => payload);
+        reply.send(output.body);
+      } else {
+        reply.code(500).send('Unable to find any decent response for the current request.');
       }
+
     } catch (e) {
       reply.code(500).send(e);
     }
