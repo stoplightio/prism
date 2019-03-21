@@ -99,7 +99,7 @@ const helpers = {
         return {
           code,
           mediaType,
-        }
+        };
       }
     }
   },

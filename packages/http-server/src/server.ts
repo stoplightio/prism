@@ -83,7 +83,6 @@ const replyHandler = <LoaderInput>(
       } else {
         reply.code(500).send('Unable to find any decent response for the current request.');
       }
-
     } catch (e) {
       reply.code(500).send(e);
     }

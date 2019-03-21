@@ -14,7 +14,6 @@ export function configMergerFactory<C, I>(
     const resolvedConfigs =
       // remove any falsy resolved configs
       _compact(
-
         // remove falsy config props
         _compact(configs)
           // resolve each config (resolveConfig is async)

@@ -4,8 +4,8 @@ import { IPrism, IPrismComponents, IPrismConfig, IValidation } from './types';
 export function factory<Resource, Input, Output, Config, LoadOpts>(
   defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
 ): (
-    customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
-  ) => IPrism<Resource, Input, Output, Config, LoadOpts> {
+  customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
+) => IPrism<Resource, Input, Output, Config, LoadOpts> {
   const prism = (
     customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
   ) => {
