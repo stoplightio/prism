@@ -9,16 +9,15 @@ const _merge = require('lodash/merge');
 export function configMergerFactory<C, I>(
   ...configs: Array<PrismConfig<C, I> | undefined>
 ): PrismConfigFactory<C, I> {
-  const factory = async (input: I, defaultConfig?: PrismConfig<C, I>): Promise<C> => {
+  const factory = (input: I, defaultConfig?: PrismConfig<C, I>): C => {
     const resolvedConfigs =
       // remove any falsy resolved configs
       _compact(
-        await Promise.all(
-          // remove falsy config props
-          _compact(configs)
-            // resolve each config (resolveConfig is async)
-            .map((c: C) => resolveConfig<C, I>(input, c, defaultConfig))
-        )
+
+        // remove falsy config props
+        _compact(configs)
+          // resolve each config (resolveConfig is async)
+          .map((c: C) => resolveConfig<C, I>(input, c, defaultConfig))
       );
 
     if (!resolvedConfigs.length) {

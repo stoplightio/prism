@@ -1,14 +1,14 @@
 import { PrismConfig, PrismConfigFactory, resolveConfig } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
 
-export const getHttpConfigFromRequest: PrismConfigFactory<IHttpConfig, IHttpRequest> = async (
+export const getHttpConfigFromRequest: PrismConfigFactory<IHttpConfig, IHttpRequest> = (
   req: IHttpRequest,
   defaultConfig?: PrismConfig<IHttpConfig, IHttpRequest>
 ) => {
   // For some reason this fixed the code coverage.
   let config: IHttpConfig = { mock: true };
   if (defaultConfig) {
-    config = await resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig);
+    config = resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig);
   }
 
   const httpOperationConfig: any = {};
@@ -40,7 +40,7 @@ export const getHttpConfigFromRequest: PrismConfigFactory<IHttpConfig, IHttpRequ
     if (typeof config.mock === 'boolean') {
       config.mock = httpOperationConfig;
     } else {
-      config.mock = Object.assign({}, config.mock, httpOperationConfig);
+      config.mock = Object.assign(config.mock, httpOperationConfig);
     }
     return config;
   }

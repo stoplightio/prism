@@ -35,7 +35,7 @@ export interface IPrismConfig {
   validate?: boolean | object;
 }
 
-export type PrismConfigFactory<C, I> = (input: I, defaultConfig?: PrismConfig<C, I>) => Promise<C>;
+export type PrismConfigFactory<C, I> = (input: I, defaultConfig?: PrismConfig<C, I>) => C;
 export type PrismConfig<C, I> = C | PrismConfigFactory<C, I>;
 
 export interface ILoader<Options, Resource> {
