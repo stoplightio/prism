@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`graphFacade httpOperations should return filtered nodes 1`] = `
+exports[`graphFacade createFilesystemNode() httpOperations should return filtered nodes 1`] = `
 Array [
   Object {
     "deprecated": undefined,

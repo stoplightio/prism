@@ -4,7 +4,7 @@ import {
   FileSystemBackend,
   FilesystemNodeType,
 } from '@stoplight/graphite/backends/filesystem';
-import { NodeCategory } from '@stoplight/graphite/graph/nodes';
+import { ISourceNode, NodeCategory } from '@stoplight/graphite/graph/nodes';
 import { createGraphite } from '@stoplight/graphite/graphite';
 import { createOas2HttpPlugin } from '@stoplight/graphite/plugins/http/oas2';
 import { createOas3HttpPlugin } from '@stoplight/graphite/plugins/http/oas3';
@@ -13,7 +13,7 @@ import { createOas2Plugin } from '@stoplight/graphite/plugins/oas2';
 import { createYamlPlugin } from '@stoplight/graphite/plugins/yaml';
 import { IHttpOperation } from '@stoplight/types';
 import * as fs from 'fs';
-import { extname, join } from 'path';
+import { extname, resolve } from 'path';
 
 import compact = require('lodash/compact');
 
@@ -33,30 +33,43 @@ export class GraphFacade {
     this.fsBackend = createFileSystemBackend(graphite, fs);
   }
 
-  public async createFilesystemNode(fsPath: string | undefined) {
-    if (fsPath) {
-      const resourceFile = join(process.cwd(), fsPath);
-      const subtype = extname(resourceFile).slice(1);
-      const stat = fs.lstatSync(resourceFile);
-      if (stat.isDirectory()) {
-        this.graphite.graph.addNode({
-          category: NodeCategory.Source,
-          type: FilesystemNodeType.Directory,
-          path: resourceFile,
-        });
-        this.fsBackend.readdir(fsPath);
-      } else if (stat.isFile()) {
-        this.graphite.graph.addNode({
-          category: NodeCategory.Source,
-          type: FilesystemNodeType.File,
-          subtype,
-          path: resourceFile,
-        });
-        this.fsBackend.readFile(resourceFile);
-      }
-      return this.graphite.scheduler.drain();
+  public async createFilesystemNode(fsPath: string) {
+    const resourceFile = resolve(fsPath);
+    const subtype = extname(resourceFile).slice(1);
+    const stat = fs.lstatSync(resourceFile);
+    if (stat.isDirectory()) {
+      this.graphite.graph.addNode({
+        category: NodeCategory.Source,
+        type: FilesystemNodeType.Directory,
+        path: resourceFile,
+      });
+      this.fsBackend.readdir(fsPath);
+    } else if (stat.isFile()) {
+      this.graphite.graph.addNode({
+        category: NodeCategory.Source,
+        type: FilesystemNodeType.File,
+        subtype,
+        path: resourceFile,
+      });
+      this.fsBackend.readFile(resourceFile);
     }
-    return null;
+
+    await this.graphite.scheduler.drain();
+  }
+
+  public async createRawNode(
+    raw: string,
+    { type, subtype }: Pick<ISourceNode, 'type' | 'subtype'>
+  ) {
+    this.graphite.graph.addNode({
+      category: NodeCategory.Source,
+      type,
+      subtype,
+      path: '/',
+      data: { raw },
+    } as ISourceNode);
+
+    await this.graphite.scheduler.drain();
   }
 
   get httpOperations(): IHttpOperation[] {

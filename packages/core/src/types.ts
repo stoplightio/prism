@@ -46,6 +46,10 @@ export interface IFilesystemLoaderOpts {
   path?: string;
 }
 
+export interface IHttpLoaderOpts {
+  url?: string;
+}
+
 export interface IRouter<Resource, Input, Config> {
   route: (
     opts: { resources: Resource[]; input: Input; config?: Config },

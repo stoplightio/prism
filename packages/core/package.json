@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@stoplight/graphite": "3.5.x",
+    "axios": "0.x.x",
     "lodash": "4.x.x",
     "tslib": "1.9.x"
   },
