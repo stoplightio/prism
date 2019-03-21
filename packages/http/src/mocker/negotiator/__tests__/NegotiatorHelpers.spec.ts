@@ -597,7 +597,7 @@ describe('NegotiatorHelpers', () => {
           helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
         }).toThrow(
           `Response for contentType: ${
-            httpContent.mediaType
+          httpContent.mediaType
           } and exampleKey: ${exampleKey} does not exist.`
         );
       });
@@ -643,7 +643,7 @@ describe('NegotiatorHelpers', () => {
           helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
         }).toThrow(
           `Tried to force a dynamic response for: ${
-            httpContent.mediaType
+          httpContent.mediaType
           } but schema is not defined.`
         );
       });
@@ -705,21 +705,6 @@ describe('NegotiatorHelpers', () => {
           mediaType: httpContent.mediaType,
           schema: { type: 'string' },
         });
-      });
-
-      it('and cannot find example and dynamic does not exist throw error', () => {
-        const partialOptions = {
-          code: chance.string(),
-        };
-        const httpContent: IHttpContent = {
-          mediaType: chance.string(),
-          examples: [],
-          encodings: [],
-        };
-
-        expect(() => {
-          helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-        }).toThrow(`Not possible to generate a response for contentType: ${httpContent.mediaType}`);
       });
     });
   });
