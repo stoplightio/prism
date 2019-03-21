@@ -8,7 +8,7 @@ import helpers from './negotiator/NegotiatorHelpers';
 
 export class HttpMocker
   implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: IExampleGenerator<any>) {}
+  constructor(private _exampleGenerator: IExampleGenerator<any>) { }
 
   public async mock({
     resource,
@@ -63,7 +63,7 @@ Here is the original validation result instead: ${JSON.stringify(input.validatio
     const example = negotiationResult.example as INodeExample;
     if (example && example.value !== undefined) {
       body = example.value;
-    } else {
+    } else if (negotiationResult.schema) {
       body = await this._exampleGenerator.generate(
         negotiationResult.schema,
         negotiationResult.mediaType
