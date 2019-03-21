@@ -6,10 +6,11 @@ const _merge = require('lodash/merge');
 /**
  * Merges all passed configs. Each next config wil override each previous config.
  */
+
 export function configMergerFactory<C, I>(
   ...configs: Array<PrismConfig<C, I> | undefined>
 ): PrismConfigFactory<C, I> {
-  const factory = (input: I, defaultConfig?: PrismConfig<C, I>): C => {
+  return (input: I, defaultConfig?: PrismConfig<C, I>): C => {
     const resolvedConfigs =
       // remove any falsy resolved configs
       _compact(
@@ -17,7 +18,7 @@ export function configMergerFactory<C, I>(
         // remove falsy config props
         _compact(configs)
           // resolve each config (resolveConfig is async)
-          .map((c: C) => resolveConfig<C, I>(input, c, defaultConfig))
+          .map((c: C) => resolveConfig(input, c, defaultConfig))
       );
 
     if (!resolvedConfigs.length) {
@@ -27,5 +28,4 @@ export function configMergerFactory<C, I>(
     // merge the configs over each other, in order
     return _merge({}, ...resolvedConfigs);
   };
-  return factory;
 }
