@@ -96,7 +96,10 @@ const helpers = {
           schema: httpContent.schema,
         };
       } else {
-        throw new Error(`Not possible to generate a response for contentType: ${mediaType}`);
+        return {
+          code,
+          mediaType,
+        }
       }
     }
   },
