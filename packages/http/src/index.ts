@@ -20,9 +20,7 @@ import { validator } from './validator';
 
 const createInstance = <LoaderInput>(overrides?: TPrismHttpComponents<LoaderInput>) => {
   return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput>({
-    config: {
-      mock: true,
-    },
+    config: {},
     loader: filesystemLoaderInstance,
     router,
     forwarder,

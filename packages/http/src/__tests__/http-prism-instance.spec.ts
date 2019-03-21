@@ -9,7 +9,7 @@ describe('Http Prism Instance function tests', () => {
   let prism: IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;
 
   beforeAll(async () => {
-    prism = createInstance();
+    prism = createInstance({ config: { mock: true } });
     await prism.load({
       path: relative(
         process.cwd(),

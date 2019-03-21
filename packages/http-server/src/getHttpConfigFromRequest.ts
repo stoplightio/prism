@@ -6,7 +6,7 @@ export const getHttpConfigFromRequest: PrismConfigFactory<IHttpConfig, IHttpRequ
   defaultConfig?: PrismConfig<IHttpConfig, IHttpRequest>
 ) => {
   // For some reason this fixed the code coverage.
-  let config: IHttpConfig = { mock: true };
+  let config: IHttpConfig = {};
   if (defaultConfig) {
     config = await resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig);
   }
