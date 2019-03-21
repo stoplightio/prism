@@ -7,8 +7,9 @@ export const getHttpConfigFromRequest: PrismConfigFactory<IHttpConfig, IHttpRequ
 ) => {
   // For some reason this fixed the code coverage.
   let config: IHttpConfig = { mock: true };
+
   if (defaultConfig) {
-    config = resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig);
+    config = Object.assign({ mock: true }, resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig));
   }
 
   const httpOperationConfig: any = {};
