@@ -54,10 +54,6 @@ Here is the original validation result instead: ${JSON.stringify(input.validatio
       negotiationResult = helpers.negotiateOptionsForValidRequest(resource, mockConfig);
     }
 
-    if (!negotiationResult.example && !negotiationResult.schema) {
-      throw new Error('Neither example nor schema is defined');
-    }
-
     // preparing response body
     let body;
     const example = negotiationResult.example as INodeExample;
