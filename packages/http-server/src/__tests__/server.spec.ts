@@ -33,7 +33,7 @@ describe('server', () => {
     });
 
     expect(response.statusCode).toBe(404);
-    expect(response.raw).toBe('');
+    expect(response.payload).toBe('');
   });
 
   test('will return requested error response when schema is provided', async () => {
