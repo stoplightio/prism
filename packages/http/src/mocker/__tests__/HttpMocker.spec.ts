@@ -93,7 +93,7 @@ describe('HttpMocker', () => {
     });
 
     describe('with valid negotiator response', () => {
-      it('fails when negotiator did not resolved to either example nor schema', () => {
+      it('returns an empty body when negotiator did not resolve to either example nor schema', () => {
         jest
           .spyOn(helpers, 'negotiateOptionsForValidRequest')
           .mockImplementation(() => ({ code: '202', mediaType: 'test' }));
@@ -103,7 +103,7 @@ describe('HttpMocker', () => {
             resource: mockResource,
             input: mockInput,
           })
-        ).rejects.toThrowErrorMatchingSnapshot();
+        ).resolves.toHaveProperty('body', undefined);
       });
 
       it('returns static example', () => {
@@ -180,6 +180,7 @@ describe('HttpMocker', () => {
           code: '202',
           mediaType: 'test',
           example: mockResource.responses![0].contents![0].examples![1],
+          schema: { type: 'string' }
         }));
 
         jest
