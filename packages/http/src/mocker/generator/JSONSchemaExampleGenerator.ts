@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as jsf from 'json-schema-faker';
-
+import cloneDeep = require('lodash/cloneDeep');
 import { IExampleGenerator } from './IExampleGenerator';
 
 jsf.option({
@@ -17,8 +17,8 @@ jsf.option({
 });
 
 export class JSONSchemaExampleGenerator implements IExampleGenerator<any> {
-  public async generate(schema: any, mediaType: string): Promise<string> {
-    const example = await jsf.resolve(JSON.parse(JSON.stringify(schema)));
+  public async generate(schema: unknown, mediaType: string): Promise<string> {
+    const example = await jsf.resolve(cloneDeep(schema));
     return this.transform(mediaType, example);
   }
 
