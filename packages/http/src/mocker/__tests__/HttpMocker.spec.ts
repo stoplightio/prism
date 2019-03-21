@@ -180,7 +180,7 @@ describe('HttpMocker', () => {
           code: '202',
           mediaType: 'test',
           example: mockResource.responses![0].contents![0].examples![1],
-          schema: { type: 'string' }
+          schema: { type: 'string' },
         }));
 
         jest

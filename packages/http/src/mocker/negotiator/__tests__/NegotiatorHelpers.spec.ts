@@ -597,7 +597,7 @@ describe('NegotiatorHelpers', () => {
           helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
         }).toThrow(
           `Response for contentType: ${
-          httpContent.mediaType
+            httpContent.mediaType
           } and exampleKey: ${exampleKey} does not exist.`
         );
       });
@@ -643,7 +643,7 @@ describe('NegotiatorHelpers', () => {
           helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
         }).toThrow(
           `Tried to force a dynamic response for: ${
-          httpContent.mediaType
+            httpContent.mediaType
           } but schema is not defined.`
         );
       });
