@@ -706,6 +706,26 @@ describe('NegotiatorHelpers', () => {
           schema: { type: 'string' },
         });
       });
+
+      it('and cannot find example and dynamic does not exist throw error', () => {
+        const partialOptions = {
+          code: chance.string(),
+        };
+
+        const httpContent: IHttpContent = {
+          mediaType: chance.string(),
+          examples: [],
+          encodings: [],
+        };
+
+        const proposedResponse = helpers.negotiateByPartialOptionsAndHttpContent(
+          partialOptions,
+          httpContent
+        );
+
+        expect(proposedResponse).toHaveProperty('code');
+        expect(proposedResponse).toHaveProperty('mediaType');
+      });
     });
   });
 });
