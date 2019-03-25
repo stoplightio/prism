@@ -9,10 +9,7 @@ export const getHttpConfigFromRequest: PrismConfigFactory<IHttpConfig, IHttpRequ
   let config: IHttpConfig = { mock: true };
 
   if (defaultConfig) {
-    config = Object.assign(
-      { mock: true },
-      resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig)
-    );
+    config = Object.assign(config, resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig));
   }
 
   const httpOperationConfig: any = {};
