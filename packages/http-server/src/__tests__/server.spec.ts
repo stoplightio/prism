@@ -6,7 +6,7 @@ describe('server', () => {
   let server: IPrismHttpServer<any>;
 
   beforeAll(async () => {
-    server = createServer({}, { components: { config: { mock: true } } });
+    server = createServer({}, { components: {}, config: { mock: true } });
     await server.prism.load({
       path: relative(
         process.cwd(),

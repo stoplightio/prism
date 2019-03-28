@@ -8,7 +8,7 @@ describe('graph', () => {
     let defaultLoaderId = 0;
     let customLoaderId = 0;
 
-    const createInstance = factory<any, any, any, any, { id: number }>({
+    const createInstance = factory<any, any, any, any, { id: number }>(undefined, {
       // the default loader, what implementations of prism define (prism-http, etc)
       loader: {
         load: async opts => {
@@ -23,7 +23,7 @@ describe('graph', () => {
      * when creating an instance, the user can override any of the components, and receive the default component
      * as an argument
      */
-    const prism = createInstance({
+    const prism = createInstance(undefined, {
       loader: {
         load: async (opts, defaultLoader) => {
           /**
@@ -52,7 +52,7 @@ describe('graph', () => {
   });
 
   test('load calls loader and sets resources', async () => {
-    const createInstance = factory<any, any, any, any, { id: number }>({
+    const createInstance = factory<any, any, any, any, { id: number }>(undefined, {
       loader: {
         load: async opts => {
           return [opts ? opts.id : 0];
@@ -86,12 +86,8 @@ describe('graph', () => {
         const defaultConfig = 'default';
         const customConfig = 'custom';
         const paramConfig = 'param';
-        const createInstance = factory<any, any, any, any, any>({
-          config: defaultConfig,
-        });
-        const prism = await createInstance({
-          config: customConfig,
-        });
+        const createInstance = factory<any, any, any, any, any>(defaultConfig, {});
+        const prism = await createInstance(customConfig);
 
         await prism.load();
         await prism.process(input, paramConfig);

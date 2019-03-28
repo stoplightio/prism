@@ -1,12 +1,15 @@
-import { configMergerFactory } from '.';
+import { configMergerFactory, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IValidation } from './types';
 
 export function factory<Resource, Input, Output, Config, LoadOpts>(
+  defaultConfig: PrismConfig<Config, Input>,
   defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
 ): (
+  customConfig?: PrismConfig<Config, Input>,
   customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
 ) => IPrism<Resource, Input, Output, Config, LoadOpts> {
   const prism = (
+    customConfig?: PrismConfig<Config, Input>,
     customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
   ) => {
     const components: Partial<
@@ -30,8 +33,8 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
 
       process: async (input: Input, c?: Config) => {
         // build the config for this request
-        const configMerger = configMergerFactory(defaultComponents.config, components.config, c);
-        const configObj: Config | undefined = await configMerger(input, defaultComponents.config);
+        const configMerger = configMergerFactory(defaultConfig, customConfig, c);
+        const configObj: Config | undefined = await configMerger(input, defaultConfig);
 
         // find the correct resource
         let resource: Resource | undefined;

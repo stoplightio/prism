@@ -32,7 +32,7 @@ export interface IHttpOperationConfig {
 }
 
 export interface IHttpConfig extends IPrismConfig {
-  mock?: boolean | IHttpOperationConfig;
+  mock: boolean | IHttpOperationConfig;
 
   security?: {
     // TODO

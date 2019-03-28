@@ -11,13 +11,10 @@ export const createServer = <LoaderInput>(
   opts: IPrismHttpServerOpts<LoaderInput>
 ): IPrismHttpServer<LoaderInput> => {
   const server = fastify<Server, IncomingMessage, ServerResponse>();
-  const { components = {} } = opts;
-  const config = configMergerFactory(components.config, getHttpConfigFromRequest);
+  const { components = {}, config } = opts;
+  const mergedConfig = configMergerFactory(config, getHttpConfigFromRequest);
 
-  const prism = createInstance<LoaderInput>({
-    ...components,
-    config,
-  });
+  const prism = createInstance<LoaderInput>(mergedConfig, components);
 
   server.all('*', {}, replyHandler<LoaderInput>(prism));
 

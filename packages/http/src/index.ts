@@ -1,4 +1,4 @@
-import { factory, filesystemLoaderInstance } from '@stoplight/prism-core';
+import { factory, filesystemLoaderInstance, PrismConfig } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 
 import { forwarder } from './forwarder';
@@ -18,15 +18,20 @@ import {
 } from './types';
 import { validator } from './validator';
 
-const createInstance = <LoaderInput>(overrides?: TPrismHttpComponents<LoaderInput>) => {
-  return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput>({
-    config: {},
-    loader: filesystemLoaderInstance,
-    router,
-    forwarder,
-    validator,
-    mocker: new HttpMocker(new JSONSchemaExampleGenerator()),
-  })(overrides);
+const createInstance = <LoaderInput>(
+  config?: PrismConfig<IHttpConfig, IHttpRequest>,
+  overrides?: TPrismHttpComponents<LoaderInput>
+) => {
+  return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput>(
+    { mock: true },
+    {
+      loader: filesystemLoaderInstance,
+      router,
+      forwarder,
+      validator,
+      mocker: new HttpMocker(new JSONSchemaExampleGenerator()),
+    }
+  )(config, overrides);
 };
 
 export {

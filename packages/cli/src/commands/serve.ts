@@ -30,9 +30,9 @@ export default class Serve extends Command {
       spec && isHttp(spec)
         ? createServer(
             { url: spec },
-            { components: { config: { mock }, loader: httpLoaderInstance } }
+            { components: { loader: httpLoaderInstance }, config: { mock } }
           )
-        : createServer({ path: spec }, { components: { config: { mock } } });
+        : createServer({ path: spec }, { config: { mock } });
 
     const address = await server.listen(port as number);
 

@@ -9,7 +9,7 @@ describe('Http Prism Instance function tests', () => {
   let prism: IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;
 
   beforeAll(async () => {
-    prism = createInstance({ config: { mock: true } });
+    prism = createInstance({ mock: true }, {});
     await prism.load({
       path: relative(
         process.cwd(),
@@ -99,7 +99,7 @@ describe('Http Prism Instance function tests', () => {
 
   test("should forward the request correctly even if resources haven't been provided", async () => {
     // Recreate Prism with no loaded document
-    prism = createInstance({ forwarder, router: undefined, mocker: undefined });
+    prism = createInstance(undefined, { forwarder, router: undefined, mocker: undefined });
 
     const response = await prism.process({
       method: 'post',

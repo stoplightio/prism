@@ -89,7 +89,6 @@ export interface IValidator<Resource, Input, Config, Output> {
 }
 
 export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
-  config: PrismConfig<Config, Input>;
   loader: ILoader<LoadOpts, Resource>;
   router: IRouter<Resource, Input, Config>;
   forwarder: IForwarder<Resource, Input, Config, Output>;
