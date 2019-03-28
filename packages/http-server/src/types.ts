@@ -4,7 +4,7 @@ import { FastifyInstance, ServerOptions } from 'fastify';
 export interface IPrismHttpServerOpts<LoaderInput> {
   fastify?: ServerOptions;
   components?: TPrismHttpComponents<LoaderInput>;
-  config: IHttpConfig;
+  config: Partial<IHttpConfig>;
 }
 
 export interface IPrismHttpServer<LoaderInput> {

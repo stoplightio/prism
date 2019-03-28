@@ -1,12 +1,16 @@
-import { PrismConfig, PrismConfigFactory, resolveConfig } from '@stoplight/prism-core';
+import {
+  PartialPrismConfig,
+  PartialPrismConfigFactory,
+  resolveConfig,
+} from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
 
-export const getHttpConfigFromRequest: PrismConfigFactory<IHttpConfig, IHttpRequest> = async (
-  req: IHttpRequest,
-  defaultConfig?: PrismConfig<IHttpConfig, IHttpRequest>
-) => {
+export const getHttpConfigFromRequest: PartialPrismConfigFactory<
+  IHttpConfig,
+  IHttpRequest
+> = async (req: IHttpRequest, defaultConfig?: PartialPrismConfig<IHttpConfig, IHttpRequest>) => {
   // For some reason this fixed the code coverage.
-  let config: IHttpConfig = { mock: true };
+  let config: Partial<IHttpConfig> = {};
   if (defaultConfig) {
     config = await resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig);
   }

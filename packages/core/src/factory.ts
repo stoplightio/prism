@@ -1,15 +1,15 @@
-import { configMergerFactory, PrismConfig } from '.';
+import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IValidation } from './types';
 
 export function factory<Resource, Input, Output, Config, LoadOpts>(
   defaultConfig: PrismConfig<Config, Input>,
   defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
 ): (
-  customConfig?: PrismConfig<Config, Input>,
+  customConfig?: PartialPrismConfig<Config, Input>,
   customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
 ) => IPrism<Resource, Input, Output, Config, LoadOpts> {
   const prism = (
-    customConfig?: PrismConfig<Config, Input>,
+    customConfig?: PartialPrismConfig<Config, Input>,
     customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
   ) => {
     const components: Partial<

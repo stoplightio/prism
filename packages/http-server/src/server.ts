@@ -12,7 +12,7 @@ export const createServer = <LoaderInput>(
 ): IPrismHttpServer<LoaderInput> => {
   const server = fastify<Server, IncomingMessage, ServerResponse>();
   const { components = {}, config } = opts;
-  const mergedConfig = configMergerFactory(config, getHttpConfigFromRequest);
+  const mergedConfig = configMergerFactory({ mock: true }, config, getHttpConfigFromRequest);
 
   const prism = createInstance<LoaderInput>(mergedConfig, components);
 

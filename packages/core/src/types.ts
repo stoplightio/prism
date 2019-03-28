@@ -29,6 +29,15 @@ export interface IPrism<Resource, Input, Output, Config, LoadOpts> {
   readonly resources: Resource[];
 }
 
+export type PartialPrismConfigFactory<C, I> = (
+  input: I,
+  defaultConfig?: PartialPrismConfig<C, I> | PrismConfig<C, I>
+) => Promise<Partial<C>>;
+export type PartialPrismConfig<C, I> =
+  | Partial<C>
+  | PrismConfigFactory<C, I>
+  | PartialPrismConfigFactory<C, I>;
+
 export interface IPrismConfig {
   mock?: boolean | object;
   security?: boolean | object;

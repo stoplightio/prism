@@ -1,4 +1,4 @@
-import { PrismConfig, PrismConfigFactory, resolveConfig } from '..';
+import { PartialPrismConfig, PrismConfig, PrismConfigFactory, resolveConfig } from '..';
 
 const _compact = require('lodash/compact');
 const _merge = require('lodash/merge');
@@ -7,15 +7,16 @@ const _merge = require('lodash/merge');
  * Merges all passed configs. Each next config wil override each previous config.
  */
 export function configMergerFactory<C, I>(
-  ...configs: Array<PrismConfig<C, I> | undefined>
+  baseConfig: PrismConfig<C, I>,
+  ...configs: Array<PartialPrismConfig<C, I> | undefined>
 ): PrismConfigFactory<C, I> {
-  const factory = async (input: I, defaultConfig?: PrismConfig<C, I>): Promise<C> => {
+  const factory = async (input: I, defaultConfig?: PartialPrismConfig<C, I>): Promise<C> => {
     const resolvedConfigs =
       // remove any falsy resolved configs
       _compact(
         await Promise.all(
           // remove falsy config props
-          _compact(configs)
+          _compact([baseConfig, ...configs])
             // resolve each config (resolveConfig is async)
             .map((c: C) => resolveConfig<C, I>(input, c, defaultConfig))
         )
@@ -28,5 +29,5 @@ export function configMergerFactory<C, I>(
     // merge the configs over each other, in order
     return _merge({}, ...resolvedConfigs);
   };
-  return factory;
+  return factory as PrismConfigFactory<C, I>;
 }

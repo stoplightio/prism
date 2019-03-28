@@ -34,17 +34,9 @@ Object {
 }
 `;
 
-exports[`getHttpConfigFromRequest() given no default config and no matching query should return my own default 1`] = `
-Object {
-  "mock": true,
-}
-`;
+exports[`getHttpConfigFromRequest() given no default config and no matching query should return my own default 1`] = `Object {}`;
 
-exports[`getHttpConfigFromRequest() given no default config and no query should return my own default 1`] = `
-Object {
-  "mock": true,
-}
-`;
+exports[`getHttpConfigFromRequest() given no default config and no query should return my own default 1`] = `Object {}`;
 
 exports[`getHttpConfigFromRequest() given no default config extracts code 1`] = `
 Object {

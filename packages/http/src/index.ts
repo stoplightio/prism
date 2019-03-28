@@ -1,4 +1,4 @@
-import { factory, filesystemLoaderInstance, PrismConfig } from '@stoplight/prism-core';
+import { factory, filesystemLoaderInstance, PartialPrismConfig } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 
 import { forwarder } from './forwarder';
@@ -19,7 +19,7 @@ import {
 import { validator } from './validator';
 
 const createInstance = <LoaderInput>(
-  config?: PrismConfig<IHttpConfig, IHttpRequest>,
+  config?: PartialPrismConfig<IHttpConfig, IHttpRequest>,
   overrides?: TPrismHttpComponents<LoaderInput>
 ) => {
   return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput>(
