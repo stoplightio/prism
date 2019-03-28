@@ -2,11 +2,7 @@
 
 exports[`http mocker request is invalid returns 400 and static error response 1`] = `
 Object {
-  "body": Array [
-    Object {
-      "message": "error",
-    },
-  ],
+  "body": "[{\\"message\\":\\"error\\"}]",
   "headers": Object {
     "Content-type": "application/json",
   },
@@ -16,13 +12,7 @@ Object {
 
 exports[`http mocker request is valid HttpOperation contains example return lowest 2xx code and match response example to media type accepted by request 1`] = `
 Object {
-  "body": Array [
-    Object {
-      "completed": true,
-      "id": 1,
-      "name": "make prism",
-    },
-  ],
+  "body": "[{\\"id\\":1,\\"completed\\":true,\\"name\\":\\"make prism\\"}]",
   "headers": Object {
     "Content-type": "application/json",
   },
@@ -54,13 +44,7 @@ Object {
 
 exports[`http mocker request is valid given enforced example key should return application/json, 200 response 1`] = `
 Object {
-  "body": Array [
-    Object {
-      "completed": false,
-      "id": 2,
-      "name": "make bears",
-    },
-  ],
+  "body": "[{\\"id\\":2,\\"completed\\":false,\\"name\\":\\"make bears\\"}]",
   "headers": Object {
     "Content-type": "application/json",
   },

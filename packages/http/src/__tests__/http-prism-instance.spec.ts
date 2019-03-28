@@ -131,4 +131,21 @@ describe('Http Prism Instance function tests', () => {
 
     expect(prism.resources).toHaveLength(5);
   });
+
+  test('returns stringified example when one defined in spec', async () => {
+    prism = createInstance();
+    await prism.load({
+      path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'todos.oas2.json')),
+    });
+
+    const response = await prism.process({
+      method: 'get',
+      url: {
+        path: '/todos',
+      },
+    });
+
+    expect(response.output).toBeDefined();
+    expect(typeof response.output!.body).toBe('string');
+  });
 });

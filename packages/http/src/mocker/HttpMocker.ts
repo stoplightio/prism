@@ -59,7 +59,7 @@ Here is the original validation result instead: ${JSON.stringify(input.validatio
     const example = negotiationResult.example;
 
     if (example && 'value' in example && example.value !== undefined) {
-      body = example.value;
+      body = typeof example.value === 'string' ? example.value : JSON.stringify(example.value);
     } else if (negotiationResult.schema) {
       body = await this._exampleGenerator.generate(
         negotiationResult.schema,
