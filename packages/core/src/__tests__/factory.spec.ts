@@ -83,9 +83,9 @@ describe('graph', () => {
         (configMergerFactory as jest.Mock).mockReturnValue(configMergerStub);
 
         const input = {};
-        const defaultConfig = 'default';
-        const customConfig = 'custom';
-        const paramConfig = 'param';
+        const defaultConfig = { test: 'default' };
+        const customConfig = { test: 'custom' };
+        const paramConfig = { test: 'param' };
         const createInstance = factory<any, any, any, any, any>(defaultConfig, {});
         const prism = await createInstance(customConfig);
 
