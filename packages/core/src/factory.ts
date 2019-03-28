@@ -34,7 +34,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
       process: async (input: Input, c?: Config) => {
         // build the config for this request
         const configMerger = configMergerFactory(defaultConfig, customConfig, c);
-        const configObj: Config | undefined = await configMerger(input, defaultConfig);
+        const configObj: Config | undefined = await configMerger(input);
 
         // find the correct resource
         let resource: Resource | undefined;
