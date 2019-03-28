@@ -19,7 +19,7 @@ describe('serve command', () => {
 
     expect(createServer).toHaveBeenLastCalledWith(
       { path: '/path/to' },
-      { components: { config: { mock: false } } }
+      { config: { mock: false } }
     );
 
     expect(listenMock).toHaveBeenLastCalledWith(4010);
@@ -30,7 +30,7 @@ describe('serve command', () => {
 
     expect(createServer).toHaveBeenLastCalledWith(
       { url: 'http://path.to/spec.oas2.yaml' },
-      { components: { config: { mock: false }, loader: httpLoaderInstance } }
+      { components: { loader: httpLoaderInstance }, config: { mock: false } }
     );
 
     expect(listenMock).toHaveBeenLastCalledWith(4010);
