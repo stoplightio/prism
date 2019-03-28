@@ -26,6 +26,34 @@ describe('server', () => {
     expect(response.statusCode).toBe(200);
   });
 
+  test('will return requested error response even if no schema or examples defined', async () => {
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pet/123?__code=404',
+    });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.payload).toBe('');
+  });
+
+  test('will return requested error response when schema is provided', async () => {
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pet/123?__code=418',
+    });
+
+    expect(response.statusCode).toBe(418);
+  });
+
+  test('will return 500 with error when an undefined code is requested', async () => {
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pet/123?__code=499',
+    });
+
+    expect(response.statusCode).toBe(500);
+  });
+
   test('should support multiple param values', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
@@ -52,15 +80,6 @@ describe('server', () => {
       'userStatus',
     ]);
     expect(response.statusCode).toBe(201);
-  });
-
-  test('should NOT support choosing a response code if that code has NO response defined', async () => {
-    const response = await server.fastify.inject({
-      method: 'POST',
-      url: '/store/order?__code=400',
-    });
-
-    expect(response.statusCode).toBe(200);
   });
 
   test('should support body params', async () => {

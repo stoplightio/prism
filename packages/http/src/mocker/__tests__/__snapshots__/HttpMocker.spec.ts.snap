@@ -24,8 +24,6 @@ Object {
 }
 `;
 
-exports[`HttpMocker mock() with valid negotiator response fails when negotiator did not resolved to either example nor schema 1`] = `"Neither example nor schema is defined"`;
-
 exports[`HttpMocker mock() with valid negotiator response returns dynamic example 1`] = `
 Object {
   "body": "example value",

@@ -27,13 +27,13 @@ describe('JSONSchemaExampleGenerator', () => {
       expect(instance.email).toMatch(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/);
     });
 
-    it('fails when media type is unknown', async () => {
+    it('fails when media type is unknown', () => {
       return expect(
         jsonSchemaExampleGenerator.generate({}, 'non-existing/media-type')
       ).rejects.toThrowErrorMatchingSnapshot();
     });
 
-    it('operates on sealed schema objects', async () => {
+    it('operates on sealed schema objects', () => {
       const schema = {
         type: 'object',
         properties: {

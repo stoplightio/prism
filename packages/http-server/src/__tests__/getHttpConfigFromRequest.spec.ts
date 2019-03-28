@@ -8,7 +8,7 @@ describe('getHttpConfigFromRequest()', () => {
           method: 'get',
           url: { path: '/' },
         })
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
     test('and no matching query should return my own default', () => {
       return expect(
@@ -16,7 +16,7 @@ describe('getHttpConfigFromRequest()', () => {
           method: 'get',
           url: { path: '/', query: {} },
         })
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
     test('extracts code', () => {
       return expect(
@@ -24,7 +24,7 @@ describe('getHttpConfigFromRequest()', () => {
           method: 'get',
           url: { path: '/', query: { __code: '202' } },
         })
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
     test('extracts mediaType', () => {
       return expect(
@@ -32,7 +32,7 @@ describe('getHttpConfigFromRequest()', () => {
           method: 'get',
           url: { path: '/', query: { __contentType: 'application/json' } },
         })
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
     test('extracts example', () => {
       return expect(
@@ -40,7 +40,7 @@ describe('getHttpConfigFromRequest()', () => {
           method: 'get',
           url: { path: '/', query: { __example: 'bear' } },
         })
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
     test('extracts dynamic', () => {
       return expect(
@@ -48,7 +48,7 @@ describe('getHttpConfigFromRequest()', () => {
           method: 'get',
           url: { path: '/', query: { __dynamic: 'true' } },
         })
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
   });
 
@@ -67,7 +67,7 @@ describe('getHttpConfigFromRequest()', () => {
           },
           spy
         )
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
   });
 
@@ -81,7 +81,7 @@ describe('getHttpConfigFromRequest()', () => {
           },
           { mock: false }
         )
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
 
     test('that is boolean and matching query should return that query', () => {
@@ -93,7 +93,7 @@ describe('getHttpConfigFromRequest()', () => {
           },
           { mock: false }
         )
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
 
     test('that is a map and matching query should return combined', () => {
@@ -110,7 +110,7 @@ describe('getHttpConfigFromRequest()', () => {
             },
           }
         )
-      ).resolves.toMatchSnapshot();
+      ).toMatchSnapshot();
     });
   });
 });

@@ -711,15 +711,20 @@ describe('NegotiatorHelpers', () => {
         const partialOptions = {
           code: chance.string(),
         };
+
         const httpContent: IHttpContent = {
           mediaType: chance.string(),
           examples: [],
           encodings: [],
         };
 
-        expect(() => {
-          helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-        }).toThrow(`Not possible to generate a response for contentType: ${httpContent.mediaType}`);
+        const proposedResponse = helpers.negotiateByPartialOptionsAndHttpContent(
+          partialOptions,
+          httpContent
+        );
+
+        expect(proposedResponse).toHaveProperty('code');
+        expect(proposedResponse).toHaveProperty('mediaType');
       });
     });
   });

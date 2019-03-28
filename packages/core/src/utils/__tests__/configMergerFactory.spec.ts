@@ -6,19 +6,19 @@ describe('configMerger', () => {
 
   test('should handle undefined configurations', () => {
     const configMerger = configMergerFactory<any, any>(undefined, undefined);
-    return expect(configMerger(input, defaultConfig)).rejects.toMatchSnapshot();
+    return expect(() => configMerger(input, defaultConfig)).toThrowErrorMatchingSnapshot();
   });
 
-  test('given one config object should return that object', async () => {
+  test('given one config object should return that object', () => {
     const configMerger = configMergerFactory<any, any>({
       x: 1,
       y: 2,
     });
 
-    expect(await configMerger(input, defaultConfig)).toMatchSnapshot();
+    return expect(configMerger(input, defaultConfig)).toMatchSnapshot();
   });
 
-  test('given one config object and some undefined should return that object', async () => {
+  test('given one config object and some undefined should return that object', () => {
     const configMerger = configMergerFactory<any, any>(
       undefined,
       {
@@ -28,10 +28,10 @@ describe('configMerger', () => {
       undefined
     );
 
-    expect(await configMerger(input, defaultConfig)).toMatchSnapshot();
+    return expect(configMerger(input, defaultConfig)).toMatchSnapshot();
   });
 
-  test('given two config objects should return a merged config', async () => {
+  test('given two config objects should return a merged config', () => {
     const configMerger = configMergerFactory<any, any>(
       {
         mock: {
@@ -54,10 +54,10 @@ describe('configMerger', () => {
       }
     );
 
-    expect(await configMerger(input, defaultConfig)).toMatchSnapshot();
+    return expect(configMerger(input, defaultConfig)).toMatchSnapshot();
   });
 
-  test('given config function and config object should merge', async () => {
+  test('given config function and config object should merge', () => {
     const resolvedConfig = {
       mock: false,
       validate: {
@@ -66,7 +66,7 @@ describe('configMerger', () => {
       },
       beta: true,
     };
-    const configFn = jest.fn().mockResolvedValue(resolvedConfig);
+    const configFn = jest.fn().mockReturnValue(resolvedConfig);
 
     const configMerger = configMergerFactory<any, any>(
       {
@@ -83,7 +83,7 @@ describe('configMerger', () => {
       configFn
     );
 
-    expect(await configMerger(input, defaultConfig)).toMatchSnapshot();
+    expect(configMerger(input, defaultConfig)).toMatchSnapshot();
     expect(configFn).toHaveBeenCalledTimes(1);
     expect(configFn).toHaveBeenCalledWith(input, defaultConfig);
   });

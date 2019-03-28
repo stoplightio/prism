@@ -32,7 +32,7 @@ export interface IPrism<Resource, Input, Output, Config, LoadOpts> {
 export type PartialPrismConfigFactory<C, I> = (
   input: I,
   defaultConfig?: PartialPrismConfig<C, I> | PrismConfig<C, I>
-) => Promise<Partial<C>>;
+) => Partial<C>;
 export type PartialPrismConfig<C, I> =
   | Partial<C>
   | PrismConfigFactory<C, I>
@@ -44,7 +44,7 @@ export interface IPrismConfig {
   validate?: boolean | object;
 }
 
-export type PrismConfigFactory<C, I> = (input: I, defaultConfig?: PrismConfig<C, I>) => Promise<C>;
+export type PrismConfigFactory<C, I> = (input: I, defaultConfig?: PrismConfig<C, I>) => C;
 export type PrismConfig<C, I> = C | PrismConfigFactory<C, I>;
 
 export interface ILoader<Options, Resource> {

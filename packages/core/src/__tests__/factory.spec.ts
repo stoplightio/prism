@@ -95,7 +95,7 @@ describe('graph', () => {
         expect(configMergerFactory).toHaveBeenCalledTimes(1);
         expect(configMergerFactory).toHaveBeenCalledWith(defaultConfig, customConfig, paramConfig);
         expect(configMergerStub).toHaveBeenCalledTimes(1);
-        expect(configMergerStub).toHaveBeenCalledWith(input, defaultConfig);
+        expect(configMergerStub).toHaveBeenCalledWith(input);
       });
     });
   });

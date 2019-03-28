@@ -5,14 +5,15 @@ import {
 } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
 
-export const getHttpConfigFromRequest: PartialPrismConfigFactory<
-  IHttpConfig,
-  IHttpRequest
-> = async (req: IHttpRequest, defaultConfig?: PartialPrismConfig<IHttpConfig, IHttpRequest>) => {
+export const getHttpConfigFromRequest: PartialPrismConfigFactory<IHttpConfig, IHttpRequest> = (
+  req: IHttpRequest,
+  defaultConfig?: PartialPrismConfig<IHttpConfig, IHttpRequest>
+) => {
   // For some reason this fixed the code coverage.
   let config: Partial<IHttpConfig> = {};
+
   if (defaultConfig) {
-    config = await resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig);
+    config = Object.assign(config, resolveConfig<IHttpConfig, IHttpRequest>(req, defaultConfig));
   }
 
   const httpOperationConfig: any = {};

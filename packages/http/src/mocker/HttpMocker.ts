@@ -1,5 +1,5 @@
 import { IMocker, IMockerOpts } from '@stoplight/prism-core';
-import { IHttpOperation, INodeExample } from '@stoplight/types';
+import { IHttpOperation } from '@stoplight/types';
 
 import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
 import { getHeaderByName } from '../validator/utils/http';
@@ -54,16 +54,13 @@ Here is the original validation result instead: ${JSON.stringify(input.validatio
       negotiationResult = helpers.negotiateOptionsForValidRequest(resource, mockConfig);
     }
 
-    if (!negotiationResult.example && !negotiationResult.schema) {
-      throw new Error('Neither example nor schema is defined');
-    }
-
     // preparing response body
     let body;
-    const example = negotiationResult.example as INodeExample;
-    if (example && example.value !== undefined) {
+    const example = negotiationResult.example;
+
+    if (example && 'value' in example && example.value !== undefined) {
       body = example.value;
-    } else {
+    } else if (negotiationResult.schema) {
       body = await this._exampleGenerator.generate(
         negotiationResult.schema,
         negotiationResult.mediaType

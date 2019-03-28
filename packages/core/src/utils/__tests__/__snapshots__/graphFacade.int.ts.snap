@@ -1268,6 +1268,39 @@ Array [
         "description": "Pet not found",
         "headers": Array [],
       },
+      Object {
+        "code": "418",
+        "contents": Array [
+          Object {
+            "examples": Array [],
+            "mediaType": "application/xml",
+            "schema": Object {
+              "properties": Object {
+                "name": Object {
+                  "example": "doggie",
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
+          },
+          Object {
+            "examples": Array [],
+            "mediaType": "application/json",
+            "schema": Object {
+              "properties": Object {
+                "name": Object {
+                  "example": "doggie",
+                  "type": "string",
+                },
+              },
+              "type": "object",
+            },
+          },
+        ],
+        "description": "Teapot found",
+        "headers": Array [],
+      },
     ],
     "security": Array [
       Object {

@@ -40,4 +40,4 @@ Object {
 }
 `;
 
-exports[`configMerger should handle undefined configurations 1`] = `[Error: All configurations passed to the factory are undefined.]`;
+exports[`configMerger should handle undefined configurations 1`] = `"All configurations passed to the factory are undefined."`;
