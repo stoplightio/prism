@@ -17,7 +17,7 @@
     "@oclif/dev-cli": "1.x.x",
     "@oclif/tslint": "3.x.x",
     "@types/chai": "4.x.x",
-    "@types/node": "10.x.x",
+    "@types/node": "11.x.x",
     "globby": "8.x.x",
     "ts-node": "7.x.x",
     "tslint": "5.x.x",
