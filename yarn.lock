@@ -5862,10 +5862,10 @@ tslint-config-prettier@1.15.x:
   resolved "https://registry.yarnpkg.com/tslint-config-prettier/-/tslint-config-prettier-1.15.0.tgz#76b9714399004ab6831fdcf76d89b73691c812cf"
   integrity sha512-06CgrHJxJmNYVgsmeMoa1KXzQRoOdvfkqnJth6XUkNeOz707qxN0WfxfhYwhL5kXHHbYJRby2bqAPKwThlZPhw==
 
-tslint-config-stoplight@1.1.x:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/tslint-config-stoplight/-/tslint-config-stoplight-1.1.0.tgz#452a2d2eb6b4c26622afdd1ef3dd6e49d91f963b"
-  integrity sha512-C5YDdUS1MUYcqWXy0CfiI6SZWx3SwADCY4ieP6T40vINzKPGCgcPM/V6R/Fqf0nRDbVG/L4/KcCVChS6fBzdsw==
+tslint-config-stoplight@1.2.x:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/tslint-config-stoplight/-/tslint-config-stoplight-1.2.0.tgz#fe72ef0d1482eeea362c0b24b79d29345b06342b"
+  integrity sha512-OZSCV3ouxK3Tdlarv3bXylzB763ZEmf8PIrVzXvxJ4WQz3js0jl8KE35nwrnska2GQfOQ82cxLaukdKQa3Un4Q==
   dependencies:
     prettier "1.14.x"
     tslint "5.11.x"
