@@ -8,21 +8,21 @@
   "bugs": "https://github.com/chris-miaskowski/prism-cli/issues",
   "dependencies": {
     "@oclif/command": "1.x.x",
-    "@oclif/config": "1.x.x",
+    "@oclif/config": "1.12.12",
     "@oclif/plugin-help": "2.x.x",
-    "@stoplight/prism-http-server": "0.0.0",
     "@stoplight/prism-core": "0.0.0",
+    "@stoplight/prism-http-server": "0.0.0",
     "tslib": "1.x.x"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "1.x.x",
+    "@oclif/dev-cli": "1.22.0",
     "@oclif/tslint": "3.x.x",
     "@types/chai": "4.x.x",
-    "@types/node": "10.x.x",
-    "globby": "8.x.x",
-    "ts-node": "7.x.x",
-    "tslint": "5.x.x",
-    "typescript": "3.1.x"
+    "@types/node": "11.12.2",
+    "globby": "9.2.0",
+    "ts-node": "8.0.3",
+    "tslint": "5.14.0",
+    "typescript": "3.4.1"
   },
   "engines": {
     "node": ">=8.0.0"
