@@ -19,7 +19,7 @@
     "test.update": "yarn test.fast --updateSnapshot"
   },
   "devDependencies": {
-    "@stoplight/types": "3.x.x",
+    "@stoplight/types": "4.x.x",
     "@types/chance": "1.0.x",
     "@types/jest": "23.3.x",
     "@types/node": "10.12.x",
