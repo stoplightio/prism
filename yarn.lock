@@ -288,7 +288,7 @@
     "@stoplight/yaml" "2.x.x"
     ajv "6.x.x"
     chalk "^2.4.2"
-    jsonpath "git+https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17"
+    jsonpath "https://github.com/stoplightio/jsonpath#f1c0e9e634da2d45671b7639fa0a99afc807da17"
     lodash ">=4.17.5"
     node-fetch "2.x.x"
     strip-ansi "^5.2.0"
@@ -3498,7 +3498,7 @@ jest-worker@^23.2.0:
   dependencies:
     merge-stream "^1.0.1"
 
-jest@23.6.x, jest@^23.6.x:
+jest@^23.6.x:
   version "23.6.0"
   resolved "https://registry.yarnpkg.com/jest/-/jest-23.6.0.tgz#ad5835e923ebf6e19e7a1d7529a432edfee7813d"
   integrity sha512-lWzcd+HSiqeuxyhG+EnZds6iO3Y3ZEnMrfZq/OTGvF/C+Z4fPMCdhWTGSAiO2Oym9rbEXfwddHhh6jqrTF3+Lw==
@@ -3679,7 +3679,6 @@ jsonpath@^1.0.0:
 
 "jsonpath@git+https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17":
   version "1.0.0"
-  uid f1c0e9e634da2d45671b7639fa0a99afc807da17
   resolved "git+https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17"
   dependencies:
     esprima "1.2.2"

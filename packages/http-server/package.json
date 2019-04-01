@@ -20,9 +20,5 @@
     "@stoplight/prism-http": "0.0.0",
     "fastify": "1.12.x",
     "tslib": "1.9.x"
-  },
-  "devDependencies": {
-    "jest": "23.6.x",
-    "ts-jest": "23.10.x"
   }
 }
