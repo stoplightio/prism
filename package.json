@@ -19,7 +19,7 @@
     "test.update": "yarn test.fast --updateSnapshot"
   },
   "devDependencies": {
-    "@stoplight/types": "3.x.x",
+    "@stoplight/types": "4.x.x",
     "@types/chance": "1.0.x",
     "@types/jest": "23.3.x",
     "@types/node": "10.12.x",
@@ -29,7 +29,7 @@
     "oclif": "^1.12.x",
     "ts-jest": "23.10.x",
     "tslint": "5.11.x",
-    "tslint-config-stoplight": "1.1.x",
+    "tslint-config-stoplight": "1.2.x",
     "tslint-eslint-rules": "5.4.x",
     "typescript": "^3.3.1"
   },
