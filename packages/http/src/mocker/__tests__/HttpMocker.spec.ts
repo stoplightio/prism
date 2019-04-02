@@ -11,9 +11,9 @@ describe('HttpMocker', () => {
 
   beforeEach(() => {
     httpMocker = new HttpMocker(mockExampleGenerator);
-    jest.spyOn(helpers, 'negotiateOptionsForValidRequest');
-    jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest');
-    jest.spyOn(mockExampleGenerator, 'generate');
+    jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockImplementation(jest.fn());
+    jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockImplementation(jest.fn());
+    jest.spyOn(mockExampleGenerator, 'generate').mockImplementation(jest.fn());
   });
 
   describe('mock()', () => {
