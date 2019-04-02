@@ -6,10 +6,6 @@ import { HttpForwarder } from '../HttpForwarder';
 describe('HttpForwarder', () => {
   const forwarder = new HttpForwarder();
 
-  beforeEach(() => {
-    jest.spyOn(axios, 'default');
-  });
-
   describe('forward()', () => {
     describe("parameters haven' been provided", () => {
       it('proxies request correctly', async () => {
