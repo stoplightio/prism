@@ -20,7 +20,7 @@ describe('HttpForwarder', () => {
           },
           data: '[{},{}]',
           statusText: 'ok',
-          config: {}
+          config: {},
         });
 
         const request = Object.assign({}, httpRequests[0]);
@@ -48,7 +48,7 @@ describe('HttpForwarder', () => {
             },
             data: '[{},{}]',
             statusText: 'ok',
-            config: {}
+            config: {},
           });
 
           const response = await forwarder.forward({

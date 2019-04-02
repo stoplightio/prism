@@ -20,7 +20,7 @@ describe('HttpForwarder', () => {
         headers: {
           'Content-type': contentType,
         },
-        config: {}
+        config: {},
       });
 
       const response = await forwarder.forward({

@@ -183,9 +183,7 @@ describe('HttpMocker', () => {
           schema: { type: 'string' },
         }));
 
-        jest
-          .spyOn(mockExampleGenerator, 'generate')
-          .mockResolvedValue('example value chelsea');
+        jest.spyOn(mockExampleGenerator, 'generate').mockResolvedValue('example value chelsea');
 
         return expect(
           httpMocker.mock({
