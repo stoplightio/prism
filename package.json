@@ -30,7 +30,7 @@
     "tslint": "5.11.x",
     "tslint-config-stoplight": "1.2.x",
     "tslint-eslint-rules": "5.4.x",
-    "typescript": "^3.3.1"
+    "typescript": "^3.4.1"
   },
   "prettier": {
     "printWidth": 100,
