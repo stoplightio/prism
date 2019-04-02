@@ -21,6 +21,7 @@
     "@types/node": "11.12.2",
     "globby": "9.2.0",
     "ts-node": "8.0.3",
+    "tsconfig-paths": "^3.8.0",
     "tslint": "5.14.0",
     "typescript": "^3.4.1"
   },
@@ -50,7 +51,7 @@
     "posttest": "tslint -p . -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "version": "oclif-dev readme && git add README.md",
-    "debug": "node --inspect-brk bin/run"
+    "cli": "node -r tsconfig-paths/register bin/run"
   },
   "types": "lib/index.d.ts"
 }
