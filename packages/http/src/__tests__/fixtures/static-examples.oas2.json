@@ -1,0 +1,38 @@
+{
+  "swagger": "2.0",
+  "host": "todos.stoplight.io",
+  "schemes": ["http"],
+  "paths": {
+    "/todos": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"},
+                  "completed": {"type": ["boolean", "null"]}
+                },
+                "required": ["name", "completed"]
+              }
+            },
+            "examples": {
+              "application/json": [
+                {"id": 1, "name": "design the thingz", "completed": true},
+                {"id": 2, "name": "mock the thingz", "completed": true},
+                {"id": 3, "name": "code the thingz", "completed": false}
+              ],
+              "empty": []
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [{"name": "Todos"}]
+}

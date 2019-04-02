@@ -132,10 +132,10 @@ describe('Http Prism Instance function tests', () => {
     expect(prism.resources).toHaveLength(5);
   });
 
-  test('returns stringified example when one defined in spec', async () => {
+  test('returns stringified static example when one defined in spec', async () => {
     prism = createInstance();
     await prism.load({
-      path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'todos.oas2.json')),
+      path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'static-examples.oas2.json')),
     });
 
     const response = await prism.process({
