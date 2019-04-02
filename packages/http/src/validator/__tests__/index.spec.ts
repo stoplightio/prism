@@ -237,7 +237,7 @@ describe('HttpValidator', () => {
         it('validates body', async () => {
           jest
             .spyOn(resolveValidationConfigModule, 'resolveResponseValidationConfig')
-            .mockReturnValueOnce({ headers: true, body: true });
+            .mockReturnValueOnce({ headers: false, body: true });
 
           await expect(
             httpValidator.validateOutput({
