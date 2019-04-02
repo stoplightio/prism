@@ -37,7 +37,7 @@ describe('HttpValidator', () => {
     jest.spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig');
     jest.spyOn(resolveValidationConfigModule, 'resolveResponseValidationConfig');
     jest.spyOn(getHeaderByNameModule, 'getHeaderByName').mockReturnValue(undefined);
-    jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue({ content: [] });
+    jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue(undefined);
     jest.spyOn(httpBodyValidator, 'validate');
     jest.spyOn(httpHeadersValidator, 'validate');
     jest.spyOn(httpQueryValidator, 'validate');
@@ -48,7 +48,7 @@ describe('HttpValidator', () => {
       const test = (extendResource?: Partial<IHttpOperation>) => async () => {
         jest
           .spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig')
-          .mockReturnValueOnce({ body: true });
+          .mockReturnValueOnce({ body: true, headers: false, hijack: false, query: false });
 
         await expect(
           httpValidator.validateInput({
@@ -100,7 +100,7 @@ describe('HttpValidator', () => {
       const test = (extendResource?: Partial<IHttpOperation>) => async () => {
         jest
           .spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig')
-          .mockReturnValueOnce({ headers: true });
+          .mockReturnValueOnce({ body: false, headers: true, hijack: false, query: false });
 
         await expect(
           httpValidator.validateInput({
@@ -156,7 +156,7 @@ describe('HttpValidator', () => {
       ) => async () => {
         jest
           .spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig')
-          .mockReturnValueOnce({ query: true });
+          .mockReturnValueOnce({ body: false, headers: false, hijack: false, query: true });
 
         await expect(
           httpValidator.validateInput({
@@ -237,7 +237,7 @@ describe('HttpValidator', () => {
         it('validates body', async () => {
           jest
             .spyOn(resolveValidationConfigModule, 'resolveResponseValidationConfig')
-            .mockReturnValueOnce({ body: true });
+            .mockReturnValueOnce({ headers: true, body: true });
 
           await expect(
             httpValidator.validateOutput({
@@ -267,7 +267,7 @@ describe('HttpValidator', () => {
         it('validates headers', async () => {
           jest
             .spyOn(resolveValidationConfigModule, 'resolveResponseValidationConfig')
-            .mockReturnValueOnce({ headers: true });
+            .mockReturnValueOnce({ headers: true, body: false });
 
           await expect(
             httpValidator.validateOutput({
