@@ -38,6 +38,6 @@
     "trailingComma": "es5"
   },
   "dependencies": {
-    "mobx": "^5.9.0"
+    "mobx": "^5.9.4"
   }
 }
