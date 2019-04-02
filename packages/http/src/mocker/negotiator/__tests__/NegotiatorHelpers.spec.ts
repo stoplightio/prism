@@ -161,30 +161,22 @@ describe('NegotiatorHelpers', () => {
 
   describe('negotiateOptionsForValidRequest()', () => {
     beforeEach(() => {
-      jest.spyOn(helpers, 'negotiateOptionsForDefaultCode').mockImplementation(() => {
-        // Spy
-      });
-      jest.spyOn(helpers, 'negotiateOptionsBySpecificCode').mockImplementation(() => {
-        // Spy
-      });
+      jest.spyOn(helpers, 'negotiateOptionsForDefaultCode');
+      jest.spyOn(helpers, 'negotiateOptionsBySpecificCode');
     });
 
     it('given status code enforced should negotiate a specific code', () => {
       const options = {
         code: chance.string(),
       };
+
       const expectedResult = {
         code: options.code,
+        mediaType: 'application/json',
       };
-      jest.spyOn(helpers, 'negotiateOptionsForDefaultCode').mockImplementation(() => {
-        // Spy
-      });
-      jest
-        .spyOn(helpers, 'negotiateOptionsBySpecificCode')
-        .mockImplementation(() => {
-          // Spy
-        })
-        .mockReturnValue(expectedResult);
+
+      jest.spyOn(helpers, 'negotiateOptionsForDefaultCode');
+      jest.spyOn(helpers, 'negotiateOptionsBySpecificCode').mockReturnValue(expectedResult);
 
       const actualResult = helpers.negotiateOptionsForValidRequest(httpOperation, options);
 
@@ -195,18 +187,14 @@ describe('NegotiatorHelpers', () => {
 
     it('given status code not enforced should negotiate a default code', () => {
       const options = {};
+
       const expectedResult = {
         code: chance.string(),
+        mediaType: 'application/json',
       };
-      jest
-        .spyOn(helpers, 'negotiateOptionsForDefaultCode')
-        .mockImplementation(() => {
-          // Spy
-        })
-        .mockReturnValue(expectedResult);
-      jest.spyOn(helpers, 'negotiateOptionsBySpecificCode').mockImplementation(() => {
-        // Spy
-      });
+
+      jest.spyOn(helpers, 'negotiateOptionsForDefaultCode').mockReturnValue(expectedResult);
+      jest.spyOn(helpers, 'negotiateOptionsBySpecificCode');
 
       const actualResult = helpers.negotiateOptionsForValidRequest(httpOperation, options);
 
@@ -217,20 +205,15 @@ describe('NegotiatorHelpers', () => {
   });
 
   describe('negotiateOptionsBySpecificCode()', () => {
-    let negotiateOptionsBySpecificResponseMock: jest.Mock;
-    let negotiateOptionsForDefaultCodeMock: jest.Mock;
+    let negotiateOptionsBySpecificResponseMock: jest.SpyInstance;
+    let negotiateOptionsForDefaultCodeMock: jest.SpyInstance;
 
     beforeEach(() => {
-      negotiateOptionsBySpecificResponseMock = jest
-        .spyOn(helpers, 'negotiateOptionsBySpecificResponse')
-        .mockImplementation(() => {
-          // Spy
-        });
-      negotiateOptionsForDefaultCodeMock = jest
-        .spyOn(helpers, 'negotiateOptionsForDefaultCode')
-        .mockImplementation(() => {
-          // Spy
-        });
+      negotiateOptionsBySpecificResponseMock = jest.spyOn(
+        helpers,
+        'negotiateOptionsBySpecificResponse'
+      );
+      negotiateOptionsForDefaultCodeMock = jest.spyOn(helpers, 'negotiateOptionsForDefaultCode');
     });
     it('given response defined should try to negotiate by that response', () => {
       const code = chance.string();
@@ -328,6 +311,7 @@ describe('NegotiatorHelpers', () => {
       };
       const fakeOperationConfig = {
         code: response.code,
+        mediaType: 'application/json',
       };
       jest
         .spyOn(helpers, 'negotiateOptionsBySpecificResponse')
@@ -352,9 +336,12 @@ describe('NegotiatorHelpers', () => {
         contents: [],
         headers: [],
       };
+
       const fakeOperationConfig = {
         code: response.code,
+        mediaType: 'application/json',
       };
+
       jest
         .spyOn(helpers, 'negotiateOptionsBySpecificResponse')
         .mockReturnValue(fakeOperationConfig);
@@ -411,7 +398,10 @@ describe('NegotiatorHelpers', () => {
           contents: [contents],
           headers: [],
         };
-        const fakeOperationConfig = {};
+        const fakeOperationConfig = {
+          code: '200',
+          mediaType: 'application/json',
+        };
         jest
           .spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent')
           .mockReturnValue(fakeOperationConfig);
@@ -469,7 +459,10 @@ describe('NegotiatorHelpers', () => {
           contents: [],
           headers: [],
         };
-        const fakeOperationConfig = {};
+        const fakeOperationConfig = {
+          code: '200',
+          mediaType: 'application/json',
+        };
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent');
         jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(fakeOperationConfig);
 
@@ -512,7 +505,10 @@ describe('NegotiatorHelpers', () => {
         contents: [contents],
         headers: [],
       };
-      const fakeOperationConfig = {};
+      const fakeOperationConfig = {
+        code: '200',
+        mediaType: 'application/json',
+      };
       jest
         .spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent')
         .mockReturnValue(fakeOperationConfig);
