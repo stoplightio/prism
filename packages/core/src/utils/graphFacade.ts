@@ -35,7 +35,7 @@ export class GraphFacade {
 
   public async createFilesystemNode(fsPath: string) {
     const resourceFile = resolve(fsPath);
-    const subtype = extname(resourceFile).slice(1);
+    const language = extname(resourceFile).slice(1);
     const stat = fs.lstatSync(resourceFile);
     if (stat.isDirectory()) {
       this.graphite.graph.addNode({
@@ -48,7 +48,7 @@ export class GraphFacade {
       this.graphite.graph.addNode({
         category: NodeCategory.Source,
         type: FilesystemNodeType.File,
-        subtype,
+        language,
         path: resourceFile,
       });
       this.fsBackend.readFile(resourceFile);
@@ -59,12 +59,12 @@ export class GraphFacade {
 
   public async createRawNode(
     raw: string,
-    { type, subtype }: Pick<ISourceNode, 'type' | 'subtype'>
+    { type, language }: Pick<ISourceNode, 'type' | 'language'>
   ) {
     this.graphite.graph.addNode({
       category: NodeCategory.Source,
       type,
-      subtype,
+      language,
       path: '/',
       data: { raw },
     } as ISourceNode);

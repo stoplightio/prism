@@ -16,7 +16,7 @@ export class HttpLoader {
 
     await this.graphFacade.createRawNode(response.data, {
       type: FilesystemNodeType.File,
-      subtype: trimStart(extname(opts.url), '.'),
+      language: trimStart(extname(opts.url), '.'),
     });
 
     return this.graphFacade.httpOperations;
