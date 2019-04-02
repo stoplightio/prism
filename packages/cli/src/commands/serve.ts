@@ -13,7 +13,7 @@ export default class Serve extends Command {
     spec: oflags.string({
       char: 's',
       description: 'Path to a spec file',
-      required: true
+      required: true,
     }),
     mock: oflags.boolean({
       char: 'm',
@@ -30,9 +30,9 @@ export default class Serve extends Command {
     const server =
       spec && isHttp(spec)
         ? createServer(
-          { url: spec },
-          { components: { loader: httpLoaderInstance }, config: { mock } }
-        )
+            { url: spec },
+            { components: { loader: httpLoaderInstance }, config: { mock } }
+          )
         : createServer({ path: spec }, { config: { mock } });
 
     const address = await server.listen(port as number);
