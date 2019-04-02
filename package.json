@@ -12,11 +12,12 @@
     "lint": "tslint -p packages/tsconfig.json",
     "build": "tsc --build ./packages/tsconfig.build.json",
     "build.watch": "tsc --build --watch ./packages/tsconfig.build.json",
-    "test": "yarn lint && yarn test.fast",
+    "test": "yarn test.fast",
+    "test.update": "yarn test --updateSnapshot",
     "test.fast": "jest --env=node --maxWorkers=2",
-    "test.coverage": "yarn test --coverage",
-    "test.watch": "yarn test --watchAll",
-    "test.update": "yarn test.fast --updateSnapshot"
+    "test.prod": "yarn lint && jest --env=node --maxWorkers=2",
+    "test.coverage": "yarn test.prod --coverage",
+    "test.watch": "yarn test --watchAll"
   },
   "devDependencies": {
     "@stoplight/types": "4.x.x",
