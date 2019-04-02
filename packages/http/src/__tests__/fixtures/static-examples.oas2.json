@@ -1,7 +1,5 @@
 {
   "swagger": "2.0",
-  "host": "todos.stoplight.io",
-  "schemes": ["http"],
   "paths": {
     "/todos": {
       "get": {
@@ -23,16 +21,12 @@
             },
             "examples": {
               "application/json": [
-                {"id": 1, "name": "design the thingz", "completed": true},
-                {"id": 2, "name": "mock the thingz", "completed": true},
-                {"id": 3, "name": "code the thingz", "completed": false}
-              ],
-              "empty": []
+                {"id": 1, "name": "design the thingz", "completed": true}
+              ]
             }
           }
         }
       }
     }
-  },
-  "tags": [{"name": "Todos"}]
+  }
 }
