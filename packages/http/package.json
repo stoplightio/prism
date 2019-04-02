@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@stoplight/prism-core": "0.0.0",
-    "ajv": "6.6.x",
+    "ajv": "6.10.x",
     "ajv-oai": "1.x.x",
     "axios": "0.x.x",
     "json-schema-faker": "stoplightio/json-schema-faker",

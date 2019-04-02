@@ -23,7 +23,7 @@
     "@types/chance": "1.0.x",
     "@types/jest": "23.3.x",
     "@types/node": "10.12.x",
-    "ajv": "6.6.x",
+    "ajv": "6.10.x",
     "chance": "1.0.x",
     "jest": "^23.6.x",
     "ts-jest": "23.10.x",
