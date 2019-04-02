@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Http Prism Instance function tests returns correct response for an existing route 1`] = `
+exports[`Http Prism Instance function tests when { mock: true } and spec file "no-refs-petstore-minimal.oas2.json" is loaded returns correct response for an existing route 1`] = `
 Object {
   "input": Object {
     "method": "get",

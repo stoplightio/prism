@@ -3,6 +3,7 @@ import { HttpParamStyles, IHttpOperation } from '@stoplight/types';
 
 import { IHttpMethod, IHttpRequest, IHttpResponse } from '../../types';
 
+// TODO DEBT: These fixtures dont have names, so its hard to tell what they are about
 export const httpOperations: IHttpOperation[] = [
   {
     id: 'todos',
