@@ -67,7 +67,7 @@ describe('validateAgainstSchema()', () => {
           message: 'should be number',
           name: 'type',
           path: [],
-          severity: 'error',
+          severity: ValidationSeverity.ERROR,
           summary: 'should be number',
         },
       ]);
