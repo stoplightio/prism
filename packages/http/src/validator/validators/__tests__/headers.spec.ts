@@ -82,7 +82,11 @@ describe('HttpHeadersValidator', () => {
 
         describe('content was not found', () => {
           it('omits schema validation', () => {
-            jest.spyOn(resolveContentModule, 'resolveContent').mockReturnValueOnce(undefined);
+            jest.spyOn(resolveContentModule, 'resolveContent').mockReturnValueOnce({
+              mediaType: 'application/exists-son',
+              examples: [],
+              encodings: [],
+            });
 
             expect(
               httpHeadersValidator.validate(
