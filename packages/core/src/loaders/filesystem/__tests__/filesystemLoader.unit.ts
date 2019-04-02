@@ -21,7 +21,7 @@ describe('filesystemLoader', () => {
 
   test('given no opts should delegate to graph facade for http operations', async () => {
     jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
-    jest.spyOn(fs, 'statSync').mockReturnValueOnce({ isDirectory: () => false });
+    jest.spyOn(fs, 'statSync').mockReturnValueOnce({ isDirectory: () => false } as fs.Stats);
     const filesystemLoader = new FilesystemLoader(graphFacadeMock);
 
     const operations = await filesystemLoader.load();
@@ -32,7 +32,7 @@ describe('filesystemLoader', () => {
 
   test('given opts should delegate to graph facade for http operations', async () => {
     jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
-    jest.spyOn(fs, 'statSync').mockReturnValueOnce({ isDirectory: () => false });
+    jest.spyOn(fs, 'statSync').mockReturnValueOnce({ isDirectory: () => false } as fs.Stats);
 
     const filesystemLoader = new FilesystemLoader(graphFacadeMock);
 
@@ -44,7 +44,7 @@ describe('filesystemLoader', () => {
 
   it('throws error when supplied with non-existing path', async () => {
     jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
-    jest.spyOn(fs, 'statSync').mockReturnValueOnce({ isDirectory: () => true });
+    jest.spyOn(fs, 'statSync').mockReturnValueOnce({ isDirectory: () => true } as fs.Stats);
     const filesystemLoader = new FilesystemLoader(graphFacadeMock);
     return expect(filesystemLoader.load({ path: 'a path' })).rejects.toThrowErrorMatchingSnapshot();
   });
