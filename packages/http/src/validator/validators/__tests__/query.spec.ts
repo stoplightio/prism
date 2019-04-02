@@ -82,7 +82,7 @@ describe('HttpQueryValidator', () => {
 
         describe('content was not found', () => {
           it('omits schema validation', () => {
-            jest.spyOn(resolveContentModule, 'resolveContent').mockReturnValueOnce(undefined);
+            jest.spyOn(resolveContentModule, 'resolveContent').mockReturnValueOnce({ encodings: [], examples: [], mediaType: 'application/json' });
 
             expect(
               httpQueryValidator.validate(
