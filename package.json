@@ -37,7 +37,5 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "dependencies": {
-    "mobx": "^5.9.0"
-  }
+  "dependencies": {}
 }
