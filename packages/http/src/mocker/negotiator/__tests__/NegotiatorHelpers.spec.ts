@@ -376,7 +376,7 @@ describe('NegotiatorHelpers', () => {
 
       expect(() => {
         helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
-      }).toThrow('No 2** response defined, cannot mock');
+      }).toThrow('No 2xx response defined, cannot mock');
     });
   });
 

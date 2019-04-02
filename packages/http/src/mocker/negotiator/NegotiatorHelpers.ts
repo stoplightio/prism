@@ -192,7 +192,7 @@ const helpers = {
         lowest2xxResponse
       );
     }
-    throw new Error('No 2** response defined, cannot mock');
+    throw new Error('No 2xx response defined, cannot mock');
   },
 
   negotiateOptionsBySpecificCode(
