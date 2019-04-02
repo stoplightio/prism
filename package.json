@@ -21,7 +21,7 @@
   "devDependencies": {
     "@stoplight/types": "4.x.x",
     "@types/chance": "1.0.x",
-    "@types/jest": "23.3.x",
+    "@types/jest": "24.0.x",
     "@types/node": "10.12.x",
     "ajv": "6.6.x",
     "chance": "1.0.x",
