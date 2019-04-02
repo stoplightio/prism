@@ -23,6 +23,6 @@
     "tslib": "1.9.x"
   },
   "devDependencies": {
-    "@types/lodash": "4.x.x"
+    "@types/lodash": "4.14.123"
   }
 }
