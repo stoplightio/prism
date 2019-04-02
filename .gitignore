@@ -20,3 +20,6 @@ dist
 # IDE
 .idea
 lib
+
+# TypeScript
+packages/*/tsconfig.build.tsbuildinfo
