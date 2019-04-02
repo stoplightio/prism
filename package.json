@@ -21,15 +21,15 @@
   "devDependencies": {
     "@stoplight/types": "4.x.x",
     "@types/chance": "1.0.x",
-    "@types/jest": "24.0.11",
-    "@types/node": "11.13.0",
+    "@types/jest": "24.x.x",
+    "@types/node": "11.x.x",
     "chance": "1.0.x",
-    "jest": "^24.6.0",
-    "ts-jest": "24.0.1",
+    "jest": "24.x.x",
+    "ts-jest": "24.x.x",
     "tslint": "5.15.0",
     "tslint-config-stoplight": "1.2.x",
     "tslint-eslint-rules": "5.4.x",
-    "typescript": "^3.4.1"
+    "typescript": "3.x.x"
   },
   "prettier": {
     "printWidth": 100,
