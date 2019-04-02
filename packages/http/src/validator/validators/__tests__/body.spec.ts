@@ -48,10 +48,7 @@ describe('HttpBodyValidator', () => {
     describe('body schema is provided', () => {
       describe('validator for given media type does not exists', () => {
         it('return no validation errors', () => {
-          jest.spyOn(validatorRegistry, 'get').mockImplementation(mediaType => {
-            expect(mediaType).toBe('application/json');
-            return;
-          });
+          const validatorRegistryGetSpy = jest.spyOn(validatorRegistry, 'get');
 
           expect(
             httpBodyValidator.validate(
@@ -61,7 +58,8 @@ describe('HttpBodyValidator', () => {
             )
           ).toEqual([]);
 
-          expect(validatorRegistry.get).toHaveBeenCalledTimes(1);
+          expect(validatorRegistryGetSpy).toHaveBeenCalledWith('application/json');
+          expect(validatorRegistryGetSpy).toHaveBeenCalledTimes(1);
         });
       });
 
