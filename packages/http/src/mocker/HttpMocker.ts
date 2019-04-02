@@ -8,7 +8,7 @@ import helpers from './negotiator/NegotiatorHelpers';
 
 export class HttpMocker
   implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: IExampleGenerator<any>) {}
+  constructor(private _exampleGenerator: IExampleGenerator<any>) { }
 
   public async mock({
     resource,
@@ -40,14 +40,11 @@ export class HttpMocker
         negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
       } catch (error) {
         return {
-          statusCode: 400,
+          statusCode: 500,
           headers: {
-            'Content-type': 'text/plain',
+            'Content-type': 'application/json',
           },
-          body: `ERROR: Your request is not valid.
-We cannot generate a sensible response because your '400'
-response has neither example nor schema or is not defined.
-Here is the original validation result instead: ${JSON.stringify(input.validations.input)}`,
+          body: JSON.stringify({ errors: input.validations.input }),
         };
       }
     } else {
@@ -56,22 +53,17 @@ Here is the original validation result instead: ${JSON.stringify(input.validatio
 
     // preparing response body
     let body;
-    const example = negotiationResult.example;
+    const { code, example = null, mediaType, schema = null } = negotiationResult;
 
     if (example && 'value' in example && example.value !== undefined) {
       body = typeof example.value === 'string' ? example.value : JSON.stringify(example.value);
-    } else if (negotiationResult.schema) {
-      body = await this._exampleGenerator.generate(
-        negotiationResult.schema,
-        negotiationResult.mediaType
-      );
+    } else if (schema) {
+      body = await this._exampleGenerator.generate(schema, mediaType);
     }
 
     return {
-      statusCode: parseInt(negotiationResult.code),
-      headers: {
-        'Content-type': negotiationResult.mediaType,
-      },
+      statusCode: parseInt(code),
+      headers: { 'Content-type': mediaType },
       body,
     };
   }

@@ -1,0 +1,85 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Required Params API",
+    "version": "1.0"
+  },
+  "host": "example.com",
+  "paths": {
+    "/query": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "a_required_param",
+            "type": "string",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/header": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Required header param",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "a_required_header",
+            "type": "string",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/body": {
+      "post": {
+        "summary": "Required body param",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "a_required_body": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "a_required_body"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ]
+}
