@@ -18,7 +18,7 @@ describe('Http Prism Instance function tests', () => {
     });
   });
 
-  test('given incorrect route should throw error', () => {
+  it('errors given incorrect route', () => {
     return expect(
       prism.process({
         method: 'get',
@@ -29,7 +29,7 @@ describe('Http Prism Instance function tests', () => {
     ).rejects.toThrowError('Route not resolved, none path matched');
   });
 
-  test('given correct route should return correct response', async () => {
+  it('returns correct response for an existing route', async () => {
     const response = await prism.process({
       method: 'get',
       url: {
@@ -50,17 +50,44 @@ describe('Http Prism Instance function tests', () => {
     expect(omit(response, 'output.body')).toMatchSnapshot();
   });
 
-  test('given route with invalid param should return a validation error', async () => {
+  it('returns validation error for with invalid param', async () => {
     const response = await prism.process({
       method: 'get',
       url: {
         path: '/pet/findByStatus',
       },
     });
-    expect(response).toMatchSnapshot();
+    expect(response).toEqual({
+      input: {
+        method: 'get',
+        url: {
+          path: '/pet/findByStatus',
+        },
+      },
+      output: {
+        body:
+          '{"errors":[{"path":["query","status"],"name":"required","summary":"","message":"Missing status query param","severity":"error"}]}',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        statusCode: 500,
+      },
+      validations: {
+        input: [
+          {
+            path: ['query', 'status'],
+            name: 'required',
+            summary: '',
+            message: 'Missing status query param',
+            severity: 'error',
+          },
+        ],
+        output: [],
+      },
+    });
   });
 
-  test('should support collection format multi', async () => {
+  it('should support collection format multi', async () => {
     const response = await prism.process({
       method: 'get',
       url: {
@@ -76,7 +103,7 @@ describe('Http Prism Instance function tests', () => {
     });
   });
 
-  test('support param in body', async () => {
+  it('support param in body', async () => {
     const response = await prism.process({
       method: 'post',
       url: {
@@ -97,7 +124,7 @@ describe('Http Prism Instance function tests', () => {
     });
   });
 
-  test("should forward the request correctly even if resources haven't been provided", async () => {
+  it("should forward the request correctly even if resources haven't been provided", async () => {
     // Recreate Prism with no loaded document
     prism = createInstance(undefined, { forwarder, router: undefined, mocker: undefined });
 
@@ -123,7 +150,7 @@ describe('Http Prism Instance function tests', () => {
     });
   });
 
-  test('loads spec provided in yaml', async () => {
+  it('loads spec provided in yaml', async () => {
     prism = createInstance();
     await prism.load({
       path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'petstore.oas2.yaml')),
@@ -132,7 +159,7 @@ describe('Http Prism Instance function tests', () => {
     expect(prism.resources).toHaveLength(5);
   });
 
-  test('returns stringified static example when one defined in spec', async () => {
+  it('returns stringified static example when one defined in spec', async () => {
     prism = createInstance();
     await prism.load({
       path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'static-examples.oas2.json')),

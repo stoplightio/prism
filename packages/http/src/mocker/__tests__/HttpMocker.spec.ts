@@ -81,7 +81,7 @@ describe('HttpMocker', () => {
         httpMocker.mock({
           input: mockInput,
         })
-      ).rejects.toThrowErrorMatchingSnapshot();
+      ).rejects.toThrowErrorMatchingInlineSnapshot(`"Resource is not defined"`);
     });
 
     it('fails when called with no input', () => {
@@ -89,7 +89,7 @@ describe('HttpMocker', () => {
         httpMocker.mock({
           resource: mockResource,
         })
-      ).rejects.toThrowErrorMatchingSnapshot();
+      ).rejects.toThrowErrorMatchingInlineSnapshot(`"Http request is not defined"`);
     });
 
     describe('with valid negotiator response', () => {
@@ -135,7 +135,37 @@ describe('HttpMocker', () => {
             resource: mockResource,
             input: mockInput,
           })
-        ).resolves.toMatchSnapshot();
+        ).resolves.toMatchInlineSnapshot(`
+                  Object {
+                    "body": "example value",
+                    "headers": Object {
+                      "Content-type": "test",
+                    },
+                    "statusCode": 202,
+                  }
+                `);
+      });
+
+      it('return an empty body if there is no schema or example', () => {
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockImplementation(() => ({
+          code: '202',
+          mediaType: 'test',
+        }));
+
+        return expect(
+          httpMocker.mock({
+            resource: mockResource,
+            input: mockInput,
+          })
+        ).resolves.toMatchInlineSnapshot(`
+                  Object {
+                    "body": undefined,
+                    "headers": Object {
+                      "Content-type": "test",
+                    },
+                    "statusCode": 202,
+                  }
+                `);
       });
 
       it('defaults to empty mock configuration when called with boolean mock value', async () => {
