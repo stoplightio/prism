@@ -19,6 +19,7 @@
     "@stoplight/graphite": "4.6.x",
     "axios": "0.x.x",
     "lodash": "4.x.x",
+    "mobx": "^5.9.4",
     "tslib": "1.9.x"
   },
   "devDependencies": {
