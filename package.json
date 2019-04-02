@@ -27,7 +27,7 @@
     "chance": "1.0.x",
     "jest": "^23.6.x",
     "ts-jest": "23.10.x",
-    "tslint": "5.11.x",
+    "tslint": "5.15.x",
     "tslint-config-stoplight": "1.2.x",
     "tslint-eslint-rules": "5.4.x",
     "typescript": "^3.3.1"
