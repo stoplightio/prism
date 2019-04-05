@@ -19,7 +19,7 @@ export default class Serve extends Command {
     mock: oflags.boolean({
       char: 'm',
       description: 'Turn global mocking on or off',
-      default: false,
+      default: true,
     }),
   };
 
