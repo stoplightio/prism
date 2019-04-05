@@ -17,10 +17,7 @@ describe('serve command', () => {
   test('starts filesystem server variant', async () => {
     await Serve.run(['-s', '/path/to']);
 
-    expect(createServer).toHaveBeenLastCalledWith(
-      { path: '/path/to' },
-      { config: { mock: false } }
-    );
+    expect(createServer).toHaveBeenLastCalledWith({ path: '/path/to' }, { config: { mock: true } });
 
     expect(listenMock).toHaveBeenLastCalledWith(4010);
   });
@@ -30,7 +27,7 @@ describe('serve command', () => {
 
     expect(createServer).toHaveBeenLastCalledWith(
       { url: 'http://path.to/spec.oas2.yaml' },
-      { components: { loader: httpLoaderInstance }, config: { mock: false } }
+      { components: { loader: httpLoaderInstance }, config: { mock: true } }
     );
 
     expect(listenMock).toHaveBeenLastCalledWith(4010);
