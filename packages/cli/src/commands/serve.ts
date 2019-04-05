@@ -9,6 +9,7 @@ export default class Serve extends Command {
       char: 'p',
       description: 'Port that Prism will run on.',
       default: 4010,
+      required: true
     }),
     spec: oflags.string({
       char: 's',
@@ -30,12 +31,12 @@ export default class Serve extends Command {
     const server =
       spec && isHttp(spec)
         ? createServer(
-            { url: spec },
-            { components: { loader: httpLoaderInstance }, config: { mock } }
-          )
+          { url: spec },
+          { components: { loader: httpLoaderInstance }, config: { mock } }
+        )
         : createServer({ path: spec }, { config: { mock } });
 
-    const address = await server.listen(port as number);
+    const address = await server.listen(port);
 
     this.log(address);
   }
