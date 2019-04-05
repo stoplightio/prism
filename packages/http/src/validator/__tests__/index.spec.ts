@@ -4,7 +4,6 @@ import { IHttpNameValue, IHttpNameValues } from '../../types';
 import { IHttpRequest } from '../../types';
 import { HttpValidator } from '../index';
 import * as resolveValidationConfigModule from '../utils/config';
-import * as getHeaderByNameModule from '../utils/http';
 import * as findResponseSpecModule from '../utils/spec';
 import { IHttpValidator } from '../validators/types';
 
@@ -36,7 +35,6 @@ describe('HttpValidator', () => {
     jest.clearAllMocks();
     jest.spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig');
     jest.spyOn(resolveValidationConfigModule, 'resolveResponseValidationConfig');
-    jest.spyOn(getHeaderByNameModule, 'getHeaderByName').mockReturnValue(undefined);
     jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue(undefined);
     jest.spyOn(httpBodyValidator, 'validate');
     jest.spyOn(httpHeadersValidator, 'validate');
@@ -70,7 +68,6 @@ describe('HttpValidator', () => {
         ).resolves.toEqual([mockError]);
 
         expect(resolveValidationConfigModule.resolveRequestValidationConfig).toHaveBeenCalled();
-        expect(getHeaderByNameModule.getHeaderByName).toHaveBeenCalled();
         expect(httpBodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
         expect(httpHeadersValidator.validate).not.toHaveBeenCalled();
         expect(httpQueryValidator.validate).not.toHaveBeenCalled();
@@ -122,7 +119,6 @@ describe('HttpValidator', () => {
         ).resolves.toEqual([mockError]);
 
         expect(resolveValidationConfigModule.resolveRequestValidationConfig).toHaveBeenCalled();
-        expect(getHeaderByNameModule.getHeaderByName).toHaveBeenCalled();
         expect(httpBodyValidator.validate).not.toHaveBeenCalled();
         expect(httpHeadersValidator.validate).toHaveBeenCalledWith({}, [], undefined);
         expect(httpQueryValidator.validate).not.toHaveBeenCalled();
@@ -178,7 +174,6 @@ describe('HttpValidator', () => {
         ).resolves.toEqual([mockError]);
 
         expect(resolveValidationConfigModule.resolveRequestValidationConfig).toHaveBeenCalled();
-        expect(getHeaderByNameModule.getHeaderByName).toHaveBeenCalled();
         expect(httpBodyValidator.validate).not.toHaveBeenCalled();
         expect(httpHeadersValidator.validate).not.toHaveBeenCalled();
         expect(httpQueryValidator.validate).toHaveBeenCalledWith({}, [], undefined);
@@ -256,7 +251,6 @@ describe('HttpValidator', () => {
           ).resolves.toEqual([mockError]);
 
           expect(resolveValidationConfigModule.resolveResponseValidationConfig).toHaveBeenCalled();
-          expect(getHeaderByNameModule.getHeaderByName).toHaveBeenCalled();
           expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
           expect(httpBodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
           expect(httpHeadersValidator.validate).not.toHaveBeenCalled();
@@ -286,7 +280,6 @@ describe('HttpValidator', () => {
           ).resolves.toEqual([mockError]);
 
           expect(resolveValidationConfigModule.resolveResponseValidationConfig).toHaveBeenCalled();
-          expect(getHeaderByNameModule.getHeaderByName).toHaveBeenCalled();
           expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
           expect(httpBodyValidator.validate).not.toHaveBeenCalled();
           expect(httpHeadersValidator.validate).toHaveBeenCalledWith({}, [], undefined);
