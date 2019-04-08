@@ -46,9 +46,7 @@
     "url": "https://github.com/stoplightio/prism.git"
   },
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "tslint -p . -t stylish",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "oclif-dev manifest",
     "version": "oclif-dev readme && git add README.md",
     "cli": "node -r tsconfig-paths/register bin/run"
   },

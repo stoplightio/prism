@@ -36,9 +36,30 @@ jobs:
       - run:
           name: Run build
           command: yarn build
+  publish:
+    docker:
+      - image: circleci/node:11
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: yarn
+      - run:
+          name: Build all code to JavaScript
+          command: yarn build
+      - run:
+          name: Publish
+          command: yarn lerna publish --yes --canary --preid next --dist-tag pre
+
 
 workflows:
   version: 2
-  build_and_publish:
+  build:
     jobs:
       - build
+      - publish:
+          filters:
+            branches:
+              only: develop
+          requires:
+            - build
