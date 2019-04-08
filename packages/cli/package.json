@@ -22,7 +22,7 @@
     "globby": "9.2.0",
     "ts-node": "8.0.3",
     "tsconfig-paths": "^3.8.0",
-    "typescript": "^3.4.1"
+    "typescript": "^3.4.2"
   },
   "engines": {
     "node": ">=8.0.0"
