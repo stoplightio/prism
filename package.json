@@ -25,6 +25,7 @@
     "@types/node": "11.x.x",
     "chance": "1.0.x",
     "jest": "24.x.x",
+    "lerna": "^3.13.1",
     "semantic-release": "15.13.3",
     "semantic-release-monorepo": "6.1.1",
     "ts-jest": "24.x.x",
@@ -43,6 +44,5 @@
     "printWidth": 100,
     "singleQuote": true,
     "trailingComma": "es5"
-  },
-  "dependencies": {}
+  }
 }

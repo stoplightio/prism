@@ -38,7 +38,7 @@ jobs:
           command: yarn build
       - run:
           name: Release if necessary
-          command: yarn workspaces run semantic-release --branch feat/pre-release --dry-run -e semantic-release-monorepo
+          command: yarn lerna exec --concurrency 1 "semantic-release -e semantic-release-monorepo --dry-run"
 
 workflows:
   version: 2
