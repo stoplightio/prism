@@ -22,3 +22,5 @@ dist
 # IDE
 .idea
 lib
+
+oclif.manifest.json
