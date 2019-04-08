@@ -49,7 +49,7 @@ jobs:
           command: yarn build
       - run:
           name: Publish
-          command: yarn lerna publish --yes --canary --preid next --dist-tag pre
+          command: yarn lerna publish --yes --preid next --dist-tag pre
 
 
 workflows:
