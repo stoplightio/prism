@@ -7,8 +7,6 @@
     "packages/*"
   ],
   "scripts": {
-    "setup": "yarn",
-    "fmt": "prettier --write \"packages/*/src/**/*.{ts,js}\"",
     "lint": "tslint -p packages/tsconfig.json",
     "build": "tsc --build ./packages/tsconfig.build.json",
     "build.watch": "tsc --build --watch ./packages/tsconfig.build.json",
