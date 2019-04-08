@@ -49,7 +49,7 @@ jobs:
           command: yarn build
       - run:
           name: Publish
-          command: yarn lerna publish --yes --preid next --dist-tag pre --no-git-tag-version
+          command: yarn lerna publish --yes --preid next --dist-tag pre --no-git-tag-version --conventional-commits
 
 
 workflows:
