@@ -26,5 +26,8 @@
   },
   "devDependencies": {
     "@types/caseless": "0.12.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

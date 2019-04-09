@@ -41,6 +41,9 @@
       "@oclif/plugin-help"
     ]
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/stoplightio/prism.git"

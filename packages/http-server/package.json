@@ -15,6 +15,9 @@
   "files": [
     "/lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@stoplight/prism-core": "3.0.0-pre",
     "@stoplight/prism-http": "3.0.0-pre",
