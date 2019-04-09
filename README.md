@@ -39,10 +39,12 @@ _*TODO:* Create an executable which will run without needing to install a node m
 
 ### CLI
 
-Running Prism on the CLI will create a HTTP server.
+#### Mock server mode
+
+Running Prism on the CLI will create a HTTP mock server.
 
 ```bash
-$ prism serve -s examples/petstore.json
+$ prism mock examples/petstore.json
 > http://127.0.0.1:4010
 ```
 
@@ -57,16 +59,36 @@ content-length: 98
 content-type: application/json
 
 {
-    "name": "ut dolore nulla non ex",
+    "name": "doggie",
     "photoUrls": [
-        "aute sed in qui",
-        "magna Excepteur",
-        "tempor dolor"
-    ]
+        "fugiat",
+        "in amet"
+    ],
+    "id": 38621518,
+    "category": {
+        "id": -77973282,
+        "name": "nisi"
+    },
+    "tags": [
+        {"id": 92329113, "name": "nulla"},
+        {"id": -72921961, "name": "esse"},
+        {"id": 38941757, "name": "velit incididunt quis ullamco magna"},
+        {"id": -14316986, "name": "occaecat exercitation cillum"}
+    ],
+    "status": "available"
 }
 ```
 
 Responses will be mocked using realistic data that conforms to the type in the description.
+
+#### Proxy server with validation mode
+
+This will run a proxy server with validation enabled according to given spec.
+
+```bash
+$ prism server examples/petstore.json
+> http://127.0.0.1:4010
+```
 
 #### Determine Responses
 
