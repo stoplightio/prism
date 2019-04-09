@@ -49,7 +49,7 @@ jobs:
           command: yarn build
       - run:
           name: Publish
-          command: yarn lerna publish --yes --dist-tag beta --conventional-commits
+          command: yarn lerna publish prerelease --yes --dist-tag beta --conventional-commits
 
 
 workflows:
