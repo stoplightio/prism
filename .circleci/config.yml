@@ -49,7 +49,7 @@ jobs:
           command: yarn build
       - run:
           name: Publish
-          command: yarn lerna publish from-git --yes --dist-tag alpha
+          command: yarn lerna publish from-package --yes --dist-tag alpha
 
 
 workflows:

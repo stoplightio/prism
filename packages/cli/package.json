@@ -5,7 +5,7 @@
   "bin": {
     "prism": "./bin/run"
   },
-  "bugs": "https://github.com/chris-miaskowski/prism-cli/issues",
+  "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
     "@oclif/command": "1.x.x",
     "@oclif/config": "1.12.12",

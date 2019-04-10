@@ -12,7 +12,7 @@ Prism is a set of packages that, given an API description, can:
 
 Being based on [Graphite], Prism supports any description format that Graphite supports:
 
-- OpenAPI v3.0 (coming soon)
+- OpenAPI v3.0 (in testing phase)
 - OpenAPI v2.0 (formerly Swagger)
 
 Prims is a multi-package repository:

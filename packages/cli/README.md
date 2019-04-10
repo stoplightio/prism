@@ -2,9 +2,9 @@ prism-cli
 =========
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/prism-cli.svg)](https://npmjs.org/package/prism-cli)
-[![Downloads/week](https://img.shields.io/npm/dw/prism-cli.svg)](https://npmjs.org/package/prism-cli)
-[![License](https://img.shields.io/npm/l/prism-cli.svg)](https://github.com/chris-miaskowski/prism-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/prism-cli.svg)](https://npmjs.org/package/@stoplight/prism-cli)
+[![Downloads/week](https://img.shields.io/npm/dw/prism-cli.svg)](https://npmjs.org/package/@stoplight/prism-cli)
+[![License](https://img.shields.io/npm/l/prism-cli.svg)](https://github.com/stoplightio/prism/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
