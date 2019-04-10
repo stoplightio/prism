@@ -14,13 +14,13 @@ describe('server command', () => {
 
   test('starts proxy server', async () => {
     await Server.run(['/path/to']);
-    expect(createServer).toHaveBeenLastCalledWith('/path/to', false);
+    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: false });
     expect(listenMock).toHaveBeenLastCalledWith(4010);
   });
 
   test('starts proxy server on custom port', async () => {
     await Server.run(['-p', '666', '/path/to']);
-    expect(createServer).toHaveBeenLastCalledWith('/path/to', false);
+    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: false });
     expect(listenMock).toHaveBeenLastCalledWith(666);
   });
 });

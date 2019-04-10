@@ -13,7 +13,7 @@ describe('server command', () => {
   });
 
   test('starts filesystem server variant', async () => {
-    createServer('/path/to', true);
+    createServer('/path/to', { mock: true });
 
     expect(createPrismServer).toHaveBeenLastCalledWith(
       { path: '/path/to' },
@@ -22,7 +22,7 @@ describe('server command', () => {
   });
 
   test('starts http server variant', async () => {
-    createServer('http://path.to/spec.oas2.yaml', false);
+    createServer('http://path.to/spec.oas2.yaml', { mock: false });
 
     expect(createPrismServer).toHaveBeenLastCalledWith(
       { url: 'http://path.to/spec.oas2.yaml' },
