@@ -25,7 +25,7 @@ export default class Server extends Command {
       args: { spec },
     } = this.parse(Server);
 
-    const server = createServer(spec, false);
+    const server = createServer(spec, { mock: false });
 
     const address = await server.listen(port);
 
