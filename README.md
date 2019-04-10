@@ -44,14 +44,14 @@ _*TODO:* Create an executable which will run without needing to install a node m
 Running Prism on the CLI will create a HTTP mock server.
 
 ```bash
-$ prism mock examples/petstore.json
+$ prism mock examples/petstore.oas3.json
 > http://127.0.0.1:4010
 ```
 
 Then in another tab, you can hit the HTTP server with your favorite HTTP client (like [HTTPie]):
 
 ```bash
-$ http GET http://127.0.0.1:4010/pet/123
+$ http GET http://127.0.0.1:4010/pets/123
 
 HTTP/1.1 200 OK
 Connection: keep-alive
@@ -59,23 +59,9 @@ content-length: 98
 content-type: application/json
 
 {
-    "name": "doggie",
-    "photoUrls": [
-        "fugiat",
-        "in amet"
-    ],
-    "id": 38621518,
-    "category": {
-        "id": -77973282,
-        "name": "nisi"
-    },
-    "tags": [
-        {"id": 92329113, "name": "nulla"},
-        {"id": -72921961, "name": "esse"},
-        {"id": 38941757, "name": "velit incididunt quis ullamco magna"},
-        {"id": -14316986, "name": "occaecat exercitation cillum"}
-    ],
-    "status": "available"
+    "id":-93918115,
+    "name":"magna",
+    "tag":"pariatur"
 }
 ```
 
