@@ -59,9 +59,10 @@ content-length: 98
 content-type: application/json
 
 {
-    "id":-93918115,
-    "name":"magna",
-    "tag":"pariatur"
+    "id": 13137069,
+    "name": "doggie",
+    "photoUrls": [ "ad fugiat sunt", "ea" ],
+    ...
 }
 ```
 
@@ -72,8 +73,27 @@ Responses will be mocked using realistic data that conforms to the type in the d
 This will run a proxy server with validation enabled according to given spec.
 
 ```bash
-$ prism server examples/petstore.json
+$ prism server examples/petstore.oas2.json
 > http://127.0.0.1:4010
+```
+
+Now let's call our server with a non-existing url to see validation in action:
+
+
+```bash
+$ http GET http://127.0.0.1:4010/petz
+
+HTTP/1.1 500 Internal Server Error
+Connection: keep-alive
+Date: Wed, 10 Apr 2019 10:18:53 GMT
+content-length: 101
+content-type: application/json; charset=utf-8
+
+{
+    "error": "Internal Server Error",
+    "message": "Route not resolved, none path matched.",
+    "statusCode": 500
+}
 ```
 
 #### Determine Responses
