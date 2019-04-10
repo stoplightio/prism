@@ -47,6 +47,7 @@ jobs:
       - run:
           name: Build all code to JavaScript
           command: yarn build
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publish
           command: yarn lerna publish from-package --yes --dist-tag alpha
