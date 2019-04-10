@@ -51,7 +51,7 @@ $ prism mock examples/petstore.oas3.json
 Then in another tab, you can hit the HTTP server with your favorite HTTP client (like [HTTPie]):
 
 ```bash
-$ http GET http://127.0.0.1:4010/pet/123
+$ http GET http://127.0.0.1:4010/pets/123
 
 HTTP/1.1 200 OK
 Connection: keep-alive
