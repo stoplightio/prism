@@ -11,7 +11,6 @@ export class HttpForwarder
     input: IPrismInput<IHttpRequest>;
   }): Promise<IHttpResponse> {
     const inputData = opts.input.data;
-    // @ts-ignore
     const baseUrl =
       opts.resource && opts.resource.servers && opts.resource.servers.length > 0
         ? this.resolveServerUrl(opts.resource.servers[0])
