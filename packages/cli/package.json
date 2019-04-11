@@ -18,7 +18,7 @@
     "@oclif/dev-cli": "1.22.0",
     "@oclif/tslint": "3.x.x",
     "@types/chai": "4.x.x",
-    "@types/node": "11.13.2",
+    "@types/node": "11.13.4",
     "globby": "9.2.0",
     "ts-node": "8.0.3",
     "tsconfig-paths": "^3.8.0",
