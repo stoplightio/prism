@@ -1,6 +1,6 @@
 import { ISchema } from '@stoplight/types';
 
-import { INoRangeDiagnostic } from '@stoplight/prism-core/src/types';
+import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { ISchemaValidator, IValidatorRegistry } from './types';
 
 export class ValidatorRegistry implements IValidatorRegistry {
@@ -8,7 +8,7 @@ export class ValidatorRegistry implements IValidatorRegistry {
 
   public get(
     mediaType: string
-  ): ((content: any, schema: ISchema) => INoRangeDiagnostic[]) | undefined {
+  ): ((content: any, schema: ISchema) => IPrismDiagnostic[]) | undefined {
     const validator = this.validators.find(v => v.supports(mediaType));
 
     if (!validator) {

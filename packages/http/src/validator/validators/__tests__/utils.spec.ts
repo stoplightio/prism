@@ -1,6 +1,6 @@
+import { DiagnosticSeverity } from '@stoplight/types';
 import * as convertAjvErrorsModule from '../utils';
 import { convertAjvErrors, validateAgainstSchema } from '../utils';
-import { DiagnosticSeverity } from '@stoplight/types';
 
 describe('convertAjvErrors()', () => {
   const errorObjectFixture = {

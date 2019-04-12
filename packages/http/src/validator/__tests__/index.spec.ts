@@ -1,5 +1,12 @@
-import { IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
+import {
+  DiagnosticSeverity,
+  IHttpContent,
+  IHttpHeaderParam,
+  IHttpOperation,
+  IHttpQueryParam,
+} from '@stoplight/types';
 
+import { IPrismDiagnostic } from '@stoplight/prism-core/src';
 import { IHttpNameValue, IHttpNameValues } from '../../types';
 import { IHttpRequest } from '../../types';
 import { HttpValidator } from '../index';
@@ -7,12 +14,11 @@ import * as resolveValidationConfigModule from '../utils/config';
 import * as findResponseSpecModule from '../utils/spec';
 import { IHttpValidator } from '../validators/types';
 
-const mockError = {
+const mockError: IPrismDiagnostic = {
   message: 'c is required',
-  name: 'required',
+  code: 'required',
   path: ['b'],
-  severity: 'error',
-  summary: 'c is required',
+  severity: DiagnosticSeverity.Error,
 };
 
 describe('HttpValidator', () => {

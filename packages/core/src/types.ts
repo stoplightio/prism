@@ -1,6 +1,5 @@
 import { IDiagnostic, Omit } from '@stoplight/types';
-export type INoRangeDiagnostic = Omit<IDiagnostic, 'range'>;
-export type Path = Array<string | number>;
+export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 // END
 
@@ -71,11 +70,11 @@ export interface IValidator<Resource, Input, Config, Output> {
   validateInput?: (
     opts: { resource: Resource; input: Input; config?: Config },
     defaultValidator?: IValidator<Resource, Input, Config, Output>
-  ) => Promise<INoRangeDiagnostic[]>;
+  ) => Promise<IPrismDiagnostic[]>;
   validateOutput?: (
     opts: { resource: Resource; output?: Output; config?: Config },
     defaultValidator?: IValidator<Resource, Input, Config, Output>
-  ) => Promise<INoRangeDiagnostic[]>;
+  ) => Promise<IPrismDiagnostic[]>;
 }
 
 export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
@@ -89,7 +88,7 @@ export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
 export interface IPrismInput<I> {
   data: I;
   validations: {
-    input: INoRangeDiagnostic[];
+    input: IPrismDiagnostic[];
   };
 }
 
@@ -97,7 +96,7 @@ export interface IPrismOutput<I, O> {
   input?: I;
   output?: O;
   validations: {
-    input: INoRangeDiagnostic[];
-    output: INoRangeDiagnostic[];
+    input: IPrismDiagnostic[];
+    output: IPrismDiagnostic[];
   };
 }

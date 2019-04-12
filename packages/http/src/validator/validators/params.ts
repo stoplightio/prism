@@ -1,7 +1,7 @@
 import { DiagnosticSeverity, HttpParamStyles, IHttpContent, IHttpParam } from '@stoplight/types';
 import { upperFirst } from 'lodash';
 
-import { INoRangeDiagnostic } from '@stoplight/prism-core/src/types';
+import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { resolveContent } from '../utils/http';
 import { IHttpValidator } from './types';
@@ -15,9 +15,9 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam>
     private _style: HttpParamStyles
   ) {}
 
-  public validate(target: Target, specs: Spec[], mediaType?: string): INoRangeDiagnostic[] {
+  public validate(target: Target, specs: Spec[], mediaType?: string): IPrismDiagnostic[] {
     const { _registry: registry, _prefix: prefix, _style: style } = this;
-    return specs.reduce<INoRangeDiagnostic[]>((results, spec) => {
+    return specs.reduce<IPrismDiagnostic[]>((results, spec) => {
       if (!(spec.name in target) && spec.required === true) {
         results.push({
           path: [prefix, spec.name],

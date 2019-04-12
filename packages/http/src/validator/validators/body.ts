@@ -1,12 +1,12 @@
 import { IHttpContent } from '@stoplight/types';
 
-import { INoRangeDiagnostic } from '@stoplight/prism-core/src/types';
+import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { IHttpValidator, IValidatorRegistry } from './types';
 
 export class HttpBodyValidator implements IHttpValidator<any, IHttpContent> {
   constructor(private _registry: IValidatorRegistry, private _prefix: string) {}
 
-  public validate(target: any, specs: IHttpContent[], mediaType?: string): INoRangeDiagnostic[] {
+  public validate(target: any, specs: IHttpContent[], mediaType?: string): IPrismDiagnostic[] {
     const { _registry: registry, _prefix: prefix } = this;
     const content = this.getContent(specs, mediaType);
 
