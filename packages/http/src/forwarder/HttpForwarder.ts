@@ -16,6 +16,10 @@ export class HttpForwarder
         ? this.resolveServerUrl(opts.resource.servers[0])
         : inputData.url.baseUrl;
 
+    if (!baseUrl) {
+      throw new Error('Either one server in spec or baseUrl in request must be defined');
+    }
+
     const response = await axios({
       method: inputData.method,
       baseURL: baseUrl,
@@ -23,7 +27,7 @@ export class HttpForwarder
       params: inputData.url.query,
       responseType: 'text',
       data: inputData.body,
-      headers: this.updateHostHeaders(inputData.headers, baseUrl),
+      headers: this.updateHostHeaders(baseUrl, inputData.headers),
       validateStatus: () => true,
     });
 
@@ -34,14 +38,9 @@ export class HttpForwarder
     };
   }
 
-  private updateHostHeaders(headers?: IHttpNameValue, baseUrl?: string) {
+  private updateHostHeaders(baseUrl: string, headers?: IHttpNameValue) {
     // no headers? do nothing
     if (!headers) return headers;
-
-    if (!baseUrl) {
-      const { host, ...restHeaders } = headers;
-      return restHeaders;
-    }
 
     // host header provided? override with actual hostname
     if (headers.hasOwnProperty('host')) {
