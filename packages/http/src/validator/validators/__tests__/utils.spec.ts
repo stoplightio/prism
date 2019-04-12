@@ -81,7 +81,7 @@ describe('validateAgainstSchema()', () => {
             schemaPath: '#/type',
           },
         ],
-        'error'
+        DiagnosticSeverity.Error
       );
     });
   });
