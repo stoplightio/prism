@@ -1,5 +1,4 @@
-import { ValidationSeverity } from '@stoplight/prism-core';
-import { ISchema } from '@stoplight/types';
+import { DiagnosticSeverity, ISchema } from '@stoplight/types';
 
 import { HttpBodyValidator } from '../body';
 import { IValidatorRegistry } from '../types';
@@ -75,9 +74,8 @@ describe('HttpBodyValidator', () => {
               return [
                 {
                   path: ['a'],
-                  name: 'testName',
-                  summary: 'testSummary',
-                  severity: ValidationSeverity.ERROR,
+                  code: 'testName',
+                  severity: DiagnosticSeverity.Error,
                   message: 'testMessage',
                 },
               ];

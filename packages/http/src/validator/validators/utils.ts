@@ -1,5 +1,5 @@
-import { IValidation, ValidationSeverity } from '@stoplight/prism-core';
-import { ISchema } from '@stoplight/types';
+import { INoRangeDiagnostic } from '@stoplight/prism-core/src/types';
+import { DiagnosticSeverity, ISchema, Segment } from '@stoplight/types';
 import { ErrorObject } from 'ajv';
 // @ts-ignore
 import * as AjvOAI from 'ajv-oai';
@@ -8,16 +8,15 @@ const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' });
 
 export const convertAjvErrors = (
   errors: ErrorObject[] | undefined | null,
-  severity: ValidationSeverity
+  severity: DiagnosticSeverity
 ) => {
   if (!errors) {
     return [];
   }
 
-  return errors.map(error => ({
+  return errors.map<INoRangeDiagnostic & { path: Segment[] }>(error => ({
     path: error.dataPath.split('.').slice(1),
-    name: error.keyword || '',
-    summary: error.message || '',
+    code: error.keyword || '',
     message: error.message || '',
     severity,
   }));
@@ -27,13 +26,13 @@ export const validateAgainstSchema = (
   value: any,
   schema: ISchema,
   prefix?: string
-): IValidation[] => {
+): INoRangeDiagnostic[] => {
   try {
     const validate = ajv.compile(schema);
     const valid = validate(value);
-    let errors: IValidation[] = [];
+    let errors: INoRangeDiagnostic[] = [];
     if (!valid) {
-      errors = convertAjvErrors(validate.errors, ValidationSeverity.ERROR).map(error => {
+      errors = convertAjvErrors(validate.errors, DiagnosticSeverity.Error).map(error => {
         const path = prefix ? [prefix, ...error.path] : [...error.path];
         return Object.assign({}, error, { path });
       });
