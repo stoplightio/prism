@@ -3,11 +3,10 @@
 exports[`JSONSchemaValidator validate() validates negatively 1`] = `
 Array [
   Object {
+    "code": "type",
     "message": "should be string",
-    "name": "type",
     "path": Array [],
-    "severity": "error",
-    "summary": "should be string",
+    "severity": 0,
   },
 ]
 `;
