@@ -1,6 +1,6 @@
 import { HttpParamStyles, IHttpHeaderParam } from '@stoplight/types';
 
-import { IValidation } from '@stoplight/prism-core';
+import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { IHttpNameValue } from '../../types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { HttpParamsValidator } from './params';
@@ -18,7 +18,7 @@ export class HttpHeadersValidator extends HttpParamsValidator<IHttpNameValue, IH
     target: IHttpNameValue,
     specs: IHttpHeaderParam[],
     mediaType?: string
-  ): IValidation[] {
+  ): IPrismDiagnostic[] {
     return super.validate(target, specs, mediaType);
   }
 }

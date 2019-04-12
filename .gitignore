@@ -17,6 +17,10 @@ node_modules/
 # Distribution directory
 dist
 
+*.tsbuildinfo
+
 # IDE
 .idea
 lib
+
+oclif.manifest.json

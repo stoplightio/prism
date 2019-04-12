@@ -26,7 +26,25 @@ function createResource(method: string, path: string, servers: IServer[]): IHttp
 
 describe('http router', () => {
   describe('route()', () => {
-    test('should return null if no resources given', () => {
+    test('should not match if no server defined', () => {
+      const method = pickOneHttpMethod();
+      const path = randomPath();
+
+      return expect(() =>
+        router.route({
+          resources: [createResource(method, path, [])],
+          input: {
+            method,
+            url: {
+              baseUrl: 'http://some.url/',
+              path,
+            },
+          },
+        })
+      ).toThrow(NO_SERVER_CONFIGURATION_PROVIDED_ERROR);
+    });
+
+    test('should not match if no resources given', () => {
       expect(() =>
         router.route({
           resources: [],
@@ -42,7 +60,7 @@ describe('http router', () => {
     });
 
     describe('given a resource', () => {
-      test('should not match if no server defined', () => {
+      test('should match even if no server defined', () => {
         const method = pickOneHttpMethod();
         const path = randomPath();
 
@@ -57,25 +75,7 @@ describe('http router', () => {
               },
             },
           })
-        ).toThrow(NO_SERVER_CONFIGURATION_PROVIDED_ERROR);
-      });
-
-      test('should not match if no servers arrays provided', () => {
-        const method = pickOneHttpMethod();
-        const path = randomPath();
-
-        return expect(() =>
-          router.route({
-            resources: [createResource(method, path, [])],
-            input: {
-              method,
-              url: {
-                baseUrl: '',
-                path,
-              },
-            },
-          })
-        ).toThrow(NO_SERVER_CONFIGURATION_PROVIDED_ERROR);
+        ).not.toThrowError();
       });
 
       test('given a concrete matching server and unmatched methods should not match', () => {
@@ -323,7 +323,7 @@ describe('http router', () => {
           expect(resource).toBe(resourceWithConcreteMatch);
         });
 
-        test('given concret servers should match by path', async () => {
+        test('given concrete servers should match by path', async () => {
           const matchingPath = '/a/b/c';
           const nonMatchingPath = '/a/b/c/d';
           const url = 'concrete.com';
@@ -344,7 +344,26 @@ describe('http router', () => {
           expect(resource).toBe(resourceWithMatchingPath);
         });
 
-        test('given empty baseUrl and concrete server it should not match', () => {
+        test('given empty baseUrl and concrete server it should match', () => {
+          const path = randomPath({ includeTemplates: false });
+          const url = 'concrete.com';
+          const expectedResource = createResource(method, path, [{ url }]);
+
+          return expect(
+            router.route({
+              resources: [expectedResource],
+              input: {
+                method,
+                url: {
+                  baseUrl: '',
+                  path,
+                },
+              },
+            })
+          ).toEqual(expectedResource);
+        });
+
+        test('given baseUrl and concrete server and non-existing request baseUrl it should not match', () => {
           const path = randomPath({ includeTemplates: false });
           const url = 'concrete.com';
 
@@ -354,12 +373,12 @@ describe('http router', () => {
               input: {
                 method,
                 url: {
-                  baseUrl: '',
+                  baseUrl: 'solid.com',
                   path,
                 },
               },
             })
-          ).toThrow(NONE_SERVER_MATCHED_ERROR);
+          ).toThrowError(NONE_SERVER_MATCHED_ERROR);
         });
 
         test('given empty baseUrl and empty server url it should match', async () => {

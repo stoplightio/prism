@@ -3,13 +3,12 @@
 exports[`convertAjvErrors() all fields defined converts properly 1`] = `
 Array [
   Object {
+    "code": "required",
     "message": "c is required",
-    "name": "required",
     "path": Array [
       "b",
     ],
-    "severity": "error",
-    "summary": "c is required",
+    "severity": 0,
   },
 ]
 `;
@@ -19,13 +18,12 @@ exports[`convertAjvErrors() errors are not set converts properly 1`] = `Array []
 exports[`convertAjvErrors() keyword field is missing converts properly 1`] = `
 Array [
   Object {
+    "code": "",
     "message": "c is required",
-    "name": "",
     "path": Array [
       "b",
     ],
-    "severity": "error",
-    "summary": "c is required",
+    "severity": 0,
   },
 ]
 `;
@@ -33,13 +31,12 @@ Array [
 exports[`convertAjvErrors() message field is missing converts properly 1`] = `
 Array [
   Object {
+    "code": "required",
     "message": "",
-    "name": "required",
     "path": Array [
       "b",
     ],
-    "severity": "error",
-    "summary": "",
+    "severity": 0,
   },
 ]
 `;
@@ -52,7 +49,7 @@ Array [
     "path": Array [
       "pfx",
     ],
-    "severity": "error",
+    "severity": 0,
     "summary": "should be number",
   },
 ]

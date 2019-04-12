@@ -17,32 +17,36 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
   route: ({ resources, input }) => {
     const matches = [];
     const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
-    const ignoreServers: boolean = requestBaseUrl === undefined;
+    const serverValidationEnabled = !!requestBaseUrl;
 
     if (!resources.length) {
       throw NO_RESOURCE_PROVIDED_ERROR;
     }
 
-    let noServerProvided: boolean = true;
-    let noneMethodMatched: boolean = true;
-    let nonePathMatched: boolean = true;
-    let noneServerMatched: boolean = !ignoreServers;
+    let anyMethodMatched = false;
+    let anyPathMatched = false;
+    let anyServerMatched = false;
+    let anyServerProvided = false;
 
     for (const resource of resources) {
       if (!matchByMethod(input, resource)) continue;
-      noneMethodMatched = false;
+      anyMethodMatched = true;
 
       const pathMatch = matchPath(requestPath, resource.path);
+      if (pathMatch !== MatchType.NOMATCH) anyPathMatched = true;
+
       const { servers = [] } = resource;
-
-      if (servers.length) noServerProvided = false;
-      if (pathMatch !== MatchType.NOMATCH) nonePathMatched = false;
-
       let serverMatch: MatchType | null = null;
 
-      if (!ignoreServers) {
+      if (serverValidationEnabled) {
+        if (servers.length === 0) continue;
+
+        anyServerProvided = true;
         serverMatch = matchServer(servers, requestBaseUrl as string);
-        if (serverMatch) noneServerMatched = false;
+        if (serverMatch) anyServerMatched = true;
+      } else {
+        anyServerMatched = true;
+        anyServerProvided = true;
       }
 
       if (pathMatch !== MatchType.NOMATCH) {
@@ -54,19 +58,19 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
       }
     }
 
-    if (noneMethodMatched) {
+    if (!anyMethodMatched) {
       throw NONE_METHOD_MATCHED_ERROR;
     }
 
-    if (noServerProvided) {
-      throw NO_SERVER_CONFIGURATION_PROVIDED_ERROR;
-    }
-
-    if (nonePathMatched) {
+    if (!anyPathMatched) {
       throw NONE_PATH_MATCHED_ERROR;
     }
 
-    if (noneServerMatched) {
+    if (!anyServerProvided) {
+      throw NO_SERVER_CONFIGURATION_PROVIDED_ERROR;
+    }
+
+    if (!anyServerMatched) {
       throw NONE_SERVER_MATCHED_ERROR;
     }
 

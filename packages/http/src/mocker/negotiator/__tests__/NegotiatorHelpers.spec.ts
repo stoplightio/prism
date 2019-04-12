@@ -527,7 +527,7 @@ describe('NegotiatorHelpers', () => {
       expect(actualOperationConfig).toBe(fakeOperationConfig);
     });
 
-    it('given no default contents should throw', () => {
+    it('when no default response return text/plain with empty body', () => {
       const code = chance.string();
       const partialOptions = { code: '200' };
       const response: IHttpOperationResponse = {
@@ -536,11 +536,14 @@ describe('NegotiatorHelpers', () => {
         headers: [],
       };
 
-      expect(() => {
-        helpers.negotiateDefaultMediaType(partialOptions, response);
-      }).toThrow(
-        'Could not generate response for provided content type or no content type provided. Tried to fallback to application/json, but no definition found.'
-      );
+      expect(helpers.negotiateDefaultMediaType(partialOptions, response)).toEqual({
+        code: '200',
+        mediaType: 'text/plain',
+        example: {
+          value: undefined,
+          key: 'default',
+        },
+      });
     });
   });
 

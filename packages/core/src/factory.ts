@@ -1,5 +1,5 @@
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
-import { IPrism, IPrismComponents, IPrismConfig, IValidation } from './types';
+import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from './types';
 
 export function factory<Resource, Input, Output, Config, LoadOpts>(
   defaultConfig: PrismConfig<Config, Input>,
@@ -46,7 +46,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         }
 
         // validate input
-        let inputValidations: IValidation[] = [];
+        let inputValidations: IPrismDiagnostic[] = [];
         if (resource && components.validator && components.validator.validateInput) {
           inputValidations = await components.validator.validateInput(
             {
@@ -83,7 +83,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         }
 
         // validate output
-        let outputValidations: IValidation[] = [];
+        let outputValidations: IPrismDiagnostic[] = [];
         if (resource && components.validator && components.validator.validateOutput) {
           outputValidations = await components.validator.validateOutput(
             {

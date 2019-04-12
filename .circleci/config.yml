@@ -36,9 +36,31 @@ jobs:
       - run:
           name: Run build
           command: yarn build
+  publish:
+    docker:
+      - image: circleci/node:11
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: yarn
+      - run:
+          name: Build all code to JavaScript
+          command: yarn build
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          name: Publish
+          command: yarn lerna publish from-package --yes --dist-tag alpha
+
 
 workflows:
   version: 2
-  build_and_publish:
+  build:
     jobs:
       - build
+      - publish:
+          filters:
+            branches:
+              only: develop
+          requires:
+            - build

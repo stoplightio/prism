@@ -1,10 +1,10 @@
 {
   "name": "@stoplight/prism-core",
-  "version": "0.0.0",
+  "version": "3.0.0-pre.1",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/stoplightio/prism.git"
@@ -24,5 +24,8 @@
   },
   "devDependencies": {
     "@types/lodash": "4.14.123"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

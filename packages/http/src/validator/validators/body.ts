@@ -1,12 +1,12 @@
-import { IValidation } from '@stoplight/prism-core';
 import { IHttpContent } from '@stoplight/types';
 
+import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { IHttpValidator, IValidatorRegistry } from './types';
 
 export class HttpBodyValidator implements IHttpValidator<any, IHttpContent> {
   constructor(private _registry: IValidatorRegistry, private _prefix: string) {}
 
-  public validate(target: any, specs: IHttpContent[], mediaType?: string): IValidation[] {
+  public validate(target: any, specs: IHttpContent[], mediaType?: string): IPrismDiagnostic[] {
     const { _registry: registry, _prefix: prefix } = this;
     const content = this.getContent(specs, mediaType);
 
@@ -25,7 +25,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IHttpContent> {
     }
 
     return validate(target, content.schema).map(error =>
-      Object.assign({}, error, { path: [prefix, ...error.path] })
+      Object.assign({}, error, { path: [prefix, ...(error.path || [])] })
     );
   }
 

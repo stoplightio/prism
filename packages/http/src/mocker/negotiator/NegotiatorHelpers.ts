@@ -125,11 +125,17 @@ const helpers = {
         },
         httpContent
       );
+    } else {
+      // no httpContent found, returning empty body
+      return {
+        code,
+        mediaType: 'text/plain',
+        example: {
+          value: undefined,
+          key: 'default',
+        },
+      };
     }
-    // a httpContent for default mediaType does not exist
-    throw new Error(
-      'Could not generate response for provided content type or no content type provided. Tried to fallback to application/json, but no definition found.'
-    );
   },
 
   negotiateOptionsBySpecificResponse(

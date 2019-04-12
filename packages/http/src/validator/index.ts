@@ -1,4 +1,4 @@
-import { IValidation, IValidator } from '@stoplight/prism-core';
+import { IPrismDiagnostic, IValidator } from '@stoplight/prism-core';
 import { IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
 import * as caseless from 'caseless';
 
@@ -39,9 +39,9 @@ export class HttpValidator
     resource: IHttpOperation;
     input: IHttpRequest;
     config?: IHttpConfig;
-  }): Promise<IValidation[]> {
+  }): Promise<IPrismDiagnostic[]> {
     const config = resolveRequestValidationConfig(originalConfig);
-    const results: IValidation[] = [];
+    const results: IPrismDiagnostic[] = [];
     const mediaType = caseless(input.headers || {}).get('content-type');
 
     // Replace resource.request in this function with request
@@ -78,13 +78,13 @@ export class HttpValidator
     resource: IHttpOperation;
     output?: IHttpResponse;
     config?: IHttpConfig;
-  }): Promise<IValidation[]> {
+  }): Promise<IPrismDiagnostic[]> {
     if (!output) {
       return [];
     }
 
     const config = resolveResponseValidationConfig(originalConfig);
-    const results: IValidation[] = [];
+    const results: IPrismDiagnostic[] = [];
     const mediaType = caseless(output.headers || {}).get('content-type');
     const responseSpec = findOperationResponse(resource.responses, output.statusCode);
 

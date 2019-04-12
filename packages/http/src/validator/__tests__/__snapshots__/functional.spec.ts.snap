@@ -5,32 +5,29 @@ exports[`HttpValidator validateInput() all validations are turned off returns no
 exports[`HttpValidator validateInput() all validations are turned on returns validation errors for whole request structure 1`] = `
 Array [
   Object {
+    "code": "type",
     "message": "should be boolean",
-    "name": "type",
     "path": Array [
       "body",
       "completed",
     ],
-    "severity": "error",
-    "summary": "should be boolean",
+    "severity": 0,
   },
   Object {
+    "code": "format",
     "message": "should match format \\"date-time\\"",
-    "name": "format",
     "path": Array [
       "header",
     ],
-    "severity": "error",
-    "summary": "should match format \\"date-time\\"",
+    "severity": 0,
   },
   Object {
+    "code": "pattern",
     "message": "should match pattern \\"^(yes|no)$\\"",
-    "name": "pattern",
     "path": Array [
       "query",
     ],
-    "severity": "error",
-    "summary": "should match pattern \\"^(yes|no)$\\"",
+    "severity": 0,
   },
 ]
 `;
@@ -38,14 +35,13 @@ Array [
 exports[`HttpValidator validateInput() only body validation is turned on returns only body validation errors 1`] = `
 Array [
   Object {
+    "code": "type",
     "message": "should be boolean",
-    "name": "type",
     "path": Array [
       "body",
       "completed",
     ],
-    "severity": "error",
-    "summary": "should be boolean",
+    "severity": 0,
   },
 ]
 `;
@@ -53,13 +49,12 @@ Array [
 exports[`HttpValidator validateInput() only headers validation is turned on returns only headers validation errors 1`] = `
 Array [
   Object {
+    "code": "format",
     "message": "should match format \\"date-time\\"",
-    "name": "format",
     "path": Array [
       "header",
     ],
-    "severity": "error",
-    "summary": "should match format \\"date-time\\"",
+    "severity": 0,
   },
 ]
 `;
@@ -67,13 +62,12 @@ Array [
 exports[`HttpValidator validateInput() only query validation is turned on returns only query validation errors 1`] = `
 Array [
   Object {
+    "code": "pattern",
     "message": "should match pattern \\"^(yes|no)$\\"",
-    "name": "pattern",
     "path": Array [
       "query",
     ],
-    "severity": "error",
-    "summary": "should match pattern \\"^(yes|no)$\\"",
+    "severity": 0,
   },
 ]
 `;
@@ -83,23 +77,21 @@ exports[`HttpValidator validateOutput() all validations are turned off returns n
 exports[`HttpValidator validateOutput() all validations are turned on returns validation errors for whole request structure 1`] = `
 Array [
   Object {
+    "code": "type",
     "message": "should be boolean",
-    "name": "type",
     "path": Array [
       "body",
       "completed",
     ],
-    "severity": "error",
-    "summary": "should be boolean",
+    "severity": 0,
   },
   Object {
+    "code": "format",
     "message": "should match format \\"date-time\\"",
-    "name": "format",
     "path": Array [
       "header",
     ],
-    "severity": "error",
-    "summary": "should match format \\"date-time\\"",
+    "severity": 0,
   },
 ]
 `;
@@ -107,14 +99,13 @@ Array [
 exports[`HttpValidator validateOutput() only body validation is turned on returns only body validation errors 1`] = `
 Array [
   Object {
+    "code": "type",
     "message": "should be boolean",
-    "name": "type",
     "path": Array [
       "body",
       "completed",
     ],
-    "severity": "error",
-    "summary": "should be boolean",
+    "severity": 0,
   },
 ]
 `;
@@ -122,13 +113,12 @@ Array [
 exports[`HttpValidator validateOutput() only headers validation is turned on returns only headers validation errors 1`] = `
 Array [
   Object {
+    "code": "format",
     "message": "should match format \\"date-time\\"",
-    "name": "format",
     "path": Array [
       "header",
     ],
-    "severity": "error",
-    "summary": "should match format \\"date-time\\"",
+    "severity": 0,
   },
 ]
 `;

@@ -3,14 +3,13 @@
 exports[`HttpBodyValidator validate() body schema is provided validator for given media type exists return validation errors 1`] = `
 Array [
   Object {
+    "code": "testName",
     "message": "testMessage",
-    "name": "testName",
     "path": Array [
       "body",
       "a",
     ],
-    "severity": "error",
-    "summary": "testSummary",
+    "severity": 0,
   },
 ]
 `;

@@ -1,5 +1,5 @@
-import { IPrismInput, ValidationSeverity } from '@stoplight/prism-core';
-import { HttpParamStyles, IHttpOperation } from '@stoplight/types';
+import { IPrismInput } from '@stoplight/prism-core';
+import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
 
 import { IHttpMethod, IHttpRequest, IHttpResponse } from '../../types';
 
@@ -330,9 +330,8 @@ export const httpRequests: Array<IPrismInput<IHttpRequest>> = [
       input: [
         {
           path: ['/'],
-          name: 'x',
-          summary: 'x',
-          severity: ValidationSeverity.ERROR,
+          code: 'x',
+          severity: DiagnosticSeverity.Error,
           message: 'message',
         },
       ],

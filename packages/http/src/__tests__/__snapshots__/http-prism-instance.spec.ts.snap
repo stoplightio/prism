@@ -39,7 +39,7 @@ Object {
     "body": "ERROR: Your request is not valid.
 We cannot generate a sensible response because your '400'
 response has neither example nor schema or is not defined.
-Here is the original validation result instead: [{\\"path\\":[\\"query\\",\\"status\\"],\\"name\\":\\"required\\",\\"summary\\":\\"\\",\\"message\\":\\"Missing status query param\\",\\"severity\\":\\"error\\"}]",
+Here is the original validation result instead: [{\\"path\\":[\\"query\\",\\"status\\"],\\"code\\":\\"required\\",\\"message\\":\\"Missing status query param\\",\\"severity\\":0}]",
     "headers": Object {
       "Content-type": "text/plain",
     },
@@ -48,14 +48,13 @@ Here is the original validation result instead: [{\\"path\\":[\\"query\\",\\"sta
   "validations": Object {
     "input": Array [
       Object {
+        "code": "required",
         "message": "Missing status query param",
-        "name": "required",
         "path": Array [
           "query",
           "status",
         ],
-        "severity": "error",
-        "summary": "",
+        "severity": 0,
       },
     ],
     "output": Array [],

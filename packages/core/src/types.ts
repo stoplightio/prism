@@ -1,25 +1,5 @@
-/**
- * The below few interfaces (until end comment) should be defined in the @stoplight/types repo
- */
-
-export interface IDisposable {
-  dispose: () => void;
-}
-
-export type Path = Array<string | number>;
-
-export enum ValidationSeverity {
-  ERROR = 'error',
-  WARN = 'warn',
-  INFO = 'info',
-}
-export interface IValidation {
-  path: Path;
-  name: string;
-  summary: string;
-  severity: ValidationSeverity;
-  message: string;
-}
+import { IDiagnostic, Omit } from '@stoplight/types';
+export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 // END
 
@@ -90,11 +70,11 @@ export interface IValidator<Resource, Input, Config, Output> {
   validateInput?: (
     opts: { resource: Resource; input: Input; config?: Config },
     defaultValidator?: IValidator<Resource, Input, Config, Output>
-  ) => Promise<IValidation[]>;
+  ) => Promise<IPrismDiagnostic[]>;
   validateOutput?: (
     opts: { resource: Resource; output?: Output; config?: Config },
     defaultValidator?: IValidator<Resource, Input, Config, Output>
-  ) => Promise<IValidation[]>;
+  ) => Promise<IPrismDiagnostic[]>;
 }
 
 export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
@@ -108,7 +88,7 @@ export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
 export interface IPrismInput<I> {
   data: I;
   validations: {
-    input: IValidation[];
+    input: IPrismDiagnostic[];
   };
 }
 
@@ -116,7 +96,7 @@ export interface IPrismOutput<I, O> {
   input?: I;
   output?: O;
   validations: {
-    input: IValidation[];
-    output: IValidation[];
+    input: IPrismDiagnostic[];
+    output: IPrismDiagnostic[];
   };
 }

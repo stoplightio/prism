@@ -1,7 +1,7 @@
-import { IValidation, ValidationSeverity } from '@stoplight/prism-core';
-import { HttpParamStyles, IHttpContent, IHttpParam } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles, IHttpContent, IHttpParam } from '@stoplight/types';
 import { upperFirst } from 'lodash';
 
+import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { resolveContent } from '../utils/http';
 import { IHttpValidator } from './types';
@@ -15,16 +15,15 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam>
     private _style: HttpParamStyles
   ) {}
 
-  public validate(target: Target, specs: Spec[], mediaType?: string): IValidation[] {
+  public validate(target: Target, specs: Spec[], mediaType?: string): IPrismDiagnostic[] {
     const { _registry: registry, _prefix: prefix, _style: style } = this;
-    return specs.reduce<IValidation[]>((results, spec) => {
+    return specs.reduce<IPrismDiagnostic[]>((results, spec) => {
       if (!(spec.name in target) && spec.required === true) {
         results.push({
           path: [prefix, spec.name],
-          name: 'required',
-          summary: '',
+          code: 'required',
           message: `Missing ${spec.name} ${prefix} param`,
-          severity: ValidationSeverity.ERROR,
+          severity: DiagnosticSeverity.Error,
         });
 
         // stop further checks
@@ -55,10 +54,9 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam>
       if (spec.deprecated === true) {
         results.push({
           path: [prefix, spec.name],
-          name: 'deprecated',
-          summary: '',
+          code: 'deprecated',
           message: `${upperFirst(prefix)} param ${spec.name} is deprecated`,
-          severity: ValidationSeverity.WARN,
+          severity: DiagnosticSeverity.Warning,
         });
       }
 

@@ -1,5 +1,4 @@
-import { ValidationSeverity } from '@stoplight/prism-core';
-
+import { DiagnosticSeverity } from '@stoplight/types';
 import * as convertAjvErrorsModule from '../utils';
 import { convertAjvErrors, validateAgainstSchema } from '../utils';
 
@@ -14,7 +13,7 @@ describe('convertAjvErrors()', () => {
 
   describe('all fields defined', () => {
     it('converts properly', () => {
-      expect(convertAjvErrors([errorObjectFixture], ValidationSeverity.ERROR)).toMatchSnapshot();
+      expect(convertAjvErrors([errorObjectFixture], DiagnosticSeverity.Error)).toMatchSnapshot();
     });
   });
 
@@ -23,7 +22,7 @@ describe('convertAjvErrors()', () => {
       expect(
         convertAjvErrors(
           [Object.assign({}, errorObjectFixture, { keyword: undefined })],
-          ValidationSeverity.ERROR
+          DiagnosticSeverity.Error
         )
       ).toMatchSnapshot();
     });
@@ -34,7 +33,7 @@ describe('convertAjvErrors()', () => {
       expect(
         convertAjvErrors(
           [Object.assign({}, errorObjectFixture, { message: undefined })],
-          ValidationSeverity.ERROR
+          DiagnosticSeverity.Error
         )
       ).toMatchSnapshot();
     });
@@ -42,7 +41,7 @@ describe('convertAjvErrors()', () => {
 
   describe('errors are not set', () => {
     it('converts properly', () => {
-      expect(convertAjvErrors(null, ValidationSeverity.ERROR)).toMatchSnapshot();
+      expect(convertAjvErrors(null, DiagnosticSeverity.Error)).toMatchSnapshot();
     });
   });
 });
@@ -67,7 +66,7 @@ describe('validateAgainstSchema()', () => {
           message: 'should be number',
           name: 'type',
           path: [],
-          severity: ValidationSeverity.ERROR,
+          severity: DiagnosticSeverity.Error,
           summary: 'should be number',
         },
       ]);
@@ -82,7 +81,7 @@ describe('validateAgainstSchema()', () => {
             schemaPath: '#/type',
           },
         ],
-        'error'
+        DiagnosticSeverity.Error
       );
     });
   });

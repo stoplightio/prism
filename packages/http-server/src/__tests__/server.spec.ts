@@ -98,4 +98,17 @@ describe('server', () => {
 
     expect(response.statusCode).toBe(200);
   });
+
+  test('should return response even if there is no content defined in spec', async () => {
+    server = createServer({}, { components: {}, config: { mock: true } });
+    await server.prism.load({
+      path: resolve(__dirname, 'fixtures', 'no-responses.oas2.yaml'),
+    });
+
+    const response = await server.fastify.inject({ method: 'GET', url: '/' });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toEqual('text/plain');
+    expect(response.payload).toEqual('');
+  });
 });

@@ -1,24 +1,24 @@
 {
   "name": "@stoplight/prism-cli",
-  "version": "0.0.0",
+  "version": "3.0.0-pre.1",
   "author": "Stoplight <support@stoplight.io>",
   "bin": {
     "prism": "./bin/run"
   },
-  "bugs": "https://github.com/chris-miaskowski/prism-cli/issues",
+  "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
     "@oclif/command": "1.x.x",
     "@oclif/config": "1.12.12",
     "@oclif/plugin-help": "2.x.x",
-    "@stoplight/prism-core": "0.0.0",
-    "@stoplight/prism-http-server": "0.0.0",
+    "@stoplight/prism-core": "^3.0.0-pre.1",
+    "@stoplight/prism-http-server": "^3.0.0-pre.1",
     "tslib": "1.x.x"
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.22.0",
     "@oclif/tslint": "3.x.x",
     "@types/chai": "4.x.x",
-    "@types/node": "11.13.2",
+    "@types/node": "11.13.4",
     "globby": "9.2.0",
     "ts-node": "8.0.3",
     "tsconfig-paths": "^3.8.0",
@@ -32,7 +32,7 @@
     "/lib",
     "/oclif.manifest.json"
   ],
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
@@ -41,14 +41,15 @@
       "@oclif/plugin-help"
     ]
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/stoplightio/prism.git"
   },
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "tslint -p . -t stylish",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "oclif-dev manifest",
     "version": "oclif-dev readme && git add README.md",
     "cli": "node -r tsconfig-paths/register bin/run"
   },

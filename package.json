@@ -1,22 +1,22 @@
 {
   "private": true,
   "name": "prism",
-  "license": "UNLICENSED",
-  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "version": "3.0.0-pre",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "setup": "yarn",
-    "fmt": "prettier --write \"packages/*/src/**/*.{ts,js}\"",
     "lint": "tslint -p packages/tsconfig.json",
     "build": "tsc --build ./packages/tsconfig.build.json",
     "build.watch": "tsc --build --watch ./packages/tsconfig.build.json",
-    "test": "yarn lint && yarn test.fast",
-    "test.fast": "jest --env=node --maxWorkers=2",
+    "pretest": "yarn lint",
+    "test": "yarn test.ci",
+    "test.ci": "jest --env=node --maxWorkers=2",
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
-    "test.update": "yarn test.fast --updateSnapshot"
+    "test.update": "yarn test.fast --updateSnapshot",
+    "release": "lerna version prerelease --conventional-commit"
   },
   "devDependencies": {
     "@stoplight/types": "4.x.x",
@@ -25,6 +25,7 @@
     "@types/node": "11.x.x",
     "chance": "1.0.x",
     "jest": "24.x.x",
+    "lerna": "3.13.2",
     "ts-jest": "24.x.x",
     "tslint": "5.15.0",
     "tslint-config-stoplight": "1.2.x",
@@ -35,6 +36,9 @@
     "printWidth": 100,
     "singleQuote": true,
     "trailingComma": "es5"
+  },
+  "publishConfig": {
+    "tag": "beta"
   },
   "dependencies": {}
 }

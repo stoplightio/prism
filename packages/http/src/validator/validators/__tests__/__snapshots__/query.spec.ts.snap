@@ -3,14 +3,13 @@
 exports[`HttpQueryValidator validate() spec is present header is present deprecated flag is set returns deprecation warning 1`] = `
 Array [
   Object {
+    "code": "deprecated",
     "message": "Query param param is deprecated",
-    "name": "deprecated",
     "path": Array [
       "query",
       "param",
     ],
-    "severity": "warn",
-    "summary": "",
+    "severity": 1,
   },
 ]
 `;
@@ -18,14 +17,13 @@ Array [
 exports[`HttpQueryValidator validate() spec is present query param is not present spec defines it as required returns validation error 1`] = `
 Array [
   Object {
+    "code": "required",
     "message": "Missing aParam query param",
-    "name": "required",
     "path": Array [
       "query",
       "aParam",
     ],
-    "severity": "error",
-    "summary": "",
+    "severity": 0,
   },
 ]
 `;
