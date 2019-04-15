@@ -4,7 +4,7 @@ import { httpInputs, httpOperations, httpRequests } from '../../__tests__/fixtur
 import { HttpForwarder } from '../HttpForwarder';
 
 jest.mock('axios', () => ({
-  default: jest.fn(async () => ({ status: 200 })),
+  default: jest.fn().mockResolvedValue({ status: 200 }),
 }));
 
 describe('HttpForwarder', () => {

@@ -1,7 +1,7 @@
 import { IForwarder, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
 import axios from 'axios';
-import urijs = require('urijs');
+import { URL } from 'url';
 import { IHttpConfig, IHttpNameValue, IHttpRequest, IHttpResponse } from '../types';
 
 export class HttpForwarder
@@ -46,7 +46,7 @@ export class HttpForwarder
     if (headers.hasOwnProperty('host')) {
       return {
         ...headers,
-        host: urijs(baseUrl).host(),
+        host: new URL(baseUrl).host,
         forwarded: `host=${headers.host}`,
       };
     }
