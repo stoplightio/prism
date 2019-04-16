@@ -1,7 +1,8 @@
 import { IForwarder, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
 import axios from 'axios';
-import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
+import { URL } from 'url';
+import { IHttpConfig, IHttpNameValue, IHttpRequest, IHttpResponse } from '../types';
 
 export class HttpForwarder
   implements IForwarder<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
@@ -10,18 +11,23 @@ export class HttpForwarder
     input: IPrismInput<IHttpRequest>;
   }): Promise<IHttpResponse> {
     const inputData = opts.input.data;
+    const baseUrl =
+      opts.resource && opts.resource.servers && opts.resource.servers.length > 0
+        ? this.resolveServerUrl(opts.resource.servers[0])
+        : inputData.url.baseUrl;
+
+    if (!baseUrl) {
+      throw new Error('Either one server in spec or baseUrl in request must be defined');
+    }
 
     const response = await axios({
       method: inputData.method,
-      baseURL:
-        opts.resource && opts.resource.servers && opts.resource.servers.length > 0
-          ? this.resolveServerUrl(opts.resource.servers[0])
-          : inputData.url.baseUrl,
+      baseURL: baseUrl,
       url: inputData.url.path,
       params: inputData.url.query,
       responseType: 'text',
       data: inputData.body,
-      headers: inputData.headers,
+      headers: this.updateHostHeaders(baseUrl, inputData.headers),
       validateStatus: () => true,
     });
 
@@ -30,6 +36,22 @@ export class HttpForwarder
       headers: response.headers,
       body: response.data,
     };
+  }
+
+  private updateHostHeaders(baseUrl: string, headers?: IHttpNameValue) {
+    // no headers? do nothing
+    if (!headers) return headers;
+
+    // host header provided? override with actual hostname
+    if (headers.hasOwnProperty('host')) {
+      return {
+        ...headers,
+        host: new URL(baseUrl).host,
+        forwarded: `host=${headers.host}`,
+      };
+    }
+
+    return headers;
   }
 
   private resolveServerUrl(server: IServer) {

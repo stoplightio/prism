@@ -1,26 +1,25 @@
 import * as axios from 'axios';
 
-import { httpOperations, httpRequests } from '../../__tests__/fixtures';
+import { httpInputs, httpOperations, httpRequests } from '../../__tests__/fixtures';
 import { HttpForwarder } from '../HttpForwarder';
+
+jest.mock('axios', () => ({
+  default: jest.fn().mockResolvedValue({ status: 200 }),
+}));
 
 describe('HttpForwarder', () => {
   const forwarder = new HttpForwarder();
 
   describe('forward()', () => {
-    describe("parameters haven' been provided", () => {
+    describe("parameters haven't been provided", () => {
       it('proxies request correctly', async () => {
-        jest.spyOn(axios, 'default').mockResolvedValue({
-          status: 200,
-          headers: {
-            'Content-type': 'application/json',
+        const request = {
+          ...httpRequests[0],
+          data: {
+            ...httpInputs[0],
+            url: { ...httpInputs[0].url, baseUrl: 'http://api.example.com' },
           },
-          data: '[{},{}]',
-          statusText: 'ok',
-          config: {},
-        });
-
-        const request = Object.assign({}, httpRequests[0]);
-        request.data.url.baseUrl = 'http://api.example.com';
+        };
 
         await forwarder.forward({ input: request });
 
@@ -30,6 +29,70 @@ describe('HttpForwarder', () => {
           baseURL: 'http://api.example.com',
           responseType: 'text',
           validateStatus: expect.any(Function),
+        });
+      });
+    });
+
+    describe('no servers defined', () => {
+      describe('baseUrl is not set', () => {
+        it('throws error', async () => {
+          const request = Object.assign({}, httpRequests[0]);
+          await expect(forwarder.forward({ input: request })).rejects.toThrowError(
+            'Either one server in spec or baseUrl in request must be defined'
+          );
+        });
+      });
+    });
+
+    describe('headers are provided', () => {
+      describe('host header is not present', () => {
+        it('does not modifies headers', async () => {
+          const request = {
+            ...httpRequests[0],
+            data: {
+              ...httpInputs[0],
+              headers: { 'x-test': 'b' },
+              url: { ...httpInputs[0].url, baseUrl: 'http://api.example.com' },
+            },
+          };
+
+          await forwarder.forward({ input: request });
+
+          expect(axios.default).toHaveBeenCalledWith({
+            method: 'get',
+            url: '/todos',
+            baseURL: 'http://api.example.com',
+            responseType: 'text',
+            validateStatus: expect.any(Function),
+            headers: { 'x-test': 'b' },
+          });
+        });
+      });
+
+      describe('host header is present', () => {
+        it('modifies headers', async () => {
+          const request = {
+            ...httpRequests[0],
+            data: {
+              ...httpInputs[0],
+              headers: { host: 'localhost' },
+              url: { ...httpInputs[0].url, baseUrl: 'http://api.example.com' },
+            },
+          };
+
+          await forwarder.forward({ input: request });
+
+          expect(axios.default).toHaveBeenCalledWith({
+            method: 'get',
+            url: '/todos',
+            baseURL: 'http://api.example.com',
+            responseType: 'text',
+            validateStatus: expect.any(Function),
+            headers: {
+              host: 'api.example.com',
+              forwarded: 'host=localhost',
+            },
+          });
         });
       });
     });
