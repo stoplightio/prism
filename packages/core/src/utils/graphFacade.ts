@@ -20,19 +20,24 @@ import compact = require('lodash/compact');
 
 export class GraphFacade {
   private fsBackend: FileSystemBackend;
-  private graphite: IGraphite;
+  private graphite: IGraphite
+  constructor(graphite?: IGraphite) {
 
-  constructor() {
-    const graphite = (this.graphite = createGraphite());
-    graphite.registerPlugins(
-      createJsonPlugin(),
-      createYamlPlugin(),
-      createOas2Plugin(),
-      createOas3Plugin(),
-      createOas2HttpPlugin(),
-      createOas3HttpPlugin()
-    );
-    this.fsBackend = createFileSystemBackend(graphite, fs);
+    if (!graphite) {
+      this.graphite = createGraphite();
+      this.graphite.registerPlugins(
+        createJsonPlugin(),
+        createYamlPlugin(),
+        createOas2Plugin(),
+        createOas3Plugin(),
+        createOas2HttpPlugin(),
+        createOas3HttpPlugin()
+      );
+    } else {
+      this.graphite = graphite;
+    }
+
+    this.fsBackend = createFileSystemBackend(this.graphite, fs);
   }
 
   public async createFilesystemNode(fsPath: string) {
