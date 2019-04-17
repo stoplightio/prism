@@ -20,9 +20,8 @@ import compact = require('lodash/compact');
 
 export class GraphFacade {
   private fsBackend: FileSystemBackend;
-  private graphite: IGraphite
+  private graphite: IGraphite;
   constructor(graphite?: IGraphite) {
-
     if (!graphite) {
       this.graphite = createGraphite();
       this.graphite.registerPlugins(
