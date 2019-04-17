@@ -1074,10 +1074,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/fast-safe-stringify/-/fast-safe-stringify-2.1.2.tgz#2811eff4989c3d4c5c9a3789f057e25358db0899"
   integrity sha512-ayw3qQ9KNn2K5q6ggrLclh+rdZsSLwYIUz3uAer1NzaCpalJLR4g32G845ylgq7Xy2AunMHnNfD3FC3s0rUcsA==
 
-"@stoplight/graphite@5.1.3":
-  version "5.1.3"
-  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-5.1.3.tgz#a84bcb9f5dec18c9d96ec216b1a127b665639d3d"
-  integrity sha512-FrFwUPQEG2wJ39veJkdMlBqeCVPIhBGt0K2wno/CcH+ZqHOh6NDjRhtZ4u+sEAvcqoxJfXbrvNt0Pb3408Ijqw==
+"@stoplight/graphite@5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-5.2.0.tgz#67a1a72349a47b4c3f10ce7e6bd1d1a145414277"
+  integrity sha512-0u6mlIzsZuqidV17Go5Hmt7zdNn40x7DJB826E2TE9/uydj59F+qnpPEErWp8IfAmBzzWs0MiG/jJhOCJClthQ==
   dependencies:
     "@stoplight/json" "1.x.x"
     "@stoplight/json-ref-resolver" "1.x.x"
