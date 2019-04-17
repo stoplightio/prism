@@ -25,7 +25,7 @@
     "@types/node": "11.x.x",
     "chance": "1.0.x",
     "jest": "24.x.x",
-    "lerna": "3.13.2",
+    "lerna": "3.13.3",
     "ts-jest": "24.x.x",
     "tslint": "5.15.0",
     "tslint-config-stoplight": "1.2.x",
