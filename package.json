@@ -27,7 +27,7 @@
     "jest": "24.x.x",
     "lerna": "3.13.2",
     "ts-jest": "24.x.x",
-    "tslint": "5.15.0",
+    "tslint": "5.16.0",
     "tslint-config-stoplight": "1.2.x",
     "tslint-eslint-rules": "5.4.x",
     "typescript": "3.x.x"
