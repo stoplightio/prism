@@ -1,23 +1,74 @@
+import { IHttpOperation } from '@stoplight/types';
 import { MemoryLoader } from '../';
-jest.mock('../../../utils/graphFacade');
-jest.mock('axios');
 import { GraphFacade } from '../../../utils/graphFacade';
 
 describe('httpLoader', () => {
-  const fakeHttpOperations = ['a', 'b', 'c'];
-  let graphFacadeMock: any;
+  const fakeHttpOperations: IHttpOperation[] = [
+    {
+      id: '1',
+      method: 'get',
+      path: '/test',
+      servers: [],
+      security: [],
+      request: {
+        headers: [],
+        query: [],
+        cookie: [],
+        path: [],
+      },
+      responses: [
+        {
+          code: '200',
+          headers: [],
+          contents: [
+            {
+              mediaType: 'application/json',
+              examples: [],
+              encodings: [],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: '2',
+      method: 'get',
+      path: '/test',
+      servers: [],
+      security: [],
+      request: {
+        headers: [],
+        query: [],
+        cookie: [],
+        path: [],
+      },
+      responses: [
+        {
+          code: '200',
+          headers: [],
+          contents: [
+            {
+              mediaType: 'application/json',
+              examples: [],
+              encodings: [],
+            },
+          ],
+        },
+      ],
+    },
+  ];
 
-  beforeEach(() => {
-    graphFacadeMock = new GraphFacade();
-    Object.defineProperty(graphFacadeMock, 'httpOperations', {
-      get: jest.fn().mockReturnValue(fakeHttpOperations),
-    });
-  });
+  const graphFacade = new GraphFacade();
 
   test('should return nothing more what is in the facade', async () => {
-    const httpLoader = new MemoryLoader(graphFacadeMock);
+    const spy = jest
+      .spyOn(graphFacade, 'httpOperations', 'get')
+      .mockReturnValue(fakeHttpOperations);
+    const httpLoader = new MemoryLoader(graphFacade);
 
     const operations = await httpLoader.load();
-    expect(operations).toBe(fakeHttpOperations);
+    expect(operations).toStrictEqual(fakeHttpOperations);
+
+    spy.mockRestore();
   });
 });
