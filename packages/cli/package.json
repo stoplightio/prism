@@ -20,7 +20,7 @@
     "@types/chai": "4.x.x",
     "@types/node": "11.13.4",
     "globby": "9.2.0",
-    "ts-node": "8.0.3",
+    "ts-node": "8.1.0",
     "tsconfig-paths": "^3.8.0",
     "typescript": "^3.4.2"
   },
