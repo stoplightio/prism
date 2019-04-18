@@ -275,6 +275,24 @@
             "schema": {
               "$ref": "#/definitions/Pet"
             }
+          },
+          "default": {
+            "description": "default response",
+            "schema": {
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "security": [

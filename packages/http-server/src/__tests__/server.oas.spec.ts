@@ -3,7 +3,7 @@ import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
 
 describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', file => {
-  let server: IPrismHttpServer<any>;
+  let server: IPrismHttpServer<{}>;
 
   beforeAll(async () => {
     server = createServer({}, { components: {}, config: { mock: true } });
@@ -139,44 +139,41 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(response.statusCode).toBe(400);
   });
 
-  if (file === 'petstore.oas2.json') {
-    describe('oas2 specific tests', () => {
-      test('should return response even if there is no content defined in spec', async () => {
-        server = createServer({}, { components: {}, config: { mock: true } });
-        await server.prism.load({
-          path: resolve(__dirname, 'fixtures', 'no-responses.oas2.yaml'),
-        });
-
-        const response = await server.fastify.inject({ method: 'GET', url: '/' });
-
-        expect(response.statusCode).toBe(200);
-        expect(response.headers['content-type']).toEqual('text/plain');
-        expect(response.payload).toEqual('');
-      });
+  test('will return the default response when using the __code property with a non existing code', async () => {
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pets/123?__code=499',
     });
-  } else if (file === 'petstore.oas3.json') {
-    describe('oas3 specific', () => {
-      test('will return the default response when using the __code property with a non existing code', async () => {
-        const response = await server.fastify.inject({
-          method: 'GET',
-          url: '/pets/123?__code=499',
-        });
 
-        expect(response.statusCode).toBe(499);
+    expect(response.statusCode).toBe(499);
+    const payload = JSON.parse(response.payload);
+    expect(payload).toHaveProperty('code');
+    expect(payload).toHaveProperty('message');
+  });
 
-        const payload = JSON.parse(response.payload);
-        expect(payload).toHaveProperty('code');
-        expect(payload).toHaveProperty('message');
-      });
-
-      test('will return 500 with error when an undefined code is requested and there is no default response', async () => {
-        const response = await server.fastify.inject({
-          method: 'GET',
-          url: '/pets/findByStatus?status=available&__code=499',
-        });
-
-        expect(response.statusCode).toBe(500);
-      });
+  test('will return 500 with error when an undefined code is requested and there is no default response', async () => {
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pets/findByStatus?status=available&__code=499',
     });
-  }
+
+    expect(response.statusCode).toBe(500);
+  });
+});
+
+describe('oas2 specific tests', () => {
+  test('should return response even if there is no content defined in spec', async () => {
+    const server = createServer({}, { components: {}, config: { mock: true } });
+    await server.prism.load({
+      path: resolve(__dirname, 'fixtures', 'no-responses.oas2.yaml'),
+    });
+
+    const response = await server.fastify.inject({ method: 'GET', url: '/' });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toEqual('text/plain');
+    expect(response.payload).toEqual('');
+
+    await server.fastify.close();
+  });
 });

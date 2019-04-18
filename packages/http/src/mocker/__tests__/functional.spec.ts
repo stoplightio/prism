@@ -35,7 +35,7 @@ describe('http mocker', () => {
               },
             },
           })
-        ).resolves.toMatchObject({ headers: { 'Content-type': 'text/plain' } });
+        ).resolves.toMatchObject({ headers: { 'Content-type': 'text/plain' }, body: undefined });
       });
     });
 
@@ -188,6 +188,7 @@ describe('http mocker', () => {
             })
           ).resolves.toMatchObject({
             headers: { 'Content-type': 'text/plain' },
+            body: undefined,
           });
         });
       });
