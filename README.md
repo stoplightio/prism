@@ -7,12 +7,11 @@
 Prism is a set of packages that, given an API description, can:
 
 1. Spin up a mock HTTP server and respond realistically based on your requests
-1. Act as a proxy and forward your request to an upstream server
 1. Validate requests passing through against the provided API description
 
 Being based on [Graphite], Prism supports any description format that Graphite supports:
 
-- OpenAPI v3.0 (in testing phase)
+- OpenAPI v3.0
 - OpenAPI v2.0 (formerly Swagger)
 
 Prims is a multi-package repository:
@@ -29,17 +28,16 @@ Look at the relative repositories' README for the specific documentation.
 Prism is a Node module, and can be installed via NPM or Yarn:
 
 ```bash
-$ npm install -g prism
-$ yarn global add prism
+npm install -g prism
+# or
+yarn global add prism
 ```
 
 _*TODO:* Create an executable which will run without needing to install a node module._
 
 ## Usage
 
-### CLI
-
-#### Mock server mode
+### Mock server
 
 Running Prism on the CLI will create a HTTP mock server.
 
@@ -59,50 +57,32 @@ content-length: 98
 content-type: application/json
 
 {
-    "id": 13137069,
+    "category": {
+        "id": -70254706,
+        "name": "nostrud voluptate sit molli"
+    },
+    "id": 69856282,
     "name": "doggie",
-    "photoUrls": [ "ad fugiat sunt", "ea" ],
-    ...
+    "photoUrls": [
+        "esse aute elit",
+        "sint Duis amet dolore",
+        "eiusmod",
+        "ea ",
+        "anim sint"
+    ],
+    "status": "available"
 }
 ```
 
 Responses will be mocked using realistic data that conforms to the type in the description.
 
-#### Proxy server with validation mode
-
-This will run a proxy server with validation enabled according to given spec.
-
-```bash
-$ prism server examples/petstore.oas2.json
-> http://127.0.0.1:4010
-```
-
-Now let's call our server with a non-existing url to see validation in action:
-
-
-```bash
-$ http GET http://127.0.0.1:4010/petz
-
-HTTP/1.1 500 Internal Server Error
-Connection: keep-alive
-Date: Wed, 10 Apr 2019 10:18:53 GMT
-content-length: 101
-content-type: application/json; charset=utf-8
-
-{
-    "error": "Internal Server Error",
-    "message": "Route not resolved, none path matched.",
-    "statusCode": 500
-}
-```
-
-#### Determine Responses
+#### Determine Response Status
 
 Prism can be forced to return different HTTP responses by specifying the status code in the query
 string:
 
 ```bash
-$ http GET http://127.0.0.1:4010/pet/123?__code=404
+http GET http://127.0.0.1:4010/pets/123?__code=404
 ```
 
 The body, headers, etc. for this response will be taken from the API description document.
@@ -112,7 +92,7 @@ The body, headers, etc. for this response will be taken from the API description
 Requests to operations which expect a request body will be validated, for example: a POST with JSON.
 
 ```bash
-$ http --json POST http://127.0.0.1:4010/pet name=Stowford
+http --json POST http://127.0.0.1:4010/pets name=Stowford
 ```
 
 This will generate an error:
@@ -124,7 +104,7 @@ Here is the original validation result instead: [{"path":["body"],"name":"requir
 This error shows the request is missing the `photoUrls` property:
 
 ```bash
-$ http --json POST http://127.0.0.1:4010/pet name=bar photoUrls:='["http://fdsf"]'
+http --json POST http://127.0.0.1:4010/pets name=bar photoUrls:='["http://fdsf"]'
 ```
 
 ## FAQ
@@ -139,14 +119,18 @@ If you have a base path of `/api` and your path is defined as `hello`, then a re
 ## TODO
 
 - [ ] Server Validation
+- [ ] Accept header validation
+- [ ] Content header validation
 - [ ] Security Validation
 - [ ] Dynamic Mocking (use JS to script custom interactions)
+- [ ] Forwarding proxy with validation
+- [ ] Recording traffic to spec file
 - [ ] Data Persistence (turn Prism into a sandbox server)
 
 ## Testing
 
 ```bash
-$ yarn test
+yarn test
 ```
 
 ## Contributing
