@@ -3,14 +3,23 @@ import { Chance } from 'chance';
 import defaults = require('lodash/defaults');
 
 const chance = new Chance();
-const httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
+const httpMethods: IHttpMethod[] = [
+  'get',
+  'put',
+  'post',
+  'delete',
+  'options',
+  'head',
+  'patch',
+  'trace',
+];
 
 export function pickOneHttpMethod(): IHttpMethod {
-  return chance.pickone(httpMethods) as IHttpMethod;
+  return chance.pickone(httpMethods);
 }
 
 export function pickSetOfHttpMethods(count: number = 2): IHttpMethod[] {
-  return chance.unique(pickOneHttpMethod, count) as IHttpMethod[];
+  return chance.unique(pickOneHttpMethod, count);
 }
 
 export function randomArray<T>(itemGenerator: () => T, length: number = 1): T[] {
