@@ -1,5 +1,6 @@
 import { IHttpMethod } from '@stoplight/prism-http';
 import { Chance } from 'chance';
+import defaults = require('lodash/defaults');
 
 const chance = new Chance();
 const httpMethods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
@@ -30,19 +31,16 @@ interface IRandomPathOptions {
 }
 
 export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions): string {
-  opts = Object.assign({}, defaultRandomPathOptions, opts);
+  defaults(opts, defaultRandomPathOptions);
+
   const randomPathFragments = randomArray(
     () =>
-      opts.includeTemplates && chance.coin() === 'heads' ? `{${chance.word()}}` : chance.word(),
+      opts.includeTemplates && chance.bool() ? `{${chance.word()}}` : chance.word(),
     opts.pathFragments
   );
-  let leadingSlash = chance.pickone(['/', '']);
-  let trailingSlash = chance.pickone(['/', '']);
-  if (opts.leadingSlash !== undefined) {
-    leadingSlash = opts.leadingSlash ? '/' : '';
-  }
-  if (opts.trailingSlash !== undefined) {
-    trailingSlash = opts.trailingSlash ? '/' : '';
-  }
+
+  const leadingSlash = opts.leadingSlash ? '/' : '';
+  const trailingSlash = opts.trailingSlash ? '/' : '';
+
   return `${leadingSlash}${randomPathFragments.join('/')}${trailingSlash}`;
 }
