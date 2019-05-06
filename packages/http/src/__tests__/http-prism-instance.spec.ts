@@ -4,6 +4,7 @@ import { omit } from 'lodash';
 import { relative, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse } from '../';
 import { forwarder } from '../forwarder';
+import { NO_PATH_MATCHED_ERROR } from '../router/errors';
 
 describe('Http Prism Instance function tests', () => {
   let prism: IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;
@@ -38,7 +39,7 @@ describe('Http Prism Instance function tests', () => {
           path: '/invalid-route',
         },
       })
-    ).rejects.toThrowError('Route not resolved, none path matched');
+    ).rejects.toThrowError(NO_PATH_MATCHED_ERROR);
   });
 
   test('given correct route should return correct response', async () => {

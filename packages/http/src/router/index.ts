@@ -3,75 +3,84 @@ import { IHttpOperation, IServer } from '@stoplight/types';
 
 import { IHttpConfig, IHttpRequest } from '../types';
 import {
+  NO_PATH_MATCHED_ERROR,
   NO_RESOURCE_PROVIDED_ERROR,
   NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
-  NONE_METHOD_MATCHED_ERROR,
-  NONE_PATH_MATCHED_ERROR,
-  NONE_SERVER_MATCHED_ERROR,
+  NO_SERVER_MATCHED_ERROR,
+  NO_SUITABLE_METHOD_ERROR,
 } from './errors';
 import { matchBaseUrl } from './matchBaseUrl';
 import { matchPath } from './matchPath';
 import { IMatch, MatchType } from './types';
 
 export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
-  route: ({ resources, input }) => {
-    const matches = [];
+  route: ({ resources, input }): IHttpOperation => {
     const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
-    const serverValidationEnabled = !!requestBaseUrl;
 
     if (!resources.length) {
       throw new Error(NO_RESOURCE_PROVIDED_ERROR);
     }
 
-    let anyMethodMatched = false;
-    let anyPathMatched = false;
-    let anyServerMatched = false;
-    let anyServerProvided = false;
-
-    for (const resource of resources) {
-      if (!matchByMethod(input, resource)) continue;
-      anyMethodMatched = true;
-
+    const matches = resources.map<IMatch>(resource => {
       const pathMatch = matchPath(requestPath, resource.path);
-      if (pathMatch !== MatchType.NOMATCH) anyPathMatched = true;
+      if (pathMatch === MatchType.NOMATCH)
+        return {
+          pathMatch,
+          methodMatch: MatchType.NOMATCH,
+          resource,
+        };
+
+      const methodMatch = matchByMethod(input, resource) ? MatchType.CONCRETE : MatchType.NOMATCH;
+
+      if (methodMatch === MatchType.NOMATCH) {
+        return {
+          pathMatch,
+          methodMatch,
+          resource,
+        };
+      }
 
       const { servers = [] } = resource;
-      let serverMatch: MatchType | null = null;
 
-      if (serverValidationEnabled) {
-        if (servers.length === 0) continue;
+      if (requestBaseUrl && servers.length > 0) {
+        const serverMatch = matchServer(servers, requestBaseUrl);
 
-        anyServerProvided = true;
-        serverMatch = matchServer(servers, requestBaseUrl as string);
-        if (serverMatch) anyServerMatched = true;
-      } else {
-        anyServerMatched = true;
-        anyServerProvided = true;
-      }
-
-      if (pathMatch !== MatchType.NOMATCH) {
-        matches.push({
+        return {
           pathMatch,
+          methodMatch,
           serverMatch,
           resource,
-        });
+        };
+      }
+
+      return {
+        pathMatch,
+        methodMatch,
+        serverMatch: null,
+        resource,
+      };
+    });
+
+    if (requestBaseUrl) {
+      if (matches.every(match => match.serverMatch === null)) {
+        throw new Error(NO_SERVER_CONFIGURATION_PROVIDED_ERROR);
+      }
+
+      if (matches.every(match => !!match.serverMatch && match.serverMatch === MatchType.NOMATCH)) {
+        throw new Error(NO_SERVER_MATCHED_ERROR);
       }
     }
 
-    if (!anyMethodMatched) {
-      throw new Error(NONE_METHOD_MATCHED_ERROR);
+    if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH)) {
+      throw new Error(NO_PATH_MATCHED_ERROR);
     }
 
-    if (!anyPathMatched) {
-      throw new Error(NONE_PATH_MATCHED_ERROR);
-    }
-
-    if (!anyServerProvided) {
-      throw new Error(NO_SERVER_CONFIGURATION_PROVIDED_ERROR);
-    }
-
-    if (!anyServerMatched) {
-      throw new Error(NONE_SERVER_MATCHED_ERROR);
+    if (
+      !matches.some(
+        match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH
+      )
+    ) {
+      throw new Error(NO_SUITABLE_METHOD_ERROR);
     }
 
     return disambiguateMatches(matches);
@@ -120,5 +129,5 @@ function areServerAndPath(match: IMatch, serverType: MatchType, pathType: MatchT
  */
 function disambiguateServers(serverMatches: MatchType[]): MatchType {
   const concreteMatch = serverMatches.find(serverMatch => serverMatch === MatchType.CONCRETE);
-  return concreteMatch || serverMatches[0];
+  return concreteMatch || serverMatches[0] || MatchType.NOMATCH;
 }
