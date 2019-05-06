@@ -79,13 +79,9 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
 };
 
 function matchServer(servers: IServer[], requestBaseUrl: string) {
-  const serverMatches = [];
-  for (const server of servers) {
-    const tempServerMatch = matchBaseUrl(server, requestBaseUrl);
-    if (tempServerMatch !== MatchType.NOMATCH) {
-      serverMatches.push(tempServerMatch);
-    }
-  }
+  const serverMatches = servers
+    .map(server => matchBaseUrl(server, requestBaseUrl))
+    .filter(match => match !== MatchType.NOMATCH);
 
   return disambiguateServers(serverMatches);
 }
