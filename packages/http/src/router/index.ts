@@ -20,7 +20,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
     const serverValidationEnabled = !!requestBaseUrl;
 
     if (!resources.length) {
-      throw NO_RESOURCE_PROVIDED_ERROR;
+      throw new Error(NO_RESOURCE_PROVIDED_ERROR);
     }
 
     let anyMethodMatched = false;
@@ -59,19 +59,19 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
     }
 
     if (!anyMethodMatched) {
-      throw NONE_METHOD_MATCHED_ERROR;
+      throw new Error(NONE_METHOD_MATCHED_ERROR);
     }
 
     if (!anyPathMatched) {
-      throw NONE_PATH_MATCHED_ERROR;
+      throw new Error(NONE_PATH_MATCHED_ERROR);
     }
 
     if (!anyServerProvided) {
-      throw NO_SERVER_CONFIGURATION_PROVIDED_ERROR;
+      throw new Error(NO_SERVER_CONFIGURATION_PROVIDED_ERROR);
     }
 
     if (!anyServerMatched) {
-      throw NONE_SERVER_MATCHED_ERROR;
+      throw new Error(NONE_SERVER_MATCHED_ERROR);
     }
 
     return disambiguateMatches(matches);

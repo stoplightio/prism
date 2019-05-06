@@ -34,8 +34,7 @@ export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions):
   defaults(opts, defaultRandomPathOptions);
 
   const randomPathFragments = randomArray(
-    () =>
-      opts.includeTemplates && chance.bool() ? `{${chance.word()}}` : chance.word(),
+    () => (opts.includeTemplates && chance.bool() ? `{${chance.word()}}` : chance.word()),
     opts.pathFragments
   );
 
