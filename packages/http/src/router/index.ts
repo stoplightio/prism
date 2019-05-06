@@ -3,11 +3,11 @@ import { IHttpOperation, IServer } from '@stoplight/types';
 
 import { IHttpConfig, IHttpRequest } from '../types';
 import {
+  NO_METHOD_MATCHED_ERROR,
   NO_PATH_MATCHED_ERROR,
   NO_RESOURCE_PROVIDED_ERROR,
   NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
   NO_SERVER_MATCHED_ERROR,
-  NO_SUITABLE_METHOD_ERROR,
 } from './errors';
 import { matchBaseUrl } from './matchBaseUrl';
 import { matchPath } from './matchPath';
@@ -80,7 +80,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
         match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH
       )
     ) {
-      throw new Error(NO_SUITABLE_METHOD_ERROR);
+      throw new Error(NO_METHOD_MATCHED_ERROR);
     }
 
     return disambiguateMatches(matches);
