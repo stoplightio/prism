@@ -1,11 +1,10 @@
 import { IHttpOperation, IServer } from '@stoplight/types';
 import { Chance } from 'chance';
 import {
+  NO_PATH_MATCHED_ERROR,
   NO_RESOURCE_PROVIDED_ERROR,
   NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
-  NONE_METHOD_MATCHED_ERROR,
-  NONE_PATH_MATCHED_ERROR,
-  NONE_SERVER_MATCHED_ERROR,
+  NO_SERVER_MATCHED_ERROR,
 } from '../errors';
 import { router } from '../index';
 import { pickOneHttpMethod, pickSetOfHttpMethods, randomPath } from './utils';
@@ -99,7 +98,7 @@ describe('http router', () => {
               },
             },
           })
-        ).toThrow(NONE_METHOD_MATCHED_ERROR);
+        ).toThrow(NO_PATH_MATCHED_ERROR);
       });
 
       describe('given matched methods', () => {
@@ -126,7 +125,7 @@ describe('http router', () => {
                 },
               },
             })
-          ).toThrow(NONE_PATH_MATCHED_ERROR);
+          ).toThrow(NO_PATH_MATCHED_ERROR);
         });
 
         test('given a concrete matching server and matched concrete path should match', async () => {
@@ -252,7 +251,7 @@ describe('http router', () => {
                 },
               },
             })
-          ).toThrow(NONE_PATH_MATCHED_ERROR);
+          ).toThrow(NO_PATH_MATCHED_ERROR);
         });
 
         test('given a concrete servers and mixed paths should match concrete path', async () => {
@@ -378,7 +377,7 @@ describe('http router', () => {
                 },
               },
             })
-          ).toThrowError(NONE_SERVER_MATCHED_ERROR);
+          ).toThrowError(NO_SERVER_MATCHED_ERROR);
         });
 
         test('given empty baseUrl and empty server url it should match', async () => {
