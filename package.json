@@ -23,7 +23,7 @@
     "@stoplight/types": "4.x.x",
     "@types/chance": "1.0.x",
     "@types/jest": "24.0.12",
-    "@types/node": "11.x.x",
+    "@types/node": "12.0.0",
     "chance": "1.0.x",
     "jest": "24.8.0",
     "lerna": "3.13.4",

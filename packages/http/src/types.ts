@@ -76,12 +76,12 @@ export interface IHttpResponse {
   body?: any;
 }
 
-export interface ProblemJson {
+export type ProblemJson = {
   name: string;
   title: string;
   status: number;
   detail: string;
-}
+};
 
 export class ProblemJsonError extends Error {
   public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
