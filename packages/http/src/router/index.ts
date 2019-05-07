@@ -17,10 +17,8 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
     const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
 
     if (!resources.length) {
-      throw new ProblemJson(
-        NO_RESOURCE_PROVIDED_ERROR.name,
-        NO_RESOURCE_PROVIDED_ERROR.title,
-        NO_RESOURCE_PROVIDED_ERROR.status,
+      throw ProblemJson.fromTemplate(
+        NO_RESOURCE_PROVIDED_ERROR,
         `The current document does not have any resource to match with.`
       );
     }
@@ -67,29 +65,23 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
 
     if (requestBaseUrl) {
       if (matches.every(match => match.serverMatch === null)) {
-        throw new ProblemJson(
-          NO_SERVER_CONFIGURATION_PROVIDED_ERROR.name,
-          NO_SERVER_CONFIGURATION_PROVIDED_ERROR.title,
-          NO_SERVER_CONFIGURATION_PROVIDED_ERROR.status,
+        throw ProblemJson.fromTemplate(
+          NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
           `No server configuration has been provided, although ${requestBaseUrl} as base url`
         );
       }
 
       if (matches.every(match => !!match.serverMatch && match.serverMatch === MatchType.NOMATCH)) {
-        throw new ProblemJson(
-          NO_SERVER_MATCHED_ERROR.name,
-          NO_SERVER_MATCHED_ERROR.title,
-          NO_SERVER_MATCHED_ERROR.status,
+        throw ProblemJson.fromTemplate(
+          NO_SERVER_MATCHED_ERROR,
           `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`
         );
       }
     }
 
     if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH)) {
-      throw new ProblemJson(
-        NO_PATH_MATCHED_ERROR.name,
-        NO_PATH_MATCHED_ERROR.title,
-        NO_PATH_MATCHED_ERROR.status,
+      throw ProblemJson.fromTemplate(
+        NO_PATH_MATCHED_ERROR,
         `The route ${requestPath} hasn't been found in the specification file`
       );
     }
@@ -99,10 +91,8 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
         match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH
       )
     ) {
-      throw new ProblemJson(
-        NO_METHOD_MATCHED_ERROR.name,
-        NO_METHOD_MATCHED_ERROR.title,
-        NO_METHOD_MATCHED_ERROR.status,
+      throw ProblemJson.fromTemplate(
+        NO_METHOD_MATCHED_ERROR,
         `The route ${requestPath} has been matched, but there's no "${input.method}" method defined`
       );
     }

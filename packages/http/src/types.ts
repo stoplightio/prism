@@ -85,6 +85,13 @@ export interface IHttpResponse {
 }
 
 export class ProblemJson extends Error {
+  public static fromTemplate(
+    template: { name: string; title: string; status: number },
+    detail: string
+  ): ProblemJson {
+    return new ProblemJson(template.name, template.title, template.status, detail);
+  }
+
   constructor(
     readonly name: string,
     readonly message: string,
