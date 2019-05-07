@@ -1,10 +1,29 @@
 import { configMergerFactory } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, TPrismHttpInstance } from '@stoplight/prism-http';
+import * as buildSerializer from 'fast-json-stringify';
 import * as fastify from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
-
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
+
+const problemJsonSerializer = buildSerializer({
+  title: 'ProblemJson',
+  type: 'object',
+  properties: {
+    type: {
+      type: 'string',
+    },
+    title: {
+      type: 'string',
+    },
+    status: {
+      type: 'number',
+    },
+    detail: {
+      type: 'string',
+    },
+  },
+});
 
 export const createServer = <LoaderInput>(
   loaderInput: LoaderInput,
@@ -81,7 +100,15 @@ const replyHandler = <LoaderInput>(
         reply.code(500).send('Unable to find any decent response for the current request.');
       }
     } catch (e) {
-      reply.code(500).send(e);
+      const status = 'status' in e ? e.status : 500;
+      reply.type('application/problem+json');
+      reply.serializer(problemJsonSerializer);
+      reply.code(status).send({
+        type: e.name || 'https://stoplight.io/prism/errors#UNKNOWN',
+        title: e.message,
+        status,
+        detail: e.detail || '',
+      });
     }
   };
   return handler;
