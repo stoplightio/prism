@@ -64,10 +64,7 @@ export const createServer = <LoaderInput>(
 const replyHandler = <LoaderInput>(
   prism: TPrismHttpInstance<LoaderInput>
 ): fastify.RequestHandler<IncomingMessage, ServerResponse> => {
-  const handler = async (
-    request: fastify.FastifyRequest<IncomingMessage>,
-    reply: fastify.FastifyReply<ServerResponse>
-  ) => {
+  return async (request, reply) => {
     try {
       const {
         req: { method, url },
@@ -94,22 +91,22 @@ const replyHandler = <LoaderInput>(
           reply.headers(output.headers);
         }
 
-        reply.serializer((payload: unknown) => payload);
-        reply.send(output.body);
+        reply.serializer((payload: unknown) => payload).send(output.body);
       } else {
         reply.code(500).send('Unable to find any decent response for the current request.');
       }
     } catch (e) {
       const status = 'status' in e ? e.status : 500;
-      reply.type('application/problem+json');
-      reply.serializer(problemJsonSerializer);
-      reply.code(status).send({
-        type: e.name || 'https://stoplight.io/prism/errors#UNKNOWN',
-        title: e.message,
-        status,
-        detail: e.detail || '',
-      });
+      reply
+        .type('application/problem+json')
+        .serializer(problemJsonSerializer)
+        .code(status)
+        .send({
+          type: e.name || 'https://stoplight.io/prism/errors#UNKNOWN',
+          title: e.message,
+          status,
+          detail: e.detail || '',
+        });
     }
   };
-  return handler;
 };
