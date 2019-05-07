@@ -16,7 +16,7 @@ jsf.option({
   maxLength: 100,
 });
 
-export class JSONSchemaExampleGenerator implements IExampleGenerator<any> {
+export class JSONSchemaExampleGenerator implements IExampleGenerator {
   public async generate(schema: unknown, mediaType: string): Promise<string> {
     const example = await jsf.resolve(cloneDeep(schema));
     return this.transform(mediaType, example);
