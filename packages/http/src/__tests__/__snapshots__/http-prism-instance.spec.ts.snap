@@ -26,38 +26,3 @@ Object {
   },
 }
 `;
-
-exports[`Http Prism Instance function tests given route with invalid param should return a validation error 1`] = `
-Object {
-  "input": Object {
-    "method": "get",
-    "url": Object {
-      "path": "/pet/findByStatus",
-    },
-  },
-  "output": Object {
-    "body": "ERROR: Your request is not valid.
-We cannot generate a sensible response because your '400'
-response has neither example nor schema or is not defined.
-Here is the original validation result instead: [{\\"path\\":[\\"query\\",\\"status\\"],\\"code\\":\\"required\\",\\"message\\":\\"Missing status query param\\",\\"severity\\":0}]",
-    "headers": Object {
-      "Content-type": "text/plain",
-    },
-    "statusCode": 400,
-  },
-  "validations": Object {
-    "input": Array [
-      Object {
-        "code": "required",
-        "message": "Missing status query param",
-        "path": Array [
-          "query",
-          "status",
-        ],
-        "severity": 0,
-      },
-    ],
-    "output": Array [],
-  },
-}
-`;

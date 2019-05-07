@@ -5,6 +5,7 @@ import { relative, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse } from '../';
 import { forwarder } from '../forwarder';
 import { NO_PATH_MATCHED_ERROR } from '../router/errors';
+import { MISSING_INVALID_RESPONSE_TEMPLATE } from '../mocker/errors';
 
 describe('Http Prism Instance function tests', () => {
   let prism: IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;
@@ -64,13 +65,12 @@ describe('Http Prism Instance function tests', () => {
   });
 
   test('given route with invalid param should return a validation error', async () => {
-    const response = await prism.process({
+    expect(prism.process({
       method: 'get',
       url: {
         path: '/pet/findByStatus',
       },
-    });
-    expect(response).toMatchSnapshot();
+    })).rejects.toThrowError(MISSING_INVALID_RESPONSE_TEMPLATE.title);
   });
 
   test('should support collection format multi', async () => {
