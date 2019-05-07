@@ -40,20 +40,20 @@ export interface IHttpConfig extends IPrismConfig {
 
   validate?: {
     request?:
-      | boolean
-      | {
-          hijack?: boolean;
-          headers?: boolean;
-          query?: boolean;
-          body?: boolean;
-        };
+    | boolean
+    | {
+      hijack?: boolean;
+      headers?: boolean;
+      query?: boolean;
+      body?: boolean;
+    };
 
     response?:
-      | boolean
-      | {
-          headers?: boolean;
-          body?: boolean;
-        };
+    | boolean
+    | {
+      headers?: boolean;
+      body?: boolean;
+    };
   };
 }
 
@@ -82,4 +82,16 @@ export interface IHttpResponse {
   statusCode: number;
   headers?: IHttpNameValue;
   body?: any;
+}
+
+export class ProblemJson extends Error {
+  constructor(
+    readonly name: string,
+    readonly message: string,
+    readonly status: number,
+    readonly detail: string
+  ) {
+    super(message);
+    Error.captureStackTrace(this, ProblemJson);
+  }
 }
