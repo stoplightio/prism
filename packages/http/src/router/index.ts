@@ -1,10 +1,10 @@
 import { IRouter } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
-import { ProblemJson } from 'http-server/src/types';
-import { IHttpConfig, IHttpRequest } from '../types';
+import { IHttpConfig, IHttpRequest, ProblemJson } from '../types';
 import {
   NO_METHOD_MATCHED_ERROR,
   NO_PATH_MATCHED_ERROR,
+  NO_RESOURCE_PROVIDED_ERROR,
   NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
   NO_SERVER_MATCHED_ERROR,
 } from './errors';
@@ -15,6 +15,15 @@ import { IMatch, MatchType } from './types';
 export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
   route: ({ resources, input }): IHttpOperation => {
     const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
+
+    if (!resources.length) {
+      throw new ProblemJson(
+        NO_RESOURCE_PROVIDED_ERROR.name,
+        NO_RESOURCE_PROVIDED_ERROR.title,
+        NO_RESOURCE_PROVIDED_ERROR.status,
+        `The current document does not have any resource to match with.`
+      );
+    }
 
     const matches = resources.map<IMatch>(resource => {
       const pathMatch = matchPath(requestPath, resource.path);
@@ -62,7 +71,8 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
           NO_SERVER_CONFIGURATION_PROVIDED_ERROR.name,
           NO_SERVER_CONFIGURATION_PROVIDED_ERROR.title,
           NO_SERVER_CONFIGURATION_PROVIDED_ERROR.status,
-          `No server configuration has been provided, although ${requestBaseUrl} as base url`);
+          `No server configuration has been provided, although ${requestBaseUrl} as base url`
+        );
       }
 
       if (matches.every(match => !!match.serverMatch && match.serverMatch === MatchType.NOMATCH)) {
@@ -70,7 +80,8 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
           NO_SERVER_MATCHED_ERROR.name,
           NO_SERVER_MATCHED_ERROR.title,
           NO_SERVER_MATCHED_ERROR.status,
-          `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`);
+          `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`
+        );
       }
     }
 
@@ -79,7 +90,8 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
         NO_PATH_MATCHED_ERROR.name,
         NO_PATH_MATCHED_ERROR.title,
         NO_PATH_MATCHED_ERROR.status,
-        `The route ${requestPath} hasn't been found in the specification file`);
+        `The route ${requestPath} hasn't been found in the specification file`
+      );
     }
 
     if (

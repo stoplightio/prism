@@ -42,7 +42,7 @@ describe('http router', () => {
             },
           },
         })
-      ).toThrow(NO_SERVER_CONFIGURATION_PROVIDED_ERROR);
+      ).toThrow(NO_SERVER_CONFIGURATION_PROVIDED_ERROR.title);
     });
 
     test('should not match if no resources given', () => {
@@ -57,7 +57,7 @@ describe('http router', () => {
             },
           },
         })
-      ).toThrow(NO_RESOURCE_PROVIDED_ERROR);
+      ).toThrow(NO_RESOURCE_PROVIDED_ERROR.title);
     });
 
     describe('given a resource', () => {
@@ -100,7 +100,7 @@ describe('http router', () => {
               },
             },
           })
-        ).toThrow(NO_PATH_MATCHED_ERROR);
+        ).toThrow(NO_PATH_MATCHED_ERROR.title);
       });
 
       describe('given matched methods', () => {
@@ -127,7 +127,7 @@ describe('http router', () => {
                 },
               },
             })
-          ).toThrow(NO_PATH_MATCHED_ERROR);
+          ).toThrow(NO_PATH_MATCHED_ERROR.title);
         });
 
         test('given a concrete matching server and matched concrete path should match', async () => {
@@ -253,7 +253,7 @@ describe('http router', () => {
                 },
               },
             })
-          ).toThrow(NO_PATH_MATCHED_ERROR);
+          ).toThrow(NO_PATH_MATCHED_ERROR.title);
         });
 
         test('given a concrete servers and mixed paths should match concrete path', async () => {
@@ -379,7 +379,7 @@ describe('http router', () => {
                 },
               },
             })
-          ).toThrowError(NO_SERVER_MATCHED_ERROR);
+          ).toThrowError(NO_SERVER_MATCHED_ERROR.title);
         });
 
         test('given empty baseUrl and empty server url it should match', async () => {
@@ -435,7 +435,7 @@ describe('http router', () => {
               },
             },
           })
-        ).toThrowError(NO_METHOD_MATCHED_ERROR);
+        ).toThrowError(NO_METHOD_MATCHED_ERROR.title);
       });
     });
   });

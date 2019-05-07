@@ -39,7 +39,7 @@ describe('Http Prism Instance function tests', () => {
           path: '/invalid-route',
         },
       })
-    ).rejects.toThrowError(NO_PATH_MATCHED_ERROR);
+    ).rejects.toThrowError(NO_PATH_MATCHED_ERROR.title);
   });
 
   test('given correct route should return correct response', async () => {
