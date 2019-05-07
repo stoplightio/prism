@@ -1,8 +1,8 @@
 import { Omit } from '@stoplight/types';
 import { ProblemJson } from '../types';
 
-export const NO_INVALID_RESPONSE_TEMPLATE: Omit<ProblemJson, 'detail'> = {
-  name: 'NO_INVALID_RESPONSE_TEMPLATE',
-  title: 'Missing invalid response or response example for the current invalid request',
-  status: 400,
+export const INVALID_REQUEST_PAYLOAD: Omit<ProblemJson, 'detail'> = {
+  name: 'INVALID_REQUEST_PAYLOAD',
+  title: 'Invalid request body payload',
+  status: 412,
 };

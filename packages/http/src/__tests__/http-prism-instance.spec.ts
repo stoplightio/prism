@@ -4,7 +4,7 @@ import { omit } from 'lodash';
 import { relative, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { forwarder } from '../forwarder';
-import { NO_INVALID_RESPONSE_TEMPLATE } from '../mocker/errors';
+import { INVALID_REQUEST_PAYLOAD } from '../mocker/errors';
 import { NO_PATH_MATCHED_ERROR } from '../router/errors';
 
 describe('Http Prism Instance function tests', () => {
@@ -66,7 +66,7 @@ describe('Http Prism Instance function tests', () => {
           path: '/pet/findByStatus',
         },
       })
-    ).rejects.toThrowError(NO_INVALID_RESPONSE_TEMPLATE.title);
+    ).rejects.toThrowError(INVALID_REQUEST_PAYLOAD.title);
   });
 
   test('should support collection format multi', async () => {

@@ -67,7 +67,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       url: '/pets/findByTags',
     });
 
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(412);
   });
 
   test.skip('should automagically provide the parameters when not provided in the query string and a default is defined', async () => {
@@ -136,7 +136,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
         complete: true,
       },
     });
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(412);
   });
 
   test('will return the default response when using the __code property with a non existing code', async () => {

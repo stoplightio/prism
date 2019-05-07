@@ -3,7 +3,7 @@ import { IHttpOperation } from '@stoplight/types';
 
 import * as caseless from 'caseless';
 import { IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
-import { NO_INVALID_RESPONSE_TEMPLATE } from './errors';
+import { INVALID_REQUEST_PAYLOAD } from './errors';
 import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
 
@@ -39,10 +39,8 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
         negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
       } catch (error) {
         throw ProblemJsonError.fromTemplate(
-          NO_INVALID_RESPONSE_TEMPLATE,
-          `Your request is not valid. We cannot generate a sensible response because your '400' response has neither example nor schema or is not defined. Here is the original validation result instead: ${JSON.stringify(
-            input.validations.input
-          )}`
+          INVALID_REQUEST_PAYLOAD,
+          `Your request body is not valid: ${JSON.stringify(input.validations.input)}`
         );
       }
     } else {
