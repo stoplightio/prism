@@ -2,9 +2,9 @@ import { IPrism } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types/http-spec';
 import { omit } from 'lodash';
 import { relative, resolve } from 'path';
-import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse } from '../';
+import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJson } from '../';
 import { forwarder } from '../forwarder';
-import { MISSING_INVALID_RESPONSE_TEMPLATE } from '../mocker/errors';
+import { NO_INVALID_RESPONSE_TEMPLATE } from '../mocker/errors';
 import { NO_PATH_MATCHED_ERROR } from '../router/errors';
 
 describe('Http Prism Instance function tests', () => {
@@ -40,7 +40,7 @@ describe('Http Prism Instance function tests', () => {
           path: '/invalid-route',
         },
       })
-    ).rejects.toThrowError(NO_PATH_MATCHED_ERROR.title);
+    ).rejects.toThrowError(ProblemJson.fromTemplate(NO_PATH_MATCHED_ERROR));
   });
 
   test('given correct route should return correct response', async () => {
@@ -72,7 +72,7 @@ describe('Http Prism Instance function tests', () => {
           path: '/pet/findByStatus',
         },
       })
-    ).rejects.toThrowError(MISSING_INVALID_RESPONSE_TEMPLATE.title);
+    ).rejects.toThrowError(NO_INVALID_RESPONSE_TEMPLATE.title);
   });
 
   test('should support collection format multi', async () => {

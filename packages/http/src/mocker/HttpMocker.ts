@@ -3,13 +3,13 @@ import { IHttpOperation } from '@stoplight/types';
 
 import * as caseless from 'caseless';
 import { IHttpConfig, IHttpRequest, IHttpResponse, ProblemJson } from '../types';
-import { MISSING_INVALID_RESPONSE_TEMPLATE } from './errors';
+import { NO_INVALID_RESPONSE_TEMPLATE } from './errors';
 import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
 
 export class HttpMocker
   implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: IExampleGenerator<any>) {}
+  constructor(private _exampleGenerator: IExampleGenerator<any>) { }
 
   public async mock({
     resource,
@@ -40,7 +40,7 @@ export class HttpMocker
         negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
       } catch (error) {
         throw ProblemJson.fromTemplate(
-          MISSING_INVALID_RESPONSE_TEMPLATE,
+          NO_INVALID_RESPONSE_TEMPLATE,
           `Your request is not valid. We cannot generate a sensible response because your '400' response has neither example nor schema or is not defined. Here is the original validation result instead: ${JSON.stringify(
             input.validations.input
           )}`

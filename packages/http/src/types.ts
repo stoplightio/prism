@@ -40,20 +40,20 @@ export interface IHttpConfig extends IPrismConfig {
 
   validate?: {
     request?:
-      | boolean
-      | {
-          hijack?: boolean;
-          headers?: boolean;
-          query?: boolean;
-          body?: boolean;
-        };
+    | boolean
+    | {
+      hijack?: boolean;
+      headers?: boolean;
+      query?: boolean;
+      body?: boolean;
+    };
 
     response?:
-      | boolean
-      | {
-          headers?: boolean;
-          body?: boolean;
-        };
+    | boolean
+    | {
+      headers?: boolean;
+      body?: boolean;
+    };
   };
 }
 
@@ -87,9 +87,9 @@ export interface IHttpResponse {
 export class ProblemJson extends Error {
   public static fromTemplate(
     template: { name: string; title: string; status: number },
-    detail: string
+    detail?: string
   ): ProblemJson {
-    return new ProblemJson(template.name, template.title, template.status, detail);
+    return new ProblemJson(template.name, template.title, template.status, detail || '');
   }
 
   constructor(

@@ -15,6 +15,7 @@ import {
   IHttpResponse,
   TPrismHttpComponents,
   TPrismHttpInstance,
+  ProblemJson,
 } from './types';
 import { validator } from './validator';
 
@@ -45,4 +46,5 @@ export {
   TPrismHttpInstance,
   IHttpOperationConfig,
   TPrismHttpComponents,
+  ProblemJson,
 };
