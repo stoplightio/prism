@@ -22,16 +22,16 @@
   "devDependencies": {
     "@stoplight/types": "4.x.x",
     "@types/chance": "1.0.x",
-    "@types/jest": "24.x.x",
+    "@types/jest": "24.0.12",
     "@types/node": "11.x.x",
     "chance": "1.0.x",
-    "jest": "24.x.x",
-    "lerna": "3.13.3",
+    "jest": "24.8.0",
+    "lerna": "3.13.4",
     "ts-jest": "24.x.x",
     "tslint": "5.16.0",
     "tslint-config-stoplight": "1.2.x",
     "tslint-eslint-rules": "5.4.x",
-    "typescript": "3.x.x"
+    "typescript": "3.4.5"
   },
   "prettier": {
     "printWidth": 100,
