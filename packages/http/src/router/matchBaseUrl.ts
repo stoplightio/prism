@@ -13,10 +13,7 @@ export function matchBaseUrl(server: IServer, baseUrl: string): MatchType {
   return templateMatchResult.length > 1 ? MatchType.TEMPLATED : MatchType.CONCRETE;
 }
 
-export function convertTemplateToRegExp(
-  urlTemplate: string,
-  variables?: { [name: string]: INodeVariable }
-) {
+export function convertTemplateToRegExp(urlTemplate: string, variables?: { [name: string]: INodeVariable }) {
   const regexp = !variables
     ? urlTemplate
     : urlTemplate.replace(variableRegexp, (_match, variableName) => {

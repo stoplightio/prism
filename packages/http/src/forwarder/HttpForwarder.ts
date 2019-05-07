@@ -4,12 +4,8 @@ import axios from 'axios';
 import { URL } from 'url';
 import { IHttpConfig, IHttpNameValue, IHttpRequest, IHttpResponse } from '../types';
 
-export class HttpForwarder
-  implements IForwarder<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  public async forward(opts: {
-    resource?: IHttpOperation;
-    input: IPrismInput<IHttpRequest>;
-  }): Promise<IHttpResponse> {
+export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
+  public async forward(opts: { resource?: IHttpOperation; input: IPrismInput<IHttpRequest> }): Promise<IHttpResponse> {
     const inputData = opts.input.data;
     const baseUrl =
       opts.resource && opts.resource.servers && opts.resource.servers.length > 0

@@ -48,9 +48,7 @@ describe('HttpQueryValidator', () => {
                   {
                     name: 'param',
                     style: HttpParamStyles.Form,
-                    contents: [
-                      { mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] },
-                    ],
+                    contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
                   },
                 ])
               ).toEqual([]);
@@ -67,9 +65,7 @@ describe('HttpQueryValidator', () => {
                     {
                       name: 'param',
                       style: HttpParamStyles.Form,
-                      contents: [
-                        { mediaType: '*', schema: { type: 'string' }, examples: [], encodings: [] },
-                      ],
+                      contents: [{ mediaType: '*', schema: { type: 'string' }, examples: [], encodings: [] }],
                     },
                   ])
                 ).toEqual([]);
@@ -93,9 +89,7 @@ describe('HttpQueryValidator', () => {
                   {
                     name: 'param',
                     style: HttpParamStyles.Form,
-                    contents: [
-                      { mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] },
-                    ],
+                    contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
                   },
                 ],
                 'application/testson'

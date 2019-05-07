@@ -71,9 +71,7 @@ describe('DeepObjectStyleDeserializer', () => {
 
       describe('no properties are defined', () => {
         it('return empty object', () => {
-          expect(deepObjectStyleDeserializer.deserialize('key', {}, { type: 'object' })).toEqual(
-            {}
-          );
+          expect(deepObjectStyleDeserializer.deserialize('key', {}, { type: 'object' })).toEqual({});
         });
       });
     });

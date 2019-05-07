@@ -131,9 +131,7 @@ describe('http mocker', () => {
           },
         });
 
-        return expect(rejection).rejects.toEqual(
-          new Error('Requested status code is not defined in the schema.')
-        );
+        return expect(rejection).rejects.toEqual(new Error('Requested status code is not defined in the schema.'));
       });
 
       test('and example key should return application/json example', async () => {

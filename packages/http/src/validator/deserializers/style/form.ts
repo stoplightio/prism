@@ -9,21 +9,14 @@ export class FormStyleDeserializer implements IHttpQueryParamStyleDeserializer {
     return style === HttpParamStyles.Form;
   }
 
-  public deserialize(
-    name: string,
-    parameters: IHttpNameValues,
-    schema: ISchema,
-    explode: boolean = true
-  ) {
+  public deserialize(name: string, parameters: IHttpNameValues, schema: ISchema, explode: boolean = true) {
     const { type } = schema;
     const values = parameters[name];
 
     if (type === 'array') {
       return explode ? this.deserializeImplodeArray(values) : this.deserializeArray(values);
     } else if (type === 'object') {
-      return explode
-        ? this.deserializeImplodeObject(parameters, schema)
-        : this.deserializeObject(values);
+      return explode ? this.deserializeImplodeObject(parameters, schema) : this.deserializeObject(values);
     } else {
       return values;
     }

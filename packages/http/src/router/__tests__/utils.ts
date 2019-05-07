@@ -3,16 +3,7 @@ import { Chance } from 'chance';
 import defaults = require('lodash/defaults');
 
 const chance = new Chance();
-const httpMethods: IHttpMethod[] = [
-  'get',
-  'put',
-  'post',
-  'delete',
-  'options',
-  'head',
-  'patch',
-  'trace',
-];
+const httpMethods: IHttpMethod[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
 export function pickOneHttpMethod(): IHttpMethod {
   return chance.pickone(httpMethods);

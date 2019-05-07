@@ -1,29 +1,8 @@
 {
-  "defaultSeverity": "error",
-  "extends": ["tslint:recommended", "tslint-config-prettier", "tslint-plugin-prettier"],
-  "jsRules": {
-    "prettier": true,
-    "object-literal-sort-keys": false,
-    "radix": false,
-    "variable-name": false,
-    "curly": false,
-    "no-console": false,
-    "no-empty-interface": false,
-    "ban-types": false,
-    "max-classes-per-file": [true, 3],
-    "no-var-requires": false
-  },
+  "extends": [
+    "tslint-config-stoplight"
+  ],
   "rules": {
-    "prettier": true,
-    "object-literal-sort-keys": false,
-    "radix": false,
-    "variable-name": false,
-    "curly": false,
-    "no-console": false,
-    "no-empty-interface": false,
-    "ban-types": false,
-    "max-classes-per-file": [true, 3],
-    "no-var-requires": false
-  },
-  "rulesDirectory": []
+    "no-reference": false
+  }
 }

@@ -12,9 +12,11 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
     customConfig?: PartialPrismConfig<Config, Input>,
     customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
   ) => {
-    const components: Partial<
-      IPrismComponents<Resource, Input, Output, Config, LoadOpts>
-    > = Object.assign({}, defaultComponents, customComponents);
+    const components: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>> = Object.assign(
+      {},
+      defaultComponents,
+      customComponents
+    );
 
     // our loaded resources (HttpOperation objects, etc)
     let resources: Resource[] = [];
@@ -39,10 +41,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         // find the correct resource
         let resource: Resource | undefined;
         if (components.router) {
-          resource = components.router.route(
-            { resources, input, config: configObj },
-            defaultComponents.router
-          );
+          resource = components.router.route({ resources, input, config: configObj }, defaultComponents.router);
         }
 
         // validate input

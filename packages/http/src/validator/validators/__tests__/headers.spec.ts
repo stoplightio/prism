@@ -48,9 +48,7 @@ describe('HttpHeadersValidator', () => {
                   {
                     name: 'x-test-header',
                     style: HttpParamStyles.Simple,
-                    contents: [
-                      { mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] },
-                    ],
+                    contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
                   },
                 ])
               ).toEqual([]);
@@ -67,9 +65,7 @@ describe('HttpHeadersValidator', () => {
                     {
                       name: 'x-test-header',
                       style: HttpParamStyles.Simple,
-                      contents: [
-                        { mediaType: '*', schema: { type: 'string' }, examples: [], encodings: [] },
-                      ],
+                      contents: [{ mediaType: '*', schema: { type: 'string' }, examples: [], encodings: [] }],
                     },
                   ])
                 ).toEqual([]);
@@ -95,9 +91,7 @@ describe('HttpHeadersValidator', () => {
                   {
                     name: 'x-test-header',
                     style: HttpParamStyles.Simple,
-                    contents: [
-                      { mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] },
-                    ],
+                    contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
                   },
                 ],
                 'application/testson'

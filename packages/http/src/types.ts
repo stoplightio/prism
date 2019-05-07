@@ -14,15 +14,7 @@ export type TPrismHttpComponents<LoaderInput> = Partial<
 >;
 
 // TODO: should be complete | and in the @stoplight/types repo
-export type IHttpMethod =
-  | 'get'
-  | 'put'
-  | 'post'
-  | 'delete'
-  | 'options'
-  | 'head'
-  | 'patch'
-  | 'trace'; // ... etc
+export type IHttpMethod = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch' | 'trace'; // ... etc
 
 export interface IHttpOperationConfig {
   readonly mediaType?: string;
@@ -92,19 +84,11 @@ export interface ProblemJson {
 }
 
 export class ProblemJsonError extends Error {
-  public static fromTemplate(
-    template: Omit<ProblemJson, 'detail'>,
-    detail?: string
-  ): ProblemJsonError {
+  public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
     return new ProblemJsonError(template.name, template.title, template.status, detail || '');
   }
 
-  constructor(
-    readonly name: string,
-    readonly message: string,
-    readonly status: number,
-    readonly detail: string
-  ) {
+  constructor(readonly name: string, readonly message: string, readonly status: number, readonly detail: string) {
     super(message);
     Error.captureStackTrace(this, ProblemJsonError);
   }

@@ -23,9 +23,7 @@ describe('JSONSchemaValidator', () => {
     });
 
     it('validates negatively', () => {
-      expect(
-        jsonSchemaValidator.validate(JSON.parse('{"key":"str"}'), { type: 'string' })
-      ).toMatchSnapshot();
+      expect(jsonSchemaValidator.validate(JSON.parse('{"key":"str"}'), { type: 'string' })).toMatchSnapshot();
     });
   });
 });

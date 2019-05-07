@@ -2,8 +2,7 @@ import { HttpParamStyles } from '@stoplight/types';
 
 import { IHttpParamDeserializerRegistry, IHttpParamStyleDeserializer } from './types';
 
-export class HttpParamDeserializerRegistry<Parameters>
-  implements IHttpParamDeserializerRegistry<Parameters> {
+export class HttpParamDeserializerRegistry<Parameters> implements IHttpParamDeserializerRegistry<Parameters> {
   constructor(private deserializers: Array<IHttpParamStyleDeserializer<Parameters>>) {}
 
   public get(style: HttpParamStyles): IHttpParamStyleDeserializer<Parameters> | undefined {

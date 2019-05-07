@@ -16,9 +16,7 @@ describe('HttpValidator', () => {
   describe('validateInput()', () => {
     describe('all validations are turned on', () => {
       it('returns validation errors for whole request structure', async () => {
-        expect(
-          await validator.validateInput({ resource: httpOperations[2], input: BAD_INPUT })
-        ).toMatchSnapshot();
+        expect(await validator.validateInput({ resource: httpOperations[2], input: BAD_INPUT })).toMatchSnapshot();
       });
     });
 

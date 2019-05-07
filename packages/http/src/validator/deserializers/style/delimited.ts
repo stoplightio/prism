@@ -12,12 +12,7 @@ export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeseriali
     return style === this.styleName;
   }
 
-  public deserialize(
-    name: string,
-    parameters: IHttpNameValues,
-    schema: ISchema,
-    explode?: boolean
-  ) {
+  public deserialize(name: string, parameters: IHttpNameValues, schema: ISchema, explode?: boolean) {
     const { type } = schema;
     const values = parameters[name];
 

@@ -1,8 +1,6 @@
 import { PartialPrismConfig, PartialPrismConfigFactory } from '../types';
 
-function isPrismConfigFactory<C, I>(
-  val: PartialPrismConfig<C, I>
-): val is PartialPrismConfigFactory<C, I> {
+function isPrismConfigFactory<C, I>(val: PartialPrismConfig<C, I>): val is PartialPrismConfigFactory<C, I> {
   return typeof val === 'function';
 }
 

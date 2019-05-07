@@ -139,13 +139,11 @@ describe('HttpMocker', () => {
       });
 
       it('defaults to empty mock configuration when called with boolean mock value', async () => {
-        const spy = jest
-          .spyOn(helpers, 'negotiateOptionsForValidRequest')
-          .mockImplementation(() => ({
-            code: '202',
-            mediaType: 'test',
-            example: mockResource.responses![0].contents![0].examples![0],
-          }));
+        const spy = jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockImplementation(() => ({
+          code: '202',
+          mediaType: 'test',
+          example: mockResource.responses![0].contents![0].examples![0],
+        }));
 
         await httpMocker.mock({
           resource: mockResource,

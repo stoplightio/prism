@@ -2,17 +2,8 @@ import { IPrismDiagnostic, IValidator } from '@stoplight/prism-core';
 import { IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
 import * as caseless from 'caseless';
 
-import {
-  IHttpConfig,
-  IHttpNameValue,
-  IHttpNameValues,
-  IHttpRequest,
-  IHttpResponse,
-} from '../types';
-import {
-  header as headerDeserializerRegistry,
-  query as queryDeserializerRegistry,
-} from './deserializers';
+import { IHttpConfig, IHttpNameValue, IHttpNameValues, IHttpRequest, IHttpResponse } from '../types';
+import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { resolveRequestValidationConfig, resolveResponseValidationConfig } from './utils/config';
 import { findOperationResponse } from './utils/spec';
 import {
@@ -23,8 +14,7 @@ import {
   validatorRegistry,
 } from './validators';
 
-export class HttpValidator
-  implements IValidator<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
+export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   constructor(
     private readonly bodyValidator: IHttpValidator<any, IHttpContent>,
     private readonly headersValidator: IHttpValidator<IHttpNameValue, IHttpHeaderParam>,

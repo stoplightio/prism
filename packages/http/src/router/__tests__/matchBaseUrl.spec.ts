@@ -15,21 +15,15 @@ describe('matchServer.ts', () => {
     });
 
     test('concrete server url does not match request url', () => {
-      expect(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.example.com/')).toEqual(
+      expect(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.example.com/')).toEqual(MatchType.NOMATCH);
+
+      expect(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.example')).toEqual(MatchType.NOMATCH);
+
+      expect(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.google.com/')).toEqual(MatchType.NOMATCH);
+
+      expect(matchBaseUrl({ url: 'http://www.example.com:8081/v1' }, 'http://www.example.com/v1')).toEqual(
         MatchType.NOMATCH
       );
-
-      expect(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.example')).toEqual(
-        MatchType.NOMATCH
-      );
-
-      expect(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.google.com/')).toEqual(
-        MatchType.NOMATCH
-      );
-
-      expect(
-        matchBaseUrl({ url: 'http://www.example.com:8081/v1' }, 'http://www.example.com/v1')
-      ).toEqual(MatchType.NOMATCH);
     });
 
     test('entirely templated server url to match request from enum', () => {
@@ -45,9 +39,7 @@ describe('matchServer.ts', () => {
 
       expect(matchBaseUrl(serverConfig, 'http://www.example.com')).toEqual(MatchType.TEMPLATED);
 
-      expect(matchBaseUrl(serverConfig, 'http://www.example.com:8080')).toEqual(
-        MatchType.TEMPLATED
-      );
+      expect(matchBaseUrl(serverConfig, 'http://www.example.com:8080')).toEqual(MatchType.TEMPLATED);
 
       expect(matchBaseUrl(serverConfig, 'http://www.example.com:808')).toEqual(MatchType.NOMATCH);
 

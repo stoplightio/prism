@@ -23,9 +23,7 @@ describe('HttpBodyValidator', () => {
     describe('request media type is not provided', () => {
       it('returns no validation errors', () => {
         expect(
-          httpBodyValidator.validate('test', [
-            { mediaType: 'application/not-exists-son', examples: [], encodings: [] },
-          ])
+          httpBodyValidator.validate('test', [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }])
         ).toEqual([]);
         expect(validatorRegistry.get).not.toHaveBeenCalled();
       });

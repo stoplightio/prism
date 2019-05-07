@@ -1,10 +1,4 @@
-import {
-  DiagnosticSeverity,
-  IHttpContent,
-  IHttpHeaderParam,
-  IHttpOperation,
-  IHttpQueryParam,
-} from '@stoplight/types';
+import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core/src';
 import { IHttpNameValue, IHttpNameValues } from '../../types';
@@ -23,19 +17,9 @@ const mockError: IPrismDiagnostic = {
 
 describe('HttpValidator', () => {
   const httpBodyValidator = { validate: () => [mockError] } as IHttpValidator<any, IHttpContent>;
-  const httpHeadersValidator = { validate: () => [mockError] } as IHttpValidator<
-    IHttpNameValue,
-    IHttpHeaderParam
-  >;
-  const httpQueryValidator = { validate: () => [mockError] } as IHttpValidator<
-    IHttpNameValues,
-    IHttpQueryParam
-  >;
-  const httpValidator = new HttpValidator(
-    httpBodyValidator,
-    httpHeadersValidator,
-    httpQueryValidator
-  );
+  const httpHeadersValidator = { validate: () => [mockError] } as IHttpValidator<IHttpNameValue, IHttpHeaderParam>;
+  const httpQueryValidator = { validate: () => [mockError] } as IHttpValidator<IHttpNameValues, IHttpQueryParam>;
+  const httpValidator = new HttpValidator(httpBodyValidator, httpHeadersValidator, httpQueryValidator);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -136,26 +120,17 @@ describe('HttpValidator', () => {
 
       describe('request is set', () => {
         describe('request.headers is not set', () => {
-          it(
-            'validates headers',
-            test({ request: { path: [], query: [], cookie: [], headers: [] } })
-          );
+          it('validates headers', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
         });
 
         describe('request.headers is set', () => {
-          it(
-            'validates headers',
-            test({ request: { path: [], query: [], cookie: [], headers: [] } })
-          );
+          it('validates headers', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
         });
       });
     });
 
     describe('query validation in enabled', () => {
-      const test = (
-        extendResource?: Partial<IHttpOperation>,
-        extendInput?: Partial<IHttpRequest>
-      ) => async () => {
+      const test = (extendResource?: Partial<IHttpOperation>, extendInput?: Partial<IHttpRequest>) => async () => {
         jest
           .spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig')
           .mockReturnValueOnce({ body: false, headers: false, hijack: false, query: true });
@@ -191,17 +166,11 @@ describe('HttpValidator', () => {
 
       describe('request is set', () => {
         describe('request.query is not set', () => {
-          it(
-            'validates query',
-            test({ request: { path: [], query: [], cookie: [], headers: [] } })
-          );
+          it('validates query', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
         });
 
         describe('request.query is set', () => {
-          it(
-            'validates query',
-            test({ request: { path: [], query: [], cookie: [], headers: [] } })
-          );
+          it('validates query', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
         });
       });
 

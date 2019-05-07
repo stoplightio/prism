@@ -7,8 +7,7 @@ import { NO_INVALID_RESPONSE_TEMPLATE } from './errors';
 import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
 
-export class HttpMocker
-  implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
+export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   constructor(private _exampleGenerator: IExampleGenerator) {}
 
   public async mock({
@@ -57,10 +56,7 @@ export class HttpMocker
     if (example && 'value' in example && example.value !== undefined) {
       body = typeof example.value === 'string' ? example.value : JSON.stringify(example.value);
     } else if (negotiationResult.schema) {
-      body = await this._exampleGenerator.generate(
-        negotiationResult.schema,
-        negotiationResult.mediaType
-      );
+      body = await this._exampleGenerator.generate(negotiationResult.schema, negotiationResult.mediaType);
     }
 
     return {

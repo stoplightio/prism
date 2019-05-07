@@ -13,20 +13,14 @@ describe('Http Prism Instance function tests', () => {
   beforeAll(async () => {
     prism = createInstance({ mock: true }, {});
     await prism.load({
-      path: relative(
-        process.cwd(),
-        resolve(__dirname, 'fixtures', 'no-refs-petstore-minimal.oas2.json')
-      ),
+      path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'no-refs-petstore-minimal.oas2.json')),
     });
   });
 
   test('keeps the instances separate', async () => {
     const second_prism = createInstance({ mock: true }, {});
     await second_prism.load({
-      path: relative(
-        process.cwd(),
-        resolve(__dirname, 'fixtures', 'no-refs-petstore-minimal.oas2.json')
-      ),
+      path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'no-refs-petstore-minimal.oas2.json')),
     });
 
     expect(prism.resources).toStrictEqual(second_prism.resources);

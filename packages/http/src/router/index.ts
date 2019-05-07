@@ -86,11 +86,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
       );
     }
 
-    if (
-      !matches.some(
-        match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH
-      )
-    ) {
+    if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH)) {
       throw ProblemJsonError.fromTemplate(
         NO_METHOD_MATCHED_ERROR,
         `The route ${requestPath} has been matched, but there's no "${input.method}" method defined`

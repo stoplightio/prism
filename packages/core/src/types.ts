@@ -13,10 +13,7 @@ export type PartialPrismConfigFactory<C, I> = (
   input: I,
   defaultConfig?: PartialPrismConfig<C, I> | PrismConfig<C, I>
 ) => Partial<C>;
-export type PartialPrismConfig<C, I> =
-  | Partial<C>
-  | PrismConfigFactory<C, I>
-  | PartialPrismConfigFactory<C, I>;
+export type PartialPrismConfig<C, I> = Partial<C> | PrismConfigFactory<C, I> | PartialPrismConfigFactory<C, I>;
 
 export interface IPrismConfig {
   mock?: boolean | object;

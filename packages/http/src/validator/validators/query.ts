@@ -13,11 +13,7 @@ export class HttpQueryValidator extends HttpParamsValidator<IHttpNameValues, IHt
   ) {
     super(registry, prefix, style);
   }
-  public validate(
-    target: IHttpNameValues,
-    specs: IHttpQueryParam[],
-    mediaType?: string
-  ): IPrismDiagnostic[] {
+  public validate(target: IHttpNameValues, specs: IHttpQueryParam[], mediaType?: string): IPrismDiagnostic[] {
     return super.validate(target, specs, mediaType);
   }
 }

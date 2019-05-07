@@ -44,9 +44,7 @@ describe('JSONSchemaExampleGenerator', () => {
 
       Object.defineProperty(schema.properties, 'name', { writable: false });
 
-      return expect(
-        jsonSchemaExampleGenerator.generate(schema, 'application/json')
-      ).resolves.toBeTruthy();
+      return expect(jsonSchemaExampleGenerator.generate(schema, 'application/json')).resolves.toBeTruthy();
     });
   });
 });

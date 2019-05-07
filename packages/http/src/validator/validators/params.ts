@@ -7,8 +7,7 @@ import { resolveContent } from '../utils/http';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 
-export class HttpParamsValidator<Target, Spec extends IHttpParam>
-  implements IHttpValidator<Target, Spec> {
+export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHttpValidator<Target, Spec> {
   constructor(
     private _registry: IHttpParamDeserializerRegistry<Target>,
     private _prefix: string,

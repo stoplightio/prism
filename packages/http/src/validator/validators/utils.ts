@@ -7,10 +7,7 @@ import { JSONSchema4 } from 'json-schema';
 
 const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' }) as Ajv.Ajv;
 
-export const convertAjvErrors = (
-  errors: Ajv.ErrorObject[] | undefined | null,
-  severity: DiagnosticSeverity
-) => {
+export const convertAjvErrors = (errors: Ajv.ErrorObject[] | undefined | null, severity: DiagnosticSeverity) => {
   if (!errors) {
     return [];
   }
@@ -23,11 +20,7 @@ export const convertAjvErrors = (
   }));
 };
 
-export const validateAgainstSchema = (
-  value: any,
-  schema: JSONSchema4,
-  prefix?: string
-): IPrismDiagnostic[] => {
+export const validateAgainstSchema = (value: any, schema: JSONSchema4, prefix?: string): IPrismDiagnostic[] => {
   try {
     const validate = ajv.compile(schema);
     const valid = validate(value);

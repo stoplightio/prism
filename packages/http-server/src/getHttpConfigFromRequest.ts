@@ -1,8 +1,4 @@
-import {
-  PartialPrismConfig,
-  PartialPrismConfigFactory,
-  resolveConfig,
-} from '@stoplight/prism-core';
+import { PartialPrismConfig, PartialPrismConfigFactory, resolveConfig } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
 
 export const getHttpConfigFromRequest: PartialPrismConfigFactory<IHttpConfig, IHttpRequest> = (
