@@ -1,5 +1,5 @@
 import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
-import { IHttpOperation } from '@stoplight/types';
+import { IHttpOperation, Omit } from '@stoplight/types';
 
 export type TPrismHttpInstance<LoaderInput> = IPrism<
   IHttpOperation,
@@ -84,12 +84,19 @@ export interface IHttpResponse {
   body?: any;
 }
 
-export class ProblemJson extends Error {
+export type ProblemJson = {
+  name: string;
+  title: string;
+  status: number;
+  detail: string;
+}
+
+export class ProblemJsonError extends Error {
   public static fromTemplate(
-    template: { name: string; title: string; status: number },
+    template: Omit<ProblemJson, 'detail'>,
     detail?: string
-  ): ProblemJson {
-    return new ProblemJson(template.name, template.title, template.status, detail || '');
+  ): ProblemJsonError {
+    return new ProblemJsonError(template.name, template.title, template.status, detail || '');
   }
 
   constructor(
@@ -99,6 +106,6 @@ export class ProblemJson extends Error {
     readonly detail: string
   ) {
     super(message);
-    Error.captureStackTrace(this, ProblemJson);
+    Error.captureStackTrace(this, ProblemJsonError);
   }
 }

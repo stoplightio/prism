@@ -1,6 +1,6 @@
 import { IRouter } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
-import { IHttpConfig, IHttpRequest, ProblemJson } from '../types';
+import { IHttpConfig, IHttpRequest, ProblemJsonError } from '../types';
 import {
   NO_METHOD_MATCHED_ERROR,
   NO_PATH_MATCHED_ERROR,
@@ -17,7 +17,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
     const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
 
     if (!resources.length) {
-      throw ProblemJson.fromTemplate(
+      throw ProblemJsonError.fromTemplate(
         NO_RESOURCE_PROVIDED_ERROR,
         `The current document does not have any resource to match with.`
       );
@@ -65,14 +65,14 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
 
     if (requestBaseUrl) {
       if (matches.every(match => match.serverMatch === null)) {
-        throw ProblemJson.fromTemplate(
+        throw ProblemJsonError.fromTemplate(
           NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
           `No server configuration has been provided, although ${requestBaseUrl} as base url`
         );
       }
 
       if (matches.every(match => !!match.serverMatch && match.serverMatch === MatchType.NOMATCH)) {
-        throw ProblemJson.fromTemplate(
+        throw ProblemJsonError.fromTemplate(
           NO_SERVER_MATCHED_ERROR,
           `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`
         );
@@ -80,7 +80,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
     }
 
     if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH)) {
-      throw ProblemJson.fromTemplate(
+      throw ProblemJsonError.fromTemplate(
         NO_PATH_MATCHED_ERROR,
         `The route ${requestPath} hasn't been found in the specification file`
       );
@@ -91,7 +91,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
         match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH
       )
     ) {
-      throw ProblemJson.fromTemplate(
+      throw ProblemJsonError.fromTemplate(
         NO_METHOD_MATCHED_ERROR,
         `The route ${requestPath} has been matched, but there's no "${input.method}" method defined`
       );
