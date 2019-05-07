@@ -14,3 +14,15 @@ export interface IPrismHttpServer<LoaderInput> {
 }
 
 export type ListenFunc = (port: number, address?: string, backlog?: number) => Promise<string>;
+
+export class ProblemJson extends Error {
+  constructor(
+    readonly name: string,
+    readonly message: string,
+    readonly status: number,
+    readonly detail: string
+  ) {
+    super(message);
+    Error.captureStackTrace(this, ProblemJson);
+  }
+}
