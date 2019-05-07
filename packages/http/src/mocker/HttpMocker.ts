@@ -9,7 +9,7 @@ import helpers from './negotiator/NegotiatorHelpers';
 
 export class HttpMocker
   implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: IExampleGenerator) { }
+  constructor(private _exampleGenerator: IExampleGenerator) {}
 
   public async mock({
     resource,

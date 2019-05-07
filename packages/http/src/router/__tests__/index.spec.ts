@@ -1,4 +1,4 @@
-import { IHttpMethod, ProblemJson } from '@stoplight/prism-http';
+import { IHttpMethod, ProblemJsonError } from '@stoplight/prism-http';
 import { IHttpOperation, IServer } from '@stoplight/types';
 import { Chance } from 'chance';
 import {
@@ -42,7 +42,7 @@ describe('http router', () => {
             },
           },
         })
-      ).toThrow(ProblemJson.fromTemplate(NO_SERVER_CONFIGURATION_PROVIDED_ERROR));
+      ).toThrow(ProblemJsonError.fromTemplate(NO_SERVER_CONFIGURATION_PROVIDED_ERROR));
     });
 
     test('should not match if no resources given', () => {
@@ -57,7 +57,7 @@ describe('http router', () => {
             },
           },
         })
-      ).toThrow(ProblemJson.fromTemplate(NO_RESOURCE_PROVIDED_ERROR));
+      ).toThrow(ProblemJsonError.fromTemplate(NO_RESOURCE_PROVIDED_ERROR));
     });
 
     describe('given a resource', () => {
@@ -100,7 +100,7 @@ describe('http router', () => {
               },
             },
           })
-        ).toThrow(ProblemJson.fromTemplate(NO_PATH_MATCHED_ERROR));
+        ).toThrow(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
       });
 
       describe('given matched methods', () => {
@@ -127,7 +127,7 @@ describe('http router', () => {
                 },
               },
             })
-          ).toThrow(ProblemJson.fromTemplate(NO_PATH_MATCHED_ERROR));
+          ).toThrow(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
         });
 
         test('given a concrete matching server and matched concrete path should match', async () => {
@@ -253,7 +253,7 @@ describe('http router', () => {
                 },
               },
             })
-          ).toThrow(ProblemJson.fromTemplate(NO_PATH_MATCHED_ERROR));
+          ).toThrow(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
         });
 
         test('given a concrete servers and mixed paths should match concrete path', async () => {
@@ -379,7 +379,7 @@ describe('http router', () => {
                 },
               },
             })
-          ).toThrowError(ProblemJson.fromTemplate(NO_SERVER_MATCHED_ERROR));
+          ).toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
         });
 
         test('given empty baseUrl and empty server url it should match', async () => {
@@ -435,7 +435,7 @@ describe('http router', () => {
               },
             },
           })
-        ).toThrowError(ProblemJson.fromTemplate(NO_METHOD_MATCHED_ERROR));
+        ).toThrowError(ProblemJsonError.fromTemplate(NO_METHOD_MATCHED_ERROR));
       });
     });
   });

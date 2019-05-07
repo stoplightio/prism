@@ -1,5 +1,5 @@
-import { ProblemJson } from '../types';
 import { Omit } from '@stoplight/types';
+import { ProblemJson } from '../types';
 
 export const NO_RESOURCE_PROVIDED_ERROR: Omit<ProblemJson, 'detail'> = {
   title: 'Route not resolved, no resource provided.',

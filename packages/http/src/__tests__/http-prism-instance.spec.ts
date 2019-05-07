@@ -2,7 +2,7 @@ import { IPrism } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types/http-spec';
 import { omit } from 'lodash';
 import { relative, resolve } from 'path';
-import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJson } from '../';
+import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { forwarder } from '../forwarder';
 import { NO_INVALID_RESPONSE_TEMPLATE } from '../mocker/errors';
 import { NO_PATH_MATCHED_ERROR } from '../router/errors';
@@ -40,7 +40,7 @@ describe('Http Prism Instance function tests', () => {
           path: '/invalid-route',
         },
       })
-    ).rejects.toThrowError(ProblemJson.fromTemplate(NO_PATH_MATCHED_ERROR));
+    ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
   });
 
   test('given correct route should return correct response', async () => {

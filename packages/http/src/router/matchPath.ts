@@ -43,8 +43,8 @@ export function matchPath(requestPath: string, operationPath: string): MatchType
       return MatchType.NOMATCH;
     } else if (paramName !== null) {
       params.push({
-        name: paramName as string,
-        value: requestPathFragment as string,
+        name: paramName,
+        value: requestPathFragment,
       });
     }
   }
