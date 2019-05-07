@@ -1,11 +1,10 @@
 import { IRouter } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
-
+import { ProblemJson } from 'http-server/src/types';
 import { IHttpConfig, IHttpRequest } from '../types';
 import {
   NO_METHOD_MATCHED_ERROR,
   NO_PATH_MATCHED_ERROR,
-  NO_RESOURCE_PROVIDED_ERROR,
   NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
   NO_SERVER_MATCHED_ERROR,
 } from './errors';
@@ -16,10 +15,6 @@ import { IMatch, MatchType } from './types';
 export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
   route: ({ resources, input }): IHttpOperation => {
     const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
-
-    if (!resources.length) {
-      throw new Error(NO_RESOURCE_PROVIDED_ERROR);
-    }
 
     const matches = resources.map<IMatch>(resource => {
       const pathMatch = matchPath(requestPath, resource.path);
@@ -63,16 +58,28 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
 
     if (requestBaseUrl) {
       if (matches.every(match => match.serverMatch === null)) {
-        throw new Error(NO_SERVER_CONFIGURATION_PROVIDED_ERROR);
+        throw new ProblemJson(
+          NO_SERVER_CONFIGURATION_PROVIDED_ERROR.name,
+          NO_SERVER_CONFIGURATION_PROVIDED_ERROR.title,
+          NO_SERVER_CONFIGURATION_PROVIDED_ERROR.status,
+          `No server configuration has been provided, although ${requestBaseUrl} as base url`);
       }
 
       if (matches.every(match => !!match.serverMatch && match.serverMatch === MatchType.NOMATCH)) {
-        throw new Error(NO_SERVER_MATCHED_ERROR);
+        throw new ProblemJson(
+          NO_SERVER_MATCHED_ERROR.name,
+          NO_SERVER_MATCHED_ERROR.title,
+          NO_SERVER_MATCHED_ERROR.status,
+          `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`);
       }
     }
 
     if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH)) {
-      throw new Error(NO_PATH_MATCHED_ERROR);
+      throw new ProblemJson(
+        NO_PATH_MATCHED_ERROR.name,
+        NO_PATH_MATCHED_ERROR.title,
+        NO_PATH_MATCHED_ERROR.status,
+        `The route ${requestPath} hasn't been found in the specification file`);
     }
 
     if (
@@ -80,7 +87,12 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
         match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH
       )
     ) {
-      throw new Error(NO_METHOD_MATCHED_ERROR);
+      throw new ProblemJson(
+        NO_METHOD_MATCHED_ERROR.name,
+        NO_METHOD_MATCHED_ERROR.title,
+        NO_METHOD_MATCHED_ERROR.status,
+        `The route ${requestPath} has been matched, but there's no "${input.method}" method defined`
+      );
     }
 
     return disambiguateMatches(matches);
