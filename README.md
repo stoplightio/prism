@@ -51,28 +51,35 @@ $ prism mock examples/petstore.oas3.json
 Then in another tab, you can hit the HTTP server with your favorite HTTP client (like [HTTPie]):
 
 ```bash
-$ http GET http://127.0.0.1:4010/pets/123
+$ curl -s -D "/dev/stderr" http://127.0.0.1:4010/pets/123 | json_pp
 
 HTTP/1.1 200 OK
-Connection: keep-alive
-content-length: 98
 content-type: application/json
+content-length: 440
+Date: Wed, 08 May 2019 17:30:30 GMT
+Connection: keep-alive
 
 {
-    "category": {
-        "id": -70254706,
-        "name": "nostrud voluptate sit molli"
-    },
-    "id": 69856282,
-    "name": "doggie",
-    "photoUrls": [
-        "esse aute elit",
-        "sint Duis amet dolore",
-        "eiusmod",
-        "ea ",
-        "anim sint"
-    ],
-    "status": "available"
+   "status" : "sold",
+   "tags" : [
+      {
+         "name" : "labore occaecat officia deserunt",
+         "id" : 75187907
+      }
+   ],
+   "photoUrls" : [
+      "nisi aute occaecat",
+      "eiusmod sunt nostrud ut",
+      "ipsum voluptate ",
+      "magna irure est consectetur",
+      "sunt quis laboris ut ex"
+   ],
+   "id" : 9427747,
+   "category" : {
+      "id" : 85199396,
+      "name" : "in mollit labore D"
+   },
+   "name" : "doggie"
 }
 ```
 
@@ -84,7 +91,7 @@ Prism can be forced to return different HTTP responses by specifying the status 
 string:
 
 ```bash
-http GET http://127.0.0.1:4010/pets/123?__code=404
+$ curl http://127.0.0.1:4010/pets/123?__code=404
 ```
 
 The body, headers, etc. for this response will be taken from the API description document.
@@ -94,20 +101,27 @@ The body, headers, etc. for this response will be taken from the API description
 Requests to operations which expect a request body will be validated, for example: a POST with JSON.
 
 ```bash
-http --json POST http://127.0.0.1:4010/pets name=Stowford
+curl -s -D "/dev/stderr" -H "content-type: application/json" -d '{"name":"Stowford"}' http://127.0.0.1:4010/pets?__code==405 | json_pp
 ```
 
 This will generate an error, conforming the [application/problem+json][rfc7807] specification:
 
 ```
-Here is the original validation result instead: [{"path":["body"],"name":"required","summary":"should have required property 'photoUrls'","message":"should have required property 'photoUrls'","severity":"error"}]
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
+content-length: 279
+Date: Wed, 08 May 2019 19:22:27 GMT
+Connection: keep-alive
+
+{
+   "title" : "Invalid request body payload",
+   "detail" : "Your request body is not valid: [{\"path\":[\"body\"],\"code\":\"required\",\"message\":\"should have required property 'photoUrls'\",\"severity\":0}]",
+   "status" : 422,
+   "name" : "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY"
+}
 ```
 
 This error shows the request is missing the `photoUrls` property:
-
-```bash
-http --json POST http://127.0.0.1:4010/pets name=bar photoUrls:='["http://fdsf"]'
-```
 
 ## FAQ
 
