@@ -85,7 +85,7 @@ const replyHandler = <LoaderInput>(
           type: e.name || 'https://stoplight.io/prism/errors#UNKNOWN',
           title: e.message,
           status,
-          detail: e.detail || '',
+          detail: e.detail,
         });
     }
   };
