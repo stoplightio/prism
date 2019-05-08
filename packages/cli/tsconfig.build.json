@@ -3,7 +3,8 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "lib",
-    "target": "es2017"
+    "target": "es2017",
+    "sourceMap": false,
   },
   "include": ["src"],
   "references": [
