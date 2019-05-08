@@ -60,8 +60,8 @@ describe('DeepObjectStyleDeserializer', () => {
                   },
                 },
               },
-            }
-          )
+            },
+          ),
         ).toEqual({
           a: 'str',
           b: { ba: 'str', bb: {}, bc: ['bc0', 'bc1'] },

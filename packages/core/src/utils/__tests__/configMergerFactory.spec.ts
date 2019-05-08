@@ -25,7 +25,7 @@ describe('configMerger', () => {
         x: 1,
         y: 2,
       },
-      undefined
+      undefined,
     );
 
     return expect(configMerger(input, defaultConfig)).toMatchSnapshot();
@@ -51,7 +51,7 @@ describe('configMerger', () => {
           c: 4,
         },
         beta: true,
-      }
+      },
     );
 
     return expect(configMerger(input, defaultConfig)).toMatchSnapshot();
@@ -80,7 +80,7 @@ describe('configMerger', () => {
         },
         alfa: false,
       },
-      configFn
+      configFn,
     );
 
     expect(configMerger(input, defaultConfig)).toMatchSnapshot();

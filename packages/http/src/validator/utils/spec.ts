@@ -2,7 +2,7 @@ import { IHttpOperationResponse } from '@stoplight/types';
 
 export function findOperationResponse(
   responseSpecs: IHttpOperationResponse[],
-  statusCode: number
+  statusCode: number,
 ): IHttpOperationResponse | undefined {
   const sortedSpecs = responseSpecs
     .filter(spec => new RegExp(`^${spec.code.replace(/X/g, '\\d')}$`).test(String(statusCode)))

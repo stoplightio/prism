@@ -30,7 +30,7 @@ describe('SimpleStyleDeserializer', () => {
     describe('type is a primitive', () => {
       it('returns unmodified value', () => {
         expect(simpleStyleDeserializer.deserialize('name', { name: 'value' }, { type: 'string' }, false)).toEqual(
-          'value'
+          'value',
         );
       });
     });
@@ -53,7 +53,7 @@ describe('SimpleStyleDeserializer', () => {
       });
       it('returns unmodified value', () => {
         expect(simpleStyleDeserializer.deserialize('name', { name: 'value' }, { type: 'string' }, false)).toEqual(
-          'value'
+          'value',
         );
       });
     });

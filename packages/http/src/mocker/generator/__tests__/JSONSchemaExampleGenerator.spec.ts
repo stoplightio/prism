@@ -29,7 +29,7 @@ describe('JSONSchemaExampleGenerator', () => {
 
     it('fails when media type is unknown', () => {
       return expect(
-        jsonSchemaExampleGenerator.generate({}, 'non-existing/media-type')
+        jsonSchemaExampleGenerator.generate({}, 'non-existing/media-type'),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
 

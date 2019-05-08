@@ -34,7 +34,7 @@ describe('http mocker', () => {
                 mediaType: 'text/funky',
               },
             },
-          })
+          }),
         ).resolves.toMatchObject({ headers: { 'Content-type': 'text/plain' }, body: undefined });
       });
     });
@@ -183,7 +183,7 @@ describe('http mocker', () => {
                   headers: { 'Content-type': 'application/yaml' },
                 }),
               }),
-            })
+            }),
           ).resolves.toMatchObject({
             headers: { 'Content-type': 'text/plain' },
             body: undefined,

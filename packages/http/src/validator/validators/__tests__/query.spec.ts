@@ -31,7 +31,7 @@ describe('HttpQueryValidator', () => {
             expect(
               httpQueryValidator.validate({}, [
                 { name: 'aParam', style: HttpParamStyles.Form, required: true, contents: [] },
-              ])
+              ]),
             ).toMatchSnapshot();
           });
         });
@@ -50,7 +50,7 @@ describe('HttpQueryValidator', () => {
                     style: HttpParamStyles.Form,
                     contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
                   },
-                ])
+                ]),
               ).toEqual([]);
 
               expect(validateAgainstSchemaModule.validateAgainstSchema).not.toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe('HttpQueryValidator', () => {
                       style: HttpParamStyles.Form,
                       contents: [{ mediaType: '*', schema: { type: 'string' }, examples: [], encodings: [] }],
                     },
-                  ])
+                  ]),
                 ).toEqual([]);
 
                 expect(validateAgainstSchemaModule.validateAgainstSchema).toHaveBeenCalled();
@@ -92,8 +92,8 @@ describe('HttpQueryValidator', () => {
                     contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
                   },
                 ],
-                'application/testson'
-              )
+                'application/testson',
+              ),
             ).toEqual([]);
 
             expect(registry.get).not.toHaveBeenCalled();
@@ -111,7 +111,7 @@ describe('HttpQueryValidator', () => {
                   style: HttpParamStyles.Form,
                   contents: [],
                 },
-              ])
+              ]),
             ).toMatchSnapshot();
           });
         });

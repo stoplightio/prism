@@ -50,11 +50,11 @@ describe('HttpValidator', () => {
                 security: [],
                 request: { headers: [], cookie: [], query: [], path: [] },
               },
-              extendResource
+              extendResource,
             ),
             input: { method: 'get', url: { path: '/' } },
             config: { mock: true, validate: { request: { body: true } } },
-          })
+          }),
         ).resolves.toEqual([mockError]);
 
         expect(resolveValidationConfigModule.resolveRequestValidationConfig).toHaveBeenCalled();
@@ -77,7 +77,7 @@ describe('HttpValidator', () => {
             'validates body',
             test({
               request: { body: { contents: [] }, path: [], query: [], headers: [], cookie: [] },
-            })
+            }),
           );
         });
       });
@@ -101,11 +101,11 @@ describe('HttpValidator', () => {
                 security: [],
                 request: { path: [], query: [], cookie: [], headers: [] },
               },
-              extendResource
+              extendResource,
             ),
             input: { method: 'get', url: { path: '/' } },
             config: { mock: true, validate: { request: { headers: true } } },
-          })
+          }),
         ).resolves.toEqual([mockError]);
 
         expect(resolveValidationConfigModule.resolveRequestValidationConfig).toHaveBeenCalled();
@@ -147,11 +147,11 @@ describe('HttpValidator', () => {
                 security: [],
                 request: { path: [], query: [], cookie: [], headers: [] },
               },
-              extendResource
+              extendResource,
             ),
             input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, extendInput),
             config: { mock: true, validate: { request: { query: true } } },
-          })
+          }),
         ).resolves.toEqual([mockError]);
 
         expect(resolveValidationConfigModule.resolveRequestValidationConfig).toHaveBeenCalled();
@@ -195,7 +195,7 @@ describe('HttpValidator', () => {
               request: { path: [], query: [], cookie: [], headers: [] },
             },
             config: { mock: true, validate: { response: { body: true } } },
-          })
+          }),
         ).resolves.toEqual([]);
 
         expect(httpBodyValidator.validate).not.toHaveBeenCalled();
@@ -222,7 +222,7 @@ describe('HttpValidator', () => {
               },
               output: { statusCode: 200 },
               config: { mock: true, validate: { response: { body: true } } },
-            })
+            }),
           ).resolves.toEqual([mockError]);
 
           expect(resolveValidationConfigModule.resolveResponseValidationConfig).toHaveBeenCalled();
@@ -251,7 +251,7 @@ describe('HttpValidator', () => {
               },
               output: { statusCode: 200 },
               config: { mock: true, validate: { response: { headers: true } } },
-            })
+            }),
           ).resolves.toEqual([mockError]);
 
           expect(resolveValidationConfigModule.resolveResponseValidationConfig).toHaveBeenCalled();

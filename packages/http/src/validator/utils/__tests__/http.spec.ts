@@ -11,7 +11,7 @@ describe('resolveContent()', () => {
             examples: [],
             encodings: [],
           },
-        })
+        }),
       ).toMatchSnapshot();
     });
   });
@@ -29,8 +29,8 @@ describe('resolveContent()', () => {
                 encodings: [],
               },
             },
-            'application/exists-son'
-          )
+            'application/exists-son',
+          ),
         ).toMatchSnapshot();
       });
     });
@@ -47,8 +47,8 @@ describe('resolveContent()', () => {
                 encodings: [],
               },
             },
-            'application/non-exists-son'
-          )
+            'application/non-exists-son',
+          ),
         ).toMatchSnapshot();
       });
     });

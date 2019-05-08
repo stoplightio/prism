@@ -35,7 +35,7 @@ export class DeepObjectStyleDeserializer implements IHttpQueryParamStyleDeserial
     function constructObject(currentPath: string[], props: any): object {
       return Object.keys(props).reduce(
         (result, k) => ({ ...result, [k]: construct([...currentPath, k], props[k]) }),
-        {}
+        {},
       );
     }
 

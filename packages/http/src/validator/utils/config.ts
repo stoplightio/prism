@@ -14,7 +14,7 @@ const DEFAULT = {
 };
 
 export function resolveResponseValidationConfig(
-  config?: IHttpConfig
+  config?: IHttpConfig,
 ): {
   headers: boolean;
   body: boolean;
@@ -48,7 +48,7 @@ export function resolveResponseValidationConfig(
 }
 
 export function resolveRequestValidationConfig(
-  config?: IHttpConfig
+  config?: IHttpConfig,
 ): {
   hijack: boolean;
   headers: boolean;

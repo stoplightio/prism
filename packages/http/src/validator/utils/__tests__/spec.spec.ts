@@ -9,8 +9,8 @@ describe('findOperationResponse()', () => {
           { code: '20X', contents: [], headers: [] },
           { code: '1XX', contents: [], headers: [] },
         ],
-        200
-      )
+        200,
+      ),
     ).toEqual({ code: '20X', contents: [], headers: [] });
   });
 });

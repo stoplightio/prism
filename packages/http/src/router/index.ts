@@ -19,7 +19,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
     if (!resources.length) {
       throw ProblemJsonError.fromTemplate(
         NO_RESOURCE_PROVIDED_ERROR,
-        `The current document does not have any resource to match with.`
+        `The current document does not have any resource to match with.`,
       );
     }
 
@@ -67,14 +67,14 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
       if (matches.every(match => match.serverMatch === null)) {
         throw ProblemJsonError.fromTemplate(
           NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
-          `No server configuration has been provided, although ${requestBaseUrl} as base url`
+          `No server configuration has been provided, although ${requestBaseUrl} as base url`,
         );
       }
 
       if (matches.every(match => !!match.serverMatch && match.serverMatch === MatchType.NOMATCH)) {
         throw ProblemJsonError.fromTemplate(
           NO_SERVER_MATCHED_ERROR,
-          `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`
+          `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`,
         );
       }
     }
@@ -82,14 +82,14 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
     if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH)) {
       throw ProblemJsonError.fromTemplate(
         NO_PATH_MATCHED_ERROR,
-        `The route ${requestPath} hasn't been found in the specification file`
+        `The route ${requestPath} hasn't been found in the specification file`,
       );
     }
 
     if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH)) {
       throw ProblemJsonError.fromTemplate(
         NO_METHOD_MATCHED_ERROR,
-        `The route ${requestPath} has been matched, but there's no "${input.method}" method defined`
+        `The route ${requestPath} has been matched, but there's no "${input.method}" method defined`,
       );
     }
 

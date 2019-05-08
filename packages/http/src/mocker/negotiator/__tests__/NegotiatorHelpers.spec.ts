@@ -270,7 +270,7 @@ describe('NegotiatorHelpers', () => {
         .instance();
 
       expect(() => helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)).toThrow(
-        'Requested status code is not defined in the schema.'
+        'Requested status code is not defined in the schema.',
       );
     });
   });
@@ -372,7 +372,7 @@ describe('NegotiatorHelpers', () => {
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
           httpOperation,
           desiredOptions,
-          httpResponseSchema
+          httpResponseSchema,
         );
 
         expect(helpers.negotiateByPartialOptionsAndHttpContent).toHaveBeenCalledTimes(1);
@@ -382,7 +382,7 @@ describe('NegotiatorHelpers', () => {
             dynamic: desiredOptions.dynamic,
             exampleKey: desiredOptions.exampleKey,
           },
-          contents
+          contents,
         );
         expect(helpers.negotiateDefaultMediaType).not.toHaveBeenCalled();
         expect(actualOperationConfig).toBe(fakeOperationConfig);
@@ -401,7 +401,7 @@ describe('NegotiatorHelpers', () => {
         };
 
         expect(
-          helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema)
+          helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema),
         ).toHaveProperty('mediaType', 'text/plain');
       });
     });
@@ -427,7 +427,7 @@ describe('NegotiatorHelpers', () => {
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
           httpOperation,
           desiredOptions,
-          httpResponseSchema
+          httpResponseSchema,
         );
 
         expect(helpers.negotiateByPartialOptionsAndHttpContent).not.toHaveBeenCalled();
@@ -438,7 +438,7 @@ describe('NegotiatorHelpers', () => {
             dynamic: desiredOptions.dynamic,
             exampleKey: desiredOptions.exampleKey,
           },
-          httpResponseSchema
+          httpResponseSchema,
         );
         expect(actualOperationConfig).toBe(fakeOperationConfig);
       });
@@ -478,7 +478,7 @@ describe('NegotiatorHelpers', () => {
           dynamic: partialOptions.dynamic,
           exampleKey: partialOptions.exampleKey,
         },
-        contents
+        contents,
       );
       expect(actualOperationConfig).toBe(fakeOperationConfig);
     });

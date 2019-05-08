@@ -25,7 +25,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IHttpContent> {
     }
 
     return validate(target, content.schema).map(error =>
-      Object.assign({}, error, { path: [prefix, ...(error.path || [])] })
+      Object.assign({}, error, { path: [prefix, ...(error.path || [])] }),
     );
   }
 

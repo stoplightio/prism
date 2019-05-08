@@ -9,7 +9,7 @@ export class HttpHeadersValidator extends HttpParamsValidator<IHttpNameValue, IH
   constructor(
     registry: IHttpParamDeserializerRegistry<IHttpNameValue>,
     prefix: string,
-    style: HttpParamStyles = HttpParamStyles.Simple
+    style: HttpParamStyles = HttpParamStyles.Simple,
   ) {
     super(registry, prefix, style);
   }

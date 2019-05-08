@@ -25,7 +25,7 @@ function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationR
 
 function findResponseByStatusCode(
   responses: IHttpOperationResponse[],
-  statusCode: string
+  statusCode: string,
 ): IHttpOperationResponse | undefined {
   const candidate = responses.find(response => response.code.toLowerCase() === statusCode.toLowerCase());
   if (candidate) {
@@ -51,7 +51,7 @@ const helpers = {
       readonly dynamic?: boolean;
       readonly exampleKey?: string;
     },
-    httpContent: IHttpContent
+    httpContent: IHttpContent,
   ): IHttpNegotiationResult {
     const { mediaType } = httpContent;
 
@@ -109,7 +109,7 @@ const helpers = {
       readonly dynamic?: boolean;
       readonly exampleKey?: string;
     },
-    response: IHttpOperationResponse
+    response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
     const { code, dynamic, exampleKey } = partialOptions;
     const mediaType = 'application/json';
@@ -122,7 +122,7 @@ const helpers = {
           dynamic,
           exampleKey,
         },
-        httpContent
+        httpContent,
       );
     } else {
       // no httpContent found, returning empty body
@@ -145,7 +145,7 @@ const helpers = {
       readonly exampleKey?: string;
       readonly dynamic?: boolean;
     },
-    response: IHttpOperationResponse
+    response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
     const { code } = response;
     const { mediaType, dynamic, exampleKey } = desiredOptions;
@@ -161,7 +161,7 @@ const helpers = {
             dynamic,
             exampleKey,
           },
-          httpContent
+          httpContent,
         );
       } else {
         return {
@@ -179,7 +179,7 @@ const helpers = {
         dynamic,
         exampleKey,
       },
-      response
+      response,
     );
   },
 
@@ -190,7 +190,7 @@ const helpers = {
       readonly code?: string;
       readonly exampleKey?: string;
       readonly dynamic?: boolean;
-    }
+    },
   ): IHttpNegotiationResult {
     const lowest2xxResponse = findLowest2xx(httpOperation.responses);
     if (lowest2xxResponse) {
@@ -207,7 +207,7 @@ const helpers = {
       readonly exampleKey?: string;
       readonly dynamic?: boolean;
     },
-    code: string
+    code: string,
   ): IHttpNegotiationResult {
     // find response by provided status code
     const responseByForcedStatusCode = findResponseByStatusCode(httpOperation.responses, code);
@@ -235,7 +235,7 @@ const helpers = {
       readonly code?: string;
       readonly exampleKey?: string;
       readonly dynamic?: boolean;
-    }
+    },
   ): IHttpNegotiationResult {
     const { code } = desiredOptions;
     if (code) {

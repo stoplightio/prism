@@ -40,7 +40,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
       } catch (error) {
         throw ProblemJsonError.fromTemplate(
           UNPROCESSABLE_ENTITY,
-          `Your request body is not valid: ${JSON.stringify(input.validations.input)}`
+          `Your request body is not valid: ${JSON.stringify(input.validations.input)}`,
         );
       }
     } else {

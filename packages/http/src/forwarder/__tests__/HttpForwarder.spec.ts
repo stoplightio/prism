@@ -38,7 +38,7 @@ describe('HttpForwarder', () => {
         it('throws error', async () => {
           const request = Object.assign({}, httpRequests[0]);
           await expect(forwarder.forward({ input: request })).rejects.toThrowError(
-            'Either one server in spec or baseUrl in request must be defined'
+            'Either one server in spec or baseUrl in request must be defined',
           );
         });
       });
@@ -144,7 +144,7 @@ describe('HttpForwarder', () => {
                   },
                 ],
               }),
-            })
+            }),
           ).rejects.toThrowErrorMatchingSnapshot();
         });
 
@@ -166,7 +166,7 @@ describe('HttpForwarder', () => {
           });
 
           expect(axios.default).toHaveBeenCalledWith(
-            expect.objectContaining({ baseURL: 'http://api.example.com', url: '/todos' })
+            expect.objectContaining({ baseURL: 'http://api.example.com', url: '/todos' }),
           );
         });
 
@@ -188,7 +188,7 @@ describe('HttpForwarder', () => {
           });
 
           expect(axios.default).toHaveBeenCalledWith(
-            expect.objectContaining({ baseURL: 'http://api.example.com', url: '/todos' })
+            expect.objectContaining({ baseURL: 'http://api.example.com', url: '/todos' }),
           );
         });
       });

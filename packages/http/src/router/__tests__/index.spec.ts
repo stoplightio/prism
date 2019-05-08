@@ -41,7 +41,7 @@ describe('http router', () => {
               path,
             },
           },
-        })
+        }),
       ).toThrow(ProblemJsonError.fromTemplate(NO_SERVER_CONFIGURATION_PROVIDED_ERROR));
     });
 
@@ -56,7 +56,7 @@ describe('http router', () => {
               path: '',
             },
           },
-        })
+        }),
       ).toThrow(ProblemJsonError.fromTemplate(NO_RESOURCE_PROVIDED_ERROR));
     });
 
@@ -75,7 +75,7 @@ describe('http router', () => {
                 path,
               },
             },
-          })
+          }),
         ).not.toThrowError();
       });
 
@@ -99,7 +99,7 @@ describe('http router', () => {
                 path: '/',
               },
             },
-          })
+          }),
         ).toThrow(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
       });
 
@@ -126,7 +126,7 @@ describe('http router', () => {
                   path: `${path}${randomPath()}`,
                 },
               },
-            })
+            }),
           ).toThrow(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
         });
 
@@ -252,7 +252,7 @@ describe('http router', () => {
                   path: requestPath,
                 },
               },
-            })
+            }),
           ).toThrow(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
         });
 
@@ -360,7 +360,7 @@ describe('http router', () => {
                   path,
                 },
               },
-            })
+            }),
           ).toEqual(expectedResource);
         });
 
@@ -378,7 +378,7 @@ describe('http router', () => {
                   path,
                 },
               },
-            })
+            }),
           ).toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
         });
 
@@ -434,7 +434,7 @@ describe('http router', () => {
                 path,
               },
             },
-          })
+          }),
         ).toThrowError(ProblemJsonError.fromTemplate(NO_METHOD_MATCHED_ERROR));
       });
     });

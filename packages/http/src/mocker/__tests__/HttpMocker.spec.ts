@@ -80,7 +80,7 @@ describe('HttpMocker', () => {
       return expect(
         httpMocker.mock({
           input: mockInput,
-        })
+        }),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
 
@@ -88,7 +88,7 @@ describe('HttpMocker', () => {
       return expect(
         httpMocker.mock({
           resource: mockResource,
-        })
+        }),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
 
@@ -102,7 +102,7 @@ describe('HttpMocker', () => {
           httpMocker.mock({
             resource: mockResource,
             input: mockInput,
-          })
+          }),
         ).resolves.toHaveProperty('body', undefined);
       });
 
@@ -117,7 +117,7 @@ describe('HttpMocker', () => {
           httpMocker.mock({
             resource: mockResource,
             input: mockInput,
-          })
+          }),
         ).resolves.toMatchSnapshot();
       });
 
@@ -134,7 +134,7 @@ describe('HttpMocker', () => {
           httpMocker.mock({
             resource: mockResource,
             input: mockInput,
-          })
+          }),
         ).resolves.toMatchSnapshot();
       });
 
@@ -167,7 +167,7 @@ describe('HttpMocker', () => {
           httpMocker.mock({
             resource: mockResource,
             input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
-          })
+          }),
         ).resolves.toMatchSnapshot();
       });
     });
@@ -187,7 +187,7 @@ describe('HttpMocker', () => {
           httpMocker.mock({
             resource: mockResource,
             input: mockInput,
-          })
+          }),
         ).resolves.toMatchSnapshot();
       });
     });

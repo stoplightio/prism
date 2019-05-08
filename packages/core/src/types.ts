@@ -11,7 +11,7 @@ export interface IPrism<Resource, Input, Output, Config, LoadOpts> {
 
 export type PartialPrismConfigFactory<C, I> = (
   input: I,
-  defaultConfig?: PartialPrismConfig<C, I> | PrismConfig<C, I>
+  defaultConfig?: PartialPrismConfig<C, I> | PrismConfig<C, I>,
 ) => Partial<C>;
 export type PartialPrismConfig<C, I> = Partial<C> | PrismConfigFactory<C, I> | PartialPrismConfigFactory<C, I>;
 
@@ -39,21 +39,21 @@ export interface IHttpLoaderOpts {
 export interface IRouter<Resource, Input, Config> {
   route: (
     opts: { resources: Resource[]; input: Input; config?: Config },
-    defaultRouter?: IRouter<Resource, Input, Config>
+    defaultRouter?: IRouter<Resource, Input, Config>,
   ) => Resource;
 }
 
 export interface IForwarder<Resource, Input, Config, Output> {
   forward: (
     opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config },
-    defaultForwarder?: IForwarder<Resource, Input, Config, Output>
+    defaultForwarder?: IForwarder<Resource, Input, Config, Output>,
   ) => Promise<Output>;
 }
 
 export interface IMocker<Resource, Input, Config, Output> {
   mock: (
     opts: Partial<IMockerOpts<Resource, Input, Config>>,
-    defaultMocker?: IMocker<Resource, Input, Config, Output>
+    defaultMocker?: IMocker<Resource, Input, Config, Output>,
   ) => Promise<Output>;
 }
 
@@ -66,11 +66,11 @@ export interface IMockerOpts<Resource, Input, Config> {
 export interface IValidator<Resource, Input, Config, Output> {
   validateInput?: (
     opts: { resource: Resource; input: Input; config?: Config },
-    defaultValidator?: IValidator<Resource, Input, Config, Output>
+    defaultValidator?: IValidator<Resource, Input, Config, Output>,
   ) => Promise<IPrismDiagnostic[]>;
   validateOutput?: (
     opts: { resource: Resource; output?: Output; config?: Config },
-    defaultValidator?: IValidator<Resource, Input, Config, Output>
+    defaultValidator?: IValidator<Resource, Input, Config, Output>,
   ) => Promise<IPrismDiagnostic[]>;
 }
 

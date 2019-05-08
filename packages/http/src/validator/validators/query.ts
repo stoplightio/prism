@@ -9,7 +9,7 @@ export class HttpQueryValidator extends HttpParamsValidator<IHttpNameValues, IHt
   constructor(
     registry: IHttpParamDeserializerRegistry<IHttpNameValues>,
     prefix: string,
-    style: HttpParamStyles = HttpParamStyles.Form
+    style: HttpParamStyles = HttpParamStyles.Form,
   ) {
     super(registry, prefix, style);
   }

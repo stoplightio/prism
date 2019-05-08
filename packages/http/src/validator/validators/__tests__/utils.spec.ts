@@ -20,7 +20,7 @@ describe('convertAjvErrors()', () => {
   describe('keyword field is missing', () => {
     it('converts properly', () => {
       expect(
-        convertAjvErrors([Object.assign({}, errorObjectFixture, { keyword: undefined })], DiagnosticSeverity.Error)
+        convertAjvErrors([Object.assign({}, errorObjectFixture, { keyword: undefined })], DiagnosticSeverity.Error),
       ).toMatchSnapshot();
     });
   });
@@ -28,7 +28,7 @@ describe('convertAjvErrors()', () => {
   describe('message field is missing', () => {
     it('converts properly', () => {
       expect(
-        convertAjvErrors([Object.assign({}, errorObjectFixture, { message: undefined })], DiagnosticSeverity.Error)
+        convertAjvErrors([Object.assign({}, errorObjectFixture, { message: undefined })], DiagnosticSeverity.Error),
       ).toMatchSnapshot();
     });
   });
@@ -75,7 +75,7 @@ describe('validateAgainstSchema()', () => {
             schemaPath: '#/type',
           },
         ],
-        DiagnosticSeverity.Error
+        DiagnosticSeverity.Error,
       );
     });
   });

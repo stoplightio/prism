@@ -18,7 +18,7 @@ export function configMergerFactory<C, I>(
         // remove falsy config props
         _compact([baseConfig, ...configs])
           // resolve each config (resolveConfig is async)
-          .map((c: C) => resolveConfig(input, c, defaultConfig))
+          .map((c: C) => resolveConfig(input, c, defaultConfig)),
       );
 
     if (!resolvedConfigs.length) {

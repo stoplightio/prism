@@ -10,7 +10,7 @@ describe('matchPath()', () => {
     const requestPath = randomPath({ leadingSlash: false });
     const operationPath = randomPath({ leadingSlash: true });
     expect(() => matchPath(requestPath, operationPath)).toThrow(
-      `The request path '${requestPath}' must start with a slash.`
+      `The request path '${requestPath}' must start with a slash.`,
     );
   });
 
@@ -18,7 +18,7 @@ describe('matchPath()', () => {
     const requestPath = randomPath({ leadingSlash: true });
     const operationPath = randomPath({ leadingSlash: false });
     expect(() => matchPath(requestPath, operationPath)).toThrow(
-      `Given request path '${requestPath}' the operation path '${operationPath}' must start with a slash.`
+      `Given request path '${requestPath}' the operation path '${operationPath}' must start with a slash.`,
     );
   });
 

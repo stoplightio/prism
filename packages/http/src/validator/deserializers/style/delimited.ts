@@ -6,7 +6,7 @@ import { IHttpQueryParamStyleDeserializer } from '../types';
 export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeserializer {
   constructor(
     private readonly separator: string,
-    private readonly styleName: HttpParamStyles.PipeDelimited | HttpParamStyles.SpaceDelimited
+    private readonly styleName: HttpParamStyles.PipeDelimited | HttpParamStyles.SpaceDelimited,
   ) {}
   public supports(style: HttpParamStyles) {
     return style === this.styleName;

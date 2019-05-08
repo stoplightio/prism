@@ -7,7 +7,7 @@ import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
 export const createServer = <LoaderInput>(
   loaderInput: LoaderInput,
-  opts: IPrismHttpServerOpts<LoaderInput>
+  opts: IPrismHttpServerOpts<LoaderInput>,
 ): IPrismHttpServer<LoaderInput> => {
   const server = fastify<Server, IncomingMessage, ServerResponse>();
   const { components = {}, config } = opts;
@@ -42,7 +42,7 @@ export const createServer = <LoaderInput>(
 };
 
 const replyHandler = <LoaderInput>(
-  prism: TPrismHttpInstance<LoaderInput>
+  prism: TPrismHttpInstance<LoaderInput>,
 ): fastify.RequestHandler<IncomingMessage, ServerResponse> => {
   return async (request, reply) => {
     try {

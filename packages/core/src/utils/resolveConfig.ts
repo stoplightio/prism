@@ -7,7 +7,7 @@ function isPrismConfigFactory<C, I>(val: PartialPrismConfig<C, I>): val is Parti
 export function resolveConfig<Config, Input>(
   input: Input,
   config: PartialPrismConfig<Config, Input>,
-  defaultConfig?: PartialPrismConfig<Config, Input>
+  defaultConfig?: PartialPrismConfig<Config, Input>,
 ): Partial<Config> {
   if (isPrismConfigFactory<Config, Input>(config)) {
     return config(input, defaultConfig);

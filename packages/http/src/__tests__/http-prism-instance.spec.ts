@@ -33,7 +33,7 @@ describe('Http Prism Instance function tests', () => {
         url: {
           path: '/invalid-route',
         },
-      })
+      }),
     ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
   });
 
@@ -58,14 +58,14 @@ describe('Http Prism Instance function tests', () => {
     expect(omit(response, 'output.body')).toMatchSnapshot();
   });
 
-  test('given route with invalid param should return a validation error', async () => {
-    expect(
+  test('given route with invalid param should return a validation error', () => {
+    return expect(
       prism.process({
         method: 'get',
         url: {
           path: '/pet/findByStatus',
         },
-      })
+      }),
     ).rejects.toThrowError(ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY));
   });
 

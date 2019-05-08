@@ -18,7 +18,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
   constructor(
     private readonly bodyValidator: IHttpValidator<any, IHttpContent>,
     private readonly headersValidator: IHttpValidator<IHttpNameValue, IHttpHeaderParam>,
-    private readonly queryValidator: IHttpValidator<IHttpNameValues, IHttpQueryParam>
+    private readonly queryValidator: IHttpValidator<IHttpNameValues, IHttpQueryParam>,
   ) {}
 
   public async validateInput({
@@ -97,5 +97,5 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
 export const validator = new HttpValidator(
   new HttpBodyValidator(validatorRegistry, 'body'),
   new HttpHeadersValidator(headerDeserializerRegistry, 'header'),
-  new HttpQueryValidator(queryDeserializerRegistry, 'query')
+  new HttpQueryValidator(queryDeserializerRegistry, 'query'),
 );

@@ -36,7 +36,7 @@ describe('resolveResponseValidationConfig()', () => {
           describe('response is set to true', () => {
             it('resolves to all-enabled config', () => {
               expect(resolveResponseValidationConfig({ mock: true, validate: { response: true } })).toEqual(
-                defaultEnabledConfig
+                defaultEnabledConfig,
               );
             });
           });
@@ -44,7 +44,7 @@ describe('resolveResponseValidationConfig()', () => {
           describe('response is set to false', () => {
             it('response to all-disabled config', () => {
               expect(resolveResponseValidationConfig({ mock: true, validate: { response: false } })).toEqual(
-                defaultDisabledConfig
+                defaultDisabledConfig,
               );
             });
           });
@@ -54,7 +54,7 @@ describe('resolveResponseValidationConfig()', () => {
           describe('none parameters are set', () => {
             it('resolves to default config', () => {
               expect(resolveResponseValidationConfig({ mock: true, validate: { response: {} } })).toEqual(
-                defaultEnabledConfig
+                defaultEnabledConfig,
               );
             });
           });
@@ -65,7 +65,7 @@ describe('resolveResponseValidationConfig()', () => {
                 resolveResponseValidationConfig({
                   mock: true,
                   validate: { response: defaultDisabledConfig },
-                })
+                }),
               ).toEqual(defaultDisabledConfig);
             });
           });
@@ -115,7 +115,7 @@ describe('resolveRequestValidationConfig()', () => {
           describe('request is set to true', () => {
             it('resolves to all-enabled config', () => {
               expect(resolveRequestValidationConfig({ mock: true, validate: { request: true } })).toEqual(
-                defaultEnabledConfig
+                defaultEnabledConfig,
               );
             });
           });
@@ -123,7 +123,7 @@ describe('resolveRequestValidationConfig()', () => {
           describe('request is set to false', () => {
             it('request to all-disabled config', () => {
               expect(resolveRequestValidationConfig({ mock: true, validate: { request: false } })).toEqual(
-                defaultDisabledConfig
+                defaultDisabledConfig,
               );
             });
           });
@@ -133,7 +133,7 @@ describe('resolveRequestValidationConfig()', () => {
           describe('none parameters are set', () => {
             it('resolves to default config', () => {
               expect(resolveRequestValidationConfig({ mock: true, validate: { request: {} } })).toEqual(
-                defaultEnabledConfig
+                defaultEnabledConfig,
               );
             });
           });
@@ -144,7 +144,7 @@ describe('resolveRequestValidationConfig()', () => {
                 resolveRequestValidationConfig({
                   mock: true,
                   validate: { request: defaultDisabledConfig },
-                })
+                }),
               ).toEqual(defaultDisabledConfig);
             });
           });

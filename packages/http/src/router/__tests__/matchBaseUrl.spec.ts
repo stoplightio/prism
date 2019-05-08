@@ -8,7 +8,7 @@ describe('matchServer.ts', () => {
         {
           url: 'http://www.example.com/',
         },
-        'http://www.example.com/'
+        'http://www.example.com/',
       );
 
       expect(serverMatch).toEqual(MatchType.CONCRETE);
@@ -22,7 +22,7 @@ describe('matchServer.ts', () => {
       expect(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.google.com/')).toEqual(MatchType.NOMATCH);
 
       expect(matchBaseUrl({ url: 'http://www.example.com:8081/v1' }, 'http://www.example.com/v1')).toEqual(
-        MatchType.NOMATCH
+        MatchType.NOMATCH,
       );
     });
 
@@ -55,8 +55,8 @@ describe('matchServer.ts', () => {
               host: { default: 'www.example.com' },
             },
           },
-          'http://stoplight.io/v1'
-        )
+          'http://stoplight.io/v1',
+        ),
       ).toEqual(MatchType.TEMPLATED);
     });
 
@@ -165,7 +165,7 @@ describe('matchServer.ts', () => {
           b: {
             default: 'vb',
           },
-        })
+        }),
       ).toThrow(`Variable 'a' is not defined, cannot parse input.`);
     });
 
