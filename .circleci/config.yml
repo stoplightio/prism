@@ -36,6 +36,22 @@ jobs:
       - run:
           name: Run build
           command: yarn typecheck
+  cli:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: yarn
+      - run:
+          name: Build all code to JavaScript
+          command: yarn build
+      - run:
+          name: Create CLI binaries
+          command: npx pkg -t node10-linux,node10-macos,node10-win --out-path ./cli-binaries ./packages/cli/
+      - store_artifacts:
+          path: ./cli-binaries
   publish:
     docker:
       - image: circleci/node:10
@@ -58,6 +74,7 @@ workflows:
   build:
     jobs:
       - build
+      - cli
       - publish:
           filters:
             branches:
