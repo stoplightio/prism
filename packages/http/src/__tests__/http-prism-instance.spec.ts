@@ -66,7 +66,7 @@ describe('Http Prism Instance function tests', () => {
           path: '/pet/findByStatus',
         },
       })
-    ).rejects.toThrowError(INVALID_REQUEST_PAYLOAD.title);
+    ).rejects.toThrowError(ProblemJsonError.fromTemplate(INVALID_REQUEST_PAYLOAD));
   });
 
   test('should support collection format multi', async () => {
