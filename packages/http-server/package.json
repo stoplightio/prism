@@ -21,7 +21,6 @@
   "dependencies": {
     "@stoplight/prism-core": "^3.0.0-pre.2",
     "@stoplight/prism-http": "^3.0.0-pre.2",
-    "fast-json-stringify": "^1.15.2",
     "fastify": "2.3.x",
     "tslib": "1.9.x"
   }

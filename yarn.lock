@@ -3016,7 +3016,7 @@ fast-json-stable-stringify@2.x, fast-json-stable-stringify@^2.0.0:
   resolved "https://registry.yarnpkg.com/fast-json-stable-stringify/-/fast-json-stable-stringify-2.0.0.tgz#d5142c0caee6b1189f87d3a76111064f86c8bbf2"
   integrity sha1-1RQsDK7msRifh9OnYREGT4bIu/I=
 
-fast-json-stringify@^1.15.0, fast-json-stringify@^1.15.2:
+fast-json-stringify@^1.15.0:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/fast-json-stringify/-/fast-json-stringify-1.15.2.tgz#dc477f91790ba9377a30bf538a1525994f567473"
   integrity sha512-iKo79rW7J2LRexme54j33BZBmFmGtqwYL6fmAxnU5VOZEJCUFir5g5iCmt5HXtxUXvI2hnmpGku+cduJpMCvwQ==
