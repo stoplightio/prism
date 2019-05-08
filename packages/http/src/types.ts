@@ -85,7 +85,12 @@ export type ProblemJson = {
 
 export class ProblemJsonError extends Error {
   public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
-    return new ProblemJsonError(template.name, template.title, template.status, detail || '');
+    return new ProblemJsonError(
+      `https://stoplight.io/prism/errors#${template.name}`,
+      template.title,
+      template.status,
+      detail || '',
+    );
   }
 
   constructor(readonly name: string, readonly message: string, readonly status: number, readonly detail: string) {
