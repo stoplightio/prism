@@ -9,6 +9,8 @@ Prism is a set of packages that, given an API description, can:
 1. Spin up a mock HTTP server and respond realistically based on your requests
 1. Validate requests passing through against the provided API description
 
+**Note: this branch refers to Prism 3.x, which is the current version most likely you will use. If you're looing for the 2.x version, point your browser to the [right branch][2.x]**
+
 Being based on [Graphite], Prism supports any description format that Graphite supports:
 
 - OpenAPI v3.0
@@ -155,3 +157,4 @@ Please see [CONTRIBUTING] and [CODE_OF_CONDUCT] for details.
 [http]: https://www.npmjs.com/package/@stoplight/prism-http
 [http-server]: https://www.npmjs.com/package/@stoplight/prism-http-server
 [cli]: https://www.npmjs.com/package/@stoplight/prism-cli
+[2.x]: https://github.com/stoplightio/prism/tree/2.x
