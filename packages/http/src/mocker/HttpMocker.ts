@@ -3,12 +3,12 @@ import { IHttpOperation } from '@stoplight/types';
 
 import * as caseless from 'caseless';
 import { IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
-import { INVALID_REQUEST_PAYLOAD } from './errors';
+import { UNPROCESSABLE_ENTITY } from './errors';
 import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: IExampleGenerator) {}
+  constructor(private _exampleGenerator: IExampleGenerator) { }
 
   public async mock({
     resource,
@@ -39,7 +39,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
         negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
       } catch (error) {
         throw ProblemJsonError.fromTemplate(
-          INVALID_REQUEST_PAYLOAD,
+          UNPROCESSABLE_ENTITY,
           `Your request body is not valid: ${JSON.stringify(input.validations.input)}`
         );
       }
