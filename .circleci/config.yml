@@ -36,7 +36,7 @@ jobs:
       - run:
           name: Run build
           command: yarn typecheck
-  cli:
+  create-cli-binaries:
     docker:
       - image: circleci/node:10
     steps:
