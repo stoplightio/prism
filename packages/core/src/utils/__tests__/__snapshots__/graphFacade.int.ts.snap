@@ -8,7 +8,7 @@ Array [
     "id": "?http-operation-id?",
     "iid": "addPet",
     "method": "post",
-    "path": "/pet",
+    "path": "/pets",
     "request": Object {
       "body": Object {
         "contents": Array [
@@ -207,7 +207,7 @@ Array [
         "description": undefined,
         "flows": Object {
           "implicit": Object {
-            "authorizationUrl": "https://petstore.swagger.io/oauth/dialog",
+            "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
             "scopes": Array [
               Object {
                 "write:pets": "modify pets in your account",
@@ -242,7 +242,7 @@ Array [
     "id": "?http-operation-id?",
     "iid": "updatePet",
     "method": "put",
-    "path": "/pet",
+    "path": "/pets",
     "request": Object {
       "body": Object {
         "contents": Array [
@@ -475,7 +475,7 @@ Array [
         "description": undefined,
         "flows": Object {
           "implicit": Object {
-            "authorizationUrl": "https://petstore.swagger.io/oauth/dialog",
+            "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
             "scopes": Array [
               Object {
                 "write:pets": "modify pets in your account",
@@ -510,7 +510,7 @@ Array [
     "id": "?http-operation-id?",
     "iid": "findPetsByStatus",
     "method": "get",
-    "path": "/pet/findByStatus",
+    "path": "/pets/findByStatus",
     "request": Object {
       "cookie": Array [],
       "headers": Array [],
@@ -743,7 +743,7 @@ Array [
         "description": undefined,
         "flows": Object {
           "implicit": Object {
-            "authorizationUrl": "https://petstore.swagger.io/oauth/dialog",
+            "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
             "scopes": Array [
               Object {
                 "write:pets": "modify pets in your account",
@@ -774,11 +774,11 @@ Array [
   },
   Object {
     "deprecated": true,
-    "description": "Muliple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
+    "description": "Muliple tags can be provided with comma separated strings. Use         tag1, tag2, tag3 for testing.",
     "id": "?http-operation-id?",
     "iid": "findPetsByTags",
     "method": "get",
-    "path": "/pet/findByTags",
+    "path": "/pets/findByTags",
     "request": Object {
       "cookie": Array [],
       "headers": Array [],
@@ -1005,7 +1005,7 @@ Array [
         "description": undefined,
         "flows": Object {
           "implicit": Object {
-            "authorizationUrl": "https://petstore.swagger.io/oauth/dialog",
+            "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
             "scopes": Array [
               Object {
                 "write:pets": "modify pets in your account",
@@ -1040,7 +1040,7 @@ Array [
     "id": "?http-operation-id?",
     "iid": "getPetById",
     "method": "get",
-    "path": "/pet/{petId}",
+    "path": "/pets/{petId}",
     "request": Object {
       "cookie": Array [],
       "headers": Array [],
@@ -1276,12 +1276,79 @@ Array [
             "mediaType": "application/xml",
             "schema": Object {
               "properties": Object {
+                "category": Object {
+                  "properties": Object {
+                    "id": Object {
+                      "format": "int64",
+                      "type": "integer",
+                    },
+                    "name": Object {
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                  "xml": Object {
+                    "name": "Category",
+                  },
+                },
+                "id": Object {
+                  "format": "int64",
+                  "type": "integer",
+                },
                 "name": Object {
                   "example": "doggie",
                   "type": "string",
                 },
+                "photoUrls": Object {
+                  "items": Object {
+                    "type": "string",
+                  },
+                  "type": "array",
+                  "xml": Object {
+                    "name": "photoUrl",
+                    "wrapped": true,
+                  },
+                },
+                "status": Object {
+                  "description": "pet status in the store",
+                  "enum": Array [
+                    "available",
+                    "pending",
+                    "sold",
+                  ],
+                  "type": "string",
+                },
+                "tags": Object {
+                  "items": Object {
+                    "properties": Object {
+                      "id": Object {
+                        "format": "int64",
+                        "type": "integer",
+                      },
+                      "name": Object {
+                        "type": "string",
+                      },
+                    },
+                    "type": "object",
+                    "xml": Object {
+                      "name": "Tag",
+                    },
+                  },
+                  "type": "array",
+                  "xml": Object {
+                    "name": "tag",
+                    "wrapped": true,
+                  },
+                },
               },
+              "required": Array [
+                "name",
+                "photoUrls",
+              ],
               "type": "object",
+              "xml": Object {
+                "name": "Pet",
+              },
             },
           },
           Object {
@@ -1289,16 +1356,128 @@ Array [
             "mediaType": "application/json",
             "schema": Object {
               "properties": Object {
+                "category": Object {
+                  "properties": Object {
+                    "id": Object {
+                      "format": "int64",
+                      "type": "integer",
+                    },
+                    "name": Object {
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                  "xml": Object {
+                    "name": "Category",
+                  },
+                },
+                "id": Object {
+                  "format": "int64",
+                  "type": "integer",
+                },
                 "name": Object {
                   "example": "doggie",
                   "type": "string",
                 },
+                "photoUrls": Object {
+                  "items": Object {
+                    "type": "string",
+                  },
+                  "type": "array",
+                  "xml": Object {
+                    "name": "photoUrl",
+                    "wrapped": true,
+                  },
+                },
+                "status": Object {
+                  "description": "pet status in the store",
+                  "enum": Array [
+                    "available",
+                    "pending",
+                    "sold",
+                  ],
+                  "type": "string",
+                },
+                "tags": Object {
+                  "items": Object {
+                    "properties": Object {
+                      "id": Object {
+                        "format": "int64",
+                        "type": "integer",
+                      },
+                      "name": Object {
+                        "type": "string",
+                      },
+                    },
+                    "type": "object",
+                    "xml": Object {
+                      "name": "Tag",
+                    },
+                  },
+                  "type": "array",
+                  "xml": Object {
+                    "name": "tag",
+                    "wrapped": true,
+                  },
+                },
               },
+              "required": Array [
+                "name",
+                "photoUrls",
+              ],
               "type": "object",
+              "xml": Object {
+                "name": "Pet",
+              },
             },
           },
         ],
-        "description": "Teapot found",
+        "description": "teapot response",
+        "headers": Array [],
+      },
+      Object {
+        "code": "default",
+        "contents": Array [
+          Object {
+            "examples": Array [],
+            "mediaType": "application/xml",
+            "schema": Object {
+              "properties": Object {
+                "code": Object {
+                  "format": "int32",
+                  "type": "integer",
+                },
+                "message": Object {
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "code",
+                "message",
+              ],
+            },
+          },
+          Object {
+            "examples": Array [],
+            "mediaType": "application/json",
+            "schema": Object {
+              "properties": Object {
+                "code": Object {
+                  "format": "int32",
+                  "type": "integer",
+                },
+                "message": Object {
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "code",
+                "message",
+              ],
+            },
+          },
+        ],
+        "description": "default response",
         "headers": Array [],
       },
     ],
@@ -1331,7 +1510,7 @@ Array [
     "id": "?http-operation-id?",
     "iid": "updatePetWithForm",
     "method": "post",
-    "path": "/pet/{petId}",
+    "path": "/pets/{petId}",
     "request": Object {
       "body": Object {
         "allowEmptyValue": undefined,
@@ -1416,7 +1595,7 @@ Array [
         "description": undefined,
         "flows": Object {
           "implicit": Object {
-            "authorizationUrl": "https://petstore.swagger.io/oauth/dialog",
+            "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
             "scopes": Array [
               Object {
                 "write:pets": "modify pets in your account",
@@ -1451,7 +1630,7 @@ Array [
     "id": "?http-operation-id?",
     "iid": "deletePet",
     "method": "delete",
-    "path": "/pet/{petId}",
+    "path": "/pets/{petId}",
     "request": Object {
       "cookie": Array [],
       "headers": Array [
@@ -1538,7 +1717,7 @@ Array [
         "description": undefined,
         "flows": Object {
           "implicit": Object {
-            "authorizationUrl": "https://petstore.swagger.io/oauth/dialog",
+            "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
             "scopes": Array [
               Object {
                 "write:pets": "modify pets in your account",
@@ -1573,7 +1752,7 @@ Array [
     "id": "?http-operation-id?",
     "iid": "uploadFile",
     "method": "post",
-    "path": "/pet/{petId}/uploadImage",
+    "path": "/pets/{petId}/uploadImage",
     "request": Object {
       "body": Object {
         "allowEmptyValue": undefined,
@@ -1667,7 +1846,7 @@ Array [
         "description": undefined,
         "flows": Object {
           "implicit": Object {
-            "authorizationUrl": "https://petstore.swagger.io/oauth/dialog",
+            "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
             "scopes": Array [
               Object {
                 "write:pets": "modify pets in your account",
@@ -1939,7 +2118,7 @@ Array [
   },
   Object {
     "deprecated": undefined,
-    "description": "For valid response try integer IDs with value >= 1 and <= 10. Other values will generated exceptions",
+    "description": "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions",
     "id": "?http-operation-id?",
     "iid": "getOrderById",
     "method": "get",
@@ -2114,7 +2293,7 @@ Array [
   },
   Object {
     "deprecated": undefined,
-    "description": "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors",
+    "description": "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors",
     "id": "?http-operation-id?",
     "iid": "deleteOrder",
     "method": "delete",
@@ -2727,7 +2906,7 @@ Array [
     },
     "responses": Array [
       Object {
-        "code": "201",
+        "code": "200",
         "contents": Array [
           Object {
             "examples": Array [],
@@ -2762,10 +2941,6 @@ Array [
                   "type": "string",
                 },
               },
-              "required": Array [
-                "id",
-                "username",
-              ],
               "type": "object",
               "xml": Object {
                 "name": "User",
@@ -2805,10 +2980,6 @@ Array [
                   "type": "string",
                 },
               },
-              "required": Array [
-                "id",
-                "username",
-              ],
               "type": "object",
               "xml": Object {
                 "name": "User",
