@@ -16,10 +16,10 @@ Being based on [Graphite], Prism supports any description format that Graphite s
 
 Prims is a multi-package repository:
 
-- `core:` basic interfaces and abstraction for API descriptions
-- `http:` A Prism implementation to work with HTTP Requests
-- `http-server:` A _[Fastify]_ instance that uses Prism to validate/mock/respond and forward to http requests
-- `cli:` A CLI to spin up servers locally easily
+- [`core:`][core] basic interfaces and abstraction for API descriptions
+- [`http:`][http] A Prism implementation to work with HTTP Requests
+- [`http-server:`][http-server] A _[Fastify]_ instance that uses Prism to validate/mock/respond and forward to http requests
+- [`cli:`][cli] A CLI to spin up servers locally easily
 
 Look at the relative repositories' README for the specific documentation.
 
@@ -151,3 +151,7 @@ Please see [CONTRIBUTING] and [CODE_OF_CONDUCT] for details.
 [HTTPie]: https://httpie.org/
 [download-release]: https://github.com/stoplightio/prism/releases/latest
 [rfc7807]: https://tools.ietf.org/html/rfc7807
+[core]: https://www.npmjs.com/package/@stoplight/prism-core
+[http]: https://www.npmjs.com/package/@stoplight/prism-http
+[http-server]: https://www.npmjs.com/package/@stoplight/prism-http-server
+[cli]: https://www.npmjs.com/package/@stoplight/prism-cli
