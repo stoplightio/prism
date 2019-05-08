@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as jsf from 'json-schema-faker';
-import cloneDeep = require('lodash/cloneDeep');
+import { cloneDeep } from 'lodash';
 import { IExampleGenerator } from './IExampleGenerator';
 
 jsf.option({

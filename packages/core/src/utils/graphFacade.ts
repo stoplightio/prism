@@ -16,7 +16,7 @@ import { IHttpOperation } from '@stoplight/types';
 import * as fs from 'fs';
 import { extname, resolve } from 'path';
 
-import compact = require('lodash/compact');
+import { compact } from 'lodash';
 
 export class GraphFacade {
   private fsBackend: FileSystemBackend;

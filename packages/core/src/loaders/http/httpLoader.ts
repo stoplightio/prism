@@ -1,7 +1,7 @@
 import { FilesystemNodeType } from '@stoplight/graphite/backends/filesystem';
 import { IHttpOperation } from '@stoplight/types';
 import axios from 'axios';
-import trimStart = require('lodash/trimStart');
+import { trimStart } from 'lodash';
 import { extname } from 'path';
 import { IHttpLoaderOpts } from '../../types';
 import { GraphFacade } from '../../utils/graphFacade';
