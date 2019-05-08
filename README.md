@@ -125,10 +125,6 @@ Connection: keep-alive
 
 This error shows the request is missing the `photoUrls` property:
 
-## API
-
-To be defined.
-
 ## FAQ
 
 **The API description defines a base path of `/api` (using OpenAPI v2 `basePath` keyword, or in
