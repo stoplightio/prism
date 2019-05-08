@@ -50,7 +50,7 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Create CLI binaries
-          command: npx pkg -t node10-linux,node10-macos,node10-win --out-path ./cli-binaries ./packages/cli/
+          command: npx pkg --out-path ./cli-binaries ./packages/cli/
       - store_artifacts:
           path: ./cli-binaries
       - run:
