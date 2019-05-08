@@ -25,15 +25,15 @@ Look at the relative repositories' README for the specific documentation.
 
 ## Install
 
-Prism is a Node module, and can be installed via NPM or Yarn:
+Most of the users will probably want to use the CLI, which is a Node module, and can either be installed via NPM or Yarn…
 
 ```bash
-npm install -g prism
+npm install -g @stoplight/prism-cli
 # or
-yarn global add prism
+yarn global add @stoplight/prism-cli
 ```
 
-_*TODO:* Create an executable which will run without needing to install a node module._
+…or if you do not want to install [Node](https://nodejs.org), you can download the latest release from [GitHub directly][download-release]
 
 ## Usage
 
@@ -95,7 +95,7 @@ Requests to operations which expect a request body will be validated, for exampl
 http --json POST http://127.0.0.1:4010/pets name=Stowford
 ```
 
-This will generate an error:
+This will generate an error, conforming the [application/problem+json][rfc7807] specification:
 
 ```
 Here is the original validation result instead: [{"path":["body"],"name":"required","summary":"should have required property 'photoUrls'","message":"should have required property 'photoUrls'","severity":"error"}]
@@ -116,7 +116,7 @@ Base paths are completely ignored by the Prism HTTP server, so they can be remov
 If you have a base path of `/api` and your path is defined as `hello`, then a request to
 `http://localhost:4010/hello` would work, but `http://localhost:4010/api/hello` will fail.
 
-## TODO
+## What's next for Prism?
 
 - [ ] Server Validation
 - [ ] Accept header validation
@@ -149,3 +149,5 @@ Please see [CONTRIBUTING] and [CODE_OF_CONDUCT] for details.
 [Fastify]: https://www.fastify.io/
 [Graphite]: https://github.com/stoplightio/graphite
 [HTTPie]: https://httpie.org/
+[download-release]: https://github.com/stoplightio/prism/releases/latest
+[rfc7807]: https://tools.ietf.org/html/rfc7807
