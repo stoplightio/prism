@@ -17,15 +17,15 @@
   },
   "dependencies": {
     "@stoplight/prism-core": "^3.0.0-pre.2",
-    "ajv": "6.x.x",
-    "ajv-oai": "1.x.x",
-    "axios": "0.x.x",
-    "caseless": "0.12.0",
+    "ajv": "^6.0.0",
+    "ajv-oai": "^1.0.0",
+    "axios": "^0.18.0",
+    "caseless": "^0.12.0",
     "json-schema-faker": "stoplightio/json-schema-faker",
-    "tslib": "1.9.x"
+    "tslib": "^1.9.0"
   },
   "devDependencies": {
-    "@types/caseless": "0.12.2",
+    "@types/caseless": "^0.12.2",
     "@types/json-schema": "^7.0.3"
   },
   "publishConfig": {

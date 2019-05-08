@@ -20,17 +20,17 @@
     "release": "lerna version prerelease --conventional-commit"
   },
   "devDependencies": {
-    "@stoplight/types": "4.x.x",
-    "@types/chance": "1.0.x",
-    "@types/jest": "24.x.x",
-    "@types/node": "12.x.x",
-    "chance": "1.0.x",
-    "jest": "24.x.x",
-    "lerna": "3.13.4",
-    "ts-jest": "24.x.x",
-    "tslint": "5.16.0",
-    "tslint-config-stoplight": "1.x.x",
-    "typescript": "3.x.x"
+    "@stoplight/types": "^4.0.0",
+    "@types/chance": "^1.0.0",
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "chance": "^1.0.0",
+    "jest": "^24.0.0",
+    "lerna": "^3.0.0",
+    "ts-jest": "^24.0.0",
+    "tslint": "^5.0.0",
+    "tslint-config-stoplight": "^1.0.0",
+    "typescript": "^3.0.0"
   },
   "prettier": {
     "printWidth": 100,
