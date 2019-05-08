@@ -39,7 +39,11 @@ yarn global add @stoplight/prism-cli
 
 ## Usage
 
-### Mock server
+### CLI
+
+We'll present here only the main use cases. For a complete overview of the CLI, you can consult the relevand [documentation][cli-docs]
+
+#### Mock server
 
 Running Prism on the CLI will create a HTTP mock server.
 
@@ -123,6 +127,10 @@ Connection: keep-alive
 
 This error shows the request is missing the `photoUrls` property:
 
+## API
+
+To be defined.
+
 ## FAQ
 
 **The API description defines a base path of `/api` (using OpenAPI v2 `basePath` keyword, or in
@@ -172,3 +180,4 @@ Please see [CONTRIBUTING] and [CODE_OF_CONDUCT] for details.
 [http-server]: https://www.npmjs.com/package/@stoplight/prism-http-server
 [cli]: https://www.npmjs.com/package/@stoplight/prism-cli
 [2.x]: https://github.com/stoplightio/prism/tree/2.x
+[cli-docs]: packages/cli/README.md
