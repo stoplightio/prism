@@ -166,7 +166,6 @@ Please see [CONTRIBUTING] and [CODE_OF_CONDUCT] for details.
 [CONTRIBUTING]: CONTRIBUTING.md
 [Fastify]: https://www.fastify.io/
 [Graphite]: https://github.com/stoplightio/graphite
-[HTTPie]: https://httpie.org/
 [download-release]: https://github.com/stoplightio/prism/releases/latest
 [rfc7807]: https://tools.ietf.org/html/rfc7807
 [core]: https://www.npmjs.com/package/@stoplight/prism-core
