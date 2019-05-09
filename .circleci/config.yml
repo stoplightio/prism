@@ -54,7 +54,9 @@ jobs:
       - store_artifacts:
           path: ./cli-binaries
       - persist_to_workspace:
-          root: ./cli-binaries
+          root: ./
+          paths:
+            - cli-binaries
       - run:
           name: Publish
           command: yarn lerna publish from-package --github-release --yes --dist-tag alpha
@@ -75,11 +77,6 @@ workflows:
     jobs:
       - build
       - publish:
-          filters:
-            branches:
-              only: master
-            tags:
-              only: /^v.*/
           requires:
             - build
       - upload_artifacts:
