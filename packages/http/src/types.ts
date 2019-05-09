@@ -32,20 +32,20 @@ export interface IHttpConfig extends IPrismConfig {
 
   validate?: {
     request?:
-      | boolean
-      | {
-          hijack?: boolean;
-          headers?: boolean;
-          query?: boolean;
-          body?: boolean;
-        };
+    | boolean
+    | {
+      hijack?: boolean;
+      headers?: boolean;
+      query?: boolean;
+      body?: boolean;
+    };
 
     response?:
-      | boolean
-      | {
-          headers?: boolean;
-          body?: boolean;
-        };
+    | boolean
+    | {
+      headers?: boolean;
+      body?: boolean;
+    };
   };
 }
 
@@ -85,6 +85,7 @@ export type ProblemJson = {
 
 export class ProblemJsonError extends Error {
   public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
+    Error.captureStackTrace(this, ProblemJsonError);
     return new ProblemJsonError(
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
