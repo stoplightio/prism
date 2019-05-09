@@ -77,7 +77,7 @@ export interface IHttpResponse {
 }
 
 export type ProblemJson = {
-  name: string;
+  type: string;
   title: string;
   status: number;
   detail: string;
@@ -86,11 +86,20 @@ export type ProblemJson = {
 export class ProblemJsonError extends Error {
   public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
     return new ProblemJsonError(
-      `https://stoplight.io/prism/errors#${template.name}`,
+      `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
       detail || '',
     );
+  }
+
+  public static fromPlainError(error: Error & { detail?: string; status?: number }): ProblemJson {
+    return {
+      type: error.name && error.name !== 'Error' ? error.name : 'https://stoplight.io/prism/errors#UNKNOWN',
+      title: error.message,
+      status: error.status || 500,
+      detail: error.detail || '',
+    };
   }
 
   constructor(readonly name: string, readonly message: string, readonly status: number, readonly detail: string) {

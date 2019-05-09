@@ -79,18 +79,9 @@ const replyHandler = <LoaderInput>(
       const status = 'status' in e ? e.status : 500;
       reply
         .type('application/problem+json')
-        .serializer((payload: unknown) => JSON.stringify(payload))
+        .serializer(JSON.stringify)
         .code(status)
-        .send(
-          ProblemJsonError.fromTemplate(
-            {
-              name: e.name || 'UNKNOWN',
-              title: e.message,
-              status,
-            },
-            e.detail,
-          ),
-        );
+        .send(ProblemJsonError.fromPlainError(e));
     }
   };
 };

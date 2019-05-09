@@ -2,6 +2,15 @@ import { relative, resolve } from 'path';
 import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
 
+function checkErrorPayloadShape(payload: string) {
+  const parsedPayload = JSON.parse(payload);
+
+  expect(parsedPayload).toHaveProperty('type');
+  expect(parsedPayload).toHaveProperty('title');
+  expect(parsedPayload).toHaveProperty('status');
+  expect(parsedPayload).toHaveProperty('detail');
+}
+
 describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', file => {
   let server: IPrismHttpServer<{}>;
 
@@ -37,6 +46,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       url: '/pets/123',
     });
     expect(response.statusCode).toBe(500);
+    checkErrorPayloadShape(response.payload);
   });
 
   test('will return requested response using the __code property', async () => {
@@ -68,6 +78,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     });
 
     expect(response.statusCode).toBe(422);
+    checkErrorPayloadShape(response.payload);
   });
 
   test.skip('should automagically provide the parameters when not provided in the query string and a default is defined', async () => {
@@ -137,6 +148,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       },
     });
     expect(response.statusCode).toBe(422);
+    checkErrorPayloadShape(response.payload);
   });
 
   test('will return the default response when using the __code property with a non existing code', async () => {
@@ -146,9 +158,6 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     });
 
     expect(response.statusCode).toBe(499);
-    const payload = JSON.parse(response.payload);
-    expect(payload).toHaveProperty('code');
-    expect(payload).toHaveProperty('message');
   });
 
   test('will return 500 with error when an undefined code is requested and there is no default response', async () => {
@@ -158,6 +167,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     });
 
     expect(response.statusCode).toBe(500);
+    checkErrorPayloadShape(response.payload);
   });
 });
 
