@@ -250,12 +250,12 @@ const helpers = {
   },
 
   negotiateOptionsForInvalidRequest(httpResponses: IHttpOperationResponse[]): IHttpNegotiationResult {
-    // currently only try to find a 400 response, but we may want to support other cases in the future
-    const code = '400';
+    // currently only try to find a 422 response, but we may want to support other cases in the future
+    const code = '422';
     const response = findResponseByStatusCode(httpResponses, code, false);
-    // TODO: what if no 400 response is defined?
+    // TODO: what if no 422 response is defined?
     if (!response) {
-      throw new Error('No 400 response defined');
+      throw new Error('No 422 response defined');
     }
     // find first response with any static examples
     const responseWithExamples = response.contents.find(content => !!content.examples && content.examples.length !== 0);
@@ -275,7 +275,7 @@ const helpers = {
         schema: responseWithSchema.schema,
       };
     } else {
-      throw new Error('Request invalid but mock data corrupted. Neither schema nor example defined for 400 response.');
+      throw new Error('Request invalid but mock data corrupted. Neither schema nor example defined for 422 response.');
     }
   },
 };

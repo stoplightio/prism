@@ -127,7 +127,7 @@ export const httpOperations: IHttpOperation[] = [
         headers: [],
       },
       {
-        code: '400',
+        code: '422',
         contents: [
           {
             mediaType: 'application/json',
@@ -217,7 +217,7 @@ export const httpOperations: IHttpOperation[] = [
         ],
       },
       {
-        code: '400',
+        code: '422',
         headers: [],
         contents: [
           {

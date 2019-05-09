@@ -219,7 +219,7 @@ describe('http mocker', () => {
   });
 
   describe('request is invalid', () => {
-    test('returns 400 and static error response', async () => {
+    test('returns 422 and static error response', async () => {
       const response = await mocker.mock({
         resource: httpOperations[0],
         input: httpRequests[1],
@@ -228,7 +228,7 @@ describe('http mocker', () => {
       expect(response).toMatchSnapshot();
     });
 
-    test('returns 400 and dynamic error response', async () => {
+    test('returns 422 and dynamic error response', async () => {
       if (!httpOperations[1].responses[1].contents[0].schema) {
         throw new Error('Missing test');
       }

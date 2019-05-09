@@ -44,8 +44,8 @@ describe('NegotiatorHelpers', () => {
   });
 
   describe('negotiateOptionsForInvalidRequest()', () => {
-    describe('and 400 response exists', () => {
-      const actualCode = '400';
+    describe('and 422 response exists', () => {
+      const actualCode = '422';
       const actualMediaType = chance.string();
       const actualExampleKey = chance.string();
 
@@ -143,16 +143,16 @@ describe('NegotiatorHelpers', () => {
 
           expect(() => {
             helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
-          }).toThrow('Request invalid but mock data corrupted. Neither schema nor example defined for 400 response.');
+          }).toThrow('Request invalid but mock data corrupted. Neither schema nor example defined for 422 response.');
         });
       });
     });
 
-    describe('and no 400 response exists', () => {
+    describe('and no 422 response exists', () => {
       test('should return an error', async () => {
         expect(() => {
           helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
-        }).toThrow('No 400 response defined');
+        }).toThrow('No 422 response defined');
       });
     });
   });
