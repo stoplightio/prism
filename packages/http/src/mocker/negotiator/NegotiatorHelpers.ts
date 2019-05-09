@@ -15,7 +15,8 @@ function findHttpContentByMediaType(response: IHttpOperationResponse, mediaType:
 }
 
 function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {
-  const generic2xxResponse = findResponseByStatusCode(httpResponses, '2XX', true);
+  const generic2xxResponse =
+    findResponseByStatusCode(httpResponses, '2XX') || createResponseFromDefault(httpResponses, '200');
   const sorted2xxResponses = httpResponses
     .filter(response => response.code.match(/2\d\d/))
     .sort((a: IHttpOperationResponse, b: IHttpOperationResponse) => Number(a.code) - Number(b.code));
@@ -26,17 +27,11 @@ function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationR
 function findResponseByStatusCode(
   responses: IHttpOperationResponse[],
   statusCode: string,
-  useDefault: boolean,
 ): IHttpOperationResponse | undefined {
-  const candidate = responses.find(response => response.code.toLowerCase() === statusCode.toLowerCase());
-  if (candidate) {
-    return candidate;
-  }
-  if (useDefault) return createResponseFromDefault(statusCode, responses);
-  return undefined;
+  return responses.find(response => response.code.toLowerCase() === statusCode.toLowerCase());
 }
 
-function createResponseFromDefault(statusCode: string, responses: IHttpOperationResponse[]) {
+function createResponseFromDefault(responses: IHttpOperationResponse[], statusCode: string) {
   const defaultResponse = responses.find(response => response.code === 'default');
   if (defaultResponse) {
     return Object.assign({}, defaultResponse, { code: statusCode });
@@ -214,7 +209,9 @@ const helpers = {
     code: string,
   ): IHttpNegotiationResult {
     // find response by provided status code
-    const responseByForcedStatusCode = findResponseByStatusCode(httpOperation.responses, code, true);
+    const responseByForcedStatusCode =
+      findResponseByStatusCode(httpOperation.responses, code) ||
+      createResponseFromDefault(httpOperation.responses, code);
     if (responseByForcedStatusCode) {
       try {
         // try to negotiate
@@ -249,10 +246,10 @@ const helpers = {
   },
 
   negotiateOptionsForInvalidRequest(httpResponses: IHttpOperationResponse[]): IHttpNegotiationResult {
-    // currently only try to find a 422 response, but we may want to support other cases in the future
-    const code = '422';
-    const response = findResponseByStatusCode(httpResponses, code, false);
-    // TODO: what if no 422 response is defined?
+    const response =
+      findResponseByStatusCode(httpResponses, '422') ||
+      findResponseByStatusCode(httpResponses, '400') ||
+      createResponseFromDefault(httpResponses, '422');
     if (!response) {
       throw new Error('No 422 response defined');
     }
@@ -263,18 +260,20 @@ const helpers = {
 
     if (responseWithExamples) {
       return {
-        code,
+        code: response.code,
         mediaType: responseWithExamples.mediaType,
         example: responseWithExamples.examples![0],
       };
     } else if (responseWithSchema) {
       return {
-        code,
+        code: response.code,
         mediaType: responseWithSchema.mediaType,
         schema: responseWithSchema.schema,
       };
     } else {
-      throw new Error('Request invalid but mock data corrupted. Neither schema nor example defined for 422 response.');
+      throw new Error(
+        `Request invalid but mock data corrupted. Neither schema nor example defined for ${response.code} response.`,
+      );
     }
   },
 };

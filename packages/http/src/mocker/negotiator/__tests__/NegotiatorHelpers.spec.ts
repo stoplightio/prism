@@ -149,6 +149,54 @@ describe('NegotiatorHelpers', () => {
     });
 
     describe('and no 422 response exists', () => {
+      test('but a 400 response exists', async () => {
+        httpOperation = anHttpOperation(httpOperation)
+          .withResponses([
+            {
+              code: '400',
+              headers: [],
+              contents: [
+                {
+                  mediaType: chance.string(),
+                  examples: [
+                    { key: chance.string(), value: '', externalValue: '' },
+                    { key: chance.string(), value: '', externalValue: '' },
+                  ],
+                  encodings: [],
+                },
+              ],
+            },
+          ])
+          .instance();
+
+        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
+        expect(actualConfig).toHaveProperty('code', '400');
+      });
+
+      test('but a default response exists', async () => {
+        httpOperation = anHttpOperation(httpOperation)
+          .withResponses([
+            {
+              code: 'default',
+              headers: [],
+              contents: [
+                {
+                  mediaType: chance.string(),
+                  examples: [
+                    { key: chance.string(), value: '', externalValue: '' },
+                    { key: chance.string(), value: '', externalValue: '' },
+                  ],
+                  encodings: [],
+                },
+              ],
+            },
+          ])
+          .instance();
+
+        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
+        expect(actualConfig).toHaveProperty('code', '422');
+      });
+
       test('should return an error', async () => {
         expect(() => {
           helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
