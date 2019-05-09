@@ -77,13 +77,11 @@ workflows:
       - publish:
           filters:
             branches:
-              only: develop
+              only: master
           requires:
             - build
       - upload_artifacts:
-          filters:
-            branches:
-              only: develop
+          type: approval
           requires:
             - build
             - publish
