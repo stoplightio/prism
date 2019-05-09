@@ -103,7 +103,7 @@ The body, headers, etc. for this response will be taken from the API description
 Requests to operations which expect a request body will be validated, for example: a POST with JSON.
 
 ```bash
-curl -s -D "/dev/stderr" -H "content-type: application/json" -d '{"name":"Stowford"}' http://127.0.0.1:4010/pets?__code==405 | json_pp
+curl -s -D "/dev/stderr" -H "content-type: application/json" -d '{"name":"Stowford"}' http://127.0.0.1:4010/pets | json_pp
 ```
 
 This will generate an error, conforming the [application/problem+json][rfc7807] specification:
