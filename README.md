@@ -123,7 +123,7 @@ Connection: keep-alive
 }
 ```
 
-This error shows the request is missing the `photoUrls` property:
+This error shows the request is missing a required property `photoUrls` from the HTTP request body.
 
 ## FAQ
 
