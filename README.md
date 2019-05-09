@@ -39,21 +39,21 @@ yarn global add @stoplight/prism-cli
 
 ### CLI
 
-We'll present here only the main use cases. For a complete overview of the CLI, you can consult the relevand [documentation][cli-docs]
+We'll present here only the main use cases. For a complete overview of the CLI, you can consult the relevant [documentation][cli-docs]
 
 #### Mock server
 
 Running Prism on the CLI will create a HTTP mock server.
 
 ```bash
-$ prism mock examples/petstore.oas3.json
+prism mock examples/petstore.oas3.json
 > http://127.0.0.1:4010
 ```
 
-Then in another tab, you can hit the HTTP server with your favorite HTTP client (like [HTTPie]):
+Then in another tab, you can hit the HTTP server with your favorite HTTP client.
 
 ```bash
-$ curl -s -D "/dev/stderr" http://127.0.0.1:4010/pets/123 | json_pp
+curl -s -D "/dev/stderr" http://127.0.0.1:4010/pets/123 | json_pp
 
 HTTP/1.1 200 OK
 content-type: application/json
@@ -93,7 +93,7 @@ Prism can be forced to return different HTTP responses by specifying the status 
 string:
 
 ```bash
-$ curl http://127.0.0.1:4010/pets/123?__code=404
+curl http://127.0.0.1:4010/pets/123?__code=404
 ```
 
 The body, headers, etc. for this response will be taken from the API description document.
