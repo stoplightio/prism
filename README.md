@@ -46,7 +46,7 @@ We'll present here only the main use cases. For a complete overview of the CLI, 
 Running Prism on the CLI will create a HTTP mock server.
 
 ```bash
-prism mock examples/petstore.oas3.json
+prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
 > http://127.0.0.1:4010
 ```
 
