@@ -17,7 +17,7 @@ $ npm install -g @stoplight/prism-cli
 $ prism COMMAND
 running command...
 $ prism (-v|--version|version)
-@stoplight/prism-cli/3.0.0-pre.2 darwin-x64 node-v11.14.0
+@stoplight/prism-cli/3.0.0-alpha.0 darwin-x64 node-v12.1.0
 $ prism --help [COMMAND]
 USAGE
   $ prism COMMAND
@@ -28,7 +28,6 @@ USAGE
 <!-- commands -->
 * [`prism help [COMMAND]`](#prism-help-command)
 * [`prism mock SPEC`](#prism-mock-spec)
-* [`prism server SPEC`](#prism-server-spec)
 
 ## `prism help [COMMAND]`
 
@@ -62,24 +61,7 @@ OPTIONS
   -p, --port=port  (required) [default: 4010] Port that Prism will run on.
 ```
 
-_See code: [src/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0.0-pre.2/src/commands/mock.ts)_
-
-## `prism server SPEC`
-
-Start a server with the given spec file
-
-```
-USAGE
-  $ prism server SPEC
-
-ARGUMENTS
-  SPEC  Path to a spec file
-
-OPTIONS
-  -p, --port=port  (required) [default: 4010] Port that Prism will run on.
-```
-
-_See code: [src/commands/server.ts](https://github.com/stoplightio/prism/blob/v3.0.0-pre.2/src/commands/server.ts)_
+_See code: [src/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0.0-alpha.0/src/commands/mock.ts)_
 <!-- commandsstop -->
 
 ## Development
