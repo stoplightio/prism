@@ -4,7 +4,7 @@ import {
   FileSystemBackend,
   FilesystemNodeType,
 } from '@stoplight/graphite/backends/filesystem';
-import { ISourceNode, NodeCategory } from '@stoplight/graphite/graph/nodes';
+import { NodeCategory } from '@stoplight/graphite/graph/nodes';
 import { createGraphite } from '@stoplight/graphite/graphite';
 import { createOas2HttpPlugin } from '@stoplight/graphite/plugins/http/oas2';
 import { createOas3HttpPlugin } from '@stoplight/graphite/plugins/http/oas3';
@@ -28,8 +28,8 @@ export class GraphFacade {
       createJsonPlugin(),
       createYamlPlugin(),
       createOas2Plugin(),
-      createOas3Plugin(),
       createOas2HttpPlugin(),
+      createOas3Plugin(),
       createOas3HttpPlugin(),
     );
     this.fsBackend = createFileSystemBackend(graphite, fs);
@@ -55,18 +55,6 @@ export class GraphFacade {
       });
       this.fsBackend.readFile(resourceFile);
     }
-
-    await this.graphite.scheduler.drain();
-  }
-
-  public async createRawNode(raw: string, { type, language }: Pick<ISourceNode, 'type' | 'language'>) {
-    this.graphite.graph.addNode({
-      category: NodeCategory.Source,
-      type,
-      language,
-      path: '/',
-      data: { raw },
-    });
 
     await this.graphite.scheduler.drain();
   }
