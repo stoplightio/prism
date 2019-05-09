@@ -119,7 +119,7 @@ Connection: keep-alive
    "title" : "Invalid request body payload",
    "detail" : "Your request body is not valid: [{\"path\":[\"body\"],\"code\":\"required\",\"message\":\"should have required property 'photoUrls'\",\"severity\":0}]",
    "status" : 422,
-   "name" : "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY"
+   "type" : "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY"
 }
 ```
 
