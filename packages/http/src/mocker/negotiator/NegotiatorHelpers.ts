@@ -32,11 +32,14 @@ function findResponseByStatusCode(
     return candidate;
   }
 
+  return createResponseFromDefault(statusCode, responses);
+}
+
+function createResponseFromDefault(statusCode: string, responses: IHttpOperationResponse[]) {
   const defaultResponse = responses.find(response => response.code === 'default');
   if (defaultResponse) {
     return Object.assign({}, defaultResponse, { code: statusCode });
   }
-
   return undefined;
 }
 
