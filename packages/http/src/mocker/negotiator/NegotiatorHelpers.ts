@@ -15,7 +15,7 @@ function findHttpContentByMediaType(response: IHttpOperationResponse, mediaType:
 }
 
 function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {
-  const generic2xxResponse = findResponseByStatusCode(httpResponses, '2XX');
+  const generic2xxResponse = findResponseByStatusCode(httpResponses, '2XX', true);
   const sorted2xxResponses = httpResponses
     .filter(response => response.code.match(/2\d\d/))
     .sort((a: IHttpOperationResponse, b: IHttpOperationResponse) => Number(a.code) - Number(b.code));
@@ -26,13 +26,15 @@ function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationR
 function findResponseByStatusCode(
   responses: IHttpOperationResponse[],
   statusCode: string,
+  useDefault: boolean,
 ): IHttpOperationResponse | undefined {
   const candidate = responses.find(response => response.code.toLowerCase() === statusCode.toLowerCase());
   if (candidate) {
     return candidate;
   }
-
-  return createResponseFromDefault(statusCode, responses);
+  if (useDefault)
+    return createResponseFromDefault(statusCode, responses);
+  return undefined;
 }
 
 function createResponseFromDefault(statusCode: string, responses: IHttpOperationResponse[]) {
@@ -213,7 +215,7 @@ const helpers = {
     code: string,
   ): IHttpNegotiationResult {
     // find response by provided status code
-    const responseByForcedStatusCode = findResponseByStatusCode(httpOperation.responses, code);
+    const responseByForcedStatusCode = findResponseByStatusCode(httpOperation.responses, code, true);
     if (responseByForcedStatusCode) {
       try {
         // try to negotiate
@@ -250,7 +252,7 @@ const helpers = {
   negotiateOptionsForInvalidRequest(httpResponses: IHttpOperationResponse[]): IHttpNegotiationResult {
     // currently only try to find a 400 response, but we may want to support other cases in the future
     const code = '400';
-    const response = findResponseByStatusCode(httpResponses, code);
+    const response = findResponseByStatusCode(httpResponses, code, false);
     // TODO: what if no 400 response is defined?
     if (!response) {
       throw new Error('No 400 response defined');
