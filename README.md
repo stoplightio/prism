@@ -2,10 +2,7 @@
 
 <a href="https://codeclimate.com/github/stoplightio/prism/test_coverage"><img src="https://api.codeclimate.com/v1/badges/f5e363a7eb5b8f4e570f/test_coverage" /></a>
 
-Prism is a set of packages that, given an API description, can:
-
-1. Spin up a mock HTTP server and respond realistically based on your requests
-1. Validate requests passing through against the provided API description
+Prism is a set of packages that relate to API specification mocking. One use case, spinning up a mock HTTP server which will response realistically to the requests you send it.
 
 **Note: this branch refers to Prism 3.x, which is the current version most likely you will use. If you're looking for the 2.x version, point your browser to the [right branch][2.x]**
 
@@ -114,9 +111,6 @@ Connection: keep-alive
 This error shows the request is missing a required property `name` from the HTTP request body.
 
 ## FAQ
-
-**The API description defines a base path of `/api` (using OpenAPI v2 `basePath` keyword, or in
-OpenAPI v3 using a path in `servers.url`), but requests seem to fail when using it?**
 
 Base paths are completely ignored by the Prism HTTP server, so they can be removed from the request.
 If you have a base path of `/api` and your path is defined as `hello`, then a request to
