@@ -1,4 +1,3 @@
-import { FilesystemNodeType } from '@stoplight/graphite/backends/filesystem';
 import { isAbsolute, resolve } from 'path';
 import { GraphFacade } from '../graphFacade';
 
@@ -17,17 +16,6 @@ describe('graphFacade', () => {
       expect(isAbsolute(path)).toBe(true);
 
       await graphFacade.createFilesystemNode(path);
-
-      expect(graphFacade.httpOperations.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('createRawNode()', () => {
-    test('httpOperations should return filtered nodes', async () => {
-      await graphFacade.createRawNode(
-        JSON.stringify(require('../../../../cli/src/samples/no-refs-petstore.oas2.json')),
-        { type: FilesystemNodeType.File, language: 'json' },
-      );
 
       expect(graphFacade.httpOperations.length).toBeGreaterThan(0);
     });
