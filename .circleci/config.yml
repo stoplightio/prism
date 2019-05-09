@@ -57,7 +57,7 @@ jobs:
           root: ./cli-binaries
       - run:
           name: Publish
-          command: yarn lerna publish from-package --yes --dist-tag alpha
+          command: yarn lerna publish from-package --github-release --yes --dist-tag alpha
   upload_artifacts:
     docker:
       - image: circleci/golang:1.8
@@ -65,7 +65,7 @@ jobs:
       - attach_workspace:
           at: /tmp/cli-binaries
       - run:
-          name: "Publish Release on GitHub"
+          name: "Publish Release artifacts on GitHub"
           command: |
             go get github.com/tcnksm/ghr
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} /tmp/cli-binaries
