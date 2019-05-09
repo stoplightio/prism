@@ -5,7 +5,7 @@ import { IPrismHttpServer } from '../types';
 function checkErrorPayloadShape(payload: string) {
   const parsedPayload = JSON.parse(payload);
 
-  expect(parsedPayload).toHaveProperty('name');
+  expect(parsedPayload).toHaveProperty('type');
   expect(parsedPayload).toHaveProperty('title');
   expect(parsedPayload).toHaveProperty('status');
   expect(parsedPayload).toHaveProperty('detail');
