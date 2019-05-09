@@ -82,6 +82,9 @@ workflows:
             - build
       - upload_artifacts:
           type: approval
+          filters:
+            branches:
+              only: master
           requires:
             - build
             - publish
