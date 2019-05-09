@@ -132,6 +132,7 @@ If you have a base path of `/api` and your path is defined as `hello`, then a re
 - [ ] Forwarding proxy with validation
 - [ ] Recording traffic to spec file
 - [ ] Data Persistence (turn Prism into a sandbox server)
+- [ ] Support files ending with `.yml` and extensionless files
 
 ## Testing
 
