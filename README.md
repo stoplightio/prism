@@ -75,7 +75,7 @@ Prism can be forced to return different HTTP responses by specifying the status 
 string:
 
 ```bash
-curl http://127.0.0.1:4010/pets/123?__code=404
+curl -v http://127.0.0.1:4010/pets/123?__code=404
 
 HTTP/1.1 404 Not Found
 content-type: application/json
@@ -99,19 +99,19 @@ This will generate an error, conforming the [application/problem+json][rfc7807] 
 ```
 HTTP/1.1 422 Unprocessable Entity
 content-type: application/problem+json
-content-length: 279
-Date: Wed, 08 May 2019 19:22:27 GMT
+content-length: 274
+Date: Thu, 09 May 2019 16:36:38 GMT
 Connection: keep-alive
 
 {
+   "detail" : "Your request body is not valid: [{\"path\":[\"body\"],\"code\":\"required\",\"message\":\"should have required property 'name'\",\"severity\":0}]",
+   "type" : "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY",
    "title" : "Invalid request body payload",
-   "detail" : "Your request body is not valid: [{\"path\":[\"body\"],\"code\":\"required\",\"message\":\"should have required property 'photoUrls'\",\"severity\":0}]",
-   "status" : 422,
-   "type" : "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY"
+   "status" : 422
 }
 ```
 
-This error shows the request is missing a required property `photoUrls` from the HTTP request body.
+This error shows the request is missing a required property `name` from the HTTP request body.
 
 ## FAQ
 

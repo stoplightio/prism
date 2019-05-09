@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`http mocker request is invalid returns 400 and static error response 1`] = `
+exports[`http mocker request is invalid returns 422 and static error response 1`] = `
 Object {
   "body": "[{\\"message\\":\\"error\\"}]",
   "headers": Object {
     "Content-type": "application/json",
   },
-  "statusCode": 400,
+  "statusCode": 422,
 }
 `;
 
