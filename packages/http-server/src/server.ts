@@ -82,10 +82,10 @@ const replyHandler = <LoaderInput>(
         .serializer(JSON.stringify)
         .code(status)
         .send({
-          name: e.name || 'UNKNOWN',
+          name: e.name && e.name !== 'Error' ? e.name : 'UNKNOWN',
           title: e.message,
           status,
-          detail: e.detail,
+          detail: e.detail || '',
         });
     }
   };

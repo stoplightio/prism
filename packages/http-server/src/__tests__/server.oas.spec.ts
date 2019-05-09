@@ -3,12 +3,12 @@ import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
 
 function checkErrorPayloadShape(payload: string) {
-  const parsedPayload = JSON.parse(payload)
+  const parsedPayload = JSON.parse(payload);
 
-  expect(parsedPayload).toHaveProperty('name')
-  expect(parsedPayload).toHaveProperty('title')
-  expect(parsedPayload).toHaveProperty('status')
-  expect(parsedPayload).toHaveProperty('detail')
+  expect(parsedPayload).toHaveProperty('name');
+  expect(parsedPayload).toHaveProperty('title');
+  expect(parsedPayload).toHaveProperty('status');
+  expect(parsedPayload).toHaveProperty('detail');
 }
 
 describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', file => {
