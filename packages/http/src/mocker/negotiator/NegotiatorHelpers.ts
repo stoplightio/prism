@@ -32,8 +32,7 @@ function findResponseByStatusCode(
   if (candidate) {
     return candidate;
   }
-  if (useDefault)
-    return createResponseFromDefault(statusCode, responses);
+  if (useDefault) return createResponseFromDefault(statusCode, responses);
   return undefined;
 }
 
