@@ -123,7 +123,6 @@ This error shows the request is missing a required property `name` from the HTTP
 
 ## FAQs
 
-OpenAPI v3 using a path in `servers.url`), but requests seem to fail when using it?**
 
 Base paths are completely ignored by the Prism HTTP server, so they can be removed from the request.
 If you have a base path of `/api` and your path is defined as `hello`, then a request to
