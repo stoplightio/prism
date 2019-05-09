@@ -147,9 +147,25 @@ If you have a base path of `/api` and your path is defined as `hello`, then a re
 
 ## Testing
 
+Prism has an extensive test suite. To run it, just use the regular `test` script
+
 ```bash
 yarn test
+# or
+npm test
 ```
+
+## Debugging
+
+The best way to debug a Prism behaviour is probably to attach your debugger to the CLI and go from there. To make that happen:
+
+```bash
+cd packages/cli
+
+node --inspect-brk -r tsconfig-paths/register bin/run mock file.oas.yml
+```
+
+The application will wait for a debugger to be attached and break on the first line; from there, you can put your breakpoint here and there and help us debug the software!
 
 ## Contributing
 
