@@ -66,7 +66,7 @@ export class GraphFacade {
       language,
       path: '/',
       data: { raw },
-    } as ISourceNode);
+    });
 
     await this.graphite.scheduler.drain();
   }
