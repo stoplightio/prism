@@ -46,7 +46,7 @@ We'll present here only the main use cases. For a complete overview of the CLI, 
 Running Prism on the CLI will create a HTTP mock server.
 
 ```bash
-prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
+prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml
 > http://127.0.0.1:4010
 ```
 
@@ -54,34 +54,16 @@ Then in another tab, you can hit the HTTP server with your favorite HTTP client.
 
 ```bash
 curl -s -D "/dev/stderr" http://127.0.0.1:4010/pets/123 | json_pp
-
 HTTP/1.1 200 OK
 content-type: application/json
-content-length: 440
-Date: Wed, 08 May 2019 17:30:30 GMT
+content-length: 85
+Date: Thu, 09 May 2019 15:25:40 GMT
 Connection: keep-alive
 
 {
-   "status" : "sold",
-   "tags" : [
-      {
-         "name" : "labore occaecat officia deserunt",
-         "id" : 75187907
-      }
-   ],
-   "photoUrls" : [
-      "nisi aute occaecat",
-      "eiusmod sunt nostrud ut",
-      "ipsum voluptate ",
-      "magna irure est consectetur",
-      "sunt quis laboris ut ex"
-   ],
-   "id" : 9427747,
-   "category" : {
-      "id" : 85199396,
-      "name" : "in mollit labore D"
-   },
-   "name" : "doggie"
+   "tag" : "proident et ",
+   "id" : -66955049,
+   "name" : "ut consectetur cillum sit exercitation"
 }
 ```
 
@@ -94,6 +76,12 @@ string:
 
 ```bash
 curl http://127.0.0.1:4010/pets/123?__code=404
+
+HTTP/1.1 404 Not Found
+content-type: application/json
+content-length: 52
+Date: Thu, 09 May 2019 15:26:07 GMT
+Connection: keep-alive
 ```
 
 The body, headers, etc. for this response will be taken from the API description document.
@@ -103,7 +91,7 @@ The body, headers, etc. for this response will be taken from the API description
 Requests to operations which expect a request body will be validated, for example: a POST with JSON.
 
 ```bash
-curl -s -D "/dev/stderr" -H "content-type: application/json" -d '{"name":"Stowford"}' http://127.0.0.1:4010/pets | json_pp
+curl -X POST -s -D "/dev/stderr" -H "content-type: application/json" -d '{"tag":"Stowford"}' http://127.0.0.1:4010/pets | json_pp
 ```
 
 This will generate an error, conforming the [application/problem+json][rfc7807] specification:
