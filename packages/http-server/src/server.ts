@@ -1,5 +1,5 @@
 import { configMergerFactory } from '@stoplight/prism-core';
-import { createInstance, IHttpMethod, TPrismHttpInstance } from '@stoplight/prism-http';
+import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import * as fastify from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
@@ -81,12 +81,7 @@ const replyHandler = <LoaderInput>(
         .type('application/problem+json')
         .serializer(JSON.stringify)
         .code(status)
-        .send({
-          name: e.name && e.name !== 'Error' ? e.name : 'UNKNOWN',
-          title: e.message,
-          status,
-          detail: e.detail || '',
-        });
+        .send(ProblemJsonError.fromPlainError(e));
     }
   };
 };

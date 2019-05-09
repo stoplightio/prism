@@ -93,6 +93,15 @@ export class ProblemJsonError extends Error {
     );
   }
 
+  public static fromPlainError(error: Error & { detail?: string; status?: number }): ProblemJson {
+    return {
+      name: error.name && error.name !== 'Error' ? error.name : 'https://stoplight.io/prism/errors#UNKNOWN',
+      title: error.message,
+      status: error.status || 500,
+      detail: error.detail || '',
+    };
+  }
+
   constructor(readonly name: string, readonly message: string, readonly status: number, readonly detail: string) {
     super(message);
     Error.captureStackTrace(this, ProblemJsonError);
