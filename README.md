@@ -123,7 +123,6 @@ This error shows the request is missing a required property `name` from the HTTP
 
 ## FAQs
 
-
 Base paths are completely ignored by the Prism HTTP server, so they can be removed from the request.
 If you have a base path of `/api` and your path is defined as `hello`, then a request to
 `http://localhost:4010/hello` would work, but `http://localhost:4010/api/hello` will fail.
