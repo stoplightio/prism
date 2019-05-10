@@ -19,9 +19,6 @@
     "test.update": "yarn test.fast --updateSnapshot",
     "release": "lerna version prerelease --preid alpha --conventional-commit"
   },
-  "resolutions": {
-    "jsonpath": "https://github.com/stoplightio/jsonpath#f1c0e9e634da2d45671b7639fa0a99afc807da17"
-  },
   "devDependencies": {
     "@stoplight/types": "^4.0.0",
     "@types/chance": "^1.0.0",
