@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-core",
-  "version": "3.0.0-alpha.1",
+  "version": "3.0.0-alpha.2",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
