@@ -32,7 +32,7 @@ yarn global add @stoplight/prism-cli@alpha
 …or if you do not want to install [Node](https://nodejs.org), you can either use the installation script (if you're using Linux or MacOS)…
 
 ```
-curl https://raw.githack.com/stoplightio/prism/master/install | sh
+curl -L https://raw.githack.com/stoplightio/prism/master/install | sh
 ```
 
 …or download the latest release from [GitHub directly][download-release]. We offer binaries for Windows as well.
