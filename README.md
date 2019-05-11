@@ -141,7 +141,7 @@ Check out our [debugging section][debugging] in the [contribution docs][contribu
 
 ## Contributing
 
-If you are interested in contributing to Prism itself, check out our [contributin docs][contributing] and [code of conduct][code_of_conduct] to get started.
+If you are interested in contributing to Prism itself, check out our [contributing docs][contributing] and [code of conduct][code_of_conduct] to get started.
 
 [code_of_conduct]: CODE_OF_CONDUCT.md
 [contributing]: CONTRIBUTING.md
