@@ -54,16 +54,18 @@ jobs:
       - store_artifacts:
           path: ./cli-binaries
       - persist_to_workspace:
-          root: ./cli-binaries
+          root: ./
+          paths:
+            - cli-binaries
       - run:
           name: Publish
-          command: yarn lerna publish from-package --github-release --yes --dist-tag alpha
+          command: yarn lerna publish from-git --github-release --yes --dist-tag alpha
   upload_artifacts:
     docker:
       - image: circleci/golang:1.8
     steps:
       - attach_workspace:
-          at: /tmp/cli-binaries
+          at: /tmp/
       - run:
           name: "Publish Release artifacts on GitHub"
           command: |
@@ -73,7 +75,10 @@ workflows:
   version: 2
   build:
     jobs:
-      - build
+      - build:
+          filters:
+            tags:
+              only: /.*/
       - publish:
           filters:
             branches:
@@ -83,7 +88,6 @@ workflows:
           requires:
             - build
       - upload_artifacts:
-          type: approval
           filters:
             branches:
               ignore: /.*/
