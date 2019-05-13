@@ -4,7 +4,7 @@ import Mock from '../mock';
 const listenMock = jest.fn();
 
 jest.mock('../../util/createServer', () => ({
-  createServer: jest.fn(() => ({ listen: listenMock })),
+  createServer: jest.fn(() => ({ listen: listenMock, prism: { resources: [{ method: 'get', path: '/test' }] } })),
 }));
 
 describe('mock command', () => {
