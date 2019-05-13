@@ -9,9 +9,9 @@ export default class Server extends Command {
   public static args = [ARGS.spec];
 
   public async run() {
-    const i = new signale.Signale({ interactive: true });
+    const signaleInteractiveInstance = new signale.Signale({ interactive: true });
 
-    i.await('Starting Prism…');
+    signaleInteractiveInstance.await('Starting Prism…');
 
     const {
       flags: { port },
@@ -22,11 +22,11 @@ export default class Server extends Command {
     const address = await server.listen(port);
 
     if (server.prism.resources.length === 0) {
-      i.fatal('No operations found in the current file.');
+      signaleInteractiveInstance.fatal('No operations found in the current file.');
       this.exit(1);
     }
 
-    i.success(`Prism is listening on ${address}`);
+    signaleInteractiveInstance.success(`Prism is listening on ${address}`);
 
     server.prism.resources.forEach(resource => {
       signale.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
