@@ -49,7 +49,11 @@ Running Prism on the CLI will create a HTTP mock server.
 
 ```bash
 prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml
-> http://127.0.0.1:4010
+✔  success   Prism is listening on http://127.0.0.1:4010
+●  note      GET        http://127.0.0.1:4010/pets
+●  note      POST       http://127.0.0.1:4010/pets
+●  note      GET        http://127.0.0.1:4010/pets/{id}
+●  note      DELETE     http://127.0.0.1:4010/pets/{id}
 ```
 
 Then in another tab, you can hit the HTTP server with your favorite HTTP client.
