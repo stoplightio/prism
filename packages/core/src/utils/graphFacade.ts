@@ -37,8 +37,8 @@ export class GraphFacade {
 
   public async createFilesystemNode(fsPath: string) {
     const resourceFile = resolve(fsPath);
-    const language = extname(resourceFile).slice(1);
     const stat = fs.lstatSync(resourceFile);
+
     if (stat.isDirectory()) {
       this.graphite.graph.addNode({
         category: NodeCategory.Source,
@@ -47,10 +47,12 @@ export class GraphFacade {
       });
       this.fsBackend.readdir(fsPath);
     } else if (stat.isFile()) {
+      const language = extname(resourceFile).slice(1);
+
       this.graphite.graph.addNode({
         category: NodeCategory.Source,
         type: FilesystemNodeType.File,
-        language,
+        language: transformLanguage(language),
         path: resourceFile,
       });
       this.fsBackend.readFile(resourceFile);
@@ -63,4 +65,9 @@ export class GraphFacade {
     const nodes = this.graphite.graph.virtualNodes.filter(node => node.type === 'http_operation');
     return compact(nodes.map<IHttpOperation>(node => node.data as IHttpOperation));
   }
+}
+
+function transformLanguage(lang: string) {
+  if (lang === 'yml') return 'yaml';
+  return lang;
 }
