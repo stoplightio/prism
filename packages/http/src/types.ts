@@ -20,7 +20,7 @@ export interface IHttpOperationConfig {
   readonly mediaType?: string;
   readonly code?: string;
   readonly exampleKey?: string;
-  readonly dynamic?: boolean;
+  readonly dynamic: boolean;
 }
 
 export interface IHttpConfig extends IPrismConfig {

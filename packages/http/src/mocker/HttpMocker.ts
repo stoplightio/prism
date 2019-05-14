@@ -8,7 +8,7 @@ import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: IExampleGenerator) {}
+  constructor(private _exampleGenerator: IExampleGenerator) { }
 
   public async mock({
     resource,
@@ -26,7 +26,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
 
     // setting default values
     const inputMediaType = input.data.headers && caseless(input.data.headers).get('content-type');
-    config = config || { mock: {} };
+    config = config || { mock: { dynamic: false } };
     const mockConfig: any = typeof config.mock === 'boolean' ? {} : Object.assign({}, config.mock);
     if (!mockConfig.mediaType && inputMediaType) {
       mockConfig.mediaType = inputMediaType;
