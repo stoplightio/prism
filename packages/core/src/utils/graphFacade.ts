@@ -4,6 +4,7 @@ import {
   FileSystemBackend,
   FilesystemNodeType,
 } from '@stoplight/graphite/backends/filesystem';
+import { filenameToLanguage } from '@stoplight/graphite/backends/filesystem/utils';
 import { NodeCategory } from '@stoplight/graphite/graph/nodes';
 import { createGraphite } from '@stoplight/graphite/graphite';
 import { createOas2HttpPlugin } from '@stoplight/graphite/plugins/http/oas2';
@@ -14,7 +15,7 @@ import { createOas3Plugin } from '@stoplight/graphite/plugins/oas3';
 import { createYamlPlugin } from '@stoplight/graphite/plugins/yaml';
 import { IHttpOperation } from '@stoplight/types';
 import * as fs from 'fs';
-import { extname, resolve } from 'path';
+import { resolve } from 'path';
 
 import { compact } from 'lodash';
 
@@ -47,12 +48,10 @@ export class GraphFacade {
       });
       this.fsBackend.readdir(fsPath);
     } else if (stat.isFile()) {
-      const language = extname(resourceFile).slice(1);
-
       this.graphite.graph.addNode({
         category: NodeCategory.Source,
         type: FilesystemNodeType.File,
-        language: transformLanguage(language),
+        language: filenameToLanguage(resourceFile),
         path: resourceFile,
       });
       this.fsBackend.readFile(resourceFile);
@@ -65,9 +64,4 @@ export class GraphFacade {
     const nodes = this.graphite.graph.virtualNodes.filter(node => node.type === 'http_operation');
     return compact(nodes.map<IHttpOperation>(node => node.data as IHttpOperation));
   }
-}
-
-function transformLanguage(lang: string) {
-  if (lang === 'yml') return 'yaml';
-  return lang;
 }
