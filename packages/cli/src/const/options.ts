@@ -19,5 +19,6 @@ export const FLAGS = {
   dynamic: oflags.boolean({
     char: 'd',
     description: 'Dynamically generate examples.',
+    default: false
   }),
 };
