@@ -214,6 +214,7 @@ describe('NegotiatorHelpers', () => {
     it('given status code enforced should negotiate a specific code', () => {
       const options = {
         code: chance.string(),
+        dynamic: false,
       };
 
       const expectedResult = {
@@ -232,7 +233,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given status code not enforced should negotiate a default code', () => {
-      const options = {};
+      const options = { dynamic: false };
 
       const expectedResult = {
         code: chance.string(),
@@ -265,7 +266,7 @@ describe('NegotiatorHelpers', () => {
         contents: [],
         headers: [],
       };
-      const desiredOptions = {};
+      const desiredOptions = { dynamic: false };
       const fakeOperationConfig = {
         code,
       };
@@ -289,7 +290,7 @@ describe('NegotiatorHelpers', () => {
         contents: [],
         headers: [],
       };
-      const desiredOptions = {};
+      const desiredOptions = { dynamic: false };
       const fakeOperationConfig = {
         code,
       };
@@ -312,7 +313,7 @@ describe('NegotiatorHelpers', () => {
 
     it('given response not defined should fallback to default code', () => {
       const code = chance.string();
-      const desiredOptions = {};
+      const desiredOptions = { dynamic: false };
       httpOperation = anHttpOperation(httpOperation)
         .withResponses([])
         .instance();
@@ -325,7 +326,7 @@ describe('NegotiatorHelpers', () => {
 
   describe('negotiateOptionsForDefaultCode()', () => {
     it('given only a generic 2XX response should negotiate that one', () => {
-      const desiredOptions = {};
+      const desiredOptions = { dynamic: false };
       const response = {
         code: '2xx',
         contents: [],
@@ -347,7 +348,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given two 2xx response should negotiate the lowest', () => {
-      const desiredOptions = {};
+      const desiredOptions = { dynamic: false };
       const response = {
         code: '200',
         contents: [],
@@ -383,7 +384,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given no 2xx response should throw exception', () => {
-      const desiredOptions = {};
+      const desiredOptions = { dynamic: false };
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse');
 
       expect(() => {
@@ -533,7 +534,7 @@ describe('NegotiatorHelpers', () => {
 
     it('when no default response return text/plain with empty body', () => {
       const code = chance.string();
-      const partialOptions = { code: '200' };
+      const partialOptions = { code: '200', dynamic: false };
       const response: IHttpOperationResponse = {
         code,
         contents: [],
@@ -642,6 +643,7 @@ describe('NegotiatorHelpers', () => {
       it('and can find other example return that example', () => {
         const partialOptions = {
           code: chance.string(),
+          dynamic: false,
         };
         const example: INodeExample | INodeExternalExample = {
           key: chance.string(),
@@ -672,6 +674,7 @@ describe('NegotiatorHelpers', () => {
 
       it('and cannot find example but schema exists return dynamic', () => {
         const partialOptions = {
+          dynamic: false,
           code: chance.string(),
         };
         const httpContent: IHttpContent = {
@@ -692,6 +695,7 @@ describe('NegotiatorHelpers', () => {
 
       it('and cannot find example and dynamic does not exist throw error', () => {
         const partialOptions = {
+          dynamic: false,
           code: chance.string(),
         };
 

@@ -27,7 +27,9 @@ describe('resolveResponseValidationConfig()', () => {
     describe('config.validate is set', () => {
       describe('config.validate.response is not set', () => {
         it('resolves to default config', () => {
-          expect(resolveResponseValidationConfig({ mock: { dynamic: false }, validate: {} })).toEqual(defaultEnabledConfig);
+          expect(resolveResponseValidationConfig({ mock: { dynamic: false }, validate: {} })).toEqual(
+            defaultEnabledConfig,
+          );
         });
       });
 
@@ -35,17 +37,17 @@ describe('resolveResponseValidationConfig()', () => {
         describe('response is a boolean', () => {
           describe('response is set to true', () => {
             it('resolves to all-enabled config', () => {
-              expect(resolveResponseValidationConfig({ mock: { dynamic: false }, validate: { response: true } })).toEqual(
-                defaultEnabledConfig,
-              );
+              expect(
+                resolveResponseValidationConfig({ mock: { dynamic: false }, validate: { response: true } }),
+              ).toEqual(defaultEnabledConfig);
             });
           });
 
           describe('response is set to false', () => {
             it('response to all-disabled config', () => {
-              expect(resolveResponseValidationConfig({ mock: { dynamic: false }, validate: { response: false } })).toEqual(
-                defaultDisabledConfig,
-              );
+              expect(
+                resolveResponseValidationConfig({ mock: { dynamic: false }, validate: { response: false } }),
+              ).toEqual(defaultDisabledConfig);
             });
           });
         });
@@ -106,7 +108,9 @@ describe('resolveRequestValidationConfig()', () => {
     describe('config.validate is set', () => {
       describe('config.validate.request is not set', () => {
         it('resolves to default config', () => {
-          expect(resolveRequestValidationConfig({ mock: { dynamic: false }, validate: {} })).toEqual(defaultEnabledConfig);
+          expect(resolveRequestValidationConfig({ mock: { dynamic: false }, validate: {} })).toEqual(
+            defaultEnabledConfig,
+          );
         });
       });
 
@@ -122,9 +126,9 @@ describe('resolveRequestValidationConfig()', () => {
 
           describe('request is set to false', () => {
             it('request to all-disabled config', () => {
-              expect(resolveRequestValidationConfig({ mock: { dynamic: false }, validate: { request: false } })).toEqual(
-                defaultDisabledConfig,
-              );
+              expect(
+                resolveRequestValidationConfig({ mock: { dynamic: false }, validate: { request: false } }),
+              ).toEqual(defaultDisabledConfig);
             });
           });
         });

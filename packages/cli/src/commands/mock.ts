@@ -19,7 +19,7 @@ export default class Server extends Command {
     } = this.parse(Server);
 
     if (dynamic) {
-      signale.star('Dynamic example generation enabled.')
+      signale.star('Dynamic example generation enabled.');
     }
 
     const server = createServer(spec, { mock: { dynamic } });

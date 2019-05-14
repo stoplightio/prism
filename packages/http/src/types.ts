@@ -28,20 +28,20 @@ export interface IHttpConfig extends IPrismConfig {
 
   validate?: {
     request?:
-    | boolean
-    | {
-      hijack?: boolean;
-      headers?: boolean;
-      query?: boolean;
-      body?: boolean;
-    };
+      | boolean
+      | {
+          hijack?: boolean;
+          headers?: boolean;
+          query?: boolean;
+          body?: boolean;
+        };
 
     response?:
-    | boolean
-    | {
-      headers?: boolean;
-      body?: boolean;
-    };
+      | boolean
+      | {
+          headers?: boolean;
+          body?: boolean;
+        };
   };
 }
 

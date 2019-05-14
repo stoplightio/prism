@@ -13,6 +13,7 @@ exports[`getHttpConfigFromRequest() given default config object that is a map an
 Object {
   "mock": Object {
     "code": "200",
+    "dynamic": false,
     "exampleKey": "bear",
     "mediaType": "plain/text",
   },
