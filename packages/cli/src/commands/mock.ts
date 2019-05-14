@@ -5,7 +5,7 @@ import { createServer } from '../util/createServer';
 
 export default class Server extends Command {
   public static description = 'Start a mock server with the given spec file';
-  public static flags = { port: FLAGS.port };
+  public static flags = { port: FLAGS.port, dynamic: FLAGS.dynamic };
   public static args = [ARGS.spec];
 
   public async run() {
@@ -14,11 +14,11 @@ export default class Server extends Command {
     signaleInteractiveInstance.await('Starting Prism…');
 
     const {
-      flags: { port },
+      flags: { port, dynamic },
       args: { spec },
     } = this.parse(Server);
 
-    const server = createServer(spec, { mock: true });
+    const server = createServer(spec, { mock: { dynamic } });
     try {
       const address = await server.listen(port);
 
