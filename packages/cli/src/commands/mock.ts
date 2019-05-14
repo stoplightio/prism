@@ -19,17 +19,21 @@ export default class Server extends Command {
     } = this.parse(Server);
 
     const server = createServer(spec, { mock: true });
-    const address = await server.listen(port);
+    try {
+      const address = await server.listen(port);
 
-    if (server.prism.resources.length === 0) {
-      signaleInteractiveInstance.fatal('No operations found in the current file.');
-      this.exit(1);
+      if (server.prism.resources.length === 0) {
+        signaleInteractiveInstance.fatal('No operations found in the current file.');
+        this.exit(1);
+      }
+
+      signaleInteractiveInstance.success(`Prism is listening on ${address}`);
+
+      server.prism.resources.forEach(resource => {
+        signale.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
+      });
+    } catch (e) {
+      signaleInteractiveInstance.fatal(e.message);
     }
-
-    signaleInteractiveInstance.success(`Prism is listening on ${address}`);
-
-    server.prism.resources.forEach(resource => {
-      signale.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
-    });
   }
 }
