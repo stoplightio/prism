@@ -148,7 +148,7 @@ describe('HttpMocker', () => {
         await httpMocker.mock({
           resource: mockResource,
           input: mockInput,
-          config: { mock: true },
+          config: { mock: { dynamic: false } },
         });
 
         expect(spy).toHaveBeenCalledWith(mockResource, {});
