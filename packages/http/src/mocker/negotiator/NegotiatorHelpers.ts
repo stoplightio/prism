@@ -47,7 +47,7 @@ const helpers = {
       dynamic,
     }: {
       readonly code: string;
-      readonly dynamic?: boolean;
+      readonly dynamic: boolean;
       readonly exampleKey?: string;
     },
     httpContent: IHttpContent,
@@ -105,7 +105,7 @@ const helpers = {
   negotiateDefaultMediaType(
     partialOptions: {
       readonly code: string;
-      readonly dynamic?: boolean;
+      readonly dynamic: boolean;
       readonly exampleKey?: string;
     },
     response: IHttpOperationResponse,
@@ -142,7 +142,7 @@ const helpers = {
       readonly mediaType?: string;
       readonly code?: string;
       readonly exampleKey?: string;
-      readonly dynamic?: boolean;
+      readonly dynamic: boolean;
     },
     response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
@@ -188,7 +188,7 @@ const helpers = {
       readonly mediaType?: string;
       readonly code?: string;
       readonly exampleKey?: string;
-      readonly dynamic?: boolean;
+      readonly dynamic: boolean;
     },
   ): IHttpNegotiationResult {
     const lowest2xxResponse = findLowest2xx(httpOperation.responses);
@@ -204,7 +204,7 @@ const helpers = {
       readonly mediaType?: string;
       readonly code?: string;
       readonly exampleKey?: string;
-      readonly dynamic?: boolean;
+      readonly dynamic: boolean;
     },
     code: string,
   ): IHttpNegotiationResult {
@@ -235,7 +235,7 @@ const helpers = {
       readonly mediaType?: string;
       readonly code?: string;
       readonly exampleKey?: string;
-      readonly dynamic?: boolean;
+      readonly dynamic: boolean;
     },
   ): IHttpNegotiationResult {
     const { code } = desiredOptions;
