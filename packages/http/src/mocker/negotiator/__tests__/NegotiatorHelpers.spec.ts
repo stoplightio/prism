@@ -213,7 +213,7 @@ describe('NegotiatorHelpers', () => {
 
     it('given status code enforced should negotiate a specific code', () => {
       const options = {
-        code: chance.string(),
+        code: chance.integer({ min: 100, max: 599 }).toString(),
         dynamic: false,
       };
 
@@ -236,7 +236,7 @@ describe('NegotiatorHelpers', () => {
       const options = { dynamic: false };
 
       const expectedResult = {
-        code: chance.string(),
+        code: chance.integer({ min: 100, max: 599 }).toString(),
         mediaType: 'application/json',
       };
 
@@ -407,7 +407,7 @@ describe('NegotiatorHelpers', () => {
           encodings: [],
         };
         const httpResponseSchema: IHttpOperationResponse = {
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
           contents: [contents],
           headers: [],
         };
@@ -444,7 +444,7 @@ describe('NegotiatorHelpers', () => {
           exampleKey: chance.string(),
         };
         const httpResponseSchema: IHttpOperationResponse = {
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
           contents: [],
           headers: [],
         };
@@ -462,7 +462,7 @@ describe('NegotiatorHelpers', () => {
           exampleKey: chance.string(),
         };
         const httpResponseSchema: IHttpOperationResponse = {
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
           contents: [],
           headers: [],
         };
@@ -557,15 +557,15 @@ describe('NegotiatorHelpers', () => {
       it('and example exists should return that example', () => {
         const exampleKey = chance.string();
         const partialOptions = {
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
           exampleKey,
           dynamic: chance.bool(),
         };
-        const example: INodeExample | INodeExternalExample = {
+        const example: INodeExample = {
           key: exampleKey,
           value: '',
-          externalValue: '',
         };
+
         const httpContent: IHttpContent = {
           mediaType: chance.string(),
           examples: [example],
@@ -584,7 +584,7 @@ describe('NegotiatorHelpers', () => {
       it('and example not exist should throw an error', () => {
         const exampleKey = chance.string();
         const partialOptions = {
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
           exampleKey,
           dynamic: chance.bool(),
         };
@@ -603,7 +603,7 @@ describe('NegotiatorHelpers', () => {
     describe('given exampleKey not forced but dynamic forced', () => {
       it('and httpContent has schema return that contents', () => {
         const partialOptions = {
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
           dynamic: true,
         };
         const httpContent: IHttpContent = {
@@ -624,7 +624,7 @@ describe('NegotiatorHelpers', () => {
 
       it('and httpContent has no schema throw error', () => {
         const partialOptions = {
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
           dynamic: true,
         };
         const httpContent: IHttpContent = {
@@ -642,7 +642,7 @@ describe('NegotiatorHelpers', () => {
     describe('given neither exampleKey nor dynamic forced', () => {
       it('and can find other example return that example', () => {
         const partialOptions = {
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
           dynamic: false,
         };
         const example: INodeExample | INodeExternalExample = {
@@ -675,7 +675,7 @@ describe('NegotiatorHelpers', () => {
       it('and cannot find example but schema exists return dynamic', () => {
         const partialOptions = {
           dynamic: false,
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
         };
         const httpContent: IHttpContent = {
           mediaType: chance.string(),
@@ -696,7 +696,7 @@ describe('NegotiatorHelpers', () => {
       it('and cannot find example and dynamic does not exist throw error', () => {
         const partialOptions = {
           dynamic: false,
-          code: chance.string(),
+          code: chance.integer({ min: 100, max: 599 }).toString(),
         };
 
         const httpContent: IHttpContent = {
