@@ -24,7 +24,7 @@
     "tslib": "^1.9.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.123",
+    "@types/lodash": "^4.14.129",
     "@types/tmp": "^0.1.0"
   },
   "publishConfig": {

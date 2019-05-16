@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as jsf from 'json-schema-faker';
+import * as jsf from '@stoplight/json-schema-faker';
 import { cloneDeep } from 'lodash';
 import { IExampleGenerator } from './IExampleGenerator';
 
