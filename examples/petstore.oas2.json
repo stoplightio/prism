@@ -43,6 +43,50 @@
   ],
   "paths": {
     "/pets": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Get all pets",
+        "description": "",
+        "operationId": "getPets",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "type": "string",
+            "description": "",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          },
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            },
+            "examples": {
+              "application/json": [{
+                "name": "abc"
+              }]
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "pet"

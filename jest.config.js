@@ -22,6 +22,10 @@ const projectDefault = {
 module.exports = {
   projects: [
     {
+      displayName: 'HARNESS',
+      testMatch: ['<rootDir>/test-harness/index.js']
+    },
+    {
       ...projectDefault,
       displayName: 'HTTP-SERVER',
       testMatch: ['<rootDir>/packages/http-server/src/**/__tests__/*.(spec|unit|int|func).(ts)?(x)'],

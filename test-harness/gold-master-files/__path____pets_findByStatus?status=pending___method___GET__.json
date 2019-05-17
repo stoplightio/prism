@@ -1,0 +1,107 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/pets/findByStatus?status=pending",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json"
+      ],
+      "content-length": [
+        "1001"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": [
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "mollit in eiusmod non"
+        ],
+        "id": 26560543,
+        "category": {
+          "id": 24410982,
+          "name": "nisi voluptate id nulla"
+        },
+        "tags": [
+          {
+            "id": 77252855,
+            "name": "Lorem pariatur Duis"
+          },
+          {
+            "id": -32481110,
+            "name": "cillum occaecat culpa esse in"
+          },
+          {
+            "id": 55600907,
+            "name": "dolor volu"
+          }
+        ],
+        "status": "available"
+      },
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "tempor magna Duis nostrud",
+          "ullamco minim velit incididunt"
+        ],
+        "id": 18930525,
+        "category": {
+          "id": 92379002,
+          "name": "Excepteur Ut dolore culpa qui"
+        },
+        "tags": [
+          {
+            "id": -69421995,
+            "name": "do sint dolore magna nostrud"
+          },
+          {
+            "id": -36430400,
+            "name": "irure dolore dolore"
+          }
+        ],
+        "status": "pending"
+      },
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "aute ea Ut incididunt sint",
+          "sit",
+          "occaecat sint est",
+          "aliqua sunt"
+        ],
+        "id": -34267800,
+        "category": {
+          "id": 91931155,
+          "name": "minim veniam quis"
+        },
+        "tags": [
+          {
+            "id": 78118007,
+            "name": "labore occaecat aliqua Ut culpa"
+          },
+          {
+            "id": 2758816,
+            "name": "pariatur eiusmod"
+          },
+          {
+            "id": 66167620,
+            "name": "enim amet ipsum"
+          },
+          {
+            "id": 59683202,
+            "name": "sit nostrud officia enim reprehenderit"
+          }
+        ],
+        "status": "pending"
+      }
+    ]
+  }
+}

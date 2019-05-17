@@ -16,7 +16,10 @@
     "test.ci": "jest --maxWorkers=2",
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
+    "run.binary": "cd cli-binaries && ./$BINARY mock ../examples/$SPEC",
     "test.update": "yarn test.fast --updateSnapshot",
+    "build.binaries": "yarn && yarn build && npx pkg --out-path ./cli-binaries ./packages/cli/",
+    "test.binary": "jest test-harness/index.js $BINARY $SPEC",
     "release": "lerna version prerelease --preid alpha"
   },
   "devDependencies": {
@@ -27,6 +30,7 @@
     "chance": "^1.0.0",
     "jest": "^24.0.0",
     "lerna": "^3.0.0",
+    "node-fetch": "^2.6.0",
     "ts-jest": "^24.0.0",
     "tslint": "^5.0.0",
     "tslint-config-stoplight": "^1.0.0",

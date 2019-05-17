@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/pets?name=abc",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json"
+      ],
+      "content-length": [
+        "16"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": [
+      {
+        "name": "abc"
+      }
+    ]
+  }
+}
