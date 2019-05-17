@@ -1,5 +1,5 @@
-import { IHttpOperation } from '@stoplight/types';
-
+import { IHttpOperation, INodeExample } from '@stoplight/types';
+import { flatMap } from 'lodash';
 import { HttpMocker } from '../../mocker';
 import { JSONSchemaExampleGenerator } from '../../mocker/generator/JSONSchemaExampleGenerator';
 import helpers from '../negotiator/NegotiatorHelpers';
@@ -8,12 +8,14 @@ describe('HttpMocker', () => {
   const mockExampleGenerator = new JSONSchemaExampleGenerator();
   const httpMocker = new HttpMocker(mockExampleGenerator);
 
+  afterEach(() => jest.restoreAllMocks());
+
   describe('mock()', () => {
     const mockSchema = {
       type: 'object',
       properties: {
         name: { type: 'string' },
-        email: { type: 'string', format: 'email' },
+        surname: { type: 'string', format: 'email' },
       },
       required: ['name', 'email'],
     };
@@ -39,6 +41,10 @@ describe('HttpMocker', () => {
               mediaType: 'application/json',
               schema: mockSchema,
               examples: [
+                {
+                  key: 'preferred key',
+                  value: 'hello',
+                },
                 {
                   key: 'test key',
                   value: 'test value',
@@ -165,6 +171,49 @@ describe('HttpMocker', () => {
             input: mockInput,
           }),
         ).resolves.toMatchSnapshot();
+      });
+    });
+
+    describe('when an example is defined', () => {
+      describe('and dynamic flag is true', () => {
+        it('should generate a dynamic response', async () => {
+          const response = await httpMocker.mock({
+            input: mockInput,
+            resource: mockResource,
+            config: { mock: { dynamic: true } },
+          });
+
+          expect(response.body).toBeDefined();
+
+          const allExamples = flatMap(mockResource.responses, res =>
+            flatMap(res.contents, content => content.examples),
+          ).map(x => {
+            if ('value' in x) return x.value;
+          });
+
+          allExamples.forEach(example => expect(response.body).not.toEqual(example));
+        });
+      });
+
+      describe('and dynamic flag is false', () => {
+        describe('and the example has been explicited', () => {
+          it('should return the selected example', async () => {
+            const response = await httpMocker.mock({
+              input: mockInput,
+              resource: mockResource,
+              config: { mock: { dynamic: true, exampleKey: 'test key' } },
+            });
+
+            expect(response.body).toBeDefined();
+
+            const selectedExample = flatMap(mockResource.responses, res =>
+              flatMap(res.contents, content => content.examples),
+            ).find(ex => ex.key === 'test key');
+
+            expect(selectedExample).toBeDefined();
+            expect(response.body).toEqual((selectedExample as INodeExample).value);
+          });
+        });
       });
     });
   });

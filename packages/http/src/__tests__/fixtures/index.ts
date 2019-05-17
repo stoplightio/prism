@@ -1,7 +1,7 @@
 import { IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
 
-import { IHttpMethod, IHttpRequest, IHttpResponse } from '../../types';
+import { IHttpRequest, IHttpResponse } from '../../types';
 
 export const httpOperations: IHttpOperation[] = [
   {
