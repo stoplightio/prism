@@ -296,11 +296,11 @@ export const httpOperations: IHttpOperation[] = [
 
 export const httpInputs: IHttpRequest[] = [
   {
-    method: 'get' as IHttpMethod,
+    method: 'get' as const,
     url: { path: '/todos', baseUrl: '' },
   },
   {
-    method: 'get' as IHttpMethod,
+    method: 'get' as const,
     url: { path: '/todos/5', baseUrl: '' },
   },
   {

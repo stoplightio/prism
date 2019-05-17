@@ -2,7 +2,6 @@ import { IHttpOperation } from '@stoplight/types';
 
 import { HttpMocker } from '../../mocker';
 import { JSONSchemaExampleGenerator } from '../../mocker/generator/JSONSchemaExampleGenerator';
-import { IHttpMethod } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
 
 describe('HttpMocker', () => {
@@ -68,7 +67,7 @@ describe('HttpMocker', () => {
         input: [],
       },
       data: {
-        method: 'get' as IHttpMethod,
+        method: 'get' as const,
         url: {
           path: '/test',
           baseUrl: 'example.com',
