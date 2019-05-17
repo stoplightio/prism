@@ -5,15 +5,8 @@ import { JSONSchemaExampleGenerator } from '../../mocker/generator/JSONSchemaExa
 import helpers from '../negotiator/NegotiatorHelpers';
 
 describe('HttpMocker', () => {
-  let httpMocker: HttpMocker;
   const mockExampleGenerator = new JSONSchemaExampleGenerator();
-
-  beforeEach(() => {
-    httpMocker = new HttpMocker(mockExampleGenerator);
-    jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockImplementation(jest.fn());
-    jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockImplementation(jest.fn());
-    jest.spyOn(mockExampleGenerator, 'generate').mockImplementation(jest.fn());
-  });
+  const httpMocker = new HttpMocker(mockExampleGenerator);
 
   describe('mock()', () => {
     const mockSchema = {
