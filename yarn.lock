@@ -1122,10 +1122,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/fast-safe-stringify/-/fast-safe-stringify-2.1.2.tgz#2811eff4989c3d4c5c9a3789f057e25358db0899"
   integrity sha512-ayw3qQ9KNn2K5q6ggrLclh+rdZsSLwYIUz3uAer1NzaCpalJLR4g32G845ylgq7Xy2AunMHnNfD3FC3s0rUcsA==
 
-"@stoplight/graphite@^6.4.0":
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-6.4.0.tgz#4bb96ae47325ae49ceb7a9129371f2c5da727025"
-  integrity sha512-16aVVNgkfwt8Z+hmQ/Keaqc93XPVK0XqiegJBXznwbg/MzxuSIlkJMrNjLFGW5WQ9QEgOnjC3HlcjB2uW9wTHA==
+"@stoplight/graphite@^6.4.1":
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-6.4.1.tgz#9c9a757ffcb762aa969e1fb0776d026cf4e77645"
+  integrity sha512-6hQMtiDT44/KbMxNQJ44qgK1zJb55G6z45tijG8sCH5Fo7dNPfrkXvbJXBrd3eY68X5qQbRKLH1TTnqrhurTUg==
   dependencies:
     "@stoplight/json" "1.x.x"
     "@stoplight/json-ref-resolver" "1.x.x"
@@ -1239,10 +1239,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-4.2.0.tgz#47740fc772d86c5ceedc2da3409010f9b9d99916"
   integrity sha512-vbsHMDJafbb1D6upWSKzLBW6yf36sA3bO2XdLUL05+YrKpLKvDQyjGE7EwbbbNiP1ecWXhn90ORb83i8hzc/eA==
 
-"@stoplight/types@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-5.0.0.tgz#5d17224f4ba727a1ec7b4e1397f330fab2e2f0de"
-  integrity sha512-ttAHp4lBiO+0uILKj0poYNFnjPR49CZObPhbba+M7Ss1UUSgo8PlQXaVKxh4klxU8ldgIqTpM+w9bW7Fth/JrQ==
+"@stoplight/types@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-5.1.1.tgz#9224aec04948ac59197da503c084c3826598be09"
+  integrity sha512-XaGr0GFD4CuDCrdbof2pPYIs+FHSNJfvCFur4ZN31iwoTtlhVg0MBwAbj9dlFviUrMMbIflLFaFgqBUNguyMEA==
 
 "@stoplight/yaml@2.2.x", "@stoplight/yaml@2.x.x":
   version "2.2.1"
