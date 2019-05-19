@@ -29,6 +29,7 @@ describe('HttpForwarder', () => {
           baseURL: 'http://api.example.com',
           responseType: 'text',
           validateStatus: expect.any(Function),
+          timeout: 0,
         });
       });
     });
@@ -65,6 +66,7 @@ describe('HttpForwarder', () => {
             responseType: 'text',
             validateStatus: expect.any(Function),
             headers: { 'x-test': 'b' },
+            timeout: 0,
           });
         });
       });
@@ -92,6 +94,7 @@ describe('HttpForwarder', () => {
               host: 'api.example.com',
               forwarded: 'host=localhost',
             },
+            timeout: 0,
           });
         });
       });
@@ -125,6 +128,7 @@ describe('HttpForwarder', () => {
             baseURL: 'http://api.example.com',
             responseType: 'text',
             validateStatus: expect.any(Function),
+            timeout: 0,
           });
         });
       });
@@ -192,6 +196,55 @@ describe('HttpForwarder', () => {
           );
         });
       });
+    });
+
+    describe('timeout is provided', () => {
+      it('overrides default timeout', async () => {
+        await forwarder.forward({
+          input: {
+            ...httpRequests[0],
+            data: {
+              ...httpInputs[0],
+              url: { ...httpInputs[0].url, baseUrl: 'http://api.example.com' },
+            },
+          },
+          timeout: 100,
+        });
+
+        expect(axios.default).toHaveBeenCalledWith(expect.objectContaining({ timeout: 100 }));
+      });
+
+      it('cannot be lower than 0', async () => {
+        await forwarder.forward({
+          input: {
+            ...httpRequests[0],
+            data: {
+              ...httpInputs[0],
+              url: { ...httpInputs[0].url, baseUrl: 'http://api.example.com' },
+            },
+          },
+          timeout: -2,
+        });
+
+        expect(axios.default).toHaveBeenCalledWith(expect.objectContaining({ timeout: 0 }));
+      });
+    });
+
+    it('accepts cancel token', async () => {
+      const cancelToken = { token: 'foo' } as any;
+      await forwarder.forward({
+        input: {
+          ...httpRequests[0],
+          data: {
+            ...httpInputs[0],
+            url: { ...httpInputs[0].url, baseUrl: 'http://api.example.com' },
+          },
+        },
+        timeout: 100,
+        cancelToken,
+      });
+
+      expect(axios.default).toHaveBeenCalledWith(expect.objectContaining({ cancelToken }));
     });
   });
 });
