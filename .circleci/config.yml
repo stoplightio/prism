@@ -21,6 +21,13 @@ jobs:
       - run:
           name: Install Dependencies
           command: yarn
+      - run:
+          name: Build all code to JavaScript
+          command: yarn build
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          name: Create CLI binaries
+          command: npx pkg --out-path ./cli-binaries ./packages/cli/
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
