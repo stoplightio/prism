@@ -35,7 +35,9 @@ function killPrism() {
 
 describe('Test harness', () => {
   beforeAll(done => {
-    killPrism();
+    // killPrism();
+
+    console.log('starting prism');
 
     exec(
       `BINARY=${process.env.BINARY || 'prism-cli-linux'} SPEC=${process.env.SPEC ||
