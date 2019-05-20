@@ -1,0 +1,56 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/pets/123",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json"
+      ],
+      "content-length": [
+        "409"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "name": "doggie",
+      "photoUrls": [
+        "occaecat sint aliquip veniam dolore",
+        "dolore officia dolor",
+        "sed dolore",
+        "adipisicing in in eu amet"
+      ],
+      "id": 5182081,
+      "category": {
+        "id": 29824967,
+        "name": "ea"
+      },
+      "tags": [
+        {
+          "id": -26553977,
+          "name": "dolor eiusmod reprehenderit qui"
+        },
+        {
+          "id": 34332832,
+          "name": "fugiat est"
+        },
+        {
+          "id": -42868313,
+          "name": "ex voluptate"
+        },
+        {
+          "id": -55158188,
+          "name": "adipisicing velit laboris dolor ex"
+        }
+      ],
+      "status": "available"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/pets/123?__code=404",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 404,
+    "statusText": "Not Found",
+    "headers": {
+      "content-type": [
+        "application/json"
+      ],
+      "content-length": [
+        "9"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "abc": 1
+    }
+  }
+}

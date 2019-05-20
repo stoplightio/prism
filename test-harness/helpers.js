@@ -1,29 +1,37 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 
-async function makeRequest({ path, method, headers = {}, body}) {
-  const opts = method === 'GET' ? {} : { body };
+async function makeRequest({ path, method, headers = {}, body }) {
+  //TODO: move out JSON.stringify
+  const opts =
+    method === 'GET' || method === 'HEAD'
+      ? {}
+      : { body: headers['Content-Type'] === 'application/json' ? JSON.stringify(body) : body };
   const baseOpts = Object.assign({}, opts, { method, headers });
   const host = 'http://localhost:4010';
   const requestConfig = {
     ...baseOpts,
     path,
-    host
+    host,
   };
 
-  return fetch(`${host}${path}`, requestConfig).then(async response => {
-    const { date, ...headers } = response.headers.raw();
+  return fetch(`${host}${path}`, requestConfig)
+    .then(async response => {
+      const { date, ...headers } = response.headers.raw();
 
-    return {
-      request: requestConfig,
-      response: {
-        status: response.status,
-        statusText: response.statusText,
-        headers: headers,
-        body: await response.json(),
-      },
-    };
-  });
+      return {
+        request: requestConfig,
+        response: {
+          status: response.status,
+          statusText: response.statusText,
+          headers: headers,
+          body: await response.json(),
+        },
+      };
+    })
+    .catch(err => {
+      console.log('err', err);
+    });
 }
 
 function constructMasterFileName(request) {

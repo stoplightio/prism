@@ -1,8 +1,8 @@
 const fetch = require('node-fetch');
 const requests = require('./requests');
 
-const {exec} = require('child_process');
-const {makeRequest, constructMasterFileName, readFile} = require('./helpers');
+const { exec } = require('child_process');
+const { makeRequest, constructMasterFileName, readFile } = require('./helpers');
 
 async function waitForPrism(done) {
   try {
@@ -15,7 +15,9 @@ async function waitForPrism(done) {
   }
 }
 
-async function runTest(request) {
+async function runTest(req) {
+  const { dynamic, ...request } = req;
+
   const masterFileName = constructMasterFileName(request);
   const masterFile = readFile(masterFileName);
 
@@ -35,45 +37,193 @@ describe('Test harness', () => {
   beforeAll(done => {
     killPrism();
 
-    exec(`BINARY=${process.env.BINARY || 'prism-cli-linux'} SPEC=${process.env.SPEC || 'petstore.oas2.json'} yarn run.binary`);
+    exec(
+      `BINARY=${process.env.BINARY || 'prism-cli-linux'} SPEC=${process.env.SPEC ||
+        'petstore.oas2.json'} yarn run.binary`
+    );
 
     waitForPrism(done);
   });
 
-  afterAll(() => {
-    killPrism(); //TODO:ensure that prism is killed
-  });
+  afterAll(killPrism);
 
-  describe('Validate missing required parameter error', () => {
-    test(['Missing required Parameter Error', 'not-dynamic'].join(), async () => {
-      const {reqRes, masterFile} = await runTest(requests[0]);
+  describe('When a required parameter is missing in query (with no default)', () => {
+    test('"Missing name query param" error is returned', async () => {
+      const { reqRes, masterFile } = await runTest(requests[0]);
+
+      expect(reqRes).toStrictEqual(masterFile);
+    });
+
+    test('"Missing status query param" error is returned', async () => {
+      const { reqRes, masterFile } = await runTest(requests[2]);
+
+      expect(reqRes).toStrictEqual(masterFile);
+    });
+
+    test('"Missing tags query param" error is returned', async () => {
+      const { reqRes, masterFile } = await runTest(requests[9]);
 
       expect(reqRes).toStrictEqual(masterFile);
     });
   });
 
-  describe('Add missing query parameter from #1', () => {
-    test(['(Not)dynamically generated Response with status code 200', 'not-dynamic'].join(), async () => {
-      const {reqRes, masterFile} = await runTest(requests[1]);
+  describe('When sending a GET with all the needed parameters in query', () => {
+    describe('static response', () => {
+      test('A response with status code 200 is returned', async () => {
+        const { reqRes, masterFile } = await runTest(requests[1]);
+
+        expect(reqRes).toStrictEqual(masterFile);
+      });
+    });
+
+    describe('dynamic response', () => {
+      test('should default to 200 and mock from schema', async () => {
+        const { reqRes, masterFile } = await runTest(requests[11]);
+        const payload = reqRes.response.body;
+
+        expect(reqRes.response.status).toBe(masterFile.response.status);
+        expect(reqRes.response.status).toBe(200);
+
+        expect(payload).toHaveProperty('id');
+        expect(payload).toHaveProperty('username');
+        expect(payload).toHaveProperty('firstName');
+        expect(payload).toHaveProperty('lastName');
+        expect(payload).toHaveProperty('email');
+        expect(payload).toHaveProperty('password');
+        expect(payload).toHaveProperty('phone');
+        expect(payload).toHaveProperty('userStatus');
+      });
+    });
+  });
+
+  describe('Authorization', () => {
+    xdescribe('When a request does not include authorization details', () => {
+      test(['Should get 401 for not being authorized', 'NOT_IN_V3:SO-176'].join(), async () => {
+        const { reqRes, masterFile } = await runTest(requests[3]);
+
+        expect(reqRes.response.status).toBe(401);
+        // expect(reqRes.response.status).toBe(masterFile.response.status);
+      });
+    });
+  });
+
+  describe('Dynamic paths', () => {
+    describe('When a resource is request from a dynamic path like /pets/{petId}', () => {
+      test('The resource is sent back with a proper schema', async () => {
+        const { reqRes, masterFile } = await runTest(requests[4]);
+        const payload = reqRes.response.body;
+
+        expect(reqRes.response.status).toBe(masterFile.response.status);
+
+        expect(payload.name).toBeDefined();
+        expect(payload.photoUrls).toBeDefined();
+        expect(payload.id).toBeDefined();
+        expect(payload.category).toBeDefined();
+        expect(payload.tags).toBeDefined();
+        expect(payload.status).toBeDefined();
+      });
+    });
+  });
+
+  xdescribe('When a form data is sent with application/x-www-form-urlencoded to create a single resource', () => {
+    test(['Should answer with JSON representing the resource'].join(), async () => {
+      const { reqRes, masterFile } = await runTest(requests[5]);
+
+      expect(reqRes.response.status).toBe(masterFile.response.status);
+      expect(reqRes.response.status).toBe(200);
+    });
+  });
+
+  describe('When using a verb that is not defined on a path', () => {
+    test('Informs with 405 that the verb is not served', async () => {
+      const { reqRes, masterFile } = await runTest(requests[6]);
 
       expect(reqRes).toStrictEqual(masterFile);
     });
   });
 
-  describe('Validate missing required parameter', () => {
-    test(['Missing Requried Parameter Error', 'not-dynamic'].join(), async () => {
-      const {reqRes, masterFile} = await runTest(requests[2]);
+  describe('When a response with a specific status code is requested using the __code property', () => {
+    describe('When an existing code is requested', () => {
 
-      expect(reqRes).toStrictEqual(masterFile);
+      describe('static response', () => {
+        test('Requested response for the given __code is returned with payload from examples', async () => {
+          const { reqRes, masterFile } = await runTest(requests[7]);
+
+          expect(reqRes).toStrictEqual(masterFile);
+        });
+      });
+
+      describe('dynamic response', () => {
+        test('Requested response is generated and returned', async () => {
+          const { reqRes, masterFile } = await runTest(requests[8]);
+          const payload = reqRes.response.body;
+
+          expect(reqRes.response.status).toBe(masterFile.response.status);
+
+          expect(payload.name).toBeDefined();
+          expect(payload.photoUrls).toBeDefined();
+          expect(payload.id).toBeDefined();
+          expect(payload.category).toBeDefined();
+          expect(payload.tags).toBeDefined();
+          expect(payload.status).toBeDefined();
+        });
+      });
+
+    })
+
+    describe('When a non existing code is requested', () => {
+      describe('When there is a default response', () => {
+        test('will return the default response', async () => {
+          const { reqRes, masterFile } = await runTest(requests[14]);
+          const payload = reqRes.response.body;
+
+          expect(payload.code).toBeDefined();
+          expect(payload.message).toBeDefined();
+          expect(reqRes.response.status).toBe(masterFile.response.status);
+        });
+      });
+
+      describe('there is no default response', () => {
+        test('will return 500 with error when an undefined code is requested and ', async () => {
+          const { reqRes, masterFile } = await runTest(requests[15]);
+
+          expect(reqRes).toStrictEqual(masterFile);
+        });
+      });
     });
   });
 
-  xdescribe('Add missing query parameter from #3', () => {
-    test(['Should get 401 for not being authorized', 'dynamic', 'NOT_IN_V3:SO-176'].join(), async () => {
-      const {reqRes, masterFile} = await runTest(requests[3]);
+  describe('When multiple values are provided for a single parameter in query', () => {
+    test('Returns results including entities with either of these values', async () => {
+      const { reqRes, masterFile } = await runTest(requests[10]);
 
-      expect(reqRes.response.status).toBe(401);
-      // expect(reqRes.response.status).toBe(masterFile.response.status);
+      expect(reqRes.response.body.filter(({ status }) => status === 'sold').length).toBeTruthy();
+      expect(reqRes.response.body.filter(({ status }) => status === 'available').length).toBeTruthy();
+
+      expect(reqRes.response.status).toBe(masterFile.response.status);
+    });
+  });
+
+  describe('Body parameters', () => {
+    describe('When sending all required parameters', () => {
+      test('should validate body params', async () => {
+        const { reqRes, masterFile } = await runTest(requests[12]);
+        const payload = reqRes.response.body;
+
+        expect(reqRes.response.status).toBe(masterFile.response.status);
+        expect(reqRes.response.status).toBe(200);
+      });
+    });
+
+    describe('When not sending all required parameters', () => {
+      test('should validate the body params and return an error code', async () => {
+        const { reqRes, masterFile } = await runTest(requests[13]);
+        const payload = reqRes.response.body;
+
+        expect(payload.detail).toContain("should have required property 'name'");
+        expect(reqRes.response.status).toBe(masterFile.response.status);
+        expect(reqRes.response.status).toBe(422);
+      });
     });
   });
 });

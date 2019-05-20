@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/pets/123?__code=499",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 499,
+    "statusText": "unknown",
+    "headers": {
+      "content-type": [
+        "application/json"
+      ],
+      "content-length": [
+        "34"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "code": -25869826,
+      "message": "sun"
+    }
+  }
+}
