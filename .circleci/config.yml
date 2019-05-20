@@ -34,6 +34,14 @@ jobs:
           paths:
             - node_modules/
       - run:
+          command: SPEC=petstore.oas2.json BINARY=prism-cli-linux yarn run.binary
+          background: true
+      - run:
+          shell: /bin/sh
+          command: |
+            wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:4010
+            :
+      - run:
           name: Run tests
           command: yarn test.binary
       - run:

@@ -37,17 +37,17 @@ describe('Test harness', () => {
   beforeAll(done => {
     // killPrism();
 
-    console.log('starting prism');
+    // console.log('starting prism');
 
-    exec(
-      `BINARY=${process.env.BINARY || 'prism-cli-linux'} SPEC=${process.env.SPEC ||
-        'petstore.oas2.json'} yarn run.binary`
-    );
-
-    waitForPrism(done);
+    // exec(
+    //   `BINARY=${process.env.BINARY || 'prism-cli-linux'} SPEC=${process.env.SPEC ||
+    //     'petstore.oas2.json'} yarn run.binary`
+    // );
+    //
+    // waitForPrism(done);
   });
 
-  afterAll(killPrism);
+  // afterAll(killPrism);
 
   describe('When a required parameter is missing in query (with no default)', () => {
     test('"Missing name query param" error is returned', async () => {
