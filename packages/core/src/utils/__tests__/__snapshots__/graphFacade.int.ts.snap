@@ -188,11 +188,13 @@ Array [
         "code": "405",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -422,11 +424,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -439,11 +443,13 @@ Array [
         "code": "404",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -456,11 +462,13 @@ Array [
         "code": "405",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -551,6 +559,7 @@ Array [
         "code": "200",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": Object {
@@ -634,6 +643,7 @@ Array [
             },
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -724,11 +734,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -813,6 +825,7 @@ Array [
         "code": "200",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": Object {
@@ -896,6 +909,7 @@ Array [
             },
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -986,11 +1000,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -1071,6 +1087,7 @@ Array [
         "code": "200",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": Object {
@@ -1151,6 +1168,7 @@ Array [
             },
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -1238,11 +1256,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -1255,11 +1275,13 @@ Array [
         "code": "404",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -1272,6 +1294,7 @@ Array [
         "code": "418",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": Object {
@@ -1352,6 +1375,7 @@ Array [
             },
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -1439,6 +1463,7 @@ Array [
         "code": "default",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": Object {
@@ -1458,6 +1483,7 @@ Array [
             },
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -1576,11 +1602,13 @@ Array [
         "code": "405",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -1681,11 +1709,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -1698,11 +1728,13 @@ Array [
         "code": "404",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -1818,6 +1850,7 @@ Array [
         "code": "200",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -1893,6 +1926,7 @@ Array [
         "code": "200",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -1997,6 +2031,7 @@ Array [
         "code": "200",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": Object {
@@ -2038,6 +2073,7 @@ Array [
             },
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -2086,11 +2122,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2155,6 +2193,7 @@ Array [
         "code": "200",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": Object {
@@ -2196,6 +2235,7 @@ Array [
             },
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -2244,11 +2284,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2261,11 +2303,13 @@ Array [
         "code": "404",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2329,11 +2373,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2346,11 +2392,13 @@ Array [
         "code": "404",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2440,11 +2488,13 @@ Array [
         "code": "default",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2537,11 +2587,13 @@ Array [
         "code": "default",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2634,11 +2686,13 @@ Array [
         "code": "default",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2719,6 +2773,7 @@ Array [
         "code": "200",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": Object {
@@ -2726,6 +2781,7 @@ Array [
             },
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -2795,11 +2851,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2843,11 +2901,13 @@ Array [
         "code": "default",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -2909,6 +2969,7 @@ Array [
         "code": "200",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": Object {
@@ -2948,6 +3009,7 @@ Array [
             },
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": Object {
@@ -2994,11 +3056,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -3011,11 +3075,13 @@ Array [
         "code": "404",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -3123,11 +3189,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -3140,11 +3208,13 @@ Array [
         "code": "404",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -3206,11 +3276,13 @@ Array [
         "code": "400",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,
@@ -3223,11 +3295,13 @@ Array [
         "code": "404",
         "contents": Array [
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/xml",
             "schema": undefined,
           },
           Object {
+            "encodings": Array [],
             "examples": Array [],
             "mediaType": "application/json",
             "schema": undefined,

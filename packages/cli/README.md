@@ -17,7 +17,7 @@ $ npm install -g @stoplight/prism-cli
 $ prism COMMAND
 running command...
 $ prism (-v|--version|version)
-@stoplight/prism-cli/3.0.0-alpha.4 darwin-x64 node-v8.15.1
+@stoplight/prism-cli/3.0.0-alpha.9 darwin-x64 node-v8.15.1
 $ prism --help [COMMAND]
 USAGE
   $ prism COMMAND
