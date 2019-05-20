@@ -18,11 +18,11 @@ export default class Server extends Command {
       args: { spec },
     } = this.parse(Server);
 
-    if (dynamic) {
+    if (true || dynamic) {
       signale.star('Dynamic example generation enabled.');
     }
 
-    const server = createServer(spec, { mock: { dynamic } });
+    const server = createServer(spec, { mock: { dynamic: true || dynamic } });
     try {
       const address = await server.listen(port);
 
