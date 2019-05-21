@@ -30,6 +30,15 @@ jobs:
           paths:
             - node_modules/
       - run:
+          name: Install Prism v2
+          command: curl https://raw.githubusercontent.com/stoplightio/prism/2.x/install.sh | sh
+      - run:
+          name: Check Prism v2 health
+          command: /usr/local/bin/prism mock ./examples/petstore.oas2.json
+          background: true
+      - run:
+          command: sleep 15
+      - run:
           name: Run tests
           command: SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.coverage --verbose
       - run:
