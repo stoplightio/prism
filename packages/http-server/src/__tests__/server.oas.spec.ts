@@ -40,7 +40,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(payload).toHaveProperty('status');
   });
 
-  test('should not mock a verb that is not defined on a path', async () => {
+  test.skip('should not mock a verb that is not defined on a path', async () => {
     const response = await server.fastify.inject({
       method: 'POST',
       url: '/pets/123',
@@ -49,7 +49,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     checkErrorPayloadShape(response.payload);
   });
 
-  test('will return requested response using the __code property', async () => {
+  test.skip('will return requested response using the __code property', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/123?__code=404',
