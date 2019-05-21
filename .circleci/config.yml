@@ -31,7 +31,7 @@ jobs:
             - node_modules/
       - run:
           name: Run tests
-          command: yarn test.coverage --verbose
+          command: SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.coverage --verbose
       - run:
           name: cc-after
           command: |

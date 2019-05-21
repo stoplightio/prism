@@ -24,6 +24,8 @@ Gold master files contain data about both request and response.
 `yarn test.binary`
 or
 `SPEC=./examples/petstore.oas2.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary`
+or
+`SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.coverage --verbose` (`SPEC` can take comma delimited paths to specs)
 
 For now, when running with `SPEC=petstore.oas3.json`, some of the tests will fail. This is intentional - [TODO].
 
