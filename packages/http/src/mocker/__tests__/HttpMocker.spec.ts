@@ -92,9 +92,7 @@ describe('HttpMocker', () => {
 
     describe('with valid negotiator response', () => {
       it('returns an empty body when negotiator did not resolve to either example nor schema', () => {
-        jest
-          .spyOn(helpers, 'negotiateOptionsForValidRequest')
-          .mockImplementation(() => ({ code: '202', mediaType: 'test' }));
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue({ code: '202', mediaType: 'test' });
 
         return expect(
           httpMocker.mock({
@@ -105,11 +103,11 @@ describe('HttpMocker', () => {
       });
 
       it('returns static example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockImplementation(() => ({
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue({
           code: '202',
           mediaType: 'test',
-          example: mockResource.responses![0].contents![0].examples![0],
-        }));
+          bodyExample: mockResource.responses![0].contents![0].examples![0],
+        });
 
         return expect(
           httpMocker.mock({
@@ -120,11 +118,11 @@ describe('HttpMocker', () => {
       });
 
       it('returns dynamic example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockImplementation(() => ({
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue({
           code: '202',
           mediaType: 'test',
           schema: mockResource.responses![0].contents![0].schema,
-        }));
+        });
 
         jest.spyOn(mockExampleGenerator, 'generate').mockResolvedValue('example value');
 
@@ -139,11 +137,11 @@ describe('HttpMocker', () => {
 
     describe('with invalid negotiator response', () => {
       it('returns static example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockImplementation(() => ({
+        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockReturnValue({
           code: '202',
           mediaType: 'test',
-          example: mockResource.responses![0].contents![0].examples![0],
-        }));
+          bodyExample: mockResource.responses![0].contents![0].examples![0],
+        });
 
         return expect(
           httpMocker.mock({
@@ -156,12 +154,12 @@ describe('HttpMocker', () => {
 
     describe('when example is of type INodeExternalExample', () => {
       it('generates a dynamic example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockImplementation(() => ({
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue({
           code: '202',
           mediaType: 'test',
-          example: mockResource.responses![0].contents![0].examples![1],
+          bodyExample: mockResource.responses![0].contents![0].examples![1],
           schema: { type: 'string' },
-        }));
+        });
 
         jest.spyOn(mockExampleGenerator, 'generate').mockResolvedValue('example value chelsea');
 

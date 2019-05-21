@@ -8,6 +8,7 @@ import {
 import { Chance } from 'chance';
 
 import helpers from '../NegotiatorHelpers';
+import { IHttpNegotiationResult } from '../types';
 
 const chance = new Chance();
 
@@ -70,10 +71,10 @@ describe('NegotiatorHelpers', () => {
           .instance();
 
         const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
-        const expectedConfig = {
+        const expectedConfig: IHttpNegotiationResult = {
           code: actualCode,
           mediaType: actualMediaType,
-          example: { key: actualExampleKey, value: '', externalValue: '' },
+          bodyExample: { key: actualExampleKey, value: '', externalValue: '' },
         };
 
         expect(actualConfig).toEqual(expectedConfig);
@@ -541,14 +542,16 @@ describe('NegotiatorHelpers', () => {
         headers: [],
       };
 
-      expect(helpers.negotiateDefaultMediaType(partialOptions, response)).toEqual({
+      const expectedResponse: IHttpNegotiationResult = {
         code: '200',
         mediaType: 'text/plain',
-        example: {
+        bodyExample: {
           value: undefined,
           key: 'default',
         },
-      });
+      };
+
+      expect(helpers.negotiateDefaultMediaType(partialOptions, response)).toEqual(expectedResponse);
     });
   });
 
@@ -561,24 +564,26 @@ describe('NegotiatorHelpers', () => {
           exampleKey,
           dynamic: chance.bool(),
         };
-        const example: INodeExample = {
+        const bodyExample: INodeExample = {
           key: exampleKey,
           value: '',
         };
 
         const httpContent: IHttpContent = {
           mediaType: chance.string(),
-          examples: [example],
+          examples: [bodyExample],
           encodings: [],
         };
 
         const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
 
-        expect(actualOperationConfig).toEqual({
+        const expectedConfig: IHttpNegotiationResult = {
           code: partialOptions.code,
           mediaType: httpContent.mediaType,
-          example,
-        });
+          bodyExample,
+        };
+
+        expect(actualOperationConfig).toEqual(expectedConfig);
       });
 
       it('and example not exist should throw an error', () => {
@@ -645,7 +650,7 @@ describe('NegotiatorHelpers', () => {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           dynamic: false,
         };
-        const example: INodeExample | INodeExternalExample = {
+        const bodyExample: INodeExample | INodeExternalExample = {
           key: chance.string(),
           value: '',
           externalValue: '',
@@ -653,7 +658,7 @@ describe('NegotiatorHelpers', () => {
         const httpContent: IHttpContent = {
           mediaType: chance.string(),
           examples: [
-            example,
+            bodyExample,
             {
               key: chance.string(),
               value: '',
@@ -664,12 +669,12 @@ describe('NegotiatorHelpers', () => {
         };
 
         const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-
-        expect(actualOperationConfig).toEqual({
+        const expectedConfig: IHttpNegotiationResult = {
           code: partialOptions.code,
           mediaType: httpContent.mediaType,
-          example,
-        });
+          bodyExample,
+        };
+        expect(actualOperationConfig).toEqual(expectedConfig);
       });
 
       it('and cannot find example but schema exists return dynamic', () => {

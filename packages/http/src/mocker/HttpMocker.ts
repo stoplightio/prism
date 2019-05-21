@@ -1,11 +1,12 @@
 import { IMocker, IMockerOpts } from '@stoplight/prism-core';
-import { IHttpOperation } from '@stoplight/types';
+import { IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
 import { IHttpConfig, IHttpOperationConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
 import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
+import { IHttpNegotiationResult } from './negotiator/types';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   constructor(private _exampleGenerator: IExampleGenerator) {}
@@ -35,7 +36,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     }
 
     // looking up proper example
-    let negotiationResult;
+    let negotiationResult: IHttpNegotiationResult;
     if (input.validations.input.length > 0) {
       try {
         negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
@@ -50,10 +51,10 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     }
 
     // preparing response body
-    let body;
-    const example = negotiationResult.example;
+    let body: string | undefined;
+    const example = negotiationResult.bodyExample;
 
-    if (example && 'value' in example && example.value !== undefined) {
+    if (isINodeExample(example) && example.value !== undefined) {
       body = typeof example.value === 'string' ? example.value : JSON.stringify(example.value);
     } else if (negotiationResult.schema) {
       body = await this._exampleGenerator.generate(negotiationResult.schema, negotiationResult.mediaType);
@@ -67,4 +68,8 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
       body,
     };
   }
+}
+
+function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undefined): nodeExample is INodeExample {
+  return !!nodeExample && 'value' in nodeExample;
 }

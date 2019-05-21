@@ -54,7 +54,7 @@ const helpers = {
         return {
           code,
           mediaType,
-          example,
+          bodyExample: example,
         };
       } else {
         throw new Error(`Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`);
@@ -77,7 +77,7 @@ const helpers = {
         return {
           code,
           mediaType,
-          example,
+          bodyExample: example,
         };
       } else if (httpContent.schema) {
         return {
@@ -116,7 +116,7 @@ const helpers = {
       return {
         code,
         mediaType: 'text/plain',
-        example: {
+        bodyExample: {
           value: undefined,
           key: 'default',
         },
@@ -230,7 +230,7 @@ const helpers = {
       return {
         code: response.code,
         mediaType: responseWithExamples.mediaType,
-        example: responseWithExamples.examples![0],
+        bodyExample: responseWithExamples.examples![0],
       };
     } else if (responseWithSchema) {
       return {
