@@ -36,6 +36,7 @@ jobs:
       - run:
           command: SPEC=petstore.oas2.json BINARY=prism-cli-linux yarn run.binary
           background: true
+      - run: sleep 25
       - run:
           shell: /bin/sh
           command: |
