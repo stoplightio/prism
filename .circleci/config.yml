@@ -24,24 +24,14 @@ jobs:
       - run:
           name: Build all code to JavaScript
           command: yarn build
-#      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
-          name: Create CLI binaries
-          command: npx pkg --out-path ./cli-binaries ./packages/cli/
+          name: Create Linux CLI binary
+          command: HOST=host yarn build.binary
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules/
-#      - run:
-#          command: SPEC=petstore.oas2.json BINARY=prism-cli-linux yarn run.binary
-#          background: true
-#      - run: sleep 25
-#      - run:
-#          shell: /bin/sh
-#          command: |
-#            wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:4010
-#            :
       - run:
           name: Run tests
           command: yarn test.coverage --verbose

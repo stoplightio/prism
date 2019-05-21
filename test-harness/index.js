@@ -37,10 +37,12 @@ describe('Test harness', () => {
   beforeAll(done => {
     killPrism();
 
-    exec(
-      `BINARY=${process.env.BINARY || 'prism-cli-linux'} SPEC=${process.env.SPEC ||
-        'petstore.oas2.json'} yarn run.binary`
-    );
+    const binary = `BINARY=${process.env.BINARY || `${__dirname}/../cli-binaries/prism-cli-linux`}`;
+    const spec = `SPEC=${process.env.SPEC || `${__dirname}/../examples/petstore.oas2.json`}`;
+
+    const command = `${binary} ${spec} yarn run.binary`;
+
+    exec(command);
 
     waitForPrism(done);
   });

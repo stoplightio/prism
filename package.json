@@ -16,9 +16,10 @@
     "test.ci": "jest --maxWorkers=2",
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
-    "run.binary": "cd cli-binaries && ./$BINARY mock ../examples/$SPEC",
+    "run.binary": "$BINARY mock $SPEC",
     "test.update": "yarn test.fast --updateSnapshot",
-    "build.binaries": "yarn && yarn build && npx pkg --out-path ./cli-binaries ./packages/cli/",
+    "build.binary": "yarn build && npx pkg --target $HOST --output ./cli-binaries/prism-cli-linux ./packages/cli/",
+    "build.binaries": "yarn build && npx pkg --out-path ./cli-binaries ./packages/cli/",
     "test.binary": "jest test-harness/index.js $BINARY $SPEC",
     "release": "lerna version prerelease --preid alpha"
   },
