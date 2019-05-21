@@ -22,9 +22,6 @@ jobs:
           name: Install Dependencies
           command: yarn
       - run:
-          name: Build all code to JavaScript
-          command: yarn build
-      - run:
           name: Create Linux CLI binary
           command: HOST=host yarn build.binary
       - save_cache:
