@@ -37,6 +37,54 @@
   ],
   "paths": {
     "/pets": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Get all pets",
+        "description": "",
+        "operationId": "getPets",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Pet"
+                  },
+                  "example": [
+                    {"name":  "abc"}
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "pet"
@@ -236,7 +284,14 @@
             "description": "Invalid ID supplied"
           },
           "404": {
-            "description": "Pet not found"
+            "description": "Pet not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "abc": 1
+                }
+              }
+            }
           },
           "418": {
             "description": "teapot response",
