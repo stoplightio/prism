@@ -30,14 +30,10 @@ jobs:
           paths:
             - node_modules/
       - run:
-          name: prepare /usr/local/bin access for the current user
-          command: chown -R $USER:$USER /usr/local/bin
-      - run:
-          name: Install Prism v2
-          command: curl https://raw.githubusercontent.com/stoplightio/prism/2.x/install.sh | sh
+          command: curl -L https://github.com/stoplightio/prism/releases/download/v2.0.17/prism_linux_amd64 -o prism && chmod +x ./prism
       - run:
           name: Check Prism v2 health
-          command: /usr/local/bin/prism mock ./examples/petstore.oas2.json
+          command: ./prism mock --spec ./examples/petstore.oas2.json
           background: true
       - run:
           command: sleep 15
