@@ -30,6 +30,9 @@ jobs:
           paths:
             - node_modules/
       - run:
+          name: prepare /usr/local/bin access for the current user
+          command: chown -R $USER:$USER /usr/local/bin
+      - run:
           name: Install Prism v2
           command: curl https://raw.githubusercontent.com/stoplightio/prism/2.x/install.sh | sh
       - run:
