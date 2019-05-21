@@ -176,22 +176,34 @@ describe('HttpMocker', () => {
 
     describe('when an example is defined', () => {
       describe('and dynamic flag is true', () => {
-        it('should generate a dynamic response', async () => {
-          const response = await httpMocker.mock({
-            input: mockInput,
-            resource: mockResource,
-            config: { mock: { dynamic: true } },
+        describe('should generate a dynamic response', () => {
+          const generatedExample = JSON.stringify({ hello: 'world' });
+          beforeAll(() => {
+            jest.spyOn(mockExampleGenerator, 'generate').mockResolvedValue(generatedExample);
+          });
+          afterAll(() => {
+            jest.restoreAllMocks();
           });
 
-          expect(response.body).toBeDefined();
+          it('the dynamic response should not be an example one', async () => {
+            const response = await httpMocker.mock({
+              input: mockInput,
+              resource: mockResource,
+              config: { mock: { dynamic: true } },
+            });
 
-          const allExamples = flatMap(mockResource.responses, res =>
-            flatMap(res.contents, content => content.examples),
-          ).map(x => {
-            if ('value' in x) return x.value;
+            expect(mockExampleGenerator.generate).toHaveBeenCalled();
+            expect(response.body).toBeDefined();
+
+            const allExamples = flatMap(mockResource.responses, res =>
+              flatMap(res.contents, content => content.examples),
+            ).map(x => {
+              if ('value' in x) return x.value;
+            });
+
+            allExamples.forEach(example => expect(response.body).not.toEqual(example));
+            expect(response.body).toBe(generatedExample);
           });
-
-          allExamples.forEach(example => expect(response.body).not.toEqual(example));
         });
       });
 
