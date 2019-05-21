@@ -44,7 +44,7 @@ jobs:
 #            :
       - run:
           name: Run tests
-          command: yarn test.binary
+          command: yarn test.coverage --verbose
       - run:
           name: cc-after
           command: |
