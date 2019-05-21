@@ -17,6 +17,7 @@
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
     "run.binary": "$BINARY mock $SPEC",
+    "run.binary.v2": "./prism mock --spec ./examples/petstore.oas2.json",
     "test.update": "yarn test.fast --updateSnapshot",
     "prebuild.binary": "yarn build",
     "prebuild.binaries": "yarn build",

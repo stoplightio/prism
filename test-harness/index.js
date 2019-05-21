@@ -38,21 +38,18 @@ function killPrism(done = () => null) {
 const spec = `${process.env.SPEC || `${__dirname}/../examples/petstore.oas2.json`}`;
 const specs = spec.split(',');
 
-const createSpec = specc => {
+const createSpec = (specPath, prismCmd) => {
   return () => {
-    describe(specc, () => {
+    describe(specPath, () => {
       beforeAll(done => {
         killPrism();
 
-        const binary = `BINARY=${process.env.BINARY || `${__dirname}/../cli-binaries/prism-cli-linux`}`;
-        const command = `${binary} SPEC=${specc} yarn run.binary`;
-
-        exec(command);
+        exec(prismCmd);
 
         waitForPrism(done);
       });
 
-      afterAll((done) => {
+      afterAll(done => {
         killPrism(done);
       });
 
@@ -245,5 +242,14 @@ const createSpec = specc => {
   };
 };
 
+const binary = `BINARY=${process.env.BINARY || `${__dirname}/../cli-binaries/prism-cli-linux`}`;
 
-specs.forEach((aSpec) => createSpec(aSpec)());
+specs.forEach(specPath => {
+  const command = `${binary} SPEC=${specPath} yarn run.binary`;
+
+  createSpec(specPath, command)();
+});
+
+describe('prism v2', () => {
+  createSpec('./examples/petstore.oas2.json', 'yarn run.binary.v2')();
+});
