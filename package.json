@@ -44,7 +44,10 @@
     "trailingComma": "es5"
   },
   "lint-staged": {
-    "*.ts": "tslint --fix"
+    "*.ts": [
+      "tslint --fix",
+      "git add"
+    ]
   },
   "husky": {
     "hooks": {
