@@ -6,7 +6,7 @@ describe('graphFacade', () => {
   const graphFacade = new GraphFacade();
 
   describe('createFilesystemNode()', () => {
-    test.skip('httpOperations should return filtered nodes', async () => {
+    test('httpOperations should return filtered nodes', async () => {
       await graphFacade.createFilesystemNode('examples/petstore.oas2.json');
 
       expect(graphFacade.httpOperations).toMatchSnapshot();
