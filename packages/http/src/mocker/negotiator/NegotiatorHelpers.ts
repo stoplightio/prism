@@ -1,4 +1,4 @@
-import { IHttpContent, IHttpOperation, IHttpOperationResponse } from '@stoplight/types';
+import { IHttpContent, IHttpOperation, IHttpOperationResponse, Omit } from '@stoplight/types';
 
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
@@ -43,7 +43,7 @@ const helpers = {
   negotiateByPartialOptionsAndHttpContent(
     { code, exampleKey, dynamic }: NegotiatePartialOptions,
     httpContent: IHttpContent,
-  ): IHttpNegotiationResult {
+  ): Omit<IHttpNegotiationResult, 'headers'> {
     const { mediaType } = httpContent;
 
     if (exampleKey) {
@@ -103,7 +103,7 @@ const helpers = {
     const httpContent = findHttpContentByMediaType(response, mediaType);
     if (httpContent) {
       // a httpContent for default mediaType exists
-      return helpers.negotiateByPartialOptionsAndHttpContent(
+      const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
         {
           code,
           dynamic,
@@ -111,6 +111,10 @@ const helpers = {
         },
         httpContent,
       );
+      return {
+        headers: response.headers,
+        ...contentNegotiationResult,
+      };
     } else {
       // no httpContent found, returning empty body
       return {
@@ -120,6 +124,7 @@ const helpers = {
           value: undefined,
           key: 'default',
         },
+        headers: response.headers,
       };
     }
   },
@@ -129,7 +134,7 @@ const helpers = {
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
-    const { code } = response;
+    const { code, headers } = response;
     const { mediaType, dynamic, exampleKey } = desiredOptions;
 
     if (mediaType) {
@@ -137,7 +142,7 @@ const helpers = {
       const httpContent = findHttpContentByMediaType(response, mediaType);
       if (httpContent) {
         // a httpContent for a provided mediaType exists
-        return helpers.negotiateByPartialOptionsAndHttpContent(
+        const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
           {
             code,
             dynamic,
@@ -145,10 +150,15 @@ const helpers = {
           },
           httpContent,
         );
+        return {
+          headers,
+          ...contentNegotiationResult,
+        };
       } else {
         return {
           code,
           mediaType: 'text/plain',
+          headers,
         };
       }
     }
@@ -231,12 +241,14 @@ const helpers = {
         code: response.code,
         mediaType: responseWithExamples.mediaType,
         bodyExample: responseWithExamples.examples![0],
+        headers: response.headers,
       };
     } else if (responseWithSchema) {
       return {
         code: response.code,
         mediaType: responseWithSchema.mediaType,
         schema: responseWithSchema.schema,
+        headers: response.headers,
       };
     } else {
       throw new Error(
