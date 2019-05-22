@@ -33,8 +33,11 @@ jobs:
           name: Download prism v2
           command: yarn download.prism.v2
       - run:
+          name: Test Harness
+          command: SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary
+      - run:
           name: Run tests
-          command: SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.coverage --verbose
+          command: yarn test.coverage --verbose
       - run:
           name: cc-after
           command: |
