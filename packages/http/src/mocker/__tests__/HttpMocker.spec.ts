@@ -92,7 +92,9 @@ describe('HttpMocker', () => {
 
     describe('with valid negotiator response', () => {
       it('returns an empty body when negotiator did not resolve to either example nor schema', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue({ code: '202', mediaType: 'test' });
+        jest
+          .spyOn(helpers, 'negotiateOptionsForValidRequest')
+          .mockReturnValue({ code: '202', mediaType: 'test', headers: [] });
 
         return expect(
           httpMocker.mock({
@@ -107,6 +109,7 @@ describe('HttpMocker', () => {
           code: '202',
           mediaType: 'test',
           bodyExample: mockResource.responses![0].contents![0].examples![0],
+          headers: [],
         });
 
         return expect(
@@ -122,6 +125,7 @@ describe('HttpMocker', () => {
           code: '202',
           mediaType: 'test',
           schema: mockResource.responses![0].contents![0].schema,
+          headers: [],
         });
 
         jest.spyOn(mockExampleGenerator, 'generate').mockResolvedValue('example value');
@@ -141,6 +145,7 @@ describe('HttpMocker', () => {
           code: '202',
           mediaType: 'test',
           bodyExample: mockResource.responses![0].contents![0].examples![0],
+          headers: [],
         });
 
         return expect(
@@ -158,6 +163,7 @@ describe('HttpMocker', () => {
           code: '202',
           mediaType: 'test',
           bodyExample: mockResource.responses![0].contents![0].examples![1],
+          headers: [],
           schema: { type: 'string' },
         });
 

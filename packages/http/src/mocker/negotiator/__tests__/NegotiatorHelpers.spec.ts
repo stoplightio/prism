@@ -4,6 +4,7 @@ import {
   IHttpOperationResponse,
   INodeExample,
   INodeExternalExample,
+  Omit,
 } from '@stoplight/types';
 import { Chance } from 'chance';
 
@@ -75,6 +76,7 @@ describe('NegotiatorHelpers', () => {
           code: actualCode,
           mediaType: actualMediaType,
           bodyExample: { key: actualExampleKey, value: '', externalValue: '' },
+          headers: [],
         };
 
         expect(actualConfig).toEqual(expectedConfig);
@@ -111,10 +113,11 @@ describe('NegotiatorHelpers', () => {
             .instance();
 
           const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
-          const expectedConfig = {
+          const expectedConfig: IHttpNegotiationResult = {
             code: actualCode,
             mediaType: actualMediaType,
             schema: { type: 'type1' },
+            headers: [],
           };
 
           expect(actualConfig).toEqual(expectedConfig);
@@ -221,6 +224,7 @@ describe('NegotiatorHelpers', () => {
       const expectedResult = {
         code: options.code,
         mediaType: 'application/json',
+        headers: [],
       };
 
       jest.spyOn(helpers, 'negotiateOptionsForDefaultCode');
@@ -239,6 +243,7 @@ describe('NegotiatorHelpers', () => {
       const expectedResult = {
         code: chance.integer({ min: 100, max: 599 }).toString(),
         mediaType: 'application/json',
+        headers: [],
       };
 
       jest.spyOn(helpers, 'negotiateOptionsForDefaultCode').mockReturnValue(expectedResult);
@@ -336,6 +341,7 @@ describe('NegotiatorHelpers', () => {
       const fakeOperationConfig = {
         code: response.code,
         mediaType: 'application/json',
+        headers: [],
       };
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(fakeOperationConfig);
       httpOperation = anHttpOperation(httpOperation)
@@ -359,6 +365,7 @@ describe('NegotiatorHelpers', () => {
       const fakeOperationConfig = {
         code: response.code,
         mediaType: 'application/json',
+        headers: [],
       };
 
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(fakeOperationConfig);
@@ -412,9 +419,10 @@ describe('NegotiatorHelpers', () => {
           contents: [contents],
           headers: [],
         };
-        const fakeOperationConfig = {
+        const fakeOperationConfig: IHttpNegotiationResult = {
           code: '200',
           mediaType: 'application/json',
+          headers: [],
         };
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(fakeOperationConfig);
         jest.spyOn(helpers, 'negotiateDefaultMediaType');
@@ -435,7 +443,7 @@ describe('NegotiatorHelpers', () => {
           contents,
         );
         expect(helpers.negotiateDefaultMediaType).not.toHaveBeenCalled();
-        expect(actualOperationConfig).toBe(fakeOperationConfig);
+        expect(actualOperationConfig).toEqual(fakeOperationConfig);
       });
 
       it('and httpContent not exist should negotiate default media type', () => {
@@ -470,6 +478,7 @@ describe('NegotiatorHelpers', () => {
         const fakeOperationConfig = {
           code: '200',
           mediaType: 'application/json',
+          headers: [],
         };
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent');
         jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(fakeOperationConfig);
@@ -503,20 +512,25 @@ describe('NegotiatorHelpers', () => {
         dynamic: chance.bool(),
         exampleKey: chance.string(),
       };
+
       const contents: IHttpContent = {
         mediaType: 'application/json',
         examples: [],
         encodings: [],
       };
+
       const response: IHttpOperationResponse = {
         code,
         contents: [contents],
         headers: [],
       };
-      const fakeOperationConfig = {
+
+      const fakeOperationConfig: IHttpNegotiationResult = {
         code: '200',
         mediaType: 'application/json',
+        headers: [],
       };
+
       jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(fakeOperationConfig);
 
       const actualOperationConfig = helpers.negotiateDefaultMediaType(partialOptions, response);
@@ -530,7 +544,7 @@ describe('NegotiatorHelpers', () => {
         },
         contents,
       );
-      expect(actualOperationConfig).toBe(fakeOperationConfig);
+      expect(actualOperationConfig).toEqual(fakeOperationConfig);
     });
 
     it('when no default response return text/plain with empty body', () => {
@@ -545,6 +559,7 @@ describe('NegotiatorHelpers', () => {
       const expectedResponse: IHttpNegotiationResult = {
         code: '200',
         mediaType: 'text/plain',
+        headers: [],
         bodyExample: {
           value: undefined,
           key: 'default',
@@ -577,7 +592,7 @@ describe('NegotiatorHelpers', () => {
 
         const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
 
-        const expectedConfig: IHttpNegotiationResult = {
+        const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
           code: partialOptions.code,
           mediaType: httpContent.mediaType,
           bodyExample,
@@ -669,7 +684,7 @@ describe('NegotiatorHelpers', () => {
         };
 
         const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-        const expectedConfig: IHttpNegotiationResult = {
+        const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
           code: partialOptions.code,
           mediaType: httpContent.mediaType,
           bodyExample,
