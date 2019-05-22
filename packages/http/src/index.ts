@@ -25,7 +25,7 @@ const createInstance = <LoaderInput>(
   overrides?: TPrismHttpComponents<LoaderInput>,
 ) => {
   return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput>(
-    { mock: true },
+    { mock: { dynamic: false } },
     {
       loader: new FilesystemLoader(),
       router,

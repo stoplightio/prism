@@ -2,7 +2,7 @@ import { IMocker, IMockerOpts } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
+import { IHttpConfig, IHttpOperationConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
 import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
@@ -26,9 +26,11 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
 
     // setting default values
     const inputMediaType = input.data.headers && caseless(input.data.headers).get('content-type');
-    config = config || { mock: {} };
-    const mockConfig: any = typeof config.mock === 'boolean' ? {} : Object.assign({}, config.mock);
-    if (!mockConfig.mediaType && inputMediaType) {
+    config = config || { mock: false };
+    const mockConfig: IHttpOperationConfig =
+      config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
+
+    if (!mockConfig.mediaType && typeof inputMediaType === 'string') {
       mockConfig.mediaType = inputMediaType;
     }
 

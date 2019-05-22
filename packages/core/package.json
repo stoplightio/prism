@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-core",
-  "version": "3.0.0-alpha.9",
+  "version": "3.0.0-alpha.10",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -16,14 +16,14 @@
     "node": ">=8"
   },
   "dependencies": {
-    "@stoplight/graphite": "^6.4.1",
+    "@stoplight/graphite": "^7.1.0",
     "axios": "^0.18.0",
     "lodash": "^4.0.0",
     "mobx": "^5.0.0",
     "tslib": "^1.9.0"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.129"
+    "@types/lodash": "^4.14.130"
   },
   "publishConfig": {
     "access": "public"
