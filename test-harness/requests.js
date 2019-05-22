@@ -12,12 +12,10 @@ module.exports = [
     method: 'GET',
   },
   {
-    dynamic: true,
     path: '/pets/findByStatus?status=pending',
     method: 'GET',
   },
   {
-    dynamic: true,
     path: '/no_auth/pets/123',
     method: 'GET',
   },
@@ -41,7 +39,6 @@ module.exports = [
     method: 'GET',
   },
   {
-    dynamic: true,
     path: '/no_auth/pets/123?__code=418',
     method: 'GET',
   },
@@ -50,17 +47,14 @@ module.exports = [
     method: 'GET',
   },
   {
-    dynamic: true,
     path: '/no_auth/pets/findByStatus?status=available&status=sold',
     method: 'GET',
   },
   {
-    dynamic: true,
     path: '/user/username',
     method: 'GET',
   },
   {
-    dynamic: true,
     path: '/store/order',
     method: 'POST',
     headers: {
@@ -93,7 +87,6 @@ module.exports = [
     }
   },
   {
-    dynamic: true,
     path: '/no_auth/pets/123?__code=499',
     method: 'GET',
   },

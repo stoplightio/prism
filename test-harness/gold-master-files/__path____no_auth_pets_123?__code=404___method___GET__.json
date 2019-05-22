@@ -2,27 +2,25 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/pets?name=abc",
+    "path": "/no_auth/pets/123?__code=404",
     "host": "http://localhost:4010"
   },
   "response": {
-    "status": 200,
-    "statusText": "OK",
+    "status": 404,
+    "statusText": "Not Found",
     "headers": {
       "content-type": [
         "application/json"
       ],
       "content-length": [
-        "16"
+        "21"
       ],
       "connection": [
         "close"
       ]
     },
-    "body": [
-      {
-        "name": "abc"
-      }
-    ]
+    "body": {
+      "msg": "no_resource"
+    }
   }
 }

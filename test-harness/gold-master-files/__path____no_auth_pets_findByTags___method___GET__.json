@@ -2,7 +2,7 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/pets/findByStatus",
+    "path": "/no_auth/pets/findByTags",
     "host": "http://localhost:4010"
   },
   "response": {
@@ -13,7 +13,7 @@
         "application/problem+json"
       ],
       "content-length": [
-        "276"
+        "272"
       ],
       "connection": [
         "close"
@@ -23,7 +23,7 @@
       "type": "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY",
       "title": "Invalid request body payload",
       "status": 422,
-      "detail": "Your request body is not valid: [{\"path\":[\"query\",\"status\"],\"code\":\"required\",\"message\":\"Missing status query param\",\"severity\":0}]"
+      "detail": "Your request body is not valid: [{\"path\":[\"query\",\"tags\"],\"code\":\"required\",\"message\":\"Missing tags query param\",\"severity\":0}]"
     }
   }
 }

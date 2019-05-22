@@ -25,8 +25,6 @@ async function recordMasterFile({ path, method, headers, body }) {
   for (const request of requests) {
     const { dynamic, ...req} = request;
 
-    if (!dynamic) {
-      await recordMasterFile(req);
-    }
+    await recordMasterFile(req);
   }
 })();

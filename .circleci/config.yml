@@ -30,8 +30,8 @@ jobs:
           paths:
             - node_modules/
       - run:
-          name: download prism v2
-          command: curl -L https://github.com/stoplightio/prism/releases/download/v2.0.17/prism_linux_amd64 -o prism && chmod +x ./prism
+          name: Download prism v2
+          command: yarn download.prism.v2
       - run:
           name: Run tests
           command: SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.coverage --verbose

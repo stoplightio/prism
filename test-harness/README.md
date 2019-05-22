@@ -26,6 +26,10 @@ or
 `SPEC=./examples/petstore.oas2.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary`
 or
 `SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.coverage --verbose` (`SPEC` can take comma delimited paths to specs)
+or
+`RUN_V2_TESTS=1 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json yarn test.binary`
+
+Adding `RUN_V2_TESTS=1` will run the tests against Prism v2 binary. Please run `yarn download.prism.v2` first.
 
 For now, when running with `SPEC=petstore.oas3.json`, some of the tests will fail. This is intentional - [TODO].
 

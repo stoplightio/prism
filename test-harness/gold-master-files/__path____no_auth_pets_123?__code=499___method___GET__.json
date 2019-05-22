@@ -2,25 +2,26 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/pets/123?__code=404",
+    "path": "/no_auth/pets/123?__code=499",
     "host": "http://localhost:4010"
   },
   "response": {
-    "status": 404,
-    "statusText": "Not Found",
+    "status": 499,
+    "statusText": "unknown",
     "headers": {
       "content-type": [
         "application/json"
       ],
       "content-length": [
-        "9"
+        "48"
       ],
       "connection": [
         "close"
       ]
     },
     "body": {
-      "abc": 1
+      "code": -60842552,
+      "message": "amet elit aliquip"
     }
   }
 }

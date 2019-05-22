@@ -1,0 +1,95 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/no_auth/pets/findByStatus?status=available&status=sold",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json"
+      ],
+      "content-length": [
+        "772"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": [
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "officia",
+          "ipsum Ut ut",
+          "Duis officia do",
+          "nostrud eiusmod",
+          "aliqua"
+        ],
+        "id": -90269745,
+        "category": {
+          "id": -72303979,
+          "name": "incididunt"
+        },
+        "tags": [
+          {
+            "id": 53808769,
+            "name": "sint laborum anim"
+          },
+          {
+            "id": -37258790,
+            "name": "irure ex veniam Duis magna"
+          },
+          {
+            "id": -99060070,
+            "name": "amet laborum nisi"
+          },
+          {
+            "id": 31518130,
+            "name": "enim non irure occaecat laboris"
+          },
+          {
+            "id": -25962679,
+            "name": "fugiat"
+          }
+        ],
+        "status": "available"
+      },
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "laboris",
+          "nisi commodo",
+          "tempor"
+        ],
+        "id": 62263231,
+        "category": {
+          "id": 34362901,
+          "name": "elit anim dolore occaecat"
+        },
+        "tags": [
+          {
+            "id": -45868383,
+            "name": "eu voluptate aliqua cillum Lor"
+          },
+          {
+            "id": -10586960,
+            "name": "id dolor"
+          },
+          {
+            "id": -85989693,
+            "name": "non in cillum"
+          },
+          {
+            "id": -37708961,
+            "name": "deserunt dolore ex"
+          }
+        ],
+        "status": "pending"
+      }
+    ]
+  }
+}

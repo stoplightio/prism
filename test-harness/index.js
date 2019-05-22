@@ -113,18 +113,20 @@ const createSpec = (specPath, prismCmd) => {
 
       describe('Dynamic paths', () => {
         describe('When a resource is request from a dynamic path like /pets/{petId}', () => {
-          test('The resource is sent back with a proper schema', async () => {
-            const { reqRes, masterFile } = await runTest(requests[4]);
-            const payload = reqRes.response.body;
+          describe('Dynamic response', () => {
+            test('The resource is sent back with a proper schema', async () => {
+              const { reqRes, masterFile } = await runTest(requests[4]);
+              const payload = reqRes.response.body;
 
-            expect(reqRes.response.status).toBe(masterFile.response.status);
+              expect(reqRes.response.status).toBe(masterFile.response.status);
 
-            expect(payload.name).toBeDefined();
-            expect(payload.photoUrls).toBeDefined();
-            expect(payload.id).toBeDefined();
-            expect(payload.category).toBeDefined();
-            expect(payload.tags).toBeDefined();
-            expect(payload.status).toBeDefined();
+              expect(payload.name).toBeDefined();
+              expect(payload.photoUrls).toBeDefined();
+              expect(payload.id).toBeDefined();
+              expect(payload.category).toBeDefined();
+              expect(payload.tags).toBeDefined();
+              expect(payload.status).toBeDefined();
+            });
           });
         });
       });
@@ -155,11 +157,14 @@ const createSpec = (specPath, prismCmd) => {
       describe('When a response with a specific status code is requested using the __code property', () => {
         describe('When an existing code is requested', () => {
           describe('static response', () => {
-            test('Requested response for the given __code is returned with payload from examples', async () => {
-              const { reqRes, masterFile } = await runTest(requests[7]);
+            test(
+              'Requested response for the given __code is returned with payload',
+              async () => {
+                const { reqRes, masterFile } = await runTest(requests[7]);
 
-              expect(reqRes).toStrictEqual(masterFile);
-            });
+                expect(reqRes).toStrictEqual(masterFile);
+              }
+            );
           });
 
           describe('Dynamic response', () => {
@@ -222,12 +227,14 @@ const createSpec = (specPath, prismCmd) => {
 
       describe('Body parameters', () => {
         describe('When sending all required parameters', () => {
-          test('should validate body params', async () => {
-            const { reqRes, masterFile } = await runTest(requests[12]);
-            const payload = reqRes.response.body;
+          describe('Dynamic response', () => {
+            test('should validate body params', async () => {
+              const { reqRes, masterFile } = await runTest(requests[12]);
+              const payload = reqRes.response.body;
 
-            expect(reqRes.response.status).toBe(masterFile.response.status);
-            expect(reqRes.response.status).toBe(200);
+              expect(reqRes.response.status).toBe(masterFile.response.status);
+              expect(reqRes.response.status).toBe(200);
+            });
           });
         });
 
@@ -235,6 +242,8 @@ const createSpec = (specPath, prismCmd) => {
           test('should validate the body params and return an error code', async () => {
             const { reqRes, masterFile } = await runTest(requests[13]);
             const payload = reqRes.response.body;
+
+            expect(reqRes).toStrictEqual(masterFile);
 
             expect(payload.detail).toContain("should have required property 'name'");
             expect(reqRes.response.status).toBe(masterFile.response.status);

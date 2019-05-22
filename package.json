@@ -16,6 +16,7 @@
     "test.ci": "jest --maxWorkers=2",
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
+    "download.prism.v2": "curl -L https://github.com/stoplightio/prism/releases/download/v2.0.17/prism_linux_amd64 -o prism && chmod +x ./prism",
     "run.binary": "$BINARY mock $SPEC",
     "run.binary.v2": "./prism mock --spec ./examples/petstore.oas2.json",
     "test.update": "yarn test.fast --updateSnapshot",

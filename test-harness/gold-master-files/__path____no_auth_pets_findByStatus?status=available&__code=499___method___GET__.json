@@ -2,7 +2,7 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/pets/findByStatus?status=available&__code=499",
+    "path": "/no_auth/pets/findByStatus?status=available&__code=499",
     "host": "http://localhost:4010"
   },
   "response": {

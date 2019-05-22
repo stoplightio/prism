@@ -161,12 +161,13 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/Pet"
-            },
-            "examples": {
-              "application/json": [
+              "type": "array",
+              "items": [
                 {
-                  "name": "abc"
+                  "example": {
+                    "name": "a_name",
+                    "photoUrls": []
+                  }
                 }
               ]
             }
@@ -241,9 +242,10 @@
           },
           "404": {
             "description": "Pet not found",
-            "examples": {
-              "application/json": {
-                "message": "no_resource"
+            "schema": {
+              "type": "object",
+              "example": {
+                "msg": "no_resource"
               }
             }
           },
@@ -317,14 +319,7 @@
             "description": "Invalid input"
           },
           "200": {
-            "description": "this gets hit when content-type is application/json...",
-            "examples": {
-              "application/json": [
-                {
-                  "field": "value"
-                }
-              ]
-            }
+            "description": "this gets hit when content-type is application/json..."
           }
         },
         "security": []
@@ -556,12 +551,7 @@
             "description": "Invalid ID supplied"
           },
           "404": {
-            "description": "Pet not found",
-            "examples": {
-              "application/json": {
-                "abc": 1
-              }
-            }
+            "description": "Pet not found"
           },
           "418": {
             "description": "teapot response",
@@ -635,16 +625,6 @@
         "responses": {
           "405": {
             "description": "Invalid input"
-          },
-          "200": {
-            "description": "this gets hit when content-type is application/json...",
-            "examples": {
-              "application/json": [
-                {
-                  "field": "value"
-                }
-              ]
-            }
           }
         },
         "security": [

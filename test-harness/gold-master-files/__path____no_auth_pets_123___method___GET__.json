@@ -1,0 +1,59 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/no_auth/pets/123",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json"
+      ],
+      "content-length": [
+        "361"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "name": "doggie",
+      "photoUrls": [
+        "sit sed non",
+        "laborum labore do deserunt ut",
+        "dolor"
+      ],
+      "id": 71171951,
+      "category": {
+        "id": -67146284,
+        "name": "elit Excepteur esse ullamco"
+      },
+      "tags": [
+        {
+          "id": 5825519,
+          "name": "id"
+        },
+        {
+          "id": 68095574,
+          "name": "do ad elit id ea"
+        },
+        {
+          "id": 84906069,
+          "name": "enim"
+        },
+        {
+          "id": 12759316,
+          "name": "sit"
+        },
+        {
+          "id": 40033734,
+          "name": "voluptate culpa"
+        }
+      ],
+      "status": "pending"
+    }
+  }
+}

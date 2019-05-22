@@ -5,7 +5,7 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "path": "/pets",
+    "path": "/no_auth/pets",
     "host": "http://localhost:4010"
   },
   "response": {
