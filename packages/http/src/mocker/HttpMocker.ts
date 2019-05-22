@@ -1,7 +1,8 @@
 import { IMocker, IMockerOpts } from '@stoplight/prism-core';
-import { IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
+import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
+import { fromPairs, keyBy, mapValues, toPairs } from 'lodash';
 import { IHttpConfig, IHttpOperationConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
 import { IExampleGenerator } from './generator/IExampleGenerator';
@@ -50,19 +51,15 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
       negotiationResult = helpers.negotiateOptionsForValidRequest(resource, mockConfig);
     }
 
-    // preparing response body
-    let body: string | undefined;
-    const example = negotiationResult.bodyExample;
-
-    if (isINodeExample(example) && example.value !== undefined) {
-      body = typeof example.value === 'string' ? example.value : JSON.stringify(example.value);
-    } else if (negotiationResult.schema) {
-      body = await this._exampleGenerator.generate(negotiationResult.schema, negotiationResult.mediaType);
-    }
+    const [body, mockedHeaders] = await Promise.all([
+      computeBody(negotiationResult, this._exampleGenerator),
+      computeMockedHeaders(negotiationResult.headers, this._exampleGenerator),
+    ]);
 
     return {
       statusCode: parseInt(negotiationResult.code),
       headers: {
+        ...mockedHeaders,
         'Content-type': negotiationResult.mediaType,
       },
       body,
@@ -72,4 +69,34 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
 
 function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undefined): nodeExample is INodeExample {
   return !!nodeExample && 'value' in nodeExample;
+}
+
+function computeMockedHeaders(headers: IHttpHeaderParam[], ex: IExampleGenerator): Promise<Dictionary<string>> {
+  const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
+    if (header.contents.length > 0) {
+      return ex.generate(header.contents[0].schema!.schema, 'application/json');
+    }
+    return 'string';
+  });
+
+  return resolvePromiseInProps(headerWithPromiseValues);
+}
+
+async function computeBody(
+  negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
+  ex: IExampleGenerator,
+) {
+  if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
+    return typeof negotiationResult.bodyExample.value === 'string'
+      ? negotiationResult.bodyExample.value
+      : JSON.stringify(negotiationResult.bodyExample.value);
+  } else if (negotiationResult.schema) {
+    return ex.generate(negotiationResult.schema, negotiationResult.mediaType);
+  }
+  return undefined;
+}
+
+async function resolvePromiseInProps(val: Dictionary<Promise<string>>): Promise<Dictionary<string>> {
+  const promisePair = await Promise.all(toPairs(val).map(v => Promise.all(v)));
+  return fromPairs(promisePair);
 }
