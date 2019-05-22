@@ -1,14 +1,14 @@
 module.exports = [
   {
-    path: '/pets',
+    path: '/no_auth/pets',
     method: 'GET',
   },
   {
-    path: '/pets?name=abc',
+    path: '/no_auth/pets?name=abc',
     method: 'GET',
   },
   {
-    path: '/pets/findByStatus',
+    path: '/no_auth/pets/findByStatus',
     method: 'GET',
   },
   {
@@ -18,11 +18,11 @@ module.exports = [
   },
   {
     dynamic: true,
-    path: '/pets/123',
+    path: '/no_auth/pets/123',
     method: 'GET',
   },
   {
-    path: '/pets/123',
+    path: '/no_auth/pets/123',
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -37,21 +37,21 @@ module.exports = [
     }
   },
   {
-    path: '/pets/123?__code=404',
+    path: '/no_auth/pets/123?__code=404',
     method: 'GET',
   },
   {
     dynamic: true,
-    path: '/pets/123?__code=418',
+    path: '/no_auth/pets/123?__code=418',
     method: 'GET',
   },
   {
-    path: '/pets/findByTags',
+    path: '/no_auth/pets/findByTags',
     method: 'GET',
   },
   {
     dynamic: true,
-    path: '/pets/findByStatus?status=available&status=sold',
+    path: '/no_auth/pets/findByStatus?status=available&status=sold',
     method: 'GET',
   },
   {
@@ -78,7 +78,7 @@ module.exports = [
     }
   },
   {
-    path: '/pets',
+    path: '/no_auth/pets',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -94,11 +94,11 @@ module.exports = [
   },
   {
     dynamic: true,
-    path: '/pets/123?__code=499',
+    path: '/no_auth/pets/123?__code=499',
     method: 'GET',
   },
   {
-    path: '/pets/findByStatus?status=available&__code=499',
+    path: '/no_auth/pets/findByStatus?status=available&__code=499',
     method: 'GET',
   }
 ];
