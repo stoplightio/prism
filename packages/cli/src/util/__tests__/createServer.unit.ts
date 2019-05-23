@@ -13,9 +13,9 @@ describe('server command', () => {
   });
 
   test('starts filesystem server variant', async () => {
-    createServer('/path/to', { mock: true });
+    createServer('/path/to', { mock: { dynamic: false } });
 
-    expect(createPrismServer).toHaveBeenLastCalledWith({ path: '/path/to' }, { config: { mock: true } });
+    expect(createPrismServer).toHaveBeenLastCalledWith({ path: '/path/to' }, { config: { mock: { dynamic: false } } });
   });
 
   test('starts http server variant', async () => {

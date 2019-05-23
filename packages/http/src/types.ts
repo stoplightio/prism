@@ -17,18 +17,14 @@ export type TPrismHttpComponents<LoaderInput> = Partial<
 export type IHttpMethod = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch' | 'trace'; // ... etc
 
 export interface IHttpOperationConfig {
-  readonly mediaType?: string;
-  readonly code?: string;
-  readonly exampleKey?: string;
-  readonly dynamic?: boolean;
+  mediaType?: string;
+  code?: string;
+  exampleKey?: string;
+  dynamic: boolean;
 }
 
 export interface IHttpConfig extends IPrismConfig {
-  mock: boolean | IHttpOperationConfig;
-
-  security?: {
-    // TODO
-  };
+  mock: false | IHttpOperationConfig;
 
   validate?: {
     request?:

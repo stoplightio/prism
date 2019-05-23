@@ -15,4 +15,10 @@ export const FLAGS = {
     default: 4010,
     required: true,
   }),
+
+  dynamic: oflags.boolean({
+    char: 'd',
+    description: 'Dynamically generate examples.',
+    default: false,
+  }),
 };

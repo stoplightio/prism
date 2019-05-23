@@ -14,13 +14,13 @@ describe('mock command', () => {
 
   test('starts mock server', async () => {
     await Mock.run(['/path/to']);
-    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: true });
+    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: { dynamic: true } });
     expect(listenMock).toHaveBeenLastCalledWith(4010);
   });
 
   test('starts mock server on custom port', async () => {
     await Mock.run(['-p', '666', '/path/to']);
-    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: true });
+    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: { dynamic: true } });
     expect(listenMock).toHaveBeenLastCalledWith(666);
   });
 });

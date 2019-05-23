@@ -16,6 +16,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             mock: {
+              dynamic: false,
               mediaType: 'text/plain',
             },
           },
@@ -31,6 +32,7 @@ describe('http mocker', () => {
             input: httpRequests[0],
             config: {
               mock: {
+                dynamic: false,
                 mediaType: 'text/funky',
               },
             },
@@ -46,6 +48,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             mock: {
+              dynamic: false,
               code: '201',
               exampleKey: 'second',
               mediaType: 'application/xml',
@@ -64,6 +67,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             mock: {
+              dynamic: false,
               code: '201',
               mediaType: 'application/xml',
             },
@@ -81,6 +85,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             mock: {
+              dynamic: false,
               exampleKey: 'bear',
             },
           },
@@ -95,6 +100,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             mock: {
+              dynamic: false,
               exampleKey: 'second',
               mediaType: 'application/xml',
             },
@@ -112,6 +118,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             mock: {
+              dynamic: false,
               code: '201',
             },
           },
@@ -126,6 +133,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             mock: {
+              dynamic: false,
               code: '205',
             },
           },
@@ -140,6 +148,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             mock: {
+              dynamic: false,
               code: '201',
               exampleKey: 'second',
             },

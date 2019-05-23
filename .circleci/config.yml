@@ -62,15 +62,17 @@ jobs:
           command: yarn lerna publish from-git --github-release --yes --dist-tag alpha
   upload_artifacts:
     docker:
-      - image: circleci/golang:1.8
+      - image: circleci/golang:1-stretch
     steps:
       - attach_workspace:
           at: /tmp/
       - run:
+          name: "Download GitHub Release Utility"
+          command: go get github.com/tcnksm/ghr
+      - run:
           name: "Publish Release artifacts on GitHub"
-          command: |
-            go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} /tmp/cli-binaries
+          command: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} /tmp/cli-binaries
+
 workflows:
   version: 2
   build:

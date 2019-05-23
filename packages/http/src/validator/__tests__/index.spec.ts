@@ -53,7 +53,7 @@ describe('HttpValidator', () => {
               extendResource,
             ),
             input: { method: 'get', url: { path: '/' } },
-            config: { mock: true, validate: { request: { body: true } } },
+            config: { mock: { dynamic: false }, validate: { request: { body: true } } },
           }),
         ).resolves.toEqual([mockError]);
 
@@ -104,7 +104,7 @@ describe('HttpValidator', () => {
               extendResource,
             ),
             input: { method: 'get', url: { path: '/' } },
-            config: { mock: true, validate: { request: { headers: true } } },
+            config: { mock: { dynamic: false }, validate: { request: { headers: true } } },
           }),
         ).resolves.toEqual([mockError]);
 
@@ -150,7 +150,7 @@ describe('HttpValidator', () => {
               extendResource,
             ),
             input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, extendInput),
-            config: { mock: true, validate: { request: { query: true } } },
+            config: { mock: { dynamic: false }, validate: { request: { query: true } } },
           }),
         ).resolves.toEqual([mockError]);
 
@@ -194,7 +194,7 @@ describe('HttpValidator', () => {
               security: [],
               request: { path: [], query: [], cookie: [], headers: [] },
             },
-            config: { mock: true, validate: { response: { body: true } } },
+            config: { mock: { dynamic: false }, validate: { response: { body: true } } },
           }),
         ).resolves.toEqual([]);
 
@@ -221,7 +221,7 @@ describe('HttpValidator', () => {
                 request: { query: [], path: [], cookie: [], headers: [] },
               },
               output: { statusCode: 200 },
-              config: { mock: true, validate: { response: { body: true } } },
+              config: { mock: { dynamic: false }, validate: { response: { body: true } } },
             }),
           ).resolves.toEqual([mockError]);
 
@@ -250,7 +250,7 @@ describe('HttpValidator', () => {
                 request: { query: [], path: [], cookie: [], headers: [] },
               },
               output: { statusCode: 200 },
-              config: { mock: true, validate: { response: { headers: true } } },
+              config: { mock: { dynamic: false }, validate: { response: { headers: true } } },
             }),
           ).resolves.toEqual([mockError]);
 

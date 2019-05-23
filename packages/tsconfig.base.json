@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
     "forceConsistentCasingInFileNames": true,
@@ -14,10 +15,28 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "importHelpers": true,
-    "lib": ["dom", "es6", "es7"],
+    "lib": [
+      "dom",
+      "es6",
+      "es7"
+    ],
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": false,
     "resolveJsonModule": true,
-    "target": "es5"
+    "target": "es5",
+    "paths": {
+      "@stoplight/prism-core": [
+        "core/src/index.ts"
+      ],
+      "@stoplight/prism-cli": [
+        "cli/src/index.ts"
+      ],
+      "@stoplight/prism-http": [
+        "http/src/index.ts"
+      ],
+      "@stoplight/prism-http-server": [
+        "http-server/src/index.ts"
+      ]
+    }
   }
 }

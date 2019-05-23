@@ -6,7 +6,7 @@ exports[`HttpMocker mock() fails when called with no resource 1`] = `"Resource i
 
 exports[`HttpMocker mock() when example is of type INodeExternalExample generates a dynamic example 1`] = `
 Object {
-  "body": "example value chelsea",
+  "body": "test value",
   "headers": Object {
     "Content-type": "test",
   },
@@ -16,7 +16,7 @@ Object {
 
 exports[`HttpMocker mock() with invalid negotiator response returns static example 1`] = `
 Object {
-  "body": "test value",
+  "body": "hello",
   "headers": Object {
     "Content-type": "test",
   },
@@ -36,7 +36,7 @@ Object {
 
 exports[`HttpMocker mock() with valid negotiator response returns static example 1`] = `
 Object {
-  "body": "test value",
+  "body": "hello",
   "headers": Object {
     "Content-type": "test",
   },
