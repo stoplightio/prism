@@ -1,4 +1,4 @@
-import { IHttpContent, IHttpOperation, IHttpOperationResponse, Omit } from '@stoplight/types';
+import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
 
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
@@ -10,7 +10,10 @@ function findExampleByKey(httpContent: IHttpContent, exampleKey: string) {
   return httpContent.examples && httpContent.examples.find(example => example.key === exampleKey);
 }
 
-function findHttpContentByMediaType(response: IHttpOperationResponse, mediaType: string): IHttpContent | undefined {
+function findHttpContentByMediaType(
+  response: IHttpOperationResponse,
+  mediaType: string,
+): IMediaTypeContent | undefined {
   return response.contents.find(content => content.mediaType === mediaType);
 }
 
@@ -42,7 +45,7 @@ function createResponseFromDefault(responses: IHttpOperationResponse[], statusCo
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
     { code, exampleKey, dynamic }: NegotiatePartialOptions,
-    httpContent: IHttpContent,
+    httpContent: IMediaTypeContent,
   ): Omit<IHttpNegotiationResult, 'headers'> {
     const { mediaType } = httpContent;
 

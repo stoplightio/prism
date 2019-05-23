@@ -73,8 +73,8 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
 
 function computeMockedHeaders(headers: IHttpHeaderParam[], ex: IExampleGenerator): Promise<Dictionary<string>> {
   const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
-    if (header.contents.length > 0 && header.contents[0].schema) {
-      return ex.generate(header.contents[0].schema, 'application/json');
+    if (header.content && header.content.schema) {
+      return ex.generate(header.content.schema, 'application/json');
     }
     return 'string';
   });

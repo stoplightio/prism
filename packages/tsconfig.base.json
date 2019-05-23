@@ -23,6 +23,7 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": false,
     "resolveJsonModule": true,
+    "moduleResolution": "node",
     "target": "es2017",
     "paths": {
       "@stoplight/prism-core": [

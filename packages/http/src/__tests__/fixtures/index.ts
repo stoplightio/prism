@@ -176,14 +176,11 @@ export const httpOperations: IHttpOperation[] = [
           {
             name: 'x-todos-publish',
             style: HttpParamStyles.Simple,
-            contents: [
-              {
-                mediaType: '*',
-                schema: { type: 'string', format: 'date-time' },
-                examples: [],
-                encodings: [],
-              },
-            ],
+            content: {
+              schema: { type: 'string', format: 'date-time' },
+              examples: [],
+              encodings: [],
+            },
           },
         ],
         contents: [
@@ -264,28 +261,22 @@ export const httpOperations: IHttpOperation[] = [
         {
           name: 'overwrite',
           style: HttpParamStyles.Form,
-          contents: [
-            {
-              mediaType: '*',
-              schema: { type: 'string', pattern: '^(yes|no)$' },
-              examples: [],
-              encodings: [],
-            },
-          ],
+          content: {
+            schema: { type: 'string', pattern: '^(yes|no)$' },
+            examples: [],
+            encodings: [],
+          },
         },
       ],
       headers: [
         {
           name: 'x-todos-publish',
           style: HttpParamStyles.Simple,
-          contents: [
-            {
-              mediaType: '*',
-              schema: { type: 'string', format: 'date-time' },
-              examples: [],
-              encodings: [],
-            },
-          ],
+          content: {
+            schema: { type: 'string', format: 'date-time' },
+            examples: [],
+            encodings: [],
+          },
         },
       ],
       cookie: [],

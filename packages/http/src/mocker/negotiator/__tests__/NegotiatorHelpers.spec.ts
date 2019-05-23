@@ -1,7 +1,7 @@
 import {
-  IHttpContent,
   IHttpOperation,
   IHttpOperationResponse,
+  IMediaTypeContent,
   INodeExample,
   INodeExternalExample,
   Omit,
@@ -409,7 +409,7 @@ describe('NegotiatorHelpers', () => {
           dynamic: chance.bool(),
           exampleKey: chance.string(),
         };
-        const contents: IHttpContent = {
+        const contents: IMediaTypeContent = {
           mediaType: desiredOptions.mediaType,
           examples: [],
           encodings: [],
@@ -513,7 +513,7 @@ describe('NegotiatorHelpers', () => {
         exampleKey: chance.string(),
       };
 
-      const contents: IHttpContent = {
+      const contents: IMediaTypeContent = {
         mediaType: 'application/json',
         examples: [],
         encodings: [],
@@ -584,7 +584,7 @@ describe('NegotiatorHelpers', () => {
           value: '',
         };
 
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [bodyExample],
           encodings: [],
@@ -608,7 +608,7 @@ describe('NegotiatorHelpers', () => {
           exampleKey,
           dynamic: chance.bool(),
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           encodings: [],
@@ -626,7 +626,7 @@ describe('NegotiatorHelpers', () => {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           dynamic: true,
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           schema: { type: 'string' },
@@ -647,7 +647,7 @@ describe('NegotiatorHelpers', () => {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           dynamic: true,
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           encodings: [],
@@ -670,7 +670,7 @@ describe('NegotiatorHelpers', () => {
           value: '',
           externalValue: '',
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [
             bodyExample,
@@ -697,7 +697,7 @@ describe('NegotiatorHelpers', () => {
           dynamic: false,
           code: chance.integer({ min: 100, max: 599 }).toString(),
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           schema: { type: 'string' },
@@ -719,7 +719,7 @@ describe('NegotiatorHelpers', () => {
           code: chance.integer({ min: 100, max: 599 }).toString(),
         };
 
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           encodings: [],
