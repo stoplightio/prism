@@ -179,7 +179,11 @@ describe('http mocker', () => {
           }),
         });
 
-        expect(response).toMatchSnapshot();
+        expect(response).toMatchSnapshot({
+          headers: {
+            'x-todos-publish': expect.any(String),
+          },
+        });
       });
 
       describe('the media type requested does not match the example', () => {
@@ -221,7 +225,10 @@ describe('http mocker', () => {
         });
 
         expect(response).toHaveProperty('statusCode', 200);
-        expect(response).toHaveProperty('headers', { 'Content-type': 'application/json' });
+        expect(response).toHaveProperty('headers', {
+          'Content-type': 'application/json',
+          'x-todos-publish': expect.any(String),
+        });
         expect(validate(JSON.parse(response.body))).toBe(true);
       });
     });
