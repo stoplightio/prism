@@ -45,7 +45,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "tslint --fix",
+      "tslint -p packages/tsconfig.json --fix",
       "git add"
     ]
   },
@@ -55,7 +55,7 @@
     }
   },
   "publishConfig": {
-    "tag": "beta"
+    "tag": "alpha"
   },
   "dependencies": {}
 }
