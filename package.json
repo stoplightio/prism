@@ -6,6 +6,10 @@
   "workspaces": [
     "packages/*"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stoplightio/prism.git"
+  },
   "scripts": {
     "lint": "tslint -p packages/tsconfig.json",
     "typecheck": "tsc --build ./packages/tsconfig.json",
@@ -17,7 +21,7 @@
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
     "test.update": "yarn test.fast --updateSnapshot",
-    "release": "lerna version prerelease --preid alpha"
+    "release": "lerna version prerelease --conventional-commits --preid alpha"
   },
   "devDependencies": {
     "@stoplight/types": "^5.1.1",
