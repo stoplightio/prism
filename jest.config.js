@@ -16,7 +16,7 @@ const projectDefault = {
   testEnvironment: 'node',
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
-  }
+  },
 };
 
 module.exports = {
