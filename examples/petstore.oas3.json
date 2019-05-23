@@ -685,7 +685,7 @@
                 "example": 1000
               },
               "X-Stats": {
-                "description": "calls per hour allowed by the user",
+                "description": "generic statistics",
                 "schema": {
                   "type": "integer",
                   "format": "int32"
