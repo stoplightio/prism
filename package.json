@@ -6,6 +6,10 @@
   "workspaces": [
     "packages/*"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stoplightio/prism.git"
+  },
   "scripts": {
     "lint": "tslint -p packages/tsconfig.json",
     "typecheck": "tsc --build ./packages/tsconfig.json",
