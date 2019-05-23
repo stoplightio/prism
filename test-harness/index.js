@@ -3,10 +3,11 @@ const requests = require('./requests');
 
 const { exec } = require('child_process');
 const { makeRequest, constructMasterFileName, readFile } = require('./helpers');
+const port = process.env.PRISM_PORT || 4010;
 
 async function waitForPrism(done) {
   try {
-    await fetch('http://localhost:4010');
+    await fetch(`http://localhost:${port}`);
     done();
   } catch (err) {
     setTimeout(() => {
@@ -30,7 +31,7 @@ async function runTest(req) {
 }
 
 function killPrism(done = () => null) {
-  exec('fuser -k 4010/tcp', () => {
+  exec(`fuser -k ${port}/tcp`, () => {
     done();
   });
 }
@@ -258,13 +259,13 @@ const createSpec = (specPath, prismCmd) => {
 const binary = `BINARY=${process.env.BINARY || `${__dirname}/../cli-binaries/prism-cli-linux`}`;
 
 specs.forEach(specPath => {
-  const command = `${binary} SPEC=${specPath} yarn run.binary`;
+  const command = `${binary} SPEC=${specPath} PRISM_PORT=${port} yarn run.binary`;
 
   createSpec(specPath, command)();
 });
 
 if (process.env.RUN_V2_TESTS) {
   describe('prism v2', () => {
-    createSpec('./examples/petstore.oas2.json', 'yarn run.binary.v2')();
+    createSpec('./examples/petstore.oas2.json', `PRISM_PORT=${port} yarn run.binary.v2`)();
   });
 }

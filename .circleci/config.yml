@@ -34,7 +34,8 @@ jobs:
           command: yarn download.prism.v2
       - run:
           name: Test Harness
-          command: SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary
+          command: |
+            PRISM_PORT=4010 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary
       - run:
           name: Run tests
           command: yarn test.coverage --verbose

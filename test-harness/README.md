@@ -34,3 +34,9 @@ When doing `yarn test.binary`, the envs are optional, they have defaults.
 
 1. `SPEC` defaults to using `petstore.oas2.json`
 2. `BINARY` defaults to using `prism-cli-linux`
+
+## Specifying a port for prism
+
+When doing `yarn test.binary`, `yarn run.binary` or `yarn run.binary.v2`, you can specify `PRISM_PORT` environment variable.
+So, for example, you can run `PRISM_PORT=8090 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary`
+to have prism running on port `8090`. If not specified, prism will run on port `4010`.

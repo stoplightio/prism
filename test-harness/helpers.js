@@ -8,7 +8,7 @@ async function makeRequest({ path, method, headers = {}, body }) {
       ? {}
       : { body: headers['Content-Type'] === 'application/json' ? JSON.stringify(body) : body };
   const baseOpts = Object.assign({}, opts, { method, headers });
-  const host = 'http://localhost:4010';
+  const host = `http://localhost:${process.env.PRISM_PORT}`;
   const requestConfig = {
     ...baseOpts,
     path,
