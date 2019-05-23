@@ -1132,24 +1132,24 @@
   resolved "https://registry.yarnpkg.com/@stoplight/fast-safe-stringify/-/fast-safe-stringify-2.1.2.tgz#2811eff4989c3d4c5c9a3789f057e25358db0899"
   integrity sha512-ayw3qQ9KNn2K5q6ggrLclh+rdZsSLwYIUz3uAer1NzaCpalJLR4g32G845ylgq7Xy2AunMHnNfD3FC3s0rUcsA==
 
-"@stoplight/graphite@^7.1.0":
-  version "7.1.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-7.1.2.tgz#99468cb8f9fa7c2090240bd545b73555ccf2da76"
-  integrity sha512-I+Fh885I6WmIGkP1mps4sbeIWFvbXruZLwesd4rGxZtQU1ovnI1aKs7+3U8zKpUX5X68tKEhGmv3GLyXAYbphQ==
+"@stoplight/graphite@7.1.1":
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-7.1.1.tgz#e7e1b557d90dbc0f56771ccd1f15f57b99f4d9da"
+  integrity sha512-pY/zqEGyVd9CvugVp2JfZL1ETVQ1KYAymAibX+5TSy9nwq3a1Ar3ilDfBXVpJAlgYCyTuJxspVb5JKU+YXbz4g==
   dependencies:
     "@stoplight/json" "2.1.0"
-    "@stoplight/json-ref-resolver" "1.5.0"
+    "@stoplight/json-ref-resolver" "1.x.x"
     "@stoplight/lifecycle" "2.x.x"
     "@stoplight/markdown" "2.2.0"
-    "@stoplight/spectral" "3.0.2"
-    "@stoplight/types" "7.0.1"
+    "@stoplight/spectral" "2.4.x"
+    "@stoplight/types" "5.1.1"
     "@stoplight/yaml" "2.3.0"
     "@types/swagger-schema-official" "2.0.x"
     "@types/urijs" "1.19.x"
     axios "0.18.x"
     diff-match-patch "1.0.x"
     fast-json-patch "2.1.x"
-    immer "3.1.2"
+    immer "2.x.x"
     jiff "0.7.x"
     lodash "4.x.x"
     micromatch "4.0.x"
@@ -1160,7 +1160,7 @@
     urijs "1.19.x"
     uuid "3.3.x"
 
-"@stoplight/json-ref-resolver@1.5.0", "@stoplight/json-ref-resolver@^1.5.0":
+"@stoplight/json-ref-resolver@1.x.x":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/@stoplight/json-ref-resolver/-/json-ref-resolver-1.5.0.tgz#e423ecdd077ef7baeaeada7ae0a11157e2fdd32a"
   integrity sha512-+0OPoSOa0fjcF0QViywTjs0NIMi4V92p11m04zrCAZ5KnW/4reC8D+FcHm6HcgNcWTNqWB0JoudSIjxJQf2TEw==
@@ -1211,17 +1211,17 @@
     remark-stringify "6.0.x"
     unified "7.1.x"
 
-"@stoplight/spectral@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-3.0.2.tgz#7aeecd3ff71cbb51a440ad9e93760313522fb4a0"
-  integrity sha512-CcFzFaTQTPPphWeIBAuu/YWViomoo0DInqiAYfGXwoBOqGNuPaAjrPmGZdOenBvhBXM1zNz02DkWpJMeBZHeOg==
+"@stoplight/spectral@2.4.x":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-2.4.0.tgz#25d3320166cf3d1b56dcd5f3fdd633e194404cdf"
+  integrity sha512-tYhnepLF1GxYs2zgoiWQMOxd1uLXloE3H/r+z4NmKIhQ0ERLn3JMwQYfLqv/LtDhKValNWemcHIiHNp9+y1AeA==
   dependencies:
     "@oclif/command" "^1.0"
     "@oclif/config" "^1.12.11"
     "@oclif/plugin-help" "^2.0"
     "@stoplight/json" "^2.1.0"
-    "@stoplight/json-ref-resolver" "^1.5.0"
-    "@stoplight/types" "^7.0.1"
+    "@stoplight/json-ref-resolver" "1.x.x"
+    "@stoplight/types" "^5.1.0"
     "@stoplight/yaml" "^2.3.0"
     ajv "6.x.x"
     ajv-oai "^1.1.1"
@@ -1233,15 +1233,15 @@
     text-table "^0.2.0"
     typescript-json-schema "^0.38.0"
 
-"@stoplight/types@5.x.x", "@stoplight/types@^5.1.1":
+"@stoplight/types@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-5.1.1.tgz#9224aec04948ac59197da503c084c3826598be09"
+  integrity sha512-XaGr0GFD4CuDCrdbof2pPYIs+FHSNJfvCFur4ZN31iwoTtlhVg0MBwAbj9dlFviUrMMbIflLFaFgqBUNguyMEA==
+
+"@stoplight/types@5.x.x", "@stoplight/types@^5.1.0", "@stoplight/types@^5.1.1":
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-5.1.2.tgz#f2c147eed36b582f920146ad2d7bad9cee3f64d0"
   integrity sha512-3PHbFrJoFQT/TChGmax3mjiZXVKXjuiFV5PkywNKO4w4AOpmydGM7Z/K2ATag9dqCCOsIz0gvcbOirdjsuwjGg==
-
-"@stoplight/types@7.0.1", "@stoplight/types@^7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-7.0.1.tgz#33ef2ce685daff4808235ee7f7f373b9e53df05c"
-  integrity sha512-9efbb6tCsS59j+AmQctVsHi+v9OcDWQTcllnLQvtzEMZ4zEwRIGNAJNXiIUMvqj7NGhov8aiBhO+jpObJ+J8hg==
 
 "@stoplight/yaml@2.3.0", "@stoplight/yaml@^2.3.0":
   version "2.3.0"
@@ -3699,7 +3699,12 @@ ignore@^4.0.3:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
-immer@3.1.2, immer@^3.1.2:
+immer@2.x.x:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-2.1.5.tgz#0389947455c5a2c7a47f1e6f415c9d1a62a1ebed"
+  integrity sha512-xyjQyTBYIeiz6jd02Hg12jV+9QISwF1crLcwTlzHpWH4e0ryNWj1kacpTwimK3bJV5NKKXw458G2vpqoB/inFA==
+
+immer@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/immer/-/immer-3.1.2.tgz#1f24f2e25433f5ff168a1ff6c8c6366d2106e61a"
   integrity sha512-pi8JuvJ9c+98DlpDms/o0YLLg5khP8Qzjd8CtIGc4qVm2eoLdQGivJL266nWccofKT/oBSxnhAh/o+nmOXtLXw==
@@ -4709,10 +4714,10 @@ jsonparse@^1.2.0:
   resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
   integrity sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=
 
-"jsonpath@https://github.com/stoplightio/jsonpath#f1c0e9e634da2d45671b7639fa0a99afc807da17":
+"jsonpath@git+https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17":
   version "1.0.0"
   uid f1c0e9e634da2d45671b7639fa0a99afc807da17
-  resolved "https://github.com/stoplightio/jsonpath#f1c0e9e634da2d45671b7639fa0a99afc807da17"
+  resolved "git+https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17"
   dependencies:
     esprima "1.2.2"
     jison "0.4.13"
