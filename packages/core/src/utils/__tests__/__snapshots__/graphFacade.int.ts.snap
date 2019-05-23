@@ -1088,7 +1088,27 @@ Array [
         "contents": Array [
           Object {
             "encodings": Array [],
-            "examples": Array [],
+            "examples": Array [
+              Object {
+                "key": "cat",
+                "value": Object {
+                  "category": Object {
+                    "id": 1,
+                    "name": "Felis",
+                  },
+                  "id": 2,
+                  "name": "Fluffy",
+                  "photoUrls": Array [],
+                  "status": "available",
+                  "tags": Array [
+                    Object {
+                      "id": 1,
+                      "name": "pet",
+                    },
+                  ],
+                },
+              },
+            ],
             "mediaType": "application/xml",
             "schema": Object {
               "properties": Object {
@@ -1169,7 +1189,27 @@ Array [
           },
           Object {
             "encodings": Array [],
-            "examples": Array [],
+            "examples": Array [
+              Object {
+                "key": "cat",
+                "value": Object {
+                  "category": Object {
+                    "id": 1,
+                    "name": "Felis",
+                  },
+                  "id": 2,
+                  "name": "Fluffy",
+                  "photoUrls": Array [],
+                  "status": "available",
+                  "tags": Array [
+                    Object {
+                      "id": 1,
+                      "name": "pet",
+                    },
+                  ],
+                },
+              },
+            ],
             "mediaType": "application/json",
             "schema": Object {
               "properties": Object {
