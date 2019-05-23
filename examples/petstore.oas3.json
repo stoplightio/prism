@@ -681,6 +681,17 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
+                },
+                "example": 1000
+              },
+              "X-Stats": {
+                "description": "calls per hour allowed by the user",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "examples": {
+                  "default": 1500
                 }
               },
               "X-Expires-After": {
