@@ -71,6 +71,43 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(payload).toHaveProperty('name');
   });
 
+  test('returns requested response example using __example property', async () => {
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pets/123?__example=cat',
+    });
+
+    const payload = JSON.parse(response.payload);
+
+    expect(response.statusCode).toBe(200);
+    expect(payload).toStrictEqual({
+      id: 2,
+      category: {
+        id: 1,
+        name: 'Felis',
+      },
+      tags: [
+        {
+          id: 1,
+          name: 'pet',
+        },
+      ],
+      name: 'Fluffy',
+      status: 'available',
+      photoUrls: [],
+    });
+  });
+
+  test('returns 500 with error when a non-existent example is requested', async () => {
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pets/123?__example=non_existent_example',
+    });
+
+    expect(response.statusCode).toBe(500);
+    checkErrorPayloadShape(response.payload);
+  });
+
   test('should not mock a request that is missing the required query parameters with no default', async () => {
     const response = await server.fastify.inject({
       method: 'GET',

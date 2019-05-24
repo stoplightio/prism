@@ -49,6 +49,12 @@ We have a pull request template setup that you will fill out when you open your 
 
 > We try to respond to all pull requests and issues within 7 days. We welcome feedback from everyone involved in the project in open pull requests.
 
+### Dependencies
+
+If you are adding a new `devDependency`, add it to the root workspace `package.json`: `yarn add -D -W {packageName}`.
+
+If you are adding a new runtime dependency, add it to the relevant `package.json` file (inside of `prism-core`, `prism-http`, etc).
+
 ### Testing
 
 Prism has an extensive test suite. To run it, just use the regular `test` script
