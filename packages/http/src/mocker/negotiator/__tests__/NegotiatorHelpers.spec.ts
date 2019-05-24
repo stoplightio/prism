@@ -1,13 +1,15 @@
 import {
-  IHttpContent,
   IHttpOperation,
   IHttpOperationResponse,
+  IMediaTypeContent,
   INodeExample,
   INodeExternalExample,
+  Omit,
 } from '@stoplight/types';
 import { Chance } from 'chance';
 
 import helpers from '../NegotiatorHelpers';
+import { IHttpNegotiationResult } from '../types';
 
 const chance = new Chance();
 
@@ -70,10 +72,11 @@ describe('NegotiatorHelpers', () => {
           .instance();
 
         const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
-        const expectedConfig = {
+        const expectedConfig: IHttpNegotiationResult = {
           code: actualCode,
           mediaType: actualMediaType,
-          example: { key: actualExampleKey, value: '', externalValue: '' },
+          bodyExample: { key: actualExampleKey, value: '', externalValue: '' },
+          headers: [],
         };
 
         expect(actualConfig).toEqual(expectedConfig);
@@ -110,10 +113,11 @@ describe('NegotiatorHelpers', () => {
             .instance();
 
           const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
-          const expectedConfig = {
+          const expectedConfig: IHttpNegotiationResult = {
             code: actualCode,
             mediaType: actualMediaType,
             schema: { type: 'type1' },
+            headers: [],
           };
 
           expect(actualConfig).toEqual(expectedConfig);
@@ -200,7 +204,7 @@ describe('NegotiatorHelpers', () => {
       test('should return an error', async () => {
         expect(() => {
           helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
-        }).toThrow('No 422 response defined');
+        }).toThrow('No 422, 400, or default responses defined');
       });
     });
   });
@@ -220,6 +224,7 @@ describe('NegotiatorHelpers', () => {
       const expectedResult = {
         code: options.code,
         mediaType: 'application/json',
+        headers: [],
       };
 
       jest.spyOn(helpers, 'negotiateOptionsForDefaultCode');
@@ -238,6 +243,7 @@ describe('NegotiatorHelpers', () => {
       const expectedResult = {
         code: chance.integer({ min: 100, max: 599 }).toString(),
         mediaType: 'application/json',
+        headers: [],
       };
 
       jest.spyOn(helpers, 'negotiateOptionsForDefaultCode').mockReturnValue(expectedResult);
@@ -335,6 +341,7 @@ describe('NegotiatorHelpers', () => {
       const fakeOperationConfig = {
         code: response.code,
         mediaType: 'application/json',
+        headers: [],
       };
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(fakeOperationConfig);
       httpOperation = anHttpOperation(httpOperation)
@@ -358,6 +365,7 @@ describe('NegotiatorHelpers', () => {
       const fakeOperationConfig = {
         code: response.code,
         mediaType: 'application/json',
+        headers: [],
       };
 
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(fakeOperationConfig);
@@ -401,7 +409,7 @@ describe('NegotiatorHelpers', () => {
           dynamic: chance.bool(),
           exampleKey: chance.string(),
         };
-        const contents: IHttpContent = {
+        const contents: IMediaTypeContent = {
           mediaType: desiredOptions.mediaType,
           examples: [],
           encodings: [],
@@ -411,9 +419,10 @@ describe('NegotiatorHelpers', () => {
           contents: [contents],
           headers: [],
         };
-        const fakeOperationConfig = {
+        const fakeOperationConfig: IHttpNegotiationResult = {
           code: '200',
           mediaType: 'application/json',
+          headers: [],
         };
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(fakeOperationConfig);
         jest.spyOn(helpers, 'negotiateDefaultMediaType');
@@ -434,7 +443,7 @@ describe('NegotiatorHelpers', () => {
           contents,
         );
         expect(helpers.negotiateDefaultMediaType).not.toHaveBeenCalled();
-        expect(actualOperationConfig).toBe(fakeOperationConfig);
+        expect(actualOperationConfig).toEqual(fakeOperationConfig);
       });
 
       it('and httpContent not exist should negotiate default media type', () => {
@@ -469,6 +478,7 @@ describe('NegotiatorHelpers', () => {
         const fakeOperationConfig = {
           code: '200',
           mediaType: 'application/json',
+          headers: [],
         };
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent');
         jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(fakeOperationConfig);
@@ -502,20 +512,25 @@ describe('NegotiatorHelpers', () => {
         dynamic: chance.bool(),
         exampleKey: chance.string(),
       };
-      const contents: IHttpContent = {
+
+      const contents: IMediaTypeContent = {
         mediaType: 'application/json',
         examples: [],
         encodings: [],
       };
+
       const response: IHttpOperationResponse = {
         code,
         contents: [contents],
         headers: [],
       };
-      const fakeOperationConfig = {
+
+      const fakeOperationConfig: IHttpNegotiationResult = {
         code: '200',
         mediaType: 'application/json',
+        headers: [],
       };
+
       jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(fakeOperationConfig);
 
       const actualOperationConfig = helpers.negotiateDefaultMediaType(partialOptions, response);
@@ -529,7 +544,7 @@ describe('NegotiatorHelpers', () => {
         },
         contents,
       );
-      expect(actualOperationConfig).toBe(fakeOperationConfig);
+      expect(actualOperationConfig).toEqual(fakeOperationConfig);
     });
 
     it('when no default response return text/plain with empty body', () => {
@@ -541,14 +556,17 @@ describe('NegotiatorHelpers', () => {
         headers: [],
       };
 
-      expect(helpers.negotiateDefaultMediaType(partialOptions, response)).toEqual({
+      const expectedResponse: IHttpNegotiationResult = {
         code: '200',
         mediaType: 'text/plain',
-        example: {
+        headers: [],
+        bodyExample: {
           value: undefined,
           key: 'default',
         },
-      });
+      };
+
+      expect(helpers.negotiateDefaultMediaType(partialOptions, response)).toEqual(expectedResponse);
     });
   });
 
@@ -561,24 +579,26 @@ describe('NegotiatorHelpers', () => {
           exampleKey,
           dynamic: chance.bool(),
         };
-        const example: INodeExample = {
+        const bodyExample: INodeExample = {
           key: exampleKey,
           value: '',
         };
 
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
-          examples: [example],
+          examples: [bodyExample],
           encodings: [],
         };
 
         const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
 
-        expect(actualOperationConfig).toEqual({
+        const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
           code: partialOptions.code,
           mediaType: httpContent.mediaType,
-          example,
-        });
+          bodyExample,
+        };
+
+        expect(actualOperationConfig).toEqual(expectedConfig);
       });
 
       it('and example not exist should throw an error', () => {
@@ -588,7 +608,7 @@ describe('NegotiatorHelpers', () => {
           exampleKey,
           dynamic: chance.bool(),
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           encodings: [],
@@ -606,7 +626,7 @@ describe('NegotiatorHelpers', () => {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           dynamic: true,
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           schema: { type: 'string' },
@@ -627,7 +647,7 @@ describe('NegotiatorHelpers', () => {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           dynamic: true,
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           encodings: [],
@@ -645,15 +665,15 @@ describe('NegotiatorHelpers', () => {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           dynamic: false,
         };
-        const example: INodeExample | INodeExternalExample = {
+        const bodyExample: INodeExample | INodeExternalExample = {
           key: chance.string(),
           value: '',
           externalValue: '',
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [
-            example,
+            bodyExample,
             {
               key: chance.string(),
               value: '',
@@ -664,12 +684,12 @@ describe('NegotiatorHelpers', () => {
         };
 
         const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-
-        expect(actualOperationConfig).toEqual({
+        const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
           code: partialOptions.code,
           mediaType: httpContent.mediaType,
-          example,
-        });
+          bodyExample,
+        };
+        expect(actualOperationConfig).toEqual(expectedConfig);
       });
 
       it('and cannot find example but schema exists return dynamic', () => {
@@ -677,7 +697,7 @@ describe('NegotiatorHelpers', () => {
           dynamic: false,
           code: chance.integer({ min: 100, max: 599 }).toString(),
         };
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           schema: { type: 'string' },
@@ -699,7 +719,7 @@ describe('NegotiatorHelpers', () => {
           code: chance.integer({ min: 100, max: 599 }).toString(),
         };
 
-        const httpContent: IHttpContent = {
+        const httpContent: IMediaTypeContent = {
           mediaType: chance.string(),
           examples: [],
           encodings: [],

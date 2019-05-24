@@ -1,7 +1,6 @@
 import { HttpParamStyles, ISchema } from '@stoplight/types';
 
 import { HttpParamDeserializerRegistry } from '../../deserializers/registry';
-import * as resolveContentModule from '../../utils/http';
 import { HttpQueryValidator } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
 
@@ -17,9 +16,6 @@ describe('HttpQueryValidator', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(registry, 'get');
-    jest
-      .spyOn(resolveContentModule, 'resolveContent')
-      .mockImplementation(contentSpecs => contentSpecs[Object.keys(contentSpecs)[0]]);
     jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema').mockImplementation(() => []);
   });
 
@@ -29,9 +25,7 @@ describe('HttpQueryValidator', () => {
         describe('spec defines it as required', () => {
           it('returns validation error', () => {
             expect(
-              httpQueryValidator.validate({}, [
-                { name: 'aParam', style: HttpParamStyles.Form, required: true, contents: [] },
-              ]),
+              httpQueryValidator.validate({}, [{ name: 'aParam', style: HttpParamStyles.Form, required: true }]),
             ).toMatchSnapshot();
           });
         });
@@ -48,7 +42,7 @@ describe('HttpQueryValidator', () => {
                   {
                     name: 'param',
                     style: HttpParamStyles.Form,
-                    contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
+                    content: { schema: { type: 'number' }, examples: [], encodings: [] },
                   },
                 ]),
               ).toEqual([]);
@@ -65,7 +59,7 @@ describe('HttpQueryValidator', () => {
                     {
                       name: 'param',
                       style: HttpParamStyles.Form,
-                      contents: [{ mediaType: '*', schema: { type: 'string' }, examples: [], encodings: [] }],
+                      content: { schema: { type: 'string' }, examples: [], encodings: [] },
                     },
                   ]),
                 ).toEqual([]);
@@ -76,24 +70,15 @@ describe('HttpQueryValidator', () => {
           });
         });
 
-        describe('content was not found', () => {
+        describe('content was not provided', () => {
           it('omits schema validation', () => {
-            jest
-              .spyOn(resolveContentModule, 'resolveContent')
-              .mockReturnValueOnce({ encodings: [], examples: [], mediaType: 'application/json' });
-
             expect(
-              httpQueryValidator.validate(
-                { param: 'abc' },
-                [
-                  {
-                    name: 'param',
-                    style: HttpParamStyles.Form,
-                    contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
-                  },
-                ],
-                'application/testson',
-              ),
+              httpQueryValidator.validate({ param: 'abc' }, [
+                {
+                  name: 'param',
+                  style: HttpParamStyles.Form,
+                },
+              ]),
             ).toEqual([]);
 
             expect(registry.get).not.toHaveBeenCalled();
@@ -109,7 +94,6 @@ describe('HttpQueryValidator', () => {
                   name: 'param',
                   deprecated: true,
                   style: HttpParamStyles.Form,
-                  contents: [],
                 },
               ]),
             ).toMatchSnapshot();

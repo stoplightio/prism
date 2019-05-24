@@ -25,6 +25,7 @@ Object {
   "body": "<todo><name>Shopping</name><completed>false</completed></todo>",
   "headers": Object {
     "Content-type": "application/xml",
+    "x-todos-publish": Any<String>,
   },
   "statusCode": 200,
 }
