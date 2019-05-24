@@ -13,21 +13,21 @@
         "application/json"
       ],
       "content-length": [
-        "190"
+        "201"
       ],
       "connection": [
         "close"
       ]
     },
     "body": {
-      "id": -61867814,
-      "username": "aliqua elit et in",
-      "firstName": "cupidatat",
-      "lastName": "est aliquip mag",
-      "email": "consequat proident",
-      "password": "proident",
-      "phone": "aliqua",
-      "userStatus": 29243348
+      "id": 71095941,
+      "username": "Ut ven",
+      "firstName": "cupidatat Ut",
+      "lastName": "ipsum Excepteur et magna reprehenderit",
+      "email": "minim ad cupidatat d",
+      "password": "eu",
+      "phone": "sit in",
+      "userStatus": -23645742
     }
   }
 }

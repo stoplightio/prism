@@ -14,7 +14,7 @@ async function recordMasterFile({ path, method, headers, body }) {
         headers,
         body,
       })}.json`,
-      JSON.stringify(reqRes, null, 2)
+      `${JSON.stringify(reqRes, null, 2)}\n`
     );
   } catch (err) {
     console.error(err);
