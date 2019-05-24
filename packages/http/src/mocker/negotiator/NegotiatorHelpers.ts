@@ -232,7 +232,7 @@ const helpers = {
       findResponseByStatusCode(httpResponses, '400') ||
       createResponseFromDefault(httpResponses, '422');
     if (!response) {
-      throw new Error('Nor 422, 400 or default response defined');
+      throw new Error('No 422, 400, or default responses defined');
     }
     // find first response with any static examples
     const responseWithExamples = response.contents.find(content => !!content.examples && content.examples.length !== 0);
