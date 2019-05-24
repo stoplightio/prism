@@ -73,16 +73,12 @@ describe('HttpHeadersValidator', () => {
         describe('content was not provided', () => {
           it('omits schema validation', () => {
             expect(
-              httpHeadersValidator.validate(
-                { 'x-test-header': 'abc' },
-                [
-                  {
-                    name: 'x-test-header',
-                    style: HttpParamStyles.Simple,
-                  },
-                ],
-                'application/testson',
-              ),
+              httpHeadersValidator.validate({ 'x-test-header': 'abc' }, [
+                {
+                  name: 'x-test-header',
+                  style: HttpParamStyles.Simple,
+                },
+              ]),
             ).toEqual([]);
 
             expect(registry.get).not.toHaveBeenCalled();

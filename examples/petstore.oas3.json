@@ -731,7 +731,9 @@
                   "format": "int32"
                 },
                 "examples": {
-                  "default": 1500
+                  "etucapio": {
+                    "value": 1500
+                  }
                 }
               },
               "X-Expires-After": {
