@@ -204,7 +204,7 @@ describe('NegotiatorHelpers', () => {
       test('should return an error', async () => {
         expect(() => {
           helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
-        }).toThrow('Nor 422, 400 or default response defined');
+        }).toThrow('No 422, 400, or default responses defined');
       });
     });
   });

@@ -771,7 +771,8 @@
                 "type": "string",
                 "format": "date-time",
                 "description": "date in UTC when token expires"
-              }
+              },
+              "X-Strange-Header": {}
             }
           },
           "400": {

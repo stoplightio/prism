@@ -742,6 +742,9 @@
                   "type": "string",
                   "format": "date-time"
                 }
+              },
+              "X-Strange-Header": {
+                "description": "date in UTC when token expires"
               }
             },
             "content": {
