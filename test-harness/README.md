@@ -30,7 +30,10 @@ Gold master files contain data about both request and response.
 3. `SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.coverage --verbose` (`SPEC` can take comma delimited paths to specs)
 4. `RUN_V2_TESTS=1 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json yarn test.binary`
 
-Adding `RUN_V2_TESTS=1` will additionally run the tests against Prism v2 binary. Please run `yarn download.prism.v2` first.
+Adding `RUN_V2_TESTS=1` will additionally run the tests against `prism` version two binary. 
+Please make sure that `prism` version 2 is available in the project root directory beforehand.
+If you have `prism` version 2 installed already, you can symlink the executable.
+Also, you can just run `yarn download.prism.v2` to have `prism` version 2 downloaded to the project root directory.
 
 For now, when running with `SPEC=petstore.oas3.json`, some of the tests will fail. This is intentional - [TODO].
 
