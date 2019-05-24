@@ -2,8 +2,9 @@ const fetch = require('node-fetch');
 const requests = require('./requests');
 
 const { exec } = require('child_process');
-const { makeRequest, constructMasterFileName, readFile } = require('./helpers');
-const port = process.env.PRISM_PORT || 4010;
+const { getPort, makeRequest, constructMasterFileName, readFile } = require('./helpers');
+
+const port = getPort(process);
 
 async function waitForPrism(done) {
   try {
