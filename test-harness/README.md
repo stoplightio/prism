@@ -10,6 +10,8 @@ For anything to work, the binaries have to be generated first with: `yarn build.
 
 *Before running any of the above, make sure that `yarn` was run beforehand*. If `yarn` was not run, you might experience `Error: command mock not found` issue.
 
+`HOST` might be set to any target, that `pkg` [supports](https://github.com/zeit/pkg#targets);
+
 ## To record gold master files:
 
 1. `SPEC=./examples/petstore.oas2.json BINARY=./cli-binaries/prism-cli-linux yarn run.binary` - this will start up prism binary. When doing `yarn run.binary`, both `SPEC` and `BINARY` have to be defined.
