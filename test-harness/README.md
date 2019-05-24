@@ -12,7 +12,8 @@ Before running any of the above, please make sure that the dependencies (from `p
 You can do so by running `yarn` or `npm install`. 
 If the dependencies were not installed, you might experience `Error: command mock not found` issue.
 
-`HOST` might be set to any target, that `pkg` [supports](https://github.com/zeit/pkg#targets);
+`HOST` variable is used to specify what binary we want to build.
+`HOST` might be set to anything that is considered a target in `pkg` [supports](https://github.com/zeit/pkg#targets).
 
 ## To record gold master files:
 
