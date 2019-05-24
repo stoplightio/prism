@@ -22,9 +22,5 @@ async function recordMasterFile({ path, method, headers, body }) {
 }
 
 (async function() {
-  for (const request of requests) {
-    const { dynamic, ...req} = request;
-
-    await recordMasterFile(req);
-  }
+  await Promise.all(requests.map(recordMasterFile));
 })();
