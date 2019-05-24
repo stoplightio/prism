@@ -1108,6 +1108,25 @@ Array [
                   ],
                 },
               },
+              Object {
+                "key": "dog",
+                "value": Object {
+                  "category": Object {
+                    "id": 2,
+                    "name": "Canis",
+                  },
+                  "id": 1,
+                  "name": "Sharik",
+                  "photoUrls": Array [],
+                  "status": "available",
+                  "tags": Array [
+                    Object {
+                      "id": 2,
+                      "name": "dog",
+                    },
+                  ],
+                },
+              },
             ],
             "mediaType": "application/xml",
             "schema": Object {
@@ -1205,6 +1224,25 @@ Array [
                     Object {
                       "id": 1,
                       "name": "pet",
+                    },
+                  ],
+                },
+              },
+              Object {
+                "key": "dog",
+                "value": Object {
+                  "category": Object {
+                    "id": 2,
+                    "name": "Canis",
+                  },
+                  "id": 1,
+                  "name": "Sharik",
+                  "photoUrls": Array [],
+                  "status": "available",
+                  "tags": Array [
+                    Object {
+                      "id": 2,
+                      "name": "dog",
                     },
                   ],
                 },

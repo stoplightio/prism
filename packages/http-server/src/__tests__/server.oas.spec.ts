@@ -98,6 +98,16 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     });
   });
 
+  test('returns 500 with error when a non-existent example is requested', async () => {
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pets/123?__example=non_existent_example',
+    });
+
+    expect(response.statusCode).toBe(500);
+    checkErrorPayloadShape(response.payload);
+  });
+
   test('should not mock a request that is missing the required query parameters with no default', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
