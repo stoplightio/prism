@@ -22,7 +22,8 @@
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
     "test.update": "yarn test.fast --updateSnapshot",
-    "release": "lerna version prerelease --conventional-commits --preid alpha"
+    "release": "lerna version prerelease --conventional-commits --preid alpha",
+    "release:dry": "lerna version prerelease --conventional-commits --preid alpha --no-push --no-git-tag-version"
   },
   "devDependencies": {
     "@stoplight/types": "^7.0.1",
