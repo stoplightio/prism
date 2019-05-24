@@ -228,6 +228,46 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Pet"
+                },
+                "examples": {
+                  "cat": {
+                    "summary": "An example of a cat",
+                    "value": {
+                      "id": 2,
+                      "category": {
+                        "id": 1,
+                        "name": "Felis"
+                      },
+                      "tags": [
+                        {
+                          "id": 1,
+                          "name": "pet"
+                        }
+                      ],
+                      "name": "Fluffy",
+                      "status": "available",
+                      "photoUrls": []
+                    }
+                  },
+                  "dog": {
+                    "summary": "An example of a dog",
+                    "value": {
+                      "id": 1,
+                      "category": {
+                        "id": 2,
+                        "name": "Canis"
+                      },
+                      "tags": [
+                        {
+                          "id": 2,
+                          "name": "dog"
+                        }
+                      ],
+                      "name": "Sharik",
+                      "status": "available",
+                      "photoUrls": []
+                    }
+                  }
                 }
               }
             }

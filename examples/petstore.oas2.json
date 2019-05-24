@@ -262,6 +262,40 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/Pet"
+            },
+            "examples": {
+              "cat": {
+                "id": 2,
+                "category": {
+                  "id": 1,
+                  "name": "Felis"
+                },
+                "tags": [
+                  {
+                    "id": 1,
+                    "name": "pet"
+                  }
+                ],
+                "name": "Fluffy",
+                "status": "available",
+                "photoUrls": []
+              },
+              "dog": {
+                "id": 1,
+                "category": {
+                  "id": 2,
+                  "name": "Canis"
+                },
+                "tags": [
+                  {
+                    "id": 2,
+                    "name": "dog"
+                  }
+                ],
+                "name": "Sharik",
+                "status": "available",
+                "photoUrls": []
+              }
             }
           },
           "400": {
