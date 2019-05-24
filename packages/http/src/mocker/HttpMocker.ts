@@ -1,11 +1,13 @@
 import { IMocker, IMockerOpts } from '@stoplight/prism-core';
-import { IHttpOperation } from '@stoplight/types';
+import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
+import { fromPairs, keyBy, mapValues, toPairs } from 'lodash';
 import { IHttpConfig, IHttpOperationConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
 import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
+import { IHttpNegotiationResult } from './negotiator/types';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   constructor(private _exampleGenerator: IExampleGenerator) {}
@@ -35,7 +37,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     }
 
     // looking up proper example
-    let negotiationResult;
+    let negotiationResult: IHttpNegotiationResult;
     if (input.validations.input.length > 0) {
       try {
         negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
@@ -49,22 +51,60 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
       negotiationResult = helpers.negotiateOptionsForValidRequest(resource, mockConfig);
     }
 
-    // preparing response body
-    let body;
-    const example = negotiationResult.example;
-
-    if (example && 'value' in example && example.value !== undefined) {
-      body = typeof example.value === 'string' ? example.value : JSON.stringify(example.value);
-    } else if (negotiationResult.schema) {
-      body = await this._exampleGenerator.generate(negotiationResult.schema, negotiationResult.mediaType);
-    }
+    const [body, mockedHeaders] = await Promise.all([
+      computeBody(negotiationResult, this._exampleGenerator),
+      computeMockedHeaders(negotiationResult.headers, this._exampleGenerator),
+    ]);
 
     return {
       statusCode: parseInt(negotiationResult.code),
       headers: {
+        ...mockedHeaders,
         'Content-type': negotiationResult.mediaType,
       },
       body,
     };
   }
+}
+
+function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undefined): nodeExample is INodeExample {
+  return !!nodeExample && 'value' in nodeExample;
+}
+
+function computeMockedHeaders(headers: IHttpHeaderParam[], ex: IExampleGenerator): Promise<Dictionary<string>> {
+  const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
+    if (header.content) {
+      if (header.content.examples.length > 0) {
+        const example = header.content.examples[0];
+        if (isINodeExample(example)) {
+          return example.value;
+        }
+      }
+      if (header.content.schema) {
+        return ex.generate(header.content.schema, 'application/json');
+      }
+    }
+    return 'string';
+  });
+
+  return resolvePromiseInProps(headerWithPromiseValues);
+}
+
+async function computeBody(
+  negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
+  ex: IExampleGenerator,
+) {
+  if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
+    return typeof negotiationResult.bodyExample.value === 'string'
+      ? negotiationResult.bodyExample.value
+      : JSON.stringify(negotiationResult.bodyExample.value);
+  } else if (negotiationResult.schema) {
+    return ex.generate(negotiationResult.schema, negotiationResult.mediaType);
+  }
+  return undefined;
+}
+
+async function resolvePromiseInProps(val: Dictionary<Promise<string>>): Promise<Dictionary<string>> {
+  const promisePair = await Promise.all(toPairs(val).map(v => Promise.all(v)));
+  return fromPairs(promisePair);
 }

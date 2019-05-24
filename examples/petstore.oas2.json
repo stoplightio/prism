@@ -762,11 +762,17 @@
                 "format": "int32",
                 "description": "calls per hour allowed by the user"
               },
+              "X-Stats": {
+                "type": "integer",
+                "format": "int32",
+                "description": "generic statistics"
+              },
               "X-Expires-After": {
                 "type": "string",
                 "format": "date-time",
                 "description": "date in UTC when token expires"
-              }
+              },
+              "X-Strange-Header": {}
             }
           },
           "400": {

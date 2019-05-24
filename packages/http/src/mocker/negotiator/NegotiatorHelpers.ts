@@ -1,4 +1,4 @@
-import { IHttpContent, IHttpOperation, IHttpOperationResponse } from '@stoplight/types';
+import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
 
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
@@ -10,7 +10,10 @@ function findExampleByKey(httpContent: IHttpContent, exampleKey: string) {
   return httpContent.examples && httpContent.examples.find(example => example.key === exampleKey);
 }
 
-function findHttpContentByMediaType(response: IHttpOperationResponse, mediaType: string): IHttpContent | undefined {
+function findHttpContentByMediaType(
+  response: IHttpOperationResponse,
+  mediaType: string,
+): IMediaTypeContent | undefined {
   return response.contents.find(content => content.mediaType === mediaType);
 }
 
@@ -42,8 +45,8 @@ function createResponseFromDefault(responses: IHttpOperationResponse[], statusCo
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
     { code, exampleKey, dynamic }: NegotiatePartialOptions,
-    httpContent: IHttpContent,
-  ): IHttpNegotiationResult {
+    httpContent: IMediaTypeContent,
+  ): Omit<IHttpNegotiationResult, 'headers'> {
     const { mediaType } = httpContent;
 
     if (exampleKey) {
@@ -54,7 +57,7 @@ const helpers = {
         return {
           code,
           mediaType,
-          example,
+          bodyExample: example,
         };
       } else {
         throw new Error(`Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`);
@@ -77,7 +80,7 @@ const helpers = {
         return {
           code,
           mediaType,
-          example,
+          bodyExample: example,
         };
       } else if (httpContent.schema) {
         return {
@@ -103,7 +106,7 @@ const helpers = {
     const httpContent = findHttpContentByMediaType(response, mediaType);
     if (httpContent) {
       // a httpContent for default mediaType exists
-      return helpers.negotiateByPartialOptionsAndHttpContent(
+      const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
         {
           code,
           dynamic,
@@ -111,15 +114,20 @@ const helpers = {
         },
         httpContent,
       );
+      return {
+        headers: response.headers,
+        ...contentNegotiationResult,
+      };
     } else {
       // no httpContent found, returning empty body
       return {
         code,
         mediaType: 'text/plain',
-        example: {
+        bodyExample: {
           value: undefined,
           key: 'default',
         },
+        headers: response.headers,
       };
     }
   },
@@ -129,7 +137,7 @@ const helpers = {
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
-    const { code } = response;
+    const { code, headers } = response;
     const { mediaType, dynamic, exampleKey } = desiredOptions;
 
     if (mediaType) {
@@ -137,7 +145,7 @@ const helpers = {
       const httpContent = findHttpContentByMediaType(response, mediaType);
       if (httpContent) {
         // a httpContent for a provided mediaType exists
-        return helpers.negotiateByPartialOptionsAndHttpContent(
+        const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
           {
             code,
             dynamic,
@@ -145,10 +153,15 @@ const helpers = {
           },
           httpContent,
         );
+        return {
+          headers,
+          ...contentNegotiationResult,
+        };
       } else {
         return {
           code,
           mediaType: 'text/plain',
+          headers,
         };
       }
     }
@@ -219,7 +232,7 @@ const helpers = {
       findResponseByStatusCode(httpResponses, '400') ||
       createResponseFromDefault(httpResponses, '422');
     if (!response) {
-      throw new Error('No 422 response defined');
+      throw new Error('No 422, 400, or default responses defined');
     }
     // find first response with any static examples
     const responseWithExamples = response.contents.find(content => !!content.examples && content.examples.length !== 0);
@@ -230,13 +243,15 @@ const helpers = {
       return {
         code: response.code,
         mediaType: responseWithExamples.mediaType,
-        example: responseWithExamples.examples![0],
+        bodyExample: responseWithExamples.examples![0],
+        headers: response.headers,
       };
     } else if (responseWithSchema) {
       return {
         code: response.code,
         mediaType: responseWithSchema.mediaType,
         schema: responseWithSchema.schema,
+        headers: response.headers,
       };
     } else {
       throw new Error(

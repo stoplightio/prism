@@ -206,6 +206,27 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(response.statusCode).toBe(500);
     checkErrorPayloadShape(response.payload);
   });
+
+  test('should mock the response headers', async () => {
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/user/login?username=foo&password=foo',
+    });
+
+    // OAS2 does not support examples for Headers, to they MUST be always generated automagically,
+    // accorging to the schema
+
+    const expectedValues = {
+      'x-rate-limit': file === 'petstore.oas3.json' ? 1000 : expect.any(String),
+      'x-stats': file === 'petstore.oas3.json' ? 1500 : expect.any(String),
+      'x-expires-after': expect.any(String),
+      'x-strange-header': file === 'petstore.oas3.json' ? 'string' : '{}',
+    };
+
+    for (const headerName of Object.keys(expectedValues)) {
+      expect(response.headers).toHaveProperty(headerName, expectedValues[headerName]);
+    }
+  });
 });
 
 describe('oas2 specific tests', () => {

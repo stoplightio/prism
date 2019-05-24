@@ -25,9 +25,9 @@
     "release": "lerna version prerelease --conventional-commits --preid alpha"
   },
   "devDependencies": {
+    "@stoplight/types": "^7.0.1",
     "@oclif/dev-cli": "^1.22.0",
     "@oclif/tslint": "^3.1.1",
-    "@stoplight/types": "^5.1.1",
     "@types/caseless": "^0.12.2",
     "@types/chai": "^4.1.7",
     "@types/chance": "^1.0.4",
@@ -35,6 +35,8 @@
     "@types/json-schema": "^7.0.3",
     "@types/lodash": "^4.14.132",
     "@types/node": "^12.0.2",
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
     "@types/signale": "^1.2.1",
     "chance": "^1.0.18",
     "globby": "^9.2.0",
@@ -52,8 +54,19 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
+  "lint-staged": {
+    "*.ts": [
+      "tslint -p packages/tsconfig.json --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "publishConfig": {
-    "tag": "beta"
+    "tag": "alpha"
   },
   "dependencies": {}
 }

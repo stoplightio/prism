@@ -1,7 +1,6 @@
 import { HttpParamStyles, ISchema } from '@stoplight/types';
 
 import { HttpParamDeserializerRegistry } from '../../deserializers/registry';
-import * as resolveContentModule from '../../utils/http';
 import { HttpHeadersValidator } from '../headers';
 import * as validateAgainstSchemaModule from '../utils';
 
@@ -17,9 +16,6 @@ describe('HttpHeadersValidator', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(registry, 'get');
-    jest
-      .spyOn(resolveContentModule, 'resolveContent')
-      .mockImplementation(contentSpecs => contentSpecs[Object.keys(contentSpecs)[0]]);
     jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema').mockImplementation(() => []);
   });
 
@@ -29,9 +25,7 @@ describe('HttpHeadersValidator', () => {
         describe('spec defines it as required', () => {
           it('returns validation error', () => {
             expect(
-              httpHeadersValidator.validate({}, [
-                { name: 'aHeader', style: HttpParamStyles.Simple, required: true, contents: [] },
-              ]),
+              httpHeadersValidator.validate({}, [{ name: 'aHeader', style: HttpParamStyles.Simple, required: true }]),
             ).toMatchSnapshot();
           });
         });
@@ -48,7 +42,7 @@ describe('HttpHeadersValidator', () => {
                   {
                     name: 'x-test-header',
                     style: HttpParamStyles.Simple,
-                    contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
+                    content: { schema: { type: 'number' }, examples: [], encodings: [] },
                   },
                 ]),
               ).toEqual([]);
@@ -65,7 +59,7 @@ describe('HttpHeadersValidator', () => {
                     {
                       name: 'x-test-header',
                       style: HttpParamStyles.Simple,
-                      contents: [{ mediaType: '*', schema: { type: 'string' }, examples: [], encodings: [] }],
+                      content: { schema: { type: 'string' }, examples: [], encodings: [] },
                     },
                   ]),
                 ).toEqual([]);
@@ -76,26 +70,15 @@ describe('HttpHeadersValidator', () => {
           });
         });
 
-        describe('content was not found', () => {
+        describe('content was not provided', () => {
           it('omits schema validation', () => {
-            jest.spyOn(resolveContentModule, 'resolveContent').mockReturnValueOnce({
-              mediaType: 'application/exists-son',
-              examples: [],
-              encodings: [],
-            });
-
             expect(
-              httpHeadersValidator.validate(
-                { 'x-test-header': 'abc' },
-                [
-                  {
-                    name: 'x-test-header',
-                    style: HttpParamStyles.Simple,
-                    contents: [{ mediaType: '*', schema: { type: 'number' }, examples: [], encodings: [] }],
-                  },
-                ],
-                'application/testson',
-              ),
+              httpHeadersValidator.validate({ 'x-test-header': 'abc' }, [
+                {
+                  name: 'x-test-header',
+                  style: HttpParamStyles.Simple,
+                },
+              ]),
             ).toEqual([]);
 
             expect(registry.get).not.toHaveBeenCalled();
@@ -111,7 +94,6 @@ describe('HttpHeadersValidator', () => {
                   name: 'x-test-header',
                   deprecated: true,
                   style: HttpParamStyles.Simple,
-                  contents: [],
                 },
               ]),
             ).toMatchSnapshot();

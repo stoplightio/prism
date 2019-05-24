@@ -1,12 +1,12 @@
-import { IHttpContent } from '@stoplight/types';
+import { IMediaTypeContent } from '@stoplight/types';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { IHttpValidator, IValidatorRegistry } from './types';
 
-export class HttpBodyValidator implements IHttpValidator<any, IHttpContent> {
+export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
   constructor(private _registry: IValidatorRegistry, private _prefix: string) {}
 
-  public validate(target: any, specs: IHttpContent[], mediaType?: string): IPrismDiagnostic[] {
+  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
     const { _registry: registry, _prefix: prefix } = this;
     const content = this.getContent(specs, mediaType);
 
@@ -29,7 +29,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IHttpContent> {
     );
   }
 
-  private getContent(specs: IHttpContent[], mediaType?: string): IHttpContent | undefined {
+  private getContent(specs: IMediaTypeContent[], mediaType?: string): IMediaTypeContent | undefined {
     if (!mediaType) {
       return specs[0];
     }

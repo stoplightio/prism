@@ -669,6 +669,19 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
+                },
+                "example": 1000
+              },
+              "X-Stats": {
+                "description": "generic statistics",
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "examples": {
+                  "etucapio": {
+                    "value": 1500
+                  }
                 }
               },
               "X-Expires-After": {
@@ -677,6 +690,9 @@
                   "type": "string",
                   "format": "date-time"
                 }
+              },
+              "X-Strange-Header": {
+                "description": "date in UTC when token expires"
               }
             },
             "content": {
