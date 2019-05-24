@@ -8,7 +8,9 @@ For anything to work, the binaries have to be generated first with: `yarn build.
 2. `HOST=host yarn build.binary` will generate a binary for the current host machine
 3. `HOST=node10-linux-x64 yarn build.binary` will generate a binary for node10-linux-x64
 
-*Before running any of the above, make sure that `yarn` was run beforehand*. If `yarn` was not run, you might experience `Error: command mock not found` issue.
+Before running any of the above, please make sure that the dependencies (from `package.json`) are installed.
+You can do so by running `yarn` or `npm install`. 
+If the dependencies were not installed, you might experience `Error: command mock not found` issue.
 
 `HOST` might be set to any target, that `pkg` [supports](https://github.com/zeit/pkg#targets);
 
