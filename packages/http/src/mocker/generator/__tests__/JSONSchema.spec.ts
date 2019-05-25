@@ -1,6 +1,6 @@
 import { generate } from '../JSONSchema';
 
-describe('JSONSchemaExampleGenerator', () => {
+describe('JSONSchema generator', () => {
   describe('generate()', () => {
     it('generates dynamic example from schema', async () => {
       const schema = {
