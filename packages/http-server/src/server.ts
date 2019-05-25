@@ -73,7 +73,7 @@ const replyHandler = <LoaderInput>(
 
         reply.send(output.body);
       } else {
-        reply.code(500).send('Unable to find any decent response for the current request.');
+        throw new Error('Unable to find any decent response for the current request.');
       }
     } catch (e) {
       const status = 'status' in e ? e.status : 500;
