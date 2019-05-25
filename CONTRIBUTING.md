@@ -72,7 +72,7 @@ The best way to debug a Prism behavior is probably to attach your debugger to th
 ```bash
 cd packages/cli
 
-node --inspect-brk -r tsconfig-paths/register bin/run mock file.oas.yml
+yarn cli:debug mock file.oas.yml
 ```
 
 The application will wait for a debugger to be attached and break on the first line; from there, you can put your breakpoint here and there and help us debug the software!
