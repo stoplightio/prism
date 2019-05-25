@@ -3,15 +3,20 @@ import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExtern
 
 import * as caseless from 'caseless';
 import { fromPairs, keyBy, mapValues, toPairs } from 'lodash';
-import { IHttpConfig, IHttpOperationConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
+import {
+  IHttpConfig,
+  IHttpOperationConfig,
+  IHttpRequest,
+  IHttpResponse,
+  PayloadGenerator,
+  ProblemJsonError,
+} from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
-type GeneratorSignature = (f: unknown) => Promise<unknown>;
-
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: GeneratorSignature) {}
+  constructor(private _exampleGenerator: PayloadGenerator) {}
 
   public async mock({
     resource,
@@ -72,7 +77,7 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
   return !!nodeExample && 'value' in nodeExample;
 }
 
-function computeMockedHeaders(headers: IHttpHeaderParam[], ex: GeneratorSignature): Promise<Dictionary<string>> {
+function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator): Promise<Dictionary<string>> {
   const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
     if (header.content) {
       if (header.content.examples.length > 0) {
@@ -93,7 +98,7 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], ex: GeneratorSignatur
 
 async function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
-  ex: GeneratorSignature,
+  ex: PayloadGenerator,
 ) {
   if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
     return negotiationResult.bodyExample.value;

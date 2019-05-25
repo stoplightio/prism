@@ -104,3 +104,5 @@ export class ProblemJsonError extends Error {
     Error.captureStackTrace(this, ProblemJsonError);
   }
 }
+
+export type PayloadGenerator = (f: unknown) => Promise<unknown>;
