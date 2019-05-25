@@ -1,5 +1,4 @@
 import { Command } from '@oclif/command';
-import * as cluster from 'cluster';
 import * as signale from 'signale';
 import { ARGS, FLAGS } from '../const/options';
 import { createServer } from '../util/createServer';
@@ -17,38 +16,28 @@ export default class Server extends Command {
       args: { spec },
     } = this.parse(Server);
 
-    if (cluster.isMaster) {
-      signaleInteractiveInstance.await('Starting Prism…');
+    signaleInteractiveInstance.await('Starting Prism…');
 
-      if (true || dynamic) {
-        signale.star('Dynamic example generation enabled.');
+    if (true || dynamic) {
+      signale.star('Dynamic example generation enabled.');
+    }
+
+    const server = createServer(spec, { mock: { dynamic: true || dynamic } });
+    try {
+      const address = await server.listen(port);
+
+      if (server.prism.resources.length === 0) {
+        signaleInteractiveInstance.fatal('No operations found in the current file.');
+        this.exit(1);
       }
 
-      cluster.setupMaster({
-        silent: true,
+      signaleInteractiveInstance.success(`Prism is listening on ${address}`);
+
+      server.prism.resources.forEach(resource => {
+        signale.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
       });
-
-      const worker = cluster.fork();
-
-      if (worker.process.stdout) worker.process.stdout.pipe(process.stdout);
-    } else {
-      const server = createServer(spec, { mock: { dynamic: true || dynamic } });
-      try {
-        const address = await server.listen(port);
-
-        if (server.prism.resources.length === 0) {
-          signaleInteractiveInstance.fatal('No operations found in the current file.');
-          this.exit(1);
-        }
-
-        signaleInteractiveInstance.success(`Prism is listening on ${address}`);
-
-        server.prism.resources.forEach(resource => {
-          signale.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
-        });
-      } catch (e) {
-        signaleInteractiveInstance.fatal(e.message);
-      }
+    } catch (e) {
+      signaleInteractiveInstance.fatal(e.message);
     }
   }
 }
