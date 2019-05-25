@@ -1,4 +1,5 @@
 import { Command } from '@oclif/command';
+import * as cluster from 'cluster';
 import * as signale from 'signale';
 import { ARGS, FLAGS } from '../const/options';
 import { createServer } from '../util/createServer';
@@ -11,33 +12,43 @@ export default class Server extends Command {
   public async run() {
     const signaleInteractiveInstance = new signale.Signale({ interactive: true });
 
-    signaleInteractiveInstance.await('Starting Prism…');
-
     const {
       flags: { port, dynamic },
       args: { spec },
     } = this.parse(Server);
 
-    if (true || dynamic) {
-      signale.star('Dynamic example generation enabled.');
-    }
+    if (cluster.isMaster) {
+      signaleInteractiveInstance.await('Starting Prism…');
 
-    const server = createServer(spec, { mock: { dynamic: true || dynamic } });
-    try {
-      const address = await server.listen(port);
-
-      if (server.prism.resources.length === 0) {
-        signaleInteractiveInstance.fatal('No operations found in the current file.');
-        this.exit(1);
+      if (true || dynamic) {
+        signale.star('Dynamic example generation enabled.');
       }
 
-      signaleInteractiveInstance.success(`Prism is listening on ${address}`);
-
-      server.prism.resources.forEach(resource => {
-        signale.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
+      cluster.setupMaster({
+        silent: true,
       });
-    } catch (e) {
-      signaleInteractiveInstance.fatal(e.message);
+
+      const worker = cluster.fork();
+
+      if (worker.process.stdout) worker.process.stdout.pipe(process.stdout);
+    } else {
+      const server = createServer(spec, { mock: { dynamic: true || dynamic } });
+      try {
+        const address = await server.listen(port);
+
+        if (server.prism.resources.length === 0) {
+          signaleInteractiveInstance.fatal('No operations found in the current file.');
+          this.exit(1);
+        }
+
+        signaleInteractiveInstance.success(`Prism is listening on ${address}`);
+
+        server.prism.resources.forEach(resource => {
+          signale.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
+        });
+      } catch (e) {
+        signaleInteractiveInstance.fatal(e.message);
+      }
     }
   }
 }
