@@ -166,7 +166,12 @@ describe('http mocker', () => {
           input: httpRequests[0],
         });
 
-        expect(response).toMatchSnapshot();
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toMatchObject({
+          completed: true,
+          id: 1,
+          name: 'make prism',
+        });
       });
 
       test('return lowest 2xx response and the first example matching the media type', async () => {
@@ -241,7 +246,8 @@ describe('http mocker', () => {
         input: httpRequests[1],
       });
 
-      expect(response).toMatchSnapshot();
+      expect(response.statusCode).toBe(422);
+      expect(response.body).toMatchObject({ message: 'error' });
     });
 
     test('returns 422 and dynamic error response', async () => {
