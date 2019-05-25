@@ -2,11 +2,11 @@ import { ISchema } from '@stoplight/types';
 import * as Ajv from 'ajv';
 
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
-import { JSONSchemaExampleGenerator } from '../generator/JSONSchemaExampleGenerator';
+import { generate } from '../generator/JSONSchema';
 import { HttpMocker } from '../index';
 
 describe('http mocker', () => {
-  const mocker = new HttpMocker(new JSONSchemaExampleGenerator());
+  const mocker = new HttpMocker(generate);
 
   describe('request is valid', () => {
     describe('given only enforced content type', () => {
@@ -229,7 +229,7 @@ describe('http mocker', () => {
           'Content-type': 'application/json',
           'x-todos-publish': expect.any(String),
         });
-        expect(validate(JSON.parse(response.body))).toBe(true);
+        expect(validate(response.body)).toBeTruthy();
       });
     });
   });
@@ -255,9 +255,9 @@ describe('http mocker', () => {
       });
 
       const ajv = new Ajv();
-      const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema as ISchema);
+      const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema!);
 
-      expect(validate(JSON.parse(response.body))).toBe(true);
+      expect(validate(response.body)).toBeTruthy();
     });
   });
 });

@@ -1,6 +1,5 @@
 import { IPrism } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types/http-spec';
-import { omit } from 'lodash';
 import { relative, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { forwarder } from '../forwarder';
@@ -47,15 +46,22 @@ describe('Http Prism Instance function tests', () => {
         },
       },
     });
-    const parsedBody = JSON.parse(response!.output!.body);
+
+    const parsedBody = response!.output!.body;
+
     expect(parsedBody.length).toBeGreaterThan(0);
+
     parsedBody.forEach((element: any) => {
-      expect(typeof element.name).toEqual('string');
-      expect(Array.isArray(element.photoUrls)).toBeTruthy();
+      expect(typeof element.name).toBe('string');
+      expect(element.photoUrls).toBeInstanceOf(Array);
       expect(element.photoUrls.length).toBeGreaterThan(0);
     });
-    // because body is generated randomly
-    expect(omit(response, 'output.body')).toMatchSnapshot();
+
+    expect(response).toMatchSnapshot({
+      output: {
+        body: expect.anything(),
+      },
+    });
   });
 
   test('given route with invalid param should return a validation error', () => {
@@ -155,6 +161,6 @@ describe('Http Prism Instance function tests', () => {
     });
 
     expect(response.output).toBeDefined();
-    expect(typeof response.output!.body).toBe('string');
+    expect(response.output!.body).toBeInstanceOf(Array);
   });
 });

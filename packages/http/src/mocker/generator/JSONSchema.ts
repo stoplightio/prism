@@ -1,5 +1,6 @@
 // @ts-ignore
 import * as jsf from '@stoplight/json-schema-faker';
+import { cloneDeep } from 'lodash';
 
 jsf.option({
   failOnInvalidTypes: false,
@@ -14,8 +15,6 @@ jsf.option({
   maxLength: 100,
 });
 
-export class JSONSchemaExampleGenerator {
-  public async generate(source: unknown): Promise<unknown> {
-    return jsf.resolve(source);
-  }
+export async function generate(source: unknown): Promise<unknown> {
+  return jsf.resolve(cloneDeep(source));
 }

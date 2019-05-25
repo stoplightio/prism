@@ -5,12 +5,13 @@ import * as caseless from 'caseless';
 import { fromPairs, keyBy, mapValues, toPairs } from 'lodash';
 import { IHttpConfig, IHttpOperationConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
-import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
+type GeneratorSignature = (f: unknown) => Promise<unknown>;
+
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: IExampleGenerator) {}
+  constructor(private _exampleGenerator: GeneratorSignature) {}
 
   public async mock({
     resource,
@@ -71,7 +72,7 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
   return !!nodeExample && 'value' in nodeExample;
 }
 
-function computeMockedHeaders(headers: IHttpHeaderParam[], ex: IExampleGenerator): Promise<Dictionary<string>> {
+function computeMockedHeaders(headers: IHttpHeaderParam[], ex: GeneratorSignature): Promise<Dictionary<string>> {
   const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
     if (header.content) {
       if (header.content.examples.length > 0) {
@@ -81,7 +82,7 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], ex: IExampleGenerator
         }
       }
       if (header.content.schema) {
-        return ex.generate(header.content.schema, 'application/json');
+        return ex(header.content.schema);
       }
     }
     return 'string';
@@ -92,14 +93,12 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], ex: IExampleGenerator
 
 async function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
-  ex: IExampleGenerator,
+  ex: GeneratorSignature,
 ) {
   if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
-    return typeof negotiationResult.bodyExample.value === 'string'
-      ? negotiationResult.bodyExample.value
-      : JSON.stringify(negotiationResult.bodyExample.value);
+    return negotiationResult.bodyExample.value;
   } else if (negotiationResult.schema) {
-    return ex.generate(negotiationResult.schema, negotiationResult.mediaType);
+    return ex(negotiationResult.schema);
   }
   return undefined;
 }
