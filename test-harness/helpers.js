@@ -40,7 +40,7 @@ function constructMasterFileName(request) {
 }
 
 function readFile(hash) {
-  const fileContent = fs.readFileSync(`${__dirname}/gold-master-files/${hash}.json`).toString();
+  const fileContent = fs.readFileSync(path.join(__dirname, '/gold-master-files/', hash, '.json')).toString();
 
   return JSON.parse(fileContent);
 }

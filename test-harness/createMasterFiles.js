@@ -8,14 +8,19 @@ async function recordMasterFile({ path, method, headers, body }) {
 
   try {
     fs.writeFileSync(
-      `${__dirname}/gold-master-files/${constructMasterFileName({
-        path,
-        method,
-        headers,
-        body,
-      })}.json`,
+      path.join(
+        __dirname,
+        '/gold-master-files/',
+        constructMasterFileName({
+          path,
+          method,
+          headers,
+          body,
+        }),
+        '.json'
+      ),
       `${JSON.stringify(reqRes, null, 2)}\n`
-    );
+    )
   } catch (err) {
     console.error(err);
   }
