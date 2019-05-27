@@ -1,5 +1,6 @@
 import { Command } from '@oclif/command';
 import { createLogger, logLevels } from '@stoplight/prism-core';
+import { default as chalk } from 'chalk';
 import * as cluster from 'cluster';
 import { LogDescriptor } from 'pino';
 import * as signale from 'signale';
@@ -22,10 +23,10 @@ export default class Server extends Command {
       cluster.setupMaster({ silent: true });
 
       const signaleInteractiveInstance = new signale.Signale({ interactive: true });
-      signaleInteractiveInstance.await({ prefix: 'CLI', message: 'Starting Prism…' });
+      signaleInteractiveInstance.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
       if (true || dynamic) {
-        signale.star({ prefix: 'CLI', message: 'Dynamic example generation enabled.' });
+        signale.star({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Dynamic example generation enabled.' });
       }
 
       const worker = cluster.fork();
@@ -33,11 +34,11 @@ export default class Server extends Command {
       if (worker.process.stdout) {
         worker.process.stdout.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
           const logLevelType = logLevels.labels[logLine.level];
-          signale[logLevelType]({ prefix: logLine.name, message: logLine.msg });
+          signale[logLevelType]({ prefix: chalk.bgWhiteBright.black(logLine.name), message: logLine.msg });
         });
       }
     } else {
-      const pino = createLogger('CLI');
+      const pino = createLogger('[CLI]');
       const server = createServer(spec, { mock: { dynamic: true || dynamic } });
       try {
         const address = await server.listen(port);
