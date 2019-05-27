@@ -1,6 +1,6 @@
 import { Command } from '@oclif/command';
 import { createLogger, logLevels } from '@stoplight/prism-core';
-import { default as chalk } from 'chalk';
+import chalk from 'chalk';
 import * as cluster from 'cluster';
 import { LogDescriptor } from 'pino';
 import * as signale from 'signale';

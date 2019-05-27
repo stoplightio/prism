@@ -1,10 +1,11 @@
 import { IHttpOperationConfig } from '@stoplight/prism-http';
-import { IHttpHeaderParam, INodeExample, INodeExternalExample, ISchema } from '@stoplight/types';
+import { ContentExample } from '@stoplight/prism-http/src/types';
+import { IHttpHeaderParam, ISchema } from '@stoplight/types';
 
 export interface IHttpNegotiationResult {
   code: string;
   mediaType: string;
-  bodyExample?: INodeExample | INodeExternalExample;
+  bodyExample?: ContentExample;
   schema?: ISchema;
   headers: IHttpHeaderParam[];
 }

@@ -1,10 +1,11 @@
 import { IMocker, IMockerOpts } from '@stoplight/prism-core';
-import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
+import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
 import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
 import pino from '../logger';
 import {
+  ContentExample,
   IHttpConfig,
   IHttpOperationConfig,
   IHttpRequest,
@@ -51,6 +52,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
         pino.warn('The request did not pass the validation rules. Looking for an invalid response');
         negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
       } catch (error) {
+        pino.info('No suitable response found, creating a 422 response based on validation responses');
         throw ProblemJsonError.fromTemplate(
           UNPROCESSABLE_ENTITY,
           `Your request body is not valid: ${JSON.stringify(input.validations.input)}`,
@@ -77,7 +79,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
   }
 }
 
-function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undefined): nodeExample is INodeExample {
+function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is INodeExample {
   return !!nodeExample && 'value' in nodeExample;
 }
 
