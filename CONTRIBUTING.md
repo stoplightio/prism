@@ -34,7 +34,7 @@ Yarn is a package manager for your code, similar to npm. While you can use npm t
 2. Fork the [https://github.com/stoplightio/prism](https://github.com/stoplightio/prism) repo.
 3. Git clone your fork (i.e. `git clone https://github.com/<your-username>/prism.git`) to your machine.
 4. Run `yarn` to install dependencies and setup the project.
-5. Because [oclif](https://oclif.io) does not respect the provided `tsconfig`, you can't use the bin directly, but we provide a script for that: `cd packages && yarn cli mock openapi.yaml`
+5. Because [oclif](https://oclif.io) does not respect the provided `tsconfig`, you can't use the bin directly, but we provide a script for that: `cd packages/cli && yarn cli mock openapi.yaml`.
 6. Run `git checkout -b [name_of_your_new_branch]` to create a new branch for your work. To help build nicer changelogs, we have a convention for branch names. Please start your branch with either `feature/{branch-name}`, `chore/{branch-name}`, or `fix/{branch-name}`. For example, if I was adding a CLI, I would make my branch name: `feature/add-cli`.
 7. Make changes, write code and tests, etc. The fun stuff!
 8. Run `yarn test` to test your changes.
@@ -72,7 +72,7 @@ The best way to debug a Prism behavior is probably to attach your debugger to th
 ```bash
 cd packages/cli
 
-node --inspect-brk -r tsconfig-paths/register bin/run mock file.oas.yml
+yarn cli:debug mock file.oas.yml
 ```
 
 The application will wait for a debugger to be attached and break on the first line; from there, you can put your breakpoint here and there and help us debug the software!

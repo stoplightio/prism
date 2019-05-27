@@ -2,11 +2,11 @@ import { ISchema } from '@stoplight/types';
 import * as Ajv from 'ajv';
 
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
-import { JSONSchemaExampleGenerator } from '../generator/JSONSchemaExampleGenerator';
+import { generate } from '../generator/JSONSchema';
 import { HttpMocker } from '../index';
 
 describe('http mocker', () => {
-  const mocker = new HttpMocker(new JSONSchemaExampleGenerator());
+  const mocker = new HttpMocker(generate);
 
   describe('request is valid', () => {
     describe('given only enforced content type', () => {
@@ -166,7 +166,12 @@ describe('http mocker', () => {
           input: httpRequests[0],
         });
 
-        expect(response).toMatchSnapshot();
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toMatchObject({
+          completed: true,
+          id: 1,
+          name: 'make prism',
+        });
       });
 
       test('return lowest 2xx response and the first example matching the media type', async () => {
@@ -229,7 +234,7 @@ describe('http mocker', () => {
           'Content-type': 'application/json',
           'x-todos-publish': expect.any(String),
         });
-        expect(validate(JSON.parse(response.body))).toBe(true);
+        expect(validate(response.body)).toBeTruthy();
       });
     });
   });
@@ -241,7 +246,8 @@ describe('http mocker', () => {
         input: httpRequests[1],
       });
 
-      expect(response).toMatchSnapshot();
+      expect(response.statusCode).toBe(422);
+      expect(response.body).toMatchObject({ message: 'error' });
     });
 
     test('returns 422 and dynamic error response', async () => {
@@ -255,9 +261,9 @@ describe('http mocker', () => {
       });
 
       const ajv = new Ajv();
-      const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema as ISchema);
+      const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema!);
 
-      expect(validate(JSON.parse(response.body))).toBe(true);
+      expect(validate(response.body)).toBeTruthy();
     });
   });
 });

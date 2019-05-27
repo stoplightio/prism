@@ -50,7 +50,7 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publish
-          command: yarn lerna publish from-git --github-release --yes --dist-tag alpha
+          command: yarn lerna publish from-git --github-release --yes
       - run:
           name: Create CLI binaries
           command: npx pkg --out-path ./cli-binaries ./packages/cli/

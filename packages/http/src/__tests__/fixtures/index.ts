@@ -51,13 +51,11 @@ export const httpOperations: IHttpOperation[] = [
             examples: [
               {
                 key: 'application/json',
-                value: [
-                  {
-                    id: 1,
-                    completed: true,
-                    name: 'make prism',
-                  },
-                ],
+                value: {
+                  id: 1,
+                  completed: true,
+                  name: 'make prism',
+                },
               },
               {
                 key: 'bear',
@@ -154,11 +152,9 @@ export const httpOperations: IHttpOperation[] = [
             examples: [
               {
                 key: 'application/json',
-                value: [
-                  {
-                    message: 'error',
-                  },
-                ],
+                value: {
+                  message: 'error',
+                },
               },
             ],
             encodings: [],

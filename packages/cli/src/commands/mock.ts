@@ -11,12 +11,12 @@ export default class Server extends Command {
   public async run() {
     const signaleInteractiveInstance = new signale.Signale({ interactive: true });
 
-    signaleInteractiveInstance.await('Starting Prism…');
-
     const {
       flags: { port, dynamic },
       args: { spec },
     } = this.parse(Server);
+
+    signaleInteractiveInstance.await('Starting Prism…');
 
     if (true || dynamic) {
       signale.star('Dynamic example generation enabled.');

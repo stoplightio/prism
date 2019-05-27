@@ -24,16 +24,6 @@ Object {
 }
 `;
 
-exports[`HttpMocker mock() with valid negotiator response returns dynamic example 1`] = `
-Object {
-  "body": "example value",
-  "headers": Object {
-    "Content-type": "test",
-  },
-  "statusCode": 202,
-}
-`;
-
 exports[`HttpMocker mock() with valid negotiator response returns static example 1`] = `
 Object {
   "body": "hello",
