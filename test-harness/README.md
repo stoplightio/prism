@@ -34,7 +34,8 @@ Gold master files contain data about both request and response.
 Adding `RUN_V2_TESTS=1` will additionally run the tests against `prism` version two binary. 
 Please make sure that `prism` version 2 is available in the project root directory beforehand.
 If you have `prism` version 2 installed already, you can symlink the executable.
-Also, you can just run `yarn download.prism.v2` to have `prism` version 2 downloaded to the project root directory.
+Also, you can just run `curl -L https://github.com/stoplightio/prism/releases/download/v2.0.17/prism_linux_amd64 -o prism && chmod +x ./prism`
+to have `prism` version 2 downloaded to the project root directory.
 
 For now, when running with `SPEC=petstore.oas3.json`, some of the tests will fail. This is intentional - [TODO].
 

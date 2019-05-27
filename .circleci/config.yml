@@ -31,7 +31,7 @@ jobs:
             - node_modules/
       - run:
           name: Download prism v2
-          command: yarn download.prism.v2
+          command: curl -L https://github.com/stoplightio/prism/releases/download/v2.0.17/prism_linux_amd64 -o prism && chmod +x ./prism
       - run:
           name: Test Harness
           command: |
