@@ -71,9 +71,9 @@ const replyHandler = <LoaderInput>(
           reply.headers(output.headers);
         }
 
-        reply.serializer((payload: unknown) => payload).send(output.body);
+        reply.send(output.body);
       } else {
-        reply.code(500).send('Unable to find any decent response for the current request.');
+        throw new Error('Unable to find any decent response for the current request.');
       }
     } catch (e) {
       const status = 'status' in e ? e.status : 500;
