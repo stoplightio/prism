@@ -34,11 +34,11 @@ export default class Server extends Command {
       if (worker.process.stdout) {
         worker.process.stdout.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
           const logLevelType = logLevels.labels[logLine.level];
-          signale[logLevelType]({ prefix: chalk.bgWhiteBright.black(logLine.name), message: logLine.msg });
+          signale[logLevelType]({ prefix: chalk.bgWhiteBright.black(`[${logLine.name}]`), message: logLine.msg });
         });
       }
     } else {
-      const pino = createLogger('[CLI]');
+      const pino = createLogger('CLI');
       const server = createServer(spec, { mock: { dynamic: true || dynamic } });
       try {
         const address = await server.listen(port);
