@@ -6,43 +6,25 @@
   "configurations": [
     {
       "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/packages/cli/bin/run",
+      "cwd": "${workspaceFolder}/packages/cli",
+      "autoAttachChildProcesses": true,
+      "runtimeArgs": [
+        "-r",
+        "tsconfig-paths/register"
+      ],
+      "args": [
+        "mock",
+        "../../examples/petstore.oas2.yaml"
+      ]
+    },
+    {
+      "type": "node",
       "request": "attach",
       "name": "Attach",
-      "port": 9229
-    },
-    {
-      "type": "node",
-      "name": "vscode-jest-tests",
-      "request": "launch",
-      "args": ["--runInBand"],
-      "cwd": "${workspaceFolder}",
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Jest All",
-      "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": ["--runInBand", "--config", "./jest.config.js"],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "windows": {
-        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-      }
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Jest Current File",
-      "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": ["${relativeFile}", "--config", "./jest.config.js"],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "windows": {
-        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-      }
+      "port": 9229,
     }
   ]
 }
