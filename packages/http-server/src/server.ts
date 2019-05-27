@@ -1,4 +1,4 @@
-import { configMergerFactory } from '@stoplight/prism-core';
+import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import * as fastify from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
@@ -9,7 +9,11 @@ export const createServer = <LoaderInput>(
   loaderInput: LoaderInput,
   opts: IPrismHttpServerOpts<LoaderInput>,
 ): IPrismHttpServer<LoaderInput> => {
-  const server = fastify<Server, IncomingMessage, ServerResponse>();
+  const server = fastify<Server, IncomingMessage, ServerResponse>({
+    logger: createLogger('HTTP SERVER'),
+    disableRequestLogging: true,
+    modifyCoreObjects: false,
+  });
   const { components = {}, config } = opts;
   const mergedConfig = configMergerFactory({ mock: { dynamic: false } }, config, getHttpConfigFromRequest);
 
