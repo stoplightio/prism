@@ -1,5 +1,6 @@
-const fetch = require('node-fetch');
 const fs = require('fs');
+const { join } = require('path');
+const fetch = require('node-fetch');
 
 const getPort = ({ PRISM_PORT }) => PRISM_PORT  || 4010;
 
@@ -40,7 +41,7 @@ function constructMasterFileName(request) {
 }
 
 function readFile(hash) {
-  const fileContent = fs.readFileSync(path.join(__dirname, '/gold-master-files/', hash, '.json')).toString();
+  const fileContent = fs.readFileSync(join(__dirname, '/gold-master-files/') + `${hash}.json`).toString();
 
   return JSON.parse(fileContent);
 }
