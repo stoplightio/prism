@@ -10,7 +10,5 @@ export interface IPrismHttpServerOpts<LoaderInput> {
 export interface IPrismHttpServer<LoaderInput> {
   readonly prism: TPrismHttpInstance<LoaderInput>;
   readonly fastify: FastifyInstance;
-  listen: ListenFunc;
+  listen: (port: number, address?: string, backlog?: number) => Promise<string>;
 }
-
-export type ListenFunc = (port: number, address?: string, backlog?: number) => Promise<string>;
