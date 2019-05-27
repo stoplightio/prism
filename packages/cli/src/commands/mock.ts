@@ -22,10 +22,10 @@ export default class Server extends Command {
       cluster.setupMaster({ silent: true });
 
       const signaleInteractiveInstance = new signale.Signale({ interactive: true });
-      signaleInteractiveInstance.await('Starting Prism…');
+      signaleInteractiveInstance.await({ prefix: 'CLI', message: 'Starting Prism…' });
 
       if (true || dynamic) {
-        signale.star('Dynamic example generation enabled.');
+        signale.star({ prefix: 'CLI', message: 'Dynamic example generation enabled.' });
       }
 
       const worker = cluster.fork();
@@ -33,7 +33,7 @@ export default class Server extends Command {
       if (worker.process.stdout) {
         worker.process.stdout.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
           const logLevelType = logLevels.labels[logLine.level];
-          signale[logLevelType](logLine.msg);
+          signale[logLevelType]({ prefix: logLine.name, message: logLine.msg });
         });
       }
     } else {
@@ -44,16 +44,17 @@ export default class Server extends Command {
 
         if (server.prism.resources.length === 0) {
           pino.fatal('No operations found in the current file.');
-          this.exit(1);
+          cluster.worker.kill();
         }
-
-        pino.info(`Prism is listening on ${address}`);
 
         server.prism.resources.forEach(resource => {
           pino.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
         });
+
+        pino.start(`Prism is listening on ${address}`);
       } catch (e) {
         pino.fatal(e.message);
+        cluster.worker.kill();
       }
     }
   }
