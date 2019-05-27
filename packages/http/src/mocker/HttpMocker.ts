@@ -2,21 +2,15 @@ import { IMocker, IMockerOpts } from '@stoplight/prism-core';
 import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
-import {
-  IHttpConfig,
-  IHttpOperationConfig,
-  IHttpRequest,
-  IHttpResponse,
-  PayloadGenerator,
-  ProblemJsonError,
-} from '../types';
+import { fromPairs, keyBy, mapValues, toPairs } from 'lodash';
+import pino from '../logger';
+import { IHttpConfig, IHttpOperationConfig, IHttpRequest, IHttpResponse, ProblemJsonError, PayloadGenerator } from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: PayloadGenerator) {}
+  constructor(private _exampleGenerator: PayloadGenerator) { }
 
   public async mock({
     resource,
@@ -39,6 +33,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
       config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
 
     if (!mockConfig.mediaType && typeof inputMediaType === 'string') {
+      pino.info(`Request contains a content-type header: ${inputMediaType}`);
       mockConfig.mediaType = inputMediaType;
     }
 
@@ -46,6 +41,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     let negotiationResult: IHttpNegotiationResult;
     if (input.validations.input.length > 0) {
       try {
+        pino.warn('The request did not pass the validation rules. Looking for an invalid response');
         negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
       } catch (error) {
         throw ProblemJsonError.fromTemplate(
@@ -54,6 +50,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
         );
       }
     } else {
+      pino.success('The request passed the validation rules. Looking for the best response');
       negotiationResult = helpers.negotiateOptionsForValidRequest(resource, mockConfig);
     }
 
