@@ -11,6 +11,7 @@ function createLogger(name: string) {
     name,
     customLevels: {
       note: 10,
+      success: 20,
     },
     level: 'note',
     base: null,
