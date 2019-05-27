@@ -2,7 +2,7 @@ import { IMocker, IMockerOpts } from '@stoplight/prism-core';
 import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { fromPairs, keyBy, mapValues, toPairs } from 'lodash';
+import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
 import {
   IHttpConfig,
   IHttpOperationConfig,
@@ -87,7 +87,8 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator)
         }
       }
       if (header.content.schema) {
-        return ex(header.content.schema);
+        const example = await ex(header.content.schema);
+        if (!(isObject(example) && isEmpty(example))) return example;
       }
     }
     return 'string';
