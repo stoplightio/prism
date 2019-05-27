@@ -20,6 +20,7 @@
     "axios": "^0.18.0",
     "lodash": "^4.0.0",
     "mobx": "^5.0.0",
+    "pino": "^5.12.6",
     "tslib": "^1.9.0"
   },
   "publishConfig": {
