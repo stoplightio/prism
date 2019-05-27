@@ -91,7 +91,7 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator)
         if (!(isObject(example) && isEmpty(example))) return example;
       }
     }
-    return 'string';
+    return '';
   });
 
   return resolvePromiseInProps(headerWithPromiseValues);
