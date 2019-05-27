@@ -2,15 +2,22 @@ import { IMocker, IMockerOpts } from '@stoplight/prism-core';
 import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { fromPairs, keyBy, mapValues, toPairs } from 'lodash';
+import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
 import pino from '../logger';
-import { IHttpConfig, IHttpOperationConfig, IHttpRequest, IHttpResponse, ProblemJsonError, PayloadGenerator } from '../types';
+import {
+  IHttpConfig,
+  IHttpOperationConfig,
+  IHttpRequest,
+  IHttpResponse,
+  PayloadGenerator,
+  ProblemJsonError,
+} from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: PayloadGenerator) { }
+  constructor(private _exampleGenerator: PayloadGenerator) {}
 
   public async mock({
     resource,
