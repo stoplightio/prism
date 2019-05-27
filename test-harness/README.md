@@ -28,8 +28,10 @@ Gold master files contain data about both request and response.
 
 1. `yarn test.binary`
 2. `SPEC=./examples/petstore.oas2.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary`
-3. `SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.coverage --verbose` (`SPEC` can take comma delimited paths to specs)
+3. `SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary` 
 4. `RUN_V2_TESTS=1 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json yarn test.binary`
+
+> `SPEC` can take comma delimited paths to specs
 
 Adding `RUN_V2_TESTS=1` will additionally run the tests against `prism` version two binary. 
 Please make sure that `prism` version 2 is available in the project root directory beforehand.
