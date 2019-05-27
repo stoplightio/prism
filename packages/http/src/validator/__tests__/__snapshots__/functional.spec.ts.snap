@@ -32,6 +32,8 @@ Array [
 ]
 `;
 
+exports[`HttpValidator validateInput() all validations are turned on when all required params are provided returns no validation errors 1`] = `Array []`;
+
 exports[`HttpValidator validateInput() only body validation is turned on returns only body validation errors 1`] = `
 Array [
   Object {
@@ -71,6 +73,8 @@ Array [
   },
 ]
 `;
+
+exports[`HttpValidator validateInput() only query validation is turned on when all required params are provided returns no validation errors 1`] = `Array []`;
 
 exports[`HttpValidator validateOutput() all validations are turned off returns no validation errors 1`] = `Array []`;
 
