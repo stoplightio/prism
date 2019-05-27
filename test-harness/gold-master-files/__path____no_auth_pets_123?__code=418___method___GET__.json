@@ -10,10 +10,10 @@
     "statusText": "I'm a Teapot",
     "headers": {
       "content-type": [
-        "application/json"
+        "application/json; charset=utf-8"
       ],
       "content-length": [
-        "269"
+        "370"
       ],
       "connection": [
         "close"
@@ -22,25 +22,34 @@
     "body": {
       "name": "doggie",
       "photoUrls": [
-        "do in dolor culpa magna",
-        "proident velit reprehenderit voluptate"
+        "officia nostrud in",
+        "Ut ut ut",
+        "irure Duis"
       ],
-      "id": -50067517,
+      "id": 60402586,
       "category": {
-        "id": -21245742,
-        "name": "non enim fugiat"
+        "id": 22027836,
+        "name": "labore Lorem"
       },
       "tags": [
         {
-          "id": 55406615,
-          "name": "eu cillum amet"
+          "id": -46887108,
+          "name": "cupidatat Ut commodo"
         },
         {
-          "id": -78366112,
-          "name": "veniam"
+          "id": 61482531,
+          "name": "adipisicing aliquip laborum Ut"
+        },
+        {
+          "id": 13750271,
+          "name": "do Excepteur"
+        },
+        {
+          "id": 29945563,
+          "name": "eu aliqua adipisicing exercitation amet"
         }
       ],
-      "status": "available"
+      "status": "sold"
     }
   }
 }

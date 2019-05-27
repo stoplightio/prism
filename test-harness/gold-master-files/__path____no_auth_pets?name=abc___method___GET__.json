@@ -10,7 +10,7 @@
     "statusText": "OK",
     "headers": {
       "content-type": [
-        "application/json"
+        "application/json; charset=utf-8"
       ],
       "content-length": [
         "34"

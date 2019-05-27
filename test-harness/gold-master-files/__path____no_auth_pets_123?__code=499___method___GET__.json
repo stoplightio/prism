@@ -10,18 +10,18 @@
     "statusText": "unknown",
     "headers": {
       "content-type": [
-        "application/json"
+        "application/json; charset=utf-8"
       ],
       "content-length": [
-        "73"
+        "45"
       ],
       "connection": [
         "close"
       ]
     },
     "body": {
-      "code": -84306996,
-      "message": "consequat mollit sit ullamco reprehenderit"
+      "code": -22223020,
+      "message": "do esse qui in"
     }
   }
 }
