@@ -1,7 +1,7 @@
 import { Command } from '@oclif/command';
+import { createLogger, logLevels } from '@stoplight/prism-core';
 import * as cluster from 'cluster';
-import * as pino from 'pino';
-import { levels, LogDescriptor } from 'pino';
+import { LogDescriptor } from 'pino';
 import * as signale from 'signale';
 import * as split from 'split2';
 import { ARGS, FLAGS } from '../const/options';
@@ -20,8 +20,6 @@ export default class Server extends Command {
 
     if (cluster.isMaster) {
       cluster.setupMaster({ silent: true });
-      levels.labels[10] = 'note';
-      levels.values.note = 10;
 
       const signaleInteractiveInstance = new signale.Signale({ interactive: true });
       signaleInteractiveInstance.await('Starting Prism…');
@@ -34,39 +32,28 @@ export default class Server extends Command {
 
       if (worker.process.stdout) {
         worker.process.stdout.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
-          const logLevelType = levels.labels[logLine.level];
+          const logLevelType = logLevels.labels[logLine.level];
           signale[logLevelType](logLine.msg);
         });
       }
     } else {
-      const pinoOptions: pino.LoggerOptions = {
-        name: 'Prism CLI',
-        customLevels: {
-          note: 10,
-        },
-        level: 'note',
-        base: null,
-        timestamp: false,
-      };
-
-      const pinoInstance = pino(pinoOptions);
-
+      const pino = createLogger('CLI');
       const server = createServer(spec, { mock: { dynamic: true || dynamic } });
       try {
         const address = await server.listen(port);
 
         if (server.prism.resources.length === 0) {
-          pinoInstance.fatal('No operations found in the current file.');
+          pino.fatal('No operations found in the current file.');
           this.exit(1);
         }
 
-        pinoInstance.info(`Prism is listening on ${address}`);
+        pino.info(`Prism is listening on ${address}`);
 
         server.prism.resources.forEach(resource => {
-          pinoInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
+          pino.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
         });
       } catch (e) {
-        pinoInstance.fatal(e.message);
+        pino.fatal(e.message);
       }
     }
   }
