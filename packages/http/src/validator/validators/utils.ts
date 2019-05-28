@@ -20,7 +20,7 @@ export const convertAjvErrors = (errors: Ajv.ErrorObject[] | undefined | null, s
   }));
 };
 
-export const validateAgainstSchema = (value: any, schema: JSONSchema4, prefix?: string): IPrismDiagnostic[] => {
+export const validateAgainstSchema = (value: unknown, schema: JSONSchema4, prefix?: string): IPrismDiagnostic[] => {
   try {
     const validate = ajv.compile(schema);
     const valid = validate(value);
@@ -34,4 +34,8 @@ export const validateAgainstSchema = (value: any, schema: JSONSchema4, prefix?: 
   } catch (error) {
     throw new Error(`AJV validation error: "${error}"`);
   }
+};
+
+export const validateJSONSchema = (value: object): boolean => {
+  return ajv.validateSchema(value);
 };

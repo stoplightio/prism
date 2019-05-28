@@ -4,7 +4,7 @@ import { upperFirst } from 'lodash';
 import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { IHttpValidator } from './types';
-import { validateAgainstSchema } from './utils';
+import { validateAgainstSchema, validateJSONSchema } from './utils';
 
 export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHttpValidator<Target, Spec> {
   constructor(
@@ -29,7 +29,7 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHt
       }
 
       const resolvedStyle = spec.style || style;
-      if (spec.content && spec.content.schema && target[spec.name]) {
+      if (spec.content && spec.content.schema && validateJSONSchema(spec.content.schema) && target[spec.name]) {
         const deserializer = registry.get(resolvedStyle);
 
         if (deserializer) {
