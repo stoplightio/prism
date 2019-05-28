@@ -1,0 +1,55 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/no_auth/pets/123?__code=418",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 418,
+    "statusText": "I'm a Teapot",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "370"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "name": "doggie",
+      "photoUrls": [
+        "officia nostrud in",
+        "Ut ut ut",
+        "irure Duis"
+      ],
+      "id": 60402586,
+      "category": {
+        "id": 22027836,
+        "name": "labore Lorem"
+      },
+      "tags": [
+        {
+          "id": -46887108,
+          "name": "cupidatat Ut commodo"
+        },
+        {
+          "id": 61482531,
+          "name": "adipisicing aliquip laborum Ut"
+        },
+        {
+          "id": 13750271,
+          "name": "do Excepteur"
+        },
+        {
+          "id": 29945563,
+          "name": "eu aliqua adipisicing exercitation amet"
+        }
+      ],
+      "status": "sold"
+    }
+  }
+}

@@ -10,7 +10,18 @@ export const httpOperations: IHttpOperation[] = [
     path: '/todos',
     request: {
       path: [],
-      query: [],
+      query: [
+        {
+          required: false,
+          name: 'name',
+          style: HttpParamStyles.Form,
+        },
+        {
+          required: true,
+          name: 'completed',
+          style: HttpParamStyles.Form,
+        },
+      ],
       headers: [],
       cookie: [],
     },

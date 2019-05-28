@@ -1,0 +1,29 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/no_auth/pets/findByStatus",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 422,
+    "statusText": "Unprocessable Entity",
+    "headers": {
+      "content-type": [
+        "application/problem+json"
+      ],
+      "content-length": [
+        "276"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "type": "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY",
+      "title": "Invalid request body payload",
+      "status": 422,
+      "detail": "Your request body is not valid: [{\"path\":[\"query\",\"status\"],\"code\":\"required\",\"message\":\"Missing status query param\",\"severity\":0}]"
+    }
+  }
+}

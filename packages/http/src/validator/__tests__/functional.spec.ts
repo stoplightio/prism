@@ -7,6 +7,10 @@ const BAD_INPUT = Object.assign({}, httpInputs[2], {
   headers: { 'x-todos-publish': 'yesterday' },
 });
 
+const GOOD_INPUT = Object.assign({}, httpInputs[2], {
+  url: Object.assign({}, httpInputs[0].url, { query: { completed: true } }),
+});
+
 const BAD_OUTPUT = Object.assign({}, httpOutputs[1], {
   body: '{"name":"Shopping","completed":"yes"}',
   headers: { 'x-todos-publish': 'yesterday' },
@@ -18,6 +22,12 @@ describe('HttpValidator', () => {
       it('returns validation errors for whole request structure', async () => {
         expect(await validator.validateInput({ resource: httpOperations[2], input: BAD_INPUT })).toMatchSnapshot();
       });
+
+      describe('when all required params are provided', () => {
+        it('returns no validation errors', async () => {
+          expect(await validator.validateInput({ resource: httpOperations[0], input: GOOD_INPUT })).toEqual([]);
+        });
+      });
     });
 
     describe('only headers validation is turned on', () => {
@@ -26,10 +36,7 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: {
-              mock: false,
-              validate: { request: { headers: true, query: false, body: false } },
-            },
+            config: { mock: false, validate: { request: { headers: true, query: false, body: false } } },
           }),
         ).toMatchSnapshot();
       });
@@ -41,12 +48,21 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: {
-              mock: false,
-              validate: { request: { headers: false, query: true, body: false } },
-            },
+            config: { mock: false, validate: { request: { headers: false, query: true, body: false } } },
           }),
         ).toMatchSnapshot();
+      });
+
+      describe('when all required params are provided', () => {
+        it('returns no validation errors', async () => {
+          expect(
+            await validator.validateInput({
+              resource: httpOperations[0],
+              input: GOOD_INPUT,
+              config: { mock: false, validate: { request: { headers: false, query: true, body: false } } },
+            }),
+          ).toEqual([]);
+        });
       });
     });
 
@@ -56,10 +72,7 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: {
-              mock: false,
-              validate: { request: { headers: false, query: false, body: true } },
-            },
+            config: { mock: false, validate: { request: { headers: false, query: false, body: true } } },
           }),
         ).toMatchSnapshot();
       });
@@ -71,10 +84,7 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: {
-              mock: false,
-              validate: { request: false },
-            },
+            config: { mock: false, validate: { request: false } },
           }),
         ).toMatchSnapshot();
       });
@@ -84,12 +94,7 @@ describe('HttpValidator', () => {
   describe('validateOutput()', () => {
     describe('all validations are turned on', () => {
       it('returns validation errors for whole request structure', async () => {
-        expect(
-          await validator.validateOutput({
-            resource: httpOperations[1],
-            output: BAD_OUTPUT,
-          }),
-        ).toMatchSnapshot();
+        expect(await validator.validateOutput({ resource: httpOperations[1], output: BAD_OUTPUT })).toMatchSnapshot();
       });
     });
 
@@ -99,10 +104,7 @@ describe('HttpValidator', () => {
           await validator.validateOutput({
             resource: httpOperations[1],
             output: BAD_OUTPUT,
-            config: {
-              mock: false,
-              validate: { response: { headers: true, body: false } },
-            },
+            config: { mock: false, validate: { response: { headers: true, body: false } } },
           }),
         ).toMatchSnapshot();
       });
@@ -114,10 +116,7 @@ describe('HttpValidator', () => {
           await validator.validateOutput({
             resource: httpOperations[1],
             output: BAD_OUTPUT,
-            config: {
-              mock: false,
-              validate: { response: { headers: false, body: true } },
-            },
+            config: { mock: false, validate: { response: { headers: false, body: true } } },
           }),
         ).toMatchSnapshot();
       });
@@ -129,10 +128,7 @@ describe('HttpValidator', () => {
           await validator.validateOutput({
             resource: httpOperations[1],
             output: BAD_OUTPUT,
-            config: {
-              mock: false,
-              validate: { response: false },
-            },
+            config: { mock: false, validate: { response: false } },
           }),
         ).toMatchSnapshot();
       });

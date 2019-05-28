@@ -21,3 +21,4 @@ node_modules/
 lib
 .vscode
 oclif.manifest.json
+cli-binaries

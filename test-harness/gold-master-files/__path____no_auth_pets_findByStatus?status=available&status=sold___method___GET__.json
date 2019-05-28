@@ -1,0 +1,135 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/no_auth/pets/findByStatus?status=available&status=sold",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "1209"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": [
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "quis reprehenderit ut id ut"
+        ],
+        "id": -60801654,
+        "category": {
+          "id": -92413503,
+          "name": "minim nostrud fugiat"
+        },
+        "tags": [
+          {
+            "id": 5836962,
+            "name": "eiusmod irure"
+          },
+          {
+            "id": -53079274,
+            "name": "ea velit Ut"
+          },
+          {
+            "id": -95292981,
+            "name": "exercitation sunt in nisi"
+          }
+        ],
+        "status": "pending"
+      },
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "in sed"
+        ],
+        "id": -47663403,
+        "category": {
+          "id": -90775807,
+          "name": "cillum"
+        },
+        "tags": [
+          {
+            "id": -25026957,
+            "name": "ullamco ea"
+          },
+          {
+            "id": -84385845,
+            "name": "ut aute fugiat eu"
+          },
+          {
+            "id": -54349259,
+            "name": "officia ipsum"
+          },
+          {
+            "id": 4472742,
+            "name": "deserunt exercitation eu dolor voluptate"
+          },
+          {
+            "id": 591306,
+            "name": "occaecat consectetur"
+          }
+        ],
+        "status": "available"
+      },
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "ullamco consequat occaecat ad"
+        ],
+        "id": -13596252,
+        "category": {
+          "id": -50429250,
+          "name": "reprehenderit id commod"
+        },
+        "tags": [
+          {
+            "id": 92492514,
+            "name": "et"
+          }
+        ],
+        "status": "pending"
+      },
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "voluptate id do anim tempor",
+          "amet dolore cillum",
+          "velit quis tempor eu anim"
+        ],
+        "id": -27077795,
+        "category": {
+          "id": -64605992,
+          "name": "Duis culpa in dolor"
+        },
+        "tags": [
+          {
+            "id": -74227584,
+            "name": "in"
+          },
+          {
+            "id": 87905326,
+            "name": "Excepteur id eu amet Duis"
+          },
+          {
+            "id": 93748763,
+            "name": "mollit"
+          },
+          {
+            "id": 64662322,
+            "name": "exercitation id"
+          }
+        ],
+        "status": "sold"
+      }
+    ]
+  }
+}

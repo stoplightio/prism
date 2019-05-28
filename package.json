@@ -22,7 +22,14 @@
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
     "test.update": "yarn test.fast --updateSnapshot",
-    "release": "lerna version prerelease --conventional-commits --preid alpha"
+    "release": "lerna version prerelease --conventional-commits --preid alpha",
+    "run.binary": "$BINARY mock -p ${PRISM_PORT:-4010} $SPEC",
+    "run.binary.v2": "./prism mock -p ${PRISM_PORT:-4010} --spec ./examples/petstore.oas2.json",
+    "prebuild.binary": "yarn build",
+    "prebuild.binaries": "yarn build",
+    "build.binary": "npx pkg --target $HOST --output ./cli-binaries/prism-cli-linux ./packages/cli/",
+    "build.binaries": "npx pkg --out-path ./cli-binaries ./packages/cli/",
+    "test.binary": "jest -c ./jest.harness.config.js"
   },
   "devDependencies": {
     "@stoplight/types": "^7.0.1",
@@ -41,6 +48,7 @@
     "chance": "^1.0.18",
     "globby": "^9.2.0",
     "jest": "^24.8.0",
+    "node-fetch": "^2.6.0",
     "lerna": "^3.14.1",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.1.0",

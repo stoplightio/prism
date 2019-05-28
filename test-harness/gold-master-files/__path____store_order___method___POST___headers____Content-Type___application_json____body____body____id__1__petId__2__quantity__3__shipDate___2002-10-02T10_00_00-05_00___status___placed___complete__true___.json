@@ -1,0 +1,34 @@
+{
+  "request": {
+    "body": "{\"body\":{\"id\":1,\"petId\":2,\"quantity\":3,\"shipDate\":\"2002-10-02T10:00:00-05:00\",\"status\":\"placed\",\"complete\":true}}",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "path": "/store/order",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "130"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "id": -66446780,
+      "petId": 29323703,
+      "quantity": -94534912,
+      "shipDate": "1992-10-28T01:32:08.217Z",
+      "status": "delivered",
+      "complete": false
+    }
+  }
+}

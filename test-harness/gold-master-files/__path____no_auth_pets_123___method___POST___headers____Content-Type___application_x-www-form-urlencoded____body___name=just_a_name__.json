@@ -1,0 +1,32 @@
+{
+  "request": {
+    "body": "name=just_a_name",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "path": "/no_auth/pets/123",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 415,
+    "statusText": "Unsupported Media Type",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "193"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "statusCode": 415,
+      "code": "FST_ERR_CTP_INVALID_MEDIA_TYPE",
+      "error": "Unsupported Media Type",
+      "message": "FST_ERR_CTP_INVALID_MEDIA_TYPE: Unsupported Media Type: application/x-www-form-urlencoded"
+    }
+  }
+}

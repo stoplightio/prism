@@ -1,0 +1,52 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/no_auth/pets/123",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "346"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "name": "doggie",
+      "photoUrls": [
+        "elit Duis",
+        "in eiusmod officia cupi",
+        "occaecat sunt veniam quis id",
+        "nisi ut officia nulla laboris"
+      ],
+      "id": -69312962,
+      "category": {
+        "id": -1577480,
+        "name": "qui sit"
+      },
+      "tags": [
+        {
+          "id": 216334,
+          "name": "Duis do aute"
+        },
+        {
+          "id": -72951498,
+          "name": "culpa cillum reprehenderit"
+        },
+        {
+          "id": -48925995,
+          "name": "nisi quis"
+        }
+      ],
+      "status": "available"
+    }
+  }
+}

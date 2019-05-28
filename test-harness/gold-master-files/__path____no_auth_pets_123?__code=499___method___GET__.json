@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/no_auth/pets/123?__code=499",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 499,
+    "statusText": "unknown",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "45"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "code": -22223020,
+      "message": "do esse qui in"
+    }
+  }
+}

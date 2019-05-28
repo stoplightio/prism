@@ -1,0 +1,50 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/pets/findByStatus?status=pending",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "288"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": [
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "reprehenderit",
+          "reprehe",
+          "ullamco ipsum anim Duis",
+          "dolor laboris esse voluptate culpa"
+        ],
+        "id": -49106009,
+        "category": {
+          "id": 89225240,
+          "name": "dolor"
+        },
+        "tags": [
+          {
+            "id": 28445378,
+            "name": "incididunt officia pr"
+          },
+          {
+            "id": 66276872,
+            "name": "aliqua"
+          }
+        ],
+        "status": "available"
+      }
+    ]
+  }
+}
