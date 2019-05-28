@@ -9,14 +9,15 @@ export const createServer = <LoaderInput>(
   loaderInput: LoaderInput,
   opts: IPrismHttpServerOpts<LoaderInput>,
 ): IPrismHttpServer<LoaderInput> => {
-  const logger = createLogger('HTTP SERVER');
+  const { components = {}, config } = opts;
+
+  const logger = components.logger || createLogger('HTTP SERVER');
 
   const server = fastify({
     logger,
     disableRequestLogging: true,
     modifyCoreObjects: false,
   });
-  const { components = {}, config } = opts;
 
   const mergedConfig = configMergerFactory({ mock: { dynamic: false } }, config, getHttpConfigFromRequest);
 

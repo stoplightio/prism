@@ -1,4 +1,5 @@
 import { IDiagnostic, Omit } from '@stoplight/types';
+import { BaseLogger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 // END
@@ -80,6 +81,7 @@ export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
   forwarder: IForwarder<Resource, Input, Config, Output>;
   mocker: IMocker<Resource, Input, Config, Output>;
   validator: IValidator<Resource, Input, Config, Output>;
+  logger: BaseLogger;
 }
 
 export interface IPrismInput<I> {
