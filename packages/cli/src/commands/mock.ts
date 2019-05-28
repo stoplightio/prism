@@ -34,6 +34,13 @@ export default class Server extends Command {
       if (worker.process.stdout) {
         worker.process.stdout.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
           const logLevelType = logLevels.labels[logLine.level];
+          if (logLine.req) {
+            const { method, url, id } = logLine.req;
+            console.log(method);
+            console.log(url);
+            console.log(id);
+          }
+
           signale[logLevelType]({ prefix: chalk.bgWhiteBright.black(`[${logLine.name}]`), message: logLine.msg });
         });
       }

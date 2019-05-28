@@ -16,6 +16,19 @@ function createLogger(name: string) {
       success: 11,
       start: 12,
     },
+    serializers: {
+      req: function asReqValue(req) {
+        return {
+          method: req.method,
+          url: req.url,
+          version: req.headers['accept-version'],
+          hostname: req.hostname,
+          remoteAddress: req.ip,
+          remotePort: req.connection.remotePort,
+          id: req.id,
+        };
+      },
+    },
     level: 'note',
     base: {},
     timestamp: false,
