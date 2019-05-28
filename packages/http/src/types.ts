@@ -1,5 +1,5 @@
 import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
-import { IHttpOperation, INodeExample, INodeExternalExample, Omit } from '@stoplight/types';
+import { HttpMethod, IHttpOperation, INodeExample, INodeExternalExample, Omit } from '@stoplight/types';
 
 export type TPrismHttpInstance<LoaderInput> = IPrism<
   IHttpOperation,
@@ -14,7 +14,7 @@ export type TPrismHttpComponents<LoaderInput> = Partial<
 >;
 
 // TODO: should be complete | and in the @stoplight/types repo
-export type IHttpMethod = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch' | 'trace'; // ... etc
+export type IHttpMethod = HttpMethod | 'trace';
 
 export interface IHttpOperationConfig {
   mediaType?: string;
