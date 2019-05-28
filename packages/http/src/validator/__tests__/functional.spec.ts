@@ -25,7 +25,7 @@ describe('HttpValidator', () => {
 
       describe('when all required params are provided', () => {
         it('returns no validation errors', async () => {
-          expect(await validator.validateInput({ resource: httpOperations[0], input: GOOD_INPUT })).toMatchSnapshot();
+          expect(await validator.validateInput({ resource: httpOperations[0], input: GOOD_INPUT })).toEqual([]);
         });
       });
     });
@@ -61,7 +61,7 @@ describe('HttpValidator', () => {
               input: GOOD_INPUT,
               config: { mock: false, validate: { request: { headers: false, query: true, body: false } } },
             }),
-          ).toMatchSnapshot();
+          ).toEqual([]);
         });
       });
     });
