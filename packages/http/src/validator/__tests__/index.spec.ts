@@ -188,8 +188,8 @@ describe('HttpValidator', () => {
     });
 
     describe('invalid schema provided', () => {
-      it('should not call the validate method', async () => {
-        const validateSpy = jest.spyOn(validatorUtils, 'validateAgainstSchema');
+      it('should not call the validateAgainstSchema method', async () => {
+        const validateAgainstSchemaSpy = jest.spyOn(validatorUtils, 'validateAgainstSchema');
 
         await httpValidator.validateInput({
           resource: {
@@ -223,7 +223,7 @@ describe('HttpValidator', () => {
         });
 
         expect(httpHeadersValidator.validate).toHaveBeenCalled();
-        expect(validateSpy).not.toHaveBeenCalled();
+        expect(validateAgainstSchemaSpy).not.toHaveBeenCalled();
       });
     });
   });
