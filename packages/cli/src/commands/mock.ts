@@ -34,14 +34,15 @@ export default class Server extends Command {
       if (worker.process.stdout) {
         worker.process.stdout.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
           const logLevelType = logLevels.labels[logLine.level];
+
+          let prefix = chalk.bgWhiteBright.black(`[${logLine.name}]`);
+
           if (logLine.req) {
             const { method, url, id } = logLine.req;
-            console.log(method);
-            console.log(url);
-            console.log(id);
+            prefix = prefix.concat(' ' + chalk.bgGreen.black(`Request: ${id} ${method} ${url}`));
           }
 
-          signale[logLevelType]({ prefix: chalk.bgWhiteBright.black(`[${logLine.name}]`), message: logLine.msg });
+          signale[logLevelType]({ prefix, message: logLine.msg });
         });
       }
     } else {
