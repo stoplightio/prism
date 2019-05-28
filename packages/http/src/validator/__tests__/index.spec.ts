@@ -1,4 +1,11 @@
-import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
+import {
+  DiagnosticSeverity,
+  HttpParamStyles,
+  IHttpContent,
+  IHttpHeaderParam,
+  IHttpOperation,
+  IHttpQueryParam,
+} from '@stoplight/types';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core/src';
 import { IHttpNameValue, IHttpNameValues } from '../../types';
@@ -7,6 +14,7 @@ import { HttpValidator } from '../index';
 import * as resolveValidationConfigModule from '../utils/config';
 import * as findResponseSpecModule from '../utils/spec';
 import { IHttpValidator } from '../validators/types';
+import * as validatorUtils from '../validators/utils';
 
 const mockError: IPrismDiagnostic = {
   message: 'c is required',
@@ -176,6 +184,46 @@ describe('HttpValidator', () => {
 
       describe('input.url.query is not set', () => {
         it("validates query assuming it's empty", test(undefined, { url: { path: '/' } }));
+      });
+    });
+
+    describe('invalid schema provided', () => {
+      it('should not call the validate method', async () => {
+        const validateSpy = jest.spyOn(validatorUtils, 'validateAgainstSchema');
+
+        await httpValidator.validateInput({
+          resource: {
+            method: 'get',
+            path: '/',
+            responses: [],
+            id: '1',
+            servers: [],
+            security: [],
+            request: {
+              path: [],
+              query: [],
+              cookie: [],
+              headers: [
+                {
+                  name: 'testHeader',
+                  style: HttpParamStyles.Simple,
+                  content: {
+                    encodings: [],
+                    examples: [],
+                    schema: {
+                      required: true,
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          input: { method: 'get', url: { path: '/' } },
+          config: { mock: { dynamic: false }, validate: { request: { headers: true } } },
+        });
+
+        expect(httpHeadersValidator.validate).toHaveBeenCalled();
+        expect(validateSpy).not.toHaveBeenCalled();
       });
     });
   });
