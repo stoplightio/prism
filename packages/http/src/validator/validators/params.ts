@@ -29,7 +29,7 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHt
       }
 
       const resolvedStyle = spec.style || style;
-      if (spec.content && spec.content.schema) {
+      if (spec.content && spec.content.schema && target[spec.name]) {
         const deserializer = registry.get(resolvedStyle);
 
         if (deserializer) {
