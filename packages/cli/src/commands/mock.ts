@@ -5,7 +5,7 @@ import * as cluster from 'cluster';
 import { LogDescriptor } from 'pino';
 import * as signale from 'signale';
 import * as split from 'split2';
-import { ARGS, FLAGS } from '../const/options';
+import { ARGS, FLAGS, LOG_COLOR_MAP } from '../const/options';
 import { createServer } from '../util/createServer';
 
 export default class Server extends Command {
@@ -35,13 +35,7 @@ export default class Server extends Command {
         worker.process.stdout.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
           const logLevelType = logLevels.labels[logLine.level];
 
-          const colourMaps = {
-            CLI: chalk.bgWhiteBright,
-            'HTTP SERVER': chalk.bgYellowBright,
-            HTTP: chalk.bgGreenBright,
-          };
-
-          let prefix = colourMaps[logLine.name].black(`[${logLine.name}]`);
+          let prefix = LOG_COLOR_MAP[logLine.name].black(`[${logLine.name}]`);
 
           if (logLine.req) {
             const { method, url, id } = logLine.req;

@@ -1,4 +1,5 @@
 import { flags as oflags } from '@oclif/command';
+import chalk from 'chalk';
 
 export const ARGS = {
   spec: {
@@ -21,4 +22,10 @@ export const FLAGS = {
     description: 'Dynamically generate examples.',
     default: false,
   }),
+};
+
+export const LOG_COLOR_MAP = {
+  CLI: chalk.bgWhiteBright,
+  'HTTP SERVER': chalk.bgYellowBright,
+  HTTP: chalk.bgGreenBright,
 };
