@@ -1,12 +1,13 @@
-import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/types';
-import { upperFirst } from 'lodash';
+import { DiagnosticSeverity, Dictionary, HttpParamStyles, IHttpParam } from '@stoplight/types';
+import { mapKeys, upperFirst } from 'lodash';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 
-export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHttpValidator<Target, Spec> {
+export class HttpParamsValidator<Target extends Dictionary<unknown, string>, Spec extends IHttpParam>
+  implements IHttpValidator<Target, Spec> {
   constructor(
     private _registry: IHttpParamDeserializerRegistry<Target>,
     private _prefix: string,
@@ -14,9 +15,11 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHt
   ) {}
 
   public validate(target: Target, specs: Spec[]): IPrismDiagnostic[] {
+    const loweredCaseTarget = mapKeys(target, (_value, key) => key.toLowerCase());
+
     const { _registry: registry, _prefix: prefix, _style: style } = this;
     return specs.reduce<IPrismDiagnostic[]>((results, spec) => {
-      if (!(spec.name in target) && spec.required === true) {
+      if (!(spec.name in loweredCaseTarget) && spec.required === true) {
         results.push({
           path: [prefix, spec.name],
           code: 'required',

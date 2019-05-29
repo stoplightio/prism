@@ -66,6 +66,19 @@ describe('HttpHeadersValidator', () => {
 
                 expect(validateAgainstSchemaModule.validateAgainstSchema).toHaveBeenCalled();
               });
+
+              it('ignores the header casing', () => {
+                expect(
+                  httpHeadersValidator.validate({ 'X-Test-Header': 'abc' }, [
+                    {
+                      required: true,
+                      name: 'x-test-header',
+                      style: HttpParamStyles.Simple,
+                      content: { schema: { type: 'string' }, examples: [], encodings: [] },
+                    },
+                  ]),
+                ).toEqual([]);
+              });
             });
           });
         });
