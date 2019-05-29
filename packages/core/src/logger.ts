@@ -21,10 +21,6 @@ function createLogger(name: string) {
         return {
           method: req.method,
           url: req.url,
-          version: req.headers['accept-version'],
-          hostname: req.hostname,
-          remoteAddress: req.ip,
-          remotePort: req.connection.remotePort,
           id: req.id,
         };
       },
