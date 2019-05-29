@@ -16,7 +16,7 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHt
   public validate(target: Target, specs: Spec[]): IPrismDiagnostic[] {
     const { _registry: registry, _prefix: prefix, _style: style } = this;
     return specs.reduce<IPrismDiagnostic[]>((results, spec) => {
-      if (!(spec.name in target) && spec.required === true) {
+      if (!(spec.name.toLowerCase() in target) && spec.required === true) {
         results.push({
           path: [prefix, spec.name],
           code: 'required',

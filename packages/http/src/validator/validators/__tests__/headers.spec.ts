@@ -67,6 +67,20 @@ describe('HttpHeadersValidator', () => {
                 expect(validateAgainstSchemaModule.validateAgainstSchema).toHaveBeenCalled();
               });
             });
+
+            it('ignores the casing', () => {
+              jest.spyOn(registry, 'get').mockReturnValueOnce(undefined);
+
+              expect(
+                httpHeadersValidator.validate({ 'X-Test-Header': 'abc' }, [
+                  {
+                    name: 'x-test-header',
+                    style: HttpParamStyles.Simple,
+                    content: { schema: { type: 'number' }, examples: [], encodings: [] },
+                  },
+                ]),
+              ).toEqual([]);
+            });
           });
         });
 
