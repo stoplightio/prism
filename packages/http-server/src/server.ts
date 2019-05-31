@@ -2,7 +2,6 @@ import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import * as fastify from 'fastify';
 import { IncomingMessage, ServerResponse } from 'http';
-import { Logger } from 'pino';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
@@ -79,21 +78,23 @@ const replyHandler = <LoaderInput>(
         if (output.headers) {
           reply.headers(output.headers);
         }
-
         reply.send(output.body);
-        (request.log as Logger).success({ input }, 'Request terminated.');
       } else {
         throw new Error('Unable to find any decent response for the current request.');
       }
     } catch (e) {
-      const status = 'status' in e ? e.status : 500;
-      reply
-        .type('application/problem+json')
-        .serializer(JSON.stringify)
-        .code(status)
-        .send(ProblemJsonError.fromPlainError(e));
+      if (!reply.sent) {
+        const status = 'status' in e ? e.status : 500;
+        reply
+          .type('application/problem+json')
+          .serializer(JSON.stringify)
+          .code(status)
+          .send(ProblemJsonError.fromPlainError(e));
+      } else {
+        reply.res.end();
+      }
 
-      request.log.error({ input }, 'Request terminated with error');
+      request.log.error({ input }, `Request terminated with error: ${e}`);
     }
   };
 };
