@@ -2,6 +2,7 @@ import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import * as fastify from 'fastify';
 import { IncomingMessage, ServerResponse } from 'http';
+import { Logger } from 'pino';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
@@ -80,7 +81,7 @@ const replyHandler = <LoaderInput>(
         }
 
         reply.send(output.body);
-        request.log.success({ input }, 'Request terminated.');
+        (request.log as Logger).success({ input }, 'Request terminated.');
       } else {
         throw new Error('Unable to find any decent response for the current request.');
       }

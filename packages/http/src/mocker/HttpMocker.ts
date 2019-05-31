@@ -4,7 +4,7 @@ import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@sto
 import * as caseless from 'caseless';
 import { Reader } from 'fp-ts/lib/Reader';
 import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
-import { BaseLogger } from 'pino';
+import { Logger } from 'pino';
 import {
   ContentExample,
   IHttpConfig,
@@ -19,14 +19,14 @@ import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
 export class HttpMocker
-  implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, Reader<BaseLogger, Promise<IHttpResponse>>> {
+  implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, Reader<Logger, Promise<IHttpResponse>>> {
   constructor(private _exampleGenerator: PayloadGenerator) {}
 
   public mock({
     resource,
     input,
     config,
-  }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): Reader<BaseLogger, Promise<IHttpResponse>> {
+  }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): Reader<Logger, Promise<IHttpResponse>> {
     // pre-requirements check
     if (!resource) {
       throw new Error('Resource is not defined');
@@ -36,7 +36,7 @@ export class HttpMocker
       throw new Error('Http request is not defined');
     }
 
-    return new Reader<BaseLogger, IHttpOperationConfig>(logger => {
+    return new Reader<Logger, IHttpOperationConfig>(logger => {
       const inputMediaType = input.data.headers && caseless(input.data.headers).get('content-type');
 
       config = config || { mock: false };
@@ -54,7 +54,7 @@ export class HttpMocker
       .chain(mockConfig => {
         if (input.validations.input.length > 0) {
           try {
-            return new Reader<BaseLogger, unknown>(logger =>
+            return new Reader<Logger, unknown>(logger =>
               logger.warn('Request did not pass the validation rules'),
             ).chain(() => helpers.negotiateOptionsForInvalidRequest(resource.responses));
           } catch (error) {
@@ -64,13 +64,13 @@ export class HttpMocker
             );
           }
         } else {
-          return new Reader<BaseLogger, unknown>(logger =>
+          return new Reader<Logger, unknown>(logger =>
             logger.success('The request passed the validation rules. Looking for the best response'),
           ).chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig));
         }
       })
       .chain((negotiationResult: IHttpNegotiationResult) => {
-        return new Reader<BaseLogger, Promise<IHttpResponse>>(async logger => {
+        return new Reader<Logger, Promise<IHttpResponse>>(async logger => {
           const [body, mockedHeaders] = await Promise.all([
             computeBody(negotiationResult, this._exampleGenerator),
             computeMockedHeaders(negotiationResult.headers, this._exampleGenerator),

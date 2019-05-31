@@ -8,7 +8,7 @@ levels.values.success = 11;
 levels.labels[12] = 'start';
 levels.values.start = 12;
 
-function createLogger(name: string) {
+function createLogger(name: string): pino.Logger {
   const options: pino.LoggerOptions = {
     name,
     customLevels: {

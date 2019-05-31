@@ -1,6 +1,6 @@
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
 import { Reader, reader } from 'fp-ts/lib/Reader';
-import { BaseLogger } from 'pino';
+import { Logger } from 'pino';
 
 import { ContentExample, NonEmptyArray } from '@stoplight/prism-http/src/types';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
@@ -205,9 +205,9 @@ const helpers = {
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
     code: string,
-  ): Reader<BaseLogger, IHttpNegotiationResult> {
+  ): Reader<Logger, IHttpNegotiationResult> {
     // find response by provided status code
-    return new Reader<BaseLogger, IHttpOperationResponse | undefined>(logger => {
+    return new Reader<Logger, IHttpOperationResponse | undefined>(logger => {
       const result = findResponseByStatusCode(httpOperation.responses, code);
       if (!result) {
         logger.info(`Unable to find a ${code} response definition`);
@@ -244,7 +244,7 @@ const helpers = {
   negotiateOptionsForValidRequest(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
-  ): Reader<BaseLogger, IHttpNegotiationResult> {
+  ): Reader<Logger, IHttpNegotiationResult> {
     const { code } = desiredOptions;
     if (code) {
       return helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code);
@@ -252,17 +252,15 @@ const helpers = {
     return reader.of(helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions));
   },
 
-  negotiateOptionsForInvalidRequest(
-    httpResponses: IHttpOperationResponse[],
-  ): Reader<BaseLogger, IHttpNegotiationResult> {
-    return new Reader<BaseLogger, IHttpOperationResponse | undefined>(logger => {
+  negotiateOptionsForInvalidRequest(httpResponses: IHttpOperationResponse[]): Reader<Logger, IHttpNegotiationResult> {
+    return new Reader<Logger, IHttpOperationResponse | undefined>(logger => {
       let result = findResponseByStatusCode(httpResponses, '422');
       if (!result) {
         logger.info('Unable to find a 422 response definition');
 
         result = findResponseByStatusCode(httpResponses, '400');
-        logger.info('Unable to find a 400 response definition');
         if (!result) {
+          logger.info('Unable to find a 400 response definition');
           return createResponseFromDefault(httpResponses, '422');
         }
       }
