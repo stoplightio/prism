@@ -37,9 +37,9 @@ export default class Server extends Command {
 
           let prefix = LOG_COLOR_MAP[logLine.name].black(`[${logLine.name}]`);
 
-          if (logLine.req) {
-            const { method, url, id } = logLine.req;
-            prefix = prefix.concat(' ' + chalk.bgGreen.black(`Request: ${id} ${method} ${url}`));
+          if (logLine.input) {
+            const { method, url } = logLine.input;
+            prefix = prefix.concat(' ' + chalk.bgGreen.black(`${method} ${url.path}`));
           }
 
           signale[logLevelType]({ prefix, message: logLine.msg });

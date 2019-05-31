@@ -11,10 +11,8 @@ export const createServer = <LoaderInput>(
 ): IPrismHttpServer<LoaderInput> => {
   const { components = {}, config } = opts;
 
-  const logger = components.logger || createLogger('HTTP SERVER');
-
   const server = fastify({
-    logger,
+    logger: createLogger('HTTP SERVER'),
     disableRequestLogging: true,
     modifyCoreObjects: false,
   });

@@ -16,15 +16,6 @@ function createLogger(name: string) {
       success: 11,
       start: 12,
     },
-    serializers: {
-      req: function asReqValue(req) {
-        return {
-          method: req.method,
-          url: req.url,
-          id: req.id,
-        };
-      },
-    },
     level: 'note',
     base: {},
     timestamp: false,
