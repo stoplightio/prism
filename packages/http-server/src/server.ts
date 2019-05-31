@@ -51,23 +51,25 @@ const replyHandler = <LoaderInput>(
   prism: TPrismHttpInstance<LoaderInput>,
 ): fastify.RequestHandler<IncomingMessage, ServerResponse> => {
   return async (request, reply) => {
-    try {
-      const {
-        req: { method, url },
-        body,
-        headers,
-        query,
-      } = request;
+    const {
+      req: { method, url },
+      body,
+      headers,
+      query,
+    } = request;
 
-      const response = await prism.process({
-        method: (method ? method.toLowerCase() : 'get') as IHttpMethod,
-        url: {
-          path: (url || '/').split('?')[0],
-          query,
-        },
-        headers,
-        body,
-      });
+    const input = {
+      method: (method ? method.toLowerCase() : 'get') as IHttpMethod,
+      url: {
+        path: (url || '/').split('?')[0],
+        query,
+      },
+      headers,
+      body,
+    };
+
+    try {
+      const response = await prism.process(input);
 
       const { output } = response;
       if (output) {
@@ -78,6 +80,7 @@ const replyHandler = <LoaderInput>(
         }
 
         reply.send(output.body);
+        request.log.success({ input }, 'Request terminated.');
       } else {
         throw new Error('Unable to find any decent response for the current request.');
       }
@@ -88,6 +91,8 @@ const replyHandler = <LoaderInput>(
         .serializer(JSON.stringify)
         .code(status)
         .send(ProblemJsonError.fromPlainError(e));
+
+      request.log.error({ input }, 'Request terminated with error');
     }
   };
 };

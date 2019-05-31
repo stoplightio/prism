@@ -147,7 +147,7 @@ describe('NegotiatorHelpers', () => {
 
           expect(() => {
             helpers.negotiateOptionsForInvalidRequest(httpOperation.responses);
-          }).toThrow('Request invalid but mock data corrupted. Neither schema nor example defined for 422 response.');
+          }).toThrow('Neither schema nor example defined for 422 response.');
         });
       });
     });

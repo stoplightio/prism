@@ -1,5 +1,6 @@
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
-import pino from '../../logger';
+import { Reader, reader } from 'fp-ts/lib/Reader';
+import { BaseLogger } from 'pino';
 
 import { ContentExample, NonEmptyArray } from '@stoplight/prism-http/src/types';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
@@ -35,12 +36,13 @@ function findResponseByStatusCode(
   responses: IHttpOperationResponse[],
   statusCode: string,
 ): IHttpOperationResponse | undefined {
-  pino.info(`Looking for a ${statusCode} among the responses`);
   return responses.find(response => response.code.toLowerCase() === statusCode.toLowerCase());
 }
 
-function createResponseFromDefault(responses: IHttpOperationResponse[], statusCode: string) {
-  pino.info(`Attempting to create a ${statusCode} using the default response`);
+function createResponseFromDefault(
+  responses: IHttpOperationResponse[],
+  statusCode: string,
+): IHttpOperationResponse | undefined {
   const defaultResponse = responses.find(response => response.code === 'default');
   if (defaultResponse) {
     return Object.assign({}, defaultResponse, { code: statusCode });
@@ -48,7 +50,7 @@ function createResponseFromDefault(responses: IHttpOperationResponse[], statusCo
   return undefined;
 }
 
-function contentWithExamples(content: IMediaTypeContent): content is IWithExampleMediaContent {
+function contentHasExamples(content: IMediaTypeContent): content is IWithExampleMediaContent {
   return !!content.examples && content.examples.length !== 0;
 }
 
@@ -203,75 +205,103 @@ const helpers = {
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
     code: string,
-  ): IHttpNegotiationResult {
+  ): Reader<BaseLogger, IHttpNegotiationResult> {
     // find response by provided status code
-    const responseByForcedStatusCode =
-      findResponseByStatusCode(httpOperation.responses, code) ||
-      createResponseFromDefault(httpOperation.responses, code);
-    if (responseByForcedStatusCode) {
-      try {
-        // try to negotiate
-        return helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, responseByForcedStatusCode);
-      } catch (error) {
-        // if negotiations fail try a default code
-        try {
-          return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
-        } catch (error2) {
-          throw new Error(`${error}. We tried default response, but we got ${error2}`);
-        }
+    return new Reader<BaseLogger, IHttpOperationResponse | undefined>(logger => {
+      const result = findResponseByStatusCode(httpOperation.responses, code);
+      if (!result) {
+        logger.info(`Unable to find a ${code} response definition`);
+        return createResponseFromDefault(httpOperation.responses, code);
       }
-    }
-    // if no response found under a status code throw an error
-    throw new Error('Requested status code is not defined in the schema.');
+
+      return result;
+    }).chain(responseByForcedStatusCode => {
+      return new Reader(logger => {
+        if (responseByForcedStatusCode) {
+          try {
+            // try to negotiate
+            return helpers.negotiateOptionsBySpecificResponse(
+              httpOperation,
+              desiredOptions,
+              responseByForcedStatusCode,
+            );
+          } catch (error) {
+            // if negotiations fail try a default code
+            try {
+              return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
+            } catch (error2) {
+              throw new Error(`${error}. We tried default response, but we got ${error2}`);
+            }
+          }
+        }
+        logger.warn(`Unable to find default response to construct a ${code} response`);
+        // if no response found under a status code throw an error
+        throw new Error('Requested status code is not defined in the schema.');
+      });
+    });
   },
 
   negotiateOptionsForValidRequest(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
-  ): IHttpNegotiationResult {
+  ): Reader<BaseLogger, IHttpNegotiationResult> {
     const { code } = desiredOptions;
     if (code) {
       return helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code);
     }
-    return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
+    return reader.of(helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions));
   },
 
-  negotiateOptionsForInvalidRequest(httpResponses: IHttpOperationResponse[]): IHttpNegotiationResult {
-    const response =
-      findResponseByStatusCode(httpResponses, '422') ||
-      findResponseByStatusCode(httpResponses, '400') ||
-      createResponseFromDefault(httpResponses, '422');
-    if (!response) {
-      throw new Error('No 422, 400, or default responses defined');
-    }
-    // find first response with any static examples
-    const responseWithExamples = response.contents.find<IWithExampleMediaContent>(contentWithExamples);
+  negotiateOptionsForInvalidRequest(
+    httpResponses: IHttpOperationResponse[],
+  ): Reader<BaseLogger, IHttpNegotiationResult> {
+    return new Reader<BaseLogger, IHttpOperationResponse | undefined>(logger => {
+      let result = findResponseByStatusCode(httpResponses, '422');
+      if (!result) {
+        logger.info('Unable to find a 422 response definition');
 
-    if (responseWithExamples) {
-      return {
-        code: response.code,
-        mediaType: responseWithExamples.mediaType,
-        bodyExample: responseWithExamples.examples[0],
-        headers: response.headers,
-      };
-    } else {
-      pino.info(`Coudlnt\'t find a content with an example defined for the response ${response.code}`);
-      // find first response with a schema
-      const responseWithSchema = response.contents.find(content => !!content.schema);
-      if (responseWithSchema)
-        return {
-          code: response.code,
-          mediaType: responseWithSchema.mediaType,
-          schema: responseWithSchema.schema,
-          headers: response.headers,
-        };
-      else {
-        pino.info(`Couldn\' t find a content with a schema defined for the response ${response.code}`);
-        throw new Error(
-          `Request invalid but mock data corrupted. Neither schema nor example defined for ${response.code} response.`,
-        );
+        result = findResponseByStatusCode(httpResponses, '400');
+        logger.info('Unable to find a 400 response definition');
+        if (!result) {
+          return createResponseFromDefault(httpResponses, '422');
+        }
       }
-    }
+
+      return result;
+    }).chain(response => {
+      return new Reader(logger => {
+        if (!response) {
+          logger.warn('Unable to find a default response definition.');
+          throw new Error('No 422, 400, or default responses defined');
+        }
+        // find first response with any static examples
+        const responseWithExamples = response.contents.find<IWithExampleMediaContent>(contentHasExamples);
+
+        if (responseWithExamples) {
+          return {
+            code: response.code,
+            mediaType: responseWithExamples.mediaType,
+            bodyExample: responseWithExamples.examples[0],
+            headers: response.headers,
+          };
+        } else {
+          logger.info(`Unable to find a content with an example defined for the response ${response.code}`);
+          // find first response with a schema
+          const responseWithSchema = response.contents.find(content => !!content.schema);
+          if (responseWithSchema)
+            return {
+              code: response.code,
+              mediaType: responseWithSchema.mediaType,
+              schema: responseWithSchema.schema,
+              headers: response.headers,
+            };
+          else {
+            logger.warn(`Unable to find a content with a schema defined for the response ${response.code}`);
+            throw new Error(`Neither schema nor example defined for ${response.code} response.`);
+          }
+        }
+      });
+    });
   },
 };
 

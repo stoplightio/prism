@@ -2,8 +2,9 @@ import { IMocker, IMockerOpts } from '@stoplight/prism-core';
 import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
+import { Reader } from 'fp-ts/lib/Reader';
 import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
-import pino from '../logger';
+import { BaseLogger } from 'pino';
 import {
   ContentExample,
   IHttpConfig,
@@ -17,14 +18,15 @@ import { UNPROCESSABLE_ENTITY } from './errors';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
-export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
+export class HttpMocker
+  implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, Reader<BaseLogger, Promise<IHttpResponse>>> {
   constructor(private _exampleGenerator: PayloadGenerator) {}
 
-  public async mock({
+  public mock({
     resource,
     input,
     config,
-  }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): Promise<IHttpResponse> {
+  }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): Reader<BaseLogger, Promise<IHttpResponse>> {
     // pre-requirements check
     if (!resource) {
       throw new Error('Resource is not defined');
@@ -34,48 +36,60 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
       throw new Error('Http request is not defined');
     }
 
-    // setting default values
-    const inputMediaType = input.data.headers && caseless(input.data.headers).get('content-type');
-    config = config || { mock: false };
-    const mockConfig: IHttpOperationConfig =
-      config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
+    return new Reader<BaseLogger, IHttpOperationConfig>(logger => {
+      const inputMediaType = input.data.headers && caseless(input.data.headers).get('content-type');
 
-    if (!mockConfig.mediaType && typeof inputMediaType === 'string') {
-      pino.info(`Request contains a content-type header: ${inputMediaType}`);
-      mockConfig.mediaType = inputMediaType;
-    }
+      config = config || { mock: false };
 
-    // looking up proper example
-    let negotiationResult: IHttpNegotiationResult;
-    if (input.validations.input.length > 0) {
-      try {
-        pino.warn('The request did not pass the validation rules. Looking for an invalid response');
-        negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
-      } catch (error) {
-        pino.info('No suitable response found, creating a 422 response based on validation responses');
-        throw ProblemJsonError.fromTemplate(
-          UNPROCESSABLE_ENTITY,
-          `Your request body is not valid: ${JSON.stringify(input.validations.input)}`,
-        );
+      const mockConfig: IHttpOperationConfig =
+        config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
+
+      if (!mockConfig.mediaType && typeof inputMediaType === 'string') {
+        logger.info(`Request contains a content-type header: ${inputMediaType}`);
+        mockConfig.mediaType = inputMediaType;
       }
-    } else {
-      pino.success('The request passed the validation rules. Looking for the best response');
-      negotiationResult = helpers.negotiateOptionsForValidRequest(resource, mockConfig);
-    }
 
-    const [body, mockedHeaders] = await Promise.all([
-      computeBody(negotiationResult, this._exampleGenerator),
-      computeMockedHeaders(negotiationResult.headers, this._exampleGenerator),
-    ]);
+      return mockConfig;
+    })
+      .chain(mockConfig => {
+        if (input.validations.input.length > 0) {
+          try {
+            return new Reader<BaseLogger, unknown>(logger =>
+              logger.warn('Request did not pass the validation rules'),
+            ).chain(() => helpers.negotiateOptionsForInvalidRequest(resource.responses));
+          } catch (error) {
+            throw ProblemJsonError.fromTemplate(
+              UNPROCESSABLE_ENTITY,
+              `Your request body is not valid: ${JSON.stringify(input.validations.input)}`,
+            );
+          }
+        } else {
+          return new Reader<BaseLogger, unknown>(logger =>
+            logger.success('The request passed the validation rules. Looking for the best response'),
+          ).chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig));
+        }
+      })
+      .chain((negotiationResult: IHttpNegotiationResult) => {
+        return new Reader<BaseLogger, Promise<IHttpResponse>>(async logger => {
+          const [body, mockedHeaders] = await Promise.all([
+            computeBody(negotiationResult, this._exampleGenerator),
+            computeMockedHeaders(negotiationResult.headers, this._exampleGenerator),
+          ]);
 
-    return {
-      statusCode: parseInt(negotiationResult.code),
-      headers: {
-        ...mockedHeaders,
-        'Content-type': negotiationResult.mediaType,
-      },
-      body,
-    };
+          const response: IHttpResponse = {
+            statusCode: parseInt(negotiationResult.code),
+            headers: {
+              ...mockedHeaders,
+              'Content-type': negotiationResult.mediaType,
+            },
+            body,
+          };
+
+          logger.success(`Responded with ${response.statusCode}`);
+
+          return response;
+        });
+      });
   }
 }
 

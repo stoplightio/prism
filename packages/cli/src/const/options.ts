@@ -27,6 +27,6 @@ export const FLAGS = {
 export const LOG_COLOR_MAP = {
   CLI: chalk.bgWhiteBright,
   'HTTP SERVER': chalk.bgYellowBright,
-  MOCKER: chalk.bgRedBright,
+  MOCKER: chalk.bgBlueBright,
   HTTP: chalk.bgGreenBright,
 };
