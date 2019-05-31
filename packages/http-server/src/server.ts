@@ -70,18 +70,21 @@ const replyHandler = <LoaderInput>(
         if (output.headers) {
           reply.headers(output.headers);
         }
-
-        reply.serializer(JSON.stringify).send(output.body);
+        reply.send(output.body);
       } else {
         throw new Error('Unable to find any decent response for the current request.');
       }
     } catch (e) {
-      const status = 'status' in e ? e.status : 500;
-      reply
-        .type('application/problem+json')
-        .serializer(JSON.stringify)
-        .code(status)
-        .send(ProblemJsonError.fromPlainError(e));
+      if (!reply.sent) {
+        const status = 'status' in e ? e.status : 500;
+        reply
+          .type('application/problem+json')
+          .serializer(JSON.stringify)
+          .code(status)
+          .send(ProblemJsonError.fromPlainError(e));
+      } else {
+        reply.res.end();
+      }
     }
   };
 };
