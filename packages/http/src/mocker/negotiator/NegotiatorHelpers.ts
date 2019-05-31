@@ -234,7 +234,7 @@ const helpers = {
             }
           }
         }
-        logger.warn(`Unable to find default response to construct a ${code} response`);
+        logger.trace(`Unable to find default response to construct a ${code} response`);
         // if no response found under a status code throw an error
         throw new Error('Requested status code is not defined in the schema.');
       });
@@ -256,45 +256,49 @@ const helpers = {
     return new Reader<Logger, IHttpOperationResponse | undefined>(logger => {
       let result = findResponseByStatusCode(httpResponses, '422');
       if (!result) {
-        logger.info('Unable to find a 422 response definition');
+        logger.trace('Unable to find a 422 response definition');
 
         result = findResponseByStatusCode(httpResponses, '400');
         if (!result) {
-          logger.info('Unable to find a 400 response definition');
+          logger.trace('Unable to find a 400 response definition');
           return createResponseFromDefault(httpResponses, '422');
         }
       }
 
+      logger.success(`Found response ${result.code}. I'll try with.`);
       return result;
     }).chain(response => {
       return new Reader(logger => {
         if (!response) {
-          logger.warn('Unable to find a default response definition.');
+          logger.trace('Unable to find a default response definition.');
           throw new Error('No 422, 400, or default responses defined');
         }
-        // find first response with any static examples
-        const responseWithExamples = response.contents.find<IWithExampleMediaContent>(contentHasExamples);
 
-        if (responseWithExamples) {
+        // find first response with any static examples
+        const contentWithExamples = response.contents.find<IWithExampleMediaContent>(contentHasExamples);
+
+        if (contentWithExamples) {
+          logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
           return {
             code: response.code,
-            mediaType: responseWithExamples.mediaType,
-            bodyExample: responseWithExamples.examples[0],
+            mediaType: contentWithExamples.mediaType,
+            bodyExample: contentWithExamples.examples[0],
             headers: response.headers,
           };
         } else {
-          logger.info(`Unable to find a content with an example defined for the response ${response.code}`);
+          logger.trace(`Unable to find a content with an example defined for the response ${response.code}`);
           // find first response with a schema
           const responseWithSchema = response.contents.find(content => !!content.schema);
-          if (responseWithSchema)
+          if (responseWithSchema) {
+            logger.success(`The response ${response.code} has a schema. I'll keep going with this one`);
             return {
               code: response.code,
               mediaType: responseWithSchema.mediaType,
               schema: responseWithSchema.schema,
               headers: response.headers,
             };
-          else {
-            logger.warn(`Unable to find a content with a schema defined for the response ${response.code}`);
+          } else {
+            logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
             throw new Error(`Neither schema nor example defined for ${response.code} response.`);
           }
         }
