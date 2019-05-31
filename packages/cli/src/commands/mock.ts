@@ -39,7 +39,7 @@ export default class Server extends Command {
 
           if (logLine.input) {
             const { method, url } = logLine.input;
-            prefix = prefix.concat(' ' + chalk.bgGreen.black(`${method} ${url.path}`));
+            prefix = prefix.concat(' ' + chalk.bold.white(`${method} ${url.path}`));
           }
 
           signale[logLevelType]({ prefix, message: logLine.msg });
