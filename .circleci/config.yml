@@ -21,9 +21,6 @@ jobs:
       - run:
           name: Install Dependencies
           command: yarn
-      - run:
-          name: Create Linux CLI binary
-          command: HOST=host yarn build.binary
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -33,12 +30,15 @@ jobs:
           name: Download prism v2
           command: curl -L https://github.com/stoplightio/prism/releases/download/v2.0.17/prism_linux_amd64 -o prism && chmod +x ./prism
       - run:
+          name: Run tests
+          command: yarn test.coverage --verbose
+      - run:
+          name: Create Linux CLI binary
+          command: HOST=host yarn build.binary
+      - run:
           name: Test Harness
           command: |
             PRISM_PORT=4010 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary
-      - run:
-          name: Run tests
-          command: yarn test.coverage --verbose
       - run:
           name: cc-after
           command: |

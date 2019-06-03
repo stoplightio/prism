@@ -15,7 +15,7 @@ function findBestHttpContentByMediaType(
   response: IHttpOperationResponse,
   mediaType: string,
 ): IMediaTypeContent | undefined {
-  return response.contents.filter(content => content.mediaType !== '*').find(content => {
+  return response.contents.find(content => {
     const requestedMediaType = mediaTypeParser.fromString(mediaType);
     const candidateMediaType = mediaTypeParser.fromString(content.mediaType);
 
