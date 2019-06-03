@@ -404,6 +404,92 @@ describe('NegotiatorHelpers', () => {
   });
 
   describe('negotiateOptionsBySpecificResponse()', () => {
+    describe('media type and sub media handling', () => {
+      it('has an application/json and requests application/vnd.api+json', () => {
+        const code = chance.string();
+        const httpResponseSchema: IHttpOperationResponse = {
+          code,
+          contents: [
+            {
+              mediaType: 'application/json',
+              encodings: [],
+              examples: [
+                {
+                  key: 'hello',
+                  value: {
+                    hello: 'world',
+                  },
+                },
+              ],
+            },
+          ],
+          headers: [],
+        };
+
+        const desiredOptions: IHttpOperationConfig = { dynamic: false, mediaType: 'application/vnd.api+json' };
+
+        expect(() =>
+          helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema),
+        ).toThrowError('');
+      });
+
+      it('has an application/vnd.api+json and requests application/json', () => {
+        const code = chance.string();
+        const httpResponseSchema: IHttpOperationResponse = {
+          code,
+          contents: [
+            {
+              mediaType: 'application/vnd.api+json',
+              encodings: [],
+              examples: [
+                {
+                  key: 'hello',
+                  value: {
+                    hello: 'world',
+                  },
+                },
+              ],
+            },
+          ],
+          headers: [],
+        };
+
+        const desiredOptions: IHttpOperationConfig = { dynamic: false, mediaType: 'application/json' };
+
+        expect(
+          helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema),
+        ).toHaveProperty('mediaType', 'application/vnd.api+json');
+      });
+
+      it('has an both application/vnd.api+json and application/json, requests application/vnd.api+json', () => {
+        const code = chance.string();
+        const httpResponseSchema: IHttpOperationResponse = {
+          code,
+          contents: [
+            {
+              mediaType: 'application/vnd.api+json',
+              encodings: [],
+              examples: [
+                {
+                  key: 'hello',
+                  value: {
+                    hello: 'world',
+                  },
+                },
+              ],
+            },
+          ],
+          headers: [],
+        };
+
+        const desiredOptions: IHttpOperationConfig = { dynamic: false, mediaType: 'application/vnd.api+json' };
+
+        expect(
+          helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema),
+        ).toHaveProperty('mediaType', 'application/vnd.api+json');
+      });
+    });
+
     describe('given forced mediaType', () => {
       it('and httpContent exists should negotiate that contents', () => {
         const desiredOptions = {
@@ -470,7 +556,7 @@ describe('NegotiatorHelpers', () => {
         ['application/activity+json', 'application/json'],
         ['application/alto-costmap+json', 'application/json'],
         ['application/alto-costmapfilter+json', 'application/json'],
-        ['application/geo+json-seq', 'text/plain'],
+        ['application/geo+json-seq', 'application/json-seq'],
       ])(
         '(%s) should fallback to the generic media type if the accept header has a more specific one',
         (mediaType, genericMediaType) => {
@@ -479,7 +565,7 @@ describe('NegotiatorHelpers', () => {
             code,
             contents: [
               {
-                mediaType: 'application/json',
+                mediaType,
                 encodings: [],
                 examples: [
                   {
@@ -494,14 +580,14 @@ describe('NegotiatorHelpers', () => {
             headers: [],
           };
 
-          const desiredOptions: IHttpOperationConfig = { dynamic: false, mediaType };
+          const desiredOptions: IHttpOperationConfig = { dynamic: false, mediaType: genericMediaType };
 
           const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
             httpOperation,
             desiredOptions,
             httpResponseSchema,
           );
-          expect(actualOperationConfig).toHaveProperty('mediaType', genericMediaType);
+          expect(actualOperationConfig).toHaveProperty('mediaType', mediaType);
         },
       );
     });

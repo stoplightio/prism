@@ -20,7 +20,8 @@ function findBestHttpContentByMediaType(
     response.contents.filter(content => content.mediaType !== '*').find(content => {
       const parsedRequestedMediaType = mediaTypeParser.fromString(mediaType);
       const parsedCandidateMediaType = mediaTypeParser.fromString(content.mediaType);
-      return parsedRequestedMediaType.suffix === parsedCandidateMediaType.subtype;
+
+      return parsedRequestedMediaType.subtype === parsedCandidateMediaType.suffix;
     })
   );
 }
