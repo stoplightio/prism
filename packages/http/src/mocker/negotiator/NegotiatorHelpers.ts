@@ -1,6 +1,6 @@
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
 // @ts-ignore
-import * as mediaTypeParser from 'media-type';
+import * as accepts from 'accepts';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
 function findBestExample(httpContent: IHttpContent) {
@@ -16,16 +16,11 @@ function findBestHttpContentByMediaType(
   mediaType: string,
 ): IMediaTypeContent | undefined {
   return response.contents.find(content => {
-    const requestedMediaType = mediaTypeParser.fromString(mediaType);
-    const candidateMediaType = mediaTypeParser.fromString(content.mediaType);
-
-    if (requestedMediaType.type === candidateMediaType.type) {
-      if (requestedMediaType.subtype === candidateMediaType.subtype) return true;
-
-      if (candidateMediaType.suffix === requestedMediaType.subtype) return true;
-    }
-
-    return false;
+    return accepts({
+      headers: {
+        accept: mediaType,
+      },
+    }).types(content.mediaType);
   });
 }
 

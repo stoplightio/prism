@@ -14,11 +14,11 @@ export const createServer = <LoaderInput>(
   const server = fastify().register(fastifyAcceptsSerializer, {
     serializers: [
       {
-        regex: /json/,
+        regex: /json$/,
         serializer: JSON.stringify,
       },
     ],
-    default: 'application/json',
+    default: 'application/json; charset=utf-8',
   });
 
   const { components = {}, config } = opts;
