@@ -1,6 +1,8 @@
+import { ProblemJsonError } from '@stoplight/prism-http';
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
 // @ts-ignore
 import * as accepts from 'accepts';
+import { NOT_ACCEPTABLE } from '../errors';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
 function findBestExample(httpContent: IHttpContent) {
@@ -165,11 +167,10 @@ const helpers = {
           ...contentNegotiationResult,
         };
       } else {
-        return {
-          code,
-          mediaType: 'text/plain',
-          headers,
-        };
+        throw ProblemJsonError.fromTemplate(
+          NOT_ACCEPTABLE,
+          `Could not find any content that satisfies ${mediaTypes.join(',')}`,
+        );
       }
     }
     // user did not provide mediaType

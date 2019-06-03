@@ -25,7 +25,7 @@ describe('http mocker', () => {
         expect(response).toMatchSnapshot();
       });
 
-      test('and that content type does not exist should return empty body', () => {
+      test('and that content type does not exist should return an error', () => {
         return expect(
           mocker.mock({
             resource: httpOperations[0],
@@ -37,7 +37,7 @@ describe('http mocker', () => {
               },
             },
           }),
-        ).resolves.toMatchObject({ headers: { 'Content-type': 'text/plain' }, body: undefined });
+        ).rejects.toThrowError();
       });
     });
 
@@ -202,10 +202,7 @@ describe('http mocker', () => {
                 }),
               }),
             }),
-          ).resolves.toMatchObject({
-            headers: { 'Content-type': 'text/plain' },
-            body: undefined,
-          });
+          ).rejects.toThrowError();
         });
       });
     });

@@ -507,7 +507,7 @@ describe('NegotiatorHelpers', () => {
         });
       });
 
-      it('and httpContent not exist should negotiate default media type', () => {
+      it('and httpContent not exist should throw an error', () => {
         const desiredOptions: NegotiationOptions = {
           mediaTypes: [chance.string()],
           dynamic: chance.bool(),
@@ -520,9 +520,9 @@ describe('NegotiatorHelpers', () => {
           headers: [],
         };
 
-        expect(
+        expect(() =>
           helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema),
-        ).toHaveProperty('mediaType', 'text/plain');
+        ).toThrowError();
       });
     });
 
