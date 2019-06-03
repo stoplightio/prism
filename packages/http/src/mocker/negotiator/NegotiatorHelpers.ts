@@ -15,15 +15,18 @@ function findBestHttpContentByMediaType(
   response: IHttpOperationResponse,
   mediaType: string,
 ): IMediaTypeContent | undefined {
-  return (
-    response.contents.find(content => content.mediaType === mediaType) ||
-    response.contents.filter(content => content.mediaType !== '*').find(content => {
-      const parsedRequestedMediaType = mediaTypeParser.fromString(mediaType);
-      const parsedCandidateMediaType = mediaTypeParser.fromString(content.mediaType);
+  return response.contents.filter(content => content.mediaType !== '*').find(content => {
+    const requestedMediaType = mediaTypeParser.fromString(mediaType);
+    const candidateMediaType = mediaTypeParser.fromString(content.mediaType);
 
-      return parsedRequestedMediaType.subtype === parsedCandidateMediaType.suffix;
-    })
-  );
+    if (requestedMediaType.type === candidateMediaType.type) {
+      if (requestedMediaType.subtype === candidateMediaType.subtype) return true;
+
+      if (candidateMediaType.suffix === requestedMediaType.subtype) return true;
+    }
+
+    return false;
+  });
 }
 
 function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {

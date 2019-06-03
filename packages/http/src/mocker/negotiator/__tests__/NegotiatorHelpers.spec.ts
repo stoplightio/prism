@@ -552,6 +552,8 @@ describe('NegotiatorHelpers', () => {
       });
 
       it.each([
+        ['application/json', 'application/json;charset=utf8'],
+        ['application/json;charset=utf8', 'application/json'],
         ['application/vnd.api+json', 'application/json'],
         ['application/activity+json', 'application/json'],
         ['application/alto-costmap+json', 'application/json'],
