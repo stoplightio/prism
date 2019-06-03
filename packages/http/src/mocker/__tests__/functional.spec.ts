@@ -17,7 +17,7 @@ describe('http mocker', () => {
           config: {
             mock: {
               dynamic: false,
-              mediaType: 'text/plain',
+              mediaType: ['text/plain'],
             },
           },
         });
@@ -33,7 +33,7 @@ describe('http mocker', () => {
             config: {
               mock: {
                 dynamic: false,
-                mediaType: 'text/funky',
+                mediaType: ['text/funky'],
               },
             },
           }),
@@ -51,7 +51,7 @@ describe('http mocker', () => {
               dynamic: false,
               code: '201',
               exampleKey: 'second',
-              mediaType: 'application/xml',
+              mediaType: ['application/xml'],
             },
           },
         });
@@ -69,7 +69,7 @@ describe('http mocker', () => {
             mock: {
               dynamic: false,
               code: '201',
-              mediaType: 'application/xml',
+              mediaType: ['application/xml'],
             },
           },
         });
@@ -102,7 +102,7 @@ describe('http mocker', () => {
             mock: {
               dynamic: false,
               exampleKey: 'second',
-              mediaType: 'application/xml',
+              mediaType: ['application/xml'],
             },
           },
         });

@@ -13,14 +13,14 @@ function findExampleByKey(httpContent: IHttpContent, exampleKey: string) {
 
 function findBestHttpContentByMediaType(
   response: IHttpOperationResponse,
-  mediaType: string,
+  mediaType: string[],
 ): IMediaTypeContent | undefined {
   return response.contents.find(content =>
     accepts({
       headers: {
-        accept: mediaType,
+        accept: mediaType.join(','),
       },
-    }).types(content.mediaType),
+    }).type(content.mediaType),
   );
 }
 
@@ -109,8 +109,7 @@ const helpers = {
     response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
     const { code, dynamic, exampleKey } = partialOptions;
-    const httpContent =
-      findBestHttpContentByMediaType(response, '*/*') || findBestHttpContentByMediaType(response, 'application/json');
+    const httpContent = findBestHttpContentByMediaType(response, ['*/*']);
 
     if (httpContent) {
       // a httpContent for default mediaType exists

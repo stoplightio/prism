@@ -404,17 +404,19 @@ describe('NegotiatorHelpers', () => {
 
   describe('negotiateOptionsBySpecificResponse()', () => {
     describe('given forced mediaType', () => {
-      it.only('and httpContent exists should negotiate that contents', () => {
+      it('and httpContent exists should negotiate that contents', () => {
         const desiredOptions = {
-          mediaType: `${chance.string()}/${chance.string()}`,
+          mediaType: [`${chance.string()}/${chance.string()}`],
           dynamic: chance.bool(),
           exampleKey: chance.string(),
         };
+
         const contents: IMediaTypeContent = {
-          mediaType: desiredOptions.mediaType,
+          mediaType: desiredOptions.mediaType[0],
           examples: [],
           encodings: [],
         };
+
         const httpResponseSchema: IHttpOperationResponse = {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           contents: [contents],
@@ -422,9 +424,10 @@ describe('NegotiatorHelpers', () => {
         };
         const fakeOperationConfig: IHttpNegotiationResult = {
           code: '200',
-          mediaType: desiredOptions.mediaType,
+          mediaType: desiredOptions.mediaType[0],
           headers: [],
         };
+
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(fakeOperationConfig);
         jest.spyOn(helpers, 'negotiateDefaultMediaType');
 
@@ -447,9 +450,65 @@ describe('NegotiatorHelpers', () => {
         expect(actualOperationConfig).toEqual(fakeOperationConfig);
       });
 
+      describe('the resource has multiple contents', () => {
+        it('should negotiatiate the content according to the preference', () => {
+          const desiredOptions = {
+            mediaType: ['application/json', 'application/xml'],
+            dynamic: chance.bool(),
+          };
+
+          const contents: IMediaTypeContent[] = desiredOptions.mediaType.reverse().map(mediaType => ({
+            mediaType,
+            encodings: [],
+            examples: [],
+          }));
+
+          const httpResponseSchema: IHttpOperationResponse = {
+            code: chance.integer({ min: 100, max: 599 }).toString(),
+            contents,
+            headers: [],
+          };
+
+          const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
+            httpOperation,
+            desiredOptions,
+            httpResponseSchema,
+          );
+
+          expect(actualOperationConfig).toHaveProperty('mediaType', 'application/xml');
+        });
+
+        it('should negotiatiate the only content that is really avaiable', () => {
+          const desiredOptions = {
+            mediaType: ['application/idonotexist', 'application/json'],
+            dynamic: chance.bool(),
+          };
+
+          const content: IMediaTypeContent = {
+            mediaType: 'application/json',
+            encodings: [],
+            examples: [],
+          };
+
+          const httpResponseSchema: IHttpOperationResponse = {
+            code: chance.integer({ min: 100, max: 599 }).toString(),
+            contents: [content],
+            headers: [],
+          };
+
+          const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
+            httpOperation,
+            desiredOptions,
+            httpResponseSchema,
+          );
+
+          expect(actualOperationConfig).toHaveProperty('mediaType', 'application/json');
+        });
+      });
+
       it('and httpContent not exist should negotiate default media type', () => {
         const desiredOptions = {
-          mediaType: chance.string(),
+          mediaType: [chance.string()],
           dynamic: chance.bool(),
           exampleKey: chance.string(),
         };
