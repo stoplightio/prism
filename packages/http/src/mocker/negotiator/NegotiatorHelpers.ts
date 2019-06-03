@@ -102,8 +102,8 @@ const helpers = {
     response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
     const { code, dynamic, exampleKey } = partialOptions;
-    const mediaType = 'application/json';
-    const httpContent = findHttpContentByMediaType(response, mediaType);
+    const httpContent = response.contents[0];
+
     if (httpContent) {
       // a httpContent for default mediaType exists
       const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
