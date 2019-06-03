@@ -9,6 +9,6 @@ export const UNPROCESSABLE_ENTITY: Omit<ProblemJson, 'detail'> = {
 
 export const NOT_ACCEPTABLE: Omit<ProblemJson, 'detail'> = {
   type: 'NOT_ACCEPTABLE',
-  title: 'The server cannot produce a response matching your content negotiation header',
+  title: 'The server cannot produce a representation for your accept header',
   status: 406,
 };
