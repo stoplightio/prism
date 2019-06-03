@@ -15,13 +15,13 @@ function findBestHttpContentByMediaType(
   response: IHttpOperationResponse,
   mediaType: string,
 ): IMediaTypeContent | undefined {
-  return response.contents.find(content => {
-    return accepts({
+  return response.contents.find(content =>
+    accepts({
       headers: {
         accept: mediaType,
       },
-    }).types(content.mediaType);
-  });
+    }).types(content.mediaType),
+  );
 }
 
 function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {

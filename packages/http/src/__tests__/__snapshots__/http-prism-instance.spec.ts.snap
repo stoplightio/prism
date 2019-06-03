@@ -17,7 +17,7 @@ Object {
   "output": Object {
     "body": Anything,
     "headers": Object {
-      "Content-type": "application/xml",
+      "Content-type": "application/json",
     },
     "statusCode": 200,
   },

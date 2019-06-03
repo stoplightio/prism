@@ -6,15 +6,23 @@
   "host": "petstore.swagger.io",
   "basePath": "/v2",
   "tags": [],
-  "schemes": ["https", "http"],
+  "schemes": [
+    "https",
+    "http"
+  ],
   "paths": {
     "/store/order": {
       "post": {
-        "tags": ["store"],
+        "tags": [
+          "store"
+        ],
         "summary": "Place an order for a pet",
         "description": "",
         "operationId": "placeOrder",
-        "produces": ["application/xml", "application/json"],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
         "parameters": [
           {
             "in": "body",
@@ -43,7 +51,11 @@
                 "status": {
                   "type": "string",
                   "description": "Order Status",
-                  "enum": ["placed", "approved", "delivered"]
+                  "enum": [
+                    "placed",
+                    "approved",
+                    "delivered"
+                  ]
                 },
                 "complete": {
                   "type": "boolean",
@@ -81,7 +93,11 @@
                 "status": {
                   "type": "string",
                   "description": "Order Status",
-                  "enum": ["placed", "approved", "delivered"]
+                  "enum": [
+                    "placed",
+                    "approved",
+                    "delivered"
+                  ]
                 },
                 "complete": {
                   "type": "boolean",
@@ -101,10 +117,15 @@
     },
     "/pet/findByStatus": {
       "get": {
-        "tags": ["pet"],
+        "tags": [
+          "pet"
+        ],
         "summary": "Finds Pets by status",
         "operationId": "findPetsByStatus",
-        "produces": ["application/xml", "application/json"],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
         "parameters": [
           {
             "name": "status",
@@ -114,7 +135,11 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": ["available", "pending", "sold"],
+              "enum": [
+                "available",
+                "pending",
+                "sold"
+              ],
               "default": "available"
             },
             "collectionFormat": "multi"
@@ -127,7 +152,10 @@
               "type": "array",
               "items": {
                 "type": "object",
-                "required": ["name", "photoUrls"],
+                "required": [
+                  "name",
+                  "photoUrls"
+                ],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -153,7 +181,10 @@
         },
         "security": [
           {
-            "petstore_auth": ["write:pets", "read:pets"]
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
           }
         ]
       }
