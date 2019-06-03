@@ -227,6 +227,46 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       expect(response.headers).toHaveProperty(headerName, expectedValues[headerName]);
     }
   });
+
+  describe('content negotiation', () => {
+    it('returns a valid response when multiple choices are given', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10',
+        headers: {
+          accept: 'idonotexist/something,application/json',
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.headers).toHaveProperty('content-type', 'application/json');
+    });
+
+    it('respects the priority when multiple avaiable choices match', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10',
+        headers: {
+          accept: 'application/json,application/xml',
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.headers).toHaveProperty('content-type', 'application/json');
+    });
+
+    it('returns 406 response when the requested media type is not offered', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10',
+        headers: {
+          accept: 'idonotexist/something',
+        },
+      });
+
+      expect(response.statusCode).toBe(406);
+    });
+  });
 });
 
 describe('oas2 specific tests', () => {

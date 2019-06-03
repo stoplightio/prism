@@ -18,7 +18,7 @@ export const createServer = <LoaderInput>(
         serializer: JSON.stringify,
       },
     ],
-    default: 'application/json; charset=utf-8',
+    default: 'application/json',
   });
 
   const { components = {}, config } = opts;
