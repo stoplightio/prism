@@ -1,5 +1,5 @@
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
-import { Reader, reader } from 'fp-ts/lib/Reader';
+import { Reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';
 
 import { ContentExample, NonEmptyArray } from '@stoplight/prism-http/src/types';
@@ -148,52 +148,57 @@ const helpers = {
     _httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse,
-  ): IHttpNegotiationResult {
+  ): Reader<Logger, IHttpNegotiationResult> {
     const { code, headers } = response;
     const { mediaType, dynamic, exampleKey } = desiredOptions;
 
-    if (mediaType) {
-      // a user provided mediaType
-      const httpContent = findHttpContentByMediaType(response, mediaType);
-      if (httpContent) {
-        // a httpContent for a provided mediaType exists
-        const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
-          {
+    return new Reader(logger => {
+      if (mediaType) {
+        // a user provided mediaType
+        const httpContent = findHttpContentByMediaType(response, mediaType);
+        if (httpContent) {
+          logger.success(`Found a compatible media type for ${mediaType}`);
+          // a httpContent for a provided mediaType exists
+          const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
+            {
+              code,
+              dynamic,
+              exampleKey,
+            },
+            httpContent,
+          );
+          return {
+            headers,
+            ...contentNegotiationResult,
+          };
+        } else {
+          logger.trace(`Unable to find a content for ${mediaType}, returning an empty text/plain response.`);
+          return {
             code,
-            dynamic,
-            exampleKey,
-          },
-          httpContent,
-        );
-        return {
-          headers,
-          ...contentNegotiationResult,
-        };
-      } else {
-        return {
-          code,
-          mediaType: 'text/plain',
-          headers,
-        };
+            mediaType: 'text/plain',
+            headers,
+          };
+        }
       }
-    }
-    // user did not provide mediaType
-    // OR
-    // a httpContent for a provided mediaType does not exist
-    return helpers.negotiateDefaultMediaType(
-      {
-        code,
-        dynamic,
-        exampleKey,
-      },
-      response,
-    );
+      // user did not provide mediaType
+      // OR
+      // a httpContent for a provided mediaType does not exist
+      logger.trace('No mediaType provided. Fallbacking to the default media type (application/json)');
+      return helpers.negotiateDefaultMediaType(
+        {
+          code,
+          dynamic,
+          exampleKey,
+        },
+        response,
+      );
+    });
   },
 
   negotiateOptionsForDefaultCode(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
-  ): IHttpNegotiationResult {
+  ): Reader<Logger, IHttpNegotiationResult> {
     const lowest2xxResponse = findLowest2xx(httpOperation.responses);
     if (lowest2xxResponse) {
       return helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, lowest2xxResponse);
@@ -216,24 +221,21 @@ const helpers = {
 
       return result;
     }).chain(responseByForcedStatusCode => {
-      return new Reader(logger => {
-        if (responseByForcedStatusCode) {
+      if (responseByForcedStatusCode) {
+        try {
+          // try to negotiate
+          return helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, responseByForcedStatusCode);
+        } catch (error) {
+          // if negotiations fail try a default code
           try {
-            // try to negotiate
-            return helpers.negotiateOptionsBySpecificResponse(
-              httpOperation,
-              desiredOptions,
-              responseByForcedStatusCode,
-            );
-          } catch (error) {
-            // if negotiations fail try a default code
-            try {
-              return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
-            } catch (error2) {
-              throw new Error(`${error}. We tried default response, but we got ${error2}`);
-            }
+            return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
+          } catch (error2) {
+            throw new Error(`${error}. We tried default response, but we got ${error2}`);
           }
         }
+      }
+
+      return new Reader(logger => {
         logger.trace(`Unable to find default response to construct a ${code} response`);
         // if no response found under a status code throw an error
         throw new Error('Requested status code is not defined in the schema.');
@@ -249,7 +251,7 @@ const helpers = {
     if (code) {
       return helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code);
     }
-    return reader.of(helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions));
+    return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
   negotiateOptionsForInvalidRequest(httpResponses: IHttpOperationResponse[]): Reader<Logger, IHttpNegotiationResult> {

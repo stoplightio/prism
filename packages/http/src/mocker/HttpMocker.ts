@@ -85,7 +85,7 @@ export class HttpMocker
             body,
           };
 
-          logger.success(`Responded with ${response.statusCode}`);
+          logger.success(`Responding with ${response.statusCode}`);
 
           return response;
         });
