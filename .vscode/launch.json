@@ -17,7 +17,7 @@
       ],
       "args": [
         "mock",
-        "../../examples/petstore.oas2.yaml"
+        "../../examples/petstore.oas2.json"
       ]
     },
     {

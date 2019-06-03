@@ -1,6 +1,9 @@
+import { createLogger } from '@stoplight/prism-core';
 import { relative, resolve } from 'path';
 import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
+
+const logger = createLogger('TEST', { enabled: true });
 
 function checkErrorPayloadShape(payload: string) {
   const parsedPayload = JSON.parse(payload);
@@ -231,7 +234,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
 
 describe('oas2 specific tests', () => {
   test('should return response even if there is no content defined in spec', async () => {
-    const server = createServer({}, { components: {}, config: { mock: { dynamic: false } } });
+    const server = createServer({}, { components: { logger }, config: { mock: { dynamic: false } } });
     await server.prism.load({
       path: resolve(__dirname, 'fixtures', 'no-responses.oas2.yaml'),
     });

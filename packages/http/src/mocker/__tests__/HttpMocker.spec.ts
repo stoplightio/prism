@@ -1,8 +1,12 @@
+import { createLogger } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample } from '@stoplight/types';
+import { reader } from 'fp-ts/lib/Reader';
 import { flatMap } from 'lodash';
 import { HttpMocker } from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import helpers from '../negotiator/NegotiatorHelpers';
+
+const logger = createLogger('TEST', { enabled: false });
 
 describe('HttpMocker', () => {
   const httpMocker = new HttpMocker(JSONSchemaGenerator.generate);
@@ -74,63 +78,77 @@ describe('HttpMocker', () => {
     };
 
     it('fails when called with no resource', () => {
-      return expect(
-        httpMocker.mock({
-          input: mockInput,
-        }),
-      ).rejects.toThrowErrorMatchingSnapshot();
+      return expect(() =>
+        httpMocker
+          .mock({
+            input: mockInput,
+          })
+          .run(logger),
+      ).toThrowErrorMatchingSnapshot();
     });
 
     it('fails when called with no input', () => {
-      return expect(
-        httpMocker.mock({
-          resource: mockResource,
-        }),
-      ).rejects.toThrowErrorMatchingSnapshot();
+      return expect(() =>
+        httpMocker
+          .mock({
+            resource: mockResource,
+          })
+          .run(logger),
+      ).toThrowErrorMatchingSnapshot();
     });
 
     describe('with valid negotiator response', () => {
       it('returns an empty body when negotiator did not resolve to either example nor schema', () => {
         jest
           .spyOn(helpers, 'negotiateOptionsForValidRequest')
-          .mockReturnValue({ code: '202', mediaType: 'test', headers: [] });
+          .mockReturnValue(reader.of({ code: '202', mediaType: 'test', headers: [] }));
 
         return expect(
-          httpMocker.mock({
-            resource: mockResource,
-            input: mockInput,
-          }),
+          httpMocker
+            .mock({
+              resource: mockResource,
+              input: mockInput,
+            })
+            .run(logger),
         ).resolves.toHaveProperty('body', undefined);
       });
 
       it('returns static example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue({
-          code: '202',
-          mediaType: 'test',
-          bodyExample: mockResource.responses![0].contents![0].examples![0],
-          headers: [],
-        });
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          reader.of({
+            code: '202',
+            mediaType: 'test',
+            bodyExample: mockResource.responses![0].contents![0].examples![0],
+            headers: [],
+          }),
+        );
 
         return expect(
-          httpMocker.mock({
-            resource: mockResource,
-            input: mockInput,
-          }),
+          httpMocker
+            .mock({
+              resource: mockResource,
+              input: mockInput,
+            })
+            .run(logger),
         ).resolves.toMatchSnapshot();
       });
 
       it('returns dynamic example', async () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue({
-          code: '202',
-          mediaType: 'test',
-          schema: mockResource.responses![0].contents![0].schema,
-          headers: [],
-        });
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          reader.of({
+            code: '202',
+            mediaType: 'test',
+            schema: mockResource.responses![0].contents![0].schema,
+            headers: [],
+          }),
+        );
 
-        const response = await httpMocker.mock({
-          resource: mockResource,
-          input: mockInput,
-        });
+        const response = await httpMocker
+          .mock({
+            resource: mockResource,
+            input: mockInput,
+          })
+          .run(logger);
 
         return expect(response.body).toMatchObject({
           name: expect.any(String),
@@ -141,39 +159,47 @@ describe('HttpMocker', () => {
 
     describe('with invalid negotiator response', () => {
       it('returns static example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockReturnValue({
-          code: '202',
-          mediaType: 'test',
-          bodyExample: mockResource.responses![0].contents![0].examples![0],
-          headers: [],
-        });
+        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockReturnValue(
+          reader.of({
+            code: '202',
+            mediaType: 'test',
+            bodyExample: mockResource.responses![0].contents![0].examples![0],
+            headers: [],
+          }),
+        );
 
         return expect(
-          httpMocker.mock({
-            resource: mockResource,
-            input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
-          }),
+          httpMocker
+            .mock({
+              resource: mockResource,
+              input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
+            })
+            .run(logger),
         ).resolves.toMatchSnapshot();
       });
     });
 
     describe('when example is of type INodeExternalExample', () => {
       it('generates a dynamic example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue({
-          code: '202',
-          mediaType: 'test',
-          bodyExample: mockResource.responses![0].contents![0].examples![1],
-          headers: [],
-          schema: { type: 'string' },
-        });
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          reader.of({
+            code: '202',
+            mediaType: 'test',
+            bodyExample: mockResource.responses![0].contents![0].examples![1],
+            headers: [],
+            schema: { type: 'string' },
+          }),
+        );
 
         jest.spyOn(JSONSchemaGenerator, 'generate').mockResolvedValue('example value chelsea');
 
         return expect(
-          httpMocker.mock({
-            resource: mockResource,
-            input: mockInput,
-          }),
+          httpMocker
+            .mock({
+              resource: mockResource,
+              input: mockInput,
+            })
+            .run(logger),
         ).resolves.toMatchSnapshot();
       });
     });
@@ -192,11 +218,13 @@ describe('HttpMocker', () => {
           });
 
           it('the dynamic response should not be an example one', async () => {
-            const response = await httpMocker.mock({
-              input: mockInput,
-              resource: mockResource,
-              config: { mock: { dynamic: true } },
-            });
+            const response = await httpMocker
+              .mock({
+                input: mockInput,
+                resource: mockResource,
+                config: { mock: { dynamic: true } },
+              })
+              .run(logger);
 
             expect(JSONSchemaGenerator.generate).not.toHaveBeenCalled();
             expect(response.body).toBeDefined();
@@ -219,11 +247,13 @@ describe('HttpMocker', () => {
       describe('and dynamic flag is false', () => {
         describe('and the example has been explicited', () => {
           it('should return the selected example', async () => {
-            const response = await httpMocker.mock({
-              input: mockInput,
-              resource: mockResource,
-              config: { mock: { dynamic: true, exampleKey: 'test key' } },
-            });
+            const response = await httpMocker
+              .mock({
+                input: mockInput,
+                resource: mockResource,
+                config: { mock: { dynamic: true, exampleKey: 'test key' } },
+              })
+              .run(logger);
 
             expect(response.body).toBeDefined();
 

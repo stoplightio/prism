@@ -1,4 +1,4 @@
-import { IPrism } from '@stoplight/prism-core';
+import { createLogger, IPrism } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types/http-spec';
 import { relative, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
@@ -6,18 +6,20 @@ import { forwarder } from '../forwarder';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_PATH_MATCHED_ERROR } from '../router/errors';
 
+const logger = createLogger('TEST', { enabled: false });
+
 describe('Http Prism Instance function tests', () => {
   let prism: IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;
 
   beforeAll(async () => {
-    prism = createInstance({ mock: { dynamic: false } }, {});
+    prism = createInstance({ mock: { dynamic: false } }, { logger });
     await prism.load({
       path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'no-refs-petstore-minimal.oas2.json')),
     });
   });
 
   test('keeps the instances separate', async () => {
-    const second_prism = createInstance({ mock: { dynamic: false } }, {});
+    const second_prism = createInstance({ mock: { dynamic: false } }, { logger });
     await second_prism.load({
       path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'no-refs-petstore-minimal.oas2.json')),
     });
@@ -114,7 +116,7 @@ describe('Http Prism Instance function tests', () => {
 
   test("should forward the request correctly even if resources haven't been provided", async () => {
     // Recreate Prism with no loaded document
-    prism = createInstance(undefined, { forwarder, router: undefined, mocker: undefined });
+    prism = createInstance(undefined, { forwarder, router: undefined, mocker: undefined, logger });
 
     const response = await prism.process({
       method: 'post',
@@ -139,7 +141,7 @@ describe('Http Prism Instance function tests', () => {
   });
 
   test('loads spec provided in yaml', async () => {
-    prism = createInstance();
+    prism = createInstance(undefined, { logger });
     await prism.load({
       path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'petstore.oas2.yaml')),
     });
@@ -148,7 +150,7 @@ describe('Http Prism Instance function tests', () => {
   });
 
   test('returns stringified static example when one defined in spec', async () => {
-    prism = createInstance();
+    prism = createInstance(undefined, { logger });
     await prism.load({
       path: relative(process.cwd(), resolve(__dirname, 'fixtures', 'static-examples.oas2.json')),
     });
