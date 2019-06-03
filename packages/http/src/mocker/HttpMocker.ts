@@ -33,7 +33,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     }
 
     // setting default values
-    const inputMediaType = input.data.headers && caseless(input.data.headers).get('content-type');
+    const inputMediaType = input.data.headers && caseless(input.data.headers).get('accept');
     config = config || { mock: false };
     const mockConfig: IHttpOperationConfig =
       config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
