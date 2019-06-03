@@ -1,7 +1,9 @@
 import { ISchema } from '@stoplight/types';
 import * as Ajv from 'ajv';
 
+import { ProblemJsonError } from '@stoplight/prism-http';
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
+import { NOT_ACCEPTABLE } from '../errors';
 import { generate } from '../generator/JSONSchema';
 import { HttpMocker } from '../index';
 
@@ -37,7 +39,7 @@ describe('http mocker', () => {
               },
             },
           }),
-        ).rejects.toThrowError();
+        ).rejects.toThrowError(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE));
       });
     });
 
@@ -202,7 +204,7 @@ describe('http mocker', () => {
                 }),
               }),
             }),
-          ).rejects.toThrowError();
+          ).rejects.toThrowError(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE));
         });
       });
     });

@@ -8,6 +8,8 @@ import {
 } from '@stoplight/types';
 import { Chance } from 'chance';
 
+import { ProblemJsonError } from '@stoplight/prism-http';
+import { NOT_ACCEPTABLE } from '../../errors';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 
@@ -522,7 +524,7 @@ describe('NegotiatorHelpers', () => {
 
         expect(() =>
           helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema),
-        ).toThrowError();
+        ).toThrowError(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE));
       });
     });
 
