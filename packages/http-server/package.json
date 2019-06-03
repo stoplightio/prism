@@ -22,6 +22,7 @@
     "@stoplight/prism-core": "^3.0.0-alpha.11",
     "@stoplight/prism-http": "^3.0.0-alpha.11",
     "fastify": "^2.3.0",
+    "fastify-accepts-serializer": "^2.0.1",
     "tslib": "^1.9.0"
   }
 }

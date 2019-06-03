@@ -1,5 +1,6 @@
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
-
+// @ts-ignore
+import * as mediaTypeParser from 'media-type';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
 function findBestExample(httpContent: IHttpContent) {
@@ -10,11 +11,18 @@ function findExampleByKey(httpContent: IHttpContent, exampleKey: string) {
   return httpContent.examples && httpContent.examples.find(example => example.key === exampleKey);
 }
 
-function findHttpContentByMediaType(
+function findBestHttpContentByMediaType(
   response: IHttpOperationResponse,
   mediaType: string,
 ): IMediaTypeContent | undefined {
-  return response.contents.find(content => content.mediaType === mediaType);
+  return (
+    response.contents.find(content => content.mediaType === mediaType) ||
+    response.contents.filter(content => content.mediaType !== '*').find(content => {
+      const parsedRequestedMediaType = mediaTypeParser.fromString(mediaType);
+      const parsedCandidateMediaType = mediaTypeParser.fromString(content.mediaType);
+      return parsedRequestedMediaType.suffix === parsedCandidateMediaType.subtype;
+    })
+  );
 }
 
 function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {
@@ -103,7 +111,7 @@ const helpers = {
   ): IHttpNegotiationResult {
     const { code, dynamic, exampleKey } = partialOptions;
     const httpContent =
-      findHttpContentByMediaType(response, '*/*') || findHttpContentByMediaType(response, 'application/json');
+      findBestHttpContentByMediaType(response, '*/*') || findBestHttpContentByMediaType(response, 'application/json');
 
     if (httpContent) {
       // a httpContent for default mediaType exists
@@ -143,7 +151,7 @@ const helpers = {
 
     if (mediaType) {
       // a user provided mediaType
-      const httpContent = findHttpContentByMediaType(response, mediaType);
+      const httpContent = findBestHttpContentByMediaType(response, mediaType);
       if (httpContent) {
         // a httpContent for a provided mediaType exists
         const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(

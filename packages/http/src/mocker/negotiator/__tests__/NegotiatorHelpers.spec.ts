@@ -8,6 +8,7 @@ import {
 } from '@stoplight/types';
 import { Chance } from 'chance';
 
+import { IHttpOperationConfig } from '@stoplight/prism-http';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult } from '../types';
 
@@ -265,6 +266,7 @@ describe('NegotiatorHelpers', () => {
       negotiateOptionsBySpecificResponseMock = jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse');
       negotiateOptionsForDefaultCodeMock = jest.spyOn(helpers, 'negotiateOptionsForDefaultCode');
     });
+
     it('given response defined should try to negotiate by that response', () => {
       const code = chance.string();
       const fakeResponse = {
@@ -462,6 +464,46 @@ describe('NegotiatorHelpers', () => {
           helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema),
         ).toHaveProperty('mediaType', 'text/plain');
       });
+
+      it.each([
+        ['application/vnd.api+json', 'application/json'],
+        ['application/activity+json', 'application/json'],
+        ['application/alto-costmap+json', 'application/json'],
+        ['application/alto-costmapfilter+json', 'application/json'],
+        ['application/geo+json-seq', 'text/plain'],
+      ])(
+        '(%s) should fallback to the generic media type if the accept header has a more specific one',
+        (mediaType, genericMediaType) => {
+          const code = chance.string();
+          const httpResponseSchema: IHttpOperationResponse = {
+            code,
+            contents: [
+              {
+                mediaType: 'application/json',
+                encodings: [],
+                examples: [
+                  {
+                    key: 'hello',
+                    value: {
+                      hello: 'world',
+                    },
+                  },
+                ],
+              },
+            ],
+            headers: [],
+          };
+
+          const desiredOptions: IHttpOperationConfig = { dynamic: false, mediaType };
+
+          const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
+            httpOperation,
+            desiredOptions,
+            httpResponseSchema,
+          );
+          expect(actualOperationConfig).toHaveProperty('mediaType', genericMediaType);
+        },
+      );
     });
 
     describe('given no mediaType', () => {
