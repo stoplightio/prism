@@ -17,7 +17,7 @@ export type TPrismHttpComponents<LoaderInput> = Partial<
 export type IHttpMethod = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch' | 'trace'; // ... etc
 
 export interface IHttpOperationConfig {
-  mediaType?: string[];
+  mediaTypes?: string[];
   code?: string;
   exampleKey?: string;
   dynamic: boolean;

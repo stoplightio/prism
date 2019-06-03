@@ -9,7 +9,7 @@ import {
 import { Chance } from 'chance';
 
 import helpers from '../NegotiatorHelpers';
-import { IHttpNegotiationResult } from '../types';
+import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 
 const chance = new Chance();
 
@@ -406,13 +406,13 @@ describe('NegotiatorHelpers', () => {
     describe('given forced mediaType', () => {
       it('and httpContent exists should negotiate that contents', () => {
         const desiredOptions = {
-          mediaType: [`${chance.string()}/${chance.string()}`],
+          mediaTypes: [`${chance.string()}/${chance.string()}`],
           dynamic: chance.bool(),
           exampleKey: chance.string(),
         };
 
         const contents: IMediaTypeContent = {
-          mediaType: desiredOptions.mediaType[0],
+          mediaType: desiredOptions.mediaTypes[0],
           examples: [],
           encodings: [],
         };
@@ -422,9 +422,10 @@ describe('NegotiatorHelpers', () => {
           contents: [contents],
           headers: [],
         };
+
         const fakeOperationConfig: IHttpNegotiationResult = {
           code: '200',
-          mediaType: desiredOptions.mediaType[0],
+          mediaType: desiredOptions.mediaTypes[0],
           headers: [],
         };
 
@@ -452,12 +453,12 @@ describe('NegotiatorHelpers', () => {
 
       describe('the resource has multiple contents', () => {
         it('should negotiatiate the content according to the preference', () => {
-          const desiredOptions = {
-            mediaType: ['application/json', 'application/xml'],
-            dynamic: chance.bool(),
+          const desiredOptions: NegotiationOptions = {
+            mediaTypes: ['application/json', 'application/xml'],
+            dynamic: false,
           };
 
-          const contents: IMediaTypeContent[] = desiredOptions.mediaType.reverse().map(mediaType => ({
+          const contents: IMediaTypeContent[] = desiredOptions.mediaTypes!.reverse().map(mediaType => ({
             mediaType,
             encodings: [],
             examples: [],
@@ -479,9 +480,9 @@ describe('NegotiatorHelpers', () => {
         });
 
         it('should negotiatiate the only content that is really avaiable', () => {
-          const desiredOptions = {
-            mediaType: ['application/idonotexist', 'application/json'],
-            dynamic: chance.bool(),
+          const desiredOptions: NegotiationOptions = {
+            mediaTypes: ['application/idonotexist', 'application/json'],
+            dynamic: false,
           };
 
           const content: IMediaTypeContent = {
@@ -507,11 +508,12 @@ describe('NegotiatorHelpers', () => {
       });
 
       it('and httpContent not exist should negotiate default media type', () => {
-        const desiredOptions = {
-          mediaType: [chance.string()],
+        const desiredOptions: NegotiationOptions = {
+          mediaTypes: [chance.string()],
           dynamic: chance.bool(),
           exampleKey: chance.string(),
         };
+
         const httpResponseSchema: IHttpOperationResponse = {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           contents: [],
@@ -526,10 +528,11 @@ describe('NegotiatorHelpers', () => {
 
     describe('given no mediaType', () => {
       it('should negotiate default media type', () => {
-        const desiredOptions = {
+        const desiredOptions: NegotiationOptions = {
           dynamic: chance.bool(),
           exampleKey: chance.string(),
         };
+
         const httpResponseSchema: IHttpOperationResponse = {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           contents: [],
@@ -540,6 +543,7 @@ describe('NegotiatorHelpers', () => {
           mediaType: 'application/json',
           headers: [],
         };
+
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent');
         jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(fakeOperationConfig);
 

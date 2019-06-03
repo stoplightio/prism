@@ -145,11 +145,11 @@ const helpers = {
     response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
     const { code, headers } = response;
-    const { mediaType, dynamic, exampleKey } = desiredOptions;
+    const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
-    if (mediaType) {
+    if (mediaTypes) {
       // a user provided mediaType
-      const httpContent = findBestHttpContentByMediaType(response, mediaType);
+      const httpContent = findBestHttpContentByMediaType(response, mediaTypes);
       if (httpContent) {
         // a httpContent for a provided mediaType exists
         const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(

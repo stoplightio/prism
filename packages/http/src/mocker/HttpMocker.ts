@@ -38,8 +38,8 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     const mockConfig: IHttpOperationConfig =
       config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
 
-    if (!mockConfig.mediaType && acceptMediaType) {
-      mockConfig.mediaType = acceptMediaType.split(',');
+    if (!mockConfig.mediaTypes && acceptMediaType) {
+      mockConfig.mediaTypes = acceptMediaType.split(',');
     }
 
     // looking up proper example

@@ -15,7 +15,7 @@ Object {
     "code": "200",
     "dynamic": false,
     "exampleKey": "bear",
-    "mediaType": Array [
+    "mediaTypes": Array [
       "plain/text",
     ],
   },
