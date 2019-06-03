@@ -179,7 +179,7 @@ describe('http mocker', () => {
           resource: httpOperations[1],
           input: Object.assign({}, httpRequests[0], {
             data: Object.assign({}, httpRequests[0].data, {
-              headers: { 'Content-type': 'application/xml' },
+              headers: { Accept: 'application/xml' },
             }),
           }),
         });
@@ -198,7 +198,7 @@ describe('http mocker', () => {
               resource: httpOperations[0],
               input: Object.assign({}, httpRequests[0], {
                 data: Object.assign({}, httpRequests[0].data, {
-                  headers: { 'Content-type': 'application/yaml' },
+                  headers: { Accept: 'application/yaml' },
                 }),
               }),
             }),
