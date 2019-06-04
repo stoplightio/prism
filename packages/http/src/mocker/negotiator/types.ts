@@ -9,7 +9,9 @@ export interface IHttpNegotiationResult {
   headers: IHttpHeaderParam[];
 }
 
-export type NegotiationOptions = IHttpOperationConfig;
+export type NegotiationOptions = IHttpOperationConfig & {
+  mediaTypes: string[];
+};
 
 export type NegotiatePartialOptions = {
   code: string;
