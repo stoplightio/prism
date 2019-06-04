@@ -24,9 +24,9 @@ Look at the relative repositories' READMEs for the specific documentation.
 Most of the users will probably want to use the CLI, which is a Node module, and can either be installed via NPM or Yarn…
 
 ```bash
-npm install -g @stoplight/prism-cli@alpha
+npm install -g @stoplight/prism-cli
 # or
-yarn global add @stoplight/prism-cli@alpha
+yarn global add @stoplight/prism-cli
 ```
 
 …or if you do not want to install [Node](https://nodejs.org), you can either use the installation script (if you're using Linux or MacOS)…
