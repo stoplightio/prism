@@ -122,7 +122,7 @@ This error shows the request is missing a required property `name` from the HTTP
 ## What's next for Prism?
 
 - [ ] Server Validation
-- [ ] Accept header validation
+- [x] Accept header validation
 - [ ] Content header validation
 - [ ] Security Validation
 - [ ] Dynamic Mocking (use JS to script custom interactions)

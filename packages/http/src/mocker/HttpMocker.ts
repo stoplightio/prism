@@ -3,17 +3,10 @@ import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExtern
 
 import * as caseless from 'caseless';
 import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
-import {
-  IHttpConfig,
-  IHttpOperationConfig,
-  IHttpRequest,
-  IHttpResponse,
-  PayloadGenerator,
-  ProblemJsonError,
-} from '../types';
+import { IHttpConfig, IHttpRequest, IHttpResponse, PayloadGenerator, ProblemJsonError } from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
 import helpers from './negotiator/NegotiatorHelpers';
-import { IHttpNegotiationResult } from './negotiator/types';
+import { IHttpNegotiationResult, NegotiationOptions } from './negotiator/types';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   constructor(private _exampleGenerator: PayloadGenerator) {}
@@ -35,10 +28,9 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     // setting default values
     const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
     config = config || { mock: false };
-    const mockConfig: IHttpOperationConfig =
-      config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
+    const mockConfig: NegotiationOptions = config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
 
-    if (!mockConfig.mediaTypes && acceptMediaType) {
+    if (acceptMediaType) {
       mockConfig.mediaTypes = acceptMediaType.split(',');
     }
 

@@ -10,7 +10,7 @@ export interface IHttpNegotiationResult {
 }
 
 export type NegotiationOptions = IHttpOperationConfig & {
-  mediaTypes: string[];
+  mediaTypes?: string[];
 };
 
 export type NegotiatePartialOptions = {
