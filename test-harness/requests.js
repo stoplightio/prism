@@ -93,5 +93,12 @@ module.exports = [
   {
     path: '/no_auth/pets/findByStatus?status=available&__code=499',
     method: 'GET',
+  },
+  {
+    path: '/no_auth/pets/10',
+    headers: {
+      accept: 'application/idonotexist'
+    },
+    method: 'GET',
   }
 ];
