@@ -26,6 +26,10 @@ function findBestHttpContentByMediaType(
   );
 }
 
+function findDefaultContentType(response: IHttpOperationResponse): IMediaTypeContent | undefined {
+  return response.contents.find(content => content.mediaType === '*/*');
+}
+
 function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {
   const generic2xxResponse =
     findResponseByStatusCode(httpResponses, '2XX') || createResponseFromDefault(httpResponses, '200');
@@ -111,7 +115,8 @@ const helpers = {
     response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
     const { code, dynamic, exampleKey } = partialOptions;
-    const httpContent = findBestHttpContentByMediaType(response, ['*/*']);
+    const httpContent =
+      findDefaultContentType(response) || findBestHttpContentByMediaType(response, ['application/json']);
 
     if (httpContent) {
       // a httpContent for default mediaType exists

@@ -780,6 +780,7 @@
         "description": "Returns a map of status codes to quantities",
         "operationId": "getInventory",
         "produces": [
+          "application/xml",
           "application/json"
         ],
         "parameters": [],
@@ -1093,7 +1094,7 @@
         "description": "",
         "operationId": "getUserByName",
         "produces": [
-          "application/json",
+          "application/json; charset=utf-8",
           "application/xml"
         ],
         "parameters": [
