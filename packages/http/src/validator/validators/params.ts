@@ -27,7 +27,7 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHt
     }));
 
     const parameterValues = pickBy(
-      mapValues(keyBy(specs, 'name'), el => {
+      mapValues(keyBy(specs, s => s.name.toLowerCase()), el => {
         const resolvedStyle = el.style || style;
         const deserializer = registry.get(resolvedStyle);
 
@@ -44,7 +44,7 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHt
 function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema4 {
   const schema: JSONSchema4 = {
     type: 'object',
-    properties: pickBy(mapValues(keyBy(params, 'name'), 'content.schema')),
+    properties: pickBy(mapValues(keyBy(params, p => p.name.toLowerCase()), 'content.schema')),
     required: compact(params.map(m => (m.required ? m.name : undefined))),
   };
 
