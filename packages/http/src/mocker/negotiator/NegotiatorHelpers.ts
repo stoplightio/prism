@@ -136,7 +136,7 @@ const helpers = {
         httpContent,
       );
       return {
-        headers: response.headers || [],
+        headers: response.headers,
         ...contentNegotiationResult,
       };
     } else {
@@ -148,7 +148,7 @@ const helpers = {
           value: undefined,
           key: 'default',
         },
-        headers: response.headers || [],
+        headers: response.headers,
       };
     }
   },
@@ -175,7 +175,7 @@ const helpers = {
           httpContent,
         );
         return {
-          headers: response.headers || [],
+          headers: response.headers,
           ...contentNegotiationResult,
         };
       } else {
@@ -269,14 +269,14 @@ const helpers = {
         code: response.code,
         mediaType: responseWithExamples.mediaType,
         bodyExample: responseWithExamples.examples![0],
-        headers: response.headers || [],
+        headers: response.headers,
       };
     } else if (responseWithSchema) {
       return {
         code: response.code,
         mediaType: responseWithSchema.mediaType,
         schema: responseWithSchema.schema,
-        headers: response.headers || [],
+        headers: response.headers,
       };
     } else {
       throw new Error(

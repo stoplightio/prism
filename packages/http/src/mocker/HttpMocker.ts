@@ -59,7 +59,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
 
     const [body, mockedHeaders] = await Promise.all([
       computeBody(negotiationResult, this._exampleGenerator),
-      computeMockedHeaders(negotiationResult.headers, this._exampleGenerator),
+      computeMockedHeaders(negotiationResult.headers || [], this._exampleGenerator),
     ]);
 
     return {
