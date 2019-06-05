@@ -7,7 +7,7 @@ export interface IHttpNegotiationResult {
   mediaType: string;
   bodyExample?: INodeExample | INodeExternalExample;
   schema?: JSONSchema4 | JSONSchema6 | JSONSchema7;
-  headers: IHttpHeaderParam[];
+  headers?: IHttpHeaderParam[];
 }
 
 export type NegotiationOptions = IHttpOperationConfig;
