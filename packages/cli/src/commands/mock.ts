@@ -22,7 +22,7 @@ export default class Server extends Command {
       signale.star('Dynamic example generation enabled.');
     }
 
-    const server = createServer(spec, { mock: { dynamic: true || dynamic } });
+    const server = createServer(spec, { mock: { dynamic: false || dynamic } });
     try {
       const address = await server.listen(port);
 
