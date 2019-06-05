@@ -30,19 +30,19 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHt
       mapValues(keyBy(specs, s => s.name.toLowerCase()), el => {
         const resolvedStyle = el.style || style;
         const deserializer = registry.get(resolvedStyle);
+        if (deserializer)
+          return deserializer.deserialize(
+            el.name,
+            target,
+            schema.properties && (schema.properties[el.name] as JSONSchema4),
+            el.explode || false,
+          );
 
-        return deserializer!.deserialize(
-          el.name,
-          target,
-          schema.properties![el.name] as JSONSchema4,
-          el.explode || false,
-        );
+        return undefined;
       }),
     );
 
-    const schemaErrors = validateAgainstSchema(parameterValues, schema, prefix);
-
-    return schemaErrors.concat(deprecatedWarnings);
+    return validateAgainstSchema(parameterValues, schema, prefix).concat(deprecatedWarnings);
   }
 }
 

@@ -1,23 +1,15 @@
 import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
-
-import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
-import { HttpParamDeserializerRegistry } from '../../deserializers/registry';
+import { query as registry } from '../../deserializers';
 import { HttpQueryValidator } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
 
 describe('HttpQueryValidator', () => {
-  const registry = new HttpParamDeserializerRegistry([
-    {
-      supports: (_style: HttpParamStyles) => true,
-      deserialize: (_name: string, _parameters: any, _schema: JSONSchema4 | JSONSchema6 | JSONSchema7) => ({}),
-    },
-  ]);
   const httpQueryValidator = new HttpQueryValidator(registry, 'query');
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(registry, 'get');
-    jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema').mockImplementation(() => []);
+    jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema');
   });
 
   describe('validate()', () => {
@@ -45,7 +37,7 @@ describe('HttpQueryValidator', () => {
 
               expect(httpQueryValidator.validate({ param: 'abc' }, [param])).toEqual([]);
 
-              expect(validateAgainstSchemaModule.validateAgainstSchema).not.toHaveBeenCalled();
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
             });
           });
 
@@ -62,13 +54,13 @@ describe('HttpQueryValidator', () => {
                   ]),
                 ).toEqual([]);
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toHaveBeenCalled();
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
               });
             });
           });
         });
 
-        describe('content was not provided', () => {
+        describe('schema was not provided', () => {
           it('omits schema validation', () => {
             expect(
               httpQueryValidator.validate({ param: 'abc' }, [
@@ -79,8 +71,7 @@ describe('HttpQueryValidator', () => {
               ]),
             ).toEqual([]);
 
-            expect(registry.get).not.toHaveBeenCalled();
-            expect(validateAgainstSchemaModule.validateAgainstSchema).not.toHaveBeenCalled();
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
           });
         });
 

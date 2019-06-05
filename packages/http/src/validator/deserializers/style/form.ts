@@ -13,16 +13,16 @@ export class FormStyleDeserializer implements IHttpQueryParamStyleDeserializer {
   public deserialize(
     name: string,
     parameters: IHttpNameValues,
-    schema: JSONSchema4 | JSONSchema6 | JSONSchema7,
+    schema?: JSONSchema4 | JSONSchema6 | JSONSchema7,
     explode: boolean = true,
   ) {
-    const { type } = schema;
+    const type = schema ? schema.type : undefined;
     const values = parameters[name];
 
     if (type === 'array') {
       return explode ? this.deserializeImplodeArray(values) : this.deserializeArray(values);
     } else if (type === 'object') {
-      return explode ? this.deserializeImplodeObject(parameters, schema) : this.deserializeObject(values);
+      return explode ? this.deserializeImplodeObject(parameters, schema || {}) : this.deserializeObject(values);
     } else {
       return values;
     }

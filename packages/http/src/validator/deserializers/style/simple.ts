@@ -13,10 +13,10 @@ export class SimpleStyleDeserializer implements IHttpHeaderParamStyleDeserialize
   public deserialize(
     name: string,
     parameters: IHttpNameValue,
-    schema: JSONSchema4 | JSONSchema6 | JSONSchema7,
+    schema?: JSONSchema4 | JSONSchema6 | JSONSchema7,
     explode?: boolean,
   ): any {
-    const { type } = schema;
+    const type = schema ? schema.type : 'undefined';
     const value = parameters[name];
 
     if (type === 'array') {

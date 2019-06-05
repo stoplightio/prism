@@ -12,7 +12,7 @@ export interface IHttpParamStyleDeserializer<Parameters, S = HttpParamStyles> {
   deserialize: (
     name: string,
     parameters: Parameters,
-    schema: JSONSchema4 | JSONSchema6 | JSONSchema7,
+    schema?: JSONSchema4 | JSONSchema6 | JSONSchema7,
     explode?: boolean,
   ) => any;
 }
