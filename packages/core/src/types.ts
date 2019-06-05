@@ -1,4 +1,4 @@
-import { IDiagnostic, Omit } from '@stoplight/types';
+import { IDiagnostic } from '@stoplight/types';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 // END

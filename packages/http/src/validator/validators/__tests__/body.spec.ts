@@ -1,5 +1,6 @@
-import { DiagnosticSeverity, ISchema } from '@stoplight/types';
+import { DiagnosticSeverity } from '@stoplight/types';
 
+import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 import { HttpBodyValidator } from '../body';
 import { IValidatorRegistry } from '../types';
 
@@ -64,11 +65,11 @@ describe('HttpBodyValidator', () => {
 
       describe('validator for given media type exists', () => {
         it('return validation errors', () => {
-          const mockSchema = { type: 'string' };
+          const mockSchema: JSONSchema4 = { type: 'string' };
 
           jest.spyOn(validatorRegistry, 'get').mockImplementation(mediaType => {
             expect(mediaType).toBe('application/json');
-            return (content: any, schema: ISchema) => {
+            return (content: any, schema: JSONSchema4 | JSONSchema6 | JSONSchema7) => {
               expect(content).toEqual('test');
               expect(schema).toEqual(mockSchema);
               return [

@@ -46,7 +46,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     let negotiationResult: IHttpNegotiationResult;
     if (input.validations.input.length > 0) {
       try {
-        negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
+        negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses!);
       } catch (error) {
         throw ProblemJsonError.fromTemplate(
           UNPROCESSABLE_ENTITY,
@@ -79,15 +79,15 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
 
 function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator): Promise<Dictionary<string>> {
   const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
-    if (header.content) {
-      if (header.content.examples.length > 0) {
-        const example = header.content.examples[0];
+    if (header && header.examples) {
+      if (header.examples.length > 0) {
+        const example = header.examples[0];
         if (isINodeExample(example)) {
           return example.value;
         }
       }
-      if (header.content.schema) {
-        const example = await ex(header.content.schema);
+      if (header.schema) {
+        const example = await ex(header.schema);
         if (!(isObject(example) && isEmpty(example))) return example;
       }
     }

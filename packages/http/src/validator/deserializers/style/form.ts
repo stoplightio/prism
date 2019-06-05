@@ -1,4 +1,5 @@
-import { HttpParamStyles, ISchema } from '@stoplight/types';
+import { HttpParamStyles } from '@stoplight/types';
+import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
 import { IHttpNameValues } from '../../../types';
 import { IHttpQueryParamStyleDeserializer } from '../types';
@@ -9,7 +10,12 @@ export class FormStyleDeserializer implements IHttpQueryParamStyleDeserializer {
     return style === HttpParamStyles.Form;
   }
 
-  public deserialize(name: string, parameters: IHttpNameValues, schema: ISchema, explode: boolean = true) {
+  public deserialize(
+    name: string,
+    parameters: IHttpNameValues,
+    schema: JSONSchema4 | JSONSchema6 | JSONSchema7,
+    explode: boolean = true,
+  ) {
     const { type } = schema;
     const values = parameters[name];
 
@@ -35,7 +41,7 @@ export class FormStyleDeserializer implements IHttpQueryParamStyleDeserializer {
     return value.split(',');
   }
 
-  private deserializeImplodeObject(parameters: IHttpNameValues, schema: ISchema) {
+  private deserializeImplodeObject(parameters: IHttpNameValues, schema: JSONSchema4 | JSONSchema6 | JSONSchema7) {
     const properties = schema.properties || {};
 
     return Object.keys(parameters).reduce((result: object, key) => {

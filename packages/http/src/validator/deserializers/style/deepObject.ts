@@ -1,4 +1,5 @@
-import { HttpParamStyles, ISchema } from '@stoplight/types';
+import { HttpParamStyles } from '@stoplight/types';
+import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 import { IHttpNameValues } from '../../../types';
 import { IHttpQueryParamStyleDeserializer } from '../types';
 
@@ -7,7 +8,7 @@ export class DeepObjectStyleDeserializer implements IHttpQueryParamStyleDeserial
     return style === HttpParamStyles.DeepObject;
   }
 
-  public deserialize(name: string, parameters: IHttpNameValues, schema: ISchema) {
+  public deserialize(name: string, parameters: IHttpNameValues, schema: JSONSchema4 | JSONSchema6 | JSONSchema7) {
     function resolve(path: string[]) {
       return name + path.map(el => `[${el}]`).join('');
     }

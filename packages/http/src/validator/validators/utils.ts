@@ -3,7 +3,7 @@ import { DiagnosticSeverity, Segment } from '@stoplight/types';
 import * as Ajv from 'ajv';
 // @ts-ignore
 import * as AjvOAI from 'ajv-oai';
-import { JSONSchema4 } from 'json-schema';
+import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
 const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' }) as Ajv.Ajv;
 
@@ -20,7 +20,11 @@ export const convertAjvErrors = (errors: Ajv.ErrorObject[] | undefined | null, s
   }));
 };
 
-export const validateAgainstSchema = (value: any, schema: JSONSchema4, prefix?: string): IPrismDiagnostic[] => {
+export const validateAgainstSchema = (
+  value: any,
+  schema: JSONSchema4 | JSONSchema6 | JSONSchema7,
+  prefix?: string,
+): IPrismDiagnostic[] => {
   try {
     const validate = ajv.compile(schema);
     const valid = validate(value);

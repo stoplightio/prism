@@ -4,6 +4,7 @@ import { forwarder } from './forwarder';
 import { HttpMocker } from './mocker';
 import { generate } from './mocker/generator/JSONSchema';
 import { router } from './router';
+export * from './types';
 import {
   IHttpConfig,
   IHttpMethod,
@@ -12,6 +13,7 @@ import {
   IHttpOperationConfig,
   IHttpRequest,
   IHttpResponse,
+  PickRequired,
   ProblemJson,
   ProblemJsonError,
   TPrismHttpComponents,
@@ -48,4 +50,5 @@ export {
   TPrismHttpComponents,
   ProblemJsonError,
   ProblemJson,
+  PickRequired,
 };

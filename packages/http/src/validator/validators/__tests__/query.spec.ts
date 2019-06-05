@@ -1,5 +1,6 @@
-import { HttpParamStyles, ISchema } from '@stoplight/types';
+import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
 
+import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 import { HttpParamDeserializerRegistry } from '../../deserializers/registry';
 import { HttpQueryValidator } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
@@ -8,7 +9,7 @@ describe('HttpQueryValidator', () => {
   const registry = new HttpParamDeserializerRegistry([
     {
       supports: (_style: HttpParamStyles) => true,
-      deserialize: (_name: string, _parameters: any, _schema: ISchema) => ({}),
+      deserialize: (_name: string, _parameters: any, _schema: JSONSchema4 | JSONSchema6 | JSONSchema7) => ({}),
     },
   ]);
   const httpQueryValidator = new HttpQueryValidator(registry, 'query');
@@ -36,16 +37,13 @@ describe('HttpQueryValidator', () => {
           describe('deserializer not available', () => {
             it('omits schema validation', () => {
               jest.spyOn(registry, 'get').mockReturnValueOnce(undefined);
+              const param: IHttpQueryParam = {
+                name: 'param',
+                style: HttpParamStyles.Form,
+                schema: { type: 'number' },
+              };
 
-              expect(
-                httpQueryValidator.validate({ param: 'abc' }, [
-                  {
-                    name: 'param',
-                    style: HttpParamStyles.Form,
-                    content: { schema: { type: 'number' }, examples: [], encodings: [] },
-                  },
-                ]),
-              ).toEqual([]);
+              expect(httpQueryValidator.validate({ param: 'abc' }, [param])).toEqual([]);
 
               expect(validateAgainstSchemaModule.validateAgainstSchema).not.toHaveBeenCalled();
             });
@@ -59,7 +57,7 @@ describe('HttpQueryValidator', () => {
                     {
                       name: 'param',
                       style: HttpParamStyles.Form,
-                      content: { schema: { type: 'string' }, examples: [], encodings: [] },
+                      schema: { type: 'string' },
                     },
                   ]),
                 ).toEqual([]);

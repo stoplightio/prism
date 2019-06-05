@@ -1,5 +1,6 @@
-import { HttpParamStyles, ISchema } from '@stoplight/types';
+import { HttpParamStyles } from '@stoplight/types';
 
+import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 import { HttpParamDeserializerRegistry } from '../../deserializers/registry';
 import { HttpHeadersValidator } from '../headers';
 import * as validateAgainstSchemaModule from '../utils';
@@ -8,7 +9,7 @@ describe('HttpHeadersValidator', () => {
   const registry = new HttpParamDeserializerRegistry([
     {
       supports: (_style: HttpParamStyles) => true,
-      deserialize: (_name: string, _parameters: any, _schema: ISchema) => ({}),
+      deserialize: (_name: string, _parameters: any, _schema: JSONSchema4 | JSONSchema6 | JSONSchema7) => ({}),
     },
   ]);
   const httpHeadersValidator = new HttpHeadersValidator(registry, 'header');
@@ -42,7 +43,7 @@ describe('HttpHeadersValidator', () => {
                   {
                     name: 'x-test-header',
                     style: HttpParamStyles.Simple,
-                    content: { schema: { type: 'number' }, examples: [], encodings: [] },
+                    schema: { type: 'number' },
                   },
                 ]),
               ).toEqual([]);
@@ -59,7 +60,7 @@ describe('HttpHeadersValidator', () => {
                     {
                       name: 'x-test-header',
                       style: HttpParamStyles.Simple,
-                      content: { schema: { type: 'string' }, examples: [], encodings: [] },
+                      schema: { type: 'string' },
                     },
                   ]),
                 ).toEqual([]);

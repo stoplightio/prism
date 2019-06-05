@@ -44,11 +44,9 @@ describe('HttpValidator', () => {
               {
                 method: 'get',
                 path: '/',
-                responses: [],
                 id: '1',
-                servers: [],
-                security: [],
-                request: { headers: [], cookie: [], query: [], path: [] },
+                request: {},
+                responses: [{ code: '200' }],
               },
               extendResource,
             ),
@@ -95,11 +93,9 @@ describe('HttpValidator', () => {
               {
                 method: 'get',
                 path: '/',
-                responses: [],
                 id: '1',
-                servers: [],
-                security: [],
-                request: { path: [], query: [], cookie: [], headers: [] },
+                request: {},
+                responses: [{ code: '200' }],
               },
               extendResource,
             ),
@@ -141,11 +137,9 @@ describe('HttpValidator', () => {
               {
                 method: 'get',
                 path: '/',
-                responses: [],
                 id: '1',
-                servers: [],
-                security: [],
-                request: { path: [], query: [], cookie: [], headers: [] },
+                request: {},
+                responses: [{ code: '200' }],
               },
               extendResource,
             ),
@@ -166,11 +160,11 @@ describe('HttpValidator', () => {
 
       describe('request is set', () => {
         describe('request.query is not set', () => {
-          it('validates query', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
+          it('validates query', test({ request: {} }));
         });
 
         describe('request.query is set', () => {
-          it('validates query', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
+          it('validates query', test({ request: {} }));
         });
       });
 
@@ -188,11 +182,9 @@ describe('HttpValidator', () => {
             resource: {
               method: 'get',
               path: '/',
-              responses: [],
               id: '1',
-              servers: [],
-              security: [],
-              request: { path: [], query: [], cookie: [], headers: [] },
+              request: {},
+              responses: [{ code: '200' }],
             },
             config: { mock: { dynamic: false }, validate: { response: { body: true } } },
           }),
@@ -214,11 +206,9 @@ describe('HttpValidator', () => {
               resource: {
                 method: 'get',
                 path: '/',
-                responses: [],
                 id: '1',
-                servers: [],
-                security: [],
-                request: { query: [], path: [], cookie: [], headers: [] },
+                request: {},
+                responses: [{ code: '200' }],
               },
               output: { statusCode: 200 },
               config: { mock: { dynamic: false }, validate: { response: { body: true } } },
@@ -243,11 +233,9 @@ describe('HttpValidator', () => {
               resource: {
                 method: 'get',
                 path: '/',
-                responses: [],
                 id: '1',
-                servers: [],
-                security: [],
-                request: { query: [], path: [], cookie: [], headers: [] },
+                request: {},
+                responses: [{ code: '200' }],
               },
               output: { statusCode: 200 },
               config: { mock: { dynamic: false }, validate: { response: { headers: true } } },

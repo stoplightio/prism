@@ -4,7 +4,6 @@ import {
   IMediaTypeContent,
   INodeExample,
   INodeExternalExample,
-  Omit,
 } from '@stoplight/types';
 import { Chance } from 'chance';
 
@@ -19,17 +18,15 @@ function anHttpOperation(givenHttpOperation?: IHttpOperation) {
   const httpOperation = givenHttpOperation || {
     method: chance.string(),
     path: chance.url(),
-    responses: [],
+    responses: [{ code: '300' }],
     id: chance.string(),
-    servers: [],
-    security: [],
-    request: { query: [], path: [], cookie: [], headers: [] },
+    request: {},
   };
   return {
     instance() {
       return httpOperation;
     },
-    withResponses(responses: IHttpOperationResponse[]) {
+    withResponses(responses: IHttpOperationResponse[] & { 0: IHttpOperationResponse }) {
       httpOperation.responses = responses;
       return this;
     },
@@ -94,20 +91,14 @@ describe('NegotiatorHelpers', () => {
                 contents: [
                   {
                     mediaType: actualMediaType + chance.character(),
-                    examples: [],
-                    encodings: [],
                   },
                   {
-                    schema: { type: 'type1' },
+                    schema: { type: 'string' },
                     mediaType: actualMediaType,
-                    examples: [],
-                    encodings: [],
                   },
                   {
-                    schema: { type: 'type2' },
+                    schema: { type: 'number' },
                     mediaType: actualMediaType + chance.character(),
-                    examples: [],
-                    encodings: [],
                   },
                 ],
               },
@@ -118,7 +109,7 @@ describe('NegotiatorHelpers', () => {
           const expectedConfig: IHttpNegotiationResult = {
             code: actualCode,
             mediaType: actualMediaType,
-            schema: { type: 'type1' },
+            schema: { type: 'string' },
             headers: [],
           };
 
@@ -296,8 +287,6 @@ describe('NegotiatorHelpers', () => {
       const code = chance.string();
       const fakeResponse = {
         code,
-        contents: [],
-        headers: [],
       };
       const desiredOptions = { dynamic: false };
       const fakeOperationConfig = {
@@ -318,18 +307,6 @@ describe('NegotiatorHelpers', () => {
       expect(negotiateOptionsForDefaultCodeMock).toHaveBeenCalledTimes(1);
       expect(negotiateOptionsForDefaultCodeMock).toHaveBeenCalledWith(httpOperation, desiredOptions);
       expect(actualOperationConfig).toBe(fakeOperationConfig);
-    });
-
-    it('given response not defined should fallback to default code', () => {
-      const code = chance.string();
-      const desiredOptions = { dynamic: false };
-      httpOperation = anHttpOperation(httpOperation)
-        .withResponses([])
-        .instance();
-
-      expect(() => helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)).toThrow(
-        'Requested status code is not defined in the schema.',
-      );
     });
   });
 

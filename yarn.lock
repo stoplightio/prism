@@ -1257,10 +1257,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-7.0.1.tgz#33ef2ce685daff4808235ee7f7f373b9e53df05c"
   integrity sha512-9efbb6tCsS59j+AmQctVsHi+v9OcDWQTcllnLQvtzEMZ4zEwRIGNAJNXiIUMvqj7NGhov8aiBhO+jpObJ+J8hg==
 
-"@stoplight/types@^9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-9.0.0.tgz#5475ebe22be270879df609459f313f557859412b"
-  integrity sha512-sPHQwM/yxEimSuZyd/ugCwme0lQEc4enps4bvOnmMfB/H/rMHa2te61dY/1SdgIuK/WLfL16v8aHkxAtX7Alsg==
+"@stoplight/types@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-9.0.1.tgz#b580610106d35d2c65e2690f636c880a45f1093a"
+  integrity sha512-PGHpxtcdAfyIjd4+GhefdGlPolaXR+1BXcO855v1Gg1xTwFWwZrM2CALcq5Ev8vl74pEMAYSZ3CvwJVrQM7BWw==
 
 "@stoplight/yaml@2.3.0", "@stoplight/yaml@^2.3.0":
   version "2.3.0"

@@ -1,5 +1,6 @@
-import { HttpParamStyles, ISchema } from '@stoplight/types';
+import { HttpParamStyles } from '@stoplight/types';
 
+import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 import { IHttpNameValue, IHttpNameValues } from '../../types';
 
 export interface IHttpParamDeserializerRegistry<Parameters, S = HttpParamStyles> {
@@ -8,7 +9,12 @@ export interface IHttpParamDeserializerRegistry<Parameters, S = HttpParamStyles>
 
 export interface IHttpParamStyleDeserializer<Parameters, S = HttpParamStyles> {
   supports: (style: S) => boolean;
-  deserialize: (name: string, parameters: Parameters, schema: ISchema, explode?: boolean) => any;
+  deserialize: (
+    name: string,
+    parameters: Parameters,
+    schema: JSONSchema4 | JSONSchema6 | JSONSchema7,
+    explode?: boolean,
+  ) => any;
 }
 
 export type IHttpHeaderParamStyleDeserializer = IHttpParamStyleDeserializer<IHttpNameValue>;
