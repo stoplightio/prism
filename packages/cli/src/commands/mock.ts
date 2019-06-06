@@ -5,14 +5,14 @@ import { createServer } from '../util/createServer';
 
 export default class Server extends Command {
   public static description = 'Start a mock server with the given spec file';
-  public static flags = { port: FLAGS.port, dynamic: FLAGS.dynamic };
+  public static flags = { port: FLAGS.port, host: FLAGS.host, dynamic: FLAGS.dynamic };
   public static args = [ARGS.spec];
 
   public async run() {
     const signaleInteractiveInstance = new signale.Signale({ interactive: true });
 
     const {
-      flags: { port, dynamic },
+      flags: { port, dynamic, host },
       args: { spec },
     } = this.parse(Server);
 
@@ -24,7 +24,7 @@ export default class Server extends Command {
 
     const server = createServer(spec, { mock: { dynamic: true || dynamic } });
     try {
-      const address = await server.listen(port);
+      const address = await server.listen(port, host);
 
       if (server.prism.resources.length === 0) {
         signaleInteractiveInstance.fatal('No operations found in the current file.');
