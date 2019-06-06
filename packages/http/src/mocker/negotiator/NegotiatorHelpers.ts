@@ -1,5 +1,6 @@
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
-import { Reader } from 'fp-ts/lib/Reader';
+import { Either, left, right } from 'fp-ts/lib/Either';
+import { Reader, reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';
 
 import { ContentExample, NonEmptyArray } from '@stoplight/prism-http/src/types';
@@ -58,7 +59,7 @@ const helpers = {
   negotiateByPartialOptionsAndHttpContent(
     { code, exampleKey, dynamic }: NegotiatePartialOptions,
     httpContent: IMediaTypeContent,
-  ): Omit<IHttpNegotiationResult, 'headers'> {
+  ): Either<Error, Omit<IHttpNegotiationResult, 'headers'>> {
     const { mediaType } = httpContent;
 
     if (exampleKey) {
@@ -66,45 +67,45 @@ const helpers = {
       const example = findExampleByKey(httpContent, exampleKey);
       if (example) {
         // example exists, return
-        return {
+        return right({
           code,
           mediaType,
           bodyExample: example,
-        };
+        });
       } else {
-        throw new Error(`Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`);
+        return left(new Error(`Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`));
       }
     } else if (dynamic === true) {
       if (httpContent.schema) {
-        return {
+        return right({
           code,
           mediaType,
           schema: httpContent.schema,
-        };
+        });
       } else {
-        throw new Error(`Tried to force a dynamic response for: ${mediaType} but schema is not defined.`);
+        return left(new Error(`Tried to force a dynamic response for: ${mediaType} but schema is not defined.`));
       }
     } else {
       // try to find a static example first
       const example = findBestExample(httpContent);
       if (example) {
         // if example exists, return
-        return {
+        return right({
           code,
           mediaType,
           bodyExample: example,
-        };
+        });
       } else if (httpContent.schema) {
-        return {
+        return right({
           code,
           mediaType,
           schema: httpContent.schema,
-        };
+        });
       } else {
-        return {
+        return right({
           code,
           mediaType,
-        };
+        });
       }
     }
   },
@@ -112,27 +113,28 @@ const helpers = {
   negotiateDefaultMediaType(
     partialOptions: NegotiatePartialOptions,
     response: IHttpOperationResponse,
-  ): IHttpNegotiationResult {
+  ): Either<Error, IHttpNegotiationResult> {
     const { code, dynamic, exampleKey } = partialOptions;
     const mediaType = 'application/json';
     const httpContent = findHttpContentByMediaType(response, mediaType);
     if (httpContent) {
       // a httpContent for default mediaType exists
-      const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
-        {
-          code,
-          dynamic,
-          exampleKey,
-        },
-        httpContent,
-      );
-      return {
-        headers: response.headers,
-        ...contentNegotiationResult,
-      };
+      return helpers
+        .negotiateByPartialOptionsAndHttpContent(
+          {
+            code,
+            dynamic,
+            exampleKey,
+          },
+          httpContent,
+        )
+        .map(contentNegotiationResult => ({
+          headers: response.headers,
+          ...contentNegotiationResult,
+        }));
     } else {
       // no httpContent found, returning empty body
-      return {
+      return right({
         code,
         mediaType: 'text/plain',
         bodyExample: {
@@ -140,7 +142,7 @@ const helpers = {
           key: 'default',
         },
         headers: response.headers,
-      };
+      });
     }
   },
 
@@ -148,7 +150,7 @@ const helpers = {
     _httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse,
-  ): Reader<Logger, IHttpNegotiationResult> {
+  ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
     const { code, headers } = response;
     const { mediaType, dynamic, exampleKey } = desiredOptions;
 
@@ -159,25 +161,26 @@ const helpers = {
         if (httpContent) {
           logger.success(`Found a compatible media type for ${mediaType}`);
           // a httpContent for a provided mediaType exists
-          const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
-            {
-              code,
-              dynamic,
-              exampleKey,
-            },
-            httpContent,
-          );
-          return {
-            headers,
-            ...contentNegotiationResult,
-          };
+          return helpers
+            .negotiateByPartialOptionsAndHttpContent(
+              {
+                code,
+                dynamic,
+                exampleKey,
+              },
+              httpContent,
+            )
+            .map(contentNegotiationResult => ({
+              headers,
+              ...contentNegotiationResult,
+            }));
         } else {
           logger.trace(`Unable to find a content for ${mediaType}, returning an empty text/plain response.`);
-          return {
+          return right({
             code,
             mediaType: 'text/plain',
             headers,
-          };
+          });
         }
       }
       // user did not provide mediaType
@@ -198,19 +201,20 @@ const helpers = {
   negotiateOptionsForDefaultCode(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
-  ): Reader<Logger, IHttpNegotiationResult> {
+  ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
     const lowest2xxResponse = findLowest2xx(httpOperation.responses);
     if (lowest2xxResponse) {
       return helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, lowest2xxResponse);
     }
-    throw new Error('No 2** response defined, cannot mock');
+
+    return reader.of(left(new Error('No 2** response defined, cannot mock')));
   },
 
   negotiateOptionsBySpecificCode(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
     code: string,
-  ): Reader<Logger, IHttpNegotiationResult> {
+  ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
     // find response by provided status code
     return new Reader<Logger, IHttpOperationResponse | undefined>(logger => {
       const result = findResponseByStatusCode(httpOperation.responses, code);
@@ -246,7 +250,7 @@ const helpers = {
   negotiateOptionsForValidRequest(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
-  ): Reader<Logger, IHttpNegotiationResult> {
+  ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
     const { code } = desiredOptions;
     if (code) {
       return helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code);
@@ -254,7 +258,9 @@ const helpers = {
     return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
-  negotiateOptionsForInvalidRequest(httpResponses: IHttpOperationResponse[]): Reader<Logger, IHttpNegotiationResult> {
+  negotiateOptionsForInvalidRequest(
+    httpResponses: IHttpOperationResponse[],
+  ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
     return new Reader<Logger, IHttpOperationResponse | undefined>(logger => {
       let result = findResponseByStatusCode(httpResponses, '422');
       if (!result) {
@@ -273,7 +279,7 @@ const helpers = {
       return new Reader(logger => {
         if (!response) {
           logger.trace('Unable to find a default response definition.');
-          throw new Error('No 422, 400, or default responses defined');
+          return left(new Error('No 422, 400, or default responses defined'));
         }
 
         // find first response with any static examples
@@ -281,27 +287,27 @@ const helpers = {
 
         if (contentWithExamples) {
           logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
-          return {
+          return right({
             code: response.code,
             mediaType: contentWithExamples.mediaType,
             bodyExample: contentWithExamples.examples[0],
             headers: response.headers,
-          };
+          });
         } else {
           logger.trace(`Unable to find a content with an example defined for the response ${response.code}`);
           // find first response with a schema
           const responseWithSchema = response.contents.find(content => !!content.schema);
           if (responseWithSchema) {
             logger.success(`The response ${response.code} has a schema. I'll keep going with this one`);
-            return {
+            return right({
               code: response.code,
               mediaType: responseWithSchema.mediaType,
               schema: responseWithSchema.schema,
               headers: response.headers,
-            };
+            });
           } else {
             logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
-            throw new Error(`Neither schema nor example defined for ${response.code} response.`);
+            return left(new Error(`Neither schema nor example defined for ${response.code} response.`));
           }
         }
       });
