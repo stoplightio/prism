@@ -14,11 +14,22 @@ export const createServer = <LoaderInput>(
   const server = fastify().register(fastifyAcceptsSerializer, {
     serializers: [
       {
-        regex: /json$/,
+        regex: /application\/\S*json$/,
         serializer: JSON.stringify,
       },
     ],
     default: 'application/json',
+  });
+
+  server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
+    if (req.headers['content-type'] && /application\/\S*json$$/.test(req.headers['content-type'])) {
+      try {
+        return done(null, JSON.parse(body));
+      } catch (e) {
+        done(e);
+      }
+    }
+    done(null);
   });
 
   const { components = {}, config } = opts;
