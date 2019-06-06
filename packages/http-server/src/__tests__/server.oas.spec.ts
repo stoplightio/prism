@@ -18,7 +18,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
   let server: IPrismHttpServer<{}>;
 
   beforeAll(async () => {
-    server = createServer({}, { components: {}, config: { mock: { dynamic: false } } });
+    server = createServer({}, { components: { logger }, config: { mock: { dynamic: false } } });
     await server.prism.load({
       path: relative(process.cwd(), resolve(__dirname, '..', '..', '..', '..', 'examples', file)),
     });

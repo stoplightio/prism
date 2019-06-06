@@ -226,23 +226,25 @@ const helpers = {
       return result;
     }).chain(responseByForcedStatusCode => {
       if (responseByForcedStatusCode) {
-        try {
-          // try to negotiate
-          return helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, responseByForcedStatusCode);
-        } catch (error) {
-          // if negotiations fail try a default code
-          try {
-            return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
-          } catch (error2) {
-            throw new Error(`${error}. We tried default response, but we got ${error2}`);
-          }
-        }
+        return helpers
+          .negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, responseByForcedStatusCode)
+          .chain(either =>
+            either.fold(
+              () =>
+                helpers
+                  .negotiateOptionsForDefaultCode(httpOperation, desiredOptions)
+                  .map(innerEither =>
+                    innerEither.mapLeft(error => new Error(`${error}. We tried default response, but we got ${error}`)),
+                  ),
+              result => reader.of(right(result)),
+            ),
+          );
       }
 
       return new Reader(logger => {
         logger.trace(`Unable to find default response to construct a ${code} response`);
         // if no response found under a status code throw an error
-        throw new Error('Requested status code is not defined in the schema.');
+        return left(new Error('Requested status code is not defined in the schema.'));
       });
     });
   },

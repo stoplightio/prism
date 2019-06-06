@@ -1,10 +1,17 @@
 import { createLogger } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample } from '@stoplight/types';
+import { Either, right } from 'fp-ts/lib/Either';
 import { reader } from 'fp-ts/lib/Reader';
 import { flatMap } from 'lodash';
 import { HttpMocker } from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import helpers from '../negotiator/NegotiatorHelpers';
+
+function assertRight<L, A>(e: Either<L, A>, onRight: (a: A) => void) {
+  e.fold(l => {
+    throw new Error('Right expected, got a Left: ' + l);
+  }, onRight);
+}
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -101,58 +108,64 @@ describe('HttpMocker', () => {
       it('returns an empty body when negotiator did not resolve to either example nor schema', () => {
         jest
           .spyOn(helpers, 'negotiateOptionsForValidRequest')
-          .mockReturnValue(reader.of({ code: '202', mediaType: 'test', headers: [] }));
+          .mockReturnValue(reader.of(right({ code: '202', mediaType: 'test', headers: [] })));
 
-        return expect(
-          httpMocker
-            .mock({
-              resource: mockResource,
-              input: mockInput,
-            })
-            .run(logger),
-        ).resolves.toHaveProperty('body', undefined);
-      });
-
-      it('returns static example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
-          reader.of({
-            code: '202',
-            mediaType: 'test',
-            bodyExample: mockResource.responses![0].contents![0].examples![0],
-            headers: [],
-          }),
-        );
-
-        return expect(
-          httpMocker
-            .mock({
-              resource: mockResource,
-              input: mockInput,
-            })
-            .run(logger),
-        ).resolves.toMatchSnapshot();
-      });
-
-      it('returns dynamic example', async () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
-          reader.of({
-            code: '202',
-            mediaType: 'test',
-            schema: mockResource.responses![0].contents![0].schema,
-            headers: [],
-          }),
-        );
-
-        const response = await httpMocker
+        const mockResult = httpMocker
           .mock({
             resource: mockResource,
             input: mockInput,
           })
           .run(logger);
 
-        return expect(response.body).toMatchObject({
-          name: expect.any(String),
-          surname: expect.any(String),
+        assertRight(mockResult, result => expect(result).resolves.toHaveProperty('body', undefined));
+      });
+
+      it('returns static example', () => {
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          reader.of(
+            right({
+              code: '202',
+              mediaType: 'test',
+              bodyExample: mockResource.responses![0].contents![0].examples![0],
+              headers: [],
+            }),
+          ),
+        );
+
+        const mockResult = httpMocker
+          .mock({
+            resource: mockResource,
+            input: mockInput,
+          })
+          .run(logger);
+
+        assertRight(mockResult, result => expect(result).resolves.toMatchSnapshot());
+      });
+
+      it('returns dynamic example', () => {
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          reader.of(
+            right({
+              code: '202',
+              mediaType: 'test',
+              schema: mockResource.responses![0].contents![0].schema,
+              headers: [],
+            }),
+          ),
+        );
+
+        const response = httpMocker
+          .mock({
+            resource: mockResource,
+            input: mockInput,
+          })
+          .run(logger);
+
+        assertRight(response, result => {
+          return expect(result).resolves.toHaveProperty('body', {
+            name: expect.any(String),
+            surname: expect.any(String),
+          });
         });
       });
     });
@@ -160,47 +173,51 @@ describe('HttpMocker', () => {
     describe('with invalid negotiator response', () => {
       it('returns static example', () => {
         jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockReturnValue(
-          reader.of({
-            code: '202',
-            mediaType: 'test',
-            bodyExample: mockResource.responses![0].contents![0].examples![0],
-            headers: [],
-          }),
+          reader.of(
+            right({
+              code: '202',
+              mediaType: 'test',
+              bodyExample: mockResource.responses![0].contents![0].examples![0],
+              headers: [],
+            }),
+          ),
         );
 
-        return expect(
-          httpMocker
-            .mock({
-              resource: mockResource,
-              input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
-            })
-            .run(logger),
-        ).resolves.toMatchSnapshot();
+        const mockResult = httpMocker
+          .mock({
+            resource: mockResource,
+            input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
+          })
+          .run(logger);
+
+        assertRight(mockResult, result => expect(result).resolves.toMatchSnapshot());
       });
     });
 
     describe('when example is of type INodeExternalExample', () => {
       it('generates a dynamic example', () => {
         jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
-          reader.of({
-            code: '202',
-            mediaType: 'test',
-            bodyExample: mockResource.responses![0].contents![0].examples![1],
-            headers: [],
-            schema: { type: 'string' },
-          }),
+          reader.of(
+            right({
+              code: '202',
+              mediaType: 'test',
+              bodyExample: mockResource.responses![0].contents![0].examples![1],
+              headers: [],
+              schema: { type: 'string' },
+            }),
+          ),
         );
 
         jest.spyOn(JSONSchemaGenerator, 'generate').mockResolvedValue('example value chelsea');
 
-        return expect(
-          httpMocker
-            .mock({
-              resource: mockResource,
-              input: mockInput,
-            })
-            .run(logger),
-        ).resolves.toMatchSnapshot();
+        const mockResult = httpMocker
+          .mock({
+            resource: mockResource,
+            input: mockInput,
+          })
+          .run(logger);
+
+        assertRight(mockResult, result => expect(result).resolves.toMatchSnapshot());
       });
     });
 
@@ -227,7 +244,6 @@ describe('HttpMocker', () => {
               .run(logger);
 
             expect(JSONSchemaGenerator.generate).not.toHaveBeenCalled();
-            expect(response.body).toBeDefined();
 
             const allExamples = flatMap(mockResource.responses, res =>
               flatMap(res.contents, content => content.examples),
@@ -235,10 +251,15 @@ describe('HttpMocker', () => {
               if ('value' in x) return x.value;
             });
 
-            allExamples.forEach(example => expect(response.body).not.toEqual(example));
-            expect(response.body).toMatchObject({
-              name: expect.any(String),
-              surname: expect.any(String),
+            assertRight(response, async result => {
+              const r = await result;
+              expect(r.body).toBeDefined();
+
+              allExamples.forEach(example => expect(r.body).not.toEqual(example));
+              expect(r.body).toMatchObject({
+                name: expect.any(String),
+                surname: expect.any(String),
+              });
             });
           });
         });
@@ -255,14 +276,16 @@ describe('HttpMocker', () => {
               })
               .run(logger);
 
-            expect(response.body).toBeDefined();
-
             const selectedExample = flatMap(mockResource.responses, res =>
               flatMap(res.contents, content => content.examples),
             ).find(ex => ex.key === 'test key');
-
             expect(selectedExample).toBeDefined();
-            expect(response.body).toEqual((selectedExample as INodeExample).value);
+
+            assertRight(response, async result => {
+              const resolved = await result;
+              expect(resolved.body).toBeDefined();
+              expect(resolved.body).toEqual((selectedExample as INodeExample).value);
+            });
           });
         });
       });

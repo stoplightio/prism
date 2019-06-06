@@ -2,11 +2,24 @@ import { ISchema } from '@stoplight/types';
 import * as Ajv from 'ajv';
 
 import { createLogger } from '@stoplight/prism-core';
+import { Either } from 'fp-ts/lib/Either';
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
 import { generate } from '../generator/JSONSchema';
 import { HttpMocker } from '../index';
 
 const logger = createLogger('TEST', { enabled: false });
+
+function assertRight<L, A>(e: Either<L, A>, onRight: (a: A) => void) {
+  e.fold(l => {
+    throw new Error('Right expected, got a Left: ' + l);
+  }, onRight);
+}
+
+function assertLeft<L, A>(e: Either<L, A>, onLeft: (a: L) => void) {
+  e.fold(onLeft, a => {
+    throw new Error('Left expected, got a Right: ' + a);
+  });
+}
 
 describe('http mocker', () => {
   const mocker = new HttpMocker(generate);
@@ -14,7 +27,7 @@ describe('http mocker', () => {
   describe('request is valid', () => {
     describe('given only enforced content type', () => {
       test('and that content type exists should first 200 static example', async () => {
-        const response = await mocker
+        const response = mocker
           .mock({
             resource: httpOperations[0],
             input: httpRequests[0],
@@ -27,30 +40,32 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        expect(response).toMatchSnapshot();
+        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
       });
 
       test('and that content type does not exist should return empty body', () => {
-        return expect(
-          mocker
-            .mock({
-              resource: httpOperations[0],
-              input: httpRequests[0],
-              config: {
-                mock: {
-                  dynamic: false,
-                  mediaType: 'text/funky',
-                },
+        const mockResult = mocker
+          .mock({
+            resource: httpOperations[0],
+            input: httpRequests[0],
+            config: {
+              mock: {
+                dynamic: false,
+                mediaType: 'text/funky',
               },
-            })
-            .run(logger),
-        ).resolves.toMatchObject({ headers: { 'Content-type': 'text/plain' }, body: undefined });
+            },
+          })
+          .run(logger);
+
+        assertRight(mockResult, result =>
+          expect(result).resolves.toMatchObject({ headers: { 'Content-type': 'text/plain' }, body: undefined }),
+        );
       });
     });
 
     describe('given enforced status code and contentType and exampleKey', () => {
       test('should return the matching example', async () => {
-        const response = await mocker
+        const response = mocker
           .mock({
             resource: httpOperations[0],
             input: httpRequests[0],
@@ -65,13 +80,13 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        expect(response).toMatchSnapshot();
+        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
       });
     });
 
     describe('given enforced status code and contentType', () => {
       test('should return the first matching example', async () => {
-        const response = await mocker
+        const response = mocker
           .mock({
             resource: httpOperations[0],
             input: httpRequests[0],
@@ -85,13 +100,13 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        expect(response).toMatchSnapshot();
+        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
       });
     });
 
     describe('given enforced example key', () => {
       test('should return application/json, 200 response', async () => {
-        const response = await mocker
+        const response = mocker
           .mock({
             resource: httpOperations[0],
             input: httpRequests[0],
@@ -104,11 +119,11 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        expect(response).toMatchSnapshot();
+        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
       });
 
       test('and mediaType should return 200 response', async () => {
-        const response = await mocker
+        const response = mocker
           .mock({
             resource: httpOperations[0],
             input: httpRequests[0],
@@ -122,13 +137,13 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        expect(response).toMatchSnapshot();
+        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
       });
     });
 
     describe('given enforced status code', () => {
       test('should return the first matching example of application/json', async () => {
-        const response = await mocker
+        const response = mocker
           .mock({
             resource: httpOperations[0],
             input: httpRequests[0],
@@ -141,7 +156,7 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        expect(response).toMatchSnapshot();
+        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
       });
 
       test('given that status code is not defined should throw an error', () => {
@@ -158,11 +173,13 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        return expect(rejection).rejects.toEqual(new Error('Requested status code is not defined in the schema.'));
+        assertLeft(rejection, e =>
+          expect(e).toHaveProperty('message', 'Requested status code is not defined in the schema.'),
+        );
       });
 
       test('and example key should return application/json example', async () => {
-        const response = await mocker
+        const response = mocker
           .mock({
             resource: httpOperations[0],
             input: httpRequests[0],
@@ -176,50 +193,51 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        expect(response).toMatchSnapshot();
+        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
       });
-    });
 
-    describe('HttpOperation contains example', () => {
-      test('return lowest 2xx code and match response example to media type accepted by request', async () => {
-        const response = await mocker
-          .mock({
-            resource: httpOperations[0],
-            input: httpRequests[0],
-          })
-          .run(logger);
+      describe('HttpOperation contains example', () => {
+        test('return lowest 2xx code and match response example to media type accepted by request', async () => {
+          const response = mocker
+            .mock({
+              resource: httpOperations[0],
+              input: httpRequests[0],
+            })
+            .run(logger);
 
-        expect(response.statusCode).toBe(200);
-        expect(response.body).toMatchObject({
-          completed: true,
-          id: 1,
-          name: 'make prism',
+          assertRight(response, async result => {
+            const r = await result;
+            expect(r.statusCode).toBe(200);
+            expect(r.body).toMatchObject({
+              completed: true,
+              id: 1,
+              name: 'make prism',
+            });
+          });
         });
-      });
 
-      test('return lowest 2xx response and the first example matching the media type', async () => {
-        const response = await mocker
-          .mock({
-            resource: httpOperations[1],
-            input: Object.assign({}, httpRequests[0], {
-              data: Object.assign({}, httpRequests[0].data, {
-                headers: { 'Content-type': 'application/xml' },
+        test('return lowest 2xx response and the first example matching the media type', async () => {
+          const response = mocker
+            .mock({
+              resource: httpOperations[1],
+              input: Object.assign({}, httpRequests[0], {
+                data: Object.assign({}, httpRequests[0].data, {
+                  headers: { 'Content-type': 'application/xml' },
+                }),
               }),
-            }),
-          })
-          .run(logger);
+            })
+            .run(logger);
 
-        expect(response).toMatchSnapshot({
-          headers: {
-            'x-todos-publish': expect.any(String),
-          },
+          assertRight(response, async result => {
+            const r = await result;
+            expect(r.statusCode).toBe(200);
+            expect(r.headers).toHaveProperty('x-todos-publish');
+          });
         });
-      });
 
-      describe('the media type requested does not match the example', () => {
-        test('throw exception', () => {
-          return expect(
-            mocker
+        describe('the media type requested does not match the example', () => {
+          test('returns an error', () => {
+            const mockResult = mocker
               .mock({
                 resource: httpOperations[0],
                 input: Object.assign({}, httpRequests[0], {
@@ -228,75 +246,91 @@ describe('http mocker', () => {
                   }),
                 }),
               })
-              .run(logger),
-          ).resolves.toMatchObject({
-            headers: { 'Content-type': 'text/plain' },
-            body: undefined,
+              .run(logger);
+
+            assertRight(mockResult, result =>
+              expect(result).resolves.toMatchObject({
+                headers: { 'Content-type': 'text/plain' },
+                body: undefined,
+              }),
+            );
+          });
+        });
+      });
+
+      describe('HTTPOperation contain no examples', () => {
+        test('return dynamic response', async () => {
+          if (!httpOperations[1].responses[0].contents[0].schema) {
+            throw new Error('Missing test');
+          }
+
+          const ajv = new Ajv();
+          const validate = ajv.compile(httpOperations[1].responses[0].contents[0].schema as ISchema);
+
+          const response = mocker
+            .mock({
+              resource: httpOperations[1],
+              input: httpRequests[0],
+              config: {
+                mock: {
+                  dynamic: true,
+                },
+              },
+            })
+            .run(logger);
+
+          expect(response.isRight()).toBeTruthy();
+
+          assertRight(response, async result => {
+            const r = await result;
+            expect(r).toHaveProperty('statusCode', 200);
+            expect(r).toHaveProperty('headers', {
+              'Content-type': 'application/json',
+              'x-todos-publish': expect.any(String),
+            });
+
+            expect(validate(r.body)).toBeTruthy();
           });
         });
       });
     });
 
-    describe('HTTPOperation contain no examples', () => {
-      test('return dynamic response', async () => {
-        if (!httpOperations[1].responses[0].contents[0].schema) {
-          throw new Error('Missing test');
-        }
-
-        const ajv = new Ajv();
-        const validate = ajv.compile(httpOperations[1].responses[0].contents[0].schema as ISchema);
-
-        const response = await mocker
+    describe('request is invalid', () => {
+      test('returns 422 and static error response', async () => {
+        const response = mocker
           .mock({
-            resource: httpOperations[1],
-            input: httpRequests[0],
-            config: {
-              mock: {
-                dynamic: true,
-              },
-            },
+            resource: httpOperations[0],
+            input: httpRequests[1],
           })
           .run(logger);
 
-        expect(response).toHaveProperty('statusCode', 200);
-        expect(response).toHaveProperty('headers', {
-          'Content-type': 'application/json',
-          'x-todos-publish': expect.any(String),
+        assertRight(response, async result => {
+          const r = await result;
+          expect(r.statusCode).toBe(422);
+          expect(r.body).toMatchObject({ message: 'error' });
         });
-        expect(validate(response.body)).toBeTruthy();
       });
-    });
-  });
 
-  describe('request is invalid', () => {
-    test('returns 422 and static error response', async () => {
-      const response = await mocker
-        .mock({
-          resource: httpOperations[0],
-          input: httpRequests[1],
-        })
-        .run(logger);
+      test('returns 422 and dynamic error response', async () => {
+        if (!httpOperations[1].responses[1].contents[0].schema) {
+          throw new Error('Missing test');
+        }
 
-      expect(response.statusCode).toBe(422);
-      expect(response.body).toMatchObject({ message: 'error' });
-    });
+        const response = mocker
+          .mock({
+            resource: httpOperations[1],
+            input: httpRequests[1],
+          })
+          .run(logger);
 
-    test('returns 422 and dynamic error response', async () => {
-      if (!httpOperations[1].responses[1].contents[0].schema) {
-        throw new Error('Missing test');
-      }
+        const ajv = new Ajv();
+        const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema!);
 
-      const response = await mocker
-        .mock({
-          resource: httpOperations[1],
-          input: httpRequests[1],
-        })
-        .run(logger);
-
-      const ajv = new Ajv();
-      const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema!);
-
-      expect(validate(response.body)).toBeTruthy();
+        assertRight(response, async result => {
+          const r = await result;
+          expect(validate(r.body)).toBeTruthy();
+        });
+      });
     });
   });
 });
