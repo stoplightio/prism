@@ -1,4 +1,5 @@
 import { IDiagnostic, Omit } from '@stoplight/types';
+import { Either } from 'fp-ts/lib/Either';
 import { Reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
@@ -80,7 +81,7 @@ export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
   loader: ILoader<LoadOpts, Resource>;
   router: IRouter<Resource, Input, Config>;
   forwarder: IForwarder<Resource, Input, Config, Output>;
-  mocker: IMocker<Resource, Input, Config, Reader<Logger, Promise<Output>>>;
+  mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Promise<Output>>>>;
   validator: IValidator<Resource, Input, Config, Output>;
   logger: Logger;
 }

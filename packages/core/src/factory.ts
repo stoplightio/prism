@@ -61,7 +61,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         let output: Output | undefined;
         if (resource && components.mocker && (configObj as IPrismConfig).mock) {
           // generate the response
-          output = await components.mocker
+          const mockerResult = await components.mocker
             .mock(
               {
                 resource,
@@ -70,7 +70,13 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
               },
               defaultComponents.mocker,
             )
-            .run(components.logger!.child({ name: 'MOCKER', input }));
+            .run(components.logger!.child({ name: 'MOCKER', input })).value;
+
+          if (mockerResult instanceof Error) {
+            throw mockerResult;
+          }
+
+          output = mockerResult;
         } else if (components.forwarder) {
           // forward request and set output from response
           output = await components.forwarder.forward(
