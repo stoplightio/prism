@@ -43,6 +43,7 @@
     "@types/lodash": "^4.14.132",
     "@types/node": "^12.0.2",
     "@types/signale": "^1.2.1",
+    "@types/type-is": "^1.6.2",
     "chance": "^1.0.18",
     "globby": "^9.2.0",
     "husky": "^2.3.0",

@@ -4,6 +4,7 @@ import * as fastify from 'fastify';
 // @ts-ignore
 import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
 import { IncomingMessage, ServerResponse } from 'http';
+import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
@@ -22,7 +23,7 @@ export const createServer = <LoaderInput>(
   });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
-    if (req.headers['content-type'] && /application\/\S*json$$/.test(req.headers['content-type'])) {
+    if (typeIs(req, ['application/*+json'])) {
       try {
         return done(null, JSON.parse(body));
       } catch (e) {
