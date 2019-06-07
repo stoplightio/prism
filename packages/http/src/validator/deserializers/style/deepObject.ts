@@ -8,7 +8,7 @@ export class DeepObjectStyleDeserializer implements IHttpQueryParamStyleDeserial
     return style === HttpParamStyles.DeepObject;
   }
 
-  public deserialize(name: string, parameters: IHttpNameValues, schema: JSONSchema4 | JSONSchema6 | JSONSchema7) {
+  public deserialize(name: string, parameters: IHttpNameValues, schema?: JSONSchema4 | JSONSchema6 | JSONSchema7) {
     function resolve(path: string[]) {
       return name + path.map(el => `[${el}]`).join('');
     }

@@ -16,10 +16,10 @@ export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeseriali
   public deserialize(
     name: string,
     parameters: IHttpNameValues,
-    schema: JSONSchema4 | JSONSchema6 | JSONSchema7,
+    schema?: JSONSchema4 | JSONSchema6 | JSONSchema7,
     explode?: boolean,
   ) {
-    const { type } = schema;
+    const type = schema ? schema.type : undefined;
     const values = parameters[name];
 
     if (type === 'array') {
