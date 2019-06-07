@@ -16,6 +16,12 @@ export const FLAGS = {
     required: true,
   }),
 
+  host: oflags.string({
+    char: 'h',
+    description: 'Host that Prism will listen to.',
+    default: '127.0.0.1',
+  }),
+
   dynamic: oflags.boolean({
     char: 'd',
     description: 'Dynamically generate examples.',

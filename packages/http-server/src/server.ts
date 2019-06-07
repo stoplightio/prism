@@ -29,7 +29,7 @@ export const createServer = <LoaderInput>(
   });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
-    if (typeIs(req, ['json', 'application/*+json'])) {
+    if (typeIs(req, ['application/*+json'])) {
       try {
         return done(null, JSON.parse(body));
       } catch (e) {
