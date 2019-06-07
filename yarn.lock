@@ -1146,19 +1146,18 @@
   resolved "https://registry.yarnpkg.com/@stoplight/fast-safe-stringify/-/fast-safe-stringify-2.1.2.tgz#2811eff4989c3d4c5c9a3789f057e25358db0899"
   integrity sha512-ayw3qQ9KNn2K5q6ggrLclh+rdZsSLwYIUz3uAer1NzaCpalJLR4g32G845ylgq7Xy2AunMHnNfD3FC3s0rUcsA==
 
-"@stoplight/graphite@^7.1.3":
-  version "7.1.3"
-  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-7.1.3.tgz#0b2eecb4a3ee17c876864b01b814e226f5ff865d"
-  integrity sha512-Fg+k4qMKm7gfDEhcnQv4hgzCHtt04Ps38aD7nbaIFg0T8Id2ALa7E43TqnIPN2E+w7GjcFyZnYYh736Gu4gjiQ==
+"@stoplight/graphite@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/graphite/-/graphite-8.0.0.tgz#27ff1a3f881e18ea25a680e47c6ce02fc52b3fd2"
+  integrity sha512-nscB+uMg5AMB+dcbaOlpIK15K9gVNSVQFhwBDkbh+WAiHxFqNqQHZlgODAK6JQFDg2ddj4khl13uvVboukZtbg==
   dependencies:
     "@stoplight/json" "2.1.0"
     "@stoplight/json-ref-resolver" "1.5.0"
     "@stoplight/lifecycle" "2.x.x"
-    "@stoplight/markdown" "2.2.0"
-    "@stoplight/spectral" "3.0.2"
-    "@stoplight/types" "7.0.1"
+    "@stoplight/markdown" "2.2.2"
+    "@stoplight/spectral" "3.0.3"
+    "@stoplight/types" "^9.0.1"
     "@stoplight/yaml" "2.3.0"
-    "@types/swagger-schema-official" "2.0.x"
     "@types/urijs" "1.19.x"
     axios "0.18.x"
     diff-match-patch "1.0.x"
@@ -1168,8 +1167,7 @@
     lodash "4.x.x"
     micromatch "4.0.x"
     neo-async "2.6.x"
-    openapi3-ts "1.2.x"
-    swagger-schema-official "2.0.0-bab6bed"
+    openapi3-ts "1.3.x"
     treeify "1.1.x"
     urijs "1.19.x"
     uuid "3.3.x"
@@ -1213,10 +1211,10 @@
     strict-event-emitter-types "^2.0.0"
     wolfy87-eventemitter "5.2.6"
 
-"@stoplight/markdown@2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/markdown/-/markdown-2.2.0.tgz#de2e08705f92428f7073ab9a2b8ab39804327581"
-  integrity sha512-BipYH3AXQBCpC3LNrkYDswJziirODc2MqwLdga7cH7gynCEhaNY3xMKlqanVL8V1nN4a7sfZnWtrsLCb/UgFcQ==
+"@stoplight/markdown@2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/markdown/-/markdown-2.2.2.tgz#3b6e2fcd5b5232855b59cd53eecaca02c1c7d92c"
+  integrity sha512-QGfg6hTExGlXWE8OGAkSchPgUatG5xcBvdBmqChypgWuOww8JYU1Cxhn5QR3G3IbGgXDmxw40R93h8T4hN4qFA==
   dependencies:
     js-yaml "3.13.x"
     lodash ">=4.17"
@@ -1225,10 +1223,10 @@
     remark-stringify "6.0.x"
     unified "7.1.x"
 
-"@stoplight/spectral@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-3.0.2.tgz#7aeecd3ff71cbb51a440ad9e93760313522fb4a0"
-  integrity sha512-CcFzFaTQTPPphWeIBAuu/YWViomoo0DInqiAYfGXwoBOqGNuPaAjrPmGZdOenBvhBXM1zNz02DkWpJMeBZHeOg==
+"@stoplight/spectral@3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-3.0.3.tgz#fa435fcfd34c39469456da804881354ca7cd21ba"
+  integrity sha512-1irTqhV/o0lU1an50cSvh9nzEfgzwrHeWV/zy5nMgQoWnflRKFNkFgwyNuRG228aQ0TQCHTsDdpnYwypIPdM4g==
   dependencies:
     "@oclif/command" "^1.0"
     "@oclif/config" "^1.12.11"
@@ -1252,7 +1250,7 @@
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-5.1.2.tgz#f2c147eed36b582f920146ad2d7bad9cee3f64d0"
   integrity sha512-3PHbFrJoFQT/TChGmax3mjiZXVKXjuiFV5PkywNKO4w4AOpmydGM7Z/K2ATag9dqCCOsIz0gvcbOirdjsuwjGg==
 
-"@stoplight/types@7.0.1", "@stoplight/types@^7.0.1":
+"@stoplight/types@^7.0.1":
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-7.0.1.tgz#33ef2ce685daff4808235ee7f7f373b9e53df05c"
   integrity sha512-9efbb6tCsS59j+AmQctVsHi+v9OcDWQTcllnLQvtzEMZ4zEwRIGNAJNXiIUMvqj7NGhov8aiBhO+jpObJ+J8hg==
@@ -1406,11 +1404,6 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
-
-"@types/swagger-schema-official@2.0.x":
-  version "2.0.16"
-  resolved "https://registry.yarnpkg.com/@types/swagger-schema-official/-/swagger-schema-official-2.0.16.tgz#656f2af49ee8962cddf61fc92c42207dec435e6d"
-  integrity sha512-ZxdNRJJHdP1yK/wHS42AxT4d59kQYu5NZoFNgTu8bcaKYrsxxa8o7kP02e9dfyfUpp81RwvkL/SOvcTXK/X8/w==
 
 "@types/unist@*", "@types/unist@^2.0.0":
   version "2.0.3"
@@ -4913,14 +4906,14 @@ jsonparse@^1.2.0:
   resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
   integrity sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=
 
-"jsonpath@https://github.com/stoplightio/jsonpath#f1c0e9e634da2d45671b7639fa0a99afc807da17":
+"jsonpath@git+https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17":
   version "1.0.0"
   uid f1c0e9e634da2d45671b7639fa0a99afc807da17
-  resolved "https://github.com/stoplightio/jsonpath#f1c0e9e634da2d45671b7639fa0a99afc807da17"
+  resolved "git+https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17"
   dependencies:
     esprima "1.2.2"
     jison "0.4.13"
-    static-eval "2.0.2"
+    static-eval "2.0.0"
     underscore "1.7.0"
 
 "jsonpath@https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17":
@@ -5986,10 +5979,10 @@ ono@^4.0.6:
   dependencies:
     format-util "^1.0.3"
 
-openapi3-ts@1.2.x:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/openapi3-ts/-/openapi3-ts-1.2.0.tgz#b86b518b7d7b5589e5266024c96bdc723e255112"
-  integrity sha512-oWRW8aI58UPD1ufx54y4QOCwqdQPedCRBKmqgwRUtetz4+NUJD2opWn3a0Te4yLzlFdf9eGinrKvc3uvD2Wegw==
+openapi3-ts@1.3.x:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/openapi3-ts/-/openapi3-ts-1.3.0.tgz#a6b4a6dda1d037cb826f3230426ce5243c75edb3"
+  integrity sha512-Xk3hsB0PzB4dzr/r/FdmK+VfQbZH7lQQ2iipMS1/1eoz1wUvh5R7rmOakYvw0bQJJE6PYrOLx8UHsYmzgTr+YQ==
 
 optimist@^0.6.1:
   version "0.6.1"
@@ -7401,13 +7394,6 @@ static-eval@2.0.0:
   dependencies:
     escodegen "^1.8.1"
 
-static-eval@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/static-eval/-/static-eval-2.0.2.tgz#2d1759306b1befa688938454c546b7871f806a42"
-  integrity sha512-N/D219Hcr2bPjLxPiV+TQE++Tsmrady7TqAJugLy7Xk1EumfDWS/f5dtBbkRCGE7wKKXuYockQoj8Rm2/pVKyg==
-  dependencies:
-    escodegen "^1.8.1"
-
 static-extend@^0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/static-extend/-/static-extend-0.1.2.tgz#60809c39cbff55337226fd5e0b520f341f1fb5c6"
@@ -7601,11 +7587,6 @@ supports-hyperlinks@^1.0.1:
   dependencies:
     has-flag "^2.0.0"
     supports-color "^5.0.0"
-
-swagger-schema-official@2.0.0-bab6bed:
-  version "2.0.0-bab6bed"
-  resolved "https://registry.yarnpkg.com/swagger-schema-official/-/swagger-schema-official-2.0.0-bab6bed.tgz#70070468d6d2977ca5237b2e519ca7d06a2ea3fd"
-  integrity sha1-cAcEaNbSl3ylI3suUZyn0Gouo/0=
 
 symbol-observable@^1.1.0:
   version "1.2.0"
