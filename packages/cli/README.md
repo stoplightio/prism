@@ -59,6 +59,7 @@ ARGUMENTS
 
 OPTIONS
   -d, --dynamic    Dynamically generate examples.
+  -h, --host=host  [default: 127.0.0.1] Host that Prism will listen to.
   -p, --port=port  (required) [default: 4010] Port that Prism will run on.
 ```
 
