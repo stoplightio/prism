@@ -34,10 +34,13 @@ export const createServer = <LoaderInput>(
       try {
         return done(null, JSON.parse(body));
       } catch (e) {
-        done(e);
+        return done(e);
       }
     }
-    done(null);
+    const error: Error & { status?: number } = new Error(`Unsupported media type.`);
+    error.status = 415;
+    Error.captureStackTrace(error);
+    return done(error);
   });
 
   const { components = {}, config } = opts;

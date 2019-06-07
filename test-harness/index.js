@@ -257,18 +257,18 @@ const createSpec = (specPath, prismCmd) => {
         describe.only('content type parser', () => {
           test.each(
             [['application/json', false], ['application/vnd.api+json', false], ['application/xml', true],
-            ['application/vnd.json', false], ['application/vnd.xml;x=json', false]])
+            ['application/vnd.json', true], ['application/vnd.xml;x=json', true]])
             ('%s', async (contentType, shouldError) => {
               const result = await makeRequest({
                 path: '/no_auth/pets', method: 'POST', headers: {
                   'content-type': contentType
-                }
+                }, body: JSON.stringify({ hello: 10 })
               });
 
               if (shouldError)
-                return expect(result.response.status).toBe(400);
+                return expect(result.response.status).toBe(415);
 
-              return expect(result.response.status).not.toBe(400);
+              return expect(result.response.status).not.toBe(415);
             });
         });
 
