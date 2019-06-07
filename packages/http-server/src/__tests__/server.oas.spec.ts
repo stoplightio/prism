@@ -291,18 +291,3 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     });
   });
 });
-
-describe('oas2 specific tests', () => {
-  test('should return response even if there is no content defined in spec', async () => {
-    const server = createServer({}, { components: {}, config: { mock: { dynamic: false } } });
-    await server.prism.load({
-      path: resolve(__dirname, 'fixtures', 'no-responses.oas2.yaml'),
-    });
-
-    const response = await server.fastify.inject({ method: 'GET', url: '/' });
-
-    expect(response.statusCode).toBe(200);
-
-    await server.fastify.close();
-  });
-});
