@@ -10,24 +10,24 @@
     "statusText": "OK",
     "headers": {
       "content-type": [
-        "application/json"
+        "application/json; charset=utf-8"
       ],
       "content-length": [
-        "215"
+        "196"
       ],
       "connection": [
         "close"
       ]
     },
     "body": {
-      "id": -82722482,
-      "username": "quis",
-      "firstName": "adipisicing aliqua et",
-      "lastName": "sed do voluptate",
-      "email": "dolor anim",
-      "password": "magna Ut laboris veniam",
-      "phone": "fugiat qui proident ad s",
-      "userStatus": 49630652
+      "id": 44207676,
+      "username": "ut exercitation consec",
+      "firstName": "aliquip dolor",
+      "lastName": "non",
+      "email": "aliquip irure minim velit cupidatat",
+      "password": "ut",
+      "phone": "dolor",
+      "userStatus": 89795089
     }
   }
 }

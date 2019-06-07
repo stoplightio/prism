@@ -10,7 +10,7 @@
     "statusText": "Not Found",
     "headers": {
       "content-type": [
-        "application/json"
+        "application/json; charset=utf-8"
       ],
       "content-length": [
         "21"

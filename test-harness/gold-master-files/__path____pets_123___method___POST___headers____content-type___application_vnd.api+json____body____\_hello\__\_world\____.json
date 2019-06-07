@@ -1,11 +1,11 @@
 {
   "request": {
-    "body": "name=just_a_name",
+    "body": "{\"hello\":\"world\"}",
     "method": "POST",
     "headers": {
-      "Content-Type": "application/x-www-form-urlencoded"
+      "content-type": "application/vnd.api+json"
     },
-    "path": "/no_auth/pets/123",
+    "path": "/pets/123",
     "host": "http://localhost:4010"
   },
   "response": {
@@ -16,7 +16,7 @@
         "application/problem+json"
       ],
       "content-length": [
-        "170"
+        "124"
       ],
       "connection": [
         "close"
@@ -24,7 +24,7 @@
     },
     "body": {
       "type": "https://stoplight.io/prism/errors#UNKNOWN",
-      "title": "Tried to force a dynamic response for: application/json but schema is not defined.",
+      "title": "No 2** response defined, cannot mock",
       "status": 500,
       "detail": ""
     }

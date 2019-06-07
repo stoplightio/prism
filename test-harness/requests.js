@@ -100,5 +100,15 @@ module.exports = [
       accept: 'application/idonotexist'
     },
     method: 'GET',
+  },
+  {
+    path: '/pets/123',
+    method: 'POST',
+    headers: {
+      'content-type': 'application/vnd.api+json'
+    },
+    body: JSON.stringify({
+      hello: 'world'
+    })
   }
 ];
