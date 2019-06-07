@@ -15,7 +15,13 @@ export const createServer = <LoaderInput>(
   const server = fastify().register(fastifyAcceptsSerializer, {
     serializers: [
       {
-        regex: /application\/\S*json$/,
+        /*
+          In theory this shuold be a regexp, but since it's JavaScript I thuoght it could be a good
+          idea to fake the function and use typeIs.is function since it's way more reliable.
+        */
+        regex: {
+          test: (value: string) => !!typeIs.is(value, ['json', 'application/*+json']),
+        },
         serializer: JSON.stringify,
       },
     ],
@@ -23,7 +29,7 @@ export const createServer = <LoaderInput>(
   });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
-    if (typeIs(req, ['application/*+json'])) {
+    if (typeIs(req, ['json', 'application/*+json'])) {
       try {
         return done(null, JSON.parse(body));
       } catch (e) {
