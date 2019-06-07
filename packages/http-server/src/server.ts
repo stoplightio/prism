@@ -20,12 +20,12 @@ export const createServer = <LoaderInput>(
           idea to fake the function and use typeIs.is function since it's way more reliable.
         */
         regex: {
-          test: (value: string) => !!typeIs.is(value, ['json', 'application/*+json']),
+          test: (value: string) => !!typeIs.is(value, ['application/*+json']),
         },
         serializer: JSON.stringify,
       },
     ],
-    default: 'application/json',
+    default: 'application/json; charset=utf-8',
   });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
@@ -93,6 +93,7 @@ const replyHandler = <LoaderInput>(
       });
 
       const { output } = response;
+
       if (output) {
         reply.code(output.statusCode);
 

@@ -3,7 +3,7 @@
     "body": "{\"body\":{\"id\":1,\"petId\":2,\"quantity\":3,\"shipDate\":\"2002-10-02T10:00:00-05:00\",\"status\":\"placed\",\"complete\":true}}",
     "method": "POST",
     "headers": {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json; charset=utf-8"
     },
     "path": "/store/order",
     "host": "http://localhost:4010"
