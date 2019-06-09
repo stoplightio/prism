@@ -4,6 +4,7 @@ import * as fastify from 'fastify';
 // @ts-ignore
 import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
 import { IncomingMessage, ServerResponse } from 'http';
+import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
@@ -14,11 +15,32 @@ export const createServer = <LoaderInput>(
   const server = fastify().register(fastifyAcceptsSerializer, {
     serializers: [
       {
-        regex: /json$/,
+        /*
+          This is a workaround, to make Fastify less strict in its json detection.
+          It expects a regexp, but instead we are using typeIs.
+        */
+        regex: {
+          test: (value: string) => !!typeIs.is(value, ['application/*+json']),
+          toString: () => 'application/*+json',
+        },
         serializer: JSON.stringify,
       },
     ],
-    default: 'application/json',
+    default: 'application/json; charset=utf-8',
+  });
+
+  server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
+    if (typeIs(req, ['application/*+json'])) {
+      try {
+        return done(null, JSON.parse(body));
+      } catch (e) {
+        return done(e);
+      }
+    }
+    const error: Error & { status?: number } = new Error(`Unsupported media type.`);
+    error.status = 415;
+    Error.captureStackTrace(error);
+    return done(error);
   });
 
   const { components = {}, config } = opts;
@@ -75,6 +97,7 @@ const replyHandler = <LoaderInput>(
       });
 
       const { output } = response;
+
       if (output) {
         reply.code(output.statusCode);
 

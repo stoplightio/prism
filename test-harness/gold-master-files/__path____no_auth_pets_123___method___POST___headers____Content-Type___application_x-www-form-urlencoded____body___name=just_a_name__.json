@@ -13,10 +13,10 @@
     "statusText": "Unsupported Media Type",
     "headers": {
       "content-type": [
-        "application/json"
+        "application/json; charset=utf-8"
       ],
       "content-length": [
-        "193"
+        "87"
       ],
       "connection": [
         "close"
@@ -24,9 +24,8 @@
     },
     "body": {
       "statusCode": 415,
-      "code": "FST_ERR_CTP_INVALID_MEDIA_TYPE",
       "error": "Unsupported Media Type",
-      "message": "FST_ERR_CTP_INVALID_MEDIA_TYPE: Unsupported Media Type: application/x-www-form-urlencoded"
+      "message": "Unsupported media type."
     }
   }
 }
