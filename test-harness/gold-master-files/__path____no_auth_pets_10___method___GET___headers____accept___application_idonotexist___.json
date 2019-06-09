@@ -15,7 +15,7 @@
         "application/json; charset=utf-8"
       ],
       "content-length": [
-        "97"
+        "100"
       ],
       "connection": [
         "close"
@@ -24,7 +24,7 @@
     "body": {
       "statusCode": 406,
       "error": "Not Acceptable",
-      "message": "Allowed: [object Object],application/json"
+      "message": "Allowed: application/*+json,application/json"
     }
   }
 }

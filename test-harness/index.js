@@ -254,7 +254,7 @@ const createSpec = (specPath, prismCmd) => {
           });
         });
 
-        describe.only('content type parser', () => {
+        describe('content type parser', () => {
           test.each(
             [['application/json', false], ['application/vnd.api+json', false], ['application/xml', true],
             ['application/vnd.json', true], ['application/vnd.xml;x=json', true]])

@@ -22,6 +22,7 @@ export const createServer = <LoaderInput>(
         */
         regex: {
           test: (value: string) => !!typeIs.is(value, ['application/*+json']),
+          toString: () => 'application/*+json',
         },
         serializer: JSON.stringify,
       },
