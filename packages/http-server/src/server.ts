@@ -16,9 +16,8 @@ export const createServer = <LoaderInput>(
     serializers: [
       {
         /*
-          In theory this should effectively be a regexp, but since it's JavaScript I thought it would
-          be a good idea to fake it and use typeIs.is function since it's way more reliable than any
-          regexp I can think of.
+          This is a workaround, to make Fastify less strict in its json detection.
+          It expects a regexp, but instead we are using typeIs.
         */
         regex: {
           test: (value: string) => !!typeIs.is(value, ['application/*+json']),
