@@ -9,24 +9,23 @@
     "host": "http://localhost:4010"
   },
   "response": {
-    "status": 500,
-    "statusText": "Internal Server Error",
+    "status": 415,
+    "statusText": "Unsupported Media Type",
     "headers": {
       "content-type": [
-        "application/problem+json"
+        "application/json; charset=utf-8"
       ],
       "content-length": [
-        "170"
+        "87"
       ],
       "connection": [
         "close"
       ]
     },
     "body": {
-      "type": "https://stoplight.io/prism/errors#UNKNOWN",
-      "title": "Tried to force a dynamic response for: application/json but schema is not defined.",
-      "status": 500,
-      "detail": ""
+      "statusCode": 415,
+      "error": "Unsupported Media Type",
+      "message": "Unsupported media type."
     }
   }
 }
