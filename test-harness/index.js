@@ -255,9 +255,9 @@ const createSpec = (specPath, prismCmd) => {
         });
 
         describe('content type parser', () => {
-          test.each(
-            [['application/json', false], ['application/vnd.api+json', false], ['application/xml', true],
-            ['application/vnd.json', true], ['application/vnd.xml;x=json', true]])
+          const cases = [['application/json', false], ['application/vnd.api+json', false], ['application/xml', true],
+          ['application/vnd.json', true], ['application/vnd.xml;x=json', true]]
+          test.each(cases)
             ('%s', async (contentType, shouldError) => {
               const result = await makeRequest({
                 path: '/no_auth/pets', method: 'POST', headers: {
