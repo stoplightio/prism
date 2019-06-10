@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-alpha.13 (2019-06-09)
+
+
+### Bug Fixes
+
+* Prism is not able to correctly handle the Content Type header #344
+
+### Features
+
+* Prism CLI has now a new CLI option to specify the IP Address where it will listen connections for #340
+
+
+
+
 # 3.0.0-alpha.12 (2019-06-04)
 
 
