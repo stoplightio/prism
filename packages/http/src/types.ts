@@ -1,5 +1,5 @@
 import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
-import { IHttpOperation } from '@stoplight/types';
+import { Dictionary, IHttpOperation } from '@stoplight/types';
 
 export type TPrismHttpInstance<LoaderInput> = IPrism<
   IHttpOperation,
@@ -45,13 +45,9 @@ export interface IHttpConfig extends IPrismConfig {
   };
 }
 
-export interface IHttpNameValues {
-  [name: string]: string | string[];
-}
+export type IHttpNameValues = Dictionary<string | string[]>;
 
-export interface IHttpNameValue {
-  [name: string]: string;
-}
+export type IHttpNameValue = Dictionary<string>;
 
 export interface IHttpUrl {
   baseUrl?: string;
