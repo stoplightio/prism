@@ -19,6 +19,8 @@ export class FormStyleDeserializer implements IHttpQueryParamStyleDeserializer {
     const type = schema ? schema.type : undefined;
     const values = parameters[name];
 
+    if (!values) return {};
+
     if (type === 'array') {
       return explode ? this.deserializeImplodeArray(values) : this.deserializeArray(values);
     } else if (type === 'object') {

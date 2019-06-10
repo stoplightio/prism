@@ -75,7 +75,7 @@ describe('FormStyleDeserializer', () => {
         it('returns object', () => {
           expect(
             formStyleDeserializer.deserialize(
-              '-',
+              'a',
               { a: 'b', c: 'd' },
               { type: 'object', properties: { a: { type: 'string' } } },
               true,

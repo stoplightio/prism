@@ -79,14 +79,13 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
 
 function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator): Promise<Dictionary<string>> {
   const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
-    if (header && header.examples) {
-      if (header.examples.length > 0) {
+    if (header.schema) {
+      if (header.examples && header.examples.length > 0) {
         const example = header.examples[0];
         if (isINodeExample(example)) {
           return example.value;
         }
-      }
-      if (header.schema) {
+      } else {
         const example = await ex(header.schema);
         if (!(isObject(example) && isEmpty(example))) return example;
       }
