@@ -4,7 +4,7 @@ exports[`HttpHeadersValidator validate() spec is present header is not present s
 Array [
   Object {
     "code": "required",
-    "message": "should have required property 'aHeader'",
+    "message": "should have required property 'aheader'",
     "path": Array [
       "header",
     ],

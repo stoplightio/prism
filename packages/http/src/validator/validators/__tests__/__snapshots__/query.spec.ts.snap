@@ -18,7 +18,7 @@ exports[`HttpQueryValidator validate() spec is present query param is not presen
 Array [
   Object {
     "code": "required",
-    "message": "should have required property 'aParam'",
+    "message": "should have required property 'aparam'",
     "path": Array [
       "query",
     ],
