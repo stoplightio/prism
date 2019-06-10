@@ -1,5 +1,5 @@
 import { IHttpOperation, INodeExample } from '@stoplight/types';
-import { JSONSchema4 } from 'json-schema';
+import { JSONSchema } from 'http/src/types';
 import { flatMap } from 'lodash';
 import { HttpMocker } from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
@@ -11,7 +11,7 @@ describe('HttpMocker', () => {
   afterEach(() => jest.restoreAllMocks());
 
   describe('mock()', () => {
-    const mockSchema: JSONSchema4 = {
+    const mockSchema: JSONSchema = {
       type: 'object',
       properties: {
         name: { type: 'string' },

@@ -1,5 +1,6 @@
 import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
 import { Dictionary, IHttpOperation } from '@stoplight/types';
+import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
 export type TPrismHttpInstance<LoaderInput> = IPrism<
   IHttpOperation,
@@ -104,3 +105,5 @@ export class ProblemJsonError extends Error {
 export type PayloadGenerator = (f: unknown) => Promise<unknown>;
 
 export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+
+export type JSONSchema = JSONSchema4 | JSONSchema6 | JSONSchema7;

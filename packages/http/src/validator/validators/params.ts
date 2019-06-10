@@ -2,7 +2,8 @@ import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/type
 import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
-import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
+import { JSONSchema } from 'http/src/types';
+import { JSONSchema4 } from 'json-schema';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
@@ -50,8 +51,8 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
   }
 }
 
-function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema4 | JSONSchema6 | JSONSchema7 {
-  const schema: JSONSchema4 | JSONSchema6 | JSONSchema7 = {
+function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema {
+  const schema: JSONSchema = {
     type: 'object',
     properties: pickBy(mapValues(keyBy(params, p => p.name.toLowerCase()), 'schema')) as JSONSchema4,
     required: compact(params.map(m => (m.required ? m.name.toLowerCase() : undefined))),

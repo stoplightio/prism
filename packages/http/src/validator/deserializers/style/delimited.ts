@@ -1,7 +1,5 @@
 import { HttpParamStyles } from '@stoplight/types';
-
-import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
-import { IHttpNameValues } from '../../../types';
+import { IHttpNameValues, JSONSchema } from '../../../types';
 import { IHttpQueryParamStyleDeserializer } from '../types';
 
 export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeserializer {
@@ -13,12 +11,7 @@ export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeseriali
     return style === this.styleName;
   }
 
-  public deserialize(
-    name: string,
-    parameters: IHttpNameValues,
-    schema?: JSONSchema4 | JSONSchema6 | JSONSchema7,
-    explode?: boolean,
-  ) {
+  public deserialize(name: string, parameters: IHttpNameValues, schema?: JSONSchema, explode?: boolean) {
     const type = schema ? schema.type : undefined;
     const values = parameters[name];
 
