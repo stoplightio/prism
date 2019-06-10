@@ -21,18 +21,13 @@ function findBestHttpContentByMediaType(
   response: PickRequired<IHttpOperationResponse, 'contents'>,
   mediaType: string[],
 ): IMediaTypeContent | undefined {
-  return response.contents
-    .map(t => {
-      if (t.mediaType === '*') t.mediaType = '*/*';
-      return t;
-    })
-    .find(content =>
-      accepts({
-        headers: {
-          accept: mediaType.join(','),
-        },
-      }).type(content.mediaType),
-    );
+  return response.contents.find(content =>
+    accepts({
+      headers: {
+        accept: mediaType.join(','),
+      },
+    }).type(content.mediaType),
+  );
 }
 
 function findDefaultContentType(
