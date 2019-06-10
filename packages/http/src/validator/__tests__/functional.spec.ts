@@ -73,7 +73,7 @@ describe('HttpValidator', () => {
                 path: '/hey',
               },
               headers: {
-                api_key: 'ha',
+                api_Key: 'ha',
               },
             },
             config: { mock: false, validate: { request: { headers: true, query: false, body: false } } },
