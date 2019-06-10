@@ -1,5 +1,5 @@
 import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/types';
-import { compact, keyBy, mapValues, pickBy, upperFirst } from 'lodash';
+import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
 import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
@@ -7,14 +7,14 @@ import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 
-export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHttpValidator<Target, Spec> {
+export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttpParam> {
   constructor(
     private _registry: IHttpParamDeserializerRegistry<Target>,
     private _prefix: string,
     private _style: HttpParamStyles,
   ) {}
 
-  public validate(target: Target, specs: Spec[]): IPrismDiagnostic[] {
+  public validate(target: Target, specs: IHttpParam[]): IPrismDiagnostic[] {
     const { _registry: registry, _prefix: prefix, _style: style } = this;
 
     const deprecatedWarnings = specs.filter(spec => spec.deprecated).map(spec => ({
@@ -33,7 +33,11 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHt
         if (deserializer)
           return deserializer.deserialize(
             el.name.toLowerCase(),
-            target,
+            // This is bad, but unfortunately for the way the parameter validators are done there's
+            // no better way at them moment. I hope to fix this in a following PR where we will revisit
+            // the validators a bit
+            // @ts-ignore
+            mapKeys(target, (_value, key) => key.toLowerCase()),
             schema.properties && (schema.properties[el.name] as JSONSchema4),
             el.explode || false,
           );
