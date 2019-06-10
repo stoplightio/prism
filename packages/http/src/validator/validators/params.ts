@@ -32,7 +32,7 @@ export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHt
         const deserializer = registry.get(resolvedStyle);
         if (deserializer)
           return deserializer.deserialize(
-            el.name,
+            el.name.toLowerCase(),
             target,
             schema.properties && (schema.properties[el.name] as JSONSchema4),
             el.explode || false,
@@ -50,7 +50,7 @@ function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema4 | JSONSch
   const schema: JSONSchema4 | JSONSchema6 | JSONSchema7 = {
     type: 'object',
     properties: pickBy(mapValues(keyBy(params, p => p.name.toLowerCase()), 'schema')) as JSONSchema4,
-    required: compact(params.map(m => (m.required ? m.name : undefined))),
+    required: compact(params.map(m => (m.required ? m.name.toLowerCase() : undefined))),
   };
 
   return schema;
