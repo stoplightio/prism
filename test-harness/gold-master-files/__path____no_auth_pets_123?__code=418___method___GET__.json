@@ -13,7 +13,7 @@
         "application/json; charset=utf-8"
       ],
       "content-length": [
-        "191"
+        "270"
       ],
       "connection": [
         "close"
@@ -22,20 +22,27 @@
     "body": {
       "name": "doggie",
       "photoUrls": [
-        "sunt consequat aute"
+        "pariatur",
+        "id occaecat et dolore fugiat",
+        "ullamco",
+        "veniam in ex"
       ],
-      "id": 8765750,
+      "id": -47409940,
       "category": {
-        "id": 98554343,
-        "name": "reprehenderit irure commodo"
+        "id": -81586435,
+        "name": "ex"
       },
       "tags": [
         {
-          "id": 73560195,
-          "name": "ea ullamco"
+          "id": -72237353,
+          "name": "voluptate aliqua"
+        },
+        {
+          "id": -76040447,
+          "name": "dolore aliquip do"
         }
       ],
-      "status": "sold"
+      "status": "available"
     }
   }
 }
