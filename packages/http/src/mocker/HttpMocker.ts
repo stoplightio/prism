@@ -46,7 +46,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     let negotiationResult: IHttpNegotiationResult;
     if (input.validations.input.length > 0) {
       try {
-        negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses!);
+        negotiationResult = helpers.negotiateOptionsForInvalidRequest(resource.responses);
       } catch (error) {
         throw ProblemJsonError.fromTemplate(
           UNPROCESSABLE_ENTITY,
