@@ -112,6 +112,33 @@ describe('Http Prism Instance function tests', () => {
     });
   });
 
+  describe('headers validation', () => {
+    test('should validate the headers even if casing does not match', async () => {
+      const response = await prism.process({
+        method: 'get',
+        url: {
+          path: '/pet/login',
+        },
+        headers: {
+          aPi_keY: 'hello',
+        },
+      });
+
+      expect(response.output).toHaveProperty('statusCode', 200);
+    });
+
+    test('should return an error if the the header is missing', () => {
+      return expect(
+        prism.process({
+          method: 'get',
+          url: {
+            path: '/pet/login',
+          },
+        }),
+      ).rejects.toThrowError();
+    });
+  });
+
   test("should forward the request correctly even if resources haven't been provided", async () => {
     // Recreate Prism with no loaded document
     prism = createInstance(undefined, { forwarder, router: undefined, mocker: undefined });

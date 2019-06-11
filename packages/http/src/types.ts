@@ -78,13 +78,15 @@ export type ProblemJson = {
 
 export class ProblemJsonError extends Error {
   public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
-    Error.captureStackTrace(this, ProblemJsonError);
-    return new ProblemJsonError(
+    const error = new ProblemJsonError(
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
       detail || '',
     );
+    Error.captureStackTrace(error, ProblemJsonError);
+
+    return error;
   }
 
   public static fromPlainError(error: Error & { detail?: string; status?: number }): ProblemJson {
