@@ -37,7 +37,7 @@ describe('matchPath()', () => {
     expect(matchPath(path, path)).toEqual(MatchType.CONCRETE);
   });
 
-  test('none request path should not match path with less fragments', () => {
+  test('none request path should match path with less fragments', () => {
     // e.g. /a/b/c should not match /a/b
     // e.g. /a/b/c should not match /{a}/b
     const trailingSlash = chance.bool();
@@ -69,7 +69,7 @@ describe('matchPath()', () => {
     expect(matchPath(requestPath, operationPath)).toEqual(MatchType.NOMATCH);
   });
 
-  test('reqest path should match a templated path and resolve variables', () => {
+  test('request path should match a templated path and resolve variables', () => {
     expect(matchPath('/a', '/{a}')).toEqual(MatchType.TEMPLATED);
 
     expect(matchPath('/a/b', '/{a}/{b}')).toEqual(MatchType.TEMPLATED);

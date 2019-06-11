@@ -11,14 +11,39 @@ function checkErrorPayloadShape(payload: string) {
   expect(parsedPayload).toHaveProperty('detail');
 }
 
+async function instantiatePrism(specPath: string) {
+  const server = createServer({}, { components: {}, config: { mock: { dynamic: false } } });
+  await server.prism.load({
+    path: relative(process.cwd(), specPath),
+  });
+  return server;
+}
+
+describe('given getOperationWithBody.oas2.json', () => {
+  test('when GET /pet with invalid body returns correct error message', async () => {
+    const server = await instantiatePrism(resolve(__dirname, 'fixtures', 'getOperationWithBody.oas2.json'));
+
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pet',
+      payload: {
+        id: 'strings are not valid!',
+      },
+    });
+
+    expect(response.statusCode).toBe(422);
+    expect(response.payload).toEqual(
+      '{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid: [{\\"path\\":[\\"body\\"],\\"code\\":\\"type\\",\\"message\\":\\"should be object\\",\\"severity\\":0}]"}',
+    );
+    await server.fastify.close();
+  });
+});
+
 describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', file => {
   let server: IPrismHttpServer<{}>;
 
   beforeAll(async () => {
-    server = createServer({}, { components: {}, config: { mock: { dynamic: false } } });
-    await server.prism.load({
-      path: relative(process.cwd(), resolve(__dirname, '..', '..', '..', '..', 'examples', file)),
-    });
+    server = await instantiatePrism(resolve(__dirname, '..', '..', '..', '..', 'examples', file));
   });
 
   afterAll(() => server.fastify.close());
