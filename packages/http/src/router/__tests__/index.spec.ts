@@ -152,6 +152,27 @@ describe('http router', () => {
           expect(resource).toBe(expectedResource);
         });
 
+        test(`given two resources with different servers
+              when routing to third server
+              with path matching of one of the resources
+              throws an error`, () => {
+          return expect(() => {
+            router.route({
+              resources: [
+                createResource(method, '/pet', [{ url: 'http://example.com/api' }]),
+                createResource(method, '/owner', [{ url: 'http://stg.example.com/api/v2' }]),
+              ],
+              input: {
+                method,
+                url: {
+                  baseUrl: 'http://oopsy.com',
+                  path: '/owner',
+                },
+              },
+            });
+          }).toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
+        });
+
         test('given a templated matching server and matched concrete path should match', async () => {
           const url = 'http://{host}/v1';
           const path = randomPath({ includeTemplates: false });
