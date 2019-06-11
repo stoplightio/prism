@@ -1,0 +1,33 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/user/username",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "229"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "id": -93954327,
+      "username": "Lorem veniam voluptate proident fugiat",
+      "firstName": "pariatur Excepteur labore id venia",
+      "lastName": "nostrud",
+      "email": "eu",
+      "password": "dolore in laborum ut",
+      "phone": "ullamco sed",
+      "userStatus": 16939126
+    }
+  }
+}

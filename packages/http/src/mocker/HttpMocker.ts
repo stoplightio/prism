@@ -2,15 +2,21 @@ import { IMocker, IMockerOpts } from '@stoplight/prism-core';
 import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { fromPairs, keyBy, mapValues, toPairs } from 'lodash';
-import { IHttpConfig, IHttpOperationConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
+import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
+import {
+  IHttpConfig,
+  IHttpOperationConfig,
+  IHttpRequest,
+  IHttpResponse,
+  PayloadGenerator,
+  ProblemJsonError,
+} from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
-import { IExampleGenerator } from './generator/IExampleGenerator';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: IExampleGenerator) {}
+  constructor(private _exampleGenerator: PayloadGenerator) {}
 
   public async mock({
     resource,
@@ -27,13 +33,13 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     }
 
     // setting default values
-    const inputMediaType = input.data.headers && caseless(input.data.headers).get('content-type');
+    const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
     config = config || { mock: false };
     const mockConfig: IHttpOperationConfig =
       config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
 
-    if (!mockConfig.mediaType && typeof inputMediaType === 'string') {
-      mockConfig.mediaType = inputMediaType;
+    if (!mockConfig.mediaTypes && acceptMediaType) {
+      mockConfig.mediaTypes = acceptMediaType.split(',');
     }
 
     // looking up proper example
@@ -53,7 +59,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
 
     const [body, mockedHeaders] = await Promise.all([
       computeBody(negotiationResult, this._exampleGenerator),
-      computeMockedHeaders(negotiationResult.headers, this._exampleGenerator),
+      computeMockedHeaders(negotiationResult.headers || [], this._exampleGenerator),
     ]);
 
     return {
@@ -71,20 +77,20 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
   return !!nodeExample && 'value' in nodeExample;
 }
 
-function computeMockedHeaders(headers: IHttpHeaderParam[], ex: IExampleGenerator): Promise<Dictionary<string>> {
+function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator): Promise<Dictionary<string>> {
   const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
-    if (header.content) {
-      if (header.content.examples.length > 0) {
-        const example = header.content.examples[0];
+    if (header.schema) {
+      if (header.examples && header.examples.length > 0) {
+        const example = header.examples[0];
         if (isINodeExample(example)) {
           return example.value;
         }
-      }
-      if (header.content.schema) {
-        return ex.generate(header.content.schema, 'application/json');
+      } else {
+        const example = await ex(header.schema);
+        if (!(isObject(example) && isEmpty(example))) return example;
       }
     }
-    return 'string';
+    return '';
   });
 
   return resolvePromiseInProps(headerWithPromiseValues);
@@ -92,14 +98,12 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], ex: IExampleGenerator
 
 async function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
-  ex: IExampleGenerator,
+  ex: PayloadGenerator,
 ) {
   if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
-    return typeof negotiationResult.bodyExample.value === 'string'
-      ? negotiationResult.bodyExample.value
-      : JSON.stringify(negotiationResult.bodyExample.value);
+    return negotiationResult.bodyExample.value;
   } else if (negotiationResult.schema) {
-    return ex.generate(negotiationResult.schema, negotiationResult.mediaType);
+    return ex(negotiationResult.schema);
   }
   return undefined;
 }

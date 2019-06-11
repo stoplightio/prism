@@ -1,5 +1,8 @@
-import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
-
+import { PickRequired, ProblemJsonError } from '@stoplight/prism-http';
+import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
+// @ts-ignore
+import * as accepts from 'accepts';
+import { NOT_ACCEPTABLE } from '../errors';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
 function findBestExample(httpContent: IHttpContent) {
@@ -10,11 +13,27 @@ function findExampleByKey(httpContent: IHttpContent, exampleKey: string) {
   return httpContent.examples && httpContent.examples.find(example => example.key === exampleKey);
 }
 
-function findHttpContentByMediaType(
-  response: IHttpOperationResponse,
-  mediaType: string,
+function hasContents(v: IHttpOperationResponse): v is PickRequired<IHttpOperationResponse, 'contents'> {
+  return !!v.contents;
+}
+
+function findBestHttpContentByMediaType(
+  response: PickRequired<IHttpOperationResponse, 'contents'>,
+  mediaType: string[],
 ): IMediaTypeContent | undefined {
-  return response.contents.find(content => content.mediaType === mediaType);
+  return response.contents.find(content =>
+    accepts({
+      headers: {
+        accept: mediaType.join(','),
+      },
+    }).type(content.mediaType),
+  );
+}
+
+function findDefaultContentType(
+  response: PickRequired<IHttpOperationResponse, 'contents'>,
+): IMediaTypeContent | undefined {
+  return response.contents.find(content => content.mediaType === '*/*');
 }
 
 function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {
@@ -102,8 +121,10 @@ const helpers = {
     response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
     const { code, dynamic, exampleKey } = partialOptions;
-    const mediaType = 'application/json';
-    const httpContent = findHttpContentByMediaType(response, mediaType);
+    const httpContent =
+      hasContents(response) &&
+      (findDefaultContentType(response) || findBestHttpContentByMediaType(response, ['application/json']));
+
     if (httpContent) {
       // a httpContent for default mediaType exists
       const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
@@ -137,12 +158,12 @@ const helpers = {
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse,
   ): IHttpNegotiationResult {
-    const { code, headers } = response;
-    const { mediaType, dynamic, exampleKey } = desiredOptions;
+    const { code } = response;
+    const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
-    if (mediaType) {
+    if (mediaTypes) {
       // a user provided mediaType
-      const httpContent = findHttpContentByMediaType(response, mediaType);
+      const httpContent = hasContents(response) && findBestHttpContentByMediaType(response, mediaTypes);
       if (httpContent) {
         // a httpContent for a provided mediaType exists
         const contentNegotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(
@@ -154,15 +175,14 @@ const helpers = {
           httpContent,
         );
         return {
-          headers,
+          headers: response.headers,
           ...contentNegotiationResult,
         };
       } else {
-        return {
-          code,
-          mediaType: 'text/plain',
-          headers,
-        };
+        throw ProblemJsonError.fromTemplate(
+          NOT_ACCEPTABLE,
+          `Could not find any content that satisfies ${mediaTypes.join(',')}`,
+        );
       }
     }
     // user did not provide mediaType
@@ -234,10 +254,15 @@ const helpers = {
     if (!response) {
       throw new Error('No 422, 400, or default responses defined');
     }
-    // find first response with any static examples
-    const responseWithExamples = response.contents.find(content => !!content.examples && content.examples.length !== 0);
-    // find first response with a schema
-    const responseWithSchema = response.contents.find(content => !!content.schema);
+    let responseWithExamples;
+    let responseWithSchema;
+
+    if (hasContents(response)) {
+      // find first response with any static examples
+      responseWithExamples = response.contents.find(content => !!content.examples && content.examples.length !== 0);
+      // find first response with a schema
+      responseWithSchema = response.contents.find(content => !!content.schema);
+    }
 
     if (responseWithExamples) {
       return {

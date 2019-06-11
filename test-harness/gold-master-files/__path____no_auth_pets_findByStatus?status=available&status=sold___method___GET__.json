@@ -1,0 +1,86 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/no_auth/pets/findByStatus?status=available&status=sold",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "673"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": [
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "sit",
+          "nulla id",
+          "sed ut est laboris Excepteur",
+          "enim occaecat",
+          "amet est Excepteur pariatur"
+        ],
+        "id": 10497268,
+        "category": {
+          "id": 27090641,
+          "name": "nostrud non cillum"
+        },
+        "tags": [
+          {
+            "id": -2621228,
+            "name": "reprehenderit nostrud commodo in anim"
+          },
+          {
+            "id": 3289701,
+            "name": "moll"
+          },
+          {
+            "id": -92018670,
+            "name": "irure in"
+          },
+          {
+            "id": -23636199,
+            "name": "nisi voluptate dolor id tempor"
+          },
+          {
+            "id": -2766698,
+            "name": "ad esse fugiat"
+          }
+        ],
+        "status": "sold"
+      },
+      {
+        "name": "doggie",
+        "photoUrls": [
+          "dolore veniam ",
+          "minim reprehenderit"
+        ],
+        "id": 16298342,
+        "category": {
+          "id": -17704755,
+          "name": "quis Duis"
+        },
+        "tags": [
+          {
+            "id": -82461568,
+            "name": "id"
+          },
+          {
+            "id": 64025932,
+            "name": "tempor enim sunt"
+          }
+        ],
+        "status": "sold"
+      }
+    ]
+  }
+}

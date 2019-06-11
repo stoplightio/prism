@@ -5,7 +5,7 @@ import { IHttpNameValue } from '../../types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { HttpParamsValidator } from './params';
 
-export class HttpHeadersValidator extends HttpParamsValidator<IHttpNameValue, IHttpHeaderParam> {
+export class HttpHeadersValidator extends HttpParamsValidator<IHttpNameValue> {
   constructor(
     registry: IHttpParamDeserializerRegistry<IHttpNameValue>,
     prefix: string,

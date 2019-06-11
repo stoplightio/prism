@@ -1,12 +1,13 @@
-import { ISchema } from '@stoplight/types';
 import * as Ajv from 'ajv';
 
+import { ProblemJsonError } from '@stoplight/prism-http';
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
-import { JSONSchemaExampleGenerator } from '../generator/JSONSchemaExampleGenerator';
+import { NOT_ACCEPTABLE } from '../errors';
+import { generate } from '../generator/JSONSchema';
 import { HttpMocker } from '../index';
 
 describe('http mocker', () => {
-  const mocker = new HttpMocker(new JSONSchemaExampleGenerator());
+  const mocker = new HttpMocker(generate);
 
   describe('request is valid', () => {
     describe('given only enforced content type', () => {
@@ -17,7 +18,7 @@ describe('http mocker', () => {
           config: {
             mock: {
               dynamic: false,
-              mediaType: 'text/plain',
+              mediaTypes: ['text/plain'],
             },
           },
         });
@@ -25,7 +26,7 @@ describe('http mocker', () => {
         expect(response).toMatchSnapshot();
       });
 
-      test('and that content type does not exist should return empty body', () => {
+      test('and that content type does not exist should return an error', () => {
         return expect(
           mocker.mock({
             resource: httpOperations[0],
@@ -33,11 +34,11 @@ describe('http mocker', () => {
             config: {
               mock: {
                 dynamic: false,
-                mediaType: 'text/funky',
+                mediaTypes: ['text/funky'],
               },
             },
           }),
-        ).resolves.toMatchObject({ headers: { 'Content-type': 'text/plain' }, body: undefined });
+        ).rejects.toThrowError(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE));
       });
     });
 
@@ -51,7 +52,7 @@ describe('http mocker', () => {
               dynamic: false,
               code: '201',
               exampleKey: 'second',
-              mediaType: 'application/xml',
+              mediaTypes: ['application/xml'],
             },
           },
         });
@@ -69,7 +70,7 @@ describe('http mocker', () => {
             mock: {
               dynamic: false,
               code: '201',
-              mediaType: 'application/xml',
+              mediaTypes: ['application/xml'],
             },
           },
         });
@@ -102,7 +103,7 @@ describe('http mocker', () => {
             mock: {
               dynamic: false,
               exampleKey: 'second',
-              mediaType: 'application/xml',
+              mediaTypes: ['application/xml'],
             },
           },
         });
@@ -166,7 +167,12 @@ describe('http mocker', () => {
           input: httpRequests[0],
         });
 
-        expect(response).toMatchSnapshot();
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toMatchObject({
+          completed: true,
+          id: 1,
+          name: 'make prism',
+        });
       });
 
       test('return lowest 2xx response and the first example matching the media type', async () => {
@@ -174,7 +180,7 @@ describe('http mocker', () => {
           resource: httpOperations[1],
           input: Object.assign({}, httpRequests[0], {
             data: Object.assign({}, httpRequests[0].data, {
-              headers: { 'Content-type': 'application/xml' },
+              headers: { Accept: 'application/xml' },
             }),
           }),
         });
@@ -193,26 +199,23 @@ describe('http mocker', () => {
               resource: httpOperations[0],
               input: Object.assign({}, httpRequests[0], {
                 data: Object.assign({}, httpRequests[0].data, {
-                  headers: { 'Content-type': 'application/yaml' },
+                  headers: { Accept: 'application/yaml' },
                 }),
               }),
             }),
-          ).resolves.toMatchObject({
-            headers: { 'Content-type': 'text/plain' },
-            body: undefined,
-          });
+          ).rejects.toThrowError(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE));
         });
       });
     });
 
     describe('HTTPOperation contain no examples', () => {
       test('return dynamic response', async () => {
-        if (!httpOperations[1].responses[0].contents[0].schema) {
+        if (!httpOperations[1].responses[0].contents![0].schema) {
           throw new Error('Missing test');
         }
 
         const ajv = new Ajv();
-        const validate = ajv.compile(httpOperations[1].responses[0].contents[0].schema as ISchema);
+        const validate = ajv.compile(httpOperations[1].responses[0].contents![0].schema);
 
         const response = await mocker.mock({
           resource: httpOperations[1],
@@ -229,7 +232,7 @@ describe('http mocker', () => {
           'Content-type': 'application/json',
           'x-todos-publish': expect.any(String),
         });
-        expect(validate(JSON.parse(response.body))).toBe(true);
+        expect(validate(response.body)).toBeTruthy();
       });
     });
   });
@@ -241,11 +244,12 @@ describe('http mocker', () => {
         input: httpRequests[1],
       });
 
-      expect(response).toMatchSnapshot();
+      expect(response.statusCode).toBe(422);
+      expect(response.body).toMatchObject({ message: 'error' });
     });
 
     test('returns 422 and dynamic error response', async () => {
-      if (!httpOperations[1].responses[1].contents[0].schema) {
+      if (!httpOperations[1].responses[1].contents![0].schema) {
         throw new Error('Missing test');
       }
 
@@ -255,9 +259,9 @@ describe('http mocker', () => {
       });
 
       const ajv = new Ajv();
-      const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema as ISchema);
+      const validate = ajv.compile(httpOperations[1].responses[1].contents![0].schema!);
 
-      expect(validate(JSON.parse(response.body))).toBe(true);
+      expect(validate(response.body)).toBeTruthy();
     });
   });
 });

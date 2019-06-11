@@ -1,7 +1,10 @@
 import { configMergerFactory } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import * as fastify from 'fastify';
-import { IncomingMessage, Server, ServerResponse } from 'http';
+// @ts-ignore
+import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
+import { IncomingMessage, ServerResponse } from 'http';
+import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
@@ -9,7 +12,37 @@ export const createServer = <LoaderInput>(
   loaderInput: LoaderInput,
   opts: IPrismHttpServerOpts<LoaderInput>,
 ): IPrismHttpServer<LoaderInput> => {
-  const server = fastify<Server, IncomingMessage, ServerResponse>();
+  const server = fastify().register(fastifyAcceptsSerializer, {
+    serializers: [
+      {
+        /*
+          This is a workaround, to make Fastify less strict in its json detection.
+          It expects a regexp, but instead we are using typeIs.
+        */
+        regex: {
+          test: (value: string) => !!typeIs.is(value, ['application/*+json']),
+          toString: () => 'application/*+json',
+        },
+        serializer: JSON.stringify,
+      },
+    ],
+    default: 'application/json; charset=utf-8',
+  });
+
+  server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
+    if (typeIs(req, ['application/*+json'])) {
+      try {
+        return done(null, JSON.parse(body));
+      } catch (e) {
+        return done(e);
+      }
+    }
+    const error: Error & { status?: number } = new Error(`Unsupported media type.`);
+    error.status = 415;
+    Error.captureStackTrace(error);
+    return done(error);
+  });
+
   const { components = {}, config } = opts;
   const mergedConfig = configMergerFactory({ mock: { dynamic: false } }, config, getHttpConfigFromRequest);
 
@@ -64,24 +97,28 @@ const replyHandler = <LoaderInput>(
       });
 
       const { output } = response;
+
       if (output) {
         reply.code(output.statusCode);
 
         if (output.headers) {
           reply.headers(output.headers);
         }
-
-        reply.serializer((payload: unknown) => payload).send(output.body);
+        reply.send(output.body);
       } else {
-        reply.code(500).send('Unable to find any decent response for the current request.');
+        throw new Error('Unable to find any decent response for the current request.');
       }
     } catch (e) {
-      const status = 'status' in e ? e.status : 500;
-      reply
-        .type('application/problem+json')
-        .serializer(JSON.stringify)
-        .code(status)
-        .send(ProblemJsonError.fromPlainError(e));
+      if (!reply.sent) {
+        const status = 'status' in e ? e.status : 500;
+        reply
+          .type('application/problem+json')
+          .serializer(JSON.stringify)
+          .code(status)
+          .send(ProblemJsonError.fromPlainError(e));
+      } else {
+        reply.res.end();
+      }
     }
   };
 };

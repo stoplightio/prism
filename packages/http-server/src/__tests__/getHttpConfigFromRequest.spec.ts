@@ -107,7 +107,7 @@ describe('getHttpConfigFromRequest()', () => {
             mock: {
               dynamic: false,
               exampleKey: 'wolf',
-              mediaType: 'plain/text',
+              mediaTypes: ['plain/text'],
             },
           },
         ),

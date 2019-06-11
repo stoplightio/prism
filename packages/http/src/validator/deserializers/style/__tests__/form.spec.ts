@@ -75,7 +75,7 @@ describe('FormStyleDeserializer', () => {
         it('returns object', () => {
           expect(
             formStyleDeserializer.deserialize(
-              '-',
+              'a',
               { a: 'b', c: 'd' },
               { type: 'object', properties: { a: { type: 'string' } } },
               true,
@@ -85,7 +85,7 @@ describe('FormStyleDeserializer', () => {
 
         describe('schema properties are missing', () => {
           it('returns empty object', () => {
-            expect(formStyleDeserializer.deserialize('-', {}, { type: 'object' }, true)).toEqual({});
+            expect(formStyleDeserializer.deserialize('-', {}, { type: 'object' }, true)).toBeUndefined();
           });
         });
       });

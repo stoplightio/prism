@@ -42,6 +42,289 @@
     "http"
   ],
   "paths": {
+    "/no_auth/pets/findByStatus": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Finds Pets by status",
+        "description": "Multiple status values can be provided with comma separated strings",
+        "operationId": "findPetsByStatus",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status values that need to be considered for filter",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "available",
+                "pending",
+                "sold"
+              ],
+              "default": "available"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Pet"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": []
+      }
+    },
+    "/no_auth/pets/findByTags": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Finds Pets by tags",
+        "description": "Muliple tags can be provided with comma separated strings. Use         tag1, tag2, tag3 for testing.",
+        "operationId": "findPetsByTags",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "tags",
+            "in": "query",
+            "description": "Tags to filter by",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Pet"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        },
+        "security": [],
+        "deprecated": true
+      }
+    },
+    "/no_auth/pets": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Get all pets",
+        "description": "",
+        "operationId": "getPets",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "type": "string",
+            "description": "",
+            "required": true
+          }
+        ],
+        "security": [],
+        "responses": {
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          },
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": [
+                {
+                  "example": {
+                    "name": "a_name",
+                    "photoUrls": []
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Add a new pet to the store",
+        "description": "",
+        "operationId": "addPet",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Pet object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": []
+      }
+    },
+    "/no_auth/pets/{petId}": {
+      "get": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Find pet by ID",
+        "description": "Returns a single pet",
+        "operationId": "getPetById",
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "description": "ID of pet to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Pet not found",
+            "schema": {
+              "type": "object",
+              "example": {
+                "msg": "no_resource"
+              }
+            }
+          },
+          "418": {
+            "description": "teapot response",
+            "schema": {
+              "$ref": "#/definitions/Pet"
+            }
+          },
+          "default": {
+            "description": "default response",
+            "schema": {
+              "required": [
+                "code",
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "post": {
+        "tags": [
+          "pet"
+        ],
+        "summary": "Updates a pet in the store with form data",
+        "description": "",
+        "operationId": "updatePetWithForm",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "petId",
+            "in": "path",
+            "description": "ID of pet that needs to be updated",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "Updated name of the pet",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "formData",
+            "description": "Updated status of the pet",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          },
+          "200": {
+            "description": "this gets hit when content-type is application/json..."
+          }
+        },
+        "security": []
+      }
+    },
     "/pets": {
       "post": {
         "tags": [
@@ -55,8 +338,8 @@
           "application/xml"
         ],
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -95,8 +378,8 @@
           "application/xml"
         ],
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -139,8 +422,8 @@
         "description": "Multiple status values can be provided with comma separated strings",
         "operationId": "findPetsByStatus",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -194,8 +477,8 @@
         "description": "Muliple tags can be provided with comma separated strings. Use         tag1, tag2, tag3 for testing.",
         "operationId": "findPetsByTags",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -244,8 +527,8 @@
         "description": "Returns a single pet",
         "operationId": "getPetById",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -346,8 +629,8 @@
           "application/x-www-form-urlencoded"
         ],
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -395,8 +678,8 @@
         "description": "",
         "operationId": "deletePet",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -497,6 +780,7 @@
         "description": "Returns a map of status codes to quantities",
         "operationId": "getInventory",
         "produces": [
+          "application/xml",
           "application/json"
         ],
         "parameters": [],
@@ -528,8 +812,8 @@
         "description": "",
         "operationId": "placeOrder",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -564,8 +848,8 @@
         "description": "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions",
         "operationId": "getOrderById",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -602,8 +886,8 @@
         "description": "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors",
         "operationId": "deleteOrder",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -635,8 +919,8 @@
         "description": "This can only be done by the logged in user.",
         "operationId": "createUser",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -665,8 +949,8 @@
         "description": "",
         "operationId": "createUsersWithArrayInput",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -698,8 +982,8 @@
         "description": "",
         "operationId": "createUsersWithListInput",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -731,8 +1015,8 @@
         "description": "",
         "operationId": "loginUser",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -790,8 +1074,8 @@
         "description": "",
         "operationId": "logoutUser",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [],
         "responses": {
@@ -810,8 +1094,8 @@
         "description": "",
         "operationId": "getUserByName",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json; charset=utf-8",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -845,8 +1129,8 @@
         "description": "This can only be done by the logged in user.",
         "operationId": "updateUser",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {
@@ -883,8 +1167,8 @@
         "description": "This can only be done by the logged in user.",
         "operationId": "deleteUser",
         "produces": [
-          "application/xml",
-          "application/json"
+          "application/json",
+          "application/xml"
         ],
         "parameters": [
           {

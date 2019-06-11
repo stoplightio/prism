@@ -24,9 +24,9 @@ Look at the relative repositories' READMEs for the specific documentation.
 Most of the users will probably want to use the CLI, which is a Node module, and can either be installed via NPM or Yarn…
 
 ```bash
-npm install -g @stoplight/prism-cli@alpha
+npm install -g @stoplight/prism-cli
 # or
-yarn global add @stoplight/prism-cli@alpha
+yarn global add @stoplight/prism-cli
 ```
 
 …or if you do not want to install [Node](https://nodejs.org), you can either use the installation script (if you're using Linux or MacOS)…
@@ -41,7 +41,7 @@ curl -L https://raw.githack.com/stoplightio/prism/master/install | sh
 
 ### CLI
 
-We'll present here only the main use cases. For a complete overview of the CLI, you can consult the relevant [documentation][cli-docs].
+We'll present here only the main use cases. For a complete overview of the CLI, you can consult the relevant [documentation ⇗][cli-docs].
 
 #### Mock server
 
@@ -122,7 +122,7 @@ This error shows the request is missing a required property `name` from the HTTP
 ## What's next for Prism?
 
 - [ ] Server Validation
-- [ ] Accept header validation
+- [x] Accept header validation
 - [ ] Content header validation
 - [ ] Security Validation
 - [ ] Dynamic Mocking (use JS to script custom interactions)
@@ -141,11 +141,11 @@ If you have a base path of `/api` and your path is defined as `hello`, then a re
 
 **How can I debug Prism?**
 
-Check out our [debugging section][debugging] in the [contribution docs][contributing].
+Check out our [debugging section ⇗][debugging] in the [contribution docs ⇗][contributing].
 
 ## Contributing
 
-If you are interested in contributing to Prism itself, check out our [contributing docs][contributing] and [code of conduct][code_of_conduct] to get started.
+If you are interested in contributing to Prism itself, check out our [contributing docs ⇗][contributing] and [code of conduct ⇗][code_of_conduct] to get started.
 
 [code_of_conduct]: CODE_OF_CONDUCT.md
 [contributing]: CONTRIBUTING.md

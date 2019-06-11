@@ -1,5 +1,6 @@
-import { DiagnosticSeverity, ISchema } from '@stoplight/types';
+import { DiagnosticSeverity } from '@stoplight/types';
 
+import { JSONSchema } from '@stoplight/prism-http';
 import { HttpBodyValidator } from '../body';
 import { IValidatorRegistry } from '../types';
 
@@ -64,11 +65,11 @@ describe('HttpBodyValidator', () => {
 
       describe('validator for given media type exists', () => {
         it('return validation errors', () => {
-          const mockSchema = { type: 'string' };
+          const mockSchema: JSONSchema = { type: 'string' };
 
           jest.spyOn(validatorRegistry, 'get').mockImplementation(mediaType => {
             expect(mediaType).toBe('application/json');
-            return (content: any, schema: ISchema) => {
+            return (content: any, schema: JSONSchema) => {
               expect(content).toEqual('test');
               expect(schema).toEqual(mockSchema);
               return [

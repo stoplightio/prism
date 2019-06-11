@@ -217,31 +217,77 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     // accorging to the schema
 
     const expectedValues = {
-      'x-rate-limit': file === 'petstore.oas3.json' ? 1000 : expect.any(String),
-      'x-stats': file === 'petstore.oas3.json' ? 1500 : expect.any(String),
+      'x-rate-limit': file === 'petstore.oas3.json' ? 1000 : expect.any(Number),
+      'x-stats': file === 'petstore.oas3.json' ? 1500 : expect.any(Number),
       'x-expires-after': expect.any(String),
-      'x-strange-header': file === 'petstore.oas3.json' ? 'string' : '{}',
+      'x-strange-header': '',
     };
 
     for (const headerName of Object.keys(expectedValues)) {
       expect(response.headers).toHaveProperty(headerName, expectedValues[headerName]);
     }
   });
-});
 
-describe('oas2 specific tests', () => {
-  test('should return response even if there is no content defined in spec', async () => {
-    const server = createServer({}, { components: {}, config: { mock: { dynamic: false } } });
-    await server.prism.load({
-      path: resolve(__dirname, 'fixtures', 'no-responses.oas2.yaml'),
+  describe('content negotiation', () => {
+    it('returns a valid response when multiple choices are given', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10',
+        headers: {
+          accept: 'idonotexist/something,application/json',
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
     });
 
-    const response = await server.fastify.inject({ method: 'GET', url: '/' });
+    it('respects the priority when multiple avaiable choices match', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10',
+        headers: {
+          accept: 'application/json,application/xml',
+        },
+      });
 
-    expect(response.statusCode).toBe(200);
-    expect(response.headers['content-type']).toEqual('text/plain');
-    expect(response.payload).toEqual('');
+      expect(response.statusCode).toBe(200);
+      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
+    });
 
-    await server.fastify.close();
+    it('returns 406 response when the requested media type is not offered', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10',
+        headers: {
+          accept: 'idonotexist/something',
+        },
+      });
+
+      expect(response.statusCode).toBe(406);
+    });
+
+    it('fallbacks to application/json in case the Accept header is not provided', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/store/inventory',
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
+    });
+
+    it('returns application/json even if the resources have the charset parameter', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/user/user1',
+        headers: {
+          accept: 'application/json',
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
+    });
   });
 });
