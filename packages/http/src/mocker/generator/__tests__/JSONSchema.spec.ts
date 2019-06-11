@@ -1,9 +1,10 @@
+import { JSONSchema } from 'http/src/types';
 import { generate } from '../JSONSchema';
 
 describe('JSONSchema generator', () => {
   describe('generate()', () => {
     it('generates dynamic example from schema', async () => {
-      const schema = {
+      const schema: JSONSchema = {
         type: 'object',
         properties: {
           name: { type: 'string', minLength: 1 },
@@ -18,7 +19,7 @@ describe('JSONSchema generator', () => {
     });
 
     it('operates on sealed schema objects', () => {
-      const schema = {
+      const schema: JSONSchema = {
         type: 'object',
         properties: {
           name: { type: 'string' },

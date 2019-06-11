@@ -1,4 +1,5 @@
 // @ts-ignore
+import { JSONSchema } from 'http/src/types';
 import * as jsf from 'json-schema-faker';
 import { cloneDeep } from 'lodash';
 
@@ -15,6 +16,6 @@ jsf.option({
   maxLength: 100,
 });
 
-export async function generate(source: unknown): Promise<unknown> {
+export async function generate(source: JSONSchema): Promise<unknown> {
   return jsf.resolve(cloneDeep(source));
 }
