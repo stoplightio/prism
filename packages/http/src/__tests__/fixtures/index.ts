@@ -9,7 +9,6 @@ export const httpOperations: IHttpOperation[] = [
     method: 'get',
     path: '/todos',
     request: {
-      path: [],
       query: [
         {
           required: false,
@@ -22,11 +21,7 @@ export const httpOperations: IHttpOperation[] = [
           style: HttpParamStyles.Form,
         },
       ],
-      headers: [],
-      cookie: [],
     },
-    servers: [],
-    security: [],
     responses: [
       {
         code: '200',
@@ -99,7 +94,6 @@ export const httpOperations: IHttpOperation[] = [
             encodings: [],
           },
         ],
-        headers: [],
       },
       {
         code: '201',
@@ -116,7 +110,6 @@ export const httpOperations: IHttpOperation[] = [
                 value: '{ "root": "second" }',
               },
             ],
-            encodings: [],
           },
           {
             mediaType: 'application/xml',
@@ -130,10 +123,8 @@ export const httpOperations: IHttpOperation[] = [
                 value: '<root>second</root>',
               },
             ],
-            encodings: [],
           },
         ],
-        headers: [],
       },
       {
         code: '422',
@@ -157,10 +148,8 @@ export const httpOperations: IHttpOperation[] = [
                 },
               },
             ],
-            encodings: [],
           },
         ],
-        headers: [],
       },
     ],
   },
@@ -168,14 +157,7 @@ export const httpOperations: IHttpOperation[] = [
     id: 'todo',
     method: 'get',
     path: '/todos/{todoId}',
-    request: {
-      path: [],
-      query: [],
-      headers: [],
-      cookie: [],
-    },
-    servers: [],
-    security: [],
+    request: {},
     responses: [
       {
         code: '200',
@@ -183,11 +165,7 @@ export const httpOperations: IHttpOperation[] = [
           {
             name: 'x-todos-publish',
             style: HttpParamStyles.Simple,
-            content: {
-              schema: { type: 'string', format: 'date-time' },
-              examples: [],
-              encodings: [],
-            },
+            schema: { type: 'string', format: 'date-time' },
           },
         ],
         contents: [
@@ -235,8 +213,6 @@ export const httpOperations: IHttpOperation[] = [
               },
               required: ['message'],
             },
-            examples: [],
-            encodings: [],
           },
         ],
       },
@@ -246,9 +222,6 @@ export const httpOperations: IHttpOperation[] = [
     id: 'todos',
     method: 'post',
     path: '/todos',
-    servers: [],
-    security: [],
-    responses: [],
     request: {
       body: {
         contents: [
@@ -259,8 +232,6 @@ export const httpOperations: IHttpOperation[] = [
               properties: { name: { type: 'string' }, completed: { type: 'boolean' } },
               required: ['name', 'completed'],
             },
-            examples: [],
-            encodings: [],
           },
         ],
       },
@@ -268,27 +239,26 @@ export const httpOperations: IHttpOperation[] = [
         {
           name: 'overwrite',
           style: HttpParamStyles.Form,
-          content: {
-            schema: { type: 'string', pattern: '^(yes|no)$' },
-            examples: [],
-            encodings: [],
-          },
+          schema: { type: 'string', pattern: '^(yes|no)$' },
         },
       ],
       headers: [
         {
           name: 'x-todos-publish',
           style: HttpParamStyles.Simple,
-          content: {
-            schema: { type: 'string', format: 'date-time' },
-            examples: [],
-            encodings: [],
-          },
+          schema: { type: 'string', format: 'date-time' },
+          examples: [],
+          encodings: [],
         },
       ],
       cookie: [],
       path: [],
     },
+    responses: [
+      {
+        code: '200',
+      },
+    ],
   },
 ];
 

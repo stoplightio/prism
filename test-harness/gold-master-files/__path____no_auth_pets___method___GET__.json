@@ -13,7 +13,7 @@
         "application/problem+json"
       ],
       "content-length": [
-        "272"
+        "275"
       ],
       "connection": [
         "close"
@@ -23,7 +23,7 @@
       "type": "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY",
       "title": "Invalid request body payload",
       "status": 422,
-      "detail": "Your request body is not valid: [{\"path\":[\"query\",\"name\"],\"code\":\"required\",\"message\":\"Missing name query param\",\"severity\":0}]"
+      "detail": "Your request body is not valid: [{\"path\":[\"query\"],\"code\":\"required\",\"message\":\"should have required property 'name'\",\"severity\":0}]"
     }
   }
 }

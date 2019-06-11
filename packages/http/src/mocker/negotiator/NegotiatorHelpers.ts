@@ -1,9 +1,12 @@
-import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent, Omit } from '@stoplight/types';
 import { Either, left, right } from 'fp-ts/lib/Either';
 import { Reader, reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';
 
+import { PickRequired } from '@stoplight/prism-http';
 import { ContentExample, NonEmptyArray } from '@stoplight/prism-http/src/types';
+import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
+// @ts-ignore
+import * as accepts from 'accepts';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
 type IWithExampleMediaContent = IMediaTypeContent & { examples: NonEmptyArray<ContentExample> };
@@ -16,11 +19,27 @@ function findExampleByKey(httpContent: IHttpContent, exampleKey: string) {
   return httpContent.examples && httpContent.examples.find(example => example.key === exampleKey);
 }
 
-function findHttpContentByMediaType(
-  response: IHttpOperationResponse,
-  mediaType: string,
+function hasContents(v: IHttpOperationResponse): v is PickRequired<IHttpOperationResponse, 'contents'> {
+  return !!v.contents;
+}
+
+function findBestHttpContentByMediaType(
+  response: PickRequired<IHttpOperationResponse, 'contents'>,
+  mediaType: string[],
 ): IMediaTypeContent | undefined {
-  return response.contents.find(content => content.mediaType === mediaType);
+  return response.contents.find(content =>
+    accepts({
+      headers: {
+        accept: mediaType.join(','),
+      },
+    }).type(content.mediaType),
+  );
+}
+
+function findDefaultContentType(
+  response: PickRequired<IHttpOperationResponse, 'contents'>,
+): IMediaTypeContent | undefined {
+  return response.contents.find(content => content.mediaType === '*/*');
 }
 
 function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {
@@ -115,8 +134,10 @@ const helpers = {
     response: IHttpOperationResponse,
   ): Either<Error, IHttpNegotiationResult> {
     const { code, dynamic, exampleKey } = partialOptions;
-    const mediaType = 'application/json';
-    const httpContent = findHttpContentByMediaType(response, mediaType);
+    const httpContent =
+      hasContents(response) &&
+      (findDefaultContentType(response) || findBestHttpContentByMediaType(response, ['application/json']));
+
     if (httpContent) {
       // a httpContent for default mediaType exists
       return helpers
@@ -152,14 +173,14 @@ const helpers = {
     response: IHttpOperationResponse,
   ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
     const { code, headers } = response;
-    const { mediaType, dynamic, exampleKey } = desiredOptions;
+    const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
     return new Reader(logger => {
-      if (mediaType) {
+      if (mediaTypes) {
         // a user provided mediaType
-        const httpContent = findHttpContentByMediaType(response, mediaType);
+        const httpContent = findBestHttpContentByMediaType(response, mediaTypes);
         if (httpContent) {
-          logger.success(`Found a compatible media type for ${mediaType}`);
+          logger.success(`Found a compatible media type for ${mediaTypes}`);
           // a httpContent for a provided mediaType exists
           return helpers
             .negotiateByPartialOptionsAndHttpContent(
@@ -175,7 +196,7 @@ const helpers = {
               ...contentNegotiationResult,
             }));
         } else {
-          logger.trace(`Unable to find a content for ${mediaType}, returning an empty text/plain response.`);
+          logger.trace(`Unable to find a content for ${mediaTypes}, returning an empty text/plain response.`);
           return right({
             code,
             mediaType: 'text/plain',

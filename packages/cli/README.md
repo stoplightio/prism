@@ -17,7 +17,7 @@ $ npm install -g @stoplight/prism-cli
 $ prism COMMAND
 running command...
 $ prism (-v|--version|version)
-@stoplight/prism-cli/3.0.0-alpha.11 darwin-x64 node-v12.3.1
+@stoplight/prism-cli/3.0.0-alpha.14 darwin-x64 node-v12.4.0
 $ prism --help [COMMAND]
 USAGE
   $ prism COMMAND
@@ -59,10 +59,11 @@ ARGUMENTS
 
 OPTIONS
   -d, --dynamic    Dynamically generate examples.
+  -h, --host=host  [default: 127.0.0.1] Host that Prism will listen to.
   -p, --port=port  (required) [default: 4010] Port that Prism will run on.
 ```
 
-_See code: [src/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0.0-alpha.11/src/commands/mock.ts)_
+_See code: [src/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0.0-alpha.14/src/commands/mock.ts)_
 <!-- commandsstop -->
 
 ## Development

@@ -1,4 +1,4 @@
-import { IDiagnostic, Omit } from '@stoplight/types';
+import { IDiagnostic } from '@stoplight/types';
 import { Either } from 'fp-ts/lib/Either';
 import { Reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';

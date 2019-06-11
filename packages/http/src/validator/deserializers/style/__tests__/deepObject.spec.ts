@@ -14,8 +14,7 @@ describe('DeepObjectStyleDeserializer', () => {
 
     describe('style is not supported', () => {
       it('returns false', () => {
-        // @ts-ignore
-        expect(deepObjectStyleDeserializer.supports('invalid')).toBe(false);
+        expect(deepObjectStyleDeserializer.supports(HttpParamStyles.PipeDelimited)).toBe(false);
       });
     });
   });

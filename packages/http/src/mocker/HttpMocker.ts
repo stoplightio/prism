@@ -41,16 +41,14 @@ export class HttpMocker
     }
 
     return new Reader<Logger, IHttpOperationConfig>(logger => {
-      const inputMediaType = input.data.headers && caseless(input.data.headers).get('content-type');
-
+      // setting default values
+      const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
       config = config || { mock: false };
-
       const mockConfig: IHttpOperationConfig =
         config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
 
-      if (!mockConfig.mediaType && typeof inputMediaType === 'string') {
-        logger.info(`Request contains a content-type header: ${inputMediaType}`);
-        mockConfig.mediaType = inputMediaType;
+      if (!mockConfig.mediaTypes && acceptMediaType) {
+        mockConfig.mediaTypes = acceptMediaType.split(',');
       }
 
       return mockConfig;
@@ -81,7 +79,7 @@ export class HttpMocker
           return result.map(async negotiationResult => {
             const [body, mockedHeaders] = await Promise.all([
               computeBody(negotiationResult, this._exampleGenerator),
-              computeMockedHeaders(negotiationResult.headers, this._exampleGenerator),
+              computeMockedHeaders(negotiationResult.headers || [], this._exampleGenerator),
             ]);
 
             const response: IHttpResponse = {
@@ -108,15 +106,14 @@ function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is
 
 function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator): Promise<Dictionary<string>> {
   const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
-    if (header.content) {
-      if (header.content.examples.length > 0) {
-        const example = header.content.examples[0];
+    if (header.schema) {
+      if (header.examples && header.examples.length > 0) {
+        const example = header.examples[0];
         if (isINodeExample(example)) {
           return example.value;
         }
-      }
-      if (header.content.schema) {
-        const example = await ex(header.content.schema);
+      } else {
+        const example = await ex(header.schema);
         if (!(isObject(example) && isEmpty(example))) return example;
       }
     }

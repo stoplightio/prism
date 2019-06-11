@@ -1,27 +1,30 @@
 {
   "request": {
     "method": "GET",
-    "headers": {},
-    "path": "/no_auth/pets/123?__code=499",
+    "headers": {
+      "accept": "application/idonotexist"
+    },
+    "path": "/no_auth/pets/10",
     "host": "http://localhost:4010"
   },
   "response": {
-    "status": 499,
-    "statusText": "unknown",
+    "status": 406,
+    "statusText": "Not Acceptable",
     "headers": {
       "content-type": [
         "application/json; charset=utf-8"
       ],
       "content-length": [
-        "37"
+        "100"
       ],
       "connection": [
         "close"
       ]
     },
     "body": {
-      "code": -61290043,
-      "message": "dolore"
+      "statusCode": 406,
+      "error": "Not Acceptable",
+      "message": "Allowed: application/*+json,application/json"
     }
   }
 }

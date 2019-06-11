@@ -1,13 +1,13 @@
-import { IHttpOperationConfig } from '@stoplight/prism-http';
+import { IHttpOperationConfig, JSONSchema } from '@stoplight/prism-http';
 import { ContentExample } from '@stoplight/prism-http/src/types';
-import { IHttpHeaderParam, ISchema } from '@stoplight/types';
+import { IHttpHeaderParam } from '@stoplight/types';
 
 export interface IHttpNegotiationResult {
   code: string;
   mediaType: string;
   bodyExample?: ContentExample;
-  schema?: ISchema;
   headers: IHttpHeaderParam[];
+  schema?: JSONSchema;
 }
 
 export type NegotiationOptions = IHttpOperationConfig;

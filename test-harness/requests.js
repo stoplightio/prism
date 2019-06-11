@@ -93,5 +93,22 @@ module.exports = [
   {
     path: '/no_auth/pets/findByStatus?status=available&__code=499',
     method: 'GET',
+  },
+  {
+    path: '/no_auth/pets/10',
+    headers: {
+      accept: 'application/idonotexist'
+    },
+    method: 'GET',
+  },
+  {
+    path: '/pets/123',
+    method: 'POST',
+    headers: {
+      'content-type': 'application/vnd.api+json'
+    },
+    body: JSON.stringify({
+      hello: 'world'
+    })
   }
 ];

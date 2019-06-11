@@ -253,6 +253,25 @@ const createSpec = (specPath, prismCmd) => {
             expect(reqRes.response.status).toBe(422);
           });
         });
+
+        describe('content type parser', () => {
+          const cases = [['application/json', false], ['application/vnd.api+json', false], ['application/xml', true],
+          ['application/vnd.json', true], ['application/vnd.xml;x=json', true]]
+          test.each(cases)
+            ('%s', async (contentType, shouldError) => {
+              const result = await makeRequest({
+                path: '/no_auth/pets', method: 'POST', headers: {
+                  'content-type': contentType
+                }, body: JSON.stringify({ hello: 10 })
+              });
+
+              if (shouldError)
+                return expect(result.response.status).toBe(415);
+
+              return expect(result.response.status).not.toBe(415);
+            });
+        });
+
       });
     });
   };

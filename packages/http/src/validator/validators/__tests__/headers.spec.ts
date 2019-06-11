@@ -1,22 +1,15 @@
-import { HttpParamStyles, ISchema } from '@stoplight/types';
-
-import { HttpParamDeserializerRegistry } from '../../deserializers/registry';
+import { HttpParamStyles } from '@stoplight/types';
+import { query as registry } from '../../deserializers';
 import { HttpHeadersValidator } from '../headers';
 import * as validateAgainstSchemaModule from '../utils';
 
 describe('HttpHeadersValidator', () => {
-  const registry = new HttpParamDeserializerRegistry([
-    {
-      supports: (_style: HttpParamStyles) => true,
-      deserialize: (_name: string, _parameters: any, _schema: ISchema) => ({}),
-    },
-  ]);
   const httpHeadersValidator = new HttpHeadersValidator(registry, 'header');
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(registry, 'get');
-    jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema').mockImplementation(() => []);
+    jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema');
   });
 
   describe('validate()', () => {
@@ -42,12 +35,12 @@ describe('HttpHeadersValidator', () => {
                   {
                     name: 'x-test-header',
                     style: HttpParamStyles.Simple,
-                    content: { schema: { type: 'number' }, examples: [], encodings: [] },
+                    schema: { type: 'number' },
                   },
                 ]),
               ).toEqual([]);
 
-              expect(validateAgainstSchemaModule.validateAgainstSchema).not.toHaveBeenCalled();
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
             });
           });
 
@@ -59,18 +52,18 @@ describe('HttpHeadersValidator', () => {
                     {
                       name: 'x-test-header',
                       style: HttpParamStyles.Simple,
-                      content: { schema: { type: 'string' }, examples: [], encodings: [] },
+                      schema: { type: 'string' },
                     },
                   ]),
                 ).toEqual([]);
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toHaveBeenCalled();
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
               });
             });
           });
         });
 
-        describe('content was not provided', () => {
+        describe('schema was not provided', () => {
           it('omits schema validation', () => {
             expect(
               httpHeadersValidator.validate({ 'x-test-header': 'abc' }, [
@@ -81,8 +74,7 @@ describe('HttpHeadersValidator', () => {
               ]),
             ).toEqual([]);
 
-            expect(registry.get).not.toHaveBeenCalled();
-            expect(validateAgainstSchemaModule.validateAgainstSchema).not.toHaveBeenCalled();
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
           });
         });
 

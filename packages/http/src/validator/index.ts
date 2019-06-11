@@ -76,7 +76,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
     const config = resolveResponseValidationConfig(originalConfig);
     const results: IPrismDiagnostic[] = [];
     const mediaType = caseless(output.headers || {}).get('content-type');
-    const responseSpec = findOperationResponse(resource.responses, output.statusCode);
+    const responseSpec = resource.responses && findOperationResponse(resource.responses, output.statusCode);
 
     if (config.body) {
       this.bodyValidator

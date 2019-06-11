@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-alpha.14 (2019-06-11)
+
+
+### Bug Fixes
+
+* Prism is now handling the fact that HTTP headers are case insensitive #338
+* Prism is now normalising OAS2/3 schemas improving and simplyfing the validation capabilites #338
+
+
+# 3.0.0-alpha.13 (2019-06-09)
+
+
+### Bug Fixes
+
+* Prism is not able to correctly handle the Content Type header #344
+
+### Features
+
+* Prism CLI has now a new CLI option to specify the IP Address where it will listen connections for #340
+
+
+
+
+# 3.0.0-alpha.12 (2019-06-04)
+
+
+### Bug Fixes
+
+* Fixed the security issue intrisic in Axios by updating its dependency in the project #334
+* Fix a bug where paremeters where undetected, returning a REQUIERD error #325
+
+### Features
+
+* Respect the `Accept` header when requesting content to Prism #333
+* Create a LICENSE file for the project #330
+* Add new GitHub ISSUES template files for the project #326
+* Decouple payload generation from its serialisation #322
+
+
+
+
 # 3.0.0-alpha.11 (2019-05-24)
 
 

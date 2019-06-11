@@ -1,4 +1,3 @@
-import { ISchema } from '@stoplight/types';
 import * as Ajv from 'ajv';
 
 import { createLogger } from '@stoplight/prism-core';
@@ -34,7 +33,7 @@ describe('http mocker', () => {
             config: {
               mock: {
                 dynamic: false,
-                mediaType: 'text/plain',
+                mediaTypes: ['text/plain'],
               },
             },
           })
@@ -51,7 +50,7 @@ describe('http mocker', () => {
             config: {
               mock: {
                 dynamic: false,
-                mediaType: 'text/funky',
+                mediaTypes: ['text/funky'],
               },
             },
           })
@@ -74,7 +73,7 @@ describe('http mocker', () => {
                 dynamic: false,
                 code: '201',
                 exampleKey: 'second',
-                mediaType: 'application/xml',
+                mediaTypes: ['application/xml'],
               },
             },
           })
@@ -94,7 +93,7 @@ describe('http mocker', () => {
               mock: {
                 dynamic: false,
                 code: '201',
-                mediaType: 'application/xml',
+                mediaTypes: ['application/xml'],
               },
             },
           })
@@ -131,7 +130,7 @@ describe('http mocker', () => {
               mock: {
                 dynamic: false,
                 exampleKey: 'second',
-                mediaType: 'application/xml',
+                mediaTypes: ['application/xml'],
               },
             },
           })
@@ -216,7 +215,7 @@ describe('http mocker', () => {
           });
         });
 
-        test('return lowest 2xx response and the first example matching the media type', async () => {
+        test('return lowest 2xx response and the first example matching the media type', () => {
           const response = mocker
             .mock({
               resource: httpOperations[1],
@@ -265,7 +264,7 @@ describe('http mocker', () => {
           }
 
           const ajv = new Ajv();
-          const validate = ajv.compile(httpOperations[1].responses[0].contents[0].schema as ISchema);
+          const validate = ajv.compile(httpOperations[1].responses[0].contents[0].schema);
 
           const response = mocker
             .mock({
@@ -278,8 +277,6 @@ describe('http mocker', () => {
               },
             })
             .run(logger);
-
-          expect(response.isRight()).toBeTruthy();
 
           assertRight(response, async result => {
             const r = await result;
@@ -310,26 +307,26 @@ describe('http mocker', () => {
           expect(r.body).toMatchObject({ message: 'error' });
         });
       });
+    });
 
-      test('returns 422 and dynamic error response', async () => {
-        if (!httpOperations[1].responses[1].contents[0].schema) {
-          throw new Error('Missing test');
-        }
+    test('returns 422 and dynamic error response', async () => {
+      if (!httpOperations[1].responses[1].contents![0].schema) {
+        throw new Error('Missing test');
+      }
 
-        const response = mocker
-          .mock({
-            resource: httpOperations[1],
-            input: httpRequests[1],
-          })
-          .run(logger);
+      const response = mocker
+        .mock({
+          resource: httpOperations[1],
+          input: httpRequests[1],
+        })
+        .run(logger);
 
-        const ajv = new Ajv();
-        const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema!);
+      const ajv = new Ajv();
+      const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema!);
 
-        assertRight(response, async result => {
-          const r = await result;
-          expect(validate(r.body)).toBeTruthy();
-        });
+      assertRight(response, async result => {
+        const r = await result;
+        expect(validate(r.body)).toBeTruthy();
       });
     });
   });
