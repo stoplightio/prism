@@ -150,7 +150,7 @@ const helpers = {
           httpContent,
         )
         .map(contentNegotiationResult => ({
-          headers: response.headers,
+          headers: response.headers || [],
           ...contentNegotiationResult,
         }));
     } else {
@@ -162,7 +162,7 @@ const helpers = {
           value: undefined,
           key: 'default',
         },
-        headers: response.headers,
+        headers: response.headers || [],
       });
     }
   },
@@ -178,7 +178,7 @@ const helpers = {
     return new Reader(logger => {
       if (mediaTypes) {
         // a user provided mediaType
-        const httpContent = findBestHttpContentByMediaType(response, mediaTypes);
+        const httpContent = hasContents(response) && findBestHttpContentByMediaType(response, mediaTypes);
         if (httpContent) {
           logger.success(`Found a compatible media type for ${mediaTypes}`);
           // a httpContent for a provided mediaType exists
@@ -192,7 +192,7 @@ const helpers = {
               httpContent,
             )
             .map(contentNegotiationResult => ({
-              headers,
+              headers: headers || [],
               ...contentNegotiationResult,
             }));
         } else {
@@ -200,7 +200,7 @@ const helpers = {
           return right({
             code,
             mediaType: 'text/plain',
-            headers,
+            headers: headers || [],
           });
         }
       }
@@ -306,7 +306,8 @@ const helpers = {
         }
 
         // find first response with any static examples
-        const contentWithExamples = response.contents.find<IWithExampleMediaContent>(contentHasExamples);
+        const contentWithExamples =
+          response.contents && response.contents.find<IWithExampleMediaContent>(contentHasExamples);
 
         if (contentWithExamples) {
           logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
@@ -314,19 +315,19 @@ const helpers = {
             code: response.code,
             mediaType: contentWithExamples.mediaType,
             bodyExample: contentWithExamples.examples[0],
-            headers: response.headers,
+            headers: response.headers || [],
           });
         } else {
           logger.trace(`Unable to find a content with an example defined for the response ${response.code}`);
           // find first response with a schema
-          const responseWithSchema = response.contents.find(content => !!content.schema);
+          const responseWithSchema = response.contents && response.contents.find(content => !!content.schema);
           if (responseWithSchema) {
             logger.success(`The response ${response.code} has a schema. I'll keep going with this one`);
             return right({
               code: response.code,
               mediaType: responseWithSchema.mediaType,
               schema: responseWithSchema.schema,
-              headers: response.headers,
+              headers: response.headers || [],
             });
           } else {
             logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);

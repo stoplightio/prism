@@ -48,6 +48,7 @@ export class HttpMocker
         config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
 
       if (!mockConfig.mediaTypes && acceptMediaType) {
+        logger.info(`Request contains an accept header: ${acceptMediaType}`);
         mockConfig.mediaTypes = acceptMediaType.split(',');
       }
 

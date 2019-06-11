@@ -3,7 +3,7 @@ import { relative, resolve } from 'path';
 import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
 
-const logger = createLogger('TEST', { enabled: true });
+const logger = createLogger('TEST', { enabled: false });
 
 function checkErrorPayloadShape(payload: string) {
   const parsedPayload = JSON.parse(payload);

@@ -347,9 +347,7 @@ describe('NegotiatorHelpers', () => {
     it('given response not defined should fallback to default code', () => {
       const code = chance.string();
       const desiredOptions = { dynamic: false };
-      httpOperation = anHttpOperation(httpOperation)
-        .withResponses([])
-        .instance();
+      httpOperation = anHttpOperation(httpOperation).instance();
 
       assertLeft(helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code).run(logger), error =>
         expect(error).toHaveProperty('message', 'Requested status code is not defined in the schema.'),
@@ -500,13 +498,11 @@ describe('NegotiatorHelpers', () => {
             headers: [],
           };
 
-          const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
-            httpOperation,
-            desiredOptions,
-            httpResponseSchema,
-          );
+          const actualOperationConfig = helpers
+            .negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema)
+            .run(logger);
 
-          expect(actualOperationConfig).toHaveProperty('mediaType', 'application/xml');
+          assertRight(actualOperationConfig, config => expect(config).toHaveProperty('mediaType', 'application/xml'));
         });
 
         it('should negotiatiate the only content that is really avaiable', () => {
@@ -527,13 +523,11 @@ describe('NegotiatorHelpers', () => {
             headers: [],
           };
 
-          const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
-            httpOperation,
-            desiredOptions,
-            httpResponseSchema,
-          );
+          const actualOperationConfig = helpers
+            .negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema)
+            .run(logger);
 
-          expect(actualOperationConfig).toHaveProperty('mediaType', 'application/json');
+          assertRight(actualOperationConfig, config => expect(config).toHaveProperty('mediaType', 'application/json'));
         });
       });
 
@@ -648,13 +642,12 @@ describe('NegotiatorHelpers', () => {
             },
             contents[1], // Check that the */* has been requested
           );
-          expect(actualOperationConfig).toEqual(fakeOperationConfig);
+
+          assertRight(actualOperationConfig, operationConfig => {
+            expect(operationConfig).toEqual(fakeOperationConfig);
+          });
         },
       );
-
-      assertRight(actualOperationConfig, operationConfig => {
-        expect(operationConfig).toEqual(fakeOperationConfig);
-      });
     });
 
     it('when no default response return text/plain with empty body', () => {

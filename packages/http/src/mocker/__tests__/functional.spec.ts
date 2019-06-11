@@ -259,12 +259,12 @@ describe('http mocker', () => {
 
       describe('HTTPOperation contain no examples', () => {
         test('return dynamic response', async () => {
-          if (!httpOperations[1].responses[0].contents[0].schema) {
+          if (!httpOperations[1].responses[0].contents![0].schema) {
             throw new Error('Missing test');
           }
 
           const ajv = new Ajv();
-          const validate = ajv.compile(httpOperations[1].responses[0].contents[0].schema);
+          const validate = ajv.compile(httpOperations[1].responses[0].contents![0].schema);
 
           const response = mocker
             .mock({
@@ -322,7 +322,7 @@ describe('http mocker', () => {
         .run(logger);
 
       const ajv = new Ajv();
-      const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema!);
+      const validate = ajv.compile(httpOperations[1].responses[1].contents![0].schema!);
 
       assertRight(response, async result => {
         const r = await result;
