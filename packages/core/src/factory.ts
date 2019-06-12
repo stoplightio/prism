@@ -61,7 +61,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         let output: Output | undefined;
         if (resource && components.mocker && (configObj as IPrismConfig).mock) {
           // generate the response
-          output = await components.mocker.mock(
+          output = components.mocker.mock(
             {
               resource,
               input: { validations: { input: inputValidations }, data: input },

@@ -2,7 +2,7 @@ import { IMocker, IMockerOpts } from '@stoplight/prism-core';
 import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
+import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import {
   IHttpConfig,
   IHttpOperationConfig,
@@ -17,11 +17,11 @@ import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  public async mock({
+  public mock({
     resource,
     input,
     config,
-  }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): Promise<IHttpResponse> {
+  }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): IHttpResponse {
     let payloadGenerator: PayloadGenerator = generateStatic;
 
     if (config) {
@@ -66,10 +66,8 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
       negotiationResult = helpers.negotiateOptionsForValidRequest(resource, mockConfig);
     }
 
-    const [body, mockedHeaders] = await Promise.all([
-      computeBody(negotiationResult, payloadGenerator),
-      computeMockedHeaders(negotiationResult.headers || [], payloadGenerator),
-    ]);
+    const mockedBody = computeBody(negotiationResult, payloadGenerator);
+    const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
 
     return {
       statusCode: parseInt(negotiationResult.code),
@@ -77,7 +75,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
         ...mockedHeaders,
         'Content-type': negotiationResult.mediaType,
       },
-      body,
+      body: mockedBody,
     };
   }
 }
@@ -86,11 +84,8 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
   return !!nodeExample && 'value' in nodeExample;
 }
 
-function computeMockedHeaders(
-  headers: IHttpHeaderParam[],
-  payloadGenerator: PayloadGenerator,
-): Promise<Dictionary<string>> {
-  const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
+function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: PayloadGenerator): Dictionary<string> {
+  const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), header => {
     if (header.schema) {
       if (header.examples && header.examples.length > 0) {
         const example = header.examples[0];
@@ -98,17 +93,17 @@ function computeMockedHeaders(
           return example.value;
         }
       } else {
-        const example = await payloadGenerator(header.schema);
+        const example = payloadGenerator(header.schema);
         if (!(isObject(example) && isEmpty(example))) return example;
       }
     }
     return '';
   });
 
-  return resolvePromiseInProps(headerWithPromiseValues);
+  return headerWithPromiseValues;
 }
 
-async function computeBody(
+function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
   payloadGenerator: PayloadGenerator,
 ) {
@@ -118,9 +113,4 @@ async function computeBody(
     return payloadGenerator(negotiationResult.schema);
   }
   return undefined;
-}
-
-async function resolvePromiseInProps(val: Dictionary<Promise<string>>): Promise<Dictionary<string>> {
-  const promisePair = await Promise.all(toPairs(val).map(v => Promise.all(v)));
-  return fromPairs(promisePair);
 }
