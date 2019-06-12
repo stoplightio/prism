@@ -82,7 +82,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
     }
 
     if (requestBaseUrl) {
-      if (resources.every(resource => resource.servers.length === 0)) {
+      if (resources.every(resource => !resource.servers || resource.servers.length === 0)) {
         throw ProblemJsonError.fromTemplate(
           NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
           `No server configuration has been provided, although ${requestBaseUrl} is set as base url`,

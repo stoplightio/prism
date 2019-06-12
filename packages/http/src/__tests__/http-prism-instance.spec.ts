@@ -1,10 +1,12 @@
 import { IPrism } from '@stoplight/prism-core';
+import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpOperation } from '@stoplight/types/http-spec';
+import * as nock from 'nock';
 import { relative, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { forwarder } from '../forwarder';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
-import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
+import { NO_BASE_URL_ERROR, NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
 
 const fixturePath = (filename: string) => relative(process.cwd(), resolve(__dirname, 'fixtures', filename));
 const noRefsPetstoreMinimalOas2Path = fixturePath('no-refs-petstore-minimal.oas2.json');
@@ -57,7 +59,7 @@ describe('Http Prism Instance function tests', () => {
       ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
     });
 
-    test('when processed with invalid basePath should throw error', () => {
+    test('when processed with invalid baseUrl should throw error', () => {
       return expect(
         prism.process({
           method: 'get',
@@ -67,6 +69,88 @@ describe('Http Prism Instance function tests', () => {
           },
         }),
       ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
+    });
+
+    describe('given mocking is turned off', () => {
+      const config: IHttpConfig = { mock: false };
+      const baseUrl = 'http://stoplight.io';
+      const serverReply = 'hello world';
+
+      beforeEach(() => {
+        nock(baseUrl)
+          .get('/x-bet')
+          .reply(200, serverReply);
+      });
+
+      afterEach(() => {
+        nock.cleanAll();
+      });
+
+      describe('given invalid path', () => {
+        const request: IHttpRequest = {
+          method: 'get',
+          url: {
+            path: '/x-bet',
+            baseUrl,
+          },
+        };
+
+        test('returns input warning', async () => {
+          const result = await prism.process(request, config);
+
+          expect(result.validations.input).toEqual([
+            {
+              code: 404,
+              source: 'https://stoplight.io/prism/errors#NO_PATH_MATCHED_ERROR',
+              message: 'Route not resolved, no path matched.',
+              severity: DiagnosticSeverity.Warning,
+            },
+          ]);
+        });
+
+        test('make a http request anyway', async () => {
+          // note that we are 'nocking' the request in beforeEach
+          const result = await prism.process(request, config);
+
+          expect(result.output!.statusCode).toEqual(200);
+          expect(result.output!.body).toEqual(serverReply);
+        });
+      });
+
+      test('given invalid path and no baseUrl should error', () => {
+        return expect(
+          prism.process(
+            {
+              method: 'get',
+              url: {
+                path: '/x-pet',
+              },
+            },
+            config,
+          ),
+        ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_BASE_URL_ERROR));
+      });
+
+      test('given valid path and no baseUrl should use one from the spec', async () => {
+        const oasBaseUrl = 'http://example.com/api';
+        const reply = 'some demo reply';
+        nock(oasBaseUrl)
+          .get('/pet')
+          .reply(200, reply);
+
+        const result = await prism.process(
+          {
+            method: 'get',
+            url: {
+              path: '/pet',
+            },
+          },
+          config,
+        );
+
+        expect(result.output!.statusCode).toEqual(200);
+        expect(result.output!.body).toEqual(reply);
+      });
     });
   });
 
