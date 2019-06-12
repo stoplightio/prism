@@ -186,7 +186,7 @@ describe('HttpMocker', () => {
             jest.restoreAllMocks();
           });
 
-          it.only('the dynamic response should not be an example one', () => {
+          it('the dynamic response should not be an example one', () => {
             const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,

@@ -85,7 +85,7 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
 }
 
 function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: PayloadGenerator): Dictionary<string> {
-  const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), header => {
+  return mapValues(keyBy(headers, h => h.name), header => {
     if (header.schema) {
       if (header.examples && header.examples.length > 0) {
         const example = header.examples[0];
@@ -97,10 +97,8 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: Pay
         if (!(isObject(example) && isEmpty(example))) return example;
       }
     }
-    return '';
+    return null;
   });
-
-  return headerWithPromiseValues;
 }
 
 function computeBody(

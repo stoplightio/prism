@@ -220,7 +220,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       'x-rate-limit': file === 'petstore.oas3.json' ? 1000 : expect.any(Number),
       'x-stats': file === 'petstore.oas3.json' ? 1500 : expect.any(Number),
       'x-expires-after': expect.any(String),
-      'x-strange-header': '',
+      'x-strange-header': null,
     };
 
     for (const headerName of Object.keys(expectedValues)) {

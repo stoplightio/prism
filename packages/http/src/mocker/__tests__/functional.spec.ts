@@ -128,7 +128,7 @@ describe('http mocker', () => {
       });
 
       test('given that status code is not defined should throw an error', () => {
-        const rejection = () =>
+        return expect(() =>
           mocker.mock({
             resource: httpOperations[0],
             input: httpRequests[0],
@@ -138,9 +138,8 @@ describe('http mocker', () => {
                 code: '205',
               },
             },
-          });
-
-        return expect(rejection).toThrowError('Requested status code is not defined in the schema.');
+          }),
+        ).toThrowError('Requested status code is not defined in the schema.');
       });
 
       test('and example key should return application/json example', () => {
