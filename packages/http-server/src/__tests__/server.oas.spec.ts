@@ -253,7 +253,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     }
   });
 
-  describe.only('server validation: given __server query param', () => {
+  describe('server validation: given __server query param', () => {
     test('when the server is not valid then return error', async () => {
       const response = await server.fastify.inject({
         method: 'GET',
