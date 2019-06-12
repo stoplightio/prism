@@ -1,6 +1,6 @@
 # Prism Server
 
-**NOTE:** The current API is still experimentale and could change with no notice. Use at your own risk.
+**NOTE:** The current API is still experimental and could change with no notice. Use at your own risk.
 
 Usage:
 
