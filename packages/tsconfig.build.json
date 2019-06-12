@@ -4,6 +4,7 @@
   ],
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "outDir": "lib",
     "composite": true,
     "sourceMap": true,
     "declaration": true,
