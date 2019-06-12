@@ -1,5 +1,5 @@
+import { ProblemJsonError } from '@stoplight/prism-http/src/types';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { ProblemJsonError } from 'http/src/types';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from './types';
 
