@@ -270,6 +270,13 @@ describe('HttpMocker', () => {
                         age: { type: ['number', 'null'] },
                         email: { type: 'string' },
                         deposit: { type: 'number' },
+                        pet: {
+                          type: 'object',
+                          properties: {
+                            name: { type: 'string', examples: ['Clark'] },
+                            middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                          },
+                        },
                       },
                       required: ['name', 'surname', 'age', 'email'],
                     },
@@ -286,11 +293,15 @@ describe('HttpMocker', () => {
             config: { mock: { dynamic: false } },
           });
 
-          console.log(response.body);
           describe('the property has an example key', () => {
             it('should return the example key', () => expect(response.body).toHaveProperty('name', 'Clark'));
             describe('the property has an example and a default key', () => {
               it('should still prefer the example', () => expect(response.body).toHaveProperty('middlename', 'J'));
+            });
+
+            describe('with a objects', () => {
+              it('should return the example key', () => expect(response.body).toHaveProperty('pet.name', 'Clark'));
+              it('should still prefer the example', () => expect(response.body).toHaveProperty('pet.middlename', 'J'));
             });
           });
 
