@@ -271,6 +271,15 @@ describe('HttpMocker', () => {
                         email: { type: 'string' },
                         deposit: { type: 'number' },
                         paymentStatus: { type: 'string', enum: ['completed', 'outstanding'] },
+                        creditScore: {
+                          anyOf: [{ type: 'number', examples: [1958] }, { type: 'string' }],
+                        },
+                        paymentScore: {
+                          oneOf: [{ type: 'number', examples: [1958] }, { type: 'string' }],
+                        },
+                        walletScore: {
+                          allOf: [{ type: 'string' }, { default: 'hello' }],
+                        },
                         pet: {
                           type: 'object',
                           properties: {
@@ -322,6 +331,12 @@ describe('HttpMocker', () => {
               it('should return the default number', () => expect(response.body).toHaveProperty('deposit', 0));
               it('should return the first enum value', () =>
                 expect(response.body).toHaveProperty('paymentStatus', 'completed'));
+              it('should return the first anyOf value', () =>
+                expect(response.body).toHaveProperty('creditScore', 1958));
+              it('should return the first anyOf value', () =>
+                expect(response.body).toHaveProperty('creditScore', 1958));
+              it('should return the first allOf value', () =>
+                expect(response.body).toHaveProperty('walletScore', 'hello'));
             });
           });
         });
