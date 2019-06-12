@@ -204,9 +204,7 @@ describe('HttpMocker', () => {
             });
 
             allExamples.forEach(example => expect(response.body).not.toEqual(example));
-            expect(response.body).toMatchObject({
-              hello: 'world',
-            });
+            expect(response.body).toHaveProperty('hello', 'world');
           });
         });
       });
@@ -217,7 +215,7 @@ describe('HttpMocker', () => {
             const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,
-              config: { mock: { dynamic: true, exampleKey: 'test key' } },
+              config: { mock: { dynamic: false, exampleKey: 'test key' } },
             });
 
             expect(response.body).toBeDefined();
@@ -228,6 +226,89 @@ describe('HttpMocker', () => {
 
             expect(selectedExample).toBeDefined();
             expect(response.body).toEqual((selectedExample as INodeExample).value);
+          });
+        });
+
+        describe('and the resource has an example, but the request does not specify any', () => {
+          it('should return the first viable example', () => {
+            const response = httpMocker.mock({
+              input: mockInput,
+              resource: mockResource,
+              config: { mock: { dynamic: false } },
+            });
+
+            expect(response.body).toBeDefined();
+
+            const selectedExample = flatMap(mockResource.responses, res =>
+              flatMap(res.contents, content => content.examples || []),
+            )[0];
+
+            expect(selectedExample).toBeDefined();
+            expect(response.body).toEqual((selectedExample as INodeExample).value);
+          });
+        });
+
+        describe('and the resource has not an example', () => {
+          const resourceOperation: IHttpOperation = {
+            id: 'id',
+            method: 'get',
+            path: '/test',
+            request: {},
+            responses: [
+              {
+                code: '200',
+                headers: [],
+                contents: [
+                  {
+                    mediaType: 'application/json',
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        name: { type: 'string', examples: ['Clark'] },
+                        middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                        surname: { type: 'string', default: 'Kent' },
+                        age: { type: ['number', 'null'] },
+                        email: { type: 'string' },
+                        deposit: { type: 'number' },
+                      },
+                      required: ['name', 'surname', 'age', 'email'],
+                    },
+                    encodings: [],
+                  },
+                ],
+              },
+            ],
+          };
+
+          const response = httpMocker.mock({
+            input: mockInput,
+            resource: resourceOperation,
+            config: { mock: { dynamic: false } },
+          });
+
+          console.log(response.body);
+          describe('the property has an example key', () => {
+            it('should return the example key', () => expect(response.body).toHaveProperty('name', 'Clark'));
+            describe('the property has an example and a default key', () => {
+              it('should still prefer the example', () => expect(response.body).toHaveProperty('middlename', 'J'));
+            });
+          });
+
+          describe('the property has not an example, but a default key', () => {
+            it('should use such key', () => {
+              expect(response.body).toHaveProperty('surname', 'Kent');
+            });
+          });
+
+          describe('the property has nor default, nor example', () => {
+            describe('is nullable', () => {
+              it('should be set to null', () => expect(response.body).toHaveProperty('age', null));
+            });
+
+            describe('and is not nullable', () => {
+              it('should return the default string', () => expect(response.body).toHaveProperty('email', 'string'));
+              it('should return the default number', () => expect(response.body).toHaveProperty('deposit', 0));
+            });
           });
         });
       });
