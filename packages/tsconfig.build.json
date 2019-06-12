@@ -1,7 +1,4 @@
 {
-  "exclude": [
-    "**/__tests__"
-  ],
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
@@ -12,6 +9,7 @@
     "module": "commonjs",
   },
   "files": [],
+  "include": [],
   "references": [
     {
       "path": "cli/tsconfig.build.json"
