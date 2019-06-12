@@ -24,12 +24,8 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
   }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): IHttpResponse {
     let payloadGenerator: PayloadGenerator = generateStatic;
 
-    if (config) {
-      if (typeof config.mock !== 'boolean') {
-        if (config.mock.dynamic) {
-          payloadGenerator = generate;
-        }
-      }
+    if (config && typeof config.mock !== 'boolean' && config.mock.dynamic) {
+      payloadGenerator = generate;
     }
 
     // pre-requirements check
