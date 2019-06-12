@@ -26,6 +26,7 @@ Array [
     "message": "should match pattern \\"^(yes|no)$\\"",
     "path": Array [
       "query",
+      "overwrite",
     ],
     "severity": 0,
   },
@@ -66,6 +67,7 @@ Array [
     "message": "should match pattern \\"^(yes|no)$\\"",
     "path": Array [
       "query",
+      "overwrite",
     ],
     "severity": 0,
   },

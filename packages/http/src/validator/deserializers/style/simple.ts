@@ -1,6 +1,6 @@
-import { HttpParamStyles, ISchema } from '@stoplight/types';
+import { HttpParamStyles } from '@stoplight/types';
 
-import { IHttpNameValue } from '../../../types';
+import { IHttpNameValue, JSONSchema } from '../../../types';
 import { IHttpHeaderParamStyleDeserializer } from '../types';
 import { createObjectFromKeyValList } from './utils';
 
@@ -9,8 +9,8 @@ export class SimpleStyleDeserializer implements IHttpHeaderParamStyleDeserialize
     return style === HttpParamStyles.Simple;
   }
 
-  public deserialize(name: string, parameters: IHttpNameValue, schema: ISchema, explode?: boolean): any {
-    const { type } = schema;
+  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode?: boolean): any {
+    const type = schema ? schema.type : 'undefined';
     const value = parameters[name];
 
     if (type === 'array') {

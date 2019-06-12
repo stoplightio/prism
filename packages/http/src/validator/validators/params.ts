@@ -1,59 +1,62 @@
 import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/types';
-import { upperFirst } from 'lodash';
+import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
+import { JSONSchema } from 'http/src/types';
+import { JSONSchema4 } from 'json-schema';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 
-export class HttpParamsValidator<Target, Spec extends IHttpParam> implements IHttpValidator<Target, Spec> {
+export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttpParam> {
   constructor(
     private _registry: IHttpParamDeserializerRegistry<Target>,
     private _prefix: string,
     private _style: HttpParamStyles,
   ) {}
 
-  public validate(target: Target, specs: Spec[]): IPrismDiagnostic[] {
+  public validate(target: Target, specs: IHttpParam[]): IPrismDiagnostic[] {
     const { _registry: registry, _prefix: prefix, _style: style } = this;
-    return specs.reduce<IPrismDiagnostic[]>((results, spec) => {
-      if (!(spec.name in target) && spec.required === true) {
-        results.push({
-          path: [prefix, spec.name],
-          code: 'required',
-          message: `Missing ${spec.name} ${prefix} param`,
-          severity: DiagnosticSeverity.Error,
-        });
 
-        // stop further checks
-        return results;
-      }
+    const deprecatedWarnings = specs.filter(spec => spec.deprecated).map(spec => ({
+      path: [prefix, spec.name],
+      code: 'deprecated',
+      message: `${upperFirst(prefix)} param ${spec.name} is deprecated`,
+      severity: DiagnosticSeverity.Warning,
+    }));
 
-      const resolvedStyle = spec.style || style;
-      if (spec.content && spec.content.schema && target[spec.name]) {
+    const schema = createJsonSchemaFromParams(specs);
+
+    const parameterValues = pickBy(
+      mapValues(keyBy(specs, s => s.name.toLowerCase()), el => {
+        const resolvedStyle = el.style || style;
         const deserializer = registry.get(resolvedStyle);
-
-        if (deserializer) {
-          Array.prototype.push.apply(
-            results,
-            validateAgainstSchema(
-              deserializer.deserialize(spec.name, target, spec.content.schema, spec.explode || false),
-              spec.content.schema,
-              prefix,
-            ),
+        if (deserializer)
+          return deserializer.deserialize(
+            el.name.toLowerCase(),
+            // This is bad, but unfortunately for the way the parameter validators are done there's
+            // no better way at them moment. I hope to fix this in a following PR where we will revisit
+            // the validators a bit
+            // @ts-ignore
+            mapKeys(target, (_value, key) => key.toLowerCase()),
+            schema.properties && (schema.properties[el.name] as JSONSchema4),
+            el.explode || false,
           );
-        }
-      }
 
-      if (spec.deprecated === true) {
-        results.push({
-          path: [prefix, spec.name],
-          code: 'deprecated',
-          message: `${upperFirst(prefix)} param ${spec.name} is deprecated`,
-          severity: DiagnosticSeverity.Warning,
-        });
-      }
+        return undefined;
+      }),
+    );
 
-      return results;
-    }, []);
+    return validateAgainstSchema(parameterValues, schema, prefix).concat(deprecatedWarnings);
   }
+}
+
+function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema {
+  const schema: JSONSchema = {
+    type: 'object',
+    properties: pickBy(mapValues(keyBy(params, p => p.name.toLowerCase()), 'schema')) as JSONSchema4,
+    required: compact(params.map(m => (m.required ? m.name.toLowerCase() : undefined))),
+  };
+
+  return schema;
 }

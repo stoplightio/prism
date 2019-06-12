@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-alpha.14 (2019-06-11)
+
+
+### Bug Fixes
+
+* Prism is now handling the fact that HTTP headers are case insensitive #338
+* Prism is now normalising OAS2/3 schemas improving and simplyfing the validation capabilites #338
+
+
 # 3.0.0-alpha.13 (2019-06-09)
 
 

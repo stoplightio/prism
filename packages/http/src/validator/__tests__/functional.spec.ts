@@ -1,3 +1,4 @@
+import { HttpParamStyles } from '@stoplight/types';
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
 import { validator } from '../index';
 
@@ -39,6 +40,45 @@ describe('HttpValidator', () => {
             config: { mock: false, validate: { request: { headers: true, query: false, body: false } } },
           }),
         ).toMatchSnapshot();
+      });
+
+      it('is case insensitive', async () => {
+        expect(
+          await validator.validateInput({
+            resource: {
+              method: 'GET',
+              path: '/hey',
+              responses: [
+                {
+                  code: '200',
+                },
+              ],
+              id: 'hey',
+              request: {
+                headers: [
+                  {
+                    name: 'API_KEY',
+                    style: HttpParamStyles.Simple,
+                    schema: {
+                      type: 'string',
+                    },
+                    required: true,
+                  },
+                ],
+              },
+            },
+            input: {
+              method: 'get',
+              url: {
+                path: '/hey',
+              },
+              headers: {
+                api_Key: 'ha',
+              },
+            },
+            config: { mock: false, validate: { request: { headers: true, query: false, body: false } } },
+          }),
+        ).toEqual([]);
       });
     });
 

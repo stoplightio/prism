@@ -1,4 +1,3 @@
-import { ISchema } from '@stoplight/types';
 import * as Ajv from 'ajv';
 
 import { ProblemJsonError } from '@stoplight/prism-http';
@@ -211,12 +210,12 @@ describe('http mocker', () => {
 
     describe('HTTPOperation contain no examples', () => {
       test('return dynamic response', async () => {
-        if (!httpOperations[1].responses[0].contents[0].schema) {
+        if (!httpOperations[1].responses[0].contents![0].schema) {
           throw new Error('Missing test');
         }
 
         const ajv = new Ajv();
-        const validate = ajv.compile(httpOperations[1].responses[0].contents[0].schema as ISchema);
+        const validate = ajv.compile(httpOperations[1].responses[0].contents![0].schema);
 
         const response = await mocker.mock({
           resource: httpOperations[1],
@@ -250,7 +249,7 @@ describe('http mocker', () => {
     });
 
     test('returns 422 and dynamic error response', async () => {
-      if (!httpOperations[1].responses[1].contents[0].schema) {
+      if (!httpOperations[1].responses[1].contents![0].schema) {
         throw new Error('Missing test');
       }
 
@@ -260,7 +259,7 @@ describe('http mocker', () => {
       });
 
       const ajv = new Ajv();
-      const validate = ajv.compile(httpOperations[1].responses[1].contents[0].schema!);
+      const validate = ajv.compile(httpOperations[1].responses[1].contents![0].schema!);
 
       expect(validate(response.body)).toBeTruthy();
     });

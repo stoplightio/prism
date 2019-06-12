@@ -1,4 +1,5 @@
 import { IHttpOperation, INodeExample } from '@stoplight/types';
+import { JSONSchema } from 'http/src/types';
 import { flatMap } from 'lodash';
 import { HttpMocker } from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
@@ -10,7 +11,7 @@ describe('HttpMocker', () => {
   afterEach(() => jest.restoreAllMocks());
 
   describe('mock()', () => {
-    const mockSchema = {
+    const mockSchema: JSONSchema = {
       type: 'object',
       properties: {
         name: { type: 'string' },
@@ -23,14 +24,7 @@ describe('HttpMocker', () => {
       id: 'id',
       method: 'get',
       path: '/test',
-      servers: [],
-      security: [],
-      request: {
-        headers: [],
-        query: [],
-        cookie: [],
-        path: [],
-      },
+      request: {},
       responses: [
         {
           code: '200',
@@ -202,7 +196,7 @@ describe('HttpMocker', () => {
             expect(response.body).toBeDefined();
 
             const allExamples = flatMap(mockResource.responses, res =>
-              flatMap(res.contents, content => content.examples),
+              flatMap(res.contents, content => content.examples || []),
             ).map(x => {
               if ('value' in x) return x.value;
             });
@@ -228,7 +222,7 @@ describe('HttpMocker', () => {
             expect(response.body).toBeDefined();
 
             const selectedExample = flatMap(mockResource.responses, res =>
-              flatMap(res.contents, content => content.examples),
+              flatMap(res.contents, content => content.examples || []),
             ).find(ex => ex.key === 'test key');
 
             expect(selectedExample).toBeDefined();

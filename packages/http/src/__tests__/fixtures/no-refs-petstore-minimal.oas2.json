@@ -77,6 +77,43 @@
           }
         }
       }
+    },
+    "/pet/login": {
+      "get": {
+        "tags": ["pet"],
+        "summary": "Finds Pets by status",
+        "produces": ["application/json", "application/xml"],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "description": "The API Key to perform this operation",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": ["write:pets", "read:pets"]
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "petstore_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://petstore.swagger.io/oauth/dialog",
+      "flow": "implicit",
+      "scopes": {
+        "write:pets": "modify pets in your account",
+        "read:pets": "read your pets"
+      }
     }
   }
 }

@@ -1,22 +1,15 @@
-import { HttpParamStyles, ISchema } from '@stoplight/types';
-
-import { HttpParamDeserializerRegistry } from '../../deserializers/registry';
+import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
+import { query as registry } from '../../deserializers';
 import { HttpQueryValidator } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
 
 describe('HttpQueryValidator', () => {
-  const registry = new HttpParamDeserializerRegistry([
-    {
-      supports: (_style: HttpParamStyles) => true,
-      deserialize: (_name: string, _parameters: any, _schema: ISchema) => ({}),
-    },
-  ]);
   const httpQueryValidator = new HttpQueryValidator(registry, 'query');
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(registry, 'get');
-    jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema').mockImplementation(() => []);
+    jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema');
   });
 
   describe('validate()', () => {
@@ -36,18 +29,15 @@ describe('HttpQueryValidator', () => {
           describe('deserializer not available', () => {
             it('omits schema validation', () => {
               jest.spyOn(registry, 'get').mockReturnValueOnce(undefined);
+              const param: IHttpQueryParam = {
+                name: 'param',
+                style: HttpParamStyles.Form,
+                schema: { type: 'number' },
+              };
 
-              expect(
-                httpQueryValidator.validate({ param: 'abc' }, [
-                  {
-                    name: 'param',
-                    style: HttpParamStyles.Form,
-                    content: { schema: { type: 'number' }, examples: [], encodings: [] },
-                  },
-                ]),
-              ).toEqual([]);
+              expect(httpQueryValidator.validate({ param: 'abc' }, [param])).toEqual([]);
 
-              expect(validateAgainstSchemaModule.validateAgainstSchema).not.toHaveBeenCalled();
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
             });
           });
 
@@ -59,18 +49,18 @@ describe('HttpQueryValidator', () => {
                     {
                       name: 'param',
                       style: HttpParamStyles.Form,
-                      content: { schema: { type: 'string' }, examples: [], encodings: [] },
+                      schema: { type: 'string' },
                     },
                   ]),
                 ).toEqual([]);
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toHaveBeenCalled();
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
               });
             });
           });
         });
 
-        describe('content was not provided', () => {
+        describe('schema was not provided', () => {
           it('omits schema validation', () => {
             expect(
               httpQueryValidator.validate({ param: 'abc' }, [
@@ -81,8 +71,7 @@ describe('HttpQueryValidator', () => {
               ]),
             ).toEqual([]);
 
-            expect(registry.get).not.toHaveBeenCalled();
-            expect(validateAgainstSchemaModule.validateAgainstSchema).not.toHaveBeenCalled();
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
           });
         });
 

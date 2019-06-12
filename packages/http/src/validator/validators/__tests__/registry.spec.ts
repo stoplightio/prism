@@ -1,10 +1,9 @@
-import { ISchema } from '@stoplight/types';
-
+import { JSONSchema4 } from 'json-schema';
 import { ValidatorRegistry } from '../registry';
 import { ISchemaValidator } from '../types';
 
 describe('ValidatorRegistry', () => {
-  const mockValidator = { supports: jest.fn(), validate: jest.fn() } as ISchemaValidator<ISchema>;
+  const mockValidator = { supports: jest.fn(), validate: jest.fn() } as ISchemaValidator<JSONSchema4>;
   const validatorRegistry = new ValidatorRegistry([mockValidator]);
 
   beforeEach(() => {

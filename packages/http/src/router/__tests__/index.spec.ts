@@ -18,7 +18,7 @@ function createResource(method: string, path: string, servers: IServer[]): IHttp
     id: chance.guid(),
     method,
     path,
-    responses: [],
+    responses: [{ code: '200' }],
     servers,
     security: [],
     request: { path: [], query: [], cookie: [], headers: [] },

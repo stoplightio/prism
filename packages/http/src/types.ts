@@ -1,5 +1,6 @@
 import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
-import { IHttpOperation, Omit } from '@stoplight/types';
+import { Dictionary, IHttpOperation } from '@stoplight/types';
+import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
 export type TPrismHttpInstance<LoaderInput> = IPrism<
   IHttpOperation,
@@ -45,13 +46,9 @@ export interface IHttpConfig extends IPrismConfig {
   };
 }
 
-export interface IHttpNameValues {
-  [name: string]: string | string[];
-}
+export type IHttpNameValues = Dictionary<string | string[]>;
 
-export interface IHttpNameValue {
-  [name: string]: string;
-}
+export type IHttpNameValue = Dictionary<string>;
 
 export interface IHttpUrl {
   baseUrl?: string;
@@ -81,13 +78,15 @@ export type ProblemJson = {
 
 export class ProblemJsonError extends Error {
   public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
-    Error.captureStackTrace(this, ProblemJsonError);
-    return new ProblemJsonError(
+    const error = new ProblemJsonError(
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
       detail || '',
     );
+    Error.captureStackTrace(error, ProblemJsonError);
+
+    return error;
   }
 
   public static fromPlainError(error: Error & { detail?: string; status?: number }): ProblemJson {
@@ -106,3 +105,7 @@ export class ProblemJsonError extends Error {
 }
 
 export type PayloadGenerator = (f: unknown) => Promise<unknown>;
+
+export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+
+export type JSONSchema = JSONSchema4 | JSONSchema6 | JSONSchema7;
