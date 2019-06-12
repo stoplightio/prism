@@ -253,6 +253,67 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     }
   });
 
+  describe.only('server validation: given __server query param', () => {
+    test('when the server is not valid then return error', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10?__server=https://google.com',
+      });
+
+      expect(response.statusCode).toBe(404);
+      expect(response.payload).toEqual(
+        '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url https://google.com hasn\'t been matched with any of the provided servers"}',
+      );
+    });
+
+    test('when the server is valid then return 200', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10?__server=https://petstore.swagger.io/v2',
+      });
+
+      expect(response.statusCode).toBe(200);
+    });
+
+    // oas2 does not support overriding servers
+    if (file === 'petstore.oas3.json') {
+      describe('and operation overrides global servers', () => {
+        test(`when the server is valid then return 200`, async () => {
+          const response = await server.fastify.inject({
+            method: 'GET',
+            url: '/store/inventory?__server=https://petstore.swagger.io/v3',
+          });
+
+          expect(response.statusCode).toBe(200);
+        });
+
+        test(`when the server is not valid for this exact operation then return error`, async () => {
+          const response = await server.fastify.inject({
+            method: 'GET',
+            url: '/store/inventory?__server=https://petstore.swagger.io/v2',
+          });
+
+          expect(response.statusCode).toBe(404);
+          expect(response.payload).toEqual(
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}',
+          );
+        });
+
+        test(`when the server is invalid return error`, async () => {
+          const response = await server.fastify.inject({
+            method: 'GET',
+            url: '/store/inventory?__server=https://notvalid.com',
+          });
+
+          expect(response.statusCode).toBe(404);
+          expect(response.payload).toEqual(
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url https://notvalid.com hasn\'t been matched with any of the provided servers"}',
+          );
+        });
+      });
+    }
+  });
+
   describe('content negotiation', () => {
     it('returns a valid response when multiple choices are given', async () => {
       const response = await server.fastify.inject({
