@@ -1,7 +1,7 @@
 import { JSONSchema } from 'http/src/types';
 import { JSONSchema6, JSONSchema7 } from 'json-schema';
 // @ts-ignore
-import * as jsf from 'json-schema-faker';
+import * as jsf from 'json-schema-faker/dist/bundle.umd.min.js';
 import { cloneDeep, mapValues } from 'lodash';
 // @ts-ignore
 import * as sampler from 'openapi-sampler';
