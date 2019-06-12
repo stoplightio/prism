@@ -6,7 +6,7 @@ import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import helpers from '../negotiator/NegotiatorHelpers';
 
 describe('HttpMocker', () => {
-  const httpMocker = new HttpMocker(JSONSchemaGenerator.generate);
+  const httpMocker = new HttpMocker();
 
   afterEach(() => jest.restoreAllMocks());
 
@@ -68,19 +68,19 @@ describe('HttpMocker', () => {
     };
 
     it('fails when called with no resource', () => {
-      return expect(
+      return expect(() =>
         httpMocker.mock({
           input: mockInput,
         }),
-      ).rejects.toThrowErrorMatchingSnapshot();
+      ).toThrowErrorMatchingSnapshot();
     });
 
     it('fails when called with no input', () => {
-      return expect(
+      return expect(() =>
         httpMocker.mock({
           resource: mockResource,
         }),
-      ).rejects.toThrowErrorMatchingSnapshot();
+      ).toThrowErrorMatchingSnapshot();
     });
 
     describe('with valid negotiator response', () => {
@@ -94,7 +94,7 @@ describe('HttpMocker', () => {
             resource: mockResource,
             input: mockInput,
           }),
-        ).resolves.toHaveProperty('body', undefined);
+        ).toHaveProperty('body', undefined);
       });
 
       it('returns static example', () => {
@@ -110,10 +110,10 @@ describe('HttpMocker', () => {
             resource: mockResource,
             input: mockInput,
           }),
-        ).resolves.toMatchSnapshot();
+        ).toMatchSnapshot();
       });
 
-      it('returns dynamic example', async () => {
+      it('returns dynamic example', () => {
         jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue({
           code: '202',
           mediaType: 'test',
@@ -121,7 +121,7 @@ describe('HttpMocker', () => {
           headers: [],
         });
 
-        const response = await httpMocker.mock({
+        const response = httpMocker.mock({
           resource: mockResource,
           input: mockInput,
         });
@@ -147,7 +147,7 @@ describe('HttpMocker', () => {
             resource: mockResource,
             input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
           }),
-        ).resolves.toMatchSnapshot();
+        ).toMatchSnapshot();
       });
     });
 
@@ -161,14 +161,14 @@ describe('HttpMocker', () => {
           schema: { type: 'string' },
         });
 
-        jest.spyOn(JSONSchemaGenerator, 'generate').mockResolvedValue('example value chelsea');
+        jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue('example value chelsea');
 
         return expect(
           httpMocker.mock({
             resource: mockResource,
             input: mockInput,
           }),
-        ).resolves.toMatchSnapshot();
+        ).toMatchSnapshot();
       });
     });
 
@@ -178,21 +178,23 @@ describe('HttpMocker', () => {
           const generatedExample = { hello: 'world' };
 
           beforeAll(() => {
-            jest.spyOn(JSONSchemaGenerator, 'generate').mockResolvedValue(generatedExample);
+            jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue(generatedExample);
+            jest.spyOn(JSONSchemaGenerator, 'generateStatic');
           });
 
           afterAll(() => {
             jest.restoreAllMocks();
           });
 
-          it('the dynamic response should not be an example one', async () => {
-            const response = await httpMocker.mock({
+          it.only('the dynamic response should not be an example one', () => {
+            const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,
               config: { mock: { dynamic: true } },
             });
 
-            expect(JSONSchemaGenerator.generate).not.toHaveBeenCalled();
+            expect(JSONSchemaGenerator.generate).toHaveBeenCalled();
+            expect(JSONSchemaGenerator.generateStatic).not.toHaveBeenCalled();
             expect(response.body).toBeDefined();
 
             const allExamples = flatMap(mockResource.responses, res =>
@@ -203,8 +205,7 @@ describe('HttpMocker', () => {
 
             allExamples.forEach(example => expect(response.body).not.toEqual(example));
             expect(response.body).toMatchObject({
-              name: expect.any(String),
-              surname: expect.any(String),
+              hello: 'world',
             });
           });
         });
@@ -212,8 +213,8 @@ describe('HttpMocker', () => {
 
       describe('and dynamic flag is false', () => {
         describe('and the example has been explicited', () => {
-          it('should return the selected example', async () => {
-            const response = await httpMocker.mock({
+          it('should return the selected example', () => {
+            const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,
               config: { mock: { dynamic: true, exampleKey: 'test key' } },

@@ -12,8 +12,6 @@ jsf.option({
   optionalsProbability: 1,
   fixedProbabilities: true,
   ignoreMissingRefs: true,
-  useExamplesValue: false,
-  useDefaultValue: false,
   maxItems: 20,
   maxLength: 100,
 });
