@@ -230,7 +230,7 @@ describe('HttpMocker', () => {
         });
 
         describe('no response example is requested specifically, and a response example is defined', () => {
-          it('should return the first viable example', () => {
+          it('should return the first example', () => {
             const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,
@@ -299,7 +299,7 @@ describe('HttpMocker', () => {
               it('prefers the example', () => expect(response.body).toHaveProperty('middlename', 'J'));
             });
 
-            describe('with a objects', () => {
+            describe('and the property containing the example is deeply nested', () => {
               it('should return the example key', () => expect(response.body).toHaveProperty('pet.name', 'Clark'));
               it('should still prefer the example', () => expect(response.body).toHaveProperty('pet.middlename', 'J'));
             });
