@@ -3,7 +3,8 @@
     "**/src/**/*"
   ],
   "exclude": [
-    "lib"
+    "lib",
+    "**/__tests__/**"
   ],
   "compilerOptions": {
     "baseUrl": ".",
