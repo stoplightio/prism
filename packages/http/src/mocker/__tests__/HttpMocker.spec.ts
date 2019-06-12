@@ -270,6 +270,7 @@ describe('HttpMocker', () => {
                         age: { type: ['number', 'null'] },
                         email: { type: 'string' },
                         deposit: { type: 'number' },
+                        paymentStatus: { type: 'string', enum: ['completed', 'outstanding'] },
                         pet: {
                           type: 'object',
                           properties: {
@@ -319,6 +320,8 @@ describe('HttpMocker', () => {
             describe('and is not nullable', () => {
               it('should return the default string', () => expect(response.body).toHaveProperty('email', 'string'));
               it('should return the default number', () => expect(response.body).toHaveProperty('deposit', 0));
+              it('should return the first enum value', () =>
+                expect(response.body).toHaveProperty('paymentStatus', 'completed'));
             });
           });
         });
