@@ -18,11 +18,11 @@ export default class Server extends Command {
 
     signaleInteractiveInstance.await('Starting Prism…');
 
-    if (true || dynamic) {
+    if (dynamic) {
       signale.star('Dynamic example generation enabled.');
     }
 
-    const server = createServer(spec, { mock: { dynamic: true || dynamic } });
+    const server = createServer(spec, { mock: { dynamic } });
     try {
       const address = await server.listen(port, host);
 
