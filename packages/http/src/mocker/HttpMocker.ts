@@ -77,7 +77,10 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
   return !!nodeExample && 'value' in nodeExample;
 }
 
-function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator): Promise<Dictionary<string>> {
+function computeMockedHeaders(
+  headers: IHttpHeaderParam[],
+  payloadGenerator: PayloadGenerator,
+): Promise<Dictionary<string>> {
   const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
     if (header.schema) {
       if (header.examples && header.examples.length > 0) {
@@ -86,7 +89,7 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator)
           return example.value;
         }
       } else {
-        const example = await ex(header.schema);
+        const example = await payloadGenerator(header.schema);
         if (!(isObject(example) && isEmpty(example))) return example;
       }
     }
@@ -98,12 +101,12 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator)
 
 async function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
-  ex: PayloadGenerator,
+  payloadGenerator: PayloadGenerator,
 ) {
   if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
     return negotiationResult.bodyExample.value;
   } else if (negotiationResult.schema) {
-    return ex(negotiationResult.schema);
+    return payloadGenerator(negotiationResult.schema);
   }
   return undefined;
 }

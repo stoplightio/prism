@@ -1,5 +1,5 @@
-// @ts-ignore
 import { JSONSchema } from 'http/src/types';
+// @ts-ignore
 import * as jsf from 'json-schema-faker';
 import { cloneDeep } from 'lodash';
 
