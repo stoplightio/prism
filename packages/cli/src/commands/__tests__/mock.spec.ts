@@ -1,7 +1,7 @@
 import { createServer } from '../../util/createServer';
 import Mock from '../mock';
 
-const listenMock = jest.fn();
+const listenMock = jest.fn().mockReturnValue('http://localhost:1000');
 
 jest.mock('../../util/createServer', () => ({
   createServer: jest.fn(() => ({ listen: listenMock, prism: { resources: [{ method: 'get', path: '/test' }] } })),
