@@ -12,17 +12,26 @@ import {
   ProblemJsonError,
 } from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
+import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: PayloadGenerator) {}
-
   public async mock({
     resource,
     input,
     config,
   }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): Promise<IHttpResponse> {
+    let payloadGenerator: PayloadGenerator = generateStatic;
+
+    if (config) {
+      if (typeof config.mock !== 'boolean') {
+        if (config.mock.dynamic) {
+          payloadGenerator = generate;
+        }
+      }
+    }
+
     // pre-requirements check
     if (!resource) {
       throw new Error('Resource is not defined');
@@ -58,8 +67,8 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
     }
 
     const [body, mockedHeaders] = await Promise.all([
-      computeBody(negotiationResult, this._exampleGenerator),
-      computeMockedHeaders(negotiationResult.headers || [], this._exampleGenerator),
+      computeBody(negotiationResult, payloadGenerator),
+      computeMockedHeaders(negotiationResult.headers || [], payloadGenerator),
     ]);
 
     return {
