@@ -3,9 +3,5 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "lib",
-    "rootDirs": [
-      "src"
-    ]
   }
 }
