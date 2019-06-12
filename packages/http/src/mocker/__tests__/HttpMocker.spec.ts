@@ -229,7 +229,7 @@ describe('HttpMocker', () => {
           });
         });
 
-        describe('and the resource has an example, but the request does not specify any', () => {
+        describe('no response example is requested specifically, and a response example is defined', () => {
           it('should return the first viable example', () => {
             const response = httpMocker.mock({
               input: mockInput,
@@ -248,7 +248,7 @@ describe('HttpMocker', () => {
           });
         });
 
-        describe('and the resource has not an example', () => {
+        describe('and the resource has no response examples', () => {
           const resourceOperation: IHttpOperation = {
             id: 'id',
             method: 'get',
@@ -295,8 +295,8 @@ describe('HttpMocker', () => {
 
           describe('the property has an example key', () => {
             it('should return the example key', () => expect(response.body).toHaveProperty('name', 'Clark'));
-            describe('the property has an example and a default key', () => {
-              it('should still prefer the example', () => expect(response.body).toHaveProperty('middlename', 'J'));
+            describe('and a default key', () => {
+              it('prefers the example', () => expect(response.body).toHaveProperty('middlename', 'J'));
             });
 
             describe('with a objects', () => {
