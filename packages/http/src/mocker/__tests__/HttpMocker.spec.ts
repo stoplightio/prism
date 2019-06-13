@@ -275,7 +275,7 @@ describe('HttpMocker', () => {
                           anyOf: [{ type: 'number', examples: [1958] }, { type: 'string' }],
                         },
                         paymentScore: {
-                          oneOf: [{ type: 'number', examples: [1958] }, { type: 'string' }],
+                          oneOf: [{ type: 'string' }, { type: 'number', examples: [1958] }],
                         },
                         walletScore: {
                           allOf: [{ type: 'string' }, { default: 'hello' }],
@@ -333,8 +333,8 @@ describe('HttpMocker', () => {
                 expect(response.body).toHaveProperty('paymentStatus', 'completed'));
               it('should return the first anyOf value', () =>
                 expect(response.body).toHaveProperty('creditScore', 1958));
-              it('should return the first anyOf value', () =>
-                expect(response.body).toHaveProperty('creditScore', 1958));
+              it('should return the first oneOf value', () =>
+                expect(response.body).toHaveProperty('paymentScore', 'string'));
               it('should return the first allOf value', () =>
                 expect(response.body).toHaveProperty('walletScore', 'hello'));
             });
