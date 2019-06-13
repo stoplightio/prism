@@ -229,8 +229,8 @@ describe('HttpMocker', () => {
           });
         });
 
-        describe('no response example is requested specifically, and a response example is defined', () => {
-          it('should return the first example', () => {
+        describe('and a response example is defined, but no response example is requested', () => {
+          it('returns the first example', () => {
             const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,
