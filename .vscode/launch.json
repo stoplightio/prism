@@ -2,7 +2,21 @@
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "oasDocument",
+      "type": "pickString",
+      "default": "../../examples/petstore.oas2.json",
+      "options": [
+        "../../examples/petstore.oas2.json",
+        "../../examples/petstore.oas2.yaml",
+        "../../examples/petstore.oas3.json",
+        "../../examples/petstore.oas3.yaml"
+      ],
+      "description": "OAS document to load Prism with",
+    }
+  ],
   "configurations": [
     {
       "type": "node",
@@ -17,8 +31,8 @@
       ],
       "args": [
         "mock",
-        "../../examples/petstore.oas2.json"
-      ]
+        "${input:oasDocument}"
+      ],
     },
     {
       "type": "node",
