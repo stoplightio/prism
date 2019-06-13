@@ -1,26 +1,16 @@
-PR Title
-
 ## Checklist
 
 - [ ] Tests have been added (for bug fixes / features)
 - [ ] Docs have been added / updated (for bug fixes / features)
 
-## What kind of change does this PR introduce
+## What kind of change does this PR introduce?
 
-Bug fix, feature, or docs update
+_Bug fix_, _feature_, or _docs update_
 
-## What is the current behavior
+## What is the current behavior? What is the new behavior?
 
-You can also link to an open issue here.
+_You can also link to an open issue here for all the info._
 
-## If this is a feature change, what is the new behavior
+## Does this PR introduce a breaking change?
 
-It can now make a nice cup of tea.
-
-## Does this PR introduce a breaking change
-
-What changes might users need to make in their application due to this PR?
-
-### Other information
-
-(e.g. detailed explanation, related issues, links for us to have context, eg. Stack Overflow, issues outside of the repo, forum, etc.)
+_What changes might users need to make in their application due to this PR?_
