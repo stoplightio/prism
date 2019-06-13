@@ -19,6 +19,50 @@ async function instantiatePrism(specPath: string) {
   return server;
 }
 
+describe('given minimal oas3 with templated server', () => {
+  let server: IPrismHttpServer<{}>;
+
+  beforeAll(async () => {
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', 'templated-server-example.oas3.json'));
+  });
+
+  afterAll(() => server.fastify.close());
+
+  test('when GET /pet with server matching a template should return 200', async () => {
+    expect((await requestPetGivenServer('http://stoplight.io/api')).statusCode).toEqual(200);
+    expect((await requestPetGivenServer('https://stoplight.io/api')).statusCode).toEqual(200);
+  });
+
+  test('when GET /pet with server not matching a template should return 400', async () => {
+    const expectedPayload = (serverUrl: string) =>
+      `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url ${serverUrl} hasn\'t been matched with any of the provided servers"}`;
+
+    expect(await requestPetGivenServer('ftp://stoplight.io/api')).toMatchObject({
+      statusCode: 404,
+      payload: expectedPayload('ftp://stoplight.io/api'),
+    });
+    expect(await requestPetGivenServer('https://stoplight.com/api')).toMatchObject({
+      statusCode: 404,
+      payload: expectedPayload('https://stoplight.com/api'),
+    });
+    expect(await requestPetGivenServer('https://google.com/api')).toMatchObject({
+      statusCode: 404,
+      payload: expectedPayload('https://google.com/api'),
+    });
+    expect(await requestPetGivenServer('https://stopligt.io/v1')).toMatchObject({
+      statusCode: 404,
+      payload: expectedPayload('https://stopligt.io/v1'),
+    });
+  });
+
+  function requestPetGivenServer(serverUrl: string) {
+    return server.fastify.inject({
+      method: 'GET',
+      url: `/pet?__server=${serverUrl}`,
+    });
+  }
+});
+
 describe('given getOperationWithBody.oas2.json', () => {
   test('when GET /pet with invalid body returns correct error message', async () => {
     const server = await instantiatePrism(resolve(__dirname, 'fixtures', 'getOperationWithBody.oas2.json'));
