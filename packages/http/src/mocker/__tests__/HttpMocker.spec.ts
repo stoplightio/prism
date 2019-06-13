@@ -2,7 +2,7 @@ import { createLogger } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample } from '@stoplight/types';
 import { Either, right } from 'fp-ts/lib/Either';
 import { reader } from 'fp-ts/lib/Reader';
-import { JSONSchema } from 'http/src/types';
+import { JSONSchema } from '@stoplight/prism-http/src/types';
 import { flatMap } from 'lodash';
 import { HttpMocker } from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
