@@ -1,8 +1,9 @@
 import { JSONSchema } from 'http/src/types';
 import { JSONSchema6, JSONSchema7 } from 'json-schema';
+import { cloneDeep, map, mapValues } from 'lodash';
+
 // @ts-ignore
 import * as jsf from 'json-schema-faker/dist/bundle.umd.min.js';
-import { cloneDeep, mapValues } from 'lodash';
 // @ts-ignore
 import * as sampler from 'openapi-sampler';
 
@@ -22,30 +23,32 @@ export function generate(source: JSONSchema): unknown {
 }
 
 export function generateStatic(source: JSONSchema): unknown {
-  return sampler.sample(transformExampleFromExamples(source));
+  const transformedSchema = createOASJSONSchemaesque(source);
+  return sampler.sample(transformedSchema);
 }
 
-function hasExample(source: JSONSchema): source is JSONSchema6 | JSONSchema7 {
+function hasExamples(source: JSONSchema): source is JSONSchema6 | JSONSchema7 {
   return 'examples' in source;
 }
 
-function transformExampleFromExamples(s: JSONSchema): any {
-  if (!s.properties) return s;
+function createOASJSONSchemaesque(schema: JSONSchema): any {
+  const returnedSchema = cloneDeep(schema);
 
-  return {
-    ...s,
-    properties: mapValues(s.properties, prop => {
-      if (typeof prop === 'boolean') return prop;
+  ['properties', 'anyOf', 'allOf', 'oneOf'].forEach(property => {
+    if (!schema[property]) return;
 
-      if (hasExample(prop) && prop.examples) {
-        Object.assign(prop, { example: prop.examples[0] });
+    const mapFn = Array.isArray(returnedSchema[property]) ? map : (mapValues as (obj: unknown) => unknown[] | unknown);
+
+    returnedSchema[property] = mapFn(schema[property], innerProp => {
+      if (typeof innerProp === 'boolean') return innerProp;
+
+      if (hasExamples(innerProp) && innerProp.examples) {
+        Object.assign(innerProp, { example: innerProp.examples[0] });
       }
 
-      if (prop.properties) {
-        return transformExampleFromExamples(prop);
-      }
+      return createOASJSONSchemaesque(innerProp);
+    });
+  });
 
-      return prop;
-    }),
-  };
+  return returnedSchema;
 }
