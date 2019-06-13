@@ -35,7 +35,7 @@ function toOpenAPIJSONSchemaesque(schema: JSONSchema): any {
   const returnedSchema = cloneDeep(schema);
 
   ['properties', 'anyOf', 'allOf', 'oneOf'].forEach(property => {
-    if (!schema[property]) return;
+    if (!returnedSchema[property]) return;
 
     const mapFn = Array.isArray(returnedSchema[property]) ? map : (mapValues as (obj: unknown) => unknown[] | unknown);
 
