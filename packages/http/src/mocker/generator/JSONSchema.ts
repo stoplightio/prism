@@ -42,7 +42,7 @@ function toOpenAPIJSONSchemaesque(schema: JSONSchema): any {
     returnedSchema[property] = mapFn(schema[property], innerProp => {
       if (typeof innerProp === 'boolean') return innerProp;
 
-      if (hasExamples(innerProp) && innerProp.examples) {
+      if (hasExamples(innerProp) && Array.isArray(innerProp.examples)) {
         Object.assign(innerProp, { example: innerProp.examples[0] });
       }
 
