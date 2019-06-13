@@ -3,7 +3,7 @@ import { JSONSchema6, JSONSchema7 } from 'json-schema';
 import { cloneDeep, map, mapValues } from 'lodash';
 
 // @ts-ignore
-import * as jsf from 'json-schema-faker/dist/bundle.umd.min.js';
+import * as jsf from '@stoplight/json-schema-faker';
 // @ts-ignore
 import * as sampler from 'openapi-sampler';
 
@@ -23,7 +23,7 @@ export function generate(source: JSONSchema): unknown {
 }
 
 export function generateStatic(source: JSONSchema): unknown {
-  const transformedSchema = createOASJSONSchemaesque(source);
+  const transformedSchema = toOpenAPIJSONSchemaesque(source);
   return sampler.sample(transformedSchema);
 }
 
@@ -31,7 +31,7 @@ function hasExamples(source: JSONSchema): source is JSONSchema6 | JSONSchema7 {
   return 'examples' in source;
 }
 
-function createOASJSONSchemaesque(schema: JSONSchema): any {
+function toOpenAPIJSONSchemaesque(schema: JSONSchema): any {
   const returnedSchema = cloneDeep(schema);
 
   ['properties', 'anyOf', 'allOf', 'oneOf'].forEach(property => {
@@ -46,7 +46,7 @@ function createOASJSONSchemaesque(schema: JSONSchema): any {
         Object.assign(innerProp, { example: innerProp.examples[0] });
       }
 
-      return createOASJSONSchemaesque(innerProp);
+      return toOpenAPIJSONSchemaesque(innerProp);
     });
   });
 

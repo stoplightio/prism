@@ -22,7 +22,7 @@
     "ajv-oai": "^1.0.0",
     "axios": "^0.18.0",
     "caseless": "^0.12.0",
-    "json-schema-faker": "^0.5.0-rc17",
+    "@stoplight/json-schema-faker": "",
     "openapi-sampler": "^1.0.0-beta.14",
     "tslib": "^1.9.0"
   },
