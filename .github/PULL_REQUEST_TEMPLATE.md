@@ -3,7 +3,7 @@
 - [ ] Tests have been added (for bug fixes / features)
 - [ ] Docs have been added / updated (for bug fixes / features)
 
-## What kind of change does this PR introduce
+## What kind of change does this PR introduce?
 
 _Bug fix_, _feature_, or _docs update_
 
