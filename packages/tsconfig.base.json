@@ -1,5 +1,5 @@
 {
-  "exclude": [],
+  "exclude": ["**/__tests__/**"],
   "compilerOptions": {
     "baseUrl": ".",
     "noFallthroughCasesInSwitch": true,
