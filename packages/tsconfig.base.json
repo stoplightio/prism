@@ -1,9 +1,6 @@
 {
-  "include": [
-    "**/src/**/*"
-  ],
   "exclude": [
-    "lib"
+    "**/__tests__/**"
   ],
   "compilerOptions": {
     "baseUrl": ".",
