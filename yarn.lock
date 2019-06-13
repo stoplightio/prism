@@ -1184,7 +1184,7 @@
     lodash "4.x.x"
     urijs "1.x.x"
 
-"@stoplight/json-schema-faker@":
+"@stoplight/json-schema-faker@^0.5.0-rc18":
   version "0.5.0-rc18"
   resolved "https://registry.yarnpkg.com/@stoplight/json-schema-faker/-/json-schema-faker-0.5.0-rc18.tgz#f2091443e74503c3ca7b86d65ed00e7082bbfeda"
   integrity sha512-BHDk7gLENfVcE9ZXXHIGb+u6HZhuxTfjUD7yozGJv7ESSxEkOfCDBZ5dj5Uiq8/A2WwqNrxnCxpBTcGpQWOGTQ==
@@ -4936,7 +4936,6 @@ jsonparse@^1.2.0:
 
 "jsonpath@https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17":
   version "1.0.0"
-  uid f1c0e9e634da2d45671b7639fa0a99afc807da17
   resolved "https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17"
   dependencies:
     esprima "1.2.2"
