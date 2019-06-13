@@ -239,9 +239,7 @@ describe('HttpMocker', () => {
 
             expect(response.body).toBeDefined();
 
-            const selectedExample = flatMap(mockResource.responses, res =>
-              flatMap(res.contents, content => content.examples || []),
-            )[0];
+            const selectedExample = mockResource.responses[0].contents![0].examples![0];
 
             expect(selectedExample).toBeDefined();
             expect(response.body).toEqual((selectedExample as INodeExample).value);
