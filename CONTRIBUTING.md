@@ -95,6 +95,10 @@ rm -rf packages/**/.tsbuildinfo
 
 …then try again. If it does not work, you can blame Vincenzo and write him.
 
+3. VS Code complains that it cannot find `@stoplight/prism-*` package
+
+Run `yarn build` - this will generate the `lib` folders in each of the packages.
+
 ## Creating an issue
 
 We want to keep issues in this repo focused on bug reports and feature requests.

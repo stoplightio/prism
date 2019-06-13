@@ -2,13 +2,13 @@ import { IPrism } from '@stoplight/prism-core';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpOperation } from '@stoplight/types/http-spec';
 import * as nock from 'nock';
-import { relative, resolve } from 'path';
+import { resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { forwarder } from '../forwarder';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_BASE_URL_ERROR, NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
 
-const fixturePath = (filename: string) => relative(process.cwd(), resolve(__dirname, 'fixtures', filename));
+const fixturePath = (filename: string) => resolve(__dirname, 'fixtures', filename);
 const noRefsPetstoreMinimalOas2Path = fixturePath('no-refs-petstore-minimal.oas2.json');
 const petStoreOas2Path = fixturePath('petstore.oas2.yaml');
 const staticExamplesOas2Path = fixturePath('static-examples.oas2.json');
