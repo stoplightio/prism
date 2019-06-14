@@ -155,7 +155,7 @@ servers:
         default: api
 ```
 
-You can make a request enforcing server validation this way
+You can make a request enforcing server validation by providing the `__server` query string parameter:
 
 ```bash
 curl -X GET localhost:4010/pet?__server=http://stoplight.io/api
