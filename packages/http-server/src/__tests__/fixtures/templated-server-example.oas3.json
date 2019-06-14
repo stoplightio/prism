@@ -1,0 +1,30 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/pet": {
+      "get": {
+        "responses": {
+          "200": {}
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "{schema}://{host}/{basePath}",
+      "variables": {
+        "schema": {
+          "default": "http",
+          "enum": ["http", "https"]
+        },
+        "host": {
+          "default": "stoplight.io",
+          "enum": ["stoplight.io", "dev.stoplight.io"]
+        },
+        "basePath": {
+          "default": "api"
+        }
+      }
+    }
+  ]
+}

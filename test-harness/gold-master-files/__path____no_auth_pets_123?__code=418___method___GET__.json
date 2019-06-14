@@ -9,40 +9,25 @@
     "status": 418,
     "statusText": "I'm a Teapot",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "270"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["243"],
+      "connection": ["close"]
     },
     "body": {
       "name": "doggie",
-      "photoUrls": [
-        "pariatur",
-        "id occaecat et dolore fugiat",
-        "ullamco",
-        "veniam in ex"
-      ],
-      "id": -47409940,
+      "photoUrls": ["Lorem velit ullamco et", "ut non", "volupta", "voluptate nulla ut in"],
+      "id": -53804425,
       "category": {
-        "id": -81586435,
-        "name": "ex"
+        "id": -65974450,
+        "name": "sint eiusmod officia et magna"
       },
       "tags": [
         {
-          "id": -72237353,
-          "name": "voluptate aliqua"
-        },
-        {
-          "id": -76040447,
-          "name": "dolore aliquip do"
+          "id": 75463054,
+          "name": "velit ex id"
         }
       ],
-      "status": "available"
+      "status": "sold"
     }
   }
 }

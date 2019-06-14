@@ -95,6 +95,7 @@ const replyHandler = <LoaderInput>(
       url: {
         path: (url || '/').split('?')[0],
         query,
+        baseUrl: query.__server,
       },
       headers,
       body,

@@ -1,6 +1,8 @@
 import * as axios from 'axios';
 
+import { ProblemJsonError } from '@stoplight/prism-http';
 import { httpInputs, httpOperations, httpRequests } from '../../__tests__/fixtures';
+import { NO_BASE_URL_ERROR } from '../../router/errors';
 import { HttpForwarder } from '../HttpForwarder';
 
 jest.mock('axios', () => ({
@@ -39,7 +41,7 @@ describe('HttpForwarder', () => {
         it('throws error', async () => {
           const request = Object.assign({}, httpRequests[0]);
           await expect(forwarder.forward({ input: request })).rejects.toThrowError(
-            'Either one server in spec or baseUrl in request must be defined',
+            ProblemJsonError.fromTemplate(NO_BASE_URL_ERROR),
           );
         });
       });

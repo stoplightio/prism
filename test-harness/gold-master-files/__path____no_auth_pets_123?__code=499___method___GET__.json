@@ -9,19 +9,13 @@
     "status": 499,
     "statusText": "unknown",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "37"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["47"],
+      "connection": ["close"]
     },
     "body": {
-      "code": -61290043,
-      "message": "dolore"
+      "code": -39156812,
+      "message": "et anim irure ut"
     }
   }
 }

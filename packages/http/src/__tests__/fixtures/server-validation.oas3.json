@@ -1,0 +1,29 @@
+{
+  "swagger": "3.0.0",
+  "servers": [
+    {
+      "url": "http://example.com/api"
+    }
+  ],
+  "paths": {
+    "/pet": {
+      "get": {
+        "responses": {
+          "200": {}
+        }
+      }
+    },
+    "/owner": {
+      "servers": [
+        {
+          "url": "http://stg.example.com/api/v2"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {}
+        }
+      }
+    }
+  }
+}
