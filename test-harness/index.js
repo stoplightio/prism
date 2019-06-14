@@ -56,6 +56,28 @@ const createSpec = (specPath, prismCmd) => {
         killPrism(done);
       });
 
+      describe('When validating a supported server', () => {
+        test('with http schema should return 200', async () => {
+          const { reqRes } = await runTest(requests[18]);
+
+          expect(reqRes.response.status).toBe(200);
+        });
+
+        test('with https schema should return 200', async () => {
+          const { reqRes } = await runTest(requests[19]);
+
+          expect(reqRes.response.status).toBe(200);
+        });
+      });
+
+      describe('When validating an unsupported server', () => {
+        test('should return json problem', async () => {
+          const { reqRes, masterFile } = await runTest(requests[20]);
+
+          expect(reqRes).toStrictEqual(masterFile);
+        });
+      });
+
       describe('When a required parameter is missing in query (with no default)', () => {
         test('"Missing X query param" error is returned', async () => {
           const { reqRes, masterFile } = await runTest(requests[0]);
@@ -150,24 +172,27 @@ const createSpec = (specPath, prismCmd) => {
       });
 
       describe('When using a verb that is not defined on a path', () => {
-        test(['Informs with 405 that the verb is not served', 'doesnt matter if auth implemented'].join(), async () => {
-          const { reqRes, masterFile } = await runTest(requests[6]);
+        test(
+          [
+            'Informs with 405 that the verb is not served',
+            'doesnt matter if auth implemented',
+          ].join(),
+          async () => {
+            const { reqRes, masterFile } = await runTest(requests[6]);
 
-          expect(reqRes).toStrictEqual(masterFile);
-        });
+            expect(reqRes).toStrictEqual(masterFile);
+          }
+        );
       });
 
       describe('When a response with a specific status code is requested using the __code property', () => {
         describe('When an existing code is requested', () => {
           describe('static response', () => {
-            test(
-              'Requested response for the given __code is returned with payload',
-              async () => {
-                const { reqRes, masterFile } = await runTest(requests[7]);
+            test('Requested response for the given __code is returned with payload', async () => {
+              const { reqRes, masterFile } = await runTest(requests[7]);
 
-                expect(reqRes).toStrictEqual(masterFile);
-              }
-            );
+              expect(reqRes).toStrictEqual(masterFile);
+            });
           });
 
           describe('Dynamic response', () => {
@@ -255,29 +280,37 @@ const createSpec = (specPath, prismCmd) => {
         });
 
         describe('content type parser', () => {
-          const cases = [['application/json', false], ['application/vnd.api+json', false], ['application/xml', true],
-          ['application/vnd.json', true], ['application/vnd.xml;x=json', true]]
-          test.each(cases)
-            ('%s', async (contentType, shouldError) => {
-              const result = await makeRequest({
-                path: '/no_auth/pets', method: 'POST', headers: {
-                  'content-type': contentType
-                }, body: JSON.stringify({ hello: 10 })
-              });
-
-              if (shouldError)
-                return expect(result.response.status).toBe(415);
-
-              return expect(result.response.status).not.toBe(415);
+          const cases = [
+            ['application/json', false],
+            ['application/vnd.api+json', false],
+            ['application/xml', true],
+            ['application/vnd.json', true],
+            ['application/vnd.xml;x=json', true],
+          ];
+          test.each(cases)('%s', async (contentType, shouldError) => {
+            const result = await makeRequest({
+              path: '/no_auth/pets',
+              method: 'POST',
+              headers: {
+                'content-type': contentType,
+              },
+              body: JSON.stringify({ hello: 10 }),
             });
-        });
 
+            if (shouldError) {
+              return expect(result.response.status).toBe(415);
+            }
+
+            return expect(result.response.status).not.toBe(415);
+          });
+        });
       });
     });
   };
 };
 
-const binary = `BINARY=${process.env.BINARY || join(__dirname, '/../cli-binaries/prism-cli-linux')}`;
+const binary = `BINARY=${process.env.BINARY ||
+  join(__dirname, '/../cli-binaries/prism-cli-linux')}`;
 
 specs.forEach(specPath => {
   const command = `${binary} SPEC=${specPath} PRISM_PORT=${port} yarn run.binary`;
