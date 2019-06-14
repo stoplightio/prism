@@ -65,15 +65,15 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
 
         // validate input
         if (resource && components.validator && components.validator.validateInput) {
-          inputValidations.concat(
-            await components.validator.validateInput(
+          inputValidations.push(
+            ...(await components.validator.validateInput(
               {
                 resource,
                 input,
                 config: configObj,
               },
               defaultComponents.validator,
-            ),
+            )),
           );
         }
 

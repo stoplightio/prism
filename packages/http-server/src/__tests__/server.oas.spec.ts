@@ -29,8 +29,10 @@ describe('GET /pet?__server', () => {
   afterAll(() => server.fastify.close());
 
   describe.each([['http://stoplight.io/api'], ['https://stoplight.io/api']])('valid server %s', serverUrl => {
-    it('returns 200', async () => {
-      expect((await requestPetGivenServer(serverUrl)).statusCode).toEqual(200);
+    it('returns 200', () => {
+      return expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
+        statusCode: 200,
+      });
     });
   });
 
@@ -40,8 +42,8 @@ describe('GET /pet?__server', () => {
     ['https://google.com/api'],
     ['https://stopligt.io/v1'],
   ])('invalid server %s', serverUrl => {
-    it('returns 404 and problem json payload', async () => {
-      expect(await requestPetGivenServer(serverUrl)).toMatchObject({
+    it('returns 404 and problem json payload', () => {
+      return expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
         statusCode: 404,
         payload: expectedPayload(serverUrl),
       });
