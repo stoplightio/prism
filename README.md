@@ -159,8 +159,7 @@ You can make a request enforcing server validation this way
 
 ```bash
 curl -X GET localhost:4010/pet?__server=http://stoplight.io/api
-# will give you a lorem ipsum response, like so:
-# "velit laborum qui pariatur"
+# This will return a 200 response
 ```
 
 On the other hand
@@ -182,7 +181,7 @@ Will give you the following error
 
 ## What's next for Prism?
 
-- [ ] Server Validation
+- [x] Server Validation
 - [x] Accept header validation
 - [ ] Content header validation
 - [ ] Security Validation

@@ -39,7 +39,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         // build the config for this request
         const configMerger = configMergerFactory(defaultConfig, customConfig, c);
         const configObj: Config | undefined = configMerger(input);
-        let inputValidations: IPrismDiagnostic[] = [];
+        const inputValidations: IPrismDiagnostic[] = [];
 
         // find the correct resource
         let resource: Resource | undefined;
@@ -65,13 +65,15 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
 
         // validate input
         if (resource && components.validator && components.validator.validateInput) {
-          inputValidations = await components.validator.validateInput(
-            {
-              resource,
-              input,
-              config: configObj,
-            },
-            defaultComponents.validator,
+          inputValidations.concat(
+            await components.validator.validateInput(
+              {
+                resource,
+                input,
+                config: configObj,
+              },
+              defaultComponents.validator,
+            ),
           );
         }
 
