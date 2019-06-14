@@ -17,7 +17,7 @@ export const createServer = <LoaderInput>(
   const server = fastify({
     logger: components.logger || createLogger('HTTP SERVER'),
     disableRequestLogging: true,
-    modifyCoreObjects: true, // This should be false, but Fastify has a bug.
+    modifyCoreObjects: false,
   }).register(fastifyAcceptsSerializer, {
     serializers: [
       {
