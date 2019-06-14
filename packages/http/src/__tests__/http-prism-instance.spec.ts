@@ -209,7 +209,7 @@ describe('Http Client .process', () => {
         });
 
         expect(response.output).toBeDefined();
-        expect(response.output.statusCode).toEqual(200);
+        expect(response.output!.statusCode).toEqual(200);
       });
     });
 
