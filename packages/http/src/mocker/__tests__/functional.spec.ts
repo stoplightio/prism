@@ -275,15 +275,14 @@ describe('http mocker', () => {
             })
             .run(logger);
 
-          assertRight(response, async result => {
-            const r = await result;
-            expect(r).toHaveProperty('statusCode', 200);
-            expect(r).toHaveProperty('headers', {
+          assertRight(response, result => {
+            expect(result).toHaveProperty('statusCode', 200);
+            expect(result).toHaveProperty('headers', {
               'Content-type': 'application/json',
               'x-todos-publish': expect.any(String),
             });
 
-            expect(validate(r.body)).toBeTruthy();
+            expect(validate(result.body)).toBeTruthy();
           });
         });
       });
