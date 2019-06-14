@@ -163,7 +163,7 @@ curl -X GET localhost:4010/pet?__server=http://stoplight.io/api
 # "velit laborum qui pariatur"
 ```
 
-On the other hand
+On the other hand, putting a server which is not defined in the specification, for example:
 
 ```bash
 curl -X GET localhost:4010/pet?__server=ftp://acme.com/api
