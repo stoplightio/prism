@@ -121,9 +121,9 @@ This error shows the request is missing a required property `name` from the HTTP
 
 ### HTTP API
 
-Prism provides [HTTP API][http-docs] as separate module for forwarding requests acting as HTTP client.
+Prism provides [HTTP API][http-docs] as separate module for forwarding and mocking requests.
 
-#### Usage example
+#### Forwarding example
 
 ```ts
 const data = await forwarder.forward({
@@ -137,6 +137,26 @@ const data = await forwarder.forward({
     },
     validations: {
       input: [],
+    },
+  },
+});
+```
+
+#### Mocking example
+
+```ts
+import { HttpMocker } from '@stoplight/prism-http/lib/mocker';
+
+const mocker = new HttpMocker(generate);
+const response = await mocker.mock({
+  resource: httpOperation,
+  input: httpRequest,
+  config: {
+    mock: {
+      dynamic: false,
+      code: '201',
+      exampleKey: 'second',
+      mediaTypes: ['application/xml'],
     },
   },
 });
