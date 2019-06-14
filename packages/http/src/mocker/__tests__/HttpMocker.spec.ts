@@ -308,7 +308,7 @@ describe('HttpMocker', () => {
                 expect(responseWithMultipleExamples.body).toHaveProperty('middlename', 'WW'));
             });
 
-            describe('with no multiple example values in the array', () => {
+            describe('with an empty `examples` array', () => {
               const responseWithNoExamples = mockResponseWithSchema({
                 type: 'object',
                 properties: {
