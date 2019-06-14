@@ -16,7 +16,7 @@ export default class Server extends Command {
 
   public async run() {
     const {
-      flags: { port, dynamic, host, fork },
+      flags: { port, dynamic, host, multiprocess },
       args: { spec },
     } = this.parse(Server);
 
@@ -33,7 +33,7 @@ export default class Server extends Command {
         });
       }
 
-      if (fork) {
+      if (multiprocess) {
         signale.star({
           prefix: chalk.bgWhiteBright.black('[CLI]'),
           message: `Multi process ${chalk.green('enabled')}.`,
@@ -41,7 +41,7 @@ export default class Server extends Command {
       }
     }
 
-    if (fork) {
+    if (multiprocess) {
       if (cluster.isMaster) {
         const worker = cluster.fork();
 

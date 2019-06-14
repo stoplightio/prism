@@ -29,8 +29,8 @@ export const FLAGS = {
     default: false,
   }),
 
-  fork: oflags.boolean({
-    char: 'f',
+  multiprocess: oflags.boolean({
+    char: 'm',
     description: 'Fork the http server from the CLI',
     default: process.env.NODE_ENV === 'production',
   }),
