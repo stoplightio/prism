@@ -57,13 +57,13 @@ const createSpec = (specPath, prismCmd) => {
       });
 
       describe('When validating a supported server', () => {
-        test('with http schema should return 200', async () => {
+        it('with http schema should return 200', async () => {
           const { reqRes } = await runTest(requests[18]);
 
           expect(reqRes.response.status).toBe(200);
         });
 
-        test('with https schema should return 200', async () => {
+        it('with https schema should return 200', async () => {
           const { reqRes } = await runTest(requests[19]);
 
           expect(reqRes.response.status).toBe(200);
@@ -71,7 +71,7 @@ const createSpec = (specPath, prismCmd) => {
       });
 
       describe('When validating an unsupported server', () => {
-        test('should return json problem', async () => {
+        it('should return json problem', async () => {
           const { reqRes, masterFile } = await runTest(requests[20]);
 
           expect(reqRes).toStrictEqual(masterFile);
@@ -79,14 +79,14 @@ const createSpec = (specPath, prismCmd) => {
       });
 
       describe('When a required parameter is missing in query (with no default)', () => {
-        test('"Missing X query param" error is returned', async () => {
+        it('"Missing X query param" error is returned', async () => {
           const { reqRes, masterFile } = await runTest(requests[0]);
 
           expect(reqRes).toStrictEqual(masterFile);
         });
 
         xdescribe('When authorization needed', () => {
-          test('"Missing X query param" error is returned', async () => {
+          it('"Missing X query param" error is returned', async () => {
             const { reqRes, masterFile } = await runTest(requests[2]);
 
             expect(reqRes).toStrictEqual(masterFile);
@@ -96,7 +96,7 @@ const createSpec = (specPath, prismCmd) => {
 
       describe('When sending a POST with all the needed params in body', () => {
         describe('Dynamic response', () => {
-          test('should default to 200 and mock from schema', async () => {
+          it('should default to 200 and mock from schema', async () => {
             const { reqRes, masterFile } = await runTest(requests[11]);
             const payload = reqRes.response.body;
 
@@ -117,7 +117,7 @@ const createSpec = (specPath, prismCmd) => {
 
       describe('When sending a GET with all the needed parameters in query', () => {
         describe('Static response', () => {
-          test('A response with status code 200 is returned', async () => {
+          it('A response with status code 200 is returned', async () => {
             const { reqRes, masterFile } = await runTest(requests[1]);
 
             expect(reqRes).toStrictEqual(masterFile);
@@ -127,7 +127,7 @@ const createSpec = (specPath, prismCmd) => {
 
       xdescribe('Authorization', () => {
         xdescribe('When a request does not include authorization details', () => {
-          test(['Should get 401 for not being authorized', 'NOT_IN_V3:SO-176'].join(), async () => {
+          it(['Should get 401 for not being authorized', 'NOT_IN_V3:SO-176'].join(), async () => {
             const { reqRes, masterFile } = await runTest(requests[3]);
 
             expect(reqRes.response.status).toBe(401);
@@ -139,7 +139,7 @@ const createSpec = (specPath, prismCmd) => {
       describe('Dynamic paths', () => {
         describe('When a resource is request from a dynamic path like /pets/{petId}', () => {
           describe('Dynamic response', () => {
-            test('The resource is sent back with a proper schema', async () => {
+            it('The resource is sent back with a proper schema', async () => {
               const { reqRes, masterFile } = await runTest(requests[4]);
               const payload = reqRes.response.body;
 
@@ -157,7 +157,7 @@ const createSpec = (specPath, prismCmd) => {
       });
 
       xdescribe('When a form data is sent with application/x-www-form-urlencoded to create a single resource', () => {
-        test(
+        it(
           [
             'Should answer with JSON representing the resource',
             'prism v3 does not respect x-ww-form-urlencoded',
@@ -172,7 +172,7 @@ const createSpec = (specPath, prismCmd) => {
       });
 
       describe('When using a verb that is not defined on a path', () => {
-        test(
+        it(
           [
             'Informs with 405 that the verb is not served',
             'doesnt matter if auth implemented',
@@ -188,7 +188,7 @@ const createSpec = (specPath, prismCmd) => {
       describe('When a response with a specific status code is requested using the __code property', () => {
         describe('When an existing code is requested', () => {
           describe('static response', () => {
-            test('Requested response for the given __code is returned with payload', async () => {
+            it('Requested response for the given __code is returned with payload', async () => {
               const { reqRes, masterFile } = await runTest(requests[7]);
 
               expect(reqRes).toStrictEqual(masterFile);
@@ -196,7 +196,7 @@ const createSpec = (specPath, prismCmd) => {
           });
 
           describe('Dynamic response', () => {
-            test('Requested response is generated and returned', async () => {
+            it('Requested response is generated and returned', async () => {
               const { reqRes, masterFile } = await runTest(requests[8]);
               const payload = reqRes.response.body;
 
@@ -214,7 +214,7 @@ const createSpec = (specPath, prismCmd) => {
 
         describe('When a non existing code is requested', () => {
           describe('When there is a default response', () => {
-            test('will return the default response', async () => {
+            it('will return the default response', async () => {
               const { reqRes, masterFile } = await runTest(requests[14]);
               const payload = reqRes.response.body;
 
@@ -225,7 +225,7 @@ const createSpec = (specPath, prismCmd) => {
           });
 
           describe('there is no default response', () => {
-            test('500 code is returned with error', async () => {
+            it('500 code is returned with error', async () => {
               const { reqRes, masterFile } = await runTest(requests[15]);
 
               expect(reqRes).toStrictEqual(masterFile);
@@ -235,7 +235,7 @@ const createSpec = (specPath, prismCmd) => {
       });
 
       xdescribe('When multiple values are provided for a single parameter in query', () => {
-        test(
+        it(
           [
             'Returns results possibly including entities with either of these values',
             'doesnt seem to work properly',
@@ -256,7 +256,7 @@ const createSpec = (specPath, prismCmd) => {
       describe('Body parameters', () => {
         describe('When sending all required parameters', () => {
           describe('Dynamic response', () => {
-            test('should validate body params', async () => {
+            it('should validate body params', async () => {
               const { reqRes, masterFile } = await runTest(requests[12]);
               const payload = reqRes.response.body;
 
@@ -267,7 +267,7 @@ const createSpec = (specPath, prismCmd) => {
         });
 
         describe('When not sending all required parameters', () => {
-          test('should validate the body params and return an error code', async () => {
+          it('should validate the body params and return an error code', async () => {
             const { reqRes, masterFile } = await runTest(requests[13]);
             const payload = reqRes.response.body;
 
@@ -287,7 +287,7 @@ const createSpec = (specPath, prismCmd) => {
             ['application/vnd.json', true],
             ['application/vnd.xml;x=json', true],
           ];
-          test.each(cases)('%s', async (contentType, shouldError) => {
+          it.each(cases)('%s', async (contentType, shouldError) => {
             const result = await makeRequest({
               path: '/no_auth/pets',
               method: 'POST',
