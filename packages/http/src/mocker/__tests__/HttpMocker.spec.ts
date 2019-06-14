@@ -247,73 +247,84 @@ describe('HttpMocker', () => {
         });
 
         describe('and the resource has no response examples', () => {
-          const resourceOperation: IHttpOperation = {
-            id: 'id',
-            method: 'get',
-            path: '/test',
-            request: {},
-            responses: [
-              {
-                code: '200',
-                headers: [],
-                contents: [
-                  {
-                    mediaType: 'application/json',
-                    schema: {
-                      type: 'object',
-                      properties: {
-                        name: { type: 'string', examples: ['Clark'] },
-                        middlename: { type: 'string', examples: ['J'], default: 'JJ' },
-                        surname: { type: 'string', default: 'Kent' },
-                        age: { type: ['number', 'null'] },
-                        email: { type: 'string' },
-                        deposit: { type: 'number' },
-                        paymentStatus: { type: 'string', enum: ['completed', 'outstanding'] },
-                        creditScore: {
-                          anyOf: [{ type: 'number', examples: [1958] }, { type: 'string' }],
-                        },
-                        paymentScore: {
-                          oneOf: [{ type: 'string' }, { type: 'number', examples: [1958] }],
-                        },
-                        walletScore: {
-                          allOf: [{ type: 'string' }, { default: 'hello' }],
-                        },
-                        pet: {
-                          type: 'object',
-                          properties: {
-                            name: { type: 'string', examples: ['Clark'] },
-                            middlename: { type: 'string', examples: ['J'], default: 'JJ' },
-                          },
-                        },
-                      },
-                      required: ['name', 'surname', 'age', 'email'],
+          function createOperationWithSchema(schema: JSONSchema): IHttpOperation {
+            return {
+              id: 'id',
+              method: 'get',
+              path: '/test',
+              request: {},
+              responses: [
+                {
+                  code: '200',
+                  headers: [],
+                  contents: [
+                    {
+                      mediaType: 'application/json',
+                      schema,
                     },
-                    encodings: [],
-                  },
-                ],
-              },
-            ],
-          };
+                  ],
+                },
+              ],
+            };
+          }
 
-          const response = httpMocker.mock({
-            input: mockInput,
-            resource: resourceOperation,
-            config: { mock: { dynamic: false } },
-          });
+          function mockResponseWithSchema(schema: JSONSchema) {
+            return httpMocker.mock({
+              input: mockInput,
+              resource: createOperationWithSchema(schema),
+              config: { mock: { dynamic: false } },
+            });
+          }
 
           describe('the property has an example key', () => {
+            const response = mockResponseWithSchema({
+              type: 'object',
+              properties: {
+                name: { type: 'string', examples: ['Clark'] },
+              },
+            });
+
             it('should return the example key', () => expect(response.body).toHaveProperty('name', 'Clark'));
             describe('and a default key', () => {
-              it('prefers the example', () => expect(response.body).toHaveProperty('middlename', 'J'));
+              const responseWithDefault = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                },
+              });
+
+              it('prefers the example', () => expect(responseWithDefault.body).toHaveProperty('middlename', 'J'));
             });
 
             describe('and the property containing the example is deeply nested', () => {
-              it('should return the example key', () => expect(response.body).toHaveProperty('pet.name', 'Clark'));
-              it('should still prefer the example', () => expect(response.body).toHaveProperty('pet.middlename', 'J'));
+              const responseWithNestedObject = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  pet: {
+                    type: 'object',
+                    properties: {
+                      name: { type: 'string', examples: ['Clark'] },
+                      middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                    },
+                  },
+                },
+              });
+
+              it('should return the example key', () =>
+                expect(responseWithNestedObject.body).toHaveProperty('pet.name', 'Clark'));
+              it('should still prefer the example', () =>
+                expect(responseWithNestedObject.body).toHaveProperty('pet.middlename', 'J'));
             });
           });
 
           describe('the property has not an example, but a default key', () => {
+            const response = mockResponseWithSchema({
+              type: 'object',
+              properties: {
+                surname: { type: 'string', default: 'Kent' },
+              },
+            });
+
             it('should use such key', () => {
               expect(response.body).toHaveProperty('surname', 'Kent');
             });
@@ -321,10 +332,47 @@ describe('HttpMocker', () => {
 
           describe('the property has nor default, nor example', () => {
             describe('is nullable', () => {
+              const response = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  age: { type: ['number', 'null'] },
+                },
+              });
+
               it('should be set to null', () => expect(response.body).toHaveProperty('age', null));
             });
 
             describe('and is not nullable', () => {
+              const response = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  name: { type: 'string', examples: ['Clark'] },
+                  middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                  surname: { type: 'string', default: 'Kent' },
+                  age: { type: ['number', 'null'] },
+                  email: { type: 'string' },
+                  deposit: { type: 'number' },
+                  paymentStatus: { type: 'string', enum: ['completed', 'outstanding'] },
+                  creditScore: {
+                    anyOf: [{ type: 'number', examples: [1958] }, { type: 'string' }],
+                  },
+                  paymentScore: {
+                    oneOf: [{ type: 'string' }, { type: 'number', examples: [1958] }],
+                  },
+                  walletScore: {
+                    allOf: [{ type: 'string' }, { default: 'hello' }],
+                  },
+                  pet: {
+                    type: 'object',
+                    properties: {
+                      name: { type: 'string', examples: ['Clark'] },
+                      middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                    },
+                  },
+                },
+                required: ['name', 'surname', 'age', 'email'],
+              });
+
               it('should return the default string', () => expect(response.body).toHaveProperty('email', 'string'));
               it('should return the default number', () => expect(response.body).toHaveProperty('deposit', 0));
               it('should return the first enum value', () =>
