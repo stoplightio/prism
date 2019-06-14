@@ -4,7 +4,7 @@ import chalk from 'chalk';
 export const ARGS = {
   spec: {
     name: 'spec',
-    description: 'Path to a spec file',
+    description: 'Path to a spec file. Can be both a file or a fetchable resource on the web',
     required: true,
   },
 };
