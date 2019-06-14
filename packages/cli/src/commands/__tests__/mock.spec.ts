@@ -7,7 +7,7 @@ jest.mock('../../util/createServer', () => ({
   createServer: jest.fn(() => ({ listen: listenMock, prism: { resources: [{ method: 'get', path: '/test' }] } })),
 }));
 
-describe.skip('mock command', () => {
+describe('mock command', () => {
   beforeEach(() => {
     (createServer as jest.Mock).mockClear();
   });
