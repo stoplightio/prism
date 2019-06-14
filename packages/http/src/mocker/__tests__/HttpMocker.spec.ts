@@ -1,8 +1,8 @@
 import { createLogger } from '@stoplight/prism-core';
+import { JSONSchema } from '@stoplight/prism-http/src/types';
 import { IHttpOperation, INodeExample } from '@stoplight/types';
 import { Either, right } from 'fp-ts/lib/Either';
 import { reader } from 'fp-ts/lib/Reader';
-import { JSONSchema } from '@stoplight/prism-http/src/types';
 import { flatMap } from 'lodash';
 import { HttpMocker } from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
@@ -17,7 +17,7 @@ function assertRight<L, A>(e: Either<L, A>, onRight: (a: A) => void) {
 const logger = createLogger('TEST', { enabled: false });
 
 describe('HttpMocker', () => {
-  const httpMocker = new HttpMocker(JSONSchemaGenerator.generate);
+  const httpMocker = new HttpMocker();
 
   afterEach(() => jest.restoreAllMocks());
 
@@ -80,21 +80,17 @@ describe('HttpMocker', () => {
 
     it('fails when called with no resource', () => {
       return expect(() =>
-        httpMocker
-          .mock({
-            input: mockInput,
-          })
-          .run(logger),
+        httpMocker.mock({
+          input: mockInput,
+        }),
       ).toThrowErrorMatchingSnapshot();
     });
 
     it('fails when called with no input', () => {
       return expect(() =>
-        httpMocker
-          .mock({
-            resource: mockResource,
-          })
-          .run(logger),
+        httpMocker.mock({
+          resource: mockResource,
+        }),
       ).toThrowErrorMatchingSnapshot();
     });
 
@@ -111,7 +107,7 @@ describe('HttpMocker', () => {
           })
           .run(logger);
 
-        assertRight(mockResult, result => expect(result).resolves.toHaveProperty('body', undefined));
+        assertRight(mockResult, result => expect(result).toHaveProperty('body', undefined));
       });
 
       it('returns static example', () => {
@@ -184,7 +180,7 @@ describe('HttpMocker', () => {
           })
           .run(logger);
 
-        assertRight(mockResult, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(mockResult, result => expect(result).toMatchSnapshot());
       });
     });
 
@@ -202,7 +198,7 @@ describe('HttpMocker', () => {
           ),
         );
 
-        jest.spyOn(JSONSchemaGenerator, 'generate').mockResolvedValue('example value chelsea');
+        jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue('example value chelsea');
 
         const mockResult = httpMocker
           .mock({
@@ -211,7 +207,7 @@ describe('HttpMocker', () => {
           })
           .run(logger);
 
-        assertRight(mockResult, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(mockResult, result => expect(result).toMatchSnapshot());
       });
     });
 
@@ -221,7 +217,8 @@ describe('HttpMocker', () => {
           const generatedExample = { hello: 'world' };
 
           beforeAll(() => {
-            jest.spyOn(JSONSchemaGenerator, 'generate').mockResolvedValue(generatedExample);
+            jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue(generatedExample);
+            jest.spyOn(JSONSchemaGenerator, 'generateStatic');
           });
 
           afterAll(() => {
@@ -238,6 +235,8 @@ describe('HttpMocker', () => {
               .run(logger);
 
             expect(JSONSchemaGenerator.generate).not.toHaveBeenCalled();
+            expect(JSONSchemaGenerator.generate).toHaveBeenCalled();
+            expect(JSONSchemaGenerator.generateStatic).not.toHaveBeenCalled();
 
             const allExamples = flatMap(mockResource.responses, res =>
               flatMap(res.contents, content => content.examples || []),
@@ -245,40 +244,236 @@ describe('HttpMocker', () => {
               if ('value' in x) return x.value;
             });
 
-            assertRight(response, async result => {
-              const r = await result;
-              expect(r.body).toBeDefined();
+            assertRight(response, result => {
+              expect(result.body).toBeDefined();
 
-              allExamples.forEach(example => expect(r.body).not.toEqual(example));
-              expect(r.body).toMatchObject({
-                name: expect.any(String),
-                surname: expect.any(String),
-              });
+              allExamples.forEach(example => expect(result.body).not.toEqual(example));
+              expect(result.body).toHaveProperty('hello', 'world');
             });
           });
         });
       });
 
       describe('and dynamic flag is false', () => {
-        describe('and the example has been explicited', () => {
-          it('should return the selected example', async () => {
-            const response = await httpMocker
+        describe('and the response has an example', () => {
+          describe('and the example has been explicited', () => {
+            const response = httpMocker
               .mock({
                 input: mockInput,
                 resource: mockResource,
-                config: { mock: { dynamic: true, exampleKey: 'test key' } },
+                config: { mock: { dynamic: false, exampleKey: 'test key' } },
               })
               .run(logger);
 
-            const selectedExample = flatMap(mockResource.responses, res =>
-              flatMap(res.contents, content => content.examples || []),
-            ).find(ex => ex.key === 'test key');
-            expect(selectedExample).toBeDefined();
+            it('should return the selected example', () => {
+              const selectedExample = flatMap(mockResource.responses, res =>
+                flatMap(res.contents, content => content.examples || []),
+              ).find(ex => ex.key === 'test key');
 
-            assertRight(response, async result => {
-              const resolved = await result;
-              expect(resolved.body).toBeDefined();
-              expect(resolved.body).toEqual((selectedExample as INodeExample).value);
+              expect(selectedExample).toBeDefined();
+
+              assertRight(response, result => expect(result.body).toEqual((selectedExample as INodeExample).value));
+            });
+          });
+
+          describe('no response example is requested', () => {
+            const response = httpMocker
+              .mock({
+                input: mockInput,
+                resource: mockResource,
+                config: { mock: { dynamic: false } },
+              })
+              .run(logger);
+
+            it('returns the first example', () => {
+              assertRight(response, result => {
+                expect(result.body).toBeDefined();
+                const selectedExample = mockResource.responses[0].contents![0].examples![0];
+
+                expect(selectedExample).toBeDefined();
+                expect(result.body).toEqual((selectedExample as INodeExample).value);
+              });
+            });
+          });
+        });
+
+        describe('and the response has not an examples', () => {
+          function createOperationWithSchema(schema: JSONSchema): IHttpOperation {
+            return {
+              id: 'id',
+              method: 'get',
+              path: '/test',
+              request: {},
+              responses: [
+                {
+                  code: '200',
+                  headers: [],
+                  contents: [
+                    {
+                      mediaType: 'application/json',
+                      schema,
+                    },
+                  ],
+                },
+              ],
+            };
+          }
+
+          function mockResponseWithSchema(schema: JSONSchema) {
+            return httpMocker
+              .mock({
+                input: mockInput,
+                resource: createOperationWithSchema(schema),
+                config: { mock: { dynamic: false } },
+              })
+              .run(logger);
+          }
+
+          describe('and the property has an example key', () => {
+            const eitherResponse = mockResponseWithSchema({
+              type: 'object',
+              properties: {
+                name: { type: 'string', examples: ['Clark'] },
+              },
+            });
+
+            it('should return the example key', () =>
+              assertRight(eitherResponse, response => expect(response.body).toHaveProperty('name', 'Clark')));
+
+            describe('and also a default key', () => {
+              const eitherResponseWithDefault = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                },
+              });
+
+              it('prefers the example', () =>
+                assertRight(eitherResponseWithDefault, responseWithDefault =>
+                  expect(responseWithDefault.body).toHaveProperty('middlename', 'J'),
+                ));
+            });
+
+            describe('with multiple example values in the array', () => {
+              const eitherResponseWithMultipleExamples = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  middlename: { type: 'string', examples: ['WW', 'JJ'] },
+                },
+              });
+
+              it('prefers the first example', () =>
+                assertRight(eitherResponseWithMultipleExamples, responseWithMultipleExamples =>
+                  expect(responseWithMultipleExamples.body).toHaveProperty('middlename', 'WW'),
+                ));
+            });
+
+            describe('with an empty `examples` array', () => {
+              const eitherResponseWithNoExamples = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  middlename: { type: 'string', examples: [] },
+                },
+              });
+
+              it('fallbacks to string', () =>
+                assertRight(eitherResponseWithNoExamples, responseWithNoExamples =>
+                  expect(responseWithNoExamples.body).toHaveProperty('middlename', 'string'),
+                ));
+            });
+          });
+
+          describe('and the property containing the example is deeply nested', () => {
+            const eitherResponseWithNestedObject = mockResponseWithSchema({
+              type: 'object',
+              properties: {
+                pet: {
+                  type: 'object',
+                  properties: {
+                    name: { type: 'string', examples: ['Clark'] },
+                    middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                  },
+                },
+              },
+            });
+
+            assertRight(eitherResponseWithNestedObject, responseWithNestedObject => {
+              it('should return the example key', () =>
+                expect(responseWithNestedObject.body).toHaveProperty('pet.name', 'Clark'));
+              it('should still prefer the example', () =>
+                expect(responseWithNestedObject.body).toHaveProperty('pet.middlename', 'J'));
+            });
+          });
+
+          describe('and the property has not an example, but a default key', () => {
+            const eitherResponse = mockResponseWithSchema({
+              type: 'object',
+              properties: {
+                surname: { type: 'string', default: 'Kent' },
+              },
+            });
+
+            it('should use such key', () => {
+              assertRight(eitherResponse, response => expect(response.body).toHaveProperty('surname', 'Kent'));
+            });
+          });
+
+          describe('and the property has nor default, nor example', () => {
+            describe('is nullable', () => {
+              const eitherResponse = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  age: { type: ['number', 'null'] },
+                },
+              });
+
+              it('should be set to null', () =>
+                assertRight(eitherResponse, response => expect(response.body).toHaveProperty('age', null)));
+            });
+
+            describe('and is not nullable', () => {
+              const eitherResponse = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  name: { type: 'string', examples: ['Clark'] },
+                  middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                  surname: { type: 'string', default: 'Kent' },
+                  age: { type: ['number', 'null'] },
+                  email: { type: 'string' },
+                  deposit: { type: 'number' },
+                  paymentStatus: { type: 'string', enum: ['completed', 'outstanding'] },
+                  creditScore: {
+                    anyOf: [{ type: 'number', examples: [1958] }, { type: 'string' }],
+                  },
+                  paymentScore: {
+                    oneOf: [{ type: 'string' }, { type: 'number', examples: [1958] }],
+                  },
+                  walletScore: {
+                    allOf: [{ type: 'string' }, { default: 'hello' }],
+                  },
+                  pet: {
+                    type: 'object',
+                    properties: {
+                      name: { type: 'string', examples: ['Clark'] },
+                      middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                    },
+                  },
+                },
+                required: ['name', 'surname', 'age', 'email'],
+              });
+
+              assertRight(eitherResponse, response => {
+                it('should return the default string', () => expect(response.body).toHaveProperty('email', 'string'));
+                it('should return the default number', () => expect(response.body).toHaveProperty('deposit', 0));
+                it('should return the first enum value', () =>
+                  expect(response.body).toHaveProperty('paymentStatus', 'completed'));
+                it('should return the first anyOf value', () =>
+                  expect(response.body).toHaveProperty('creditScore', 1958));
+                it('should return the first oneOf value', () =>
+                  expect(response.body).toHaveProperty('paymentScore', 'string'));
+                it('should return the first allOf value', () =>
+                  expect(response.body).toHaveProperty('walletScore', 'hello'));
+              });
             });
           });
         });

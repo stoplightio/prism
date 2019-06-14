@@ -1,9 +1,10 @@
+import { JSONSchema } from 'http/src/types';
 import { generate } from '../JSONSchema';
 
 describe('JSONSchema generator', () => {
   describe('generate()', () => {
-    it('generates dynamic example from schema', async () => {
-      const schema = {
+    it('generates dynamic example from schema', () => {
+      const schema: JSONSchema = {
         type: 'object',
         properties: {
           name: { type: 'string', minLength: 1 },
@@ -12,13 +13,13 @@ describe('JSONSchema generator', () => {
         required: ['name', 'email'],
       };
 
-      const instance = await generate(schema);
+      const instance = generate(schema);
       expect(instance).toHaveProperty('name');
       expect(instance).toHaveProperty('email');
     });
 
     it('operates on sealed schema objects', () => {
-      const schema = {
+      const schema: JSONSchema = {
         type: 'object',
         properties: {
           name: { type: 'string' },
@@ -28,7 +29,7 @@ describe('JSONSchema generator', () => {
 
       Object.defineProperty(schema.properties, 'name', { writable: false });
 
-      return expect(generate(schema)).resolves.toBeTruthy();
+      return expect(generate(schema)).toBeTruthy();
     });
   });
 });

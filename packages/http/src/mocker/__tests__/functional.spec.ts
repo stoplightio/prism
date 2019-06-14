@@ -3,7 +3,6 @@ import * as Ajv from 'ajv';
 import { createLogger } from '@stoplight/prism-core';
 import { Either } from 'fp-ts/lib/Either';
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
-import { generate } from '../generator/JSONSchema';
 import { HttpMocker } from '../index';
 
 const logger = createLogger('TEST', { enabled: false });
@@ -21,11 +20,11 @@ function assertLeft<L, A>(e: Either<L, A>, onLeft: (a: L) => void) {
 }
 
 describe('http mocker', () => {
-  const mocker = new HttpMocker(generate);
+  const mocker = new HttpMocker();
 
   describe('request is valid', () => {
     describe('given only enforced content type', () => {
-      test('and that content type exists should first 200 static example', async () => {
+      test('and that content type exists should first 200 static example', () => {
         const response = mocker
           .mock({
             resource: httpOperations[0],
@@ -204,10 +203,9 @@ describe('http mocker', () => {
             })
             .run(logger);
 
-          assertRight(response, async result => {
-            const r = await result;
-            expect(r.statusCode).toBe(200);
-            expect(r.body).toMatchObject({
+          assertRight(response, result => {
+            expect(result.statusCode).toBe(200);
+            expect(result.body).toMatchObject({
               completed: true,
               id: 1,
               name: 'make prism',
@@ -227,10 +225,9 @@ describe('http mocker', () => {
             })
             .run(logger);
 
-          assertRight(response, async result => {
-            const r = await result;
-            expect(r.statusCode).toBe(200);
-            expect(r.headers).toHaveProperty('x-todos-publish');
+          assertRight(response, result => {
+            expect(result.statusCode).toBe(200);
+            expect(result.headers).toHaveProperty('x-todos-publish');
           });
         });
 
@@ -248,7 +245,7 @@ describe('http mocker', () => {
               .run(logger);
 
             assertRight(mockResult, result =>
-              expect(result).resolves.toMatchObject({
+              expect(result).toMatchObject({
                 headers: { 'Content-type': 'text/plain' },
                 body: undefined,
               }),
@@ -301,15 +298,14 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        assertRight(response, async result => {
-          const r = await result;
-          expect(r.statusCode).toBe(422);
-          expect(r.body).toMatchObject({ message: 'error' });
+        assertRight(response, result => {
+          expect(result.statusCode).toBe(422);
+          expect(result.body).toMatchObject({ message: 'error' });
         });
       });
     });
 
-    test('returns 422 and dynamic error response', async () => {
+    test('returns 422 and dynamic error response', () => {
       if (!httpOperations[1].responses[1].contents![0].schema) {
         throw new Error('Missing test');
       }
@@ -324,9 +320,8 @@ describe('http mocker', () => {
       const ajv = new Ajv();
       const validate = ajv.compile(httpOperations[1].responses[1].contents![0].schema!);
 
-      assertRight(response, async result => {
-        const r = await result;
-        expect(validate(r.body)).toBeTruthy();
+      assertRight(response, result => {
+        expect(validate(result.body)).toBeTruthy();
       });
     });
   });

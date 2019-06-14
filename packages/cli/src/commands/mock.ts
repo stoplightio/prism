@@ -25,7 +25,7 @@ export default class Server extends Command {
       const signaleInteractiveInstance = new signale.Signale({ interactive: true });
       signaleInteractiveInstance.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
-      if (true || dynamic) {
+      if (dynamic) {
         signale.star({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Dynamic example generation enabled.' });
       }
 
@@ -47,7 +47,7 @@ export default class Server extends Command {
       }
     } else {
       const pino = createLogger('CLI');
-      const server = createServer(spec, { mock: { dynamic: true || dynamic } });
+      const server = createServer(spec, { mock: { dynamic } });
       try {
         const address = await server.listen(port, host);
 
