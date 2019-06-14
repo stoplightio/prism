@@ -119,6 +119,29 @@ Connection: keep-alive
 
 This error shows the request is missing a required property `name` from the HTTP request body.
 
+### HTTP API
+
+Prism provides [HTTP API][http-docs] as separate module for forwarding requests acting as HTTP client.
+
+#### Usage example
+
+```ts
+const data = await forwarder.forward({
+  input: {
+    data: {
+      url: {
+        baseUrl: 'https://example.com',
+        path: '/v1',
+      },
+      method: 'get' as IHttpMethod,
+    },
+    validations: {
+      input: [],
+    },
+  },
+});
+```
+
 ## What's next for Prism?
 
 - [ ] Server Validation
@@ -160,3 +183,4 @@ If you are interested in contributing to Prism itself, check out our [contributi
 [cli]: https://www.npmjs.com/package/@stoplight/prism-cli
 [2.x]: https://github.com/stoplightio/prism/tree/2.x
 [cli-docs]: packages/cli/README.md
+[http-docs]: packages/http/README.md
