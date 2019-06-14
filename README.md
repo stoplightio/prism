@@ -183,7 +183,7 @@ Will give you the following error
 
 - [x] Server Validation
 - [x] Accept header validation
-- [ ] Content header validation
+- [x] Content header validation
 - [ ] Security Validation
 - [ ] Dynamic Mocking (use JS to script custom interactions)
 - [ ] Forwarding proxy with validation
