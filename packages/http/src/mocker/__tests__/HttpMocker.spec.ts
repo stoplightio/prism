@@ -296,6 +296,30 @@ describe('HttpMocker', () => {
               it('prefers the example', () => expect(responseWithDefault.body).toHaveProperty('middlename', 'J'));
             });
 
+            describe('with multiple example values in the array', () => {
+              const responseWithMultipleExamples = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  middlename: { type: 'string', examples: ['WW', 'JJ'] },
+                },
+              });
+
+              it('prefers the first example', () =>
+                expect(responseWithMultipleExamples.body).toHaveProperty('middlename', 'WW'));
+            });
+
+            describe('with no multiple example values in the array', () => {
+              const responseWithNoExamples = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  middlename: { type: 'string', examples: [] },
+                },
+              });
+
+              it('fallbacks to string', () =>
+                expect(responseWithNoExamples.body).toHaveProperty('middlename', 'string'));
+            });
+
             describe('and the property containing the example is deeply nested', () => {
               const responseWithNestedObject = mockResponseWithSchema({
                 type: 'object',
