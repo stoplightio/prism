@@ -37,7 +37,8 @@ describe('Http Client .process', () => {
           },
         });
 
-        expect(result.output!.statusCode).toBe(200);
+        expect(result.output).toBeDefined();
+        expect(result.output.statusCode).toBe(200);
       });
     });
 
@@ -51,7 +52,8 @@ describe('Http Client .process', () => {
           },
         });
 
-        expect(result.output!.statusCode).toBe(200);
+        expect(result.output).toBeDefined();
+        expect(result.output.statusCode).toBe(200);
       });
     });
 
@@ -124,8 +126,9 @@ describe('Http Client .process', () => {
           // note that we are 'nocking' the request in beforeEach
           const result = await prism.process(request, config);
 
-          expect(result.output!.statusCode).toEqual(200);
-          expect(result.output!.body).toEqual(serverReply);
+          expect(result.output).toBeDefined();
+          expect(result.output.statusCode).toEqual(200);
+          expect(result.output.body).toEqual(serverReply);
         });
 
         describe('baseUrl is not set', () => {
@@ -163,8 +166,9 @@ describe('Http Client .process', () => {
             config,
           );
 
-          expect(result.output!.statusCode).toEqual(200);
-          expect(result.output!.body).toEqual(reply);
+          expect(result.output).toBeDefined();
+          expect(result.output.statusCode).toEqual(200);
+          expect(result.output.body).toEqual(reply);
         });
       });
     });
@@ -204,7 +208,8 @@ describe('Http Client .process', () => {
           url: { path: '/pet' },
         });
 
-        expect(response.output!.statusCode).toEqual(200);
+        expect(response.output).toBeDefined();
+        expect(response.output.statusCode).toEqual(200);
       });
     });
 

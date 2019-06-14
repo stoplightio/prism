@@ -47,11 +47,11 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
           try {
             resource = components.router.route({ resources, input, config: configObj }, defaultComponents.router);
           } catch (error) {
-            const { message, name, status } = error as ProblemJsonError;
             // rethrow error we if we're attempting to mock
             if ((configObj as IPrismConfig).mock) {
               throw error;
             }
+            const { message, name, status } = error as ProblemJsonError;
             // otherwise let's just stack it on the inputValidations
             // when someone simply wants to hit an URL, don't block them
             inputValidations.push({
