@@ -20,7 +20,8 @@ import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
-export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
+export class HttpMocker
+  implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, Reader<Logger, Either<Error, IHttpResponse>>> {
   public mock({
     resource,
     input,

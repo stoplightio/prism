@@ -38,7 +38,7 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(response, result => expect(result).toMatchSnapshot());
       });
 
       test('and that content type does not exist should return empty body', () => {
@@ -56,7 +56,7 @@ describe('http mocker', () => {
           .run(logger);
 
         assertRight(mockResult, result =>
-          expect(result).resolves.toMatchObject({ headers: { 'Content-type': 'text/plain' }, body: undefined }),
+          expect(result).toMatchObject({ headers: { 'Content-type': 'text/plain' }, body: undefined }),
         );
       });
     });
@@ -78,7 +78,7 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(response, result => expect(result).toMatchSnapshot());
       });
     });
 
@@ -98,7 +98,7 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(response, result => expect(result).toMatchSnapshot());
       });
     });
 
@@ -117,7 +117,7 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(response, result => expect(result).toMatchSnapshot());
       });
 
       test('and mediaType should return 200 response', async () => {
@@ -135,7 +135,7 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(response, result => expect(result).toMatchSnapshot());
       });
     });
 
@@ -154,7 +154,7 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(response, result => expect(result).toMatchSnapshot());
       });
 
       test('given that status code is not defined should throw an error', () => {
@@ -191,7 +191,7 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        assertRight(response, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(response, result => expect(result).toMatchSnapshot());
       });
 
       describe('HttpOperation contains example', () => {

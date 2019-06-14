@@ -129,7 +129,7 @@ describe('HttpMocker', () => {
           })
           .run(logger);
 
-        assertRight(mockResult, result => expect(result).resolves.toMatchSnapshot());
+        assertRight(mockResult, result => expect(result).toMatchSnapshot());
       });
 
       it('returns dynamic example', () => {
@@ -152,7 +152,7 @@ describe('HttpMocker', () => {
           .run(logger);
 
         assertRight(response, result => {
-          return expect(result).resolves.toHaveProperty('body', {
+          return expect(result).toHaveProperty('body', {
             name: expect.any(String),
             surname: expect.any(String),
           });
@@ -234,7 +234,6 @@ describe('HttpMocker', () => {
               })
               .run(logger);
 
-            expect(JSONSchemaGenerator.generate).not.toHaveBeenCalled();
             expect(JSONSchemaGenerator.generate).toHaveBeenCalled();
             expect(JSONSchemaGenerator.generateStatic).not.toHaveBeenCalled();
 

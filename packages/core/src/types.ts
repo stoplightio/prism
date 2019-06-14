@@ -81,7 +81,7 @@ export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
   loader: ILoader<LoadOpts, Resource>;
   router: IRouter<Resource, Input, Config>;
   forwarder: IForwarder<Resource, Input, Config, Output>;
-  mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Promise<Output>>>>;
+  mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;
   validator: IValidator<Resource, Input, Config, Output>;
   logger: Logger;
 }
