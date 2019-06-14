@@ -121,50 +121,38 @@ This error shows the request is missing a required property `name` from the HTTP
 
 #### Server Validation
 
-OpenAPI lets API spec authors make only certain servers available, and they also allow certain operations to be restricted to certain servers. Make sure the server URL you plan to use is a valid server this the particular operation you are attempting. 
+OpenAPI lets API spec authors make only certain servers available, and they also allow certain operations to be restricted to certain servers. Make sure the server URL you plan to use is a valid server this the particular operation you are attempting.
 by providing a `__server` query param.
 
 Take this minimalistic spec (oas3) example:
 
-```json
-{
-  "openapi": "3.0.0",
-  "paths": {
-    "/pet": {
-      "get": {
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "servers": [
-    {
-      "url": "{schema}://{host}/{basePath}",
-      "variables": {
-        "schema": {
-          "default": "http",
-          "enum": ["http", "https"]
-        },
-        "host": {
-          "default": "stoplight.io",
-          "enum": ["stoplight.io", "dev.stoplight.io"]
-        },
-        "basePath": {
-          "default": "api"
-        }
-      }
-    }
-  ]
-}
+```yaml
+---
+openapi: 3.0.2
+paths:
+  '/pet':
+    get:
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                type: string
+servers:
+  - url: '{schema}://{host}/{basePath}'
+    variables:
+      schema:
+        default: http
+        enum:
+          - http
+          - https
+      host:
+        default: stoplight.io
+        enum:
+          - stoplight.io
+          - dev.stoplight.io
+      basePath:
+        default: api
 ```
 
 You can make a request enforcing server validation this way
