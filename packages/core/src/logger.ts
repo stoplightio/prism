@@ -8,7 +8,11 @@ levels.values.success = 11;
 levels.labels[12] = 'start';
 levels.values.start = 12;
 
-function createLogger(name: string, overrideOptions: pino.LoggerOptions = {}): pino.Logger {
+function createLogger(
+  name: string,
+  overrideOptions: pino.LoggerOptions = {},
+  destination?: pino.DestinationStream,
+): pino.Logger {
   const options: pino.LoggerOptions = {
     ...overrideOptions,
     name,
@@ -22,6 +26,7 @@ function createLogger(name: string, overrideOptions: pino.LoggerOptions = {}): p
     timestamp: false,
   };
 
+  if (destination) return pino(options, destination);
   return pino(options);
 }
 
