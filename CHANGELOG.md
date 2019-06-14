@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-alpha.15 (2019-06-14)
+
+
+### Bug Fixes
+
+* Prism's build process received some tweaks, but there's more work to do #352
+
+### Features
+
+* Prism now has got a static example fallback in case the `dynamic` flag is not enabled #347
+* Prism can now validate servers #351
+
 # 3.0.0-alpha.14 (2019-06-11)
 
 

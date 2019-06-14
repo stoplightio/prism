@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-http",
-  "version": "3.0.0-alpha.14",
+  "version": "3.0.0-alpha.15",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@stoplight/json-schema-faker": "^0.5.0-rc18",
-    "@stoplight/prism-core": "^3.0.0-alpha.14",
+    "@stoplight/prism-core": "^3.0.0-alpha.15",
     "accepts": "^1.3.7",
     "ajv": "^6.0.0",
     "ajv-oai": "^1.0.0",
