@@ -210,43 +210,44 @@ describe('HttpMocker', () => {
       });
 
       describe('and dynamic flag is false', () => {
-        describe('and the example has been explicited', () => {
-          it('should return the selected example', () => {
+        describe('and the response has an example', () => {
+          describe('and the example has been explicited', () => {
             const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,
               config: { mock: { dynamic: false, exampleKey: 'test key' } },
             });
 
-            expect(response.body).toBeDefined();
+            it('should return the selected example', () => {
+              expect(response.body).toBeDefined();
 
-            const selectedExample = flatMap(mockResource.responses, res =>
-              flatMap(res.contents, content => content.examples || []),
-            ).find(ex => ex.key === 'test key');
+              const selectedExample = flatMap(mockResource.responses, res =>
+                flatMap(res.contents, content => content.examples || []),
+              ).find(ex => ex.key === 'test key');
 
-            expect(selectedExample).toBeDefined();
-            expect(response.body).toEqual((selectedExample as INodeExample).value);
+              expect(selectedExample).toBeDefined();
+              expect(response.body).toEqual((selectedExample as INodeExample).value);
+            });
           });
-        });
 
-        describe('and a response example is defined, but no response example is requested', () => {
-          it('returns the first example', () => {
+          describe('no response example is requested', () => {
             const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,
               config: { mock: { dynamic: false } },
             });
 
-            expect(response.body).toBeDefined();
+            it('returns the first example', () => {
+              expect(response.body).toBeDefined();
+              const selectedExample = mockResource.responses[0].contents![0].examples![0];
 
-            const selectedExample = mockResource.responses[0].contents![0].examples![0];
-
-            expect(selectedExample).toBeDefined();
-            expect(response.body).toEqual((selectedExample as INodeExample).value);
+              expect(selectedExample).toBeDefined();
+              expect(response.body).toEqual((selectedExample as INodeExample).value);
+            });
           });
         });
 
-        describe('and the resource has no response examples', () => {
+        describe('and the response has not an examples', () => {
           function createOperationWithSchema(schema: JSONSchema): IHttpOperation {
             return {
               id: 'id',
@@ -276,7 +277,7 @@ describe('HttpMocker', () => {
             });
           }
 
-          describe('the property has an example key', () => {
+          describe('and the property has an example key', () => {
             const response = mockResponseWithSchema({
               type: 'object',
               properties: {
@@ -285,7 +286,8 @@ describe('HttpMocker', () => {
             });
 
             it('should return the example key', () => expect(response.body).toHaveProperty('name', 'Clark'));
-            describe('and a default key', () => {
+
+            describe('and also a default key', () => {
               const responseWithDefault = mockResponseWithSchema({
                 type: 'object',
                 properties: {
@@ -319,29 +321,29 @@ describe('HttpMocker', () => {
               it('fallbacks to string', () =>
                 expect(responseWithNoExamples.body).toHaveProperty('middlename', 'string'));
             });
-
-            describe('and the property containing the example is deeply nested', () => {
-              const responseWithNestedObject = mockResponseWithSchema({
-                type: 'object',
-                properties: {
-                  pet: {
-                    type: 'object',
-                    properties: {
-                      name: { type: 'string', examples: ['Clark'] },
-                      middlename: { type: 'string', examples: ['J'], default: 'JJ' },
-                    },
-                  },
-                },
-              });
-
-              it('should return the example key', () =>
-                expect(responseWithNestedObject.body).toHaveProperty('pet.name', 'Clark'));
-              it('should still prefer the example', () =>
-                expect(responseWithNestedObject.body).toHaveProperty('pet.middlename', 'J'));
-            });
           });
 
-          describe('the property has not an example, but a default key', () => {
+          describe('and the property containing the example is deeply nested', () => {
+            const responseWithNestedObject = mockResponseWithSchema({
+              type: 'object',
+              properties: {
+                pet: {
+                  type: 'object',
+                  properties: {
+                    name: { type: 'string', examples: ['Clark'] },
+                    middlename: { type: 'string', examples: ['J'], default: 'JJ' },
+                  },
+                },
+              },
+            });
+
+            it('should return the example key', () =>
+              expect(responseWithNestedObject.body).toHaveProperty('pet.name', 'Clark'));
+            it('should still prefer the example', () =>
+              expect(responseWithNestedObject.body).toHaveProperty('pet.middlename', 'J'));
+          });
+
+          describe('and the property has not an example, but a default key', () => {
             const response = mockResponseWithSchema({
               type: 'object',
               properties: {
@@ -354,7 +356,7 @@ describe('HttpMocker', () => {
             });
           });
 
-          describe('the property has nor default, nor example', () => {
+          describe('and the property has nor default, nor example', () => {
             describe('is nullable', () => {
               const response = mockResponseWithSchema({
                 type: 'object',
