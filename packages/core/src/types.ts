@@ -54,7 +54,7 @@ export interface IMocker<Resource, Input, Config, Output> {
   mock: (
     opts: Partial<IMockerOpts<Resource, Input, Config>>,
     defaultMocker?: IMocker<Resource, Input, Config, Output>,
-  ) => Promise<Output>;
+  ) => Output;
 }
 
 export interface IMockerOpts<Resource, Input, Config> {
