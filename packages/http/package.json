@@ -27,9 +27,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "devDependencies": {
-    "@types/nock": "^10.0.3",
-    "nock": "^10.0.6"
   }
 }
