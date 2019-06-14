@@ -13,6 +13,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 * Prism now has got a static example fallback in case the `dynamic` flag is not enabled #347
+
+### Chores
+
 * The PR Template for the repository has been reduced by half #353
 
 # 3.0.0-alpha.14 (2019-06-11)
