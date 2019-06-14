@@ -90,11 +90,13 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
               },
               defaultComponents.mocker,
             )
-            .run(components.logger!.child({ name: 'MOCKER', input })).value;
-
-          if (mockerResult instanceof Error) {
-            throw mockerResult;
-          }
+            .run(components.logger!.child({ name: 'MOCKER', input }))
+            .fold(
+              e => {
+                throw e;
+              },
+              r => r,
+            );
 
           output = mockerResult;
         } else if (components.forwarder) {
