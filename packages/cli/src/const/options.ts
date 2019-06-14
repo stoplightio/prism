@@ -28,6 +28,12 @@ export const FLAGS = {
     description: 'Dynamically generate examples.',
     default: false,
   }),
+
+  fork: oflags.boolean({
+    char: 'f',
+    description: 'Fork the http server from the CLI',
+    default: process.env.NODE_ENV === 'production',
+  }),
 };
 
 export const LOG_COLOR_MAP = {
