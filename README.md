@@ -155,14 +155,14 @@ servers:
         default: api
 ```
 
-You can make a request enforcing server validation this way
+You can make a request enforcing server validation by providing the `__server` query string parameter:
 
 ```bash
 curl -X GET localhost:4010/pet?__server=http://stoplight.io/api
 # This will return a 200 response
 ```
 
-On the other hand
+On the other hand, putting a server which is not defined in the specification, for example:
 
 ```bash
 curl -X GET localhost:4010/pet?__server=ftp://acme.com/api
