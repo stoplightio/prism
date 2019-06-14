@@ -11,19 +11,86 @@ function checkErrorPayloadShape(payload: string) {
   expect(parsedPayload).toHaveProperty('detail');
 }
 
-describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', file => {
+async function instantiatePrism(specPath: string) {
+  const server = createServer({}, { components: {}, config: { mock: { dynamic: false } } });
+  await server.prism.load({
+    path: relative(process.cwd(), specPath),
+  });
+  return server;
+}
+
+describe('GET /pet?__server', () => {
   let server: IPrismHttpServer<{}>;
 
   beforeAll(async () => {
-    server = createServer({}, { components: {}, config: { mock: { dynamic: false } } });
-    await server.prism.load({
-      path: relative(process.cwd(), resolve(__dirname, '..', '..', '..', '..', 'examples', file)),
-    });
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', 'templated-server-example.oas3.json'));
   });
 
   afterAll(() => server.fastify.close());
 
-  test('should mock back /pets/:petId', async () => {
+  describe.each([['http://stoplight.io/api'], ['https://stoplight.io/api']])('valid server %s', serverUrl => {
+    it('returns 200', () => {
+      return expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
+        statusCode: 200,
+      });
+    });
+  });
+
+  describe.each([
+    ['ftp://stoplight.io/api'],
+    ['https://stoplight.com/api'],
+    ['https://google.com/api'],
+    ['https://stopligt.io/v1'],
+  ])('invalid server %s', serverUrl => {
+    it('returns 404 and problem json payload', () => {
+      return expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
+        statusCode: 404,
+        payload: expectedPayload(serverUrl),
+      });
+    });
+  });
+
+  const expectedPayload = (serverUrl: string) =>
+    `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url ${serverUrl} hasn\'t been matched with any of the provided servers"}`;
+
+  function requestPetGivenServer(serverUrl: string) {
+    return server.fastify.inject({
+      method: 'GET',
+      url: `/pet?__server=${serverUrl}`,
+    });
+  }
+});
+
+describe('GET /pet with invalid body', () => {
+  it('returns correct error message', async () => {
+    const server = await instantiatePrism(resolve(__dirname, 'fixtures', 'getOperationWithBody.oas2.json'));
+
+    const response = await server.fastify.inject({
+      method: 'GET',
+      url: '/pet',
+      payload: {
+        id: 'strings are not valid!',
+      },
+    });
+
+    expect(response.statusCode).toBe(422);
+    expect(response.payload).toEqual(
+      '{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid: [{\\"path\\":[\\"body\\"],\\"code\\":\\"type\\",\\"message\\":\\"should be object\\",\\"severity\\":0}]"}',
+    );
+    await server.fastify.close();
+  });
+});
+
+describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', file => {
+  let server: IPrismHttpServer<{}>;
+
+  beforeAll(async () => {
+    server = await instantiatePrism(resolve(__dirname, '..', '..', '..', '..', 'examples', file));
+  });
+
+  afterAll(() => server.fastify.close());
+
+  it('should mock back /pets/:petId', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/123',
@@ -40,7 +107,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(payload).toHaveProperty('status');
   });
 
-  test('should not mock a verb that is not defined on a path', async () => {
+  it('should not mock a verb that is not defined on a path', async () => {
     const response = await server.fastify.inject({
       method: 'POST',
       url: '/pets/123',
@@ -49,7 +116,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     checkErrorPayloadShape(response.payload);
   });
 
-  test('will return requested response using the __code property', async () => {
+  it('will return requested response using the __code property', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/123?__code=404',
@@ -59,7 +126,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(response.payload).toBe('');
   });
 
-  test('will return requested error response with payload', async () => {
+  it('will return requested error response with payload', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/123?__code=418',
@@ -71,7 +138,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(payload).toHaveProperty('name');
   });
 
-  test('returns requested response example using __example property', async () => {
+  it('returns requested response example using __example property', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/123?__example=cat',
@@ -98,7 +165,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     });
   });
 
-  test('returns 500 with error when a non-existent example is requested', async () => {
+  it('returns 500 with error when a non-existent example is requested', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/123?__example=non_existent_example',
@@ -108,7 +175,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     checkErrorPayloadShape(response.payload);
   });
 
-  test('should not mock a request that is missing the required query parameters with no default', async () => {
+  it('should not mock a request that is missing the required query parameters with no default', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/findByTags',
@@ -118,7 +185,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     checkErrorPayloadShape(response.payload);
   });
 
-  test.skip('should automagically provide the parameters when not provided in the query string and a default is defined', async () => {
+  it.skip('should automagically provide the parameters when not provided in the query string and a default is defined', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/findByStatus',
@@ -127,7 +194,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(response.statusCode).toBe(200);
   });
 
-  test('should support multiple param values', async () => {
+  it('should support multiple param values', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/findByStatus?status=available&status=sold',
@@ -136,7 +203,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(response.statusCode).toBe(200);
   });
 
-  test('should default to 200 and mock from schema', async () => {
+  it('should default to 200 and mock from schema', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/user/username',
@@ -154,7 +221,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(payload).toHaveProperty('userStatus');
   });
 
-  test('should validate body params', async () => {
+  it('should validate body params', async () => {
     const response = await server.fastify.inject({
       method: 'POST',
       url: '/store/order',
@@ -171,7 +238,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(response.statusCode).toBe(200);
   });
 
-  test('should validate the body params and return an error code', async () => {
+  it('should validate the body params and return an error code', async () => {
     const response = await server.fastify.inject({
       method: 'POST',
       url: '/pets',
@@ -188,7 +255,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     checkErrorPayloadShape(response.payload);
   });
 
-  test('will return the default response when using the __code property with a non existing code', async () => {
+  it('will return the default response when using the __code property with a non existing code', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/123?__code=499',
@@ -197,7 +264,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(response.statusCode).toBe(499);
   });
 
-  test('will return 500 with error when an undefined code is requested and there is no default response', async () => {
+  it('will return 500 with error when an undefined code is requested and there is no default response', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/findByStatus?status=available&__code=499',
@@ -207,7 +274,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     checkErrorPayloadShape(response.payload);
   });
 
-  test('should mock the response headers', async () => {
+  it('should mock the response headers', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/user/login?username=foo&password=foo',
@@ -225,6 +292,67 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
 
     for (const headerName of Object.keys(expectedValues)) {
       expect(response.headers).toHaveProperty(headerName, expectedValues[headerName]);
+    }
+  });
+
+  describe('server validation: given __server query param', () => {
+    it('when the server is not valid then return error', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10?__server=https://google.com',
+      });
+
+      expect(response.statusCode).toBe(404);
+      expect(response.payload).toEqual(
+        '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url https://google.com hasn\'t been matched with any of the provided servers"}',
+      );
+    });
+
+    it('when the server is valid then return 200', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/10?__server=https://petstore.swagger.io/v2',
+      });
+
+      expect(response.statusCode).toBe(200);
+    });
+
+    // oas2 does not support overriding servers
+    if (file === 'petstore.oas3.json') {
+      describe('and operation overrides global servers', () => {
+        it(`when the server is valid then return 200`, async () => {
+          const response = await server.fastify.inject({
+            method: 'GET',
+            url: '/store/inventory?__server=https://petstore.swagger.io/v3',
+          });
+
+          expect(response.statusCode).toBe(200);
+        });
+
+        it(`when the server is not valid for this exact operation then return error`, async () => {
+          const response = await server.fastify.inject({
+            method: 'GET',
+            url: '/store/inventory?__server=https://petstore.swagger.io/v2',
+          });
+
+          expect(response.statusCode).toBe(404);
+          expect(response.payload).toEqual(
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}',
+          );
+        });
+
+        it(`when the server is invalid return error`, async () => {
+          const response = await server.fastify.inject({
+            method: 'GET',
+            url: '/store/inventory?__server=https://notvalid.com',
+          });
+
+          expect(response.statusCode).toBe(404);
+          expect(response.payload).toEqual(
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url https://notvalid.com hasn\'t been matched with any of the provided servers"}',
+          );
+        });
+      });
     }
   });
 

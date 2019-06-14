@@ -13,21 +13,21 @@
         "application/json; charset=utf-8"
       ],
       "content-length": [
-        "229"
+        "219"
       ],
       "connection": [
         "close"
       ]
     },
     "body": {
-      "id": -93954327,
-      "username": "Lorem veniam voluptate proident fugiat",
-      "firstName": "pariatur Excepteur labore id venia",
-      "lastName": "nostrud",
-      "email": "eu",
-      "password": "dolore in laborum ut",
-      "phone": "ullamco sed",
-      "userStatus": 16939126
+      "id": 70706068,
+      "username": "veniam mollit",
+      "firstName": "dolor",
+      "lastName": "reprehenderit mollit",
+      "email": "officia tempor in in Ut",
+      "password": "occaecat ex cupidatat",
+      "phone": "magna irure elit nost",
+      "userStatus": 86588668
     }
   }
 }

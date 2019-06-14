@@ -119,9 +119,69 @@ Connection: keep-alive
 
 This error shows the request is missing a required property `name` from the HTTP request body.
 
+#### Server Validation
+
+OpenAPI lets API spec authors make only certain servers available, and they also allow certain operations to be restricted to certain servers. Make sure the server URL you plan to use is a valid server this the particular operation you are attempting.
+by providing a `__server` query param.
+
+Take this minimalistic spec (oas3) example:
+
+```yaml
+---
+openapi: 3.0.2
+paths:
+  '/pet':
+    get:
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                type: string
+servers:
+  - url: '{schema}://{host}/{basePath}'
+    variables:
+      schema:
+        default: http
+        enum:
+          - http
+          - https
+      host:
+        default: stoplight.io
+        enum:
+          - stoplight.io
+          - dev.stoplight.io
+      basePath:
+        default: api
+```
+
+You can make a request enforcing server validation by providing the `__server` query string parameter:
+
+```bash
+curl -X GET localhost:4010/pet?__server=http://stoplight.io/api
+# This will return a 200 response
+```
+
+On the other hand, putting a server which is not defined in the specification, for example:
+
+```bash
+curl -X GET localhost:4010/pet?__server=ftp://acme.com/api
+```
+
+Will give you the following error
+
+```json
+{
+  "type": "https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR",
+  "title": "Route not resolved, no server matched.",
+  "status": 404,
+  "detail": "The base url ftp://acme.com/api hasn't been matched with any of the provided servers"
+}
+```
+
 ## What's next for Prism?
 
-- [ ] Server Validation
+- [x] Server Validation
 - [x] Accept header validation
 - [ ] Content header validation
 - [ ] Security Validation

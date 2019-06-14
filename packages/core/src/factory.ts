@@ -1,3 +1,5 @@
+import { ProblemJsonError } from '@stoplight/prism-http/src/types';
+import { DiagnosticSeverity } from '@stoplight/types';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from './types';
 
@@ -37,23 +39,41 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         // build the config for this request
         const configMerger = configMergerFactory(defaultConfig, customConfig, c);
         const configObj: Config | undefined = configMerger(input);
+        const inputValidations: IPrismDiagnostic[] = [];
 
         // find the correct resource
         let resource: Resource | undefined;
         if (components.router) {
-          resource = components.router.route({ resources, input, config: configObj }, defaultComponents.router);
+          try {
+            resource = components.router.route({ resources, input, config: configObj }, defaultComponents.router);
+          } catch (error) {
+            // rethrow error we if we're attempting to mock
+            if ((configObj as IPrismConfig).mock) {
+              throw error;
+            }
+            const { message, name, status } = error as ProblemJsonError;
+            // otherwise let's just stack it on the inputValidations
+            // when someone simply wants to hit an URL, don't block them
+            inputValidations.push({
+              message,
+              source: name,
+              code: status,
+              severity: DiagnosticSeverity.Warning,
+            });
+          }
         }
 
         // validate input
-        let inputValidations: IPrismDiagnostic[] = [];
         if (resource && components.validator && components.validator.validateInput) {
-          inputValidations = await components.validator.validateInput(
-            {
-              resource,
-              input,
-              config: configObj,
-            },
-            defaultComponents.validator,
+          inputValidations.push(
+            ...(await components.validator.validateInput(
+              {
+                resource,
+                input,
+                config: configObj,
+              },
+              defaultComponents.validator,
+            )),
           );
         }
 

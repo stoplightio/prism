@@ -1,0 +1,51 @@
+{
+  "request": {
+    "method": "GET",
+    "headers": {},
+    "path": "/pets/123?__server=http://petstore.swagger.io/v2",
+    "host": "http://localhost:4010"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": [
+        "application/json; charset=utf-8"
+      ],
+      "content-length": [
+        "342"
+      ],
+      "connection": [
+        "close"
+      ]
+    },
+    "body": {
+      "name": "doggie",
+      "photoUrls": [
+        "adipisicing ad",
+        "mollit in eu",
+        "Duis qui pariatur occaecat ullamco"
+      ],
+      "id": -60144457,
+      "category": {
+        "id": -22496035,
+        "name": "mollit enim est"
+      },
+      "tags": [
+        {
+          "id": -74854118,
+          "name": "enim cupidatat aliqua pariatur ea"
+        },
+        {
+          "id": 74896061,
+          "name": "sunt laboris elit Ut incididunt"
+        },
+        {
+          "id": -82382211,
+          "name": "ipsum"
+        }
+      ],
+      "status": "sold"
+    }
+  }
+}

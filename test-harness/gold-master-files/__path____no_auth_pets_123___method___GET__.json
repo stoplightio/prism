@@ -9,44 +9,34 @@
     "status": 200,
     "statusText": "OK",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "346"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["344"],
+      "connection": ["close"]
     },
     "body": {
       "name": "doggie",
-      "photoUrls": [
-        "eiusmod incididunt ex enim",
-        "in labore dolor",
-        "aute elit pariatur Excepteur"
-      ],
-      "id": 81948422,
+      "photoUrls": ["pariatur exercitation reprehenderit", "veniam in", "dolore"],
+      "id": -70832004,
       "category": {
-        "id": 80882782,
-        "name": "non"
+        "id": -18546292,
+        "name": "cillum sint ad"
       },
       "tags": [
         {
-          "id": 78794932,
-          "name": "in ut enim irure non"
+          "id": 74619582,
+          "name": "do in"
         },
         {
-          "id": 87249358,
-          "name": "pariatur "
+          "id": 63235549,
+          "name": "magna amet cillum"
         },
         {
-          "id": 46468223,
-          "name": "quis aliquip"
+          "id": -75616285,
+          "name": "consectetur dolore"
         },
         {
-          "id": 94647628,
-          "name": "pariatur"
+          "id": -41003332,
+          "name": "consectetur"
         }
       ],
       "status": "available"

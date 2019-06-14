@@ -23,7 +23,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
       );
     }
 
-    const matches = resources.map<IMatch>(resource => {
+    let matches = resources.map<IMatch>(resource => {
       const pathMatch = matchPath(requestPath, resource.path);
       if (pathMatch === MatchType.NOMATCH)
         return {
@@ -63,34 +63,40 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
       };
     });
 
-    if (requestBaseUrl) {
-      if (matches.every(match => match.serverMatch === null)) {
-        throw ProblemJsonError.fromTemplate(
-          NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
-          `No server configuration has been provided, although ${requestBaseUrl} as base url`,
-        );
-      }
+    matches = matches.filter(match => match.pathMatch !== MatchType.NOMATCH);
 
-      if (matches.every(match => !!match.serverMatch && match.serverMatch === MatchType.NOMATCH)) {
-        throw ProblemJsonError.fromTemplate(
-          NO_SERVER_MATCHED_ERROR,
-          `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`,
-        );
-      }
-    }
-
-    if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH)) {
+    if (!matches.length) {
       throw ProblemJsonError.fromTemplate(
         NO_PATH_MATCHED_ERROR,
         `The route ${requestPath} hasn't been found in the specification file`,
       );
     }
 
-    if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH)) {
+    matches = matches.filter(match => match.methodMatch !== MatchType.NOMATCH);
+
+    if (!matches.length) {
       throw ProblemJsonError.fromTemplate(
         NO_METHOD_MATCHED_ERROR,
-        `The route ${requestPath} has been matched, but there's no "${input.method}" method defined`,
+        `The route ${requestPath} has been matched, but it does not have "${input.method}" method defined`,
       );
+    }
+
+    if (requestBaseUrl) {
+      if (resources.every(resource => !resource.servers || resource.servers.length === 0)) {
+        throw ProblemJsonError.fromTemplate(
+          NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
+          `No server configuration has been provided, although ${requestBaseUrl} is set as base url`,
+        );
+      }
+
+      matches = matches.filter(match => !!match.serverMatch && match.serverMatch !== MatchType.NOMATCH);
+
+      if (!matches.length) {
+        throw ProblemJsonError.fromTemplate(
+          NO_SERVER_MATCHED_ERROR,
+          `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`,
+        );
+      }
     }
 
     return disambiguateMatches(matches);

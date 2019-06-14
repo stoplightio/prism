@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Http Prism Instance function tests given correct route should return correct response 1`] = `
+exports[`Http Client .process given no-refs-petstore-minimal.oas2.json when processing GET /pet/findByStatus with valid query params returns generated body 1`] = `
 Object {
   "input": Object {
     "method": "get",

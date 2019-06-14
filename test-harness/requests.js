@@ -23,16 +23,16 @@ module.exports = [
     path: '/no_auth/pets/123',
     method: 'POST',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: "name=just_a_name"
+    body: 'name=just_a_name',
   },
   {
     path: '/pets/123',
     method: 'PATCH',
     body: {
-      name: 'a_new_name'
-    }
+      name: 'a_new_name',
+    },
   },
   {
     path: '/no_auth/pets/123?__code=404',
@@ -58,7 +58,7 @@ module.exports = [
     path: '/store/order',
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: {
       body: {
@@ -68,14 +68,14 @@ module.exports = [
         shipDate: '2002-10-02T10:00:00-05:00',
         status: 'placed',
         complete: true,
-      }
-    }
+      },
+    },
   },
   {
     path: '/no_auth/pets',
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     body: {
       id: 1,
@@ -84,7 +84,7 @@ module.exports = [
       shipDate: '2002-10-02T10:00:00-05:00',
       status: 'placed',
       complete: true,
-    }
+    },
   },
   {
     path: '/no_auth/pets/123?__code=499',
@@ -97,7 +97,7 @@ module.exports = [
   {
     path: '/no_auth/pets/10',
     headers: {
-      accept: 'application/idonotexist'
+      accept: 'application/idonotexist',
     },
     method: 'GET',
   },
@@ -105,10 +105,22 @@ module.exports = [
     path: '/pets/123',
     method: 'POST',
     headers: {
-      'content-type': 'application/vnd.api+json'
+      'content-type': 'application/vnd.api+json',
     },
     body: JSON.stringify({
-      hello: 'world'
-    })
-  }
+      hello: 'world',
+    }),
+  },
+  {
+    path: '/pets/123?__server=http://petstore.swagger.io/v2',
+    method: 'GET',
+  },
+  {
+    path: '/pets/123?__server=https://petstore.swagger.io/v2',
+    method: 'GET',
+  },
+  {
+    path: '/pets/123?__server=https://petstore.io/v2',
+    method: 'GET',
+  },
 ];

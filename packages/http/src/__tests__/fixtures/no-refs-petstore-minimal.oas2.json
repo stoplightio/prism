@@ -1,204 +1,88 @@
 {
   "swagger": "2.0",
-  "info": {
-    "title": "Swagger Petstore"
-  },
-  "host": "petstore.swagger.io",
-  "basePath": "/v2",
-  "tags": [],
-  "schemes": [
-    "https",
-    "http"
-  ],
   "paths": {
-    "/store/order": {
-      "post": {
-        "tags": [
-          "store"
-        ],
-        "summary": "Place an order for a pet",
-        "description": "",
-        "operationId": "placeOrder",
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "order placed for purchasing the pet",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "petId": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "quantity": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "shipDate": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "status": {
-                  "type": "string",
-                  "description": "Order Status",
-                  "enum": [
-                    "placed",
-                    "approved",
-                    "delivered"
-                  ]
-                },
-                "complete": {
-                  "type": "boolean",
-                  "default": false
-                }
-              },
-              "xml": {
-                "name": "Order"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "petId": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "quantity": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "shipDate": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "status": {
-                  "type": "string",
-                  "description": "Order Status",
-                  "enum": [
-                    "placed",
-                    "approved",
-                    "delivered"
-                  ]
-                },
-                "complete": {
-                  "type": "boolean",
-                  "default": false
-                }
-              },
-              "xml": {
-                "name": "Order"
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid Order"
-          }
-        }
-      }
-    },
     "/pet/findByStatus": {
       "get": {
-        "tags": [
-          "pet"
-        ],
-        "summary": "Finds Pets by status",
-        "operationId": "findPetsByStatus",
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "status",
             "in": "query",
-            "description": "Status values that need to be considered for filter",
             "required": true,
             "type": "array",
             "items": {
               "type": "string",
-              "enum": [
-                "available",
-                "pending",
-                "sold"
-              ],
+              "enum": ["available", "pending", "sold"],
               "default": "available"
             },
             "collectionFormat": "multi"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Order Status",
+                  "enum": ["placed", "approved", "delivered"]
+                },
+                "complete": {
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": [
-                  "name",
-                  "photoUrls"
-                ],
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "example": "doggie"
-                  },
-                  "photoUrls": {
-                    "type": "array",
-                    "xml": {
-                      "name": "photoUrl",
-                      "wrapped": true
-                    },
-                    "items": {
-                      "type": "string"
-                    }
-                  }
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/pet": {
+      "get": {
+        "produces": ["application/json"],
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
                 }
               }
             }
-          },
-          "400": {
-            "description": "Invalid status value"
           }
-        },
-        "security": [
-          {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            }
           }
-        ]
+        }
       }
     },
     "/pet/login": {
       "get": {
-        "tags": [
-          "pet"
-        ],
+        "tags": ["pet"],
         "summary": "Finds Pets by status",
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "api_key",
@@ -215,10 +99,7 @@
         },
         "security": [
           {
-            "petstore_auth": [
-              "write:pets",
-              "read:pets"
-            ]
+            "petstore_auth": ["write:pets", "read:pets"]
           }
         ]
       }
@@ -233,11 +114,6 @@
         "write:pets": "modify pets in your account",
         "read:pets": "read your pets"
       }
-    },
-    "api_key": {
-      "type": "apiKey",
-      "name": "api_key",
-      "in": "header"
     }
   }
 }
