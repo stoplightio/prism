@@ -27,7 +27,17 @@ export default class Server extends Command {
       signaleInteractiveInstance.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
       if (dynamic) {
-        signale.star({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Dynamic example generation enabled.' });
+        signale.star({
+          prefix: chalk.bgWhiteBright.black('[CLI]'),
+          message: `Dynamic example generation ${chalk.green('enabled')}.`,
+        });
+      }
+
+      if (fork) {
+        signale.star({
+          prefix: chalk.bgWhiteBright.black('[CLI]'),
+          message: `Multi process ${chalk.green('enabled')}.`,
+        });
       }
     }
 
