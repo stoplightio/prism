@@ -2,7 +2,6 @@ import { factory, FilesystemLoader, PartialPrismConfig } from '@stoplight/prism-
 import { IHttpOperation } from '@stoplight/types';
 import { forwarder } from './forwarder';
 import { HttpMocker } from './mocker';
-import { generate } from './mocker/generator/JSONSchema';
 import { router } from './router';
 export * from './types';
 import {
@@ -32,7 +31,7 @@ const createInstance = <LoaderInput>(
       router,
       forwarder,
       validator,
-      mocker: new HttpMocker(generate),
+      mocker: new HttpMocker(),
     },
   )(config, overrides);
 };

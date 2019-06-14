@@ -3,16 +3,15 @@ import * as Ajv from 'ajv';
 import { ProblemJsonError } from '@stoplight/prism-http';
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
 import { NOT_ACCEPTABLE } from '../errors';
-import { generate } from '../generator/JSONSchema';
 import { HttpMocker } from '../index';
 
 describe('http mocker', () => {
-  const mocker = new HttpMocker(generate);
+  const mocker = new HttpMocker();
 
   describe('request is valid', () => {
     describe('given only enforced content type', () => {
-      test('and that content type exists should first 200 static example', async () => {
-        const response = await mocker.mock({
+      test('and that content type exists should first 200 static example', () => {
+        const response = mocker.mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -27,7 +26,7 @@ describe('http mocker', () => {
       });
 
       test('and that content type does not exist should return an error', () => {
-        return expect(
+        return expect(() =>
           mocker.mock({
             resource: httpOperations[0],
             input: httpRequests[0],
@@ -38,13 +37,13 @@ describe('http mocker', () => {
               },
             },
           }),
-        ).rejects.toThrowError(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE));
+        ).toThrowError(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE));
       });
     });
 
     describe('given enforced status code and contentType and exampleKey', () => {
-      test('should return the matching example', async () => {
-        const response = await mocker.mock({
+      test('should return the matching example', () => {
+        const response = mocker.mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -62,8 +61,8 @@ describe('http mocker', () => {
     });
 
     describe('given enforced status code and contentType', () => {
-      test('should return the first matching example', async () => {
-        const response = await mocker.mock({
+      test('should return the first matching example', () => {
+        const response = mocker.mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -80,8 +79,8 @@ describe('http mocker', () => {
     });
 
     describe('given enforced example key', () => {
-      test('should return application/json, 200 response', async () => {
-        const response = await mocker.mock({
+      test('should return application/json, 200 response', () => {
+        const response = mocker.mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -95,8 +94,8 @@ describe('http mocker', () => {
         expect(response).toMatchSnapshot();
       });
 
-      test('and mediaType should return 200 response', async () => {
-        const response = await mocker.mock({
+      test('and mediaType should return 200 response', () => {
+        const response = mocker.mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -113,8 +112,8 @@ describe('http mocker', () => {
     });
 
     describe('given enforced status code', () => {
-      test('should return the first matching example of application/json', async () => {
-        const response = await mocker.mock({
+      test('should return the first matching example of application/json', () => {
+        const response = mocker.mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -129,22 +128,22 @@ describe('http mocker', () => {
       });
 
       test('given that status code is not defined should throw an error', () => {
-        const rejection = mocker.mock({
-          resource: httpOperations[0],
-          input: httpRequests[0],
-          config: {
-            mock: {
-              dynamic: false,
-              code: '205',
+        return expect(() =>
+          mocker.mock({
+            resource: httpOperations[0],
+            input: httpRequests[0],
+            config: {
+              mock: {
+                dynamic: false,
+                code: '205',
+              },
             },
-          },
-        });
-
-        return expect(rejection).rejects.toEqual(new Error('Requested status code is not defined in the schema.'));
+          }),
+        ).toThrowError('Requested status code is not defined in the schema.');
       });
 
-      test('and example key should return application/json example', async () => {
-        const response = await mocker.mock({
+      test('and example key should return application/json example', () => {
+        const response = mocker.mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -161,8 +160,8 @@ describe('http mocker', () => {
     });
 
     describe('HttpOperation contains example', () => {
-      test('return lowest 2xx code and match response example to media type accepted by request', async () => {
-        const response = await mocker.mock({
+      test('return lowest 2xx code and match response example to media type accepted by request', () => {
+        const response = mocker.mock({
           resource: httpOperations[0],
           input: httpRequests[0],
         });
@@ -175,8 +174,8 @@ describe('http mocker', () => {
         });
       });
 
-      test('return lowest 2xx response and the first example matching the media type', async () => {
-        const response = await mocker.mock({
+      test('return lowest 2xx response and the first example matching the media type', () => {
+        const response = mocker.mock({
           resource: httpOperations[1],
           input: Object.assign({}, httpRequests[0], {
             data: Object.assign({}, httpRequests[0].data, {
@@ -194,7 +193,7 @@ describe('http mocker', () => {
 
       describe('the media type requested does not match the example', () => {
         test('throw exception', () => {
-          return expect(
+          return expect(() =>
             mocker.mock({
               resource: httpOperations[0],
               input: Object.assign({}, httpRequests[0], {
@@ -203,13 +202,13 @@ describe('http mocker', () => {
                 }),
               }),
             }),
-          ).rejects.toThrowError(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE));
+          ).toThrowError(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE));
         });
       });
     });
 
     describe('HTTPOperation contain no examples', () => {
-      test('return dynamic response', async () => {
+      test('return dynamic response', () => {
         if (!httpOperations[1].responses[0].contents![0].schema) {
           throw new Error('Missing test');
         }
@@ -217,7 +216,7 @@ describe('http mocker', () => {
         const ajv = new Ajv();
         const validate = ajv.compile(httpOperations[1].responses[0].contents![0].schema);
 
-        const response = await mocker.mock({
+        const response = mocker.mock({
           resource: httpOperations[1],
           input: httpRequests[0],
           config: {
@@ -238,8 +237,8 @@ describe('http mocker', () => {
   });
 
   describe('request is invalid', () => {
-    test('returns 422 and static error response', async () => {
-      const response = await mocker.mock({
+    test('returns 422 and static error response', () => {
+      const response = mocker.mock({
         resource: httpOperations[0],
         input: httpRequests[1],
       });
@@ -248,12 +247,12 @@ describe('http mocker', () => {
       expect(response.body).toMatchObject({ message: 'error' });
     });
 
-    test('returns 422 and dynamic error response', async () => {
+    test('returns 422 and dynamic error response', () => {
       if (!httpOperations[1].responses[1].contents![0].schema) {
         throw new Error('Missing test');
       }
 
-      const response = await mocker.mock({
+      const response = mocker.mock({
         resource: httpOperations[1],
         input: httpRequests[1],
       });
