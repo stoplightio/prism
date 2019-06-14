@@ -121,7 +121,7 @@ This error shows the request is missing a required property `name` from the HTTP
 
 #### Server Validation
 
-You can simulate a request to a real server and verify whether it is valid according to the spec
+OpenAPI lets API spec authors make only certain servers available, and they also allow certain operations to be restricted to certain servers. Make sure the server URL you plan to use is a valid server this the particular operation you are attempting. 
 by providing a `__server` query param.
 
 Take this minimalistic spec (oas3) example:
