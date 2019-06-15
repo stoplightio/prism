@@ -1,0 +1,21 @@
+{
+  "include": [
+    "src"
+  ],
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../core"
+    },
+    {
+      "path": "../http"
+    },
+    {
+      "path": "../http-server"
+    }
+  ]
+}
