@@ -23,7 +23,7 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
     }
 
     const response = await axios({
-      method: inputData.method,
+      method: inputData.method as any,
       baseURL: baseUrl,
       url: inputData.url.path,
       params: inputData.url.query,
