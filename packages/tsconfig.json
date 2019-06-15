@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "composite": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "removeComments": true,
+    "strict": true,
+    "target": "es2018",
+    "paths": {
+      "@stoplight/prism-core": [
+        "./core/src"
+      ],
+      "@stoplight/prism-http": [
+        "./http/src"
+      ],
+      "@stoplight/prism-http-server": [
+        "./http-server/src"
+      ]
+    }
+  }
+}
