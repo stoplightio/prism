@@ -9,6 +9,7 @@
     "moduleResolution": "node",
     "noEmitOnError": true,
     "removeComments": true,
+    "suppressImplicitAnyIndexErrors": true,
     "strict": true,
     "target": "es2018",
     "paths": {

@@ -45,7 +45,7 @@ jobs:
             ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
       - run:
           name: Run build
-          command: yarn typecheck
+          command: yarn build
   publish:
     docker:
       - image: circleci/node:10
