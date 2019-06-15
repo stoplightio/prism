@@ -85,7 +85,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
       if (resources.every(resource => !resource.servers || resource.servers.length === 0)) {
         throw ProblemJsonError.fromTemplate(
           NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
-          `No server configuration has been provided, although ${requestBaseUrl} is set as base url`,
+          `No server configuration has been provided, although ${requestBaseUrl} is set as server url`,
         );
       }
 
@@ -94,7 +94,7 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
       if (!matches.length) {
         throw ProblemJsonError.fromTemplate(
           NO_SERVER_MATCHED_ERROR,
-          `The base url ${requestBaseUrl} hasn't been matched with any of the provided servers`,
+          `The server url ${requestBaseUrl} hasn't been matched with any of the provided servers`,
         );
       }
     }

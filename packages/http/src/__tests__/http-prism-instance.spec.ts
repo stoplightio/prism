@@ -4,7 +4,6 @@ import { IHttpOperation } from '@stoplight/types/http-spec';
 import * as nock from 'nock';
 import { basename, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
-import { forwarder } from '../forwarder';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_BASE_URL_ERROR, NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
 
@@ -290,7 +289,7 @@ describe('Http Client .process', () => {
   });
 
   describe('headers validation', () => {
-    it('should validate the headers even if casing does not match', async () => {
+    it('validates the headers even if casing does not match', async () => {
       const response = await prism.process({
         method: 'get',
         url: {
@@ -304,7 +303,7 @@ describe('Http Client .process', () => {
       expect(response.output).toHaveProperty('statusCode', 200);
     });
 
-    it('should return an error if the the header is missing', () => {
+    it('returns an error if the the header is missing', () => {
       return expect(
         prism.process({
           method: 'get',
@@ -313,32 +312,6 @@ describe('Http Client .process', () => {
           },
         }),
       ).rejects.toThrowError();
-    });
-  });
-
-  it("should forward the request correctly even if resources haven't been provided", async () => {
-    // Recreate Prism with no loaded document
-    prism = createInstance(undefined, { forwarder, router: undefined, mocker: undefined });
-
-    const response = await prism.process({
-      method: 'post',
-      url: {
-        path: '/store/order',
-        baseUrl: 'https://petstore.swagger.io',
-      },
-      body: {
-        id: 1,
-        petId: 2,
-        quantity: 3,
-        shipDate: '12-01-2018',
-        status: 'placed',
-        complete: true,
-      },
-    });
-
-    expect(response.validations).toEqual({
-      input: [],
-      output: [],
     });
   });
 
