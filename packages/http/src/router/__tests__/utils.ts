@@ -1,6 +1,6 @@
-import { IHttpMethod } from '@stoplight/prism-http';
 import { Chance } from 'chance';
 import { defaults } from 'lodash';
+import { IHttpMethod } from '../../types';
 
 const chance = new Chance();
 const httpMethods: IHttpMethod[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];

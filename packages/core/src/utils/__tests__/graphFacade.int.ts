@@ -1,5 +1,5 @@
 import { FilesystemNodeType } from '@stoplight/graphite/backends/filesystem';
-import { isAbsolute, resolve } from 'path';
+import { resolve } from 'path';
 import { GraphFacade } from '../graphFacade';
 
 describe('graphFacade', () => {
@@ -8,7 +8,6 @@ describe('graphFacade', () => {
   describe('createFilesystemNode()', () => {
     test('handles spec given by absolute path', async () => {
       const path = resolve('examples/petstore.oas2.json');
-      expect(isAbsolute(path)).toBe(true);
 
       await graphFacade.createFilesystemNode(path);
 

@@ -21,13 +21,13 @@
   },
   "files": [
     "/bin",
-    "/lib",
+    "/dist",
     "/oclif.manifest.json"
   ],
   "license": "Apache-2.0",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "oclif": {
-    "commands": "./lib/commands",
+    "commands": "./dist/commands",
     "bin": "prism",
     "plugins": [
       "@oclif/plugin-help"
@@ -46,7 +46,7 @@
     "cli": "node -r tsconfig-paths/register bin/run",
     "cli:debug": "node --inspect-brk -r tsconfig-paths/register bin/run"
   },
-  "types": "lib/index.d.ts",
+  "types": "dist/index.d.ts",
   "devDependencies": {
     "typescript": "^3.5.1"
   }

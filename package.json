@@ -11,9 +11,9 @@
     "url": "https://github.com/stoplightio/prism.git"
   },
   "scripts": {
-    "lint": "tslint -p packages/tsconfig.json",
+    "lint": "tslint -p packages/tsconfig.test.json",
     "lint.fix": "yarn lint --fix",
-    "build": "tsc --build ./packages/tsconfig.json",
+    "build": "tsc --build ./packages/tsconfig.build.json",
     "posttest": "yarn lint",
     "test": "yarn test.ci",
     "test.ci": "jest --maxWorkers=2",
@@ -65,7 +65,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "tslint -p packages/tsconfig.json --fix",
+      "tslint -p packages/tsconfig.test.json --fix",
       "git add"
     ]
   },

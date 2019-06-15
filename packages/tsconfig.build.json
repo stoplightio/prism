@@ -2,9 +2,7 @@
   "exclude": [
     "**/__tests__"
   ],
-  "compilerOptions": {
-    "noEmit": true
-  },
+  "include": [],
   "extends": "./tsconfig.json",
   "references": [
     {

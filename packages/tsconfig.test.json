@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+  },
+  "extends": "./tsconfig.build.json",
+  "exclude": [],
+  "include": [
+    "**/src"
+  ]
+}
