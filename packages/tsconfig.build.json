@@ -5,16 +5,16 @@
   "extends": "./tsconfig.json",
   "references": [
     {
-      "path": "./packages/core"
+      "path": "./core"
     },
     {
-      "path": "./packages/http"
+      "path": "./http"
     },
     {
-      "path": "./packages/http-server"
+      "path": "./http-server"
     },
     {
-      "path": "./packages/cli"
+      "path": "./cli"
     }
   ]
 }
