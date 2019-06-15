@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "extends": "./tsconfig.json",
+  "references": [
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/http"
+    },
+    {
+      "path": "./packages/http-server"
+    },
+    {
+      "path": "./packages/cli"
+    }
+  ]
+}
