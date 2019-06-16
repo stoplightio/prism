@@ -9,21 +9,11 @@ import { Chance } from 'chance';
 import { reader } from 'fp-ts/lib/Reader';
 
 import { createLogger } from '@stoplight/prism-core';
-import { Either, left, right } from 'fp-ts/lib/Either';
+
+import { left, right } from 'fp-ts/lib/Either';
+import { assertLeft, assertRight } from '../../../__tests__/utils';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
-
-function assertRight<L, A>(e: Either<L, A>, onRight: (a: A) => void) {
-  e.fold(l => {
-    throw new Error('Right expected, got a Left: ' + l);
-  }, onRight);
-}
-
-function assertLeft<L, A>(e: Either<L, A>, onLeft: (a: L) => void) {
-  e.fold(onLeft, a => {
-    throw new Error('Left expected, got a Right: ' + a);
-  });
-}
 
 const chance = new Chance();
 const logger = createLogger('TEST', { enabled: false });
