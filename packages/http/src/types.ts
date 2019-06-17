@@ -104,7 +104,7 @@ export class ProblemJsonError extends Error {
   }
 }
 
-export type PayloadGenerator = (f: unknown) => Promise<unknown>;
+export type PayloadGenerator = (f: JSONSchema) => unknown;
 
 export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 

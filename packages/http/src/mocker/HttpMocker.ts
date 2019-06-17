@@ -2,7 +2,7 @@ import { IMocker, IMockerOpts } from '@stoplight/prism-core';
 import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { fromPairs, isEmpty, isObject, keyBy, mapValues, toPairs } from 'lodash';
+import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import {
   IHttpConfig,
   IHttpOperationConfig,
@@ -12,17 +12,22 @@ import {
   ProblemJsonError,
 } from '../types';
 import { UNPROCESSABLE_ENTITY } from './errors';
+import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
 export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
-  constructor(private _exampleGenerator: PayloadGenerator) {}
-
-  public async mock({
+  public mock({
     resource,
     input,
     config,
-  }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): Promise<IHttpResponse> {
+  }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): IHttpResponse {
+    let payloadGenerator: PayloadGenerator = generateStatic;
+
+    if (config && typeof config.mock !== 'boolean' && config.mock.dynamic) {
+      payloadGenerator = generate;
+    }
+
     // pre-requirements check
     if (!resource) {
       throw new Error('Resource is not defined');
@@ -57,10 +62,8 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
       negotiationResult = helpers.negotiateOptionsForValidRequest(resource, mockConfig);
     }
 
-    const [body, mockedHeaders] = await Promise.all([
-      computeBody(negotiationResult, this._exampleGenerator),
-      computeMockedHeaders(negotiationResult.headers || [], this._exampleGenerator),
-    ]);
+    const mockedBody = computeBody(negotiationResult, payloadGenerator);
+    const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
 
     return {
       statusCode: parseInt(negotiationResult.code),
@@ -68,7 +71,7 @@ export class HttpMocker implements IMocker<IHttpOperation, IHttpRequest, IHttpCo
         ...mockedHeaders,
         'Content-type': negotiationResult.mediaType,
       },
-      body,
+      body: mockedBody,
     };
   }
 }
@@ -77,8 +80,8 @@ function isINodeExample(nodeExample: INodeExample | INodeExternalExample | undef
   return !!nodeExample && 'value' in nodeExample;
 }
 
-function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator): Promise<Dictionary<string>> {
-  const headerWithPromiseValues = mapValues(keyBy(headers, h => h.name), async header => {
+function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: PayloadGenerator): Dictionary<string> {
+  return mapValues(keyBy(headers, h => h.name), header => {
     if (header.schema) {
       if (header.examples && header.examples.length > 0) {
         const example = header.examples[0];
@@ -86,29 +89,22 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], ex: PayloadGenerator)
           return example.value;
         }
       } else {
-        const example = await ex(header.schema);
+        const example = payloadGenerator(header.schema);
         if (!(isObject(example) && isEmpty(example))) return example;
       }
     }
-    return '';
+    return null;
   });
-
-  return resolvePromiseInProps(headerWithPromiseValues);
 }
 
-async function computeBody(
+function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
-  ex: PayloadGenerator,
+  payloadGenerator: PayloadGenerator,
 ) {
   if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
     return negotiationResult.bodyExample.value;
   } else if (negotiationResult.schema) {
-    return ex(negotiationResult.schema);
+    return payloadGenerator(negotiationResult.schema);
   }
   return undefined;
-}
-
-async function resolvePromiseInProps(val: Dictionary<Promise<string>>): Promise<Dictionary<string>> {
-  const promisePair = await Promise.all(toPairs(val).map(v => Promise.all(v)));
-  return fromPairs(promisePair);
 }

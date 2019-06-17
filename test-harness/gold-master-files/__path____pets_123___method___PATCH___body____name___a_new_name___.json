@@ -12,21 +12,15 @@
     "status": 405,
     "statusText": "Method Not Allowed",
     "headers": {
-      "content-type": [
-        "application/problem+json"
-      ],
-      "content-length": [
-        "217"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/problem+json"],
+      "content-length": ["223"],
+      "connection": ["close"]
     },
     "body": {
       "type": "https://stoplight.io/prism/errors#NO_METHOD_MATCHED_ERROR",
       "title": "Route resolved, but no path matched.",
       "status": 405,
-      "detail": "The route /pets/123 has been matched, but there's no \"patch\" method defined"
+      "detail": "The route /pets/123 has been matched, but it does not have \"patch\" method defined"
     }
   }
 }

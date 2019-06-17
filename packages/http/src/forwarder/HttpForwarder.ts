@@ -2,7 +2,8 @@ import { IForwarder, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
 import axios, { CancelToken } from 'axios';
 import { URL } from 'url';
-import { IHttpConfig, IHttpNameValue, IHttpRequest, IHttpResponse } from '../types';
+import { NO_BASE_URL_ERROR } from '../router/errors';
+import { IHttpConfig, IHttpNameValue, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
 
 export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   public async forward(opts: {
@@ -18,7 +19,7 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
         : inputData.url.baseUrl;
 
     if (!baseUrl) {
-      throw new Error('Either one server in spec or baseUrl in request must be defined');
+      throw ProblemJsonError.fromTemplate(NO_BASE_URL_ERROR);
     }
 
     const response = await axios({
