@@ -1,4 +1,4 @@
-import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { JSONSchema } from '@stoplight/prism-http';
 import { DiagnosticSeverity, Segment } from '@stoplight/types';
 import * as Ajv from 'ajv';

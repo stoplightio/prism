@@ -1,4 +1,4 @@
-import { JSONSchema } from '@stoplight/prism-http/src/types';
+import { JSONSchema } from '@stoplight/prism-http';
 import { IHttpOperation, INodeExample } from '@stoplight/types';
 import { flatMap } from 'lodash';
 import { HttpMocker } from '../../mocker';

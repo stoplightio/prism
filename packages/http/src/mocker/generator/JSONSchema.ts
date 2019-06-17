@@ -1,6 +1,6 @@
-import { JSONSchema } from 'http/src/types';
 import { JSONSchema6, JSONSchema7 } from 'json-schema';
 import { cloneDeep, map, mapValues } from 'lodash';
+import { JSONSchema } from '../../types';
 
 // @ts-ignore
 import * as jsf from '@stoplight/json-schema-faker';

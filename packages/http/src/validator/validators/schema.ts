@@ -1,4 +1,4 @@
-import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { JSONSchema4 } from 'json-schema';
 import { ISchemaValidator } from './types';
 import { validateAgainstSchema } from './utils';
