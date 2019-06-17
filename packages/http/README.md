@@ -2,8 +2,9 @@
 
 This package provides a http client featuring the ability to:
 
-- mock requests instead of hitting the server
-- validate the request and the response according to an openapi spec
+- mock responses based of OAS spec
+- make requests to a http server
+- validate the request and/or the response according to the provided OAS
 
 The goal of this document is to provide you with some basic code examples to get you started and to cover some of the advanced scenarios.
 
@@ -36,7 +37,7 @@ paths:
 
 ## I want to mock responses of operations defined in an OAS file
 
-[Try it!](https://repl.it/@ChrisMiaskowski/prism-http-client-basic-mocking);
+[Try it out!](https://repl.it/@ChrisMiaskowski/prism-http-client-basic-mocking)
 
 ```javascript
 const Prism = require('@stoplight/prism-http');
@@ -141,55 +142,235 @@ prism
 
 # Advanced Topics
 
-TBD...
+## Creating Prism Instance
 
-- Describe `load`, `process` and `createInstance`
-- Describe the config object
-- describe `validations`
+In order to create and instance of Http Client (later referred to as `prism` for simplicity) use the `createInstance` function, like so:
 
-### Initialization
+```javascript
+const Prism = require('@stoplight/prism-http');
+const config = { mock: false };
+const prism = Prism.createInstance(config /*, components */);
+```
 
-- `config` configuration of `IHttpConfig` type overriding default behavior _(optional)_
+There are two (both optional) arguments you can supply `createInstance` with:
 
-#### Config property
+- config (of `IHttpConfig` type)
+- components (of `TPrismHttpComponents` type)
 
-`config` object contains `mock` property of type `false | IHttpOperationConfig` defined by:
+We will cover the `config` argument in next section and we'll leave `components` for some other time (overriding default `components` is the _ultimate advanced stuff_).
+
+### Config Property
+
+Prism's config object (`IHttpConfig`) allows you to manipulate Prism's behaviour in many ways. For instance:
+
+- turn validation on and off
+- turn mocking on and off
+- influence Prism's mocked response generation strategy
+
+The actual interface looks like this (but rather than explain each property I will give you some examples)
 
 ```ts
-interface IHttpOperationConfig {
-  mediaTypes?: string[];
-  code?: string;
-  exampleKey?: string;
-  dynamic: boolean;
+export interface IHttpConfig extends IPrismConfig {
+  mock: false | IHttpOperationConfig;
+
+  validate?: {
+    request?:
+      | boolean
+      | {
+          hijack?: boolean;
+          headers?: boolean;
+          query?: boolean;
+          body?: boolean;
+        };
+
+    response?:
+      | boolean
+      | {
+          headers?: boolean;
+          body?: boolean;
+        };
+  };
 }
 ```
 
-`mediaTypes` - array of media types that need to match operation response
-`code` - response code to match operation response
-`exampleKey` - providing specific example key will only match examples with that key
-`dynamic` - determines whether example should be static (taken from operation if there are any) or dynamically generated
+#### Config Examples
 
-##### Config example
+**Do not mock and do not validate requests**
 
-```json
-{
-  "mock": {
-    "dynamic": false,
-    "code": "201",
-    "exampleKey": "second",
-    "mediaTypes": ["application/xml"]
+```javascript
+const config = {
+  mock: false,
+  validate: {
+    request: false,
+    // response is set to true by default
+  },
+};
+```
+
+With the above configuration the http client will proxy your requests to a server and will validate the response with the OAS you loaded. However, it will not validate the input (e.g. will not check whether the provided query param is valid).
+
+**Validate only request's body and response's headers**
+
+```javascript
+const config = {
+  validate: {
+    request: {
+      body: true,
+    },
+    response: {
+      headers: true,
+    },
+  },
+};
+```
+
+**When mocking a response generate static response**
+
+```javascript
+const config = {
+  mock: {
+    dynamic: false,
+  },
+};
+```
+
+Generating static responses means that if an OAS operation's response has any examples defined the payload we construct will use those examples.
+
+This contrasts "dynamic responses" which means generating responses from a json schema.
+
+**Return named example of a specified key**
+
+```javascript
+const config = {
+  mock: {
+    example: 'key',
+  },
+};
+```
+
+In OAS3 one can construct such response that will have multiple examples mapped by keys.
+This configuration allows you to be very specific which example you want to choose.
+
+**Return 403 response of specified mime type**
+
+```javascript
+const config = {
+  mock: {
+    code: 403,
+    mimeType: 'application/xml',
+  },
+};
+```
+
+This will enforce a 403 response (given that such response is defined in your OAS file).
+
+## Loading specs
+
+When you load a spec you "teach" prism how your API looks like.
+You can run prism without loading a spec, but features such as validation will be disabled.
+
+```javascript
+const loaderConfig = { path: '/absolute/file/path.oas3.yaml' };
+const promise = prism.load(loaderConfig);
+```
+
+## Making requests
+
+To make a basic request you need to do the following
+
+```javascript
+const request = {
+  method: 'get',
+  url: {
+    path: '/path', // must be prefixed with slash
+  },
+};
+const promise = prism.process(request);
+```
+
+The request object has the following interface
+
+```ts
+export interface IHttpRequest {
+  method: IHttpMethod;
+  url: IHttpUrl;
+  headers?: IHttpNameValue;
+  body?: any;
+}
+```
+
+All of this is pretty standard except the `url.baseUrl` which I will describe in more details.
+
+### Server Validation
+
+Consider a request
+
+```javascript
+prism.process({
+  method: 'get',
+  url: {
+    path: '/path', // must be prefixed with slash
+    baseUrl: 'http://localhost:4010',
+  },
+});
+```
+
+Notice that `baseUrl` is defined.
+
+This will instruct Prism to do one of the two:
+
+- if mocking is **disabled** (`{ mock: false }`)
+  - it will use that `baseUrl` to make a request to the server (`GET http://localhost:4010/path`)
+  - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OAS and **add an input warning to the .process return value if it is not valid**
+- if mocking is **enabled**
+  - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OAS and **return an error if it is not valid**
+
+## Understanding response
+
+The `prism.process` resolved (it's a Promise!) value consists of:
+
+- input - copy of the request object you provided
+- output - the HTTP response
+- validations
+  - input - list of warnings/errors related to you http request object
+  - output - list of warnings/errors related to you http response object
+
+Validations are still subject of tests and experimentation therefore I will not cover them fully for the time being.
+
+One example however is that for a given example
+
+```javascript
+const Prism = require('@stoplight/prism-http');
+
+// Create Prism instance and configure it to make http requests
+const config = { mock: false };
+const prism = Prism.createInstance(config);
+prism
+  .process({
+    method: 'get',
+    url: {
+      path: '/todos',
+      baseUrl: 'http://127.0.0.1:4010',
+    },
+  })
+  .then(prismResponse => {
+    console.log(prismResponse.validations.input);
+  });
+```
+
+You would get this in response
+
+```bash
+[
+  {
+    message: 'Route not resolved, no resource provided.',
+    source: 'https://stoplight.io/prism/errors#NO_RESOURCE_PROVIDED_ERROR',
+    code: 404,
+    severity: 1
   }
-}
+]
 ```
 
-# Gotchas
+## Gotchas
 
 If provided request object contains `Host` header it will be replaced with `baseUrl` host. The original value will be set to `Forwarded` header with `host=` prefix.
-
-# Even more advanced stuff for the hardcore nerds :)
-
-Some say that unit tests and integration tests are the best documentation.
-
-We keep our test coverage pretty solid so feel free to explore the `__tests__` folder to find out more about the API.
-
-For those of you who're just intersted in the API layer I'd recommend checking out the [http-prism-instance.spec.ts] file which covers a great deal of functional cases.
