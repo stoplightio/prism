@@ -127,7 +127,6 @@ by providing a `__server` query param.
 Take this minimalistic spec (oas3) example:
 
 ```yaml
----
 openapi: 3.0.2
 paths:
   '/pet':
