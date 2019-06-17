@@ -1,4 +1,4 @@
-import { IMocker, IMockerOpts } from '@stoplight/prism-core';
+import { IMocker, IMockerOpts, IPrismInput } from '@stoplight/prism-core';
 import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
@@ -54,27 +54,33 @@ export class HttpMocker
 
       return mockConfig;
     })
-      .chain(mockConfig => {
-        if (input.validations.input.length > 0) {
-          return withLogger(logger => logger.warn('Request did not pass the validation rules')).chain(() =>
-            helpers
-              .negotiateOptionsForInvalidRequest(resource.responses)
-              .map(e =>
-                e.mapLeft(() =>
-                  ProblemJsonError.fromTemplate(
-                    UNPROCESSABLE_ENTITY,
-                    `Your request body is not valid: ${JSON.stringify(input.validations.input)}`,
-                  ),
-                ),
-              ),
-          );
-        } else {
-          return withLogger(logger =>
-            logger.success('The request passed the validation rules. Looking for the best response'),
-          ).chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig));
-        }
-      })
+      .chain(mockConfig => negotiateResponse(mockConfig, input, resource))
       .chain(result => assembleResponse(result, payloadGenerator));
+  }
+}
+
+function negotiateResponse(
+  mockConfig: IHttpOperationConfig,
+  input: IPrismInput<IHttpRequest>,
+  resource: IHttpOperation,
+) {
+  if (input.validations.input.length > 0) {
+    return withLogger(logger => logger.warn('Request did not pass the validation rules')).chain(() =>
+      helpers
+        .negotiateOptionsForInvalidRequest(resource.responses)
+        .map(e =>
+          e.mapLeft(() =>
+            ProblemJsonError.fromTemplate(
+              UNPROCESSABLE_ENTITY,
+              `Your request body is not valid: ${JSON.stringify(input.validations.input)}`,
+            ),
+          ),
+        ),
+    );
+  } else {
+    return withLogger(logger =>
+      logger.success('The request passed the validation rules. Looking for the best response'),
+    ).chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig));
   }
 }
 
