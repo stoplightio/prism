@@ -12,10 +12,10 @@ export const createServer = <LoaderInput>(
   loaderInput: LoaderInput,
   opts: IPrismHttpServerOpts<LoaderInput>,
 ): IPrismHttpServer<LoaderInput> => {
-  const { components = {}, config } = opts;
+  const { components, config } = opts;
 
   const server = fastify({
-    logger: components.logger || createLogger('HTTP SERVER'),
+    logger: (components && components.logger) || createLogger('HTTP SERVER'),
     disableRequestLogging: true,
     modifyCoreObjects: false,
   }).register(fastifyAcceptsSerializer, {

@@ -1,8 +1,8 @@
-import { IHttpConfig, TPrismHttpComponents, TPrismHttpInstance } from '@stoplight/prism-http';
+import { IHttpConfig, PickRequired, TPrismHttpComponents, TPrismHttpInstance } from '@stoplight/prism-http';
 import { FastifyInstance } from 'fastify';
 
 export interface IPrismHttpServerOpts<LoaderInput> {
-  components?: TPrismHttpComponents<LoaderInput>;
+  components?: PickRequired<TPrismHttpComponents<LoaderInput>, 'logger'>;
   config: Partial<IHttpConfig>;
 }
 
