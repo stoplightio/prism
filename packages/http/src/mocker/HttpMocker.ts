@@ -74,28 +74,33 @@ export class HttpMocker
           ).chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig));
         }
       })
-      .chain(result => {
-        return withLogger(logger => {
-          return result.map(negotiationResult => {
-            const mockedBody = computeBody(negotiationResult, payloadGenerator);
-            const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
-
-            const response: IHttpResponse = {
-              statusCode: parseInt(negotiationResult.code),
-              headers: {
-                ...mockedHeaders,
-                'Content-type': negotiationResult.mediaType,
-              },
-              body: mockedBody,
-            };
-
-            logger.success(`Responding with ${response.statusCode}`);
-
-            return response;
-          });
-        });
-      });
+      .chain(result => assembleResponse(result, payloadGenerator));
   }
+}
+
+function assembleResponse(
+  result: Either<Error, IHttpNegotiationResult>,
+  payloadGenerator: PayloadGenerator,
+): Reader<Logger, Either<Error, IHttpResponse>> {
+  return withLogger(logger =>
+    result.map(negotiationResult => {
+      const mockedBody = computeBody(negotiationResult, payloadGenerator);
+      const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
+
+      const response: IHttpResponse = {
+        statusCode: parseInt(negotiationResult.code),
+        headers: {
+          ...mockedHeaders,
+          'Content-type': negotiationResult.mediaType,
+        },
+        body: mockedBody,
+      };
+
+      logger.success(`Responding with ${response.statusCode}`);
+
+      return response;
+    }),
+  );
 }
 
 function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is INodeExample {
