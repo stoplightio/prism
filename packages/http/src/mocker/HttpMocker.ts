@@ -93,7 +93,7 @@ function assembleResponse(
         body: mockedBody,
       };
 
-      logger.success(`Responding with ${response.statusCode}`);
+      logger.success(`Responding with the requested status code ${response.statusCode}`);
 
       return response;
     }),
