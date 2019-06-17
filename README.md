@@ -121,10 +121,11 @@ This error shows the request is missing a required property `name` from the HTTP
 
 #### Server Validation
 
-OpenAPI lets API spec authors make only certain servers available, and they also allow certain operations to be restricted to certain servers. Make sure the server URL you plan to use is a valid server this the particular operation you are attempting.
-by providing a `__server` query param.
+OpenAPI lets API spec authors make only certain servers available, and they also allow certain
+operations to be restricted to certain servers. Make sure the server URL you plan to use is a valid
+server this the particular operation you are attempting. by providing a `__server` query param.
 
-Take this minimalistic spec (oas3) example:
+Take this minimalist spec (OpenAPI v3) example:
 
 ```yaml
 openapi: 3.0.2
@@ -137,66 +138,62 @@ paths:
             '*/*':
               schema:
                 type: string
+                example: hello world
 servers:
-  - url: '{schema}://{host}/{basePath}'
-    variables:
-      schema:
-        default: http
-        enum:
-          - http
-          - https
-      host:
-        default: stoplight.io
-        enum:
-          - stoplight.io
-          - dev.stoplight.io
-      basePath:
-        default: api
+  - url: https://stoplight.io/api
+    name: Production
+  - url: https://stag.stoplight.io/api
+    name: Staging
 ```
 
 You can make a request enforcing server validation by providing the `__server` query string parameter:
 
 ```bash
-curl -X GET localhost:4010/pet?__server=http://stoplight.io/api
-# This will return a 200 response
+curl http://localhost:4010/pet?__server=https://stoplight.io/api
+hello world
 ```
 
 On the other hand, putting a server which is not defined in the specification, for example:
 
 ```bash
-curl -X GET localhost:4010/pet?__server=ftp://acme.com/api
+curl http://localhost:4010/pet?__server=https://nonsense.com/api
 ```
 
-Will give you the following error
+Will give you the following error:
 
 ```json
 {
   "type": "https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR",
   "title": "Route not resolved, no server matched.",
   "status": 404,
-  "detail": "The base url ftp://acme.com/api hasn't been matched with any of the provided servers"
+  "detail": "The server url http://nonsense.com/api hasn't been matched with any of the provided servers"
 }
 ```
 
 ## What's next for Prism?
 
 - [x] Server Validation
-- [x] Accept header validation
-- [ ] Content header validation
+- [x] Content Negotiation
 - [ ] Security Validation
-- [ ] Dynamic Mocking (use JS to script custom interactions)
-- [ ] Forwarding proxy with validation
-- [ ] Recording traffic to spec file
-- [ ] Data Persistence (turn Prism into a sandbox server)
-- [x] Support files ending with `.yml` and extension-less files
+- [ ] Custom Mocking
+- [ ] Validation Proxy
+- [ ] Recording / "Learning" mode to create spec files
+- [ ] Data Persistence (allow Prism act like a sandbox)
 
 ## FAQs
 
-**Requests with base paths are failing. Why?**
+**Why am I getting 404 errors when I include my basePath?**
 
-Base paths are completely ignored by the Prism HTTP server, so they can be removed from the request.
-If you have a base path of `/api` and your path is defined as `hello`, then a request to
-`http://localhost:4010/hello` would work, but `http://localhost:4010/api/hello` will fail.
+OpenAPI v2.0 had a concept called "basePath", which was essentially part of the HTTP path the stuff
+after host name and protocol, and before query string. Unlike the paths in your `paths` object, this
+basePath was applied to every single URL, so Prism v2.x used to do the same. In OpenAPI v3.0 they
+merged the basePath concept in with the server.url, and Prism v3 has done the same.
+
+We treat OAS2 `host + basePath` the same as OAS3 `server.url`, so we do not require them to go in
+the URL. If you have a base path of `api/v1` and your path is defined as `hello`, then a request to
+`http://localhost:4010/hello` would work, but `http://localhost:4010/api/v1/hello` will fail. This
+confuses some, but the other way was confusing to others. Check the default output of Prism CLI to
+see what URLs you have available.
 
 **How can I debug Prism?**
 

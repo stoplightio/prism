@@ -9,21 +9,15 @@
     "status": 404,
     "statusText": "Not Found",
     "headers": {
-      "content-type": [
-        "application/problem+json"
-      ],
-      "content-length": [
-        "230"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/problem+json"],
+      "content-length": ["232"],
+      "connection": ["close"]
     },
     "body": {
       "type": "https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR",
       "title": "Route not resolved, no server matched.",
       "status": 404,
-      "detail": "The base url https://petstore.io/v2 hasn't been matched with any of the provided servers"
+      "detail": "The server url https://petstore.io/v2 hasn't been matched with any of the provided servers"
     }
   }
 }
