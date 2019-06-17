@@ -149,7 +149,7 @@ servers:
 You can make a request enforcing server validation by providing the `__server` query string parameter:
 
 ```bash
-curl -X GET localhost:4010/pet?__server=https://stoplight.io/api
+curl http://localhost:4010/pet?__server=https://stoplight.io/api
 hello world
 ```
 
