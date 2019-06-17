@@ -82,16 +82,15 @@ async function createPrismServerWithLogger(
 }
 
 function pipeOutputToSignale(stream: Readable) {
+  function constructPrefix(logLine: LogDescriptor): string {
+    const prefix = LOG_COLOR_MAP[logLine.name].black(`[${logLine.name}]`);
+    return logLine.input
+      ? prefix.concat(' ' + chalk.bold.white(`${logLine.input.method} ${logLine.input.url.path}`))
+      : prefix;
+  }
+
   stream.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
     const logLevelType = logLevels.labels[logLine.level];
-
-    let prefix = LOG_COLOR_MAP[logLine.name].black(`[${logLine.name}]`);
-
-    if (logLine.input) {
-      const { method, url } = logLine.input;
-      prefix = prefix.concat(' ' + chalk.bold.white(`${method} ${url.path}`));
-    }
-
-    signale[logLevelType]({ prefix, message: logLine.msg });
+    signale[logLevelType]({ prefix: constructPrefix(logLine), message: logLine.msg });
   });
 }
