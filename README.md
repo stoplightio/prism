@@ -119,47 +119,6 @@ Connection: keep-alive
 
 This error shows the request is missing a required property `name` from the HTTP request body.
 
-### HTTP API
-
-Prism provides [HTTP API][http-docs] as separate module for forwarding and mocking requests.
-
-#### Forwarding example
-
-```ts
-const data = await forwarder.forward({
-  input: {
-    data: {
-      url: {
-        baseUrl: 'https://example.com',
-        path: '/v1',
-      },
-      method: 'get' as IHttpMethod,
-    },
-    validations: {
-      input: [],
-    },
-  },
-});
-```
-
-#### Mocking example
-
-````ts
-import { HttpMocker } from '@stoplight/prism-http/lib/mocker';
-
-const mocker = new HttpMocker(generate);
-const response = await mocker.mock({
-  resource: httpOperation,
-  input: httpRequest,
-  config: {
-    mock: {
-      dynamic: false,
-      code: '201',
-      exampleKey: 'second',
-      mediaTypes: ['application/xml'],
-    },
-  },
-});
 #### Server Validation
 
 OpenAPI lets API spec authors make only certain servers available, and they also allow certain operations to be restricted to certain servers. Make sure the server URL you plan to use is a valid server this the particular operation you are attempting.
@@ -194,7 +153,7 @@ servers:
           - dev.stoplight.io
       basePath:
         default: api
-````
+```
 
 You can make a request enforcing server validation by providing the `__server` query string parameter:
 
@@ -232,6 +191,14 @@ Will give you the following error
 - [ ] Data Persistence (turn Prism into a sandbox server)
 - [x] Support files ending with `.yml` and extension-less files
 
+## Experimental programmatic APIs (advanced topic)
+
+### Http Client
+
+Prism's Http Client programmatic API lets you write custom code and build things like request makers and mocking servers (in fact Prism CLI uses the Http Client deep inside!).
+
+You can find more details about this package in [its dedicated documentation](packages/http/README.md).
+
 ## FAQs
 
 **Requests with base paths are failing. Why?**
@@ -262,3 +229,7 @@ If you are interested in contributing to Prism itself, check out our [contributi
 [2.x]: https://github.com/stoplightio/prism/tree/2.x
 [cli-docs]: packages/cli/README.md
 [http-docs]: packages/http/README.md
+
+```
+
+```
