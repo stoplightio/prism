@@ -38,24 +38,20 @@ export default class Server extends Command {
           prefix: chalk.bgWhiteBright.black('[CLI]'),
           message: `Multi process ${chalk.green('enabled')}.`,
         });
-      }
-    }
 
-    if (multiprocess) {
-      if (cluster.isMaster) {
         const worker = cluster.fork();
 
         if (worker.process.stdout) {
           pipeOutputToSignale(worker.process.stdout);
         }
       } else {
-        const logInstance = createLogger('CLI');
+        const logStream = new PassThrough();
+        const logInstance = createLogger('CLI', undefined, logStream);
+        pipeOutputToSignale(logStream);
         await createPrismServerWithLogger(spec, dynamic, port, host, logInstance);
       }
-    } else {
-      const logStream = new PassThrough();
-      const logInstance = createLogger('CLI', undefined, logStream);
-      pipeOutputToSignale(logStream);
+    } else if (multiprocess && cluster.isWorker) {
+      const logInstance = createLogger('CLI');
       await createPrismServerWithLogger(spec, dynamic, port, host, logInstance);
     }
   }
