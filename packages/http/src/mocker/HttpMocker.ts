@@ -37,11 +37,8 @@ export class HttpMocker
       throw new Error('Http request is not defined');
     }
 
-    let payloadGenerator: PayloadGenerator = generateStatic;
-
-    if (config && typeof config.mock !== 'boolean' && config.mock.dynamic) {
-      payloadGenerator = generate;
-    }
+    const payloadGenerator: PayloadGenerator =
+      config && typeof config.mock !== 'boolean' && config.mock.dynamic ? generate : generateStatic;
 
     return withLogger(logger => {
       // setting default values
