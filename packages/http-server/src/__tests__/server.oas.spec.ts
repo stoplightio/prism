@@ -36,22 +36,20 @@ describe('GET /pet?__server', () => {
     });
   });
 
-  describe.each([
-    ['ftp://stoplight.io/api'],
-    ['https://stoplight.com/api'],
-    ['https://google.com/api'],
-    ['https://stopligt.io/v1'],
-  ])('invalid server %s', serverUrl => {
-    it('returns 404 and problem json payload', () => {
-      return expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
-        statusCode: 404,
-        payload: expectedPayload(serverUrl),
+  describe.each([['https://stoplight.com/api'], ['https://google.com/api'], ['https://stopligt.io/v1']])(
+    'invalid server %s',
+    serverUrl => {
+      it('returns 404 and problem json payload', () => {
+        return expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
+          statusCode: 404,
+          payload: expectedPayload(serverUrl),
+        });
       });
-    });
-  });
+    },
+  );
 
   const expectedPayload = (serverUrl: string) =>
-    `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url ${serverUrl} hasn\'t been matched with any of the provided servers"}`;
+    `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The server url ${serverUrl} hasn\'t been matched with any of the provided servers"}`;
 
   function requestPetGivenServer(serverUrl: string) {
     return server.fastify.inject({
@@ -304,7 +302,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
 
       expect(response.statusCode).toBe(404);
       expect(response.payload).toEqual(
-        '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url https://google.com hasn\'t been matched with any of the provided servers"}',
+        '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The server url https://google.com hasn\'t been matched with any of the provided servers"}',
       );
     });
 
@@ -337,7 +335,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
 
           expect(response.statusCode).toBe(404);
           expect(response.payload).toEqual(
-            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}',
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}',
           );
         });
 
@@ -349,7 +347,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
 
           expect(response.statusCode).toBe(404);
           expect(response.payload).toEqual(
-            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The base url https://notvalid.com hasn\'t been matched with any of the provided servers"}',
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}',
           );
         });
       });
