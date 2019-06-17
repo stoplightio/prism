@@ -15,6 +15,7 @@ import {
   PayloadGenerator,
   ProblemJsonError,
 } from '../types';
+import withLogger from '../withLogger';
 import { UNPROCESSABLE_ENTITY } from './errors';
 import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
@@ -42,7 +43,7 @@ export class HttpMocker
       payloadGenerator = generate;
     }
 
-    return new Reader<Logger, IHttpOperationConfig>(logger => {
+    return withLogger(logger => {
       // setting default values
       const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
       config = config || { mock: false };
@@ -58,27 +59,26 @@ export class HttpMocker
     })
       .chain(mockConfig => {
         if (input.validations.input.length > 0) {
-          return new Reader<Logger, unknown>(logger => logger.warn('Request did not pass the validation rules')).chain(
-            () =>
-              helpers
-                .negotiateOptionsForInvalidRequest(resource.responses)
-                .map(e =>
-                  e.mapLeft(() =>
-                    ProblemJsonError.fromTemplate(
-                      UNPROCESSABLE_ENTITY,
-                      `Your request body is not valid: ${JSON.stringify(input.validations.input)}`,
-                    ),
+          return withLogger(logger => logger.warn('Request did not pass the validation rules')).chain(() =>
+            helpers
+              .negotiateOptionsForInvalidRequest(resource.responses)
+              .map(e =>
+                e.mapLeft(() =>
+                  ProblemJsonError.fromTemplate(
+                    UNPROCESSABLE_ENTITY,
+                    `Your request body is not valid: ${JSON.stringify(input.validations.input)}`,
                   ),
                 ),
+              ),
           );
         } else {
-          return new Reader<Logger, unknown>(logger =>
+          return withLogger(logger =>
             logger.success('The request passed the validation rules. Looking for the best response'),
           ).chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig));
         }
       })
       .chain(result => {
-        return new Reader<Logger, Either<Error, IHttpResponse>>(logger => {
+        return withLogger(logger => {
           return result.map(negotiationResult => {
             const mockedBody = computeBody(negotiationResult, payloadGenerator);
             const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);

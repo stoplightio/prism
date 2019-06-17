@@ -1,5 +1,5 @@
 import { Either, left, right } from 'fp-ts/lib/Either';
-import { Reader, reader } from 'fp-ts/lib/Reader';
+import { reader, Reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';
 
 import { PickRequired } from '@stoplight/prism-http';
@@ -7,6 +7,7 @@ import { ContentExample, NonEmptyArray } from '@stoplight/prism-http/src/types';
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 // @ts-ignore
 import * as accepts from 'accepts';
+import withLogger from '../../withLogger';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
 type IWithExampleMediaContent = IMediaTypeContent & { examples: NonEmptyArray<ContentExample> };
@@ -175,7 +176,7 @@ const helpers = {
     const { code, headers } = response;
     const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
-    return new Reader(logger => {
+    return withLogger(logger => {
       if (mediaTypes) {
         // a user provided mediaType
         const httpContent = hasContents(response) && findBestHttpContentByMediaType(response, mediaTypes);
@@ -237,7 +238,7 @@ const helpers = {
     code: string,
   ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
     // find response by provided status code
-    return new Reader<Logger, IHttpOperationResponse | undefined>(logger => {
+    return withLogger(logger => {
       const result = findResponseByStatusCode(httpOperation.responses, code);
       if (!result) {
         logger.info(`Unable to find a ${code} response definition`);
@@ -262,7 +263,7 @@ const helpers = {
           );
       }
 
-      return new Reader(logger => {
+      return withLogger(logger => {
         logger.trace(`Unable to find default response to construct a ${code} response`);
         // if no response found under a status code throw an error
         return left(new Error('Requested status code is not defined in the schema.'));
@@ -284,7 +285,7 @@ const helpers = {
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
   ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
-    return new Reader<Logger, IHttpOperationResponse | undefined>(logger => {
+    return withLogger(logger => {
       let result = findResponseByStatusCode(httpResponses, '422');
       if (!result) {
         logger.trace('Unable to find a 422 response definition');
@@ -299,7 +300,7 @@ const helpers = {
       logger.success(`Found response ${result.code}. I'll try with.`);
       return result;
     }).chain(response => {
-      return new Reader(logger => {
+      return withLogger(logger => {
         if (!response) {
           logger.trace('Unable to find a default response definition.');
           return left(new Error('No 422, 400, or default responses defined'));
