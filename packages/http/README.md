@@ -1,152 +1,148 @@
 # Prism HTTP
 
-This package provides HTTP APIs for forwarding and mocking requests.
+This package provides a http client featuring the ability to:
 
-## HTTP Forwarder
+- mock requests instead of hitting the server
+- validate the request and the response according to an openapi spec
 
-> Note: The current API is still experimental - changes can be introduced in future.
+# Basic Usages
 
-Module used to forward provided request. Is exposes single `forward` method and can be initialized with `IHttpOperation` and `IHttpRequest`.
+> Note: examples in this document use the following spec
 
-### Forwarder props
-
-Object containing:
-
-- `resource` containing `IHttpOperation` _(optional)_
-- `input` `IHttpRequest` wrapped with `IPrismInput`
-- `timeout` overrides default timeout _(optional)_
-- `cancelToken` cancellation token _(optional)_
-
-Properties used from `resource: IHttpOperation`:
-
-- `servers[]` - if not empty the first element will be used as server url
-
-The type of `input` parameter `IPrismInput<IHttpRequest>` is defined as:
-
-```ts
-interface IPrismInput<IHttpRequest> {
-  data: IHttpRequest;
-  validations: {
-    input: IPrismDiagnostic[];
+```yaml
+---
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      parameters:
+        - name: title
+          in: query
+          style: form
+          schema:
+            enum:
+              - eat
+              - drink
+      responses:
+        200:
+          description: Get Todo Items
 ```
 
-Validations are not supported at the moment for Http Forwarder.
+## I want to use Prism to mock responses
 
-If both `resource` and `input` parameters are provided then server url is taken from the `resource`
+[Try it!](https://repl.it/@ChrisMiaskowski/prism-http-client-basic-mocking);
 
-### Usage example
+```javascript
+const Prism = require('@stoplight/prism-http');
+const path = require('path');
 
-```ts
-import { forwarder } from '@stoplight/prism-http/lib/forwarder';
+// Create Prism instance and configure it as a mocker generating static examples
+const config = { mock: { dynamic: false } };
+const prism = Prism.createInstance(config);
 
-try {
-  const data = await forwarder.forward({
-    input: {
-      data: {
+// Load openapi spec file
+const specPath = path.resolve(process.cwd(), 'basic.oas3.yaml');
+prism
+  .load({ path: specPath })
+  .then(() => {
+    // Make a "GET /todos" request
+    return prism.process({
+      method: 'get',
+      url: {
+        path: '/todos',
+      },
+    });
+  })
+  .then(prismResponse => {
+    console.log(prismResponse.output);
+  });
+```
+
+Output
+
+```bash
+{ statusCode: 200,
+  headers: { 'Content-type': 'text/plain' },
+  body: undefined }
+```
+
+## I want Prism to make a http request a server
+
+In this use case we assume we have a server running at `http://localhost:4010`
+that is able to handle `GET /todos` request.
+
+We don't want to mock a reqeust, we simply wan to make the request, hit the actual server and get the response back.
+
+```javascript
+const Prism = require('@stoplight/prism-http');
+
+// Create Prism instance and configure it to make http requests
+const config = { mock: false };
+const prism = Prism.createInstance(config);
+prism
+  .process({
+    method: 'get',
+    url: {
+      path: '/todos',
+      baseUrl: 'http://localhost:4010',
+    },
+  })
+  .then(prismResponse => {
+    console.log(prismResponse.output);
+  });
+```
+
+In response you'll get whatever the server responds with.
+
+## I want to override Prism's config for a single request
+
+In the following example we will first instantiate Prism to make requests to an actual server.
+
+Later we alter than behaviour by passing a config object to the `process` function.
+
+```javascript
+const Prism = require('@stoplight/prism-http');
+const path = require('path');
+
+const prism = Prism.createInstance({ mock: false });
+const specPath = path.resolve(process.cwd(), 'basic.oas3.yaml');
+
+prism
+  .load({ path: specPath })
+  .then(() => {
+    // Make a "GET /todos" request
+    return prism.process(
+      {
+        method: 'get',
         url: {
-          baseUrl: 'https://example.com',
-          path: '/v1',
-        },
-        method: 'post' as IHttpMethod,
-        body: '{}',
-        headers: {
-          headerName: 'headerValue',
+          path: '/todos',
+          baseUrl: 'http://localhost:4010',
         },
       },
-      validations: {
-        input: [],
-      },
-    },
-    timeout: 1000,
-  });
-} catch (ex) {}
-```
-
-### Using variables
-
-API supports variables included in `IHttpOperation` servers.
-Examples:
-
-```json
-{
-  "servers": [
-    {
-      "url": "http://{var1}.example.com",
-      "variables": {
-        "var1": {
-          "default": "api"
-        }
+      {
+        // we force prism to mock the response instead of hit the server
+        mock: {
+          dynamic: true,
+        },
       }
-    }
-  ]
-}
-```
-
-If no default value - first element will be used:
-
-```json
-{
-  "servers": [
-    {
-      "url": "http://{var1}.example.com",
-      "variables": {
-        "var1": {
-          "enum": ["api", "api2"]
-        }
-      }
-    }
-  ]
-}
-```
-
-### Using cancellation token
-
-```ts
-import { CancelToken, forwarder } from '@stoplight/prism-http/lib/forwarder';
-
-const cancelTokenSource = CancelToken.source();
-try {
-  const data = await forwarder.forward({
-    input: {
-      data: request,
-      validations: {
-        input: [],
-      },
-    },
-    cancelToken: cancelTokenSource.token,
+    );
+  })
+  .catch(e => console.error(e))
+  .then(prismResponse => {
+    console.log(prismResponse.output);
   });
-} catch (ex) {}
 ```
 
-### Headers manipulation
+# Advanced Topics
 
-If provided request object contains `Host` header it will be replaced with `baseUrl` host. The original value will be set to `Forwarded` header with `host=` prefix.
+TBD...
 
-## HTTP Mocker
-
-Module used to generate mocked responses for provided operation definition and corresponding request. It exposes single `mock` method that is initialized with `IHttpOperation` and `IHttpRequest`.
+- Describe `load`, `process` and `createInstance`
+- Describe the config object
+- describe `validations`
 
 ### Initialization
 
-Mocker is initialized with generator function that will be used for dynamic example generation.
-
-```ts
-import * as jsf from '@stoplight/json-schema-faker';
-import { cloneDeep } from 'lodash';
-
-async function generate(source: unknown): Promise<unknown> {
-  return jsf.resolve(cloneDeep(source));
-}
-
-const mocker = new HttpMocker(generate);
-```
-
-### Mock props
-
-Object containing:
-
-- `resource` containing `IHttpOperation` providing operation definition with schemas and examples to mock
-- `input` containing `IHttpRequest` wrapped with `IPrismInput` which is used against provided `resource` as input request
 - `config` configuration of `IHttpConfig` type overriding default behavior _(optional)_
 
 #### Config property
@@ -180,35 +176,6 @@ interface IHttpOperationConfig {
 }
 ```
 
-#### Negotiation process
+# Gotchas
 
-Given provided resource (being http operation definition) and http request Prism runs that request against http operation trying to find the best suitable response following negotiation rules. Those rules can be extended by a config object containing specific values that have to match the operation.
-
-1. Find response by code (if provided) or find the lowest 2xx response.
-2. Find content by provided media type or use default media type if it is not provided or content for that media type does not exist.
-3. Find example using provided `exampleKey` and `dynamic` values in following order:
-   3.1. If `exampleKey` is provided and it exists for that response and media type return response with example value matching example key.
-   3.2. If `dynamic` is set to `true` use schema to generate dynamic example.
-   3.3. Try to find static example.
-   3.4. Try to generate dynamic example.
-   3.5. Return response with no body.
-
-### Usage example
-
-```ts
-import { HttpMocker } from '@stoplight/prism-http/lib/mocker';
-
-const mocker = new HttpMocker(generate);
-const response = await mocker.mock({
-  resource: httpOperation,
-  input: httpRequest,
-  config: {
-    mock: {
-      dynamic: false,
-      code: '201',
-      exampleKey: 'second',
-      mediaTypes: ['application/xml'],
-    },
-  },
-});
-```
+If provided request object contains `Host` header it will be replaced with `baseUrl` host. The original value will be set to `Forwarded` header with `host=` prefix.
