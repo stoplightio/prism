@@ -48,6 +48,6 @@
   },
   "types": "dist/index.d.ts",
   "devDependencies": {
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.2"
   }
 }
