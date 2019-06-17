@@ -156,7 +156,7 @@ hello world
 On the other hand, putting a server which is not defined in the specification, for example:
 
 ```bash
-curl -X GET localhost:4010/pet?__server=https://nonsense.com/api
+curl http://localhost:4010/pet?__server=https://nonsense.com/api
 ```
 
 Will give you the following error:
