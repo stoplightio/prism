@@ -64,7 +64,7 @@ async function createPrismServerWithLogger(
   host: string | undefined,
   logInstance: Logger,
 ) {
-  const server = createServer(spec, { mock: { dynamic } });
+  const server = createServer(spec, { mock: { dynamic } }, logInstance.child({ name: 'HTTP SERVER' }));
   try {
     const address = await server.listen(port, host);
     if (server.prism.resources.length === 0) {
