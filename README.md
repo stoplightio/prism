@@ -170,6 +170,17 @@ Will give you the following error:
 }
 ```
 
+### Docker
+
+Official image is available @ [DockerHub](https://hub.docker.com/r/stoplight/prism/).
+
+To use the docker image:
+
+```bash
+docker run --rm -v $(pwd)/openapi.yml:/openapi.yml stoplight/prism mock --host=0.0.0.0 /openapi.yml
+```
+Due to internal docker host binding, you need to specify host option like above.
+
 ## What's next for Prism?
 
 - [x] Server Validation
