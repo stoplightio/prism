@@ -78,22 +78,6 @@ describe('HttpMocker', () => {
       },
     };
 
-    it('fails when called with no resource', () => {
-      return expect(() =>
-        httpMocker.mock({
-          input: mockInput,
-        }),
-      ).toThrowErrorMatchingSnapshot();
-    });
-
-    it('fails when called with no input', () => {
-      return expect(() =>
-        httpMocker.mock({
-          resource: mockResource,
-        }),
-      ).toThrowErrorMatchingSnapshot();
-    });
-
     describe('with valid negotiator response', () => {
       it('returns an empty body when negotiator did not resolve to either example nor schema', () => {
         jest

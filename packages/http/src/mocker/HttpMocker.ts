@@ -27,16 +27,7 @@ export class HttpMocker
     resource,
     input,
     config,
-  }: Partial<IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>>): Reader<Logger, Either<Error, IHttpResponse>> {
-    // pre-requirements check
-    if (!resource) {
-      throw new Error('Resource is not defined');
-    }
-
-    if (!input) {
-      throw new Error('Http request is not defined');
-    }
-
+  }: IMockerOpts<IHttpOperation, IHttpRequest, IHttpConfig>): Reader<Logger, Either<Error, IHttpResponse>> {
     const payloadGenerator: PayloadGenerator =
       config && typeof config.mock !== 'boolean' && config.mock.dynamic ? generate : generateStatic;
 
