@@ -39,6 +39,7 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
       statusCode: response.status,
       headers: response.headers,
       body: response.data,
+      responseType: (response.request && response.request.responseType) || '',
     };
   }
 
