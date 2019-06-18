@@ -5,6 +5,7 @@ import { reader } from 'fp-ts/lib/Reader';
 import { flatMap } from 'lodash';
 import { HttpMocker } from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
+import { JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
 
 function assertRight<L, A>(e: Either<L, A>, onRight: (a: A) => void) {

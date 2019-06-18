@@ -1,4 +1,4 @@
-import { PickRequired, ProblemJsonError } from '@stoplight/prism-http';
+import { PickRequired } from '@stoplight/prism-http';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, ProblemJsonError } from './types';
