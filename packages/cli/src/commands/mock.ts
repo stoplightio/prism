@@ -9,6 +9,13 @@ import { PassThrough, Readable } from 'stream';
 import { ARGS, FLAGS, LOG_COLOR_MAP } from '../const/options';
 import { createServer } from '../util/createServer';
 
+function logEnabledFeature(message: string) {
+  signale.star({
+    prefix: chalk.bgWhiteBright.black('[CLI]'),
+    message,
+  });
+}
+
 export default class Server extends Command {
   public static description = 'Start a mock server with the given spec file';
   public static flags = FLAGS;
@@ -27,17 +34,11 @@ export default class Server extends Command {
       signaleInteractiveInstance.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
       if (dynamic) {
-        signale.star({
-          prefix: chalk.bgWhiteBright.black('[CLI]'),
-          message: `Dynamic example generation ${chalk.green('enabled')}.`,
-        });
+        logEnabledFeature(`Dynamic example generation ${chalk.green('enabled')}.`);
       }
 
       if (multiprocess) {
-        signale.star({
-          prefix: chalk.bgWhiteBright.black('[CLI]'),
-          message: `Multi process ${chalk.green('enabled')}.`,
-        });
+        logEnabledFeature(`Multi process ${chalk.green('enabled')}.`);
 
         const worker = cluster.fork();
 
