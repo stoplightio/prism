@@ -378,8 +378,8 @@ prism
   .process({
     method: 'get',
     url: {
-      path: '/todos',
-      baseUrl: 'http://127.0.0.1:4010',
+      path: '/facts',
+      baseUrl: 'https://cat-fact.herokuapp.com',
     },
   })
   .then(prismResponse => {
