@@ -181,7 +181,7 @@ const helpers = {
         // a user provided mediaType
         const httpContent = hasContents(response) && findBestHttpContentByMediaType(response, mediaTypes);
         if (httpContent) {
-          logger.success(`Found a compatible media type for ${mediaTypes}`);
+          logger.success(`Found a compatible content for ${mediaTypes}`);
           // a httpContent for a provided mediaType exists
           return helpers
             .negotiateByPartialOptionsAndHttpContent(
