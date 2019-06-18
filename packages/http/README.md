@@ -88,7 +88,8 @@ Output
 ```bash
 { statusCode: 200,
   headers: { 'Content-type': 'text/plain' },
-  body: undefined }
+  body: undefined 
+}
 ```
 
 ## Do Not Mock Responses
