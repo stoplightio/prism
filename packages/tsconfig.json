@@ -1,7 +1,5 @@
 {
-  "exclude": [
-    "**/__tests__"
-  ],
+  "exclude": ["**/__tests__"],
   "compilerOptions": {
     "baseUrl": ".",
     "declaration": true,
@@ -11,6 +9,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "module": "commonjs",
     "strict": true,
-    "target": "es2018",
+    "target": "es2018"
   }
 }
