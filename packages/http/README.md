@@ -91,34 +91,6 @@ Output
   body: undefined }
 ```
 
-## Do Not Mock Responses
-
-In this use case we assume we have a server running at `http://localhost:4010`
-that is able to handle `GET /todos` request.
-
-We don't want to mock a reqeust, we simply want to make the request, hit the actual server and get the response back.
-
-```javascript
-const Prism = require('@stoplight/prism-http');
-
-// Create Prism instance and configure it to make HTTP requests (mock: false)
-const config = { mock: false };
-const prism = Prism.createInstance(config);
-prism
-  .process({
-    method: 'get',
-    url: {
-      path: '/todos',
-      baseUrl: 'http://localhost:4010',
-    },
-  })
-  .then(prismResponse => {
-    console.log(prismResponse.output);
-  });
-```
-
-In response you'll get whatever the server responds with.
-
 ## Mock Single Response
 
 In the following example we will first instantiate Prism to make requests to an actual server.
@@ -157,6 +129,34 @@ prism
     console.log(prismResponse.output);
   });
 ```
+
+## Make Request To An Upstream Server
+
+In this use case we assume we have a server running at `http://localhost:4010`
+that is able to handle `GET /todos` request.
+
+We don't want to mock a reqeust, we simply want to make the request, hit the actual server and get the response back.
+
+```javascript
+const Prism = require('@stoplight/prism-http');
+
+// Create Prism instance and configure it to make HTTP requests (mock: false)
+const config = { mock: false };
+const prism = Prism.createInstance(config);
+prism
+  .process({
+    method: 'get',
+    url: {
+      path: '/todos',
+      baseUrl: 'http://localhost:4010',
+    },
+  })
+  .then(prismResponse => {
+    console.log(prismResponse.output);
+  });
+```
+
+In response you'll get whatever the server responds with.
 
 # Advanced Topics
 
