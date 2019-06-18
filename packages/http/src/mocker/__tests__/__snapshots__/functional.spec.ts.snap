@@ -1,16 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`http mocker request is valid HttpOperation contains example return lowest 2xx response and the first example matching the media type 1`] = `
-Object {
-  "body": "<todo><name>Shopping</name><completed>false</completed></todo>",
-  "headers": Object {
-    "Content-type": "application/xml",
-    "x-todos-publish": Any<String>,
-  },
-  "statusCode": 200,
-}
-`;
-
 exports[`http mocker request is valid given enforced example key and mediaType should return 200 response 1`] = `
 Object {
   "body": "{ \\"root\\": \\"second\\" }",
