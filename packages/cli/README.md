@@ -14,27 +14,24 @@
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g @stoplight/prism-cli
 $ prism COMMAND
 running command...
 $ prism (-v|--version|version)
-@stoplight/prism-cli/3.0.0-alpha.16 darwin-x64 node-v12.4.0
+@stoplight/prism-cli/3.0.0-beta.0 darwin-x64 node-v12.4.0
 $ prism --help [COMMAND]
 USAGE
   $ prism COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-
-- [`prism help [COMMAND]`](#prism-help-command)
-- [`prism mock SPEC`](#prism-mock-spec)
+* [`prism help [COMMAND]`](#prism-help-command)
+* [`prism mock SPEC`](#prism-mock-spec)
 
 ## `prism help [COMMAND]`
 
@@ -62,15 +59,16 @@ USAGE
   $ prism mock SPEC
 
 ARGUMENTS
-  SPEC  Path to a spec file
+  SPEC  Path to a spec file. Can be both a file or a fetchable resource on the web
 
 OPTIONS
-  -d, --dynamic    Dynamically generate examples.
-  -h, --host=host  [default: 127.0.0.1] Host that Prism will listen to.
-  -p, --port=port  (required) [default: 4010] Port that Prism will run on.
+  -d, --dynamic       Dynamically generate examples.
+  -h, --host=host     [default: 127.0.0.1] Host that Prism will listen to.
+  -m, --multiprocess  Fork the http server from the CLI
+  -p, --port=port     (required) [default: 4010] Port that Prism will run on.
 ```
 
-_See code: [src/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0.0-alpha.16/src/commands/mock.ts)_
+_See code: [src/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0.0-beta.0/src/commands/mock.ts)_
 <!-- commandsstop -->
 
 ## Running in production

@@ -20,7 +20,7 @@
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
     "test.update": "yarn test.fast --updateSnapshot",
-    "release": "lerna version prerelease --preid alpha",
+    "release": "lerna version prerelease --preid beta",
     "run.binary": "$BINARY mock -p ${PRISM_PORT:-4010} $SPEC",
     "run.binary.v2": "./prism mock -p ${PRISM_PORT:-4010} --spec ./examples/petstore.oas2.json",
     "prebuild.binary": "yarn build",
