@@ -4,7 +4,7 @@ This package provides a HTTP client featuring the ability to:
 
 - mock responses based of OpenAPI spec
 - make requests to a HTTP server
-- validate the request and/or the response according to the provided OpenAPI
+- validate the request and/or the response according to the provided OpenAPI Specification file
 
 In essence it's an HTTP client (similar to axios - in fact, we use axios to make requests) with the ability to mock responses and validate requests.
 
@@ -32,7 +32,7 @@ yarn add @stoplight/prism-http
 
 # Basic Usages
 
-> Note: examples in this document use the following spec
+> Note: the examples in this document use the following spec
 
 ```yaml
 ---
@@ -66,7 +66,7 @@ const config = { mock: { dynamic: false } };
 const prism = Prism.createInstance(config);
 
 // Load openapi spec file
-const specPath = path.resolve(process.cwd(), 'basic.oas3.yaml');
+const specPath = path.relative('.', 'basic.oas3.yaml');
 prism
   .load({ path: specPath })
   .then(() => {
@@ -185,7 +185,7 @@ Prism's config object (`IHttpConfig`) allows you to manipulate Prism's behaviour
 - turn mocking on and off
 - influence Prism's mocked response generation strategy
 
-The actual interface looks like this (but rather than explain each property I will give you some examples)
+The actual interface looks like this (but rather than explain each property we're going to look at some examples)
 
 ```ts
 export interface IHttpConfig extends IPrismConfig {
@@ -317,7 +317,7 @@ export interface IHttpRequest {
 }
 ```
 
-All of this is pretty standard except the `url.baseUrl` which I will describe in more details.
+All of this is pretty standard except the `url.baseUrl` which we will describe in more details.
 
 ### Server Validation
 
@@ -353,7 +353,7 @@ The `prism.process` resolved (it's a Promise!) value consists of:
   - input - list of warnings/errors related to you http request object
   - output - list of warnings/errors related to you http response object
 
-Validations are still subject of tests and experimentation therefore I will not cover them fully for the time being.
+Validations are still subject of tests and experimentation therefore we will not cover them fully for the time being.
 
 One example however is that for a given example
 
