@@ -52,7 +52,7 @@ paths:
           description: Get Todo Items
           content:
             'text/plain':
-              example: Write lit OpenAPI specs!
+              example: Write great OpenAPI specs!
 ```
 
 ## Mock All Responses
@@ -123,8 +123,8 @@ prism
       {
         method: 'get',
         url: {
-          path: '/todos',
-          baseUrl: 'http://localhost:4010',
+          path: '/facts',
+          baseUrl: 'https://cat-fact.herokuapp.com',
         },
       },
       {
@@ -338,8 +338,8 @@ Consider a request
 prism.process({
   method: 'get',
   url: {
-    path: '/path', // must be prefixed with slash
-    baseUrl: 'http://localhost:4010',
+    path: '/facts', // must be prefixed with slash
+    baseUrl: 'https://cat-fact.herokuapp.com',
   },
 });
 ```
@@ -349,7 +349,7 @@ Notice that `baseUrl` is defined.
 This will instruct Prism to do one of the two:
 
 - if mocking is **disabled** (`{ mock: false }`)
-  - it will use that `baseUrl` to make a request to the server (`GET http://localhost:4010/path`)
+  - it will use that `baseUrl` to make a request to the server (`GET https://cat-fact.herokuapp.com/facts`)
   - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OpenAPI and **add an input warning to the .process return value if it is not valid**
 - if mocking is **enabled**
   - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OpenAPI and **return an error if it is not valid**
