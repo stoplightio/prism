@@ -1,9 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HttpMocker mock() fails when called with no input 1`] = `"Http request is not defined"`;
-
-exports[`HttpMocker mock() fails when called with no resource 1`] = `"Resource is not defined"`;
-
 exports[`HttpMocker mock() when example is of type INodeExternalExample generates a dynamic example 1`] = `
 Object {
   "body": "test value",

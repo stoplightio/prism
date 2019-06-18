@@ -22,7 +22,7 @@ import { validator } from './validator';
 
 const createInstance = <LoaderInput>(
   config?: PartialPrismConfig<IHttpConfig, IHttpRequest>,
-  overrides?: TPrismHttpComponents<LoaderInput>,
+  overrides?: PickRequired<TPrismHttpComponents<LoaderInput>, 'logger'>,
 ) => {
   return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput>(
     { mock: { dynamic: false } },

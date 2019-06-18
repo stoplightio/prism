@@ -1,38 +1,64 @@
-import { createServer } from '../../util/createServer';
+import { createMultiProcessPrism, createSingleProcessPrism } from '../../util/createServer';
 import Mock from '../mock';
-
-const listenMock = jest.fn().mockReturnValue('http://localhost:1000');
-
-jest.mock('../../util/createServer', () => ({
-  createServer: jest.fn(() => ({ listen: listenMock, prism: { resources: [{ method: 'get', path: '/test' }] } })),
-}));
+jest.mock('../../util/createServer');
 
 describe('mock command', () => {
   beforeEach(() => {
-    (createServer as jest.Mock).mockClear();
+    (createSingleProcessPrism as jest.Mock).mockClear();
+    (createMultiProcessPrism as jest.Mock).mockClear();
   });
-
   test('starts mock server', async () => {
     await Mock.run(['/path/to']);
-    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: { dynamic: false } });
-    expect(listenMock).toHaveBeenLastCalledWith(4010, '127.0.0.1');
+    expect(createMultiProcessPrism).not.toHaveBeenCalled();
+    expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
+      spec: '/path/to',
+      dynamic: false,
+      host: '127.0.0.1',
+      port: 4010,
+    });
   });
 
   test('starts mock server on custom port', async () => {
     await Mock.run(['-p', '666', '/path/to']);
-    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: { dynamic: false } });
-    expect(listenMock).toHaveBeenLastCalledWith(666, '127.0.0.1');
+    expect(createMultiProcessPrism).not.toHaveBeenCalled();
+    expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
+      spec: '/path/to',
+      dynamic: false,
+      host: '127.0.0.1',
+      port: 666,
+    });
   });
 
   test('starts mock server on custom host', async () => {
     await Mock.run(['-h', '0.0.0.0', '/path/to']);
-    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: { dynamic: false } });
-    expect(listenMock).toHaveBeenLastCalledWith(4010, '0.0.0.0');
+    expect(createMultiProcessPrism).not.toHaveBeenCalled();
+    expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
+      spec: '/path/to',
+      dynamic: false,
+      host: '0.0.0.0',
+      port: 4010,
+    });
   });
 
   test('starts mock server on custom host and port', async () => {
     await Mock.run(['-p', '666', '-h', '0.0.0.0', '/path/to']);
-    expect(createServer).toHaveBeenLastCalledWith('/path/to', { mock: { dynamic: false } });
-    expect(listenMock).toHaveBeenLastCalledWith(666, '0.0.0.0');
+    expect(createMultiProcessPrism).not.toHaveBeenCalled();
+    expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
+      spec: '/path/to',
+      dynamic: false,
+      host: '0.0.0.0',
+      port: 666,
+    });
+  });
+
+  test('starts mock server with multiprocess option ', async () => {
+    await Mock.run(['-p', '666', '-m', '-h', '0.0.0.0', '/path/to']);
+    expect(createSingleProcessPrism).not.toHaveBeenCalled();
+    expect(createMultiProcessPrism).toHaveBeenLastCalledWith({
+      spec: '/path/to',
+      dynamic: false,
+      host: '0.0.0.0',
+      port: 666,
+    });
   });
 });

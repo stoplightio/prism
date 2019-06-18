@@ -1,5 +1,5 @@
 import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
-import { Dictionary, IHttpOperation } from '@stoplight/types';
+import { Dictionary, HttpMethod, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
 export type TPrismHttpInstance<LoaderInput> = IPrism<
@@ -15,7 +15,7 @@ export type TPrismHttpComponents<LoaderInput> = Partial<
 >;
 
 // TODO: should be complete | and in the @stoplight/types repo
-export type IHttpMethod = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch' | 'trace'; // ... etc
+export type IHttpMethod = HttpMethod | 'trace';
 
 export interface IHttpOperationConfig {
   mediaTypes?: string[];
@@ -105,6 +105,8 @@ export class ProblemJsonError extends Error {
   }
 }
 
+export type ContentExample = INodeExample | INodeExternalExample;
+export type NonEmptyArray<T> = T[] & { 0: T };
 export type PayloadGenerator = (f: JSONSchema) => unknown;
 
 export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
