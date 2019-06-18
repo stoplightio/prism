@@ -97,7 +97,7 @@ Output
 {
   statusCode: 200,
   headers: { 'Content-type': 'text/plain' },
-  body: 'Write lit OpenAPI specs!'
+  body: 'Write dope OpenAPI specs!'
 }
 ```
 
