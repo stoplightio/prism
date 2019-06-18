@@ -177,7 +177,7 @@ There are two (both optional) arguments you can supply `createInstance` with:
 
 We will cover the `config` argument in next section and we'll leave `components` for some other time (overriding default `components` is the _ultimate advanced stuff_).
 
-### Config Property
+### Config Object
 
 Prism's config object (`IHttpConfig`) allows you to manipulate Prism's behaviour in many ways. For instance:
 
