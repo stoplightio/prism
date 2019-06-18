@@ -50,6 +50,9 @@ paths:
       responses:
         200:
           description: Get Todo Items
+          content:
+            'text/plain':
+              example: Write lit OpenAPI specs!
 ```
 
 ## Mock All Responses
@@ -61,11 +64,13 @@ const Prism = require('@stoplight/prism-http');
 const path = require('path');
 
 // Create Prism instance and configure it as a mocker generating static examples
-const config = { mock: { dynamic: false } };
-const prism = Prism.createInstance(config);
+const prism = Prism.createInstance({
+  mock: { dynamic: false },
+  validate: { request: { query: true } },
+});
 
 // Load openapi spec file
-const specPath = path.relative('.', 'basic.oas3.yaml');
+const specPath = path.resolve(process.cwd(), 'basic.oas3.yaml');
 prism
   .load({ path: specPath })
   .then(() => {
@@ -75,8 +80,12 @@ prism
       url: {
         path: '/todos',
       },
+      headers: {
+        Accept: 'text/plain',
+      },
     });
   })
+  .catch(e => console.error(e))
   .then(prismResponse => {
     console.log(prismResponse.output);
   });
@@ -85,9 +94,10 @@ prism
 Output
 
 ```bash
-{ statusCode: 200,
+{
+  statusCode: 200,
   headers: { 'Content-type': 'text/plain' },
-  body: undefined
+  body: 'Write lit OpenAPI specs!'
 }
 ```
 
