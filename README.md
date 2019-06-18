@@ -180,6 +180,14 @@ Will give you the following error:
 - [ ] Recording / "Learning" mode to create spec files
 - [ ] Data Persistence (allow Prism act like a sandbox)
 
+## Experimental programmatic APIs (advanced topic)
+
+### HTTP Client
+
+Prism's HTTP Client programmatic API lets you write custom code and build things like request makers and mocking servers (in fact Prism CLI uses the HTTP Client deep inside!).
+
+You can find more details about this package in [its dedicated documentation](packages/http/README.md).
+
 ## FAQs
 
 **Why am I getting 404 errors when I include my basePath?**
@@ -216,3 +224,4 @@ If you are interested in contributing to Prism itself, check out our [contributi
 [cli]: https://www.npmjs.com/package/@stoplight/prism-cli
 [2.x]: https://github.com/stoplightio/prism/tree/2.x
 [cli-docs]: packages/cli/README.md
+[http-docs]: packages/http/README.md
