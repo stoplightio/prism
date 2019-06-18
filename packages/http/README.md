@@ -1,10 +1,12 @@
-# Http Client
+# HTTP Client
 
-This package provides a http client featuring the ability to:
+This package provides a HTTP client featuring the ability to:
 
-- mock responses based of OAS spec
-- make requests to a http server
-- validate the request and/or the response according to the provided OAS
+- mock responses based of OpenAPI spec
+- make requests to a HTTP server
+- validate the request and/or the response according to the provided OpenAPI
+
+In essence it's an HTTP client (similar to axios - in fact, we use axios to make requests) with the ability to mock responses and validate requests.
 
 The goal of this document is to provide you with some basic code examples to get you started and to cover some of the advanced scenarios.
 
@@ -35,7 +37,7 @@ paths:
           description: Get Todo Items
 ```
 
-## I want to mock responses of operations defined in an OAS file
+## I want to mock responses of operations defined in an OpenAPI file
 
 [Try it out!](https://repl.it/@ChrisMiaskowski/prism-http-client-basic-mocking)
 
@@ -73,7 +75,7 @@ Output
   body: undefined }
 ```
 
-## I want to make a http request a server
+## I want to make a HTTP request a server
 
 In this use case we assume we have a server running at `http://localhost:4010`
 that is able to handle `GET /todos` request.
@@ -83,7 +85,7 @@ We don't want to mock a reqeust, we simply want to make the request, hit the act
 ```javascript
 const Prism = require('@stoplight/prism-http');
 
-// Create Prism instance and configure it to make http requests (mock: false)
+// Create Prism instance and configure it to make HTTP requests (mock: false)
 const config = { mock: false };
 const prism = Prism.createInstance(config);
 prism
@@ -144,7 +146,7 @@ prism
 
 ## Creating Prism Instance
 
-In order to create and instance of Http Client (later referred to as `prism` for simplicity) use the `createInstance` function, like so:
+In order to create and instance of HTTP Client (later referred to as `prism` for simplicity) use the `createInstance` function, like so:
 
 ```javascript
 const Prism = require('@stoplight/prism-http');
@@ -207,7 +209,7 @@ const config = {
 };
 ```
 
-With the above configuration the http client will proxy your requests to a server and will validate the response with the OAS you loaded. However, it will not validate the input (e.g. will not check whether the provided query param is valid).
+With the above configuration the http client will proxy your requests to a server and will validate the response with the OpenAPI you loaded. However, it will not validate the input (e.g. will not check whether the provided query param is valid).
 
 **Validate only request's body and response's headers**
 
@@ -234,7 +236,7 @@ const config = {
 };
 ```
 
-Generating static responses means that if an OAS operation's response has any examples defined the payload we construct will use those examples.
+Generating static responses means that if an OpenAPI operation's response has any examples defined the payload we construct will use those examples.
 
 This contrasts "dynamic responses" which means generating responses from a json schema.
 
@@ -262,7 +264,7 @@ const config = {
 };
 ```
 
-This will enforce a 403 response (given that such response is defined in your OAS file).
+This will enforce a 403 response (given that such response is defined in your OpenAPI file).
 
 ## Loading specs
 
@@ -321,9 +323,9 @@ This will instruct Prism to do one of the two:
 
 - if mocking is **disabled** (`{ mock: false }`)
   - it will use that `baseUrl` to make a request to the server (`GET http://localhost:4010/path`)
-  - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OAS and **add an input warning to the .process return value if it is not valid**
+  - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OpenAPI and **add an input warning to the .process return value if it is not valid**
 - if mocking is **enabled**
-  - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OAS and **return an error if it is not valid**
+  - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OpenAPI and **return an error if it is not valid**
 
 ## Understanding response
 

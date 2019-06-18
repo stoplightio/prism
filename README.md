@@ -182,9 +182,9 @@ Will give you the following error:
 
 ## Experimental programmatic APIs (advanced topic)
 
-### Http Client
+### HTTP Client
 
-Prism's Http Client programmatic API lets you write custom code and build things like request makers and mocking servers (in fact Prism CLI uses the Http Client deep inside!).
+Prism's HTTP Client programmatic API lets you write custom code and build things like request makers and mocking servers (in fact Prism CLI uses the HTTP Client deep inside!).
 
 You can find more details about this package in [its dedicated documentation](packages/http/README.md).
 
@@ -225,7 +225,3 @@ If you are interested in contributing to Prism itself, check out our [contributi
 [2.x]: https://github.com/stoplightio/prism/tree/2.x
 [cli-docs]: packages/cli/README.md
 [http-docs]: packages/http/README.md
-
-```
-
-```
