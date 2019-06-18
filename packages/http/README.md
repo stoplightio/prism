@@ -26,7 +26,9 @@ The goal of this document is to provide you with some basic code examples to get
 
 # Installation
 
-`yarn add @stoplight/prism-http`
+```bash
+yarn add @stoplight/prism-http
+```
 
 # Basic Usages
 
@@ -51,7 +53,7 @@ paths:
           description: Get Todo Items
 ```
 
-## I want to mock responses of operations defined in an OpenAPI file
+## Mock All Responses
 
 [Try it out!](https://repl.it/@ChrisMiaskowski/prism-http-client-basic-mocking)
 
@@ -89,7 +91,7 @@ Output
   body: undefined }
 ```
 
-## I want to make a HTTP request a server
+## Do Not Mock Responses
 
 In this use case we assume we have a server running at `http://localhost:4010`
 that is able to handle `GET /todos` request.
@@ -117,7 +119,7 @@ prism
 
 In response you'll get whatever the server responds with.
 
-## I want all my requests to talk to a server unless I override it per a reqeust
+## Mock Single Response
 
 In the following example we will first instantiate Prism to make requests to an actual server.
 
