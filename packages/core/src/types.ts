@@ -109,6 +109,8 @@ export type ProblemJson = {
   detail: string;
 };
 
+export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+
 export class ProblemJsonError extends Error {
   public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
     const error = new ProblemJsonError(

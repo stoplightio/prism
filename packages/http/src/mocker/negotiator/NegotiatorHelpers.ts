@@ -2,7 +2,7 @@ import { Either, left, right } from 'fp-ts/lib/Either';
 import { reader, Reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';
 
-import { PickRequired } from '@stoplight/prism-http';
+import { PickRequired } from '@stoplight/prism-core';
 import { ContentExample, NonEmptyArray } from '@stoplight/prism-http/src/types';
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 // @ts-ignore

@@ -2,8 +2,8 @@ import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/type
 import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { JSONSchema } from '@stoplight/prism-http';
 import { JSONSchema4 } from 'json-schema';
+import { JSONSchema } from '../../';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';

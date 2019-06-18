@@ -1,19 +1,21 @@
 {
-  "exclude": ["**/__tests__"],
+  "exclude": [
+    "**/__tests__"
+  ],
   "include": [],
   "extends": "./tsconfig.json",
   "references": [
     {
-      "path": "./core"
+      "path": "./core/tsconfig.build.json"
     },
     {
-      "path": "./http"
+      "path": "./http/tsconfig.build.json"
     },
     {
-      "path": "./http-server"
+      "path": "./http-server/tsconfig.build.json"
     },
     {
-      "path": "./cli"
+      "path": "./cli/tsconfig.build.json"
     }
   ]
 }

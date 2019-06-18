@@ -1,5 +1,5 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { JSONSchema } from '@stoplight/prism-http';
+import { JSONSchema } from '../../';
 
 export interface IHttpValidator<Target, Specs> {
   validate(target: Target, specs: Specs[], mediaType?: string): IPrismDiagnostic[];

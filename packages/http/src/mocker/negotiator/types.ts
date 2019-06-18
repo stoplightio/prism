@@ -1,6 +1,6 @@
-import { IHttpOperationConfig, JSONSchema } from '@stoplight/prism-http';
 import { ContentExample } from '@stoplight/prism-http/src/types';
 import { IHttpHeaderParam } from '@stoplight/types';
+import { IHttpOperationConfig, JSONSchema } from '../../';
 
 export interface IHttpNegotiationResult {
   code: string;

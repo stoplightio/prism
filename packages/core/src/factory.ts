@@ -1,7 +1,6 @@
-import { PickRequired } from '@stoplight/prism-http';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
-import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, ProblemJsonError } from './types';
+import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 
 export function factory<Resource, Input, Output, Config, LoadOpts>(
   defaultConfig: PrismConfig<Config, Input>,
