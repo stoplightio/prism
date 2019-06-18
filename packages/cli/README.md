@@ -81,8 +81,8 @@ Processing logs slows down the process significantly. If you're planning to use 
 
 ### Debugging
 
-1. `node --inspect -r tsconfig-paths/register bin/run`
-2. .vscode/launch.json
+1. `yarn cli:debug mock file.oas.yml`
+2. Run your preferred debugger on the newly created process. If you're into VSCoode, you can create `.vscode/launch.json` and put this content inside:
 
 ```json
 {
@@ -93,5 +93,4 @@ Processing logs slows down the process significantly. If you're planning to use 
 },
 ```
 
-3. Run VSCode debugger
-4. Enjoy breakpoints in VSCode :)
+4. Enjoy the breakpoints :)
