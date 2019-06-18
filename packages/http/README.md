@@ -178,7 +178,7 @@ There are two (both optional) arguments you can supply `createInstance` with:
 
 We will cover the `config` argument in next section and we'll leave `components` for some other time (overriding default `components` is the _ultimate advanced stuff_).
 
-### Config Property
+### Config Object
 
 Prism's config object (`IHttpConfig`) allows you to manipulate Prism's behaviour in many ways. For instance:
 
@@ -267,7 +267,7 @@ const config = {
 };
 ```
 
-In OAS3 one can construct such response that will have multiple examples mapped by keys.
+In OpenAPI Specification 3 one can construct such response that will have multiple examples mapped by keys.
 This configuration allows you to be very specific which example you want to choose.
 
 **Return 403 response of specified mime type**
