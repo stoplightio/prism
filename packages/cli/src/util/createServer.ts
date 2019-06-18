@@ -15,17 +15,6 @@ export function createServer(spec: string, config: IHttpConfig, logger: Logger) 
     : createHttpServer({ path: spec }, { config, components: { logger } });
 }
 
-function isHttp(spec: string) {
-  return !!spec.match(/^https?:\/\//);
-}
-
-type CreatePrismOptions = {
-  dynamic: boolean;
-  host?: string;
-  port: number;
-  spec: string;
-};
-
 export async function createMultiProcessPrism(options: CreatePrismOptions) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
@@ -102,3 +91,14 @@ function logCLIMessage(message: string) {
     message,
   });
 }
+
+function isHttp(spec: string) {
+  return !!spec.match(/^https?:\/\//);
+}
+
+type CreatePrismOptions = {
+  dynamic: boolean;
+  host?: string;
+  port: number;
+  spec: string;
+};

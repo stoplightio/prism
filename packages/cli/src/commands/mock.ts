@@ -7,7 +7,7 @@ export default class Server extends Command {
   public static flags = FLAGS;
   public static args = [ARGS.spec];
 
-  public async run() {
+  public run() {
     const {
       flags: { port, dynamic, host, multiprocess },
       args: { spec },
