@@ -1,16 +1,13 @@
-import { IHttpConfig, TPrismHttpComponents, TPrismHttpInstance } from '@stoplight/prism-http';
-import { FastifyInstance, ServerOptions } from 'fastify';
+import { IHttpConfig, PickRequired, TPrismHttpComponents, TPrismHttpInstance } from '@stoplight/prism-http';
+import { FastifyInstance } from 'fastify';
 
 export interface IPrismHttpServerOpts<LoaderInput> {
-  fastify?: ServerOptions;
-  components?: TPrismHttpComponents<LoaderInput>;
+  components?: PickRequired<TPrismHttpComponents<LoaderInput>, 'logger'>;
   config: Partial<IHttpConfig>;
 }
 
 export interface IPrismHttpServer<LoaderInput> {
   readonly prism: TPrismHttpInstance<LoaderInput>;
   readonly fastify: FastifyInstance;
-  listen: ListenFunc;
+  listen: (port: number, address?: string, backlog?: number) => Promise<string>;
 }
-
-export type ListenFunc = (port: number, address?: string, backlog?: number) => Promise<string>;

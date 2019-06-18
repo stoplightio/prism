@@ -18,7 +18,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 - Prism now has got a static example fallback in case the `dynamic` flag is not enabled #347
-- Prism can now validate servers #351
 
 # 3.0.0-alpha.14 (2019-06-11)
 

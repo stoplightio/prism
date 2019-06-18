@@ -1,6 +1,9 @@
+import { createLogger } from '@stoplight/prism-core';
 import { relative, resolve } from 'path';
 import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
+
+const logger = createLogger('TEST', { enabled: false });
 
 function checkErrorPayloadShape(payload: string) {
   const parsedPayload = JSON.parse(payload);
@@ -12,7 +15,7 @@ function checkErrorPayloadShape(payload: string) {
 }
 
 async function instantiatePrism(specPath: string) {
-  const server = createServer({}, { components: {}, config: { mock: { dynamic: false } } });
+  const server = createServer({}, { components: { logger }, config: { mock: { dynamic: false } } });
   await server.prism.load({
     path: relative(process.cwd(), specPath),
   });

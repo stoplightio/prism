@@ -1,4 +1,4 @@
-import { configMergerFactory } from '@stoplight/prism-core';
+import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import * as fastify from 'fastify';
 // @ts-ignore
@@ -12,7 +12,13 @@ export const createServer = <LoaderInput>(
   loaderInput: LoaderInput,
   opts: IPrismHttpServerOpts<LoaderInput>,
 ): IPrismHttpServer<LoaderInput> => {
-  const server = fastify().register(fastifyAcceptsSerializer, {
+  const { components, config } = opts;
+
+  const server = fastify({
+    logger: (components && components.logger) || createLogger('HTTP SERVER'),
+    disableRequestLogging: true,
+    modifyCoreObjects: false,
+  }).register(fastifyAcceptsSerializer, {
     serializers: [
       {
         /*
@@ -43,7 +49,6 @@ export const createServer = <LoaderInput>(
     return done(error);
   });
 
-  const { components = {}, config } = opts;
   const mergedConfig = configMergerFactory({ mock: { dynamic: false } }, config, getHttpConfigFromRequest);
 
   const prism = createInstance<LoaderInput>(mergedConfig, components);
@@ -78,24 +83,26 @@ const replyHandler = <LoaderInput>(
   prism: TPrismHttpInstance<LoaderInput>,
 ): fastify.RequestHandler<IncomingMessage, ServerResponse> => {
   return async (request, reply) => {
-    try {
-      const {
-        req: { method, url },
-        body,
-        headers,
-        query,
-      } = request;
+    const {
+      req: { method, url },
+      body,
+      headers,
+      query,
+    } = request;
 
-      const response = await prism.process({
-        method: (method ? method.toLowerCase() : 'get') as IHttpMethod,
-        url: {
-          path: (url || '/').split('?')[0],
-          query,
-          baseUrl: query.__server,
-        },
-        headers,
-        body,
-      });
+    const input = {
+      method: (method ? method.toLowerCase() : 'get') as IHttpMethod,
+      url: {
+        path: (url || '/').split('?')[0],
+        query,
+        baseUrl: query.__server,
+      },
+      headers,
+      body,
+    };
+
+    try {
+      const response = await prism.process(input);
 
       const { output } = response;
 
@@ -120,6 +127,8 @@ const replyHandler = <LoaderInput>(
       } else {
         reply.res.end();
       }
+
+      request.log.error({ input }, `Request terminated with error: ${e}`);
     }
   };
 };

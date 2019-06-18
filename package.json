@@ -43,6 +43,8 @@
     "@types/lodash": "^4.14.132",
     "@types/nock": "^10.0.3",
     "@types/node": "^12.0.2",
+    "@types/pino": "^5.8.7",
+    "@types/split2": "^2.1.6",
     "@types/signale": "^1.2.1",
     "@types/type-is": "^1.6.2",
     "chance": "^1.0.18",

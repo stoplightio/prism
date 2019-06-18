@@ -1,7 +1,10 @@
 jest.mock('../utils/configMergerFactory');
 
 import { factory } from '../factory';
+import { createLogger } from '../logger';
 import { configMergerFactory } from '../utils/configMergerFactory';
+
+const logger = createLogger('TEST', { enabled: false });
 
 describe('graph', () => {
   test('component functions pass the default component to user provided overrides', async () => {
@@ -24,6 +27,7 @@ describe('graph', () => {
      * as an argument
      */
     const prism = createInstance(undefined, {
+      logger,
       loader: {
         load: async (opts, defaultLoader) => {
           /**
