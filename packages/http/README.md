@@ -35,7 +35,6 @@ yarn add @stoplight/prism-http
 > Note: the examples in this document use the following spec
 
 ```yaml
----
 openapi: 3.0.2
 paths:
   /todos:
