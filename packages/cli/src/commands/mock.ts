@@ -9,7 +9,7 @@ import { PassThrough, Readable } from 'stream';
 import { ARGS, FLAGS, LOG_COLOR_MAP } from '../const/options';
 import { createServer } from '../util/createServer';
 
-function logEnabledFeature(message: string) {
+function logCLIMessage(message: string) {
   signale.star({
     prefix: chalk.bgWhiteBright.black('[CLI]'),
     message,
@@ -34,11 +34,11 @@ export default class Server extends Command {
       signaleInteractiveInstance.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
       if (dynamic) {
-        logEnabledFeature(`Dynamic example generation ${chalk.green('enabled')}.`);
+        logCLIMessage(`Dynamic example generation ${chalk.green('enabled')}.`);
       }
 
       if (multiprocess) {
-        logEnabledFeature(`Multi process ${chalk.green('enabled')}.`);
+        logCLIMessage(`Multi process ${chalk.green('enabled')}.`);
 
         const worker = cluster.fork();
 
