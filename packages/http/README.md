@@ -10,6 +10,20 @@ In essence it's an HTTP client (similar to axios - in fact, we use axios to make
 
 The goal of this document is to provide you with some basic code examples to get you started and to cover some of the advanced scenarios.
 
+# Table of Contents
+
+- [Installation](#installation)
+- [Basic Usages](#basic-usages)
+- [Advanced Topics](#advanced-topics)
+  - [Creating Prism Instance](#creating-prism-instance)
+    - [Config Property](#config-property)
+      - [Config Examples](#config-examples)
+  - [Loading specs](#loading-specs)
+  - [Making requests](#making-requests)
+    - [Server Validation](#server-validation)
+  - [Understanding response](#understanding-response)
+  - [Gotchas](#gotchas)
+
 # Installation
 
 `yarn add @stoplight/prism-http`
