@@ -30,8 +30,7 @@ export default class Server extends Command {
     if (cluster.isMaster) {
       cluster.setupMaster({ silent: true });
 
-      const signaleInteractiveInstance = new signale.Signale({ interactive: true });
-      signaleInteractiveInstance.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
+      signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
       if (dynamic) {
         logCLIMessage(`Dynamic example generation ${chalk.green('enabled')}.`);
