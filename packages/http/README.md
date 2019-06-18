@@ -87,7 +87,7 @@ Output
 ```bash
 { statusCode: 200,
   headers: { 'Content-type': 'text/plain' },
-  body: undefined 
+  body: undefined
 }
 ```
 
@@ -132,9 +132,6 @@ prism
 
 ## Make Request To An Upstream Server
 
-In this use case we assume we have a server running at `http://localhost:4010`
-that is able to handle `GET /todos` request.
-
 We don't want to mock a reqeust, we simply want to make the request, hit the actual server and get the response back.
 
 ```javascript
@@ -147,8 +144,8 @@ prism
   .process({
     method: 'get',
     url: {
-      path: '/todos',
-      baseUrl: 'http://localhost:4010',
+      path: '/facts',
+      baseUrl: 'https://cat-fact.herokuapp.com',
     },
   })
   .then(prismResponse => {
@@ -156,7 +153,11 @@ prism
   });
 ```
 
-In response you'll get whatever the server responds with.
+In response you'll get some... facts about cats. For example:
+
+> Cats aren’t the only animals that purr — squirrels, lemurs, elephants, and even gorillas purr too.
+
+:)
 
 # Advanced Topics
 
