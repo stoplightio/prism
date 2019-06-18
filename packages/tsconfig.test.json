@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@stoplight/prism-core": ["./core/src"],
+      "@stoplight/prism-http": ["./http/src"],
+      "@stoplight/prism-http-server": ["./http-server/src"]
+    }
   },
   "extends": "./tsconfig.build.json",
   "exclude": [],

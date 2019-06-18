@@ -3,10 +3,10 @@ import { reader, Reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';
 
 import { PickRequired } from '@stoplight/prism-core';
-import { ContentExample, NonEmptyArray } from '@stoplight/prism-http/src/types';
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 // @ts-ignore
 import * as accepts from 'accepts';
+import { ContentExample, NonEmptyArray } from '../../';
 import withLogger from '../../withLogger';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 

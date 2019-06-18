@@ -1,6 +1,6 @@
 import * as axios from 'axios';
 
-import { ProblemJsonError } from '@stoplight/prism-http';
+import { ProblemJsonError } from '../../';
 import { httpInputs, httpOperations, httpRequests } from '../../__tests__/fixtures';
 import { NO_BASE_URL_ERROR } from '../../router/errors';
 import { HttpForwarder } from '../HttpForwarder';

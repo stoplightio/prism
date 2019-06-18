@@ -1,7 +1,7 @@
 const { pathsToModuleNameMapper } = require('ts-jest/utils');
 const path = require('path')
 const { mapValues } = require('lodash')
-const { compilerOptions } = require('./packages/cli/tsconfig.json');
+const { compilerOptions } = require('./packages/tsconfig.test');
 
 const projectDefault = {
   moduleNameMapper: mapValues(pathsToModuleNameMapper(compilerOptions.paths), v => path.resolve(path.join('packages', v))),

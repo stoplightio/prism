@@ -1,5 +1,5 @@
-import { ContentExample } from '@stoplight/prism-http/src/types';
 import { IHttpHeaderParam } from '@stoplight/types';
+import { ContentExample } from '../../';
 import { IHttpOperationConfig, JSONSchema } from '../../';
 
 export interface IHttpNegotiationResult {

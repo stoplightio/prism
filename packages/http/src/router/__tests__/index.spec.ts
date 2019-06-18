@@ -1,6 +1,6 @@
-import { IHttpMethod, ProblemJsonError } from '@stoplight/prism-http';
 import { IHttpOperation, IServer } from '@stoplight/types';
 import { Chance } from 'chance';
+import { IHttpMethod, ProblemJsonError } from '../../';
 import {
   NO_METHOD_MATCHED_ERROR,
   NO_PATH_MATCHED_ERROR,
