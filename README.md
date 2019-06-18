@@ -173,8 +173,7 @@ Will give you the following error:
 ## What's next for Prism?
 
 - [x] Server Validation
-- [x] Accept header validation
-- [x] Content header validation
+- [x] Content Negotiation
 - [ ] Security Validation
 - [ ] Custom Mocking
 - [ ] Validation Proxy
