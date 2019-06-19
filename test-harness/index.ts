@@ -1,6 +1,6 @@
 import { join } from 'path';
+import { constructMasterFileName, makeRequest, readFile } from './helpers';
 import requests from './requests';
-import { makeRequest, constructMasterFileName, readFile } from './helpers';
 
 async function runTest(req) {
   const { dynamic, ...request } = req;
@@ -18,7 +18,7 @@ async function runTest(req) {
 
 const spec = process.env.SPEC || join(__dirname, '/../examples/petstore.oas2.json');
 
-const createSpec = (specPath) => {
+const createSpec = specPath => {
   return () => {
     describe(specPath, () => {
       describe('When validating a supported server', () => {
@@ -132,22 +132,16 @@ const createSpec = (specPath) => {
 
             expect(reqRes.response.status).toBe(masterFile.response.status);
             expect(reqRes.response.status).toBe(200);
-          }
+          },
         );
       });
 
       describe('When using a verb that is not defined on a path', () => {
-        it(
-          [
-            'Informs with 405 that the verb is not served',
-            'doesnt matter if auth implemented',
-          ].join(),
-          async () => {
-            const { reqRes, masterFile } = await runTest(requests[6]);
+        it(['Informs with 405 that the verb is not served', 'doesnt matter if auth implemented'].join(), async () => {
+          const { reqRes, masterFile } = await runTest(requests[6]);
 
-            expect(reqRes).toMatchObject(masterFile);
-          }
-        );
+          expect(reqRes).toMatchObject(masterFile);
+        });
       });
 
       describe('When a response with a specific status code is requested using the __code property', () => {
@@ -209,12 +203,12 @@ const createSpec = (specPath) => {
             const { reqRes, masterFile } = await runTest(requests[10]);
 
             const soldAndOrAvailable = reqRes.response.body.filter(
-              ({ status }) => !(status === 'sold' || status === 'available')
+              ({ status }) => !(status === 'sold' || status === 'available'),
             );
 
             expect(soldAndOrAvailable.length).toBe(0);
             expect(reqRes.response.status).toBe(masterFile.response.status);
-          }
+          },
         );
       });
 
@@ -237,7 +231,9 @@ const createSpec = (specPath) => {
 
             expect(reqRes).toMatchObject(masterFile);
 
-            expect(payload.detail).toContain("should have required property 'name'");
+            expect(payload.detail).toContain(
+              'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+            );
             expect(reqRes.response.status).toBe(masterFile.response.status);
             expect(reqRes.response.status).toBe(422);
           });

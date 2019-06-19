@@ -76,7 +76,7 @@ describe('GET /pet with invalid body', () => {
 
     expect(response.statusCode).toBe(422);
     expect(response.payload).toEqual(
-      '{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid: [{\\"path\\":[\\"body\\"],\\"code\\":\\"type\\",\\"message\\":\\"should be object\\",\\"severity\\":0}]"}',
+      '{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]}',
     );
     await server.fastify.close();
   });

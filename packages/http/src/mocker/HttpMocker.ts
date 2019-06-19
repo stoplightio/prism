@@ -59,14 +59,7 @@ function negotiateResponse(
     return withLogger(logger => logger.warn('Request did not pass the validation rules')).chain(() =>
       helpers
         .negotiateOptionsForInvalidRequest(resource.responses)
-        .map(e =>
-          e.mapLeft(() =>
-            ProblemJsonError.fromTemplate(
-              UNPROCESSABLE_ENTITY,
-              `Your request body is not valid: ${JSON.stringify(input.validations.input)}`,
-            ),
-          ),
-        ),
+        .map(e => e.mapLeft(() => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, input.validations.input))),
     );
   } else {
     return withLogger(logger =>

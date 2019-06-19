@@ -12,14 +12,34 @@
     "statusText": "Unprocessable Entity",
     "headers": {
       "content-type": ["application/problem+json"],
-      "content-length": ["518"],
+      "content-length": ["614"],
       "connection": ["close"]
     },
     "body": {
       "type": "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY",
       "title": "Invalid request body payload",
       "status": 422,
-      "detail": "Your request body is not valid: [{\"path\":[\"body\"],\"code\":\"required\",\"message\":\"should have required property 'name'\",\"severity\":0},{\"path\":[\"body\"],\"code\":\"required\",\"message\":\"should have required property 'photoUrls'\",\"severity\":0},{\"path\":[\"body\",\"status\"],\"code\":\"enum\",\"message\":\"should be equal to one of the allowed values\",\"severity\":0}]"
+      "detail": "Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.",
+      "validation": [
+        {
+          "location": ["body"],
+          "severity": "Error",
+          "code": "required",
+          "message": "should have required property 'name'"
+        },
+        {
+          "location": ["body"],
+          "severity": "Error",
+          "code": "required",
+          "message": "should have required property 'photoUrls'"
+        },
+        {
+          "location": ["body", "status"],
+          "severity": "Error",
+          "code": "enum",
+          "message": "should be equal to one of the allowed values"
+        }
+      ]
     }
   }
 }
