@@ -2,7 +2,8 @@ module.exports = {
   projects: [
     {
       displayName: 'HARNESS',
-      testMatch: ['<rootDir>/test-harness/index.js']
+      preset: 'ts-jest',
+      testMatch: ['<rootDir>/test-harness/index.ts']
     }
   ]
 };
