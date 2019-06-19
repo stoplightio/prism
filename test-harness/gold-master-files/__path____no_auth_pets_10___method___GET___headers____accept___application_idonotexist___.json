@@ -4,22 +4,15 @@
     "headers": {
       "accept": "application/idonotexist"
     },
-    "path": "/no_auth/pets/10",
-    "host": "http://localhost:4010"
+    "path": "/no_auth/pets/10"
   },
   "response": {
     "status": 406,
     "statusText": "Not Acceptable",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "100"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["100"],
+      "connection": ["close"]
     },
     "body": {
       "statusCode": 406,

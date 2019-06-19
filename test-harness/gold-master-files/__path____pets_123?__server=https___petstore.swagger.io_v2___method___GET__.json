@@ -2,28 +2,19 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/pets/123?__server=https://petstore.swagger.io/v2",
-    "host": "http://localhost:4010"
+    "path": "/pets/123?__server=https://petstore.swagger.io/v2"
   },
   "response": {
     "status": 200,
     "statusText": "OK",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "254"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["254"],
+      "connection": ["close"]
     },
     "body": {
       "name": "doggie",
-      "photoUrls": [
-        "deserunt commodo aute incididunt"
-      ],
+      "photoUrls": ["deserunt commodo aute incididunt"],
       "id": -21345246,
       "category": {
         "id": 64744067,

@@ -2,8 +2,7 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/pets/123?__server=https://petstore.io/v2",
-    "host": "http://localhost:4010"
+    "path": "/pets/123?__server=https://petstore.io/v2"
   },
   "response": {
     "status": 404,

@@ -39,7 +39,7 @@ const createSpec = (specPath) => {
         it('should return json problem', async () => {
           const { reqRes, masterFile } = await runTest(requests[20]);
 
-          expect(reqRes).toStrictEqual(masterFile);
+          expect(reqRes).toMatchObject(masterFile);
         });
       });
 
@@ -47,14 +47,14 @@ const createSpec = (specPath) => {
         it('"Missing X query param" error is returned', async () => {
           const { reqRes, masterFile } = await runTest(requests[0]);
 
-          expect(reqRes).toStrictEqual(masterFile);
+          expect(reqRes).toMatchObject(masterFile);
         });
 
         xdescribe('When authorization needed', () => {
           it('"Missing X query param" error is returned', async () => {
             const { reqRes, masterFile } = await runTest(requests[2]);
 
-            expect(reqRes).toStrictEqual(masterFile);
+            expect(reqRes).toMatchObject(masterFile);
           });
         });
       });
@@ -85,7 +85,7 @@ const createSpec = (specPath) => {
           it('A response with status code 200 is returned', async () => {
             const { reqRes, masterFile } = await runTest(requests[1]);
 
-            expect(reqRes).toStrictEqual(masterFile);
+            expect(reqRes).toMatchObject(masterFile);
           });
         });
       });
@@ -145,7 +145,7 @@ const createSpec = (specPath) => {
           async () => {
             const { reqRes, masterFile } = await runTest(requests[6]);
 
-            expect(reqRes).toStrictEqual(masterFile);
+            expect(reqRes).toMatchObject(masterFile);
           }
         );
       });
@@ -156,7 +156,7 @@ const createSpec = (specPath) => {
             it('Requested response for the given __code is returned with payload', async () => {
               const { reqRes, masterFile } = await runTest(requests[7]);
 
-              expect(reqRes).toStrictEqual(masterFile);
+              expect(reqRes).toMatchObject(masterFile);
             });
           });
 
@@ -193,7 +193,7 @@ const createSpec = (specPath) => {
             it('500 code is returned with error', async () => {
               const { reqRes, masterFile } = await runTest(requests[15]);
 
-              expect(reqRes).toStrictEqual(masterFile);
+              expect(reqRes).toMatchObject(masterFile);
             });
           });
         });
@@ -235,7 +235,7 @@ const createSpec = (specPath) => {
             const { reqRes, masterFile } = await runTest(requests[13]);
             const payload = reqRes.response.body;
 
-            expect(reqRes).toStrictEqual(masterFile);
+            expect(reqRes).toMatchObject(masterFile);
 
             expect(payload.detail).toContain("should have required property 'name'");
             expect(reqRes.response.status).toBe(masterFile.response.status);

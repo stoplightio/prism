@@ -5,22 +5,15 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "path": "/no_auth/pets",
-    "host": "http://localhost:4010"
+    "path": "/no_auth/pets"
   },
   "response": {
     "status": 422,
     "statusText": "Unprocessable Entity",
     "headers": {
-      "content-type": [
-        "application/problem+json"
-      ],
-      "content-length": [
-        "518"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/problem+json"],
+      "content-length": ["518"],
+      "connection": ["close"]
     },
     "body": {
       "type": "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY",

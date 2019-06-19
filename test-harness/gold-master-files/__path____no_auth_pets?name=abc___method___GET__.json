@@ -2,22 +2,15 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/no_auth/pets?name=abc",
-    "host": "http://localhost:4010"
+    "path": "/no_auth/pets?name=abc"
   },
   "response": {
     "status": 200,
     "statusText": "OK",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "34"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["34"],
+      "connection": ["close"]
     },
     "body": [
       {
