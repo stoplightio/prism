@@ -26,14 +26,6 @@ describe('getHttpConfigFromRequest()', () => {
         }),
       ).toMatchSnapshot();
     });
-    test('extracts mediaType', () => {
-      return expect(
-        getHttpConfigFromRequest({
-          method: 'get',
-          url: { path: '/', query: { __contentType: 'application/json' } },
-        }),
-      ).toMatchSnapshot();
-    });
     test('extracts example', () => {
       return expect(
         getHttpConfigFromRequest({

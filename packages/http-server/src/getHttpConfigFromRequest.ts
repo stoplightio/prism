@@ -19,7 +19,7 @@ export const getHttpConfigFromRequest: PartialPrismConfigFactory<IHttpConfig, IH
     return config;
   }
 
-  const { __code, __dynamic, __contentType, __example } = query;
+  const { __code, __dynamic, __example } = query;
 
   if (__code) {
     httpOperationConfig.code = __code;
@@ -27,10 +27,6 @@ export const getHttpConfigFromRequest: PartialPrismConfigFactory<IHttpConfig, IH
 
   if (__dynamic) {
     httpOperationConfig.dynamic = __dynamic === 'true';
-  }
-
-  if (__contentType) {
-    httpOperationConfig.mediaType = __contentType;
   }
 
   if (__example) {
