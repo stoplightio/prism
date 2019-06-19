@@ -1,22 +1,6 @@
 const { join } = require('path');
-const fetch = require('node-fetch');
 const requests = require('./requests');
-
-const { exec } = require('child_process');
-const { getPort, makeRequest, constructMasterFileName, readFile } = require('./helpers');
-
-const port = getPort(process);
-
-async function waitForPrism(done) {
-  try {
-    await fetch(`http://localhost:${port}`);
-    done();
-  } catch (err) {
-    setTimeout(() => {
-      waitForPrism(done);
-    }, 500);
-  }
-}
+const { makeRequest, constructMasterFileName, readFile } = require('./helpers');
 
 async function runTest(req) {
   const { dynamic, ...request } = req;
@@ -32,30 +16,11 @@ async function runTest(req) {
   };
 }
 
-function killPrism(done = () => null) {
-  exec(`fuser -k ${port}/tcp`, () => {
-    done();
-  });
-}
-
 const spec = process.env.SPEC || join(__dirname, '/../examples/petstore.oas2.json');
-const specs = spec.split(',');
 
-const createSpec = (specPath, prismCmd) => {
+const createSpec = (specPath) => {
   return () => {
     describe(specPath, () => {
-      beforeAll(done => {
-        killPrism();
-
-        exec(prismCmd);
-
-        waitForPrism(done);
-      });
-
-      afterAll(done => {
-        killPrism(done);
-      });
-
       describe('When validating a supported server', () => {
         it('with http schema should return 200', async () => {
           const { reqRes } = await runTest(requests[18]);
@@ -74,7 +39,7 @@ const createSpec = (specPath, prismCmd) => {
         it('should return json problem', async () => {
           const { reqRes, masterFile } = await runTest(requests[20]);
 
-          expect(reqRes).toStrictEqual(masterFile);
+          expect(reqRes).toMatchObject(masterFile);
         });
       });
 
@@ -82,14 +47,14 @@ const createSpec = (specPath, prismCmd) => {
         it('"Missing X query param" error is returned', async () => {
           const { reqRes, masterFile } = await runTest(requests[0]);
 
-          expect(reqRes).toStrictEqual(masterFile);
+          expect(reqRes).toMatchObject(masterFile);
         });
 
         xdescribe('When authorization needed', () => {
           it('"Missing X query param" error is returned', async () => {
             const { reqRes, masterFile } = await runTest(requests[2]);
 
-            expect(reqRes).toStrictEqual(masterFile);
+            expect(reqRes).toMatchObject(masterFile);
           });
         });
       });
@@ -120,7 +85,7 @@ const createSpec = (specPath, prismCmd) => {
           it('A response with status code 200 is returned', async () => {
             const { reqRes, masterFile } = await runTest(requests[1]);
 
-            expect(reqRes).toStrictEqual(masterFile);
+            expect(reqRes).toMatchObject(masterFile);
           });
         });
       });
@@ -180,7 +145,7 @@ const createSpec = (specPath, prismCmd) => {
           async () => {
             const { reqRes, masterFile } = await runTest(requests[6]);
 
-            expect(reqRes).toStrictEqual(masterFile);
+            expect(reqRes).toMatchObject(masterFile);
           }
         );
       });
@@ -191,7 +156,7 @@ const createSpec = (specPath, prismCmd) => {
             it('Requested response for the given __code is returned with payload', async () => {
               const { reqRes, masterFile } = await runTest(requests[7]);
 
-              expect(reqRes).toStrictEqual(masterFile);
+              expect(reqRes).toMatchObject(masterFile);
             });
           });
 
@@ -228,7 +193,7 @@ const createSpec = (specPath, prismCmd) => {
             it('500 code is returned with error', async () => {
               const { reqRes, masterFile } = await runTest(requests[15]);
 
-              expect(reqRes).toStrictEqual(masterFile);
+              expect(reqRes).toMatchObject(masterFile);
             });
           });
         });
@@ -258,7 +223,6 @@ const createSpec = (specPath, prismCmd) => {
           describe('Dynamic response', () => {
             it('should validate body params', async () => {
               const { reqRes, masterFile } = await runTest(requests[12]);
-              const payload = reqRes.response.body;
 
               expect(reqRes.response.status).toBe(masterFile.response.status);
               expect(reqRes.response.status).toBe(200);
@@ -271,7 +235,7 @@ const createSpec = (specPath, prismCmd) => {
             const { reqRes, masterFile } = await runTest(requests[13]);
             const payload = reqRes.response.body;
 
-            expect(reqRes).toStrictEqual(masterFile);
+            expect(reqRes).toMatchObject(masterFile);
 
             expect(payload.detail).toContain("should have required property 'name'");
             expect(reqRes.response.status).toBe(masterFile.response.status);
@@ -309,17 +273,4 @@ const createSpec = (specPath, prismCmd) => {
   };
 };
 
-const binary = `BINARY=${process.env.BINARY ||
-  join(__dirname, '/../cli-binaries/prism-cli-linux')}`;
-
-specs.forEach(specPath => {
-  const command = `${binary} SPEC=${specPath} PRISM_PORT=${port} yarn run.binary`;
-
-  createSpec(specPath, command)();
-});
-
-if (process.env.RUN_V2_TESTS) {
-  describe('prism v2', () => {
-    createSpec('./examples/petstore.oas2.json', `PRISM_PORT=${port} yarn run.binary.v2`)();
-  });
-}
+createSpec(spec)();

@@ -2,22 +2,15 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/no_auth/pets/findByStatus?status=available&__code=499",
-    "host": "http://localhost:4010"
+    "path": "/no_auth/pets/findByStatus?status=available&__code=499"
   },
   "response": {
     "status": 500,
     "statusText": "Internal Server Error",
     "headers": {
-      "content-type": [
-        "application/problem+json"
-      ],
-      "content-length": [
-        "139"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/problem+json"],
+      "content-length": ["139"],
+      "connection": ["close"]
     },
     "body": {
       "type": "https://stoplight.io/prism/errors#UNKNOWN",

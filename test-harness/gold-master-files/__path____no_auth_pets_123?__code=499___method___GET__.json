@@ -2,8 +2,7 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/no_auth/pets/123?__code=499",
-    "host": "http://localhost:4010"
+    "path": "/no_auth/pets/123?__code=499"
   },
   "response": {
     "status": 499,

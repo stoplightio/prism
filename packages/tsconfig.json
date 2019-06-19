@@ -1,5 +1,4 @@
 {
-  "exclude": ["**/__tests__"],
   "compilerOptions": {
     "baseUrl": ".",
     "declaration": true,

@@ -69,6 +69,10 @@
     "*.ts": [
       "tslint -p packages/tsconfig.test.json --fix",
       "git add"
+    ],
+    "*.json": [
+      "prettier --write",
+      "git add"
     ]
   },
   "husky": {

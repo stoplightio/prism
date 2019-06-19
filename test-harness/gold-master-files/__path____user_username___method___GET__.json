@@ -2,22 +2,15 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/user/username",
-    "host": "http://localhost:4010"
+    "path": "/user/username"
   },
   "response": {
     "status": 200,
     "statusText": "OK",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "219"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["219"],
+      "connection": ["close"]
     },
     "body": {
       "id": 70706068,

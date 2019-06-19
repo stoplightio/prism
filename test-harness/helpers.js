@@ -2,15 +2,13 @@ const fs = require('fs');
 const { join } = require('path');
 const fetch = require('node-fetch');
 
-const getPort = ({ PRISM_PORT }) => PRISM_PORT  || 4010;
-
 async function makeRequest({ path, method, headers = {}, body }) {
   const opts =
     method === 'GET' || method === 'HEAD'
       ? {}
       : { body: headers['Content-Type'] === 'application/json' ? JSON.stringify(body) : body };
   const baseOpts = Object.assign({}, opts, { method, headers });
-  const host = `http://localhost:${getPort(process)}`;
+  const host = `http://localhost:${process.env.PRISM_PORT || 4010}`;
   const requestConfig = {
     ...baseOpts,
     path,
@@ -50,5 +48,4 @@ module.exports = {
   constructMasterFileName,
   makeRequest,
   readFile,
-  getPort
 };

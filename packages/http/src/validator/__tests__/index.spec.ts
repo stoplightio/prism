@@ -1,6 +1,6 @@
 import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
 
-import { IPrismDiagnostic } from '@stoplight/prism-core/src';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IHttpNameValue, IHttpNameValues } from '../../types';
 import { IHttpRequest } from '../../types';
 import { HttpValidator } from '../index';
