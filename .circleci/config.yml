@@ -30,26 +30,52 @@ jobs:
           name: Run tests
           command: yarn test.coverage --verbose
       - run:
-          name: Create Linux CLI binary
-          command: HOST=host yarn build.binary
-      - run:
-          name: Download prism v2
-          command: curl -L https://github.com/stoplightio/prism/releases/download/v2.0.17/prism_linux_amd64 -o prism && chmod +x ./prism
-      - run:
-          name: Start Prism server
-          command: ./cli-binaries/prism-cli-linux mock ./examples/petstore.oas2.json -p 4010
-          background: true
-      - run:
-          name: Run Test Harness
-          command: |
-            PRISM_PORT=4010 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary
-      - run:
           name: cc-after
           command: |
             ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
       - run:
           name: Run build
           command: yarn build
+  harness:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.6.1
+      - run:
+          name: Create Linux CLI binary
+          command: HOST=host yarn build.binary
+      - run:
+          name: Start Prism server for OAS2 document
+          command: ./cli-binaries/prism-cli-linux mock ./examples/petstore.oas2.json -p 4010
+          background: true
+      - run:
+          name: Start Prism server for OAS3 document
+          command: ./cli-binaries/prism-cli-linux mock ./examples/petstore.oas3.json -p 4011
+          background: true
+      - run:
+          name: Wait Prism OAS2
+          command: dockerize -wait tcp://localhost:4010 -timeout 10s
+      - run:
+          name: Run OAS2 Harness
+          command: |
+            PRISM_PORT=4010 SPEC=./examples/petstore.oas2.json yarn test.binary
+      - run:
+          name: Wait Prism OAS3
+          command: dockerize -wait tcp://localhost:4011 -timeout 10s
+      - run:
+          name: Run OAS3 Harness
+          command: |
+            PRISM_PORT=4011 SPEC=./examples/petstore.oas3.json yarn test.binary
+
   publish:
     docker:
       - image: circleci/node:10
@@ -95,6 +121,10 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - harness:
+          filters:
+            tags:
+              only: /.*/
       - publish:
           filters:
             branches:
@@ -103,6 +133,7 @@ workflows:
               only: /^v.*/
           requires:
             - build
+            - harness
       - upload_artifacts:
           filters:
             branches:

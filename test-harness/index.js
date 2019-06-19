@@ -1,10 +1,6 @@
 const { join } = require('path');
 const requests = require('./requests');
-
-const { exec } = require('child_process');
-const { getPort, makeRequest, constructMasterFileName, readFile } = require('./helpers');
-
-const port = getPort(process);
+const { makeRequest, constructMasterFileName, readFile } = require('./helpers');
 
 async function runTest(req) {
   const { dynamic, ...request } = req;
@@ -21,7 +17,6 @@ async function runTest(req) {
 }
 
 const spec = process.env.SPEC || join(__dirname, '/../examples/petstore.oas2.json');
-const specs = spec.split(',');
 
 const createSpec = (specPath) => {
   return () => {
@@ -278,12 +273,4 @@ const createSpec = (specPath) => {
   };
 };
 
-specs.forEach(specPath => {
-  createSpec(specPath)();
-});
-
-if (process.env.RUN_V2_TESTS) {
-  describe('prism v2', () => {
-    createSpec('./examples/petstore.oas2.json', `PRISM_PORT=${port} yarn run.binary.v2`)();
-  });
-}
+createSpec(spec)();
