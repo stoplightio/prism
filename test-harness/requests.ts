@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     path: '/no_auth/pets',
     method: 'GET',

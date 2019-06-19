@@ -1,6 +1,6 @@
-const fs = require('fs');
-const { join } = require('path');
-const fetch = require('node-fetch');
+import * as  fs from 'fs';
+import { join } from 'path';
+import fetch from 'node-fetch';
 
 async function makeRequest({ path, method, headers = {}, body }) {
   const opts =
@@ -14,7 +14,6 @@ async function makeRequest({ path, method, headers = {}, body }) {
     path,
     host,
   };
-
   return fetch(`${host}${path}`, requestConfig)
     .then(async response => {
       const { date, ...headers } = response.headers.raw();
