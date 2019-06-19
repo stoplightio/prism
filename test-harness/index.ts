@@ -1,6 +1,6 @@
-const { join } = require('path');
-const requests = require('./requests');
-const { makeRequest, constructMasterFileName, readFile } = require('./helpers');
+import { join } from 'path';
+import requests from './requests';
+import { makeRequest, constructMasterFileName, readFile } from './helpers';
 
 async function runTest(req) {
   const { dynamic, ...request } = req;
