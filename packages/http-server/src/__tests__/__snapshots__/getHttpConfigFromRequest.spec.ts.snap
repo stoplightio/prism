@@ -64,11 +64,3 @@ Object {
   },
 }
 `;
-
-exports[`getHttpConfigFromRequest() given no default config extracts mediaType 1`] = `
-Object {
-  "mock": Object {
-    "mediaType": "application/json",
-  },
-}
-`;

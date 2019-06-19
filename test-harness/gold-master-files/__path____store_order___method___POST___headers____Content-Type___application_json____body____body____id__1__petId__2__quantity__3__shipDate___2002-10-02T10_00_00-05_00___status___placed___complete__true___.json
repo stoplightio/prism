@@ -5,22 +5,15 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "path": "/store/order",
-    "host": "http://localhost:4010"
+    "path": "/store/order"
   },
   "response": {
     "status": 200,
     "statusText": "OK",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "128"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["128"],
+      "connection": ["close"]
     },
     "body": {
       "id": -20519952,

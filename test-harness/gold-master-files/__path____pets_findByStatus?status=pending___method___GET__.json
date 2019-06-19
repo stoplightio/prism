@@ -2,22 +2,15 @@
   "request": {
     "method": "GET",
     "headers": {},
-    "path": "/pets/findByStatus?status=pending",
-    "host": "http://localhost:4010"
+    "path": "/pets/findByStatus?status=pending"
   },
   "response": {
     "status": 200,
     "statusText": "OK",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "242"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["242"],
+      "connection": ["close"]
     },
     "body": [
       {

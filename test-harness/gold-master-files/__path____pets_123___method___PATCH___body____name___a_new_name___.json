@@ -5,8 +5,7 @@
     },
     "method": "PATCH",
     "headers": {},
-    "path": "/pets/123",
-    "host": "http://localhost:4010"
+    "path": "/pets/123"
   },
   "response": {
     "status": 405,

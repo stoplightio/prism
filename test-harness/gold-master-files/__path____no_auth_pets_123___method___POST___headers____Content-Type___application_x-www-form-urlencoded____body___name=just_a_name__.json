@@ -5,22 +5,15 @@
     "headers": {
       "Content-Type": "application/x-www-form-urlencoded"
     },
-    "path": "/no_auth/pets/123",
-    "host": "http://localhost:4010"
+    "path": "/no_auth/pets/123"
   },
   "response": {
     "status": 415,
     "statusText": "Unsupported Media Type",
     "headers": {
-      "content-type": [
-        "application/json; charset=utf-8"
-      ],
-      "content-length": [
-        "87"
-      ],
-      "connection": [
-        "close"
-      ]
+      "content-type": ["application/json; charset=utf-8"],
+      "content-length": ["87"],
+      "connection": ["close"]
     },
     "body": {
       "statusCode": 415,

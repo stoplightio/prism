@@ -17,35 +17,23 @@ If the dependencies were not installed, you might experience `Error: command moc
 
 ## To run tests, run any of the following:
 
-_There is no need to manually start prism binary to run tests._
+Start Prism with the target file you'd like and then run the command
 
 1. `yarn test.binary`
-2. `SPEC=./examples/petstore.oas2.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary`
-3. `SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary`
-4. `RUN_V2_TESTS=1 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json yarn test.binary`
+2. `SPEC=./examples/petstore.oas2.json yarn test.binary`
+3. `SPEC=./examples/petstore.oas2.json PRISM_PORT=4011 yarn test.binary`
 
 > `SPEC` can take comma delimited paths to specs
 
-Adding `RUN_V2_TESTS=1` will additionally run the tests against `prism` version two binary.
-Please make sure that `prism` version 2 is available in the project root directory beforehand.
-If you have `prism` version 2 installed already, you can symlink the executable.
-Also, you can just run `curl -L https://github.com/stoplightio/prism/releases/download/v2.0.17/prism_linux_amd64 -o prism && chmod +x ./prism`
-to have `prism` version 2 downloaded to the project root directory.
 
 When doing `yarn test.binary`, the envs are optional, they have defaults.
 
 1. `SPEC` defaults to using `petstore.oas2.json`
-2. `BINARY` defaults to using `prism-cli-linux`
+2. `PRISM_PORT` defaults to using `4010`
 
 ## To record gold master files:
 
-1. `SPEC=./examples/petstore.oas2.json BINARY=./cli-binaries/prism-cli-linux yarn run.binary` - this will start up prism binary. When doing `yarn run.binary`, both `SPEC` and `BINARY` have to be defined.
+1. Run the Prism binary with the target file you want to record
 2. in another terminal window: `node test-harness/createMasterFiles.js` - this will use requests definitions from `requests.js` and save master files under `/gold-master-files`
 
 Gold master files contain data about both request and response.
-
-## Specifying a port for prism
-
-When doing `yarn test.binary`, `yarn run.binary` or `yarn run.binary.v2`, you can specify `PRISM_PORT` environment variable.
-So, for example, you can run `PRISM_PORT=8090 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary`
-to have prism running on port `8090`. If not specified, prism will run on port `4010`.
