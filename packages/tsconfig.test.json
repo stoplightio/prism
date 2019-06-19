@@ -7,7 +7,7 @@
       "@stoplight/prism-http-server": ["./http-server/src"]
     }
   },
-  "extends": "./tsconfig.build.json",
+  "extends": "./tsconfig.json",
   "exclude": [],
   "include": ["**/src"]
 }

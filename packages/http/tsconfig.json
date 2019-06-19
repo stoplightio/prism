@@ -1,13 +1,8 @@
 {
-  "include": [
-    "src"
-  ],
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@stoplight/prism-core": [
-        "./core/src"
-      ]
+      "@stoplight/prism-core": ["./core/src"]
     }
   }
 }
