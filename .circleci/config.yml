@@ -142,4 +142,5 @@ workflows:
               only: /^v.*/
           requires:
             - build
+            - harness
             - publish
