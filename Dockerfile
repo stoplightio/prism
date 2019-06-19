@@ -5,33 +5,49 @@ WORKDIR /usr/src/prism
 COPY package.json yarn.lock /usr/src/prism/
 COPY packages/ /usr/src/prism/packages/
 
-# To remove as soon as jsonpath dependency points to npm package (currently, it's a git dependency)
-RUN apt install git
-
-RUN yarn && yarn build
+RUN yarn
+RUN yarn build
+RUN yarn workspace @stoplight/prism-cli oclif-dev manifest
 
 ###############################################################
 FROM node:12 as dependencies
 
-WORKDIR /usr/src/prism/packages/cli/
+WORKDIR /usr/src/prism/
 
-COPY packages/cli/package.json ./package.json
-COPY yarn.lock ./yarn.lock
-
-RUN npm install tsconfig-paths \
-  && npm install globby
+COPY package.json /usr/src/prism/
+COPY packages/core/package.json /usr/src/prism/packages/core/
+COPY packages/http/package.json /usr/src/prism/packages/http/
+COPY packages/http-server/package.json /usr/src/prism/packages/http-server
+COPY packages/cli/package.json /usr/src/prism/packages/cli/
 
 ENV NODE_ENV production
-RUN yarn
+RUN yarn --production
 
 ###############################################################
 FROM node:12-alpine
 
 WORKDIR /usr/src/prism
+ENV NODE_ENV production
 
-COPY --from=compiler /usr/src/prism/packages/ /usr/src/prism/packages/
-COPY --from=dependencies /usr/src/prism/packages/cli/ /usr/src/prism/packages/cli/
+COPY package.json /usr/src/prism/
+COPY packages/core/package.json /usr/src/prism/packages/core/
+COPY packages/http/package.json /usr/src/prism/packages/http/
+COPY packages/http-server/package.json /usr/src/prism/packages/http-server/
+COPY packages/cli/package.json /usr/src/prism/packages/cli/
+
+COPY --from=compiler /usr/src/prism/packages/core/dist /usr/src/prism/packages/core/dist
+COPY --from=compiler /usr/src/prism/packages/http/dist /usr/src/prism/packages/http/dist
+COPY --from=compiler /usr/src/prism/packages/http-server/dist /usr/src/prism/packages/http-server/dist
+COPY --from=compiler /usr/src/prism/packages/cli/dist /usr/src/prism/packages/cli/dist
+
+COPY --from=compiler /usr/src/prism/packages/cli/oclif.manifest.json /usr/src/prism/packages/cli/oclif.manifest.json
+COPY --from=compiler /usr/src/prism/packages/cli/bin /usr/src/prism/packages/cli/bin
+
+COPY --from=dependencies /usr/src/prism/node_modules/ /usr/src/prism/node_modules/
+COPY --from=dependencies /usr/src/prism/packages/core/node_modules/ /usr/src/prism/packages/core/node_modules/
+COPY --from=dependencies /usr/src/prism/packages/http/node_modules/ /usr/src/prism/packages/http/node_modules/
+COPY --from=dependencies /usr/src/prism/packages/cli/node_modules/ /usr/src/prism/packages/cli/node_modules/
 
 WORKDIR /usr/src/prism/packages/cli/
 
-ENTRYPOINT [ "node", "-r", "tsconfig-paths/register", "bin/run" ]
+ENTRYPOINT [ "node", "bin/run" ]
