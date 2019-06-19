@@ -3,9 +3,7 @@
   "paths": {
     "/todos": {
       "get": {
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "schema": {
@@ -13,16 +11,14 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "name": {"type": "string"},
-                  "completed": {"type": ["boolean", "null"]}
+                  "name": { "type": "string" },
+                  "completed": { "type": ["boolean", "null"] }
                 },
                 "required": ["name", "completed"]
               }
             },
             "examples": {
-              "application/json": [
-                {"id": 1, "name": "design the thingz", "completed": true}
-              ]
+              "application/json": [{ "id": 1, "name": "design the thingz", "completed": true }]
             }
           }
         }

@@ -1,6 +1,6 @@
 import { HttpParamStyles, IHttpHeaderParam } from '@stoplight/types';
 
-import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IHttpNameValue } from '../../types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { HttpParamsValidator } from './params';

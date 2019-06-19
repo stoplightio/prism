@@ -1,4 +1,4 @@
-import { JSONSchema } from 'http/src/types';
+import { JSONSchema } from '../../../types';
 import { generate } from '../JSONSchema';
 
 describe('JSONSchema generator', () => {

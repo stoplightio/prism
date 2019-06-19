@@ -1,4 +1,4 @@
-import { IPrism } from '@stoplight/prism-core';
+import { createLogger, IPrism } from '@stoplight/prism-core';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpOperation } from '@stoplight/types/http-spec';
 import * as nock from 'nock';
@@ -6,6 +6,8 @@ import { basename, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_BASE_URL_ERROR, NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
+
+const logger = createLogger('TEST', { enabled: false });
 
 const fixturePath = (filename: string) => resolve(__dirname, 'fixtures', filename);
 const noRefsPetstoreMinimalOas2Path = fixturePath('no-refs-petstore-minimal.oas2.json');
@@ -23,7 +25,7 @@ describe('Http Client .process', () => {
     ${basename(serverValidationOas3Path)} | ${serverValidationOas3Path}
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
-      prism = createInstance({ mock: { dynamic: false } }, {});
+      prism = createInstance({ mock: { dynamic: false } }, { logger });
       await prism.load({ path: specPath });
     });
 
@@ -175,12 +177,12 @@ describe('Http Client .process', () => {
 
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
-      prism = createInstance({ mock: { dynamic: false } }, {});
+      prism = createInstance({ mock: { dynamic: false } }, { logger });
       await prism.load({ path: noRefsPetstoreMinimalOas2Path });
     });
 
     it('keeps the instances separate', async () => {
-      const secondPrism = createInstance({ mock: { dynamic: false } }, {});
+      const secondPrism = createInstance({ mock: { dynamic: false } }, { logger });
       await secondPrism.load({ path: noRefsPetstoreMinimalOas2Path });
 
       expect(prism.resources).toStrictEqual(secondPrism.resources);
@@ -316,14 +318,14 @@ describe('Http Client .process', () => {
   });
 
   it('loads spec provided in yaml', async () => {
-    prism = createInstance();
+    prism = createInstance(undefined, { logger });
     await prism.load({ path: petStoreOas2Path });
 
     expect(prism.resources).toHaveLength(3);
   });
 
   it('returns stringified static example when one defined in spec', async () => {
-    prism = createInstance();
+    prism = createInstance(undefined, { logger });
     await prism.load({ path: staticExamplesOas2Path });
 
     const response = await prism.process({

@@ -1,5 +1,5 @@
-import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
-import { JSONSchema } from '@stoplight/prism-http/src/types';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
+import { JSONSchema } from '../../';
 import { ISchemaValidator, IValidatorRegistry } from './types';
 
 export class ValidatorRegistry implements IValidatorRegistry {

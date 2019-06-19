@@ -1,6 +1,6 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 
-import { JSONSchema } from '@stoplight/prism-http';
+import { JSONSchema } from '../../..';
 import { HttpBodyValidator } from '../body';
 import { IValidatorRegistry } from '../types';
 

@@ -89,7 +89,7 @@ The application will wait for a debugger to be attached and break on the first l
 Prism is using TypeScript's incremental compiler capability that, in some cases, could have some stale data. The best way to fix the issue is to simply remove any compiled file as well the incremental files:
 
 ```sh
-rm -rf packages/**/lib
+rm -rf packages/**/dist
 rm -rf packages/**/.tsbuildinfo
 ```
 

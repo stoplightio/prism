@@ -1,8 +1,11 @@
 {
+  "include": ["src"],
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
-    "module": "commonjs",
-    "moduleResolution": "node"
+    "outDir": "dist",
+    "paths": {
+      "@stoplight/prism-core": ["./core/src"]
+    }
   }
 }

@@ -1,9 +1,10 @@
 import { flags as oflags } from '@oclif/command';
+import chalk from 'chalk';
 
 export const ARGS = {
   spec: {
     name: 'spec',
-    description: 'Path to a spec file',
+    description: 'Path to a spec file. Can be both a file or a fetchable resource on the web',
     required: true,
   },
 };
@@ -27,4 +28,17 @@ export const FLAGS = {
     description: 'Dynamically generate examples.',
     default: false,
   }),
+
+  multiprocess: oflags.boolean({
+    char: 'm',
+    description: 'Fork the http server from the CLI',
+    default: process.env.NODE_ENV === 'production',
+  }),
+};
+
+export const LOG_COLOR_MAP = {
+  CLI: chalk.bgWhiteBright,
+  'HTTP SERVER': chalk.bgYellowBright,
+  MOCKER: chalk.bgBlueBright,
+  HTTP: chalk.bgGreenBright,
 };

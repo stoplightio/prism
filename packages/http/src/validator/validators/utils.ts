@@ -1,9 +1,9 @@
-import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
-import { JSONSchema } from '@stoplight/prism-http';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Segment } from '@stoplight/types';
 import * as Ajv from 'ajv';
 // @ts-ignore
 import * as AjvOAI from 'ajv-oai';
+import { JSONSchema } from '../../';
 
 const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' }) as Ajv.Ajv;
 

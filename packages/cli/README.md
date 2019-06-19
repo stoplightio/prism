@@ -19,7 +19,7 @@ $ npm install -g @stoplight/prism-cli
 $ prism COMMAND
 running command...
 $ prism (-v|--version|version)
-@stoplight/prism-cli/3.0.0-alpha.16 darwin-x64 node-v12.4.0
+@stoplight/prism-cli/3.0.0-beta.1 darwin-x64 node-v12.4.0
 $ prism --help [COMMAND]
 USAGE
   $ prism COMMAND
@@ -59,23 +59,30 @@ USAGE
   $ prism mock SPEC
 
 ARGUMENTS
-  SPEC  Path to a spec file
+  SPEC  Path to a spec file. Can be both a file or a fetchable resource on the web
 
 OPTIONS
-  -d, --dynamic    Dynamically generate examples.
-  -h, --host=host  [default: 127.0.0.1] Host that Prism will listen to.
-  -p, --port=port  (required) [default: 4010] Port that Prism will run on.
+  -d, --dynamic       Dynamically generate examples.
+  -h, --host=host     [default: 127.0.0.1] Host that Prism will listen to.
+  -m, --multiprocess  Fork the http server from the CLI
+  -p, --port=port     (required) [default: 4010] Port that Prism will run on.
 ```
 
-_See code: [src/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0.0-alpha.16/src/commands/mock.ts)_
+_See code: [dist/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0.0-beta.1/dist/commands/mock.ts)_
 <!-- commandsstop -->
+
+## Running in production
+
+When running in development mode (which happens when the `NODE_ENV` environment variable is not set to `production`) or the `-m` flag is set to false, both the HTTP Server and the CLI (which is responsible of parsing and showing the received logs on the screen) will run within the same process.
+
+Processing logs slows down the process significantly. If you're planning to use the CLI in production (for example in a Docker Container) we recommend to run the CLI with the `-m` flag or set the `NODE_ENV` variable to `production`. In this way, the CLI and the HTTP server will run on two different processes, so that logs processing, parsing and printing does not slow down the http requests processing.
 
 ## Development
 
 ### Debugging
 
-1. `node --inspect -r tsconfig-paths/register bin/run`
-2. .vscode/launch.json
+1. `yarn cli:debug mock file.oas.yml`
+2. Run your preferred debugger on the newly created process. If you're into VSCoode, you can create `.vscode/launch.json` and put this content inside:
 
 ```json
 {
@@ -86,5 +93,4 @@ _See code: [src/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0
 },
 ```
 
-3. Run VSCode debugger
-4. Enjoy breakpoints in VSCode :)
+4. Enjoy the breakpoints :)

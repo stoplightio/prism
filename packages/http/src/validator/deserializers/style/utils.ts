@@ -1,5 +1,5 @@
 export function createObjectFromKeyValList(items: string[]) {
-  return items.reduce((obj: object, item, i) => {
+  return items.reduce((obj: any, item, i) => {
     if (i % 2 === 0) {
       obj[item] = undefined;
     } else {

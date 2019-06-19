@@ -1,6 +1,6 @@
-import { JSONSchema } from 'http/src/types';
 import { JSONSchema6, JSONSchema7 } from 'json-schema';
 import { cloneDeep, map, mapValues } from 'lodash';
+import { JSONSchema } from '../../types';
 
 // @ts-ignore
 import * as jsf from '@stoplight/json-schema-faker';
@@ -34,7 +34,9 @@ function hasExamples(source: JSONSchema): source is JSONSchema6 | JSONSchema7 {
 function toOpenAPIJSONSchemaesque(schema: JSONSchema): any {
   const returnedSchema = cloneDeep(schema);
 
-  ['properties', 'anyOf', 'allOf', 'oneOf'].forEach(property => {
+  const targetKeys: Array<keyof JSONSchema> = ['properties', 'anyOf', 'allOf', 'oneOf'];
+
+  targetKeys.forEach(property => {
     if (!returnedSchema[property]) return;
 
     const mapFn = Array.isArray(returnedSchema[property]) ? map : (mapValues as (obj: unknown) => unknown[] | unknown);

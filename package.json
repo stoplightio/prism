@@ -11,18 +11,16 @@
     "url": "https://github.com/stoplightio/prism.git"
   },
   "scripts": {
-    "lint": "tslint -p packages/tsconfig.json",
+    "lint": "tslint -p packages/tsconfig.test.json",
     "lint.fix": "yarn lint --fix",
-    "typecheck": "tsc --build ./packages/tsconfig.json",
     "build": "tsc --build ./packages/tsconfig.build.json",
-    "build.watch": "tsc --build --watch ./packages/tsconfig.build.json",
     "posttest": "yarn lint",
     "test": "yarn test.ci",
     "test.ci": "jest --maxWorkers=2",
     "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
     "test.update": "yarn test.fast --updateSnapshot",
-    "release": "lerna version prerelease --preid alpha",
+    "release": "lerna version prerelease --preid beta",
     "run.binary": "$BINARY mock -p ${PRISM_PORT:-4010} $SPEC",
     "run.binary.v2": "./prism mock -p ${PRISM_PORT:-4010} --spec ./examples/petstore.oas2.json",
     "prebuild.binary": "yarn build",
@@ -43,6 +41,8 @@
     "@types/lodash": "^4.14.132",
     "@types/nock": "^10.0.3",
     "@types/node": "^12.0.2",
+    "@types/pino": "^5.8.7",
+    "@types/split2": "^2.1.6",
     "@types/signale": "^1.2.1",
     "@types/type-is": "^1.6.2",
     "chance": "^1.0.18",
@@ -58,7 +58,7 @@
     "tsconfig-paths": "^3.8.0",
     "tslint": "^5.17.0",
     "tslint-config-stoplight": "^1.3.0",
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.2"
   },
   "prettier": {
     "printWidth": 100,
@@ -67,7 +67,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "tslint -p packages/tsconfig.json --fix",
+      "tslint -p packages/tsconfig.test.json --fix",
       "git add"
     ]
   },

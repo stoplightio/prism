@@ -1,6 +1,6 @@
 import { IMediaTypeContent } from '@stoplight/types';
 
-import { IPrismDiagnostic } from '@stoplight/prism-core/src/types';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IHttpValidator, IValidatorRegistry } from './types';
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {

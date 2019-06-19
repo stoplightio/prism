@@ -17,8 +17,7 @@ node_modules/
 *.tsbuildinfo
 
 # IDE
-.idea
-lib
+dist
 .vscode
 oclif.manifest.json
 cli-binaries

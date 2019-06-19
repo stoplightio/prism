@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-cli",
-  "version": "3.0.0-alpha.16",
+  "version": "3.0.0-beta.1",
   "author": "Stoplight <support@stoplight.io>",
   "bin": {
     "prism": "./bin/run"
@@ -10,10 +10,11 @@
     "@oclif/command": "^1.0.0",
     "@oclif/config": "^1.12.12",
     "@oclif/plugin-help": "^2.0.0",
-    "@stoplight/prism-core": "^3.0.0-alpha.16",
-    "@stoplight/prism-http-server": "^3.0.0-alpha.16",
+    "@stoplight/prism-core": "^3.0.0-beta.1",
+    "@stoplight/prism-http-server": "^3.0.0-beta.1",
     "signale": "^1.4.0",
-    "tslib": "^1.0.0",
+    "split2": "^3.1.1",
+    "tslib": "^1.10.0",
     "urijs": "^1.19.1"
   },
   "engines": {
@@ -21,13 +22,13 @@
   },
   "files": [
     "/bin",
-    "/lib",
+    "/dist",
     "/oclif.manifest.json"
   ],
   "license": "Apache-2.0",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "oclif": {
-    "commands": "./lib/commands",
+    "commands": "./dist/commands",
     "bin": "prism",
     "plugins": [
       "@oclif/plugin-help"
@@ -46,8 +47,8 @@
     "cli": "node -r tsconfig-paths/register bin/run",
     "cli:debug": "node --inspect-brk -r tsconfig-paths/register bin/run"
   },
-  "types": "lib/index.d.ts",
+  "types": "dist/index.d.ts",
   "devDependencies": {
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.2"
   }
 }

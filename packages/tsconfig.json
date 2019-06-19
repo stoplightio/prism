@@ -1,7 +1,14 @@
 {
-  "exclude": [],
-  "extends": "./tsconfig.base.json",
+  "exclude": ["**/__tests__"],
   "compilerOptions": {
-    "noEmit": true,
+    "baseUrl": ".",
+    "declaration": true,
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "removeComments": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "module": "commonjs",
+    "strict": true,
+    "target": "es2018"
   }
 }
