@@ -1,22 +1,10 @@
 const { join } = require('path');
-const fetch = require('node-fetch');
 const requests = require('./requests');
 
 const { exec } = require('child_process');
 const { getPort, makeRequest, constructMasterFileName, readFile } = require('./helpers');
 
 const port = getPort(process);
-
-async function waitForPrism(done) {
-  try {
-    await fetch(`http://localhost:${port}`);
-    done();
-  } catch (err) {
-    setTimeout(() => {
-      waitForPrism(done);
-    }, 500);
-  }
-}
 
 async function runTest(req) {
   const { dynamic, ...request } = req;
@@ -32,30 +20,12 @@ async function runTest(req) {
   };
 }
 
-function killPrism(done = () => null) {
-  exec(`fuser -k ${port}/tcp`, () => {
-    done();
-  });
-}
-
 const spec = process.env.SPEC || join(__dirname, '/../examples/petstore.oas2.json');
 const specs = spec.split(',');
 
-const createSpec = (specPath, prismCmd) => {
+const createSpec = (specPath) => {
   return () => {
     describe(specPath, () => {
-      beforeAll(done => {
-        killPrism();
-
-        exec(prismCmd);
-
-        waitForPrism(done);
-      });
-
-      afterAll(done => {
-        killPrism(done);
-      });
-
       describe('When validating a supported server', () => {
         it('with http schema should return 200', async () => {
           const { reqRes } = await runTest(requests[18]);
@@ -258,7 +228,6 @@ const createSpec = (specPath, prismCmd) => {
           describe('Dynamic response', () => {
             it('should validate body params', async () => {
               const { reqRes, masterFile } = await runTest(requests[12]);
-              const payload = reqRes.response.body;
 
               expect(reqRes.response.status).toBe(masterFile.response.status);
               expect(reqRes.response.status).toBe(200);
@@ -309,13 +278,8 @@ const createSpec = (specPath, prismCmd) => {
   };
 };
 
-const binary = `BINARY=${process.env.BINARY ||
-  join(__dirname, '/../cli-binaries/prism-cli-linux')}`;
-
 specs.forEach(specPath => {
-  const command = `${binary} SPEC=${specPath} PRISM_PORT=${port} yarn run.binary`;
-
-  createSpec(specPath, command)();
+  createSpec(specPath)();
 });
 
 if (process.env.RUN_V2_TESTS) {

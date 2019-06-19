@@ -36,7 +36,11 @@ jobs:
           name: Download prism v2
           command: curl -L https://github.com/stoplightio/prism/releases/download/v2.0.17/prism_linux_amd64 -o prism && chmod +x ./prism
       - run:
-          name: Test Harness
+          name: Start Prism server
+          command: ./cli-binaries/prism-cli-linux mock ./examples/petstore.oas2.json -p 4010
+          background: true
+      - run:
+          name: Run Test Harness
           command: |
             PRISM_PORT=4010 SPEC=./examples/petstore.oas2.json,./examples/petstore.oas3.json BINARY=./cli-binaries/prism-cli-linux yarn test.binary
       - run:
