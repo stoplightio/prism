@@ -1,0 +1,13 @@
+FROM ubuntu as dependencies
+ADD prism-cli-linux /src/bin/
+WORKDIR /src
+RUN ldd bin/prism | tr -s '[:blank:]' '\n' | grep '^/' | \
+    xargs -I % sh -c 'mkdir -p $(dirname deps%); cp % deps%;'
+
+FROM scratch
+COPY --from=dependencies /src/deps /
+COPY --from=dependencies /src/bin/prism-cli-linux /
+
+EXPOSE 4010 
+
+ENTRYPOINT ["/prism-cli-linux"]
