@@ -1,5 +1,6 @@
 {
   "include": ["src"],
+  "exclude": ["src/**/__tests__/**/*.ts"],
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "composite": true,
