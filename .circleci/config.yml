@@ -99,6 +99,15 @@ jobs:
           root: ./
           paths:
             - cli-binaries
+      - run:
+          name: Create Alpine binary
+          command: npx pkg --targets alpine --out-path ./alpine-cli-binary ./packages/cli/
+      - store_artifacts:
+          path: ./alpine-cli-binary
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - alpine-cli-binary
   upload_artifacts:
     docker:
       - image: circleci/golang:1-stretch
