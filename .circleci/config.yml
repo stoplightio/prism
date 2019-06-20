@@ -103,7 +103,7 @@ jobs:
           name: Docker build and upload
           command: |
             cd cli-binaries/
-            docker build -t killianh/prism:$CIRCLE_BRANCH . -f DockerfileBin
+            docker build -t killianh/prism:$CIRCLE_BRANCH . -f ../DockerfileBin
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push killianh/prism:$TAG
   upload_artifacts:
