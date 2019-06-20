@@ -16,10 +16,10 @@
     "node": ">=8"
   },
   "dependencies": {
-    "@stoplight/graphite": "^8.1.1",
+    "@stoplight/graphite": "^8.2.5",
     "axios": "^0.18.0",
     "lodash": "^4.0.0",
-    "mobx": "^5.0.0",
+    "mobx": "^5.10.1",
     "pino": "^5.12.6",
     "tslib": "^1.10.0"
   },

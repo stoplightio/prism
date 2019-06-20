@@ -7,9 +7,9 @@
   },
   "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
-    "@oclif/command": "^1.0.0",
+    "@oclif/command": "^1.5.15",
     "@oclif/config": "^1.12.12",
-    "@oclif/plugin-help": "^2.0.0",
+    "@oclif/plugin-help": "^2.2.0",
     "@stoplight/prism-core": "^3.0.0-beta.1",
     "@stoplight/prism-http-server": "^3.0.0-beta.1",
     "signale": "^1.4.0",
