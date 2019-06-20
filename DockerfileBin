@@ -1,7 +1,7 @@
 FROM ubuntu as dependencies
 ADD prism-cli-linux /src/bin/
 WORKDIR /src
-RUN ldd bin/prism | tr -s '[:blank:]' '\n' | grep '^/' | \
+RUN ldd bin/prism-cli-linux | tr -s '[:blank:]' '\n' | grep '^/' | \
     xargs -I % sh -c 'mkdir -p $(dirname deps%); cp % deps%;'
 
 FROM scratch
