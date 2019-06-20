@@ -107,7 +107,7 @@ jobs:
             cd cli-binaries/
             docker build -t killianh/prism:$CIRCLE_BRANCH . -f ../DockerfileBin
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-            docker push killianh/prism:$TAG
+            docker push killianh/prism:$CIRCLE_BRANCH
   upload_artifacts:
     docker:
       - image: circleci/golang:1-stretch
