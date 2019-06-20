@@ -99,6 +99,8 @@ jobs:
           root: ./
           paths:
             - cli-binaries
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Docker build and upload
           command: |
