@@ -29,10 +29,10 @@ jobs:
       - run:
           name: Run tests
           command: yarn test.coverage --verbose
-#      - run:
-#          name: cc-after
-#          command: |
-#            ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
+      - run:
+          name: cc-after
+          command: |
+            ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
       - run:
           name: Run build
           command: yarn build
@@ -105,9 +105,9 @@ jobs:
           name: Docker build and upload
           command: |
             cd cli-binaries/
-            docker build -t killianh/prism:$CIRCLE_BRANCH . -f ../DockerfileBin
+            docker build -t stoplight/prism:$CIRCLE_BRANCH . -f ../DockerfileBin
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-            docker push killianh/prism:$CIRCLE_BRANCH
+            docker push stoplight/prism:$CIRCLE_BRANCH
   upload_artifacts:
     docker:
       - image: circleci/golang:1-stretch
