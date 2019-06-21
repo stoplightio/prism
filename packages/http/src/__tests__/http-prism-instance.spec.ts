@@ -1,6 +1,6 @@
 import { createLogger, IPrism } from '@stoplight/prism-core';
 import { DiagnosticSeverity } from '@stoplight/types';
-import { IHttpOperation } from '@stoplight/types/http-spec';
+import { IHttpOperation } from '@stoplight/types';
 import * as nock from 'nock';
 import { basename, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
