@@ -37,6 +37,12 @@ curl -L https://raw.githack.com/stoplightio/prism/master/install | sh
 
 …or download the latest release from [GitHub directly][download-release]. We offer binaries for Windows as well.
 
+### Docker Image
+
+We're publishing some Docker Images as we release Prism.
+
+`docker run -b stoplight/prism:3 mock file.yml`
+
 ## Usage
 
 ### CLI
