@@ -19,7 +19,7 @@ $ npm install -g @stoplight/prism-cli
 $ prism COMMAND
 running command...
 $ prism (-v|--version|version)
-@stoplight/prism-cli/3.0.0-beta.1 darwin-x64 node-v12.4.0
+@stoplight/prism-cli/3.0.0-beta.2 darwin-x64 node-v12.4.0
 $ prism --help [COMMAND]
 USAGE
   $ prism COMMAND
@@ -48,7 +48,7 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
 
 ## `prism mock SPEC`
 
@@ -67,8 +67,6 @@ OPTIONS
   -m, --multiprocess  Fork the http server from the CLI
   -p, --port=port     (required) [default: 4010] Port that Prism will run on.
 ```
-
-_See code: [dist/commands/mock.ts](https://github.com/stoplightio/prism/blob/v3.0.0-beta.1/dist/commands/mock.ts)_
 <!-- commandsstop -->
 
 ## Running in production

@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-cli",
-  "version": "3.0.0-beta.1",
+  "version": "3.0.0-beta.2",
   "author": "Stoplight <support@stoplight.io>",
   "bin": {
     "prism": "./bin/run"
@@ -10,8 +10,8 @@
     "@oclif/command": "^1.5.15",
     "@oclif/config": "^1.12.12",
     "@oclif/plugin-help": "^2.2.0",
-    "@stoplight/prism-core": "^3.0.0-beta.1",
-    "@stoplight/prism-http-server": "^3.0.0-beta.1",
+    "@stoplight/prism-core": "^3.0.0-beta.2",
+    "@stoplight/prism-http-server": "^3.0.0-beta.2",
     "signale": "^1.4.0",
     "split2": "^3.1.1",
     "tslib": "^1.10.0",

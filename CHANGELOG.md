@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-beta.1 (2019-06-22)
+
+### Features
+
+- Prism now works correctly on Windows thanks to some internal libraries updates #374
+- Prism 3 has now a Docker Image #359; you can try it at `stoplight/prism:3`
+
+### Bug Fixes
+
+- Static JSON Schema examples generator gives precendece to `default` over `examples` #373
+
+
 # 3.0.0-beta.1 (2019-06-18)
 
 ### Features
