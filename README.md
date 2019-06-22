@@ -39,9 +39,9 @@ curl -L https://raw.githack.com/stoplightio/prism/master/install | sh
 
 ### Docker Image
 
-We're publishing some Docker Images as we release Prism.
+Prism is avaiable as Docker Image as well under the `3` tag.
 
-`docker run -b stoplight/prism:3 mock file.yml`
+`docker run -P stoplight/prism:3 mock -h 0.0.0.0 api.oas2.yml`
 
 ## Usage
 
