@@ -123,11 +123,7 @@ const replyHandler = <LoaderInput>(
           .type('application/problem+json')
           .serializer(JSON.stringify)
           .code(status)
-          .send(
-            (e.name.includes('UNPROCESSABLE_ENTITY')
-              ? ProblemJsonError.asValidationIssue
-              : ProblemJsonError.fromPlainError)(e),
-          );
+          .send(ProblemJsonError.fromPlainError(e));
       } else {
         reply.res.end();
       }

@@ -1,5 +1,5 @@
 import { IMocker, IMockerOpts, IPrismInput } from '@stoplight/prism-core';
-import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
+import { Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample, DiagnosticSeverity } from '@stoplight/types';
 
 import * as caseless from 'caseless';
 import { Either } from 'fp-ts/lib/Either';
@@ -56,10 +56,17 @@ function negotiateResponse(
   resource: IHttpOperation,
 ) {
   if (input.validations.input.length > 0) {
+    const validationError = input.validations.input.map(detail => ({
+      location: detail.path,
+      severity: DiagnosticSeverity[detail.severity],
+      code: detail.code,
+      message: detail.message,
+    }));
+
     return withLogger(logger => logger.warn('Request did not pass the validation rules')).chain(() =>
       helpers
         .negotiateOptionsForInvalidRequest(resource.responses)
-        .map(e => e.mapLeft(() => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, input.validations.input))),
+        .map(e => e.mapLeft(() => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, '', { validation: validationError }))),
     );
   } else {
     return withLogger(logger =>
