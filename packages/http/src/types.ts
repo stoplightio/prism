@@ -30,20 +30,20 @@ export interface IHttpConfig extends IPrismConfig {
 
   validate?: {
     request?:
-      | boolean
-      | {
-          hijack?: boolean;
-          headers?: boolean;
-          query?: boolean;
-          body?: boolean;
-        };
+    | boolean
+    | {
+      hijack?: boolean;
+      headers?: boolean;
+      query?: boolean;
+      body?: boolean;
+    };
 
     response?:
-      | boolean
-      | {
-          headers?: boolean;
-          body?: boolean;
-        };
+    | boolean
+    | {
+      headers?: boolean;
+      body?: boolean;
+    };
   };
 }
 
@@ -78,52 +78,31 @@ export type ProblemJson = {
   detail: any;
 };
 
-function sharedErrorProps(error: any) {
-  return {
-    type: error.name && error.name !== 'Error' ? error.name : 'https://stoplight.io/prism/errors#UNKNOWN',
-    title: error.message,
-    status: error.status || 500,
-  };
-}
-
 export class ProblemJsonError extends Error {
   public static fromTemplate(
     template: Omit<ProblemJson, 'detail'>,
-    detail?: string | IPrismDiagnostic[],
+    detail?: string,
+    additional?: Dictionary<unknown>
   ): ProblemJsonError {
     const error = new ProblemJsonError(
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
       detail || '',
+      additional
     );
     Error.captureStackTrace(error, ProblemJsonError);
 
     return error;
   }
 
-  public static asValidationIssue(error: Error & { detail: IPrismDiagnostic[]; status?: number }): any {
+  public static fromPlainError(error: Error & { detail?: string; status?: number, additional?: Dictionary<unknown> }): ProblemJson {
     return {
-      ...sharedErrorProps(error),
-      detail:
-        'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-      validation: error.detail.map(detail => {
-        const { path, code, message } = detail;
-
-        return {
-          location: path,
-          severity: DiagnosticSeverity[detail.severity],
-          code,
-          message,
-        };
-      }),
-    };
-  }
-
-  public static fromPlainError(error: Error & { detail?: string; status?: number }): ProblemJson {
-    return {
-      ...sharedErrorProps(error),
+      type: error.name && error.name !== 'Error' ? error.name : 'https://stoplight.io/prism/errors#UNKNOWN',
+      title: error.message,
+      status: error.status || 500,
       detail: error.detail || '',
+      ...error.additional
     };
   }
 
@@ -131,7 +110,8 @@ export class ProblemJsonError extends Error {
     readonly name: string,
     readonly message: string,
     readonly status: number,
-    readonly detail: string | IPrismDiagnostic[],
+    readonly detail: string,
+    readonly additional?: Dictionary<unknown>
   ) {
     super(message);
     Error.captureStackTrace(this, ProblemJsonError);
