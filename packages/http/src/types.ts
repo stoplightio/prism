@@ -30,20 +30,20 @@ export interface IHttpConfig extends IPrismConfig {
 
   validate?: {
     request?:
-    | boolean
-    | {
-      hijack?: boolean;
-      headers?: boolean;
-      query?: boolean;
-      body?: boolean;
-    };
+      | boolean
+      | {
+          hijack?: boolean;
+          headers?: boolean;
+          query?: boolean;
+          body?: boolean;
+        };
 
     response?:
-    | boolean
-    | {
-      headers?: boolean;
-      body?: boolean;
-    };
+      | boolean
+      | {
+          headers?: boolean;
+          body?: boolean;
+        };
   };
 }
 
@@ -82,27 +82,29 @@ export class ProblemJsonError extends Error {
   public static fromTemplate(
     template: Omit<ProblemJson, 'detail'>,
     detail?: string,
-    additional?: Dictionary<unknown>
+    additional?: Dictionary<unknown>,
   ): ProblemJsonError {
     const error = new ProblemJsonError(
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
       detail || '',
-      additional
+      additional,
     );
     Error.captureStackTrace(error, ProblemJsonError);
 
     return error;
   }
 
-  public static fromPlainError(error: Error & { detail?: string; status?: number, additional?: Dictionary<unknown> }): ProblemJson {
+  public static fromPlainError(
+    error: Error & { detail?: string; status?: number; additional?: Dictionary<unknown> },
+  ): ProblemJson {
     return {
       type: error.name && error.name !== 'Error' ? error.name : 'https://stoplight.io/prism/errors#UNKNOWN',
       title: error.message,
       status: error.status || 500,
       detail: error.detail || '',
-      ...error.additional
+      ...error.additional,
     };
   }
 
@@ -111,7 +113,7 @@ export class ProblemJsonError extends Error {
     readonly message: string,
     readonly status: number,
     readonly detail: string,
-    readonly additional?: Dictionary<unknown>
+    readonly additional?: Dictionary<unknown>,
   ) {
     super(message);
     Error.captureStackTrace(this, ProblemJsonError);
