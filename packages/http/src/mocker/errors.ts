@@ -2,7 +2,7 @@ import { ProblemJson } from '../types';
 
 export const UNPROCESSABLE_ENTITY: Omit<ProblemJson, 'detail'> = {
   type: 'UNPROCESSABLE_ENTITY',
-  title: 'Invalid request body payload',
+  title: 'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
   status: 422,
 };
 
