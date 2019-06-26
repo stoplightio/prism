@@ -6,9 +6,9 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
   defaultConfig: PrismConfig<Config, Input>,
   defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
 ): (
-  customConfig?: PartialPrismConfig<Config, Input>,
-  customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
-) => IPrism<Resource, Input, Output, Config, LoadOpts> {
+    customConfig?: PartialPrismConfig<Config, Input>,
+    customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
+  ) => IPrism<Resource, Input, Output, Config, LoadOpts> {
   const prism = (
     customConfig?: PartialPrismConfig<Config, Input>,
     customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
@@ -88,7 +88,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
               },
               defaultComponents.mocker,
             )
-            .run(components.logger.child({ name: 'MOCKER', input }))
+            .run(components.logger.child({ name: 'NEGOTIATOR', input }))
             .fold(
               e => {
                 throw e;
