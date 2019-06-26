@@ -101,6 +101,7 @@ const replyHandler = <LoaderInput>(
       body,
     };
 
+    request.log.info({ input }, 'Request came in');
     try {
       const response = await prism.process(input);
 

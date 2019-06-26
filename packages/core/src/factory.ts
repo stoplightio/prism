@@ -6,9 +6,9 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
   defaultConfig: PrismConfig<Config, Input>,
   defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
 ): (
-    customConfig?: PartialPrismConfig<Config, Input>,
-    customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
-  ) => IPrism<Resource, Input, Output, Config, LoadOpts> {
+  customConfig?: PartialPrismConfig<Config, Input>,
+  customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
+) => IPrism<Resource, Input, Output, Config, LoadOpts> {
   const prism = (
     customConfig?: PartialPrismConfig<Config, Input>,
     customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
