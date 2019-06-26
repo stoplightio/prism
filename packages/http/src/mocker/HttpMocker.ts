@@ -56,27 +56,28 @@ function negotiateResponse(
   resource: IHttpOperation,
 ) {
   if (input.validations.input.length > 0) {
-    return withLogger(logger => logger.warn('Request did not pass the validation rules')).chain(() =>
-      helpers.negotiateOptionsForInvalidRequest(resource.responses).map(e =>
-        e.mapLeft(() =>
-          ProblemJsonError.fromTemplate(
-            UNPROCESSABLE_ENTITY,
-            'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-            {
-              validation: input.validations.input.map(detail => ({
-                location: detail.path,
-                severity: DiagnosticSeverity[detail.severity],
-                code: detail.code,
-                message: detail.message,
-              })),
-            },
+    return withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')).chain(
+      () =>
+        helpers.negotiateOptionsForInvalidRequest(resource.responses).map(e =>
+          e.mapLeft(() =>
+            ProblemJsonError.fromTemplate(
+              UNPROCESSABLE_ENTITY,
+              'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+              {
+                validation: input.validations.input.map(detail => ({
+                  location: detail.path,
+                  severity: DiagnosticSeverity[detail.severity],
+                  code: detail.code,
+                  message: detail.message,
+                })),
+              },
+            ),
           ),
         ),
-      ),
     );
   } else {
     return withLogger(logger =>
-      logger.success('The request passed the validation rules. Looking for the best response'),
+      logger.success({ name: 'VALIDATOR' }, 'The request passed the validation rules. Looking for the best response'),
     ).chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig));
   }
 }

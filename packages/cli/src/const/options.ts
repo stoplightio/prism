@@ -40,5 +40,5 @@ export const LOG_COLOR_MAP = {
   CLI: { index: 0, color: chalk.bgWhiteBright },
   'HTTP SERVER': { index: 1, color: chalk.bgYellowBright },
   NEGOTIATOR: { index: 3, color: chalk.bgBlueBright },
-  HTTP: { index: 2, color: chalk.bgGreenBright },
+  VALIDATOR: { index: 3, color: chalk.bgGreenBright },
 };
