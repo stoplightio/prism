@@ -1305,15 +1305,6 @@
     urijs "1.x.x"
     vscode-uri "2.x.x"
 
-"@stoplight/json-schema-faker@^0.5.0-rc18":
-  version "0.5.0-rc18"
-  resolved "https://registry.yarnpkg.com/@stoplight/json-schema-faker/-/json-schema-faker-0.5.0-rc18.tgz#f2091443e74503c3ca7b86d65ed00e7082bbfeda"
-  integrity sha512-BHDk7gLENfVcE9ZXXHIGb+u6HZhuxTfjUD7yozGJv7ESSxEkOfCDBZ5dj5Uiq8/A2WwqNrxnCxpBTcGpQWOGTQ==
-  dependencies:
-    json-schema-ref-parser "^5.0.0"
-    jsonpath "https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17"
-    randexp "^0.5.3"
-
 "@stoplight/json@2.x.x", "@stoplight/json@^2.2.2":
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-2.2.2.tgz#08e0359007d643ec95609276649628a9f4bb1c1d"
@@ -5048,7 +5039,7 @@ js-tokens@^3.0.2:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
-js-yaml@^3.12.0, js-yaml@^3.13, js-yaml@^3.13.1, js-yaml@^3.7.0:
+js-yaml@^3.12.1, js-yaml@^3.13, js-yaml@^3.13.1, js-yaml@^3.7.0:
   version "3.13.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.13.1.tgz#aff151b30bfdfa8e49e05da22e7415e9dfa37847"
   integrity sha512-YfbcO7jXDdyj0DGxYVSlSeQNHbD7XPWvrVWeVUujrQEoZzWJIRrCPoyk6kL6IAjAG2IolMK4T0hNUe0HOUs5Jw==
@@ -5110,15 +5101,22 @@ json-pointer@^0.6.0:
   dependencies:
     foreach "^2.0.4"
 
-json-schema-ref-parser@^5.0.0:
-  version "5.1.3"
-  resolved "https://registry.yarnpkg.com/json-schema-ref-parser/-/json-schema-ref-parser-5.1.3.tgz#f86c5868f40898e69169e1bbc854725a4fd0e1ad"
-  integrity sha512-CpDFlBwz/6la78hZxyB9FECVKGYjIIl3Ms3KLqFj99W7IIb7D00/RDgc++IGB4BBALl0QRhh5m4q5WNSopvLtQ==
+json-schema-faker@json-schema-faker/json-schema-faker:
+  version "0.5.0-rc17"
+  resolved "https://codeload.github.com/json-schema-faker/json-schema-faker/tar.gz/c88c9c4fe13c2badd6cc8d7d2af8a23af474e413"
+  dependencies:
+    json-schema-ref-parser "^6.0.2"
+    jsonpath-plus "^0.20.1"
+    randexp "^0.5.3"
+
+json-schema-ref-parser@^6.0.2:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/json-schema-ref-parser/-/json-schema-ref-parser-6.1.0.tgz#30af34aeab5bee0431da805dac0eb21b574bf63d"
+  integrity sha512-pXe9H1m6IgIpXmE5JSb8epilNTGsmTb2iPohAXpOdhqGFbQjNeHHsZxU+C8w6T81GZxSPFLeUoqDJmzxx5IGuw==
   dependencies:
     call-me-maybe "^1.0.1"
-    debug "^3.1.0"
-    js-yaml "^3.12.0"
-    ono "^4.0.6"
+    js-yaml "^3.12.1"
+    ono "^4.0.11"
 
 json-schema-traverse@^0.4.1:
   version "0.4.1"
@@ -5178,19 +5176,14 @@ jsonparse@^1.2.0:
   resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
   integrity sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=
 
+jsonpath-plus@^0.20.1:
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/jsonpath-plus/-/jsonpath-plus-0.20.1.tgz#5358b8e8a5df569c541de64908d54bca55550e1c"
+  integrity sha512-8O4tBeXh9XGma2x2aPVwvpo9lXJAd4bx0XA0eRjYs4Cpz7e5PQy7sPttk2YmhvROJhEUu4DNUxmtLueicCqyZg==
+
 "jsonpath@https://github.com/stoplightio/jsonpath#f1c0e9e634da2d45671b7639fa0a99afc807da17":
   version "1.0.0"
-  uid f1c0e9e634da2d45671b7639fa0a99afc807da17
   resolved "https://github.com/stoplightio/jsonpath#f1c0e9e634da2d45671b7639fa0a99afc807da17"
-  dependencies:
-    esprima "1.2.2"
-    jison "0.4.13"
-    static-eval "2.0.0"
-    underscore "1.7.0"
-
-"jsonpath@https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17":
-  version "1.0.0"
-  resolved "https://github.com/stoplightio/jsonpath.git#f1c0e9e634da2d45671b7639fa0a99afc807da17"
   dependencies:
     esprima "1.2.2"
     jison "0.4.13"
@@ -6243,7 +6236,7 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-ono@^4.0.6:
+ono@^4.0.11:
   version "4.0.11"
   resolved "https://registry.yarnpkg.com/ono/-/ono-4.0.11.tgz#c7f4209b3e396e8a44ef43b9cedc7f5d791d221d"
   integrity sha512-jQ31cORBFE6td25deYeD80wxKBMj+zBmHTrVxnc6CKhx8gho6ipmWM5zj/oeoqioZ99yqBls9Z/9Nss7J26G2g==
