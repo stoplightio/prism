@@ -1260,7 +1260,8 @@
           },
           "name": {
             "type": "string",
-            "example": "doggie"
+            "example": "doggie",
+            "x-faker": "name.firstName"
           },
           "photoUrls": {
             "type": "array",

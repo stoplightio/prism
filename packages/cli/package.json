@@ -45,7 +45,8 @@
     "prepack": "node -r tsconfig-paths/register ../../node_modules/.bin/oclif-dev manifest",
     "version": "node -r tsconfig-paths/register ../../node_modules/.bin/oclif-dev readme && git add README.md",
     "cli": "node -r tsconfig-paths/register bin/run",
-    "cli:debug": "node --inspect-brk -r tsconfig-paths/register bin/run"
+    "cli:debug": "node --inspect-brk -r tsconfig-paths/register bin/run",
+    "cli:example": "npm run cli -- mock -d ../../examples/petstore.oas3.json"
   },
   "types": "dist/index.d.ts",
   "devDependencies": {
