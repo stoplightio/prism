@@ -1,9 +1,8 @@
-import { JSONSchema6, JSONSchema7 } from 'json-schema';
-import { cloneDeep, map, mapValues } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
 // @ts-ignore
-import * as jsf from '@stoplight/json-schema-faker';
+import * as jsf from 'json-schema-faker';
 // @ts-ignore
 import * as sampler from 'openapi-sampler';
 
