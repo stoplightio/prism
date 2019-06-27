@@ -1,3 +1,5 @@
+// @ts-ignore
+import faker from 'faker';
 import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
@@ -6,7 +8,7 @@ import * as jsf from 'json-schema-faker';
 // @ts-ignore
 import * as sampler from 'openapi-sampler';
 
-jsf.extend('faker', () => require('faker'));
+jsf.extend('faker', () => faker);
 
 jsf.option({
   failOnInvalidTypes: false,
