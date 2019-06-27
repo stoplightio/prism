@@ -74,7 +74,7 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
 function pipeOutputToSignale(stream: Readable) {
   function constructPrefix(logLine: LogDescriptor): string {
     const logOptions = LOG_COLOR_MAP[logLine.name];
-    const prefix = ' '.repeat(logOptions.index).concat(logOptions.color.black(`[${logLine.name}]`));
+    const prefix = '    '.repeat(logOptions.index).concat(logOptions.color.black(`[${logLine.name}]`));
 
     return logLine.input
       ? prefix.concat(' ' + chalk.bold.white(`${logLine.input.method} ${logLine.input.url.path}`))
