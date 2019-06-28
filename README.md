@@ -234,6 +234,6 @@ If you are interested in contributing to Prism itself, check out our [contributi
 
 ## Prism Decision Flow Diagram
 
-The below diagram represents all logical decision we make to figure out the best HTTP response to the specific request.
+The [below diagram](https://www.lucidchart.com/documents/edit/ef1559a1-a8c3-45a5-9c00-1883684a6412/1?shared=true) represents all logical decision we make to figure out the best HTTP response to the specific request.
 
 ![Decision Flow Diagram](./docs/images/mock-server-dfd.png)
