@@ -9,13 +9,35 @@ describe('JSONSchema generator', () => {
         properties: {
           name: { type: 'string', minLength: 1 },
           email: { type: 'string', format: 'email' },
+          ip: { type: 'string', 'x-faker': 'internet.ip' },
         },
-        required: ['name', 'email'],
+        required: ['name', 'email', 'ip'],
       };
 
       const instance = generate(schema);
       expect(instance).toHaveProperty('name');
       expect(instance).toHaveProperty('email');
+    });
+
+    it('generates dynamic example with faker from schema', () => {
+      const schema: JSONSchema = {
+        type: 'object',
+        properties: {
+          name: { type: 'string', minLength: 1 },
+          email: { type: 'string', format: 'email' },
+          ip: { type: 'string', 'x-faker': 'internet.ip' },
+        },
+        required: ['name', 'email', 'ip'],
+      };
+
+      const instance = generate(schema);
+      expect(instance).toHaveProperty('name');
+      expect(instance).toHaveProperty('email');
+      expect(instance).toHaveProperty('ip');
+      // @ts-ignore
+      expect(instance.ip).not.toBeUndefined();
+      // @ts-ignore
+      expect(instance.ip).not.toEqual('internet.ip');
     });
 
     it('operates on sealed schema objects', () => {
