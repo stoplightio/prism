@@ -35,7 +35,7 @@ USAGE
 
 ## `prism help [COMMAND]`
 
-display help for prism
+Display help for prism.
 
 ```
 USAGE
@@ -52,7 +52,7 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0
 
 ## `prism mock SPEC`
 
-Start a mock server with the given spec file
+Start a mock server with the given spec file.
 
 ```
 USAGE
@@ -68,6 +68,53 @@ OPTIONS
   -p, --port=port     (required) [default: 4010] Port that Prism will run on.
 ```
 <!-- commandsstop -->
+
+### Options
+#### `-d, --dynamic`
+Dynamically generate examples.
+
+Prism uses [JSON-schema-faker](https://github.com/json-schema-faker/json-schema-faker) under the hood to generate dynamic examples.
+
+Because the OpenAPI spec [allows extensions](https://swagger.io/docs/specification/openapi-extensions/) using a `x-` prefix on the custom keyword and prism extends [JSON-schema-faker](https://github.com/json-schema-faker/json-schema-faker) with [faker.js](https://github.com/marak/Faker.js/), you can add the `x-faker` keyword with a faker API method to provide more specific mocking.
+
+**Example:**
+
+Schema:
+```
+{
+  "type": "object",
+  "properties": {
+    "ip": {
+      "type": "string",
+      "example": "192.168.1.1",
+      "x-faker": "internet.ip"
+    },
+  },
+}
+```
+
+Result:
+```
+{
+  "ip": "255.255.0.0"
+}
+```
+
+#### `-h, --host=host`
+Host that prism will listen to.
+
+Default: `127.0.0.1`
+
+#### `-m, --multiprocess`
+Fork the http server from the CLI
+
+#### `-p, --port=port`
+**Required**
+
+Port that prism will run on.
+
+Default: `4010`
+
 
 ## Running in production
 
