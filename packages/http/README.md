@@ -404,7 +404,7 @@ You would get this in response
 
 The below diagram represents all logical decision we make to figure out the best HTTP response to the specific request. Note that this diagram is valid only when mocking is turned on.
 
-![Decision Flow Diagram](docs/images/pdfd.png)
+![Decision Flow Diagram](./docs/images/mock-server-dfd.png)
 
 ## Gotchas
 
