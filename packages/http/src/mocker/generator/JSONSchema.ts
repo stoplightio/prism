@@ -1,5 +1,7 @@
-// @ts-ignore
-import faker from 'faker';
+
+// import faker = require('faker');
+import * as faker from 'faker';
+
 import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
