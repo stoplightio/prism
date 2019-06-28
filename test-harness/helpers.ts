@@ -1,41 +1,20 @@
-import * as  fs from 'fs';
-import { join } from 'path';
-import fetch from 'node-fetch';
+export function parseSpecFile(spec: string) {
+  const regex = /====(server|test|spec|command|expect)====\r?\n/gi;
+  const splitted = spec.split(regex);
 
-export async function makeRequest({ path, method, headers = {}, body }) {
-  const opts =
-    method === 'GET' || method === 'HEAD'
-      ? {}
-      : { body: headers['Content-Type'] === 'application/json' ? JSON.stringify(body) : body };
-  const baseOpts = Object.assign({}, opts, { method, headers });
-  const host = `http://localhost:${process.env.PRISM_PORT || 4010}`;
-  const requestConfig = {
-    ...baseOpts,
-    path,
-    host,
+  const testIndex = splitted.findIndex(t => t === 'test');
+  const specIndex = splitted.findIndex(t => t === 'spec');
+  const serverIndex = splitted.findIndex(t => t === 'server');
+  const commandIndex = splitted.findIndex(t => t === 'command');
+  const expectIndex = splitted.findIndex(t => t === 'expect');
+  const expectLooseIndex = splitted.findIndex(t => t === 'expect-loose');
+
+  return {
+    test: splitted[1 + testIndex],
+    spec: splitted[1 + specIndex],
+    server: splitted[1 + serverIndex],
+    command: splitted[1 + commandIndex],
+    expect: splitted[1 + expectIndex],
+    expectLooseIndex: splitted[1 + expectLooseIndex],
   };
-  return fetch(`${host}${path}`, requestConfig)
-    .then(async response => {
-      const { date, ...headers } = response.headers.raw();
-
-      return {
-        request: requestConfig,
-        response: {
-          status: response.status,
-          statusText: response.statusText,
-          headers: headers,
-          body: await response.json(),
-        },
-      };
-    });
-}
-
-export function constructMasterFileName(request) {
-  return JSON.stringify(request).replace(/[{},":/]/gim, '_');
-}
-
-export function readFile(hash) {
-  const fileContent = fs.readFileSync(join(__dirname, '/gold-master-files/') + `${hash}.json`).toString();
-
-  return JSON.parse(fileContent);
 }

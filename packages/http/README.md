@@ -400,6 +400,12 @@ You would get this in response
 ]
 ```
 
+## Prism Decision Flow Diagram
+
+The below diagram represents all logical decision we make to figure out the best HTTP response to the specific request.
+
+![Decision Flow Diagram](./docs/images/mock-server-dfd.png)
+
 ## Gotchas
 
 If provided request object contains `Host` header it will be replaced with `baseUrl` host. The original value will be set to `Forwarded` header with `host=` prefix.

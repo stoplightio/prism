@@ -1,39 +1,75 @@
-## Generating binaries
+# Test Harness
 
-For anything to work, the binaries have to be generated first with: `yarn build.binaries`. This will generate three binaries.
+## Prerequisites
 
-### Alternatively, run any of the following:
+* Install the project dependencies with `yarn`
+* Generate the binary for your platform with `yarn build.binary`. This will *also* compile the project from TS -> JS
 
-1. `yarn build.binary` will assume the host machine
-2. `HOST=host yarn build.binary` will generate a binary for the current host machine
-3. `HOST=node10-linux-x64 yarn build.binary` will generate a binary for node10-linux-x64
+## Running the suite
 
-Before running any of the above, please make sure that the dependencies (from `package.json`) are installed.
-You can do so by running `yarn` or `npm install`.
-If the dependencies were not installed, you might experience `Error: command mock not found` issue.
+Run `yarn test.harness` from your terminal
 
-`HOST` variable is used to specify what binary we want to build.
-`HOST` might be set to anything that is considered a target in `pkg` [supports](https://github.com/zeit/pkg#targets).
+## Adding a new test
 
-## To run tests, run any of the following:
+* Create a new file in the `./spec` directory. It can have _any_ name and _any_ extension, it does not really matter.
+* Use the following template and put your stuff:
 
-Start Prism with the target file you'd like and then run the command
+```
+====test====
+Test text, can be multi line.
+====spec====
+openapi 2/3 document
+====server====
+command line arguments to run Prism with
+====command====
+curl command to get the response
+====expect====
+expected output from curl
+```
 
-1. `yarn test.binary`
-2. `SPEC=./examples/petstore.oas2.json yarn test.binary`
-3. `SPEC=./examples/petstore.oas2.json PRISM_PORT=4011 yarn test.binary`
+### A real example?
 
-> `SPEC` can take comma delimited paths to specs
+```
+====test====
+Hello
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: Get Todo Items
+          content:
+            'application/json':
+              example: hello
+====server====
+mock -p 4010
+====command====
+curl -i -X GET http://localhost:4010/todos -H "accept: application/json"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+content-length: 7
+Date: Fri, 21 Jun 2019 09:25:34 GMT
+Connection: keep-alive
 
+"hello"
+```
 
-When doing `yarn test.binary`, the envs are optional, they have defaults.
+#### Things to keep in mind when creating the files:
 
-1. `SPEC` defaults to using `petstore.oas2.json`
-2. `PRISM_PORT` defaults to using `4010`
+* 1 test per file, we do not support multiple splitting.
+* Be precise with the separators. They shuold be 4 *before* **AND** *after* the word. `====`
+* The 4 keywords are `test,spec,server,command,expect,expect-loose`, nothing else at the moment
+* You can run all the tests on the same port `4010`, but you can also choose another one
+* The `curl` command does not support piping stuff into other tools; so if you're trying to be cool and do `curl | grep`, well maybe next time.
 
-## To record gold master files:
+## Technical details
 
-1. Run the Prism binary with the target file you want to record
-2. in another terminal window: `node test-harness/createMasterFiles.js` - this will use requests definitions from `requests.js` and save master files under `/gold-master-files`
-
-Gold master files contain data about both request and response.
+* A RegExp is used to split the content
+* A temporany file with the specification file is stored on your disk
+* Prism gets spawn with the specified arguments and waited to be running
+* The curl command is performed
+* The outputs get converted using `http-string-parser`, a veeery old package transforming CURL output in a consumable format
+* Gavel is used to validate the request — it will automagically ignore headers that can change and consider only the "fundamental" one such as content negotiation ones and stuff around.
