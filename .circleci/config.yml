@@ -53,27 +53,8 @@ jobs:
           name: Create Linux CLI binary
           command: HOST=host yarn build.binary
       - run:
-          name: Start Prism server for OAS2 document
-          command: ./cli-binaries/prism-cli-linux mock ./examples/petstore.oas2.json -p 4010
-          background: true
-      - run:
-          name: Start Prism server for OAS3 document
-          command: ./cli-binaries/prism-cli-linux mock ./examples/petstore.oas3.json -p 4011
-          background: true
-      - run:
-          name: Wait Prism OAS2
-          command: dockerize -wait tcp://localhost:4010 -timeout 10s
-      - run:
-          name: Run OAS2 Harness
-          command: |
-            PRISM_PORT=4010 SPEC=./examples/petstore.oas2.json yarn test.binary
-      - run:
-          name: Wait Prism OAS3
-          command: dockerize -wait tcp://localhost:4011 -timeout 10s
-      - run:
-          name: Run OAS3 Harness
-          command: |
-            PRISM_PORT=4011 SPEC=./examples/petstore.oas3.json yarn test.binary
+          name: Run Harness
+          command: yarn test.harness
 
   publish:
     docker:
