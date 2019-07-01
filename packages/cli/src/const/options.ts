@@ -37,8 +37,8 @@ export const FLAGS = {
 };
 
 export const LOG_COLOR_MAP = {
-  CLI: chalk.bgWhiteBright,
-  'HTTP SERVER': chalk.bgYellowBright,
-  MOCKER: chalk.bgBlueBright,
-  HTTP: chalk.bgGreenBright,
+  CLI: { index: 0, color: chalk.bgWhiteBright },
+  'HTTP SERVER': { index: 0, color: chalk.bgYellowBright },
+  NEGOTIATOR: { index: 1, color: chalk.bgCyanBright },
+  VALIDATOR: { index: 1, color: chalk.bgGreenBright },
 };

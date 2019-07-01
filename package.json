@@ -65,7 +65,7 @@
     "trailingComma": "es5"
   },
   "lint-staged": {
-    "*packages/**/.ts": [
+    "**/packages/**/*.ts": [
       "tslint -p packages/tsconfig.test.json --fix",
       "git add"
     ],

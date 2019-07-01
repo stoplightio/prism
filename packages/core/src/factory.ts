@@ -88,7 +88,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
               },
               defaultComponents.mocker,
             )
-            .run(components.logger.child({ name: 'MOCKER', input }))
+            .run(components.logger.child({ name: 'NEGOTIATOR' }))
             .fold(
               e => {
                 throw e;
