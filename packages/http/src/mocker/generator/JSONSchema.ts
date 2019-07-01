@@ -1,4 +1,3 @@
-// @ts-ignore
 import * as faker from 'faker';
 import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
