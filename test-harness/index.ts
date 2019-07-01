@@ -36,12 +36,11 @@ describe('harness', () => {
     afterAll(() => tmpFileHandle.removeCallback(undefined, undefined, undefined, undefined));
 
     test(parsed.test, done => {
-      expect.hasAssertions()
       const [command, ...args] = parsed.command.split(' ').map(t => t.trim());
       const serverArgs = [...parsed.server.split(' ').map(t => t.trim()), tmpFileHandle.name];
 
       prismMockProcessHandle = cp.spawn(
-        path.join(__dirname, '../cli-binaries/prism-cli-linux'),
+        path.join(__dirname, '../cli-binaries/prism-cli'),
         serverArgs
       );
 
