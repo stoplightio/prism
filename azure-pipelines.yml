@@ -15,12 +15,6 @@ jobs:
         inputs:
           versionSpec: '12.x'
         displayName: 'Install Node.js'
-      - powershell: |
-         $ver = $env:BUILD_SOURCEBRANCH.remove(0, 10)
-         Write-Host "##vso[task.setvariable variable=Tag;isOutput=true]$ver"
-        displayName: 'Update version to Tag'
-        name: setTag
-        condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
 
       - script: yarn
         displayName: 'Install deps'
@@ -43,17 +37,22 @@ jobs:
       - publish: $(Build.ArtifactStagingDirectory)
         artifact: prism-cli-win.exe
   - job: publish
-    variables:
-      Tag: $[ dependencies.test.outputs['setTag.Tag'] ]
     dependsOn: test
     displayName: Publish binary
-    condition: not(eq(coalesce(variables['Tag'], ''), ''))
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     pool:
       vmImage: vs2017-win2016
 
     steps:
+      - powershell: |
+         $ver = $env:BUILD_SOURCEBRANCH.remove(0, 10)
+         Write-Host "##vso[task.setvariable variable=Tag;isOutput=true]$ver"
+        displayName: 'Update version to Tag'
+        name: setTag
+        condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+
       - task: GitHubRelease@0
         inputs:
           gitHubConnection: spartacusroboticus
           action: 'edit'
-          tag: variables['Build.Tag']
+          tag: $(Tag)
