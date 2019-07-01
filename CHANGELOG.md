@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-beta.3 (2019-07-01)
+
+### Features
+
+- Introduced Azure Pipelines to make sure Prism works on Windows #388
+- Prism has now a diagram in the readme that shows you the mocker flow #386
+- Several improvements to the logging of the Http Mocker #382
+- Our `application/vnd+problem.json` messages have been improved #370
+
+### Bug Fixes
+
+- Prism is now able to parse HTTP FormData payloads #381
+
 # 3.0.0-beta.1 (2019-06-22)
 
 ### Features
@@ -13,7 +26,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 - Static JSON Schema examples generator gives precendece to `default` over `examples` #373
-
 
 # 3.0.0-beta.1 (2019-06-18)
 

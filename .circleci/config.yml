@@ -51,7 +51,7 @@ jobs:
             DOCKERIZE_VERSION: v0.6.1
       - run:
           name: Create Linux CLI binary
-          command: HOST=host yarn build.binary
+          command: yarn build.binary
       - run:
           name: Run Harness
           command: yarn test.harness
@@ -73,7 +73,7 @@ jobs:
           command: yarn lerna publish from-git --github-release --yes
       - run:
           name: Create CLI binaries
-          command: npx pkg --out-path ./cli-binaries ./packages/cli/
+          command: npx pkg --out-path ./cli-binaries --targets linux,macos ./packages/cli/
       - store_artifacts:
           path: ./cli-binaries
       - persist_to_workspace:

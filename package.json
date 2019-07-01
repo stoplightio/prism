@@ -20,7 +20,7 @@
     "test.watch": "yarn test --watchAll",
     "release": "lerna version prerelease --preid beta",
     "prebuild.binary": "yarn build",
-    "build.binary": "npx pkg --target $HOST --output ./cli-binaries/prism-cli-linux ./packages/cli/",
+    "build.binary": "npx pkg --output ./cli-binaries/prism-cli ./packages/cli/",
     "test.harness": "jest -c ./jest.harness.config.js"
   },
   "devDependencies": {

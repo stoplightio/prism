@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-http",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0-beta.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -16,7 +16,7 @@
     "node": ">=8"
   },
   "dependencies": {
-    "@stoplight/prism-core": "^3.0.0-beta.2",
+    "@stoplight/prism-core": "^3.0.0-beta.3",
     "accepts": "^1.3.7",
     "ajv": "^6.0.0",
     "ajv-oai": "^1.0.0",
