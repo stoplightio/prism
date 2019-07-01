@@ -73,14 +73,14 @@ OPTIONS
 #### `-d, --dynamic`
 Dynamically generate examples.
 
-Prism uses [JSON-schema-faker](https://github.com/json-schema-faker/json-schema-faker) under the hood to generate dynamic examples.
+Prism uses [JSON Schema Faker](https://github.com/json-schema-faker/json-schema-faker) under the hood to generate dynamic examples.
 
-Because the OpenAPI spec [allows extensions](https://swagger.io/docs/specification/openapi-extensions/) using a `x-` prefix on the custom keyword and prism extends [JSON-schema-faker](https://github.com/json-schema-faker/json-schema-faker) with [faker.js](https://github.com/marak/Faker.js/), you can add the `x-faker` keyword with a faker API method to provide more specific mocking.
+Because the OpenAPI spec [allows extensions](https://swagger.io/docs/specification/openapi-extensions/) using a `x-` prefix on the custom keyword and prism extends [JSON Schema Faker](https://github.com/json-schema-faker/json-schema-faker) with [faker.js](https://github.com/marak/Faker.js/), you can add the `x-faker` keyword with a faker API method to provide more specific mocking.
 
 **Example:**
 
 Schema:
-```
+```js
 {
   "type": "object",
   "properties": {
@@ -94,7 +94,7 @@ Schema:
 ```
 
 Result:
-```
+```js
 {
   "ip": "255.255.0.0"
 }
