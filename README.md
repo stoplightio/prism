@@ -1,6 +1,7 @@
 # Prism
 
-<a href="https://codeclimate.com/github/stoplightio/prism/test_coverage"><img src="https://api.codeclimate.com/v1/badges/f5e363a7eb5b8f4e570f/test_coverage" /></a>
+[![Build Status](https://dev.azure.com/vncz/vncz/_apis/build/status/stoplightio.prism?branchName=master)](https://dev.azure.com/vncz/vncz/_build/latest?definitionId=1&branchName=master)
+[![CircleCI](https://circleci.com/gh/stoplightio/prism.svg?style=svg)](https://circleci.com/gh/stoplightio/prism)
 
 Prism is a set of packages for API mocking with **OpenAPI Specification v2** (formerly known as Swagger Specification) and **OpenAPI Specification v3**.
 
