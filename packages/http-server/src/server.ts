@@ -104,6 +104,7 @@ const replyHandler = <LoaderInput>(
       body,
     };
 
+    request.log.info({ input }, 'Request received');
     try {
       const response = await prism.process(input);
 
@@ -131,7 +132,7 @@ const replyHandler = <LoaderInput>(
         reply.res.end();
       }
 
-      request.log.error({ input }, `Request terminated with error: ${e}`);
+      request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
     }
   };
 };
