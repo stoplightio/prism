@@ -231,3 +231,9 @@ If you are interested in contributing to Prism itself, check out our [contributi
 [2.x]: https://github.com/stoplightio/prism/tree/2.x
 [cli-docs]: packages/cli/README.md
 [http-docs]: packages/http/README.md
+
+## Prism Decision Flow Diagram
+
+The below diagram represents all logical decision we make to figure out the best HTTP response to the specific request.
+
+![Decision Flow Diagram](./docs/images/mock-server-dfd.png)
