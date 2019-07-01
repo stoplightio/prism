@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import { JSONSchema } from '../../../types';
 import { generate } from '../JSONSchema';
 
@@ -33,10 +34,13 @@ describe('JSONSchema generator', () => {
       const instance = generate(schema);
       expect(instance).toHaveProperty('name');
       expect(instance).toHaveProperty('email');
-      // @ts-ignore
-      expect(instance.ip).not.toBeUndefined();
-      // @ts-ignore
-      expect(instance.ip).not.toEqual('internet.ip');
+
+      expect(instance).toHaveProperty('ip');
+      const ipValue = get(instance, 'ip');
+
+      const ipRegEx = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
+      expect(ipValue).not.toBe('internet.ip');
+      expect(ipRegEx.test(ipValue)).toBeTruthy();
     });
 
     it('operates on sealed schema objects', () => {
