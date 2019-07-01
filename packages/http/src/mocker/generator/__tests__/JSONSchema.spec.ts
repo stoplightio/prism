@@ -33,7 +33,6 @@ describe('JSONSchema generator', () => {
       const instance = generate(schema);
       expect(instance).toHaveProperty('name');
       expect(instance).toHaveProperty('email');
-      expect(instance).toHaveProperty('ip');
       // @ts-ignore
       expect(instance.ip).not.toBeUndefined();
       // @ts-ignore
