@@ -21,6 +21,9 @@ COPY packages/cli/package.json /usr/src/prism/packages/cli/
 ENV NODE_ENV production
 RUN yarn --production
 
+RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash
+RUN ./bin/node-prune
+
 ###############################################################
 FROM node:12-alpine
 
