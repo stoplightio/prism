@@ -5,9 +5,7 @@
 
 Prism is a set of packages for API mocking with **OpenAPI Specification v2** (formerly known as Swagger Specification) and **OpenAPI Specification v3**.
 
-For example, given an API specification:
-
-- You can spin up a mock HTTP server and respond realistically based on your requests
+For example, given an API specification you can spin up a mock HTTP server and respond realistically based on your requests
 
 ![Demo of Prism Mock Server being called with curl from the CLI](./examples/prism-cli.svg)
 
@@ -15,7 +13,7 @@ The set of packages are made up of:
 
 - [`core`][core]: basic interfaces and abstraction for API descriptions
 - [`http`][http]: A Prism implementation to work with HTTP Requests
-- [`http-server`][http-server]: A _[Fastify]_ instance that uses Prism to validate/mock/respond and forward to http requests
+- [`http-server`][http-server]: A _[Fastify]_ instance that uses Prism to validate/mock/respond to http requests
 - [`cli`][cli]: A CLI to spin up servers locally easily
 
 Look at the relative repositories' READMEs for the specific documentation.
