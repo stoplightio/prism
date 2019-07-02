@@ -3,6 +3,9 @@
 [![Build Status](https://dev.azure.com/vncz/vncz/_apis/build/status/stoplightio.prism?branchName=master)](https://dev.azure.com/vncz/vncz/_build/latest?definitionId=1&branchName=master)
 [![CircleCI](https://circleci.com/gh/stoplightio/prism.svg?style=svg)](https://circleci.com/gh/stoplightio/prism)
 
+![CircleCI](./examples/1.svg)
+![CircleCI](./examples/2.svg)
+
 Prism is a set of packages for API mocking with **OpenAPI Specification v2** (formerly known as Swagger Specification) and **OpenAPI Specification v3**.
 
 For example, given an API specification:
