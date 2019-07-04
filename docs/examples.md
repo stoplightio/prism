@@ -18,7 +18,7 @@ Both Dynamic and Static generation almost follow the same path, which forks in t
 
 ## Static Example Generation
 
-1. If the provided JSON Schema has an example for the whole object, it will return such value (or the first one in case it is an array)
+1. If the provided OpenAPI Schema Object has an example for the whole object, it will return such value (or the first one in case it is an array)
 2. If not, for each property
   * If the property has a default value, then it will return the specified value (or the first one in case it's an array)
   * If the property has an example value, then it will return the specified value (or the first one in case it's an array)
