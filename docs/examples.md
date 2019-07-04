@@ -1,4 +1,4 @@
-# Examples generation
+# Examples Generation
 
 Prism will try to generate meaningful examples for all the responses and use some fallback mechanisms in case the generation was not possible. This document outlines how the process works so that you will understand why Prism has responded with such example.
 
