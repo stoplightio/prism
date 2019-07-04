@@ -12,7 +12,7 @@ By default, Prism will use a **static generation strategy**, which is outlined b
 
 We will assume you're already familiar with the mocking flow. In case you're not, you can consult [our diagram][diagram]. This document describes fundamentally what happens once we have enough data to return a meaningful payload (aka: the last green circle).
 
-When the negotiator has sorted out the response to return to the client and has selected the appropiate `content` according to the `Accept` header, but there's no element in the `examples` property, then the example generation kicks in.
+When the negotiator has sorted out the response to return to the client and has selected the appropiate `content` according to the `Accept` header, but there's no element nor in the `example` property nor in the `examples` one, then the example generation kicks in.
 
 Both Dynamic and Static generation almost follow the same path, which forks in the final behaviour in case anything else fails.
 
