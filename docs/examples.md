@@ -20,8 +20,8 @@ Both Dynamic and Static generation almost follow the same path, which forks in t
 
 1. If the provided OpenAPI Schema Object has an example for the whole object, it will return such value (or the first one in case it is an array)
 2. If not, for each property
-  * If the property has a default value, then it will return the specified value (or the first one in case it's an array)
-  * If the property has an example value, then it will return the specified value (or the first one in case it's an array)
+  * If the property has a default value, then it will return the specified value
+  * If the property has an `examples` value, then it will return the first element in the array
   * If the property has nor an example or a default value and it's **nullable**, it will return null
   * If the property has nor an example or a default value and it's **not** nullable, and has a `format` specified it will return a meaningful static value according to the format
   * If the property has nor an example or a default value and it's **not** nullable, and has not a `format` specified it will return `'string'` in case of a number and `0` in case of a string
