@@ -26,6 +26,8 @@ Both Dynamic and Static generation almost follow the same path, which forks in t
   * If the property has nor an example or a default value and it's **not** nullable, and has a `format` specified it will return a meaningful static value according to the format
   * If the property has nor an example or a default value and it's **not** nullable, and has not a `format` specified it will return `'string'` in case of a number and `0` in case of a string
 
+As you probably noticed, the Static Example Generation strategy is fundamentally going through the description and try to assemble a static example using all the avaiables sources of data. This means that the better your document is, the better the static example will be.
+
 ## Dynamic Example Generation
 
 Prism will generate a random value for all the properties according to the type, regardless of the examples presence or not. You will still be able to manually select a specific example you want to get back in case it's required through the `__example` query parameter. All the generated properties will take in consideration the `format` property, in case it's provided.
