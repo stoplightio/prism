@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-beta.3 (2019-07-05)
+
+### Features
+
+- Prism examples generator supports `x-faker` extensions #384 — thanks @vanhoofmaarten!
+- Documentation reorganisation #393
+
 # 3.0.0-beta.3 (2019-07-01)
 
 ### Features
