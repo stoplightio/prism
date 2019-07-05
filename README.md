@@ -46,9 +46,9 @@ Prism is avaiable as Docker Image as well under the `3` tag.
 
 ## Usage
 
-### CLI
+### CLI — Quick start
 
-We'll present here only the main use cases. For a complete overview of the CLI, you can consult the relevant [documentation ⇗][cli-docs].
+We'll present here only the main use case. For a the complete list of commands, you can consult the relevant [documentation ⇗][cli-docs].
 
 #### Mock server
 
