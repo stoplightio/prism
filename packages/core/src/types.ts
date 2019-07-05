@@ -70,11 +70,11 @@ export interface IValidator<Resource, Input, Config, Output> {
   validateInput?: (
     opts: { resource: Resource; input: Input; config?: Config },
     defaultValidator?: IValidator<Resource, Input, Config, Output>,
-  ) => Promise<IPrismDiagnostic[]>;
+  ) => IPrismDiagnostic[];
   validateOutput?: (
     opts: { resource: Resource; output?: Output; config?: Config },
     defaultValidator?: IValidator<Resource, Input, Config, Output>,
-  ) => Promise<IPrismDiagnostic[]>;
+  ) => IPrismDiagnostic[];
 }
 
 export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
