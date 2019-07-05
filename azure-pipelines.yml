@@ -55,8 +55,3 @@ jobs:
           gitHubConnection: spartacusroboticus
           action: 'edit'
           tag: $(Tag)
-
-      - task: GitHubRelease@0
-        condition: failed()
-        inputs:
-          gitHubConnection: spartacusroboticus
