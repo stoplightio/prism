@@ -34,7 +34,7 @@ Prism will generate a random value for all the properties according to the type,
 
 ### Use the Faker extension for more meaningful examples
 
-In case you're using dynamic examples, you can instruct with a simple extension what kind of data you're looking for, even if the official JSON Schema does not support such values, using the `x-faker` property.
+In case you're using dynamic examples, you can instruct with a simple extension what kind of data you're looking for, even if the official OpenAPI Schema Object does not support such values, using the `x-faker` property.
 
 You can use any of the [supported API Methods][fakerjs]
 
