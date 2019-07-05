@@ -14,35 +14,32 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: '12.x'
-        displayName: 'Install Node.js'
+        displayName: Install Node.js
 
       - script: yarn
-        displayName: 'Install deps'
+        displayName: Install deps
 
       - script: npx jest
-        displayName: 'Run tests'
+        displayName: Run tests
 
       - script: yarn build
-        displayName: 'Build the code'
+        displayName: Build the code
 
       - script: npx pkg --output ./cli-binaries/prism-cli ./packages/cli/
-        displayName: 'Create binary'
+        displayName: Create binary
 
       - script: yarn test.harness
-        displayName: 'Run harness'
+        displayName: Run harness
 
-      - script: cp ./cli-binaries/prism-cli.exe $(Build.ArtifactStagingDirectory)/prism-cli-win.exe
-        displayName: 'Copy binary in the special Azure directory'
-
-      - publish: $(Build.ArtifactStagingDirectory)
+      - publish: ./cli-binaries/
         artifact: prism-cli-win.exe
+
   - job: publish
     dependsOn: test
     displayName: Publish binary
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
     pool:
       vmImage: vs2017-win2016
-
     steps:
       - powershell: |
          $ver = $env:BUILD_SOURCEBRANCH.remove(0, 10)
@@ -50,13 +47,15 @@ jobs:
         displayName: 'Update version to Tag'
         name: setTag
 
-      - task: GitHubRelease@0
+      - task: DownloadPipelineArtifact@2
         inputs:
-          gitHubConnection: spartacusroboticus
-          action: 'edit'
-          tag: $(Tag)
+          path: $(Build.ArtifactStagingDirectory)
 
       - task: GitHubRelease@0
-        condition: failed()
         inputs:
           gitHubConnection: spartacusroboticus
+          assets: '$(Build.ArtifactStagingDirectory)/**/*'
+          action: edit
+          assetUploadMode: replace
+          addChangeLog: false
+          tag: $(setTag.Tag)
