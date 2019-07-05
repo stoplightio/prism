@@ -82,7 +82,7 @@ Connection: keep-alive
 
 Responses will be mocked using realistic data that conforms to the type in the description.
 
-#### Determine Response Status
+### Determine Response Status
 
 Prism can be forced to return different HTTP responses by specifying the status code in the query
 string:
@@ -99,7 +99,7 @@ Connection: keep-alive
 
 The body, headers, etc. for this response will be taken from the API description document.
 
-#### Request Validation
+### Request Validation
 
 Requests to operations which expect a request body will be validated, for example: a POST with JSON.
 
@@ -126,7 +126,7 @@ Connection: keep-alive
 
 This error shows the request is missing a required property `name` from the HTTP request body.
 
-#### Server Validation
+### Server Validation
 
 OpenAPI lets API spec authors make only certain servers available, and they also allow certain
 operations to be restricted to certain servers. Make sure the server URL you plan to use is a valid
