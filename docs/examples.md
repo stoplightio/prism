@@ -32,7 +32,7 @@ As you probably noticed, the Static Example Generation strategy is fundamentally
 
 Prism will generate a random value for all the properties according to the type, regardless of the examples presence or not. You will still be able to manually select a specific example you want to get back in case it's required through the `__example` query parameter. All the generated properties will take in consideration the `format` property, in case it's provided.
 
-### Use the Faker extension for more meaningful examples
+### Improving Dynamic Examples with Faker Extension
 
 In case you're using dynamic examples, you can instruct with a simple extension what kind of data you're looking for, even if the official OpenAPI Schema Object does not support such values, using the `x-faker` property.
 
