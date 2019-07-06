@@ -7,7 +7,7 @@ export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 // END
 
 export interface IPrism<Resource, Input, Output, Config, LoadOpts> {
-  process: (input: Input, config?: Config) => Promise<IPrismOutput<Input, Output>>;
+  process: (input: Input, config?: Config) => Either<Error, IPrismOutput<Input, Output>>;
   load: (opts?: LoadOpts) => Promise<void>;
   readonly resources: Resource[];
 }

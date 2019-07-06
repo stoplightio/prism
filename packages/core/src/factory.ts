@@ -1,4 +1,5 @@
 import { DiagnosticSeverity } from '@stoplight/types';
+import { right } from 'fp-ts/lib/Either';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 
@@ -7,15 +8,21 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
   defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
 ): (
   customConfig?: PartialPrismConfig<Config, Input>,
-  customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
+  customComponents?: PickRequired<
+    Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
+    'logger' | 'router'
+  >,
 ) => IPrism<Resource, Input, Output, Config, LoadOpts> {
   const prism = (
     customConfig?: PartialPrismConfig<Config, Input>,
-    customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
+    customComponents?: PickRequired<
+      Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
+      'logger' | 'router'
+    >,
   ) => {
     const components: PickRequired<
       Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
-      'logger'
+      'logger' | 'router'
     > = Object.assign({}, defaultComponents, customComponents);
 
     // our loaded resources (HttpOperation objects, etc)
@@ -33,22 +40,15 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         }
       },
 
-      process: async (input: Input, c?: Config) => {
+      process: (input: Input, c?: Config) => {
         // build the config for this request
         const configMerger = configMergerFactory(defaultConfig, customConfig, c);
         const configObj: Config | undefined = configMerger(input);
         const inputValidations: IPrismDiagnostic[] = [];
 
-        // find the correct resource
-        let resource: Resource | undefined;
-        if (components.router) {
-          try {
-            resource = components.router.route({ resources, input, config: configObj }, defaultComponents.router);
-          } catch (error) {
-            // rethrow error we if we're attempting to mock
-            if ((configObj as IPrismConfig).mock) {
-              throw error;
-            }
+        return components.router
+          .route({ resources, input, config: configObj }, defaultComponents.router)
+          .mapLeft(error => {
             const { message, name, status } = error as ProblemJsonError;
             // otherwise let's just stack it on the inputValidations
             // when someone simply wants to hit an URL, don't block them
@@ -58,76 +58,64 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
               code: status,
               severity: DiagnosticSeverity.Warning,
             });
-          }
-        }
 
-        // validate input
-        if (resource && components.validator && components.validator.validateInput) {
-          inputValidations.push(
-            ...(await components.validator.validateInput(
-              {
-                resource,
-                input,
-                config: configObj,
-              },
-              defaultComponents.validator,
-            )),
-          );
-        }
+            return error;
+          })
+          .chain(resource => {
+            // validate input
+            if (components.validator && components.validator.validateInput) {
+              inputValidations.concat(
+                components.validator.validateInput(
+                  {
+                    resource,
+                    input,
+                    config: configObj,
+                  },
+                  defaultComponents.validator,
+                ),
+              );
+            }
 
-        // build output
-        let output: Output | undefined;
-        if (resource && components.mocker && (configObj as IPrismConfig).mock) {
-          // generate the response
-          output = components.mocker
-            .mock(
-              {
-                resource,
-                input: { validations: { input: inputValidations }, data: input },
-                config: configObj,
-              },
-              defaultComponents.mocker,
-            )
-            .run(components.logger.child({ name: 'NEGOTIATOR' }))
-            .fold(
-              e => {
-                throw e;
-              },
-              r => r,
-            );
-        } else if (components.forwarder) {
-          // forward request and set output from response
-          output = await components.forwarder.forward(
-            {
-              resource,
-              input: { validations: { input: inputValidations }, data: input },
-              config: configObj,
-            },
-            defaultComponents.forwarder,
-          );
-        }
+            if (components.mocker && (configObj as IPrismConfig).mock) {
+              // generate the response
+              return components.mocker
+                .mock(
+                  {
+                    resource,
+                    input: { validations: { input: inputValidations }, data: input },
+                    config: configObj,
+                  },
+                  defaultComponents.mocker,
+                )
+                .run(components.logger.child({ name: 'NEGOTIATOR' }))
+                .map(output => ({ resource, output }));
+            }
 
-        // validate output
-        let outputValidations: IPrismDiagnostic[] = [];
-        if (resource && components.validator && components.validator.validateOutput) {
-          outputValidations = await components.validator.validateOutput(
-            {
-              resource,
+            return right<Error, { output: Output | undefined; resource: Resource }>({ output: undefined, resource });
+          })
+          .map(({ resource, output }) => {
+            // validate output
+            let outputValidations: IPrismDiagnostic[] = [];
+            if (components.validator && components.validator.validateOutput) {
+              outputValidations = components.validator.validateOutput(
+                {
+                  resource,
+                  output,
+                  config: configObj,
+                },
+                defaultComponents.validator,
+              );
+            }
+
+            return {
+              input,
               output,
-              config: configObj,
-            },
-            defaultComponents.validator,
-          );
-        }
-
-        return {
-          input,
-          output,
-          validations: {
-            input: inputValidations,
-            output: outputValidations,
-          },
-        };
+              validations: {
+                input: inputValidations,
+                output: outputValidations,
+              },
+            };
+          });
       },
     };
   };

@@ -105,34 +105,34 @@ const replyHandler = <LoaderInput>(
     };
 
     request.log.info({ input }, 'Request received');
-    try {
-      const response = await prism.process(input);
 
-      const { output } = response;
+    prism
+      .process(input)
+      .map(response => {
+        const { output } = response;
 
-      if (output) {
-        reply.code(output.statusCode);
+        if (output) {
+          reply.code(output.statusCode);
 
-        if (output.headers) {
-          reply.headers(output.headers);
+          if (output.headers) {
+            reply.headers(output.headers);
+          }
+          reply.send(output.body);
         }
-        reply.send(output.body);
-      } else {
-        throw new Error('Unable to find any decent response for the current request.');
-      }
-    } catch (e) {
-      if (!reply.sent) {
-        const status = 'status' in e ? e.status : 500;
-        reply
-          .type('application/problem+json')
-          .serializer(JSON.stringify)
-          .code(status)
-          .send(ProblemJsonError.fromPlainError(e));
-      } else {
-        reply.res.end();
-      }
+      })
+      .mapLeft(error => {
+        if (!reply.sent) {
+          const formattedError = ProblemJsonError.fromPlainError(error);
+          reply
+            .type('application/problem+json')
+            .serializer(JSON.stringify)
+            .code(formattedError.status || 500)
+            .send(formattedError);
+        } else {
+          reply.res.end();
+        }
 
-      request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
-    }
+        request.log.error({ input, offset: 1 }, `Request terminated with error: ${error}`);
+      });
   };
 };
