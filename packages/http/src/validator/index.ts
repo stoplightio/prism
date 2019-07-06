@@ -21,7 +21,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
     private readonly queryValidator: IHttpValidator<IHttpNameValues, IHttpQueryParam>,
   ) {}
 
-  public async validateInput({
+  public validateInput({
     resource,
     input,
     config: originalConfig,
@@ -29,7 +29,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
     resource: IHttpOperation;
     input: IHttpRequest;
     config?: IHttpConfig;
-  }): Promise<IPrismDiagnostic[]> {
+  }): IPrismDiagnostic[] {
     const config = resolveRequestValidationConfig(originalConfig);
     const results: IPrismDiagnostic[] = [];
     const mediaType = caseless(input.headers || {}).get('content-type');
@@ -60,7 +60,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
     return results;
   }
 
-  public async validateOutput({
+  public validateOutput({
     resource,
     output,
     config: originalConfig,
@@ -68,7 +68,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
     resource: IHttpOperation;
     output?: IHttpResponse;
     config?: IHttpConfig;
-  }): Promise<IPrismDiagnostic[]> {
+  }): IPrismDiagnostic[] {
     if (!output) {
       return [];
     }
