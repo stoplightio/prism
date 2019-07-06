@@ -281,25 +281,7 @@ describe('Http Client .process', () => {
       });
 
       // TODO: will be fixed by https://stoplightio.atlassian.net/browse/SO-259
-      xit('with invalid body returns validation errors', () => {
-        assertLeft(
-          prism.process({
-            method: 'get',
-            url: {
-              path: '/pet/findByStatus',
-              query: {
-                status: ['available'],
-              },
-            },
-            body: {
-              id: 'should not be a string',
-              status: 'should be one of "placed", "approved", "delivered"',
-              complete: 'should be a boolean',
-            },
-          }),
-          error => expect(error).toEqual(ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY)),
-        );
-      });
+      test.todo('with invalid body returns validation errors');
     });
   });
 
