@@ -201,18 +201,8 @@ describe('Http Client .process', () => {
       });
     });
 
-    describe('GET /pet without an optional body parameter', () => {
-      // TODO will be fixed by https://stoplightio.atlassian.net/browse/SO-260
-      xit('returns 200 response', async () => {
-        const response = await prism.process({
-          method: 'get',
-          url: { path: '/pet' },
-        });
-
-        expect(response.output).toBeDefined();
-        expect(response.output!.statusCode).toEqual(200);
-      });
-    });
+    // TODO will be fixed by https://stoplightio.atlassian.net/browse/SO-260
+    test.todo('GET /pet without an optional body parameter');
 
     describe('when processing GET /pet/findByStatus', () => {
       it('with valid query params returns generated body', async () => {
@@ -269,24 +259,7 @@ describe('Http Client .process', () => {
       });
 
       // TODO: will be fixed by https://stoplightio.atlassian.net/browse/SO-259
-      xit('with invalid body returns validation errors', () => {
-        return expect(
-          prism.process({
-            method: 'get',
-            url: {
-              path: '/pet/findByStatus',
-              query: {
-                status: ['available'],
-              },
-            },
-            body: {
-              id: 'should not be a string',
-              status: 'should be one of "placed", "approved", "delivered"',
-              complete: 'should be a boolean',
-            },
-          }),
-        ).rejects.toThrowError(ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY));
-      });
+      test.todo('with invalid body returns validation errors');
     });
   });
 
