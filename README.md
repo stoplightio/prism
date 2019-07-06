@@ -9,15 +9,6 @@ For example, given an API specification you can spin up a mock HTTP server and r
 
 ![Demo of Prism Mock Server being called with curl from the CLI](./examples/prism-cli.svg)
 
-The set of packages are made up of:
-
-- [`core`][core]: basic interfaces and abstraction for API descriptions
-- [`http`][http]: A Prism implementation to work with HTTP Requests
-- [`http-server`][http-server]: A _[Fastify]_ instance that uses Prism to validate/mock/respond to http requests
-- [`cli`][cli]: A CLI to spin up servers locally easily
-
-Look at the relative repositories' READMEs for the specific documentation.
-
 > Note: This branch refers to Prism 3.x, which is the current version most likely you will use. If you're looking for the 2.x version, point your browser to the [2.x branch][2.x]
 
 ## Installation
@@ -32,7 +23,7 @@ yarn global add @stoplight/prism-cli
 
 …or if you do not want to install [Node](https://nodejs.org), you can either use the installation script (if you're using Linux or MacOS)…
 
-```
+```bash
 curl -L https://raw.githack.com/stoplightio/prism/master/install | sh
 ```
 
@@ -46,7 +37,9 @@ Please check out our `docs` directory. A good point to start is the [CLI section
 
 Prism is avaiable as Docker Image as well under the `3` tag.
 
-`docker run -P stoplight/prism:3 mock -h 0.0.0.0 api.oas2.yml`
+```bash
+docker run -P stoplight/prism:3 mock -h 0.0.0.0 api.oas2.yml
+```
 
 ## What's next for Prism?
 
