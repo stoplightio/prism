@@ -188,14 +188,9 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     checkErrorPayloadShape(response.payload);
   });
 
-  it.skip('should automagically provide the parameters when not provided in the query string and a default is defined', async () => {
-    const response = await server.fastify.inject({
-      method: 'GET',
-      url: '/pets/findByStatus',
-    });
-
-    expect(response.statusCode).toBe(200);
-  });
+  test.todo(
+    'should automagically provide the parameters when not provided in the query string and a default is defined',
+  );
 
   it('should support multiple param values', async () => {
     const response = await server.fastify.inject({
