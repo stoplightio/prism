@@ -42,13 +42,15 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         const inputValidations: IPrismDiagnostic[] = [];
 
         if (components.router) {
-          return fromEither(components.router.route({ resources, input, config: configObj }, defaultComponents.router))
-            .foldTaskEither(
+          return components.router
+            .route({ resources, input, config: configObj }, defaultComponents.router)
+            .fold(
               error => {
                 // rethrow error we if we're attempting to mock
                 if ((configObj as IPrismConfig).mock) {
-                  throw error;
+                  return left2v(error);
                 }
+
                 const { message, name, status } = error as ProblemJsonError;
                 // otherwise let's just stack it on the inputValidations
                 // when someone simply wants to hit an URL, don't block them
@@ -132,13 +134,15 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
                 },
               };
             })
-            .fold(
-              e => {
-                throw e;
-              },
-              o => o,
-            )
-            .run();
+            .run()
+            .then(v =>
+              v.fold(
+                e => {
+                  throw e;
+                },
+                o => o,
+              ),
+            );
         }
 
         return Promise.resolve({
