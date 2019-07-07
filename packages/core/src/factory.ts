@@ -43,27 +43,26 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
 
         if (components.router) {
           return fromEither(components.router.route({ resources, input, config: configObj }, defaultComponents.router))
-            .map(r => {
-              if (r) return r;
-              return undefined;
-            })
-            .orElse(error => {
-              // rethrow error we if we're attempting to mock
-              if ((configObj as IPrismConfig).mock) {
-                throw error;
-              }
-              const { message, name, status } = error as ProblemJsonError;
-              // otherwise let's just stack it on the inputValidations
-              // when someone simply wants to hit an URL, don't block them
-              inputValidations.push({
-                message,
-                source: name,
-                code: status,
-                severity: DiagnosticSeverity.Warning,
-              });
+            .foldTaskEither(
+              error => {
+                // rethrow error we if we're attempting to mock
+                if ((configObj as IPrismConfig).mock) {
+                  throw error;
+                }
+                const { message, name, status } = error as ProblemJsonError;
+                // otherwise let's just stack it on the inputValidations
+                // when someone simply wants to hit an URL, don't block them
+                inputValidations.push({
+                  message,
+                  source: name,
+                  code: status,
+                  severity: DiagnosticSeverity.Warning,
+                });
 
-              return right2v<Error, Resource | undefined>(undefined);
-            })
+                return right2v<Error, Resource | undefined>(undefined);
+              },
+              value => right2v(value),
+            )
             .chain(resource => {
               // validate input
               if (resource && components.validator && components.validator.validateInput) {
