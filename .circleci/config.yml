@@ -1,4 +1,11 @@
 version: 2.1
+executors:
+  docker-node:
+    docker:
+      - image: circleci/node:10
+  macos:
+    macos:
+      xcode: 10.2.1
 commands:
   early_return_for_forked_pull_requests:
     description: >-
@@ -14,8 +21,7 @@ commands:
             fi
 jobs:
   build:
-    docker:
-      - image: circleci/node:10
+    executor: docker-node
     steps:
       - checkout
       - run:
@@ -51,8 +57,10 @@ jobs:
           command: |
             ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
   harness:
-    docker:
-      - image: circleci/node:10
+    parameters:
+      executor:
+        type: executor
+    executor: << parameters.executor >>
     steps:
       - checkout
       - run:
@@ -60,19 +68,18 @@ jobs:
           command: yarn
       - run:
           name: Install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          command: curl -OL https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-$(uname |  tr '[:upper:]' '[:lower:]')-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-$(uname |  tr '[:upper:]' '[:lower:]')-amd64-$DOCKERIZE_VERSION.tar.gz
           environment:
             DOCKERIZE_VERSION: v0.6.1
       - run:
-          name: Create Linux CLI binary
+          name: Create CLI binary
           command: yarn build.binary
       - run:
           name: Run Harness
           command: yarn test.harness
 
   publish:
-    docker:
-      - image: circleci/node:10
+    executor: docker-node
     steps:
       - checkout
       - run:
@@ -116,6 +123,15 @@ workflows:
             tags:
               only: /.*/
       - harness:
+          name: harness-macos
+          executor: macos
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /.*/
+      - harness:
+          executor: docker-node
           filters:
             tags:
               only: /.*/
@@ -128,6 +144,7 @@ workflows:
           requires:
             - build
             - harness
+            - harness-macos
       - upload_artifacts:
           filters:
             branches:
@@ -137,4 +154,5 @@ workflows:
           requires:
             - build
             - harness
+            - harness-macos
             - publish
