@@ -35,7 +35,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         }
       },
 
-      process: (input: Input, c?: Config) => {
+      process: async (input: Input, c?: Config) => {
         // build the config for this request
         const configMerger = configMergerFactory(defaultConfig, customConfig, c);
         const configObj: Config | undefined = configMerger(input);
@@ -145,14 +145,14 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
             );
         }
 
-        return Promise.resolve({
+        return {
           input,
           output: undefined,
           validations: {
             input: [],
             output: [],
           },
-        });
+        };
       },
     };
   };
