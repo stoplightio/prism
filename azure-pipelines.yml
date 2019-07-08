@@ -5,6 +5,7 @@ trigger:
   branches:
     include:
       - master
+      - develop
 jobs:
   - job: test
     displayName: Test
