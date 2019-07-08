@@ -68,11 +68,11 @@ jobs:
           command: yarn
       - run:
           name: Install dockerize
-          command: curl -OL https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-$(uname)-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-$(uname)-amd64-$DOCKERIZE_VERSION.tar.gz
+          command: curl -OL https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-$(uname |  tr '[:upper:]' '[:lower:]')-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-$(uname |  tr '[:upper:]' '[:lower:]')-amd64-$DOCKERIZE_VERSION.tar.gz
           environment:
             DOCKERIZE_VERSION: v0.6.1
       - run:
-          name: Create Linux CLI binary
+          name: Create CLI binary
           command: yarn build.binary
       - run:
           name: Run Harness
@@ -126,6 +126,8 @@ workflows:
           name: harness-macos
           executor: macos
           filters:
+            branches:
+              only: master
             tags:
               only: /.*/
       - harness:
