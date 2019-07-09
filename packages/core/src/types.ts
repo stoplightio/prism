@@ -1,6 +1,7 @@
 import { IDiagnostic } from '@stoplight/types';
 import { Either } from 'fp-ts/lib/Either';
 import { Reader } from 'fp-ts/lib/Reader';
+import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
@@ -51,6 +52,10 @@ export interface IForwarder<Resource, Input, Config, Output> {
     opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config },
     defaultForwarder?: IForwarder<Resource, Input, Config, Output>,
   ) => Promise<Output>;
+  fforward: (
+    opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config },
+    defaultForwarder?: IForwarder<Resource, Input, Config, Output>,
+  ) => TaskEither<Error, Output>;
 }
 
 export interface IMocker<Resource, Input, Config, Output> {

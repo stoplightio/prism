@@ -96,18 +96,16 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
                 ).map(output => ({ output, resource }));
               } else if (components.forwarder) {
                 // forward request and set output from response
-                return tryCatch(
-                  () =>
-                    components.forwarder!.forward(
-                      {
-                        resource,
-                        input: { validations: { input: inputValidations }, data: input },
-                        config: configObj,
-                      },
-                      defaultComponents.forwarder,
-                    ),
-                  e => toError(e),
-                ).map(output => ({ output, resource }));
+                return components.forwarder
+                  .fforward(
+                    {
+                      resource,
+                      input: { validations: { input: inputValidations }, data: input },
+                      config: configObj,
+                    },
+                    defaultComponents.forwarder,
+                  )
+                  .map(output => ({ output, resource }));
               }
 
               return left2v(new Error('Nor forwarder nor mocker has been selected. Something is wrong'));
