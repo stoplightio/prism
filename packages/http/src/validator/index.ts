@@ -6,13 +6,7 @@ import { IHttpConfig, IHttpNameValue, IHttpNameValues, IHttpRequest, IHttpRespon
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { resolveRequestValidationConfig, resolveResponseValidationConfig } from './utils/config';
 import { findOperationResponse } from './utils/spec';
-import {
-  HttpBodyValidator,
-  HttpHeadersValidator,
-  HttpQueryValidator,
-  IHttpValidator,
-  validatorRegistry,
-} from './validators';
+import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator, IHttpValidator } from './validators';
 
 export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   constructor(
@@ -95,7 +89,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
 }
 
 export const validator = new HttpValidator(
-  new HttpBodyValidator(validatorRegistry, 'body'),
+  new HttpBodyValidator('body'),
   new HttpHeadersValidator(headerDeserializerRegistry, 'header'),
   new HttpQueryValidator(queryDeserializerRegistry, 'query'),
 );
