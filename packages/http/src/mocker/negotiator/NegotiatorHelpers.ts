@@ -292,12 +292,14 @@ const helpers = {
 
         result = findResponseByStatusCode(httpResponses, '400');
         if (!result) {
-          logger.trace('Unable to find a 400 response definition');
-          return createResponseFromDefault(httpResponses, '422');
+          logger.trace('Unable to find a 400 response definition.');
+          const response = createResponseFromDefault(httpResponses, '422');
+          if (response) logger.success(`Created a ${response.code} from a default response`);
+          return response;
         }
       }
 
-      logger.success(`Found response ${result.code}. I'll try with.`);
+      logger.success(`Found response ${result.code}. I'll try with it.`);
       return result;
     }).chain(response => {
       return withLogger(logger => {
