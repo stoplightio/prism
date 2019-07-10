@@ -297,7 +297,7 @@ const helpers = {
         }
       }
 
-      logger.success(`Found response ${result.code}. I'll try with.`);
+      logger.success(`Found response ${result.code}. I'll try with it.`);
       return result;
     }).chain(response => {
       return withLogger(logger => {
