@@ -1,6 +1,6 @@
 ====test====
 When I send a request to an operation that does not have a consumes defined
-and I send a request with an application/json body
+and I send a request with an formdata body
 and such body does not respect the schema
 I shuold get a validation error response
 ====spec====
@@ -26,10 +26,10 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl http://127.0.0.1:4010/pet/findByStatus -H 'Content-Type: application/x-www-form-urlencoded' --data 'id=randomstring'
+curl -i http://127.0.0.1:4010/pet/findByStatus -H 'Content-Type: application/x-www-form-urlencoded' --data 'id=randomstring'
 ====expect====
-HTTP/1.1 200 OK
-content-type: application/json; charset=utf-8
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
 content-length: 7
 Date: Fri, 21 Jun 2019 09:25:34 GMT
 Connection: keep-alive
