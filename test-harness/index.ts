@@ -51,7 +51,12 @@ describe('harness', () => {
           const expected: any = parseResponse(parsed.expect.trim());
 
           try {
-            expect(validate(expected, output).isValid).toBeTruthy();
+            const isValid = validate(expected, output).isValid
+            if (!!isValid)
+              expect(validate(expected, output).isValid).toBeTruthy();
+            else {
+              expect(output).toMatchObject(expected)
+            }
             if (parsed.expect)
               expect(expected.body).toEqual(output.body)
           } catch (e) {
