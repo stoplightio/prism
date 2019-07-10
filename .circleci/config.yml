@@ -67,11 +67,6 @@ jobs:
           name: Install Dependencies
           command: yarn
       - run:
-          name: Install dockerize
-          command: curl -OL https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-$(uname |  tr '[:upper:]' '[:lower:]')-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-$(uname |  tr '[:upper:]' '[:lower:]')-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.6.1
-      - run:
           name: Create CLI binary
           command: yarn build.binary
       - run:
