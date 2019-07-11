@@ -62,12 +62,12 @@ describe('GET /pet?__server', () => {
   }
 });
 
-describe('GET /pet with invalid body', () => {
+describe('POST /pet with invalid body', () => {
   it('returns correct error message', async () => {
     const server = await instantiatePrism(resolve(__dirname, 'fixtures', 'getOperationWithBody.oas2.json'));
 
     const response = await server.fastify.inject({
-      method: 'GET',
+      method: 'POST',
       url: '/pet',
       payload: {
         id: 'strings are not valid!',
@@ -78,7 +78,7 @@ describe('GET /pet with invalid body', () => {
     const parsed = JSON.parse(response.payload);
     expect(parsed).toMatchObject({
       type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
-      validation: [{ location: ['body'], severity: 'Error', code: 'type', message: 'should be object' }],
+      validation: [{ location: ['body', 'id'], severity: 'Error', code: 'type', message: 'should be integer' }],
     });
     await server.fastify.close();
   });
