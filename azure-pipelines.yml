@@ -30,6 +30,7 @@ jobs:
 
       - bash: yarn test.harness
         displayName: Run harness
+        condition: not(always())
 
       - publish: ./cli-binaries/
         artifact: prism-cli-win.exe
