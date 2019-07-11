@@ -46,7 +46,7 @@ describe('harness', () => {
 
       prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
         if (line.includes('Prism is listening')) {
-          const clientCommandHandle = spawnSync(command, args, { shell: true, encoding: 'utf8' });
+          const clientCommandHandle = spawnSync(command, args, { shell: true, encoding: 'utf8', windowsVerbatimArguments: false });
           const output: any = parseResponse(clientCommandHandle.stdout.trim());
           const expected: any = parseResponse(parsed.expect.trim());
 
