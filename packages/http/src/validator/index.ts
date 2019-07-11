@@ -1,5 +1,5 @@
 import { IPrismDiagnostic, IValidator } from '@stoplight/prism-core';
-import { IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
 import * as caseless from 'caseless';
 
 import { IHttpConfig, IHttpNameValue, IHttpNameValues, IHttpRequest, IHttpResponse } from '../types';
@@ -33,6 +33,10 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
 
     if (config.body) {
       const { body } = input;
+
+      if (request && request.body && request.body.required && !body) {
+        results.push({ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error });
+      }
 
       this.bodyValidator
         .validate(body, (request && request.body && request.body.contents) || [], mediaType)
