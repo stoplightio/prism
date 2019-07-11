@@ -1,6 +1,5 @@
 import { DiagnosticSeverity } from '@stoplight/types';
-import { toError } from 'fp-ts/lib/Either';
-import { fromEither, left2v, right2v, tryCatch } from 'fp-ts/lib/TaskEither';
+import { fromEither, left2v, right2v } from 'fp-ts/lib/TaskEither';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 
