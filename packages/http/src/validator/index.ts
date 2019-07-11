@@ -33,14 +33,15 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
 
     if (config.body) {
       const { body } = input;
-
-      if (request && request.body && request.body.required && !body) {
-        results.push({ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error });
+      if (request && request.body) {
+        if (!body && request.body.required) {
+          results.push({ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error });
+        } else if (body) {
+          this.bodyValidator
+            .validate(body, (request && request.body && request.body.contents) || [], mediaType)
+            .forEach(validationResult => results.push(validationResult));
+        }
       }
-
-      this.bodyValidator
-        .validate(body, (request && request.body && request.body.contents) || [], mediaType)
-        .forEach(validationResult => results.push(validationResult));
     }
 
     if (config.headers) {
