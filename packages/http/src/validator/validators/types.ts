@@ -9,7 +9,3 @@ export interface ISchemaValidator<S = JSONSchema> {
   validate(content: any, schema: S): IPrismDiagnostic[];
   supports(mediaType: string): boolean;
 }
-
-export interface IValidatorRegistry {
-  get(mediaType: string): ((content: any, schema: JSONSchema) => IPrismDiagnostic[]) | undefined;
-}

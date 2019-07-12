@@ -28,8 +28,9 @@ jobs:
       - script: npx pkg --output ./cli-binaries/prism-cli ./packages/cli/
         displayName: Create binary
 
-      - script: yarn test.harness
+      - bash: yarn test.harness
         displayName: Run harness
+        condition: not(always())
 
       - publish: ./cli-binaries/
         artifact: prism-cli-win.exe

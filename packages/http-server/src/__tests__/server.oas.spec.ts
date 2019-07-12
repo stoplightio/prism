@@ -112,10 +112,10 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
 
   it('should not mock a verb that is not defined on a path', async () => {
     const response = await server.fastify.inject({
-      method: 'POST',
+      method: 'PATCH',
       url: '/pets/123',
     });
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(405);
     checkErrorPayloadShape(response.payload);
   });
 

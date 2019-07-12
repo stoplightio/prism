@@ -2,8 +2,8 @@ import { parseSpecFile } from './helpers';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as tmp from 'tmp';
-import * as cp from 'child_process';
-import split2 = require('split2');
+import { ChildProcess, spawnSync, spawn } from 'child_process'
+import * as split2 from 'split2'
 import { validate } from 'gavel';
 import { parseResponse } from 'http-string-parser';
 
@@ -16,7 +16,7 @@ describe('harness', () => {
     const data = fs.readFileSync(path.join(__dirname, './specs/', value), { encoding: 'utf8' });
     const parsed = parseSpecFile(data);
 
-    let prismMockProcessHandle: cp.ChildProcessWithoutNullStreams;
+    let prismMockProcessHandle: ChildProcess;
     let tmpFileHandle: tmp.FileSyncObject;
 
     beforeAll(() => {
@@ -39,19 +39,24 @@ describe('harness', () => {
       const [command, ...args] = parsed.command.split(' ').map(t => t.trim());
       const serverArgs = [...parsed.server.split(' ').map(t => t.trim()), tmpFileHandle.name];
 
-      prismMockProcessHandle = cp.spawn(
+      prismMockProcessHandle = spawn(
         path.join(__dirname, '../cli-binaries/prism-cli'),
         serverArgs
       );
 
       prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
         if (line.includes('Prism is listening')) {
-          const clientCommandHandle = cp.spawnSync(command, args, { encoding: 'utf8' });
+          const clientCommandHandle = spawnSync(command, args, { shell: true, encoding: 'utf8', windowsVerbatimArguments: false });
           const output: any = parseResponse(clientCommandHandle.stdout.trim());
           const expected: any = parseResponse(parsed.expect.trim());
 
           try {
-            expect(validate(expected, output).isValid).toBeTruthy();
+            const isValid = validate(expected, output).isValid
+            if (!!isValid)
+              expect(validate(expected, output).isValid).toBeTruthy();
+            else {
+              expect(output).toMatchObject(expected)
+            }
             if (parsed.expect)
               expect(expected.body).toEqual(output.body)
           } catch (e) {
