@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-beta.6 (2019-07-12)
+
+### Bug Fixes
+
+- Prism now loads correctly files from the internet with urls using query parameters #452
+- Prism now correctly respects the `required` property in OpenAPI 2 body parameters #450
+- Prism now validates any payload, as long it has a schema and it's parsable #446
+- Prism now will tell you explicitly when a response has been constructed from a `default` response definition #445
+
 # 3.0.0-beta.5 (2019-07-09)
 
 ### Features
