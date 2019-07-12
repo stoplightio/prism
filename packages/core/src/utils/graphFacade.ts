@@ -16,6 +16,7 @@ import { createYamlPlugin } from '@stoplight/graphite/plugins/yaml';
 import { IHttpOperation } from '@stoplight/types';
 import * as fs from 'fs';
 import { resolve } from 'path';
+import { parse } from 'url';
 
 import { compact } from 'lodash';
 
@@ -61,10 +62,16 @@ export class GraphFacade {
   }
 
   public async createRawNode(raw: string, { type, path }: Pick<ISourceNode, 'type' | 'path'>) {
+    const parsedPath = parse(path).pathname;
+
+    if (!parsedPath) {
+      throw new Error('Unable to parse the path.');
+    }
+
     this.graphite.graph.addNode({
       category: NodeCategory.Source,
       type,
-      language: filenameToLanguage(path),
+      language: filenameToLanguage(parsedPath),
       path: '/' + path,
       data: { raw },
     });
