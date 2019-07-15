@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "paths": {
     "/pet": {
-      "get": {
+      "post": {
         "produces": ["application/json"],
         "consumes": ["application/json"],
         "parameters": [

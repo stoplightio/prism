@@ -1,11 +1,13 @@
-import { JSONSchema6, JSONSchema7 } from 'json-schema';
-import { cloneDeep, map, mapValues } from 'lodash';
+import * as faker from 'faker';
+import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
 // @ts-ignore
-import * as jsf from '@stoplight/json-schema-faker';
+import * as jsf from 'json-schema-faker';
 // @ts-ignore
 import * as sampler from 'openapi-sampler';
+
+jsf.extend('faker', () => faker);
 
 jsf.option({
   failOnInvalidTypes: false,
@@ -23,34 +25,5 @@ export function generate(source: JSONSchema): unknown {
 }
 
 export function generateStatic(source: JSONSchema): unknown {
-  const transformedSchema = toOpenAPIJSONSchemaesque(source);
-  return sampler.sample(transformedSchema);
-}
-
-function hasExamples(source: JSONSchema): source is JSONSchema6 | JSONSchema7 {
-  return 'examples' in source;
-}
-
-function toOpenAPIJSONSchemaesque(schema: JSONSchema): any {
-  const returnedSchema = cloneDeep(schema);
-
-  const targetKeys: Array<keyof JSONSchema> = ['properties', 'anyOf', 'allOf', 'oneOf'];
-
-  targetKeys.forEach(property => {
-    if (!returnedSchema[property]) return;
-
-    const mapFn = Array.isArray(returnedSchema[property]) ? map : (mapValues as (obj: unknown) => unknown[] | unknown);
-
-    returnedSchema[property] = mapFn(schema[property], innerProp => {
-      if (typeof innerProp === 'boolean') return innerProp;
-
-      if (hasExamples(innerProp) && Array.isArray(innerProp.examples)) {
-        Object.assign(innerProp, { example: innerProp.examples[0] });
-      }
-
-      return toOpenAPIJSONSchemaesque(innerProp);
-    });
-  });
-
-  return returnedSchema;
+  return sampler.sample(source);
 }

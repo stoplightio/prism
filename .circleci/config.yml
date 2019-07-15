@@ -1,8 +1,27 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+executors:
+  docker-node:
     docker:
       - image: circleci/node:10
+  macos:
+    macos:
+      xcode: 10.2.1
+commands:
+  early_return_for_forked_pull_requests:
+    description: >-
+      If this build is from a fork, stop executing the current job and return success.
+      This is useful to avoid steps that will fail due to missing credentials.
+    steps:
+      - run:
+          name: Early return if this build is from a forked PR
+          command: |
+            if [ -n "$CIRCLE_PR_NUMBER" ]; then
+              echo "Nothing to do for forked PRs, so marking this step successful"
+              circleci step halt
+            fi
+jobs:
+  build:
+    executor: docker-node
     steps:
       - checkout
       - run:
@@ -30,54 +49,32 @@ jobs:
           name: Run tests
           command: yarn test.coverage --verbose
       - run:
+          name: Run build
+          command: yarn build
+      - early_return_for_forked_pull_requests
+      - run:
           name: cc-after
           command: |
             ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
-      - run:
-          name: Run build
-          command: yarn build
   harness:
-    docker:
-      - image: circleci/node:10
+    parameters:
+      executor:
+        type: executor
+    executor: << parameters.executor >>
     steps:
       - checkout
       - run:
           name: Install Dependencies
           command: yarn
       - run:
-          name: Install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.6.1
+          name: Create CLI binary
+          command: yarn build.binary
       - run:
-          name: Create Linux CLI binary
-          command: HOST=host yarn build.binary
-      - run:
-          name: Start Prism server for OAS2 document
-          command: ./cli-binaries/prism-cli-linux mock ./examples/petstore.oas2.json -p 4010
-          background: true
-      - run:
-          name: Start Prism server for OAS3 document
-          command: ./cli-binaries/prism-cli-linux mock ./examples/petstore.oas3.json -p 4011
-          background: true
-      - run:
-          name: Wait Prism OAS2
-          command: dockerize -wait tcp://localhost:4010 -timeout 10s
-      - run:
-          name: Run OAS2 Harness
-          command: |
-            PRISM_PORT=4010 SPEC=./examples/petstore.oas2.json yarn test.binary
-      - run:
-          name: Wait Prism OAS3
-          command: dockerize -wait tcp://localhost:4011 -timeout 10s
-      - run:
-          name: Run OAS3 Harness
-          command: |
-            PRISM_PORT=4011 SPEC=./examples/petstore.oas3.json yarn test.binary
+          name: Run Harness
+          command: yarn test.harness
 
   publish:
-    docker:
-      - image: circleci/node:10
+    executor: docker-node
     steps:
       - checkout
       - run:
@@ -92,7 +89,7 @@ jobs:
           command: yarn lerna publish from-git --github-release --yes
       - run:
           name: Create CLI binaries
-          command: npx pkg --out-path ./cli-binaries ./packages/cli/
+          command: npx pkg --out-path ./cli-binaries --targets linux,macos ./packages/cli/
       - store_artifacts:
           path: ./cli-binaries
       - persist_to_workspace:
@@ -121,6 +118,15 @@ workflows:
             tags:
               only: /.*/
       - harness:
+          name: harness-macos
+          executor: macos
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /.*/
+      - harness:
+          executor: docker-node
           filters:
             tags:
               only: /.*/
@@ -133,6 +139,7 @@ workflows:
           requires:
             - build
             - harness
+            - harness-macos
       - upload_artifacts:
           filters:
             branches:
@@ -142,4 +149,5 @@ workflows:
           requires:
             - build
             - harness
+            - harness-macos
             - publish

@@ -1,0 +1,62 @@
+trigger:
+  tags:
+    include:
+      - v*
+  branches:
+    include:
+      - master
+jobs:
+  - job: test
+    displayName: Test
+    pool:
+      vmImage: vs2017-win2016
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '12.x'
+        displayName: Install Node.js
+
+      - script: yarn
+        displayName: Install deps
+
+      - script: npx jest
+        displayName: Run tests
+
+      - script: yarn build
+        displayName: Build the code
+
+      - script: npx pkg --output ./cli-binaries/prism-cli ./packages/cli/
+        displayName: Create binary
+
+      - bash: yarn test.harness
+        displayName: Run harness
+        condition: not(always())
+
+      - publish: ./cli-binaries/
+        artifact: prism-cli-win.exe
+
+  - job: publish
+    dependsOn: test
+    displayName: Publish binary
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+    pool:
+      vmImage: vs2017-win2016
+    steps:
+      - powershell: |
+         $ver = $env:BUILD_SOURCEBRANCH.remove(0, 10)
+         Write-Host "##vso[task.setvariable variable=Tag;isOutput=true]$ver"
+        displayName: 'Update version to Tag'
+        name: setTag
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          path: $(Build.ArtifactStagingDirectory)
+
+      - task: GitHubRelease@0
+        inputs:
+          gitHubConnection: spartacusroboticus
+          assets: '$(Build.ArtifactStagingDirectory)/**/*'
+          action: edit
+          assetUploadMode: replace
+          addChangeLog: false
+          tag: $(setTag.Tag)

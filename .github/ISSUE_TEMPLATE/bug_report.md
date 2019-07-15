@@ -1,30 +1,21 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: 'bug: '
 labels: bug
-assignees: XVincentX
 ---
 
-**Note: For support questions, please use the [Stoplight Community forum](https://community.stoplight.io)**. This repository's issues are reserved for feature requests and bug reports. If you are unsure if you are experiencing a bug, the [Community forum](https://community.stoplight.io) is a great place to start.
+> For support questions, please use the [Stoplight Community Forum](https://community.stoplight.io). This repository's issues are reserved for feature requests and bug reports. If you are unsure if you are experiencing a bug, the [Community Forum](https://community.stoplight.io) is a great place to start.
+>
+> **Please delete this section, any any sections below that you don't use, before creating the issue.**
 
 **Describe the bug**
 A clear and concise description of what the bug is.
 
 **To Reproduce**
 
-Using this example specification:
-
-``` yaml
-openapi: 3.0
-# ...
-```
-
-Steps to reproduce the behavior:
-
-1. When I run this command: `prism mock example.yaml --foo --bar`
-2. Then make the following HTTP request: `curl GET ...`
-3. Then something unexpected happens...
+1. Given this OpenAPI document '...'
+2. Run this CLI command '....'
+3. See error
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
@@ -32,8 +23,10 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
+**Environment (remove any that are not applicable):**
+ - Library version: [e.g. 3.0.0]
+ - OS: [e.g. Windows 7]
+ - Browser: [e.g. Chrome 61]
 
-- OS: [e.g. macOS 10.14.4]
-- Prism Version [e.g. v3.0.0]
-- Install method [e.g. binary, npm, yarn, docker]
+**Additional context**
+Add any other context about the problem here.

@@ -1,5 +1,6 @@
-import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
+import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from '@stoplight/prism-core';
 import { Dictionary, HttpMethod, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
+import { DiagnosticSeverity } from '@stoplight/types';
 import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
 export type TPrismHttpInstance<LoaderInput> = IPrism<
@@ -74,32 +75,46 @@ export type ProblemJson = {
   type: string;
   title: string;
   status: number;
-  detail: string;
+  detail: any;
 };
 
 export class ProblemJsonError extends Error {
-  public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
+  public static fromTemplate(
+    template: Omit<ProblemJson, 'detail'>,
+    detail?: string,
+    additional?: Dictionary<unknown>,
+  ): ProblemJsonError {
     const error = new ProblemJsonError(
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
       detail || '',
+      additional,
     );
     Error.captureStackTrace(error, ProblemJsonError);
 
     return error;
   }
 
-  public static fromPlainError(error: Error & { detail?: string; status?: number }): ProblemJson {
+  public static fromPlainError(
+    error: Error & { detail?: string; status?: number; additional?: Dictionary<unknown> },
+  ): ProblemJson {
     return {
       type: error.name && error.name !== 'Error' ? error.name : 'https://stoplight.io/prism/errors#UNKNOWN',
       title: error.message,
       status: error.status || 500,
       detail: error.detail || '',
+      ...error.additional,
     };
   }
 
-  constructor(readonly name: string, readonly message: string, readonly status: number, readonly detail: string) {
+  constructor(
+    readonly name: string,
+    readonly message: string,
+    readonly status: number,
+    readonly detail: string,
+    readonly additional?: Dictionary<unknown>,
+  ) {
     super(message);
     Error.captureStackTrace(this, ProblemJsonError);
   }

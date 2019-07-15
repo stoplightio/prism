@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0-beta.6 (2019-07-12)
+
+### Bug Fixes
+
+- Prism now loads correctly files from the internet with urls using query parameters #452
+- Prism now correctly respects the `required` property in OpenAPI 2 body parameters #450
+- Prism now validates any payload, as long it has a schema and it's parsable #446
+- Prism now will tell you explicitly when a response has been constructed from a `default` response definition #445
+
+# 3.0.0-beta.5 (2019-07-09)
+
+### Features
+
+- Internal refactoring: Prism validation process is now completely sync #400
+
+# 3.0.0-beta.3 (2019-07-05)
+
+### Features
+
+- Prism examples generator supports `x-faker` extensions #384 — thanks @vanhoofmaarten!
+- Documentation reorganisation #393
+
+# 3.0.0-beta.3 (2019-07-01)
+
+### Features
+
+- Introduced Azure Pipelines to make sure Prism works on Windows #388
+- Prism has now a diagram in the readme that shows you the mocker flow #386
+- Several improvements to the logging of the Http Mocker #382
+- Our `application/vnd+problem.json` messages have been improved #370
+
+### Bug Fixes
+
+- Prism is now able to parse HTTP FormData payloads #381
+
+# 3.0.0-beta.1 (2019-06-22)
+
+### Features
+
+- Prism now works correctly on Windows thanks to some internal libraries updates #374
+- Prism 3 has now a Docker Image #359; you can try it at `stoplight/prism:3`
+
+### Bug Fixes
+
+- Static JSON Schema examples generator gives precendece to `default` over `examples` #373
+
 # 3.0.0-beta.1 (2019-06-18)
 
 ### Features

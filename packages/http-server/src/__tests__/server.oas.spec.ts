@@ -214,12 +214,12 @@ describe('GET /pet?__server', () => {
   }
 });
 
-describe('GET /pet with invalid body', () => {
+describe('POST /pet with invalid body', () => {
   it('returns correct error message', async () => {
     const server = await instantiatePrism(resolve(__dirname, 'fixtures', 'getOperationWithBody.oas2.json'));
 
     const response = await server.fastify.inject({
-      method: 'GET',
+      method: 'POST',
       url: '/pet',
       payload: {
         id: 'strings are not valid!',
@@ -227,9 +227,11 @@ describe('GET /pet with invalid body', () => {
     });
 
     expect(response.statusCode).toBe(422);
-    expect(response.payload).toEqual(
-      '{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid: [{\\"path\\":[\\"body\\"],\\"code\\":\\"type\\",\\"message\\":\\"should be object\\",\\"severity\\":0}]"}',
-    );
+    const parsed = JSON.parse(response.payload);
+    expect(parsed).toMatchObject({
+      type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
+      validation: [{ location: ['body', 'id'], severity: 'Error', code: 'type', message: 'should be integer' }],
+    });
     await server.fastify.close();
   });
 });
@@ -262,10 +264,10 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
 
   it('should not mock a verb that is not defined on a path', async () => {
     const response = await server.fastify.inject({
-      method: 'POST',
+      method: 'PATCH',
       url: '/pets/123',
     });
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(405);
     checkErrorPayloadShape(response.payload);
   });
 
@@ -338,14 +340,9 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     checkErrorPayloadShape(response.payload);
   });
 
-  it.skip('should automagically provide the parameters when not provided in the query string and a default is defined', async () => {
-    const response = await server.fastify.inject({
-      method: 'GET',
-      url: '/pets/findByStatus',
-    });
-
-    expect(response.statusCode).toBe(200);
-  });
+  test.todo(
+    'should automagically provide the parameters when not provided in the query string and a default is defined',
+  );
 
   it('should support multiple param values', async () => {
     const response = await server.fastify.inject({
@@ -456,8 +453,12 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       });
 
       expect(response.statusCode).toBe(404);
-      expect(response.payload).toEqual(
-        '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The server url https://google.com hasn\'t been matched with any of the provided servers"}',
+      const parsed = JSON.parse(response.payload);
+
+      expect(parsed).toHaveProperty('type', 'https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR');
+      expect(parsed).toHaveProperty(
+        'detail',
+        "The server url https://google.com hasn't been matched with any of the provided servers",
       );
     });
 

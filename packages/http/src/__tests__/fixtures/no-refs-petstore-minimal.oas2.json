@@ -16,28 +16,6 @@
               "default": "available"
             },
             "collectionFormat": "multi"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "status": {
-                  "type": "string",
-                  "description": "Order Status",
-                  "enum": ["placed", "approved", "delivered"]
-                },
-                "complete": {
-                  "type": "boolean",
-                  "default": false
-                }
-              }
-            }
           }
         ],
         "responses": {

@@ -1,18 +1,12 @@
 import { IPrismDiagnostic, IValidator } from '@stoplight/prism-core';
-import { IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
 import * as caseless from 'caseless';
 
 import { IHttpConfig, IHttpNameValue, IHttpNameValues, IHttpRequest, IHttpResponse } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { resolveRequestValidationConfig, resolveResponseValidationConfig } from './utils/config';
 import { findOperationResponse } from './utils/spec';
-import {
-  HttpBodyValidator,
-  HttpHeadersValidator,
-  HttpQueryValidator,
-  IHttpValidator,
-  validatorRegistry,
-} from './validators';
+import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator, IHttpValidator } from './validators';
 
 export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   constructor(
@@ -21,7 +15,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
     private readonly queryValidator: IHttpValidator<IHttpNameValues, IHttpQueryParam>,
   ) {}
 
-  public async validateInput({
+  public validateInput({
     resource,
     input,
     config: originalConfig,
@@ -29,7 +23,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
     resource: IHttpOperation;
     input: IHttpRequest;
     config?: IHttpConfig;
-  }): Promise<IPrismDiagnostic[]> {
+  }): IPrismDiagnostic[] {
     const config = resolveRequestValidationConfig(originalConfig);
     const results: IPrismDiagnostic[] = [];
     const mediaType = caseless(input.headers || {}).get('content-type');
@@ -39,10 +33,15 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
 
     if (config.body) {
       const { body } = input;
-
-      this.bodyValidator
-        .validate(body, (request && request.body && request.body.contents) || [], mediaType)
-        .forEach(validationResult => results.push(validationResult));
+      if (request && request.body) {
+        if (!body && request.body.required) {
+          results.push({ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error });
+        } else if (body) {
+          this.bodyValidator
+            .validate(body, (request && request.body && request.body.contents) || [], mediaType)
+            .forEach(validationResult => results.push(validationResult));
+        }
+      }
     }
 
     if (config.headers) {
@@ -60,7 +59,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
     return results;
   }
 
-  public async validateOutput({
+  public validateOutput({
     resource,
     output,
     config: originalConfig,
@@ -68,7 +67,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
     resource: IHttpOperation;
     output?: IHttpResponse;
     config?: IHttpConfig;
-  }): Promise<IPrismDiagnostic[]> {
+  }): IPrismDiagnostic[] {
     if (!output) {
       return [];
     }
@@ -95,7 +94,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
 }
 
 export const validator = new HttpValidator(
-  new HttpBodyValidator(validatorRegistry, 'body'),
+  new HttpBodyValidator('body'),
   new HttpHeadersValidator(headerDeserializerRegistry, 'header'),
   new HttpQueryValidator(queryDeserializerRegistry, 'query'),
 );

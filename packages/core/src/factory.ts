@@ -1,4 +1,5 @@
 import { DiagnosticSeverity } from '@stoplight/types';
+import { fromEither, left2v, right2v } from 'fp-ts/lib/TaskEither';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 
@@ -39,93 +40,114 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         const configObj: Config | undefined = configMerger(input);
         const inputValidations: IPrismDiagnostic[] = [];
 
-        // find the correct resource
-        let resource: Resource | undefined;
         if (components.router) {
-          try {
-            resource = components.router.route({ resources, input, config: configObj }, defaultComponents.router);
-          } catch (error) {
-            // rethrow error we if we're attempting to mock
-            if ((configObj as IPrismConfig).mock) {
-              throw error;
-            }
-            const { message, name, status } = error as ProblemJsonError;
-            // otherwise let's just stack it on the inputValidations
-            // when someone simply wants to hit an URL, don't block them
-            inputValidations.push({
-              message,
-              source: name,
-              code: status,
-              severity: DiagnosticSeverity.Warning,
-            });
-          }
-        }
-
-        // validate input
-        if (resource && components.validator && components.validator.validateInput) {
-          inputValidations.push(
-            ...(await components.validator.validateInput(
-              {
-                resource,
-                input,
-                config: configObj,
-              },
-              defaultComponents.validator,
-            )),
-          );
-        }
-
-        // build output
-        let output: Output | undefined;
-        if (resource && components.mocker && (configObj as IPrismConfig).mock) {
-          // generate the response
-          output = components.mocker
-            .mock(
-              {
-                resource,
-                input: { validations: { input: inputValidations }, data: input },
-                config: configObj,
-              },
-              defaultComponents.mocker,
-            )
-            .run(components.logger.child({ name: 'MOCKER', input }))
+          return components.router
+            .route({ resources, input, config: configObj }, defaultComponents.router)
             .fold(
-              e => {
-                throw e;
-              },
-              r => r,
-            );
-        } else if (components.forwarder) {
-          // forward request and set output from response
-          output = await components.forwarder.forward(
-            {
-              resource,
-              input: { validations: { input: inputValidations }, data: input },
-              config: configObj,
-            },
-            defaultComponents.forwarder,
-          );
-        }
+              error => {
+                // rethrow error we if we're attempting to mock
+                if ((configObj as IPrismConfig).mock) {
+                  return left2v(error);
+                }
 
-        // validate output
-        let outputValidations: IPrismDiagnostic[] = [];
-        if (resource && components.validator && components.validator.validateOutput) {
-          outputValidations = await components.validator.validateOutput(
-            {
-              resource,
-              output,
-              config: configObj,
-            },
-            defaultComponents.validator,
-          );
+                const { message, name, status } = error as ProblemJsonError;
+                // otherwise let's just stack it on the inputValidations
+                // when someone simply wants to hit an URL, don't block them
+                inputValidations.push({
+                  message,
+                  source: name,
+                  code: status,
+                  severity: DiagnosticSeverity.Warning,
+                });
+
+                return right2v<Error, Resource | undefined>(undefined);
+              },
+              value => right2v(value),
+            )
+            .chain(resource => {
+              // validate input
+              if (resource && components.validator && components.validator.validateInput) {
+                inputValidations.push(
+                  ...components.validator.validateInput(
+                    {
+                      resource,
+                      input,
+                      config: configObj,
+                    },
+                    defaultComponents.validator,
+                  ),
+                );
+              }
+
+              if (resource && components.mocker && (configObj as IPrismConfig).mock) {
+                // generate the response
+                return fromEither(
+                  components.mocker
+                    .mock(
+                      {
+                        resource,
+                        input: { validations: { input: inputValidations }, data: input },
+                        config: configObj,
+                      },
+                      defaultComponents.mocker,
+                    )
+                    .run(components.logger.child({ name: 'NEGOTIATOR' })),
+                ).map(output => ({ output, resource }));
+              } else if (components.forwarder) {
+                // forward request and set output from response
+                return components.forwarder
+                  .fforward(
+                    {
+                      resource,
+                      input: { validations: { input: inputValidations }, data: input },
+                      config: configObj,
+                    },
+                    defaultComponents.forwarder,
+                  )
+                  .map(output => ({ output, resource }));
+              }
+
+              return left2v(new Error('Nor forwarder nor mocker has been selected. Something is wrong'));
+            })
+            .map(({ output, resource }) => {
+              let outputValidations: IPrismDiagnostic[] = [];
+              if (resource && components.validator && components.validator.validateOutput) {
+                outputValidations = components.validator.validateOutput(
+                  {
+                    resource,
+                    output,
+                    config: configObj,
+                  },
+                  defaultComponents.validator,
+                );
+              }
+
+              return {
+                input,
+                output,
+                validations: {
+                  input: inputValidations,
+                  output: outputValidations,
+                },
+              };
+            })
+            .run()
+            .then(v =>
+              v.fold(
+                e => {
+                  throw e;
+                },
+                o => o,
+              ),
+            );
         }
 
         return {
           input,
-          output,
+          output: undefined,
           validations: {
-            input: inputValidations,
-            output: outputValidations,
+            input: [],
+            output: [],
           },
         };
       },

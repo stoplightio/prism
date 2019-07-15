@@ -1,6 +1,7 @@
 import { IDiagnostic } from '@stoplight/types';
 import { Either } from 'fp-ts/lib/Either';
 import { Reader } from 'fp-ts/lib/Reader';
+import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
@@ -43,7 +44,7 @@ export interface IRouter<Resource, Input, Config> {
   route: (
     opts: { resources: Resource[]; input: Input; config?: Config },
     defaultRouter?: IRouter<Resource, Input, Config>,
-  ) => Resource;
+  ) => Either<Error, Resource>;
 }
 
 export interface IForwarder<Resource, Input, Config, Output> {
@@ -51,6 +52,10 @@ export interface IForwarder<Resource, Input, Config, Output> {
     opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config },
     defaultForwarder?: IForwarder<Resource, Input, Config, Output>,
   ) => Promise<Output>;
+  fforward: (
+    opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config },
+    defaultForwarder?: IForwarder<Resource, Input, Config, Output>,
+  ) => TaskEither<Error, Output>;
 }
 
 export interface IMocker<Resource, Input, Config, Output> {
@@ -70,11 +75,11 @@ export interface IValidator<Resource, Input, Config, Output> {
   validateInput?: (
     opts: { resource: Resource; input: Input; config?: Config },
     defaultValidator?: IValidator<Resource, Input, Config, Output>,
-  ) => Promise<IPrismDiagnostic[]>;
+  ) => IPrismDiagnostic[];
   validateOutput?: (
     opts: { resource: Resource; output?: Output; config?: Config },
     defaultValidator?: IValidator<Resource, Input, Config, Output>,
-  ) => Promise<IPrismDiagnostic[]>;
+  ) => IPrismDiagnostic[];
 }
 
 export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {

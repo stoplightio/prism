@@ -3,7 +3,7 @@ import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixture
 import { validator } from '../index';
 
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
-  body: '{"name":"Shopping","completed":"yes"}',
+  body: { name: 'Shopping', completed: 'yes' },
   url: Object.assign({}, httpInputs[2].url, { query: { overwrite: 'true' } }),
   headers: { 'x-todos-publish': 'yesterday' },
 });
@@ -13,7 +13,7 @@ const GOOD_INPUT = Object.assign({}, httpInputs[2], {
 });
 
 const BAD_OUTPUT = Object.assign({}, httpOutputs[1], {
-  body: '{"name":"Shopping","completed":"yes"}',
+  body: { name: 'Shopping', completed: 'yes' },
   headers: { 'x-todos-publish': 'yesterday' },
 });
 

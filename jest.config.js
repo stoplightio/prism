@@ -56,5 +56,6 @@ module.exports = {
   ],
   collectCoverageFrom: [
     '**/src/**/*.{ts,tsx}',
+    '!**/src/**/__tests__/**/*.{ts,tsx}',
   ],
 };

@@ -1,13 +1,14 @@
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IMediaTypeContent } from '@stoplight/types';
 
-import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { IHttpValidator, IValidatorRegistry } from './types';
+import { validateAgainstSchema } from '../validators/utils';
+import { IHttpValidator } from './types';
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
-  constructor(private _registry: IValidatorRegistry, private _prefix: string) {}
+  constructor(private _prefix: string) {}
 
   public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
-    const { _registry: registry, _prefix: prefix } = this;
+    const { _prefix: prefix } = this;
     const content = this.getContent(specs, mediaType);
 
     if (!content) {
@@ -18,13 +19,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
       return [];
     }
 
-    const validate = registry.get(content.mediaType);
-
-    if (!validate) {
-      return [];
-    }
-
-    return validate(target, content.schema).map(error =>
+    return validateAgainstSchema(target, content.schema).map(error =>
       Object.assign({}, error, { path: [prefix, ...(error.path || [])] }),
     );
   }

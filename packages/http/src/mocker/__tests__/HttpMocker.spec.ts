@@ -331,9 +331,9 @@ describe('HttpMocker', () => {
                 },
               });
 
-              it('prefers the example', () =>
+              it('prefers the default', () =>
                 assertRight(eitherResponseWithDefault, responseWithDefault =>
-                  expect(responseWithDefault.body).toHaveProperty('middlename', 'J'),
+                  expect(responseWithDefault.body).toHaveProperty('middlename', 'JJ'),
                 ));
             });
 
@@ -383,8 +383,8 @@ describe('HttpMocker', () => {
             assertRight(eitherResponseWithNestedObject, responseWithNestedObject => {
               it('should return the example key', () =>
                 expect(responseWithNestedObject.body).toHaveProperty('pet.name', 'Clark'));
-              it('should still prefer the example', () =>
-                expect(responseWithNestedObject.body).toHaveProperty('pet.middlename', 'J'));
+              it('should still prefer the default', () =>
+                expect(responseWithNestedObject.body).toHaveProperty('pet.middlename', 'JJ'));
             });
           });
 
