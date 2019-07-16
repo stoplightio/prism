@@ -1,7 +1,7 @@
 ====test====
-When I send a request to an operation with Accept header containing application/vnd.api+json
-And this operation can produce a response with content-type of application/vnd.api+json and content-type of application/json
-Then I should get back a response with the specified vendor
+When I send a request (with no Accept header) to an operation
+And this operation defines some responses
+Then I should get back the first response defined for that operation
 And this response should have 200 status code
 ====spec====
 openapi: 3.0.2
@@ -19,11 +19,11 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos -H "accept: application/vnd.api+json"
+curl -i -X GET http://localhost:4010/todos
 ====expect====
 HTTP/1.1 200 OK
-content-type: application/vnd.api+json
-content-length: 8
+content-type: application/json; charset=utf-8
+content-length: 7
 Connection: keep-alive
 
-"vendor"
+"hello"
