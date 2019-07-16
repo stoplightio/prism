@@ -23,5 +23,4 @@ curl -i -X GET http://localhost:4010/todos -H "accept: application/json"
 HTTP/1.1 406 Not Acceptable
 content-type: application/problem+json
 content-length: 0
-Date: Fri, 21 Jun 2019 09:25:34 GMT
 Connection: keep-alive

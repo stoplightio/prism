@@ -1,5 +1,5 @@
 ====test====
-When I send a request to an operation with Accept header containing application/xml,application/json
+When I send a request to an operation with Accept header containing application/xml, application/json
 And this operation cannot produce a response with content-type of application/xml
 And this operation can produce a response with content-type of application/json
 Then I should get back a response with content-type of application/json
@@ -18,12 +18,11 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos -H "accept: application/xml,application/json"
+curl -i -X GET http://localhost:4010/todos -H "accept: application/xml, application/json"
 ====expect====
 HTTP/1.1 200 OK
 content-type: application/json; charset=utf-8
 content-length: 7
-Date: Fri, 21 Jun 2019 09:25:34 GMT
 Connection: keep-alive
 
 "hello"
