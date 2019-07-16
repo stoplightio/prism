@@ -1,5 +1,5 @@
 ====test====
-When I send a request to an operation with Accept header containing application/json
+When I send a request to an operation with Accept header containing X (ie. application/json)
 And this operation can produce a response that matches this X format
 Then I should get back a response matching that format
 And this response should have Content-Type header matching X format

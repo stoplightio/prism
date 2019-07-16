@@ -1,5 +1,6 @@
 ====test====
-When I send a request to an operation with Accept header containing application/json,application/xml
+When I send a request to an operation with Accept header containing application/xml,application/json
+And this operation cannot produce a response with content-type of application/xml
 And this operation can produce a response with content-type of application/json
 Then I should get back a response with content-type of application/json
 And this response should have 200 status code
