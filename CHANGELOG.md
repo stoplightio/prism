@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.0 (2019-07-16)
+
+This is nothing more than the beta 6 rebranded.
+
 # 3.0.0-beta.6 (2019-07-12)
 
 ### Bug Fixes
