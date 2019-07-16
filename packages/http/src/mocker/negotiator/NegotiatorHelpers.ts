@@ -197,10 +197,11 @@ const helpers = {
               ...contentNegotiationResult,
             }));
         } else {
-          logger.trace(`Unable to find a content for ${mediaTypes}, returning an empty text/plain response.`);
+          logger.trace(`Unable to find a content for ${mediaTypes}, returning application/json+problem response.`);
+
           return right({
-            code,
-            mediaType: 'text/plain',
+            code: '406',
+            mediaType: 'application/problem+json',
             headers: headers || [],
           });
         }
