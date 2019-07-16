@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-http",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -16,7 +16,7 @@
     "node": ">=8"
   },
   "dependencies": {
-    "@stoplight/prism-core": "^3.0.0",
+    "@stoplight/prism-core": "^3.0.1",
     "accepts": "^1.3.7",
     "ajv": "^6.10.1",
     "ajv-oai": "^1.0.0",
@@ -24,7 +24,7 @@
     "caseless": "^0.12.0",
     "faker": "^4.1.0",
     "fp-ts": "^1.19.3",
-    "json-schema-faker": "json-schema-faker/json-schema-faker",
+    "json-schema-faker": "XVincentX/json-schema-faker",
     "openapi-sampler": "^1.0.0-beta.15",
     "pino": "^5.12.6",
     "tslib": "^1.10.0"

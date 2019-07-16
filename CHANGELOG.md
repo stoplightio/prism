@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 3.0.1 (2019-07-16)
+
+## Bug fixes
+
+- Fixed an error in the JSON Path bundling for NPM Package download
+
 # 3.0.0 (2019-07-16)
 
 This is nothing more than the beta 6 rebranded.

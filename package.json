@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "prism",
+  "name": "@stoplight/prism-cli",
   "license": "Apache-2.0",
-  "version": "3.0.0-pre",
+  "version": "3.0.0",
   "workspaces": [
     "packages/*"
   ],

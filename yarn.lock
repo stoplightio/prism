@@ -5249,9 +5249,9 @@ json-pointer@0.6.0, json-pointer@^0.6.0:
   dependencies:
     foreach "^2.0.4"
 
-json-schema-faker@json-schema-faker/json-schema-faker:
+json-schema-faker@XVincentX/json-schema-faker:
   version "0.5.0-rc17"
-  resolved "https://codeload.github.com/json-schema-faker/json-schema-faker/tar.gz/c88c9c4fe13c2badd6cc8d7d2af8a23af474e413"
+  resolved "https://codeload.github.com/XVincentX/json-schema-faker/tar.gz/3c62e1bd8a3990ab0871cc3ae98e7aa8037df2a5"
   dependencies:
     json-schema-ref-parser "^6.0.2"
     jsonpath-plus "^0.20.1"
