@@ -10,7 +10,7 @@ import { reader } from 'fp-ts/lib/Reader';
 
 import { createLogger } from '@stoplight/prism-core';
 
-import { left, right } from 'fp-ts/lib/Either';
+import { isLeft, left, right } from 'fp-ts/lib/Either';
 import { assertLeft, assertRight } from '../../../__tests__/utils';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
@@ -74,7 +74,7 @@ describe('NegotiatorHelpers', () => {
           ])
           .instance();
 
-        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses).run(logger);
+        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
         const expectedConfig: IHttpNegotiationResult = {
           code: actualCode,
           mediaType: actualMediaType,
@@ -109,7 +109,7 @@ describe('NegotiatorHelpers', () => {
             ])
             .instance();
 
-          const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses).run(logger);
+          const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
           const expectedConfig: IHttpNegotiationResult = {
             code: actualCode,
             mediaType: actualMediaType,
@@ -142,7 +142,7 @@ describe('NegotiatorHelpers', () => {
             ])
             .instance();
 
-          const negotiationResult = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses).run(logger);
+          const negotiationResult = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
 
           assertLeft(negotiationResult, e =>
             expect(e.message).toBe('Neither schema nor example defined for 422 response.'),
@@ -172,7 +172,7 @@ describe('NegotiatorHelpers', () => {
           ])
           .instance();
 
-        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses).run(logger);
+        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
         assertRight(actualConfig, c => expect(c).toHaveProperty('code', '400'));
       });
 
@@ -196,12 +196,12 @@ describe('NegotiatorHelpers', () => {
           ])
           .instance();
 
-        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses).run(logger);
+        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
         assertRight(actualConfig, config => expect(config).toHaveProperty('code', '422'));
       });
 
       test('should return an error', () => {
-        assertLeft(helpers.negotiateOptionsForInvalidRequest(httpOperation.responses).run(logger), error =>
+        assertLeft(helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger), error =>
           expect(error).toHaveProperty('message', 'No 422, 400, or default responses defined'),
         );
       });
@@ -226,7 +226,7 @@ describe('NegotiatorHelpers', () => {
         .spyOn(helpers, 'negotiateOptionsBySpecificCode')
         .mockReturnValue(reader.of(right(expectedResult)));
 
-      const actualResult = helpers.negotiateOptionsForValidRequest(httpOperation, options).run(logger);
+      const actualResult = helpers.negotiateOptionsForValidRequest(httpOperation, options)(logger);
 
       expect(negotiateOptionsForDefaultCodeSpy).not.toHaveBeenCalled();
       expect(negotiateOptionsBySpecificCodeSpy).toHaveBeenCalledTimes(1);
@@ -249,7 +249,7 @@ describe('NegotiatorHelpers', () => {
 
       const negotiateOptionsBySpecificCodeSpy = jest.spyOn(helpers, 'negotiateOptionsBySpecificCode');
 
-      const actualResult = helpers.negotiateOptionsForValidRequest(httpOperation, options).run(logger);
+      const actualResult = helpers.negotiateOptionsForValidRequest(httpOperation, options)(logger);
 
       expect(negotiateOptionsBySpecificCodeSpy).not.toHaveBeenCalled();
       expect(negotiateOptionsForDefaultCodeSpy).toHaveBeenCalledTimes(1);
@@ -291,9 +291,7 @@ describe('NegotiatorHelpers', () => {
         .withResponses([fakeResponse])
         .instance();
 
-      const actualOperationConfig = helpers
-        .negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)
-        .run(logger);
+      const actualOperationConfig = helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger);
 
       expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledTimes(1);
       expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledWith(httpOperation, desiredOptions, fakeResponse);
@@ -321,9 +319,7 @@ describe('NegotiatorHelpers', () => {
         .withResponses([fakeResponse])
         .instance();
 
-      const actualOperationConfig = helpers
-        .negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)
-        .run(logger);
+      const actualOperationConfig = helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger);
 
       expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledTimes(1);
       expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledWith(httpOperation, desiredOptions, fakeResponse);
@@ -339,7 +335,7 @@ describe('NegotiatorHelpers', () => {
       const desiredOptions = { dynamic: false };
       httpOperation = anHttpOperation(httpOperation).instance();
 
-      assertLeft(helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code).run(logger), error =>
+      assertLeft(helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger), error =>
         expect(error).toHaveProperty('message', 'Requested status code is not defined in the schema.'),
       );
     });
@@ -363,7 +359,7 @@ describe('NegotiatorHelpers', () => {
         .withResponses([response])
         .instance();
 
-      const actualOperationConfig = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions).run(logger);
+      const actualOperationConfig = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions)(logger);
 
       expect(helpers.negotiateOptionsBySpecificResponse).toHaveBeenCalledTimes(1);
       assertRight(actualOperationConfig, operationConfig => {
@@ -402,7 +398,7 @@ describe('NegotiatorHelpers', () => {
         ])
         .instance();
 
-      const actualOperationConfig = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions).run(logger);
+      const actualOperationConfig = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions)(logger);
 
       expect(helpers.negotiateOptionsBySpecificResponse).toHaveBeenCalledTimes(1);
       assertRight(actualOperationConfig, operationConfig => {
@@ -414,7 +410,7 @@ describe('NegotiatorHelpers', () => {
       const desiredOptions = { dynamic: false };
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse');
 
-      const negotiationResult = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions).run(logger);
+      const negotiationResult = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions)(logger);
       assertLeft(negotiationResult, e => {
         expect(e.message).toBe('No 2** response defined, cannot mock');
       });
@@ -450,9 +446,11 @@ describe('NegotiatorHelpers', () => {
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(right(fakeOperationConfig));
         jest.spyOn(helpers, 'negotiateDefaultMediaType');
 
-        const actualOperationConfig = helpers
-          .negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema)
-          .run(logger);
+        const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
+          httpOperation,
+          desiredOptions,
+          httpResponseSchema,
+        )(logger);
 
         expect(helpers.negotiateByPartialOptionsAndHttpContent).toHaveBeenCalledTimes(1);
         expect(helpers.negotiateByPartialOptionsAndHttpContent).toHaveBeenCalledWith(
@@ -488,9 +486,11 @@ describe('NegotiatorHelpers', () => {
             headers: [],
           };
 
-          const actualOperationConfig = helpers
-            .negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema)
-            .run(logger);
+          const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
+            httpOperation,
+            desiredOptions,
+            httpResponseSchema,
+          )(logger);
 
           assertRight(actualOperationConfig, config => expect(config).toHaveProperty('mediaType', 'application/xml'));
         });
@@ -513,9 +513,11 @@ describe('NegotiatorHelpers', () => {
             headers: [],
           };
 
-          const actualOperationConfig = helpers
-            .negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema)
-            .run(logger);
+          const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
+            httpOperation,
+            desiredOptions,
+            httpResponseSchema,
+          )(logger);
 
           assertRight(actualOperationConfig, config => expect(config).toHaveProperty('mediaType', 'application/json'));
         });
@@ -534,15 +536,13 @@ describe('NegotiatorHelpers', () => {
           headers: [],
         };
 
-        const actualResponse = helpers
-          .negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema)
-          .run(logger);
+        const actualResponse = helpers.negotiateOptionsBySpecificResponse(
+          httpOperation,
+          desiredOptions,
+          httpResponseSchema,
+        )(logger);
 
-        expect(actualResponse.isLeft()).toBeTruthy();
-
-        actualResponse.map(response => {
-          expect(response).toHaveProperty('mediaType', 'text/plain');
-        });
+        expect(isLeft(actualResponse)).toBeTruthy();
       });
     });
 
@@ -567,9 +567,11 @@ describe('NegotiatorHelpers', () => {
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent');
         jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(right(fakeOperationConfig));
 
-        const actualOperationConfig = helpers
-          .negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema)
-          .run(logger);
+        const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
+          httpOperation,
+          desiredOptions,
+          httpResponseSchema,
+        )(logger);
 
         expect(helpers.negotiateByPartialOptionsAndHttpContent).not.toHaveBeenCalled();
         expect(helpers.negotiateDefaultMediaType).toHaveBeenCalledTimes(1);
@@ -660,9 +662,8 @@ describe('NegotiatorHelpers', () => {
       };
 
       const negotiationResult = helpers.negotiateDefaultMediaType(partialOptions, response);
-      expect(negotiationResult.isRight()).toBeTruthy();
 
-      negotiationResult.map(result => {
+      assertRight(negotiationResult, result => {
         expect(result).toEqual(expectedResponse);
       });
     });
