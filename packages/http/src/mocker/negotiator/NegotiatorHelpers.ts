@@ -168,7 +168,7 @@ const helpers = {
   negotiateOptionsForDefaultCode(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
-  ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
+  ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     const lowest2xxResponse = findLowest2xx(httpOperation.responses);
     if (lowest2xxResponse) {
       return helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, lowest2xxResponse);
@@ -181,7 +181,7 @@ const helpers = {
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
     code: string,
-  ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
+  ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     // find response by provided status code
     return pipe(
       withLogger(logger => {
@@ -213,7 +213,7 @@ const helpers = {
   negotiateOptionsForValidRequest(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
-  ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
+  ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     const { code } = desiredOptions;
     if (code) {
       return helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code);
@@ -223,7 +223,7 @@ const helpers = {
 
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
-  ): Reader<Logger, Either<Error, IHttpNegotiationResult>> {
+  ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
       withLogger(logger => {
         let result = findResponseByStatusCode(httpResponses, '422');
