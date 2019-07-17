@@ -17,6 +17,6 @@ mock -p 4010
 ====command====
 curl -i -X GET http://localhost:4010/todos?_code=404
 ====expect====
-HTTP/1.1 200 OK
+HTTP/1.1 400 Bad Request
 content-type: text/plain
 Connection: keep-alive
