@@ -18,7 +18,7 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos?__code=304
+curl -i http://localhost:4010/todos?__code=304
 ====expect====
 HTTP/1.1 500 Internal Server Error
 content-type: application/problem+json

@@ -21,10 +21,6 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos
+curl http://localhost:4010/todos
 ====expect====
-HTTP/1.1 200 OK
-content-type: */*
-Connection: keep-alive
-
 test
