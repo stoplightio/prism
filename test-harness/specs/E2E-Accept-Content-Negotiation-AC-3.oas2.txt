@@ -20,11 +20,11 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos -H "accept: text/plain, application/json"
+curl -i http://localhost:4010/todos -H "accept: text/plain, application/json"
 ====expect====
 HTTP/1.1 200 OK
 content-type: text/plain
 content-length: 5
 Connection: keep-alive
 
-hello
+text_plain

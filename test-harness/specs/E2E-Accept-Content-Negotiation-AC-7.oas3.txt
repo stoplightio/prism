@@ -16,7 +16,7 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos -H "accept: */*"
+curl -i http://localhost:4010/todos -H "accept: */*"
 ====expect====
 HTTP/1.1 200 OK
 content-type: */*

@@ -18,7 +18,7 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos -H "accept: application/json"
+curl -i http://localhost:4010/todos -H "accept: application/json"
 ====expect====
 HTTP/1.1 406 Not Acceptable
 content-type: application/problem+json
