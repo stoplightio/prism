@@ -13,7 +13,7 @@ jest.setTimeout(60000);
 describe('harness', () => {
   const files = fs.readdirSync(path.join(__dirname, './specs/'));
 
-  files/*.filter((file) => file.includes('E2E-Accept-Content-Negotiation-AC-8'))*/.forEach(value => {
+  files.forEach(value => {
     const data = fs.readFileSync(path.join(__dirname, './specs/', value), { encoding: 'utf8' });
     const parsed = parseSpecFile(data);
 
