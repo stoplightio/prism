@@ -1,7 +1,7 @@
 import { Either, left, map, right } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { chain, reader, Reader } from 'fp-ts/lib/Reader';
-import { mapLeft, ReaderEither } from 'fp-ts/lib/ReaderEither';
+import { chain, reader } from 'fp-ts/lib/Reader';
+import { mapLeft, orElse, ReaderEither } from 'fp-ts/lib/ReaderEither';
 import { Logger } from 'pino';
 
 import { ProblemJsonError } from '@stoplight/prism-core';
@@ -197,7 +197,12 @@ const helpers = {
         if (responseByForcedStatusCode) {
           return pipe(
             helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, responseByForcedStatusCode),
-            mapLeft(error => new Error(`${error}. We tried default response, but we got ${error}`)),
+            orElse(() =>
+              pipe(
+                helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions),
+                mapLeft(error => new Error(`${error}. We tried default response, but we got ${error}`)),
+              ),
+            ),
           );
         }
 
