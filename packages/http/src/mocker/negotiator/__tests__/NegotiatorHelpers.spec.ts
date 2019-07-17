@@ -538,7 +538,7 @@ describe('NegotiatorHelpers', () => {
           .negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, httpResponseSchema)
           .run(logger);
 
-        expect(actualResponse.isRight()).toBeTruthy();
+        expect(actualResponse.isLeft()).toBeTruthy();
 
         actualResponse.map(response => {
           expect(response).toHaveProperty('mediaType', 'text/plain');

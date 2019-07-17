@@ -29,7 +29,7 @@ describe('http mocker', () => {
         assertRight(response, result => expect(result).toMatchSnapshot());
       });
 
-      test('and that content type does not exist should return empty body', () => {
+      test('and that content type does not exist should return a 406 error', () => {
         const mockResult = mocker
           .mock({
             resource: httpOperations[0],
@@ -43,9 +43,7 @@ describe('http mocker', () => {
           })
           .run(logger);
 
-        assertRight(mockResult, result =>
-          expect(result).toMatchObject({ headers: { 'Content-type': 'text/plain' }, body: undefined }),
-        );
+        assertLeft(mockResult, e => expect(e).toHaveProperty('status', 406));
       });
     });
 
@@ -232,12 +230,7 @@ describe('http mocker', () => {
               })
               .run(logger);
 
-            assertRight(mockResult, result =>
-              expect(result).toMatchObject({
-                headers: { 'Content-type': 'text/plain' },
-                body: undefined,
-              }),
-            );
+            assertLeft(mockResult, result => expect(result).toHaveProperty('status', 406));
           });
         });
       });
