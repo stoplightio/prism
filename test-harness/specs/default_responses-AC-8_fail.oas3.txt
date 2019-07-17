@@ -15,7 +15,7 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos?_code=404
+curl -i -X GET http://localhost:4010/todos?__code=404
 ====expect====
 HTTP/1.1 404 Not Found
 content-type: application/json
