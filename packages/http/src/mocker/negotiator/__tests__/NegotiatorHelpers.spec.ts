@@ -10,7 +10,8 @@ import { reader } from 'fp-ts/lib/Reader';
 
 import { createLogger } from '@stoplight/prism-core';
 
-import { isLeft, left, right } from 'fp-ts/lib/Either';
+import * as Either from 'fp-ts/lib/Either';
+import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertLeft, assertRight } from '../../../__tests__/utils';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
@@ -224,7 +225,7 @@ describe('NegotiatorHelpers', () => {
       const negotiateOptionsForDefaultCodeSpy = jest.spyOn(helpers, 'negotiateOptionsForDefaultCode');
       const negotiateOptionsBySpecificCodeSpy = jest
         .spyOn(helpers, 'negotiateOptionsBySpecificCode')
-        .mockReturnValue(reader.of(right(expectedResult)));
+        .mockReturnValue(right(expectedResult));
 
       const actualResult = helpers.negotiateOptionsForValidRequest(httpOperation, options)(logger);
 
@@ -245,7 +246,7 @@ describe('NegotiatorHelpers', () => {
 
       const negotiateOptionsForDefaultCodeSpy = jest
         .spyOn(helpers, 'negotiateOptionsForDefaultCode')
-        .mockReturnValue(reader.of(right(expectedResult)));
+        .mockReturnValue(right(expectedResult));
 
       const negotiateOptionsBySpecificCodeSpy = jest.spyOn(helpers, 'negotiateOptionsBySpecificCode');
 
@@ -286,7 +287,7 @@ describe('NegotiatorHelpers', () => {
         mediaType: '',
       };
 
-      negotiateOptionsBySpecificResponseMock.mockReturnValue(reader.of(right(fakeOperationConfig)));
+      negotiateOptionsBySpecificResponseMock.mockReturnValue(right(fakeOperationConfig));
       httpOperation = anHttpOperation(httpOperation)
         .withResponses([fakeResponse])
         .instance();
@@ -301,7 +302,7 @@ describe('NegotiatorHelpers', () => {
       });
     });
 
-    it('given response defined should fallback to default code on error', () => {
+    it.only('given response defined should fallback to default code on error', () => {
       const code = chance.string();
       const fakeResponse = {
         code,
@@ -313,8 +314,8 @@ describe('NegotiatorHelpers', () => {
         headers: [],
       };
 
-      negotiateOptionsBySpecificResponseMock.mockReturnValue(reader.of(left(new Error('Hey'))));
-      negotiateOptionsForDefaultCodeMock.mockReturnValue(reader.of(right(fakeOperationConfig)));
+      negotiateOptionsBySpecificResponseMock.mockReturnValue(left(new Error('Hey')));
+      negotiateOptionsForDefaultCodeMock.mockReturnValue(right(fakeOperationConfig));
       httpOperation = anHttpOperation(httpOperation)
         .withResponses([fakeResponse])
         .instance();
@@ -354,7 +355,7 @@ describe('NegotiatorHelpers', () => {
         mediaType: 'application/json',
         headers: [],
       };
-      jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(reader.of(right(fakeOperationConfig)));
+      jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(right(fakeOperationConfig));
       httpOperation = anHttpOperation(httpOperation)
         .withResponses([response])
         .instance();
@@ -381,7 +382,7 @@ describe('NegotiatorHelpers', () => {
         headers: [],
       };
 
-      jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(reader.of(right(fakeOperationConfig)));
+      jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(right(fakeOperationConfig));
       httpOperation = anHttpOperation(httpOperation)
         .withResponses([
           response,
@@ -443,7 +444,9 @@ describe('NegotiatorHelpers', () => {
           mediaType: desiredOptions.mediaTypes[0],
           headers: [],
         };
-        jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(right(fakeOperationConfig));
+        jest
+          .spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent')
+          .mockReturnValue(Either.right(fakeOperationConfig));
         jest.spyOn(helpers, 'negotiateDefaultMediaType');
 
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
@@ -542,7 +545,7 @@ describe('NegotiatorHelpers', () => {
           httpResponseSchema,
         )(logger);
 
-        expect(isLeft(actualResponse)).toBeTruthy();
+        expect(Either.isLeft(actualResponse)).toBeTruthy();
       });
     });
 
@@ -565,7 +568,7 @@ describe('NegotiatorHelpers', () => {
         };
 
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent');
-        jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(right(fakeOperationConfig));
+        jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(Either.right(fakeOperationConfig));
 
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
           httpOperation,
@@ -621,7 +624,9 @@ describe('NegotiatorHelpers', () => {
             headers: [],
           };
 
-          jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(right(fakeOperationConfig));
+          jest
+            .spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent')
+            .mockReturnValue(Either.right(fakeOperationConfig));
 
           const actualOperationConfig = helpers.negotiateDefaultMediaType(partialOptions, response);
 
