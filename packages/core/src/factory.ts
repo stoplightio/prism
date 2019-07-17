@@ -82,16 +82,14 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
               if (resource && components.mocker && (configObj as IPrismConfig).mock) {
                 // generate the response
                 return fromEither(
-                  components.mocker
-                    .mock(
-                      {
-                        resource,
-                        input: { validations: { input: inputValidations }, data: input },
-                        config: configObj,
-                      },
-                      defaultComponents.mocker,
-                    )
-                    .run(components.logger.child({ name: 'NEGOTIATOR' })),
+                  components.mocker.mock(
+                    {
+                      resource,
+                      input: { validations: { input: inputValidations }, data: input },
+                      config: configObj,
+                    },
+                    defaultComponents.mocker,
+                  )(components.logger.child({ name: 'NEGOTIATOR' })),
                 ).map(output => ({ output, resource }));
               } else if (components.forwarder) {
                 // forward request and set output from response
@@ -130,8 +128,7 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
                   output: outputValidations,
                 },
               };
-            })
-            .run()
+            })()
             .then(v =>
               v.fold(
                 e => {

@@ -84,12 +84,10 @@ describe('HttpMocker', () => {
           .spyOn(helpers, 'negotiateOptionsForValidRequest')
           .mockReturnValue(reader.of(right({ code: '202', mediaType: 'test', headers: [] })));
 
-        const mockResult = httpMocker
-          .mock({
-            resource: mockResource,
-            input: mockInput,
-          })
-          .run(logger);
+        const mockResult = httpMocker.mock({
+          resource: mockResource,
+          input: mockInput,
+        })(logger);
 
         assertRight(mockResult, result => expect(result).toHaveProperty('body', undefined));
       });
@@ -106,12 +104,10 @@ describe('HttpMocker', () => {
           ),
         );
 
-        const mockResult = httpMocker
-          .mock({
-            resource: mockResource,
-            input: mockInput,
-          })
-          .run(logger);
+        const mockResult = httpMocker.mock({
+          resource: mockResource,
+          input: mockInput,
+        })(logger);
 
         assertRight(mockResult, result => expect(result).toMatchSnapshot());
       });
@@ -128,12 +124,10 @@ describe('HttpMocker', () => {
           ),
         );
 
-        const response = httpMocker
-          .mock({
-            resource: mockResource,
-            input: mockInput,
-          })
-          .run(logger);
+        const response = httpMocker.mock({
+          resource: mockResource,
+          input: mockInput,
+        })(logger);
 
         assertRight(response, result => {
           return expect(result).toHaveProperty('body', {
@@ -157,12 +151,10 @@ describe('HttpMocker', () => {
           ),
         );
 
-        const mockResult = httpMocker
-          .mock({
-            resource: mockResource,
-            input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
-          })
-          .run(logger);
+        const mockResult = httpMocker.mock({
+          resource: mockResource,
+          input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
+        })(logger);
 
         assertRight(mockResult, result => expect(result).toMatchSnapshot());
       });
@@ -184,12 +176,10 @@ describe('HttpMocker', () => {
 
         jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue('example value chelsea');
 
-        const mockResult = httpMocker
-          .mock({
-            resource: mockResource,
-            input: mockInput,
-          })
-          .run(logger);
+        const mockResult = httpMocker.mock({
+          resource: mockResource,
+          input: mockInput,
+        })(logger);
 
         assertRight(mockResult, result => expect(result).toMatchSnapshot());
       });
@@ -210,13 +200,11 @@ describe('HttpMocker', () => {
           });
 
           it('the dynamic response should not be an example one', async () => {
-            const response = await httpMocker
-              .mock({
-                input: mockInput,
-                resource: mockResource,
-                config: { mock: { dynamic: true } },
-              })
-              .run(logger);
+            const response = await httpMocker.mock({
+              input: mockInput,
+              resource: mockResource,
+              config: { mock: { dynamic: true } },
+            })(logger);
 
             expect(JSONSchemaGenerator.generate).toHaveBeenCalled();
             expect(JSONSchemaGenerator.generateStatic).not.toHaveBeenCalled();
@@ -240,13 +228,11 @@ describe('HttpMocker', () => {
       describe('and dynamic flag is false', () => {
         describe('and the response has an example', () => {
           describe('and the example has been explicited', () => {
-            const response = httpMocker
-              .mock({
-                input: mockInput,
-                resource: mockResource,
-                config: { mock: { dynamic: false, exampleKey: 'test key' } },
-              })
-              .run(logger);
+            const response = httpMocker.mock({
+              input: mockInput,
+              resource: mockResource,
+              config: { mock: { dynamic: false, exampleKey: 'test key' } },
+            })(logger);
 
             it('should return the selected example', () => {
               const selectedExample = flatMap(mockResource.responses, res =>
@@ -260,13 +246,11 @@ describe('HttpMocker', () => {
           });
 
           describe('no response example is requested', () => {
-            const response = httpMocker
-              .mock({
-                input: mockInput,
-                resource: mockResource,
-                config: { mock: { dynamic: false } },
-              })
-              .run(logger);
+            const response = httpMocker.mock({
+              input: mockInput,
+              resource: mockResource,
+              config: { mock: { dynamic: false } },
+            })(logger);
 
             it('returns the first example', () => {
               assertRight(response, result => {
@@ -303,13 +287,11 @@ describe('HttpMocker', () => {
           }
 
           function mockResponseWithSchema(schema: JSONSchema) {
-            return httpMocker
-              .mock({
-                input: mockInput,
-                resource: createOperationWithSchema(schema),
-                config: { mock: { dynamic: false } },
-              })
-              .run(logger);
+            return httpMocker.mock({
+              input: mockInput,
+              resource: createOperationWithSchema(schema),
+              config: { mock: { dynamic: false } },
+            })(logger);
           }
 
           describe('and the property has an example key', () => {
