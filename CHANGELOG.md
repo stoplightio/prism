@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# Unreleased
+
+- Prism is now returning a `406` error instead of an empty response in case it is not able to find a response whose content type satisfies the provided `Accept` Header
+- Prism now respects the `q` value in the `Accept` header to specify the content type preference
+
 # 3.0.1 (2019-07-16)
 
 ## Bug fixes
