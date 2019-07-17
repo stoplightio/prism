@@ -140,6 +140,8 @@ const helpers = {
             .map(contentNegotiationResult => ({
               headers: headers || [],
               ...contentNegotiationResult,
+              mediaType:
+                contentNegotiationResult.mediaType === '*/*' ? 'text/plain' : contentNegotiationResult.mediaType,
             }));
         } else {
           logger.warn(`Unable to find a content for ${mediaTypes}`);

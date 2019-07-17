@@ -1,0 +1,26 @@
+====test====
+When I send a request to an operation
+And this operation is defined
+And this operation has only a default response defined
+Then I should get back the default response
+====spec====
+swagger: "2.0"
+info:
+  description: "description"
+  title: "title"
+  version: "1.0"
+paths:
+  /todos:
+    get:
+      responses:
+        default:
+          description: default response
+          schema:
+            type: string
+            example: test
+====server====
+mock -p 4010
+====command====
+curl http://localhost:4010/todos
+====expect====
+test

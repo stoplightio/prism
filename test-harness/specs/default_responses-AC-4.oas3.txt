@@ -1,0 +1,24 @@
+====test====
+When I send a request to an operation
+And this operation has no response with a matching status code
+And this operation does not have default response defined
+Then I should get back a response with 500 status code
+And the response's payload should describe the error
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        405:
+          description: method not allowed
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 500 Internal Server Error
+content-type: application/problem+json
+Connection: keep-alive
+
+{"type":"https://stoplight.io/prism/errors#UNKNOWN","title":"No 2** response defined, cannot mock","status":500,"detail":""}

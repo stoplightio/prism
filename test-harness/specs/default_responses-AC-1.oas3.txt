@@ -1,0 +1,22 @@
+====test====
+When I send a request to an operation
+And this operation is defined
+And this operation has only a default response defined
+Then I should get back the default response
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              example: test
+====server====
+mock -p 4010
+====command====
+curl http://localhost:4010/todos
+====expect====
+"test"
