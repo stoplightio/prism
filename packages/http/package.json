@@ -24,7 +24,7 @@
     "caseless": "^0.12.0",
     "faker": "^4.1.0",
     "fp-ts": "^1.19.3",
-    "json-schema-faker": "XVincentX/json-schema-faker",
+    "json-schema-faker": "json-schema-faker/json-schema-faker",
     "openapi-sampler": "^1.0.0-beta.15",
     "pino": "^5.12.6",
     "tslib": "^1.10.0"
