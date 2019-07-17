@@ -143,6 +143,8 @@ const helpers = {
             map(contentNegotiationResult => ({
               headers: headers || [],
               ...contentNegotiationResult,
+              mediaType:
+                contentNegotiationResult.mediaType === '*/*' ? 'text/plain' : contentNegotiationResult.mediaType,
             })),
           );
         } else {

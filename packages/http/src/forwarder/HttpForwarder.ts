@@ -18,12 +18,9 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
   }): Promise<IHttpResponse> {
     return pipe(
       this.fforward(opts),
-      fold<unknown, IHttpResponse, IHttpResponse>(
-        e => {
-          throw e;
-        },
-        o => Task.of(o),
-      ),
+      fold<unknown, IHttpResponse, IHttpResponse>(e => {
+        throw e;
+      }, Task.of),
     )();
   }
 

@@ -1,7 +1,7 @@
 ====test====
 When I send a request to an operation with Accept header containing */*
 And this operation produces a response with content-type of */*
-Then I should get back a response with Content-Type of */*
+Then I should get back a response with Content-Type of text/plain
 ====spec====
 openapi: 3.0.2
 paths:
@@ -19,7 +19,7 @@ mock -p 4010
 curl -i http://localhost:4010/todos -H "accept: */*"
 ====expect====
 HTTP/1.1 200 OK
-content-type: */*
+content-type: text/plain
 content-length: 5
 Connection: keep-alive
 

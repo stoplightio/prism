@@ -302,7 +302,7 @@ describe('NegotiatorHelpers', () => {
       });
     });
 
-    it.only('given response defined should fallback to default code on error', () => {
+    it('given response defined should fallback to default code on error', () => {
       const code = chance.string();
       const fakeResponse = {
         code,
