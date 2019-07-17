@@ -1,0 +1,29 @@
+====test====
+When I send a request to an operation with Accept header containing X (ie. application/json)
+And this operation can produce a response that matches this X format
+Then I should get back a response matching that format
+And this response should have Content-Type header matching X format
+And this response should have 200 status code
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Get Todo Items
+          examples:
+            application/json: "hello"
+====server====
+mock -p 4010
+====command====
+curl -i -X GET http://localhost:4010/todos -H "accept: application/json"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+content-length: 7
+Connection: keep-alive
+
+"hello"

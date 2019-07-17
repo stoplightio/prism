@@ -1,0 +1,25 @@
+====test====
+When I send a request to an operation with Accept header containing */*
+And this operation produces a response with content-type of */*
+Then I should get back a response with Content-Type of */*
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: Get Todo Items
+          examples:
+            '*/*': hello
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "accept: */*"
+====expect====
+HTTP/1.1 200 OK
+content-type: */*
+content-length: 5
+Connection: keep-alive
+
+hello
