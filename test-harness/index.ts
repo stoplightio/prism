@@ -1,5 +1,6 @@
 import { parseSpecFile } from './helpers';
 import * as fs from 'fs';
+import * as os from 'os'
 import * as path from 'path';
 import * as tmp from 'tmp';
 import { ChildProcess, spawnSync, spawn } from 'child_process'
@@ -35,7 +36,7 @@ describe('harness', () => {
 
     afterAll(() => tmpFileHandle.removeCallback(undefined, undefined, undefined, undefined));
 
-    test(parsed.test, done => {
+    test(`${value}${os.EOL}${parsed.test}`, done => {
       const [command, ...args] = parsed.command.split(' ').map(t => t.trim());
       const serverArgs = [...parsed.server.split(' ').map(t => t.trim()), tmpFileHandle.name];
 
