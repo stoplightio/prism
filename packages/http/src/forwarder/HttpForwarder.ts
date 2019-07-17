@@ -3,7 +3,7 @@ import { IHttpOperation, IServer } from '@stoplight/types';
 import axios, { CancelToken } from 'axios';
 import { toError } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { of } from 'fp-ts/lib/Task';
+import * as Task from 'fp-ts/lib/Task';
 import { fold, TaskEither, tryCatch } from 'fp-ts/lib/TaskEither';
 import { URL } from 'url';
 import { NO_BASE_URL_ERROR } from '../router/errors';
@@ -22,7 +22,7 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
         e => {
           throw e;
         },
-        o => of(o),
+        o => Task.of(o),
       ),
     )();
   }
