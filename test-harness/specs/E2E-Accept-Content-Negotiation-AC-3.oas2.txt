@@ -24,7 +24,6 @@ curl -i http://localhost:4010/todos -H "accept: text/plain, application/json"
 ====expect====
 HTTP/1.1 200 OK
 content-type: text/plain
-content-length: 5
 Connection: keep-alive
 
 text_plain

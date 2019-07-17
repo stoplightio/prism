@@ -14,9 +14,8 @@ paths:
       responses:
         200:
           description: Get Todo Items
-          schema:
-            type: string
-            example: hello
+          examples:
+            application/json: "hello"
 ====server====
 mock -p 4010
 ====command====
