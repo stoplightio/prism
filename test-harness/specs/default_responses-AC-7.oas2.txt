@@ -1,6 +1,6 @@
 ====test====
 When I send a request to an operation
-And in the path I specify ?_code=404
+And in the path I specify ?__code=404
 And the operation has no 404 status code response defined
 And the operation has 400 status code defined, but no schema or example defined in the response
 Then I get back a response with a blank body with Content-Type of text/plain
@@ -15,7 +15,7 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos?_code=404
+curl -i -X GET http://localhost:4010/todos?__code=404
 ====expect====
 HTTP/1.1 400 Bad Request
 content-type: text/plain
