@@ -1,7 +1,7 @@
 ====test====
-When I send a request to an operation with Accept header containing application/xml, application/json
-And this operation can produce a response with content-type of application/xml
-Then I should get back a response with content-type of application/xml
+When I send a request to an operation with Accept header containing text/plain, application/json
+And this operation can produce a response with content-type of text/plain
+Then I should get back a response with content-type of text/plain
 And this response should have 200 status code
 ====spec====
 swagger: "2.0"
@@ -15,15 +15,16 @@ paths:
         200:
           description: Get Todo Items
           examples:
-            text/plain: text_plain
             application/xml: <project><foo>1</foo><bar>2</bar></project>
+            text/plain: text_plain
 ====server====
 mock -p 4010
 ====command====
-curl -i -X GET http://localhost:4010/todos -H "accept: application/xml, application/json"
+curl -i -X GET http://localhost:4010/todos -H "accept: text/plain, application/json"
 ====expect====
 HTTP/1.1 200 OK
-content-type: application/xml
+content-type: text/plain
+content-length: 5
 Connection: keep-alive
 
-<a>xml</a>
+hello
