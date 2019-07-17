@@ -1,18 +1,13 @@
 import { createLogger } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample } from '@stoplight/types';
-import { Either, right } from 'fp-ts/lib/Either';
+import { right } from 'fp-ts/lib/Either';
 import { reader } from 'fp-ts/lib/Reader';
 import { flatMap } from 'lodash';
+import { assertRight } from '../../__tests__/utils';
 import { HttpMocker } from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import { JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
-
-function assertRight<L, A>(e: Either<L, A>, onRight: (a: A) => void) {
-  e.fold(l => {
-    throw new Error('Right expected, got a Left: ' + l);
-  }, onRight);
-}
 
 const logger = createLogger('TEST', { enabled: false });
 
