@@ -3,18 +3,19 @@ When I send a request to an operation with Accept header containing */*
 And this operation does not produce a response with content-type of */*
 Then I should get back a response with the first content-type from the list
 ====spec====
-openapi: 3.0.2
+swagger: "2.0"
 paths:
   /todos:
     get:
+      produces:
+        - text/plain
+        - application/json
       responses:
         200:
           description: Get Todo Items
-          content:
-            'text/plain':
-              example: hello
-            'application/json':
-              example: "hello"
+          examples:
+            'text/plain': hello
+            'application/json': "hello"
 ====server====
 mock -p 4010
 ====command====
