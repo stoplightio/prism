@@ -3,7 +3,10 @@ import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INode
 
 import * as caseless from 'caseless';
 import { Either } from 'fp-ts/lib/Either';
-import { Reader } from 'fp-ts/lib/Reader';
+import { map } from 'fp-ts/lib/Either';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { chain, Reader } from 'fp-ts/lib/Reader';
+import { mapLeft } from 'fp-ts/lib/ReaderEither';
 import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import { Logger } from 'pino';
 import {
@@ -31,22 +34,24 @@ export class HttpMocker
     const payloadGenerator: PayloadGenerator =
       config && typeof config.mock !== 'boolean' && config.mock.dynamic ? generate : generateStatic;
 
-    return withLogger(logger => {
-      // setting default values
-      const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
-      config = config || { mock: false };
-      const mockConfig: IHttpOperationConfig =
-        config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
+    return pipe(
+      withLogger(logger => {
+        // setting default values
+        const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
+        config = config || { mock: false };
+        const mockConfig: IHttpOperationConfig =
+          config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
 
-      if (!mockConfig.mediaTypes && acceptMediaType) {
-        logger.info(`Request contains an accept header: ${acceptMediaType}`);
-        mockConfig.mediaTypes = acceptMediaType.split(',');
-      }
+        if (!mockConfig.mediaTypes && acceptMediaType) {
+          logger.info(`Request contains an accept header: ${acceptMediaType}`);
+          mockConfig.mediaTypes = acceptMediaType.split(',');
+        }
 
-      return mockConfig;
-    })
-      .chain(mockConfig => negotiateResponse(mockConfig, input, resource))
-      .chain(result => assembleResponse(result, payloadGenerator));
+        return mockConfig;
+      }),
+      chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
+      chain(result => assembleResponse(result, payloadGenerator)),
+    );
   }
 }
 
@@ -56,10 +61,12 @@ function negotiateResponse(
   resource: IHttpOperation,
 ) {
   if (input.validations.input.length > 0) {
-    return withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')).chain(
-      () =>
-        helpers.negotiateOptionsForInvalidRequest(resource.responses).map(e =>
-          e.mapLeft(() =>
+    return pipe(
+      withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
+      chain(() =>
+        pipe(
+          helpers.negotiateOptionsForInvalidRequest(resource.responses),
+          mapLeft(() =>
             ProblemJsonError.fromTemplate(
               UNPROCESSABLE_ENTITY,
               'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
@@ -74,11 +81,15 @@ function negotiateResponse(
             ),
           ),
         ),
+      ),
     );
   } else {
-    return withLogger(logger =>
-      logger.success({ name: 'VALIDATOR' }, 'The request passed the validation rules. Looking for the best response'),
-    ).chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig));
+    return pipe(
+      withLogger(logger =>
+        logger.success({ name: 'VALIDATOR' }, 'The request passed the validation rules. Looking for the best response'),
+      ),
+      chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig)),
+    );
   }
 }
 
@@ -87,23 +98,26 @@ function assembleResponse(
   payloadGenerator: PayloadGenerator,
 ): Reader<Logger, Either<Error, IHttpResponse>> {
   return withLogger(logger =>
-    result.map(negotiationResult => {
-      const mockedBody = computeBody(negotiationResult, payloadGenerator);
-      const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
+    pipe(
+      result,
+      map(negotiationResult => {
+        const mockedBody = computeBody(negotiationResult, payloadGenerator);
+        const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
 
-      const response: IHttpResponse = {
-        statusCode: parseInt(negotiationResult.code),
-        headers: {
-          ...mockedHeaders,
-          'Content-type': negotiationResult.mediaType,
-        },
-        body: mockedBody,
-      };
+        const response: IHttpResponse = {
+          statusCode: parseInt(negotiationResult.code),
+          headers: {
+            ...mockedHeaders,
+            'Content-type': negotiationResult.mediaType,
+          },
+          body: mockedBody,
+        };
 
-      logger.success(`Responding with the requested status code ${response.statusCode}`);
+        logger.success(`Responding with the requested status code ${response.statusCode}`);
 
-      return response;
-    }),
+        return response;
+      }),
+    ),
   );
 }
 
