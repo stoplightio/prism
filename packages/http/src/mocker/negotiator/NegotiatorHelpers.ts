@@ -2,12 +2,13 @@ import { Either, left, right } from 'fp-ts/lib/Either';
 import { reader, Reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';
 
-import { PickRequired } from '@stoplight/prism-core';
+import { PickRequired, ProblemJsonError } from '@stoplight/prism-core';
 import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 // @ts-ignore
 import * as accepts from 'accepts';
 import { ContentExample, NonEmptyArray } from '../../';
 import withLogger from '../../withLogger';
+import { NOT_ACCEPTABLE } from '../errors';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
 type IWithExampleMediaContent = IMediaTypeContent & { examples: NonEmptyArray<ContentExample> };
@@ -197,13 +198,8 @@ const helpers = {
               ...contentNegotiationResult,
             }));
         } else {
-          logger.trace(`Unable to find a content for ${mediaTypes}, returning an empty text/plain response.`);
-
-          return right({
-            code,
-            mediaType: 'text/plain',
-            headers: headers || [],
-          });
+          logger.warn(`Unable to find a content for ${mediaTypes}`);
+          return left(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find a content for ${mediaTypes}`));
         }
       }
       // user did not provide mediaType
