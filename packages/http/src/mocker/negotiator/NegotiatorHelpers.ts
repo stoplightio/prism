@@ -2,78 +2,23 @@ import { Either, left, right } from 'fp-ts/lib/Either';
 import { reader, Reader } from 'fp-ts/lib/Reader';
 import { Logger } from 'pino';
 
-import { PickRequired } from '@stoplight/prism-core';
-import { IHttpContent, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
-// @ts-ignore
-import * as accepts from 'accepts';
-import { ContentExample, NonEmptyArray } from '../../';
+import { ProblemJsonError } from '@stoplight/prism-core';
+import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import withLogger from '../../withLogger';
+import { NOT_ACCEPTABLE } from '../errors';
+import {
+  contentHasExamples,
+  createResponseFromDefault,
+  findBestExample,
+  findBestHttpContentByMediaType,
+  findDefaultContentType,
+  findExampleByKey,
+  findLowest2xx,
+  findResponseByStatusCode,
+  hasContents,
+  IWithExampleMediaContent,
+} from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
-
-type IWithExampleMediaContent = IMediaTypeContent & { examples: NonEmptyArray<ContentExample> };
-
-function findBestExample(httpContent: IHttpContent) {
-  return httpContent.examples && httpContent.examples[0];
-}
-
-function findExampleByKey(httpContent: IHttpContent, exampleKey: string) {
-  return httpContent.examples && httpContent.examples.find(example => example.key === exampleKey);
-}
-
-function hasContents(v: IHttpOperationResponse): v is PickRequired<IHttpOperationResponse, 'contents'> {
-  return !!v.contents;
-}
-
-function findBestHttpContentByMediaType(
-  response: PickRequired<IHttpOperationResponse, 'contents'>,
-  mediaType: string[],
-): IMediaTypeContent | undefined {
-  return response.contents.find(content =>
-    accepts({
-      headers: {
-        accept: mediaType.join(','),
-      },
-    }).type(content.mediaType),
-  );
-}
-
-function findDefaultContentType(
-  response: PickRequired<IHttpOperationResponse, 'contents'>,
-): IMediaTypeContent | undefined {
-  return response.contents.find(content => content.mediaType === '*/*');
-}
-
-function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {
-  const generic2xxResponse =
-    findResponseByStatusCode(httpResponses, '2XX') || createResponseFromDefault(httpResponses, '200');
-  const sorted2xxResponses = httpResponses
-    .filter(response => response.code.match(/2\d\d/))
-    .sort((a: IHttpOperationResponse, b: IHttpOperationResponse) => Number(a.code) - Number(b.code));
-
-  return sorted2xxResponses[0] || generic2xxResponse;
-}
-
-function findResponseByStatusCode(
-  responses: IHttpOperationResponse[],
-  statusCode: string,
-): IHttpOperationResponse | undefined {
-  return responses.find(response => response.code.toLowerCase() === statusCode.toLowerCase());
-}
-
-function createResponseFromDefault(
-  responses: IHttpOperationResponse[],
-  statusCode: string,
-): IHttpOperationResponse | undefined {
-  const defaultResponse = responses.find(response => response.code === 'default');
-  if (defaultResponse) {
-    return Object.assign({}, defaultResponse, { code: statusCode });
-  }
-  return undefined;
-}
-
-function contentHasExamples(content: IMediaTypeContent): content is IWithExampleMediaContent {
-  return !!content.examples && content.examples.length !== 0;
-}
 
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
@@ -197,12 +142,8 @@ const helpers = {
               ...contentNegotiationResult,
             }));
         } else {
-          logger.trace(`Unable to find a content for ${mediaTypes}, returning an empty text/plain response.`);
-          return right({
-            code,
-            mediaType: 'text/plain',
-            headers: headers || [],
-          });
+          logger.warn(`Unable to find a content for ${mediaTypes}`);
+          return left(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`));
         }
       }
       // user did not provide mediaType

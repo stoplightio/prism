@@ -1,11 +1,20 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to Semantic Versioning.
+
+# Unreleased
+
+## Fixed
+
+- Prism is now returning a `406` error instead of an empty response in case it is not able to find a response whose content type satisfies the provided `Accept` Header
+- Prism now respects the `q` value in the `Accept` header to specify the content type preference
+- Prism is now correctly returning `text/plain` when the document does *not* specify any Content Type for the examples
 
 # 3.0.1 (2019-07-16)
 
-## Bug fixes
+## Fixed
 
 - Fixed an error in the JSON Path bundling for NPM Package download
 
@@ -15,7 +24,7 @@ This is nothing more than the beta 6 rebranded.
 
 # 3.0.0-beta.6 (2019-07-12)
 
-### Bug Fixes
+### Fixed
 
 - Prism now loads correctly files from the internet with urls using query parameters #452
 - Prism now correctly respects the `required` property in OpenAPI 2 body parameters #450
@@ -44,7 +53,7 @@ This is nothing more than the beta 6 rebranded.
 - Several improvements to the logging of the Http Mocker #382
 - Our `application/vnd+problem.json` messages have been improved #370
 
-### Bug Fixes
+### Fixed
 
 - Prism is now able to parse HTTP FormData payloads #381
 
@@ -55,7 +64,7 @@ This is nothing more than the beta 6 rebranded.
 - Prism now works correctly on Windows thanks to some internal libraries updates #374
 - Prism 3 has now a Docker Image #359; you can try it at `stoplight/prism:3`
 
-### Bug Fixes
+### Fixed
 
 - Static JSON Schema examples generator gives precendece to `default` over `examples` #373
 
@@ -67,7 +76,7 @@ This is nothing more than the beta 6 rebranded.
 
 - The HTTP Client API has been documented #355
 
-### Bug Fixes
+### Fixed
 
 - Prism's build process in TypeScript has been revisited #356
 
@@ -79,7 +88,7 @@ This is nothing more than the beta 6 rebranded.
 
 # 3.0.0-alpha.15 (2019-06-14)
 
-### Bug Fixes
+### Fixed
 
 - Prism's build process received some tweaks, but there's more work to do #352
 
@@ -89,14 +98,14 @@ This is nothing more than the beta 6 rebranded.
 
 # 3.0.0-alpha.14 (2019-06-11)
 
-### Bug Fixes
+### Fixed
 
 - Prism is now handling the fact that HTTP headers are case insensitive #338
 - Prism is now normalising OAS2/3 schemas improving and simplyfing the validation capabilites #338
 
 # 3.0.0-alpha.13 (2019-06-09)
 
-### Bug Fixes
+### Fixed
 
 - Prism is not able to correctly handle the Content Type header #344
 
@@ -106,7 +115,7 @@ This is nothing more than the beta 6 rebranded.
 
 # 3.0.0-alpha.12 (2019-06-04)
 
-### Bug Fixes
+### Fixed
 
 - Fixed the security issue intrisic in Axios by updating its dependency in the project #334
 - Fix a bug where paremeters where undetected, returning a REQUIERD error #325
@@ -120,7 +129,7 @@ This is nothing more than the beta 6 rebranded.
 
 # 3.0.0-alpha.11 (2019-05-24)
 
-### Bug Fixes
+### Fixed
 
 - a bug where http operations were not resolved ([6aee679](https://github.com/stoplightio/prism/commit/6aee679))
 - add missing referenced project ([7621f8a](https://github.com/stoplightio/prism/commit/7621f8a))
