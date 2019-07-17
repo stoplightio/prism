@@ -143,7 +143,7 @@ const helpers = {
             }));
         } else {
           logger.warn(`Unable to find a content for ${mediaTypes}`);
-          return left(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find a content for ${mediaTypes}`));
+          return left(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`));
         }
       }
       // user did not provide mediaType
