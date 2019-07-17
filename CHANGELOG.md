@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
-## Bug Fixes
+## Fixed
 
 - Prism is now returning a `406` error instead of an empty response in case it is not able to find a response whose content type satisfies the provided `Accept` Header
 - Prism now respects the `q` value in the `Accept` header to specify the content type preference
