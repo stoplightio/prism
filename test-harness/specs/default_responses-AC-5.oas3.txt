@@ -1,0 +1,25 @@
+====test====
+When I send a request to an operation
+And in the path I specify ?_code=some-code (ie ?_code=200)
+And the operation has such status code response defined
+Then I get back a response with a status code of 200
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              example: ok
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos?_code=200
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+Connection: keep-alive
+
+"ok"
