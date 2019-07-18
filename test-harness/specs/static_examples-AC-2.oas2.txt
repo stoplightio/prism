@@ -34,6 +34,8 @@ paths:
 ====server====
 mock --dynamic -p 4010
 ====command====
-curl http://localhost:4010/todos?__dynamic=false
+curl -i http://localhost:4010/todos?__dynamic=false
 ====expect====
+HTTP/1.1 200 OK
+
 {"title":"Work","description":"string","priority":0}

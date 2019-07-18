@@ -36,6 +36,8 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl http://localhost:4010/todos
+curl -i http://localhost:4010/todos
 ====expect====
+HTTP/1.1 200 OK
+
 {"title":"Work","description":"string","priority":0}
