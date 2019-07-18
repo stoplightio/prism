@@ -41,14 +41,19 @@ const mockCommand: CommandModule = {
           default: process.env.NODE_ENV === 'production',
         },
       }),
-  handler: stuff => {
-    const { multiprocess, dynamic, port, host, spec } = stuff;
+  handler: parsedArgs => {
+    const { multiprocess, dynamic, port, host, spec } = (parsedArgs as unknown) as {
+      multiprocess: boolean;
+      dynamic: boolean;
+      port: number;
+      host: string;
+      spec: string;
+    };
 
     if (multiprocess) {
-      // @ts-ignore
       return createMultiProcessPrism({ dynamic, port, host, spec });
     }
-    // @ts-ignore
+
     return createSingleProcessPrism({ dynamic, port, host, spec });
   },
 };
