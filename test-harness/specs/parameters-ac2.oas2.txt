@@ -13,8 +13,10 @@ paths:
         - in: query
           name: age
           required: true
+          type: number
       responses:
-        '200':
+        200:
+          description: ok
           schema:
             type: string
 ====server====

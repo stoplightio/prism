@@ -9,15 +9,16 @@ swagger: '2.0'
 paths:
   /pet/a/{b}:
     get:
-     parameters:
-       - in: path
-         name: b
-         required: true
-     responses:
-       '200':
-         description: ok
-         schema:
-           type: string
+      parameters:
+        - in: path
+          name: b
+          required: true
+          type: number
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: string
 ====server====
 mock -p 4010
 ====command====

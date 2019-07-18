@@ -18,6 +18,7 @@ paths:
             type: number
       responses:
         '200':
+          description: ok
           schema:
             type: string
 ====server====
