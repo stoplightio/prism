@@ -1,15 +1,6 @@
 ====test====
-Given
-
-Prism is started without --dynamic flag.
-
-When
-
-curl localhost:4010/todos
-
-Expect output to be
-
-{"title":"Work","description":"string","priority":0}
+When prism is started without the --dynamic flag,
+responses should be built with examples from the spec.
 ====spec====
 swagger: "2.0"
 paths:
