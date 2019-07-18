@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is now returning a `406` error instead of an empty response in case it is not able to find a response whose content type satisfies the provided `Accept` Header
 - Prism now respects the `q` value in the `Accept` header to specify the content type preference
 - Prism is now correctly returning `text/plain` when the document does *not* specify any Content Type for the examples
+- Prism is now correctly returning the example according to the `Accept` header for OAS2 documents
 
 # 3.0.1 (2019-07-16)
 
