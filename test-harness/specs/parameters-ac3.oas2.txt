@@ -14,8 +14,7 @@ paths:
         - in: query
           name: age
           required: true
-          schema:
-            type: number
+          type: number
       responses:
         '200':
           description: ok
