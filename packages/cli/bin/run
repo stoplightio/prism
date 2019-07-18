@@ -12,5 +12,6 @@ yargs
   .commandDir(commandOptions.path, { extensions: commandOptions.extensions })
   .demandCommand()
   .version(false)
-  .help(false)
+  .help(true)
+  .strict()
   .wrap(yargs.terminalWidth()).argv;
