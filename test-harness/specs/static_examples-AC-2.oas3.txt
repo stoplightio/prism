@@ -1,0 +1,52 @@
+====test====
+Given
+
+Prism is started with --dynamic flag.
+
+When
+
+curl localhost:4010/todos?__dynamic=false
+
+Expect
+
+{"title":"Work","description":"string","priority":0}
+====spec====
+info:
+  title: Sample API
+  version: 1.0.0
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      parameters:
+        - name: title
+          in: query
+          style: form
+          schema:
+            enum:
+              - eat
+              - drink
+      responses:
+        200:
+          description: Get Todo Items
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    examples:
+                      - Work
+                      - Rest
+                  description:
+                    type: string
+                  priority:
+                    type: number
+                    default: 0
+====server====
+mock --dynamic -p 4010
+====command====
+curl http://localhost:4010/todos?__dynamic=false
+====expect====
+{"title":"Work","description":"string","priority":0}
