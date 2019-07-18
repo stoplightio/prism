@@ -11,21 +11,10 @@ Expect
 
 {"title":"Work","description":"string","priority":0}
 ====spec====
-info:
-  title: Sample API
-  version: 1.0.0
 openapi: 3.0.2
 paths:
   /todos:
     get:
-      parameters:
-        - name: title
-          in: query
-          style: form
-          schema:
-            enum:
-              - eat
-              - drink
       responses:
         200:
           description: Get Todo Items
