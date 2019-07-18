@@ -1,22 +1,24 @@
 ====test====
 When I send a request to an operation
-And the operation has a required header
-And in the request I sent that header is missing
+And the operation has a required query param
+And in the request I sent that query param is missing
 Then I should get a 400 response back
 And the payload of the response should be in application/problem+json content-type
 ====spec====
-swagger: '2.0'
+openapi: 3.0.2
 paths:
   /pet:
     get:
       parameters:
-        - in: header
-          name: x-age
+        - in: query
+          name: age
           required: true
       responses:
-        '200':
-          schema:
-            type: string
+        200:
+          description: ok
+          content:
+            application/json:
+              example: "abc"
 ====server====
 mock -p 4010
 ====command====

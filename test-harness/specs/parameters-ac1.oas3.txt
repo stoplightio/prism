@@ -5,19 +5,20 @@ And in the request I sent that segment is missing
 I should get a 400 response back
 And the payload of the response should be in application/problem+json content-type
 ====spec====
-swagger: '2.0'
+openapi: 3.0.2
 paths:
   /pet/a/{b}:
     get:
-     parameters:
-       - in: path
-         name: b
-         required: true
-     responses:
-       '200':
-         description: ok
-         schema:
-           type: string
+      parameters:
+        - in: path
+          name: b
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              example: "abc"
+          description: ok
 ====server====
 mock -p 4010
 ====command====
