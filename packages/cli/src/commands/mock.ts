@@ -1,5 +1,5 @@
 import { CommandModule } from 'yargs';
-import { createMultiProcessPrism, createSingleProcessPrism } from '../util/createServer';
+import { createMultiProcessPrism, CreatePrismOptions, createSingleProcessPrism } from '../util/createServer';
 
 const mockCommand: CommandModule = {
   describe: 'Start a mock server with the given spec file',
@@ -35,19 +35,15 @@ const mockCommand: CommandModule = {
         },
 
         multiprocess: {
-          char: 'm',
+          alias: 'm',
           description: 'Forks the http server from the CLI for faster log processing',
           boolean: true,
           default: process.env.NODE_ENV === 'production',
         },
       }),
   handler: parsedArgs => {
-    const { multiprocess, dynamic, port, host, spec } = (parsedArgs as unknown) as {
+    const { multiprocess, dynamic, port, host, spec } = (parsedArgs as unknown) as CreatePrismOptions & {
       multiprocess: boolean;
-      dynamic: boolean;
-      port: number;
-      host: string;
-      spec: string;
     };
 
     if (multiprocess) {
