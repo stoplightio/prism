@@ -19,5 +19,4 @@ node_modules/
 # IDE
 dist
 .vscode
-oclif.manifest.json
 cli-binaries
