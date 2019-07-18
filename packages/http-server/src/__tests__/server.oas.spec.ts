@@ -141,32 +141,33 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(payload).toHaveProperty('name');
   });
 
-  it('returns requested response example using __example property', async () => {
-    const response = await server.fastify.inject({
-      method: 'GET',
-      url: '/pets/123?__example=cat',
-    });
+  if (file !== 'petstore.oas2.json')
+    it('returns requested response example using __example property', async () => {
+      const response = await server.fastify.inject({
+        method: 'GET',
+        url: '/pets/123?__example=cat',
+      });
 
-    const payload = JSON.parse(response.payload);
+      const payload = JSON.parse(response.payload);
 
-    expect(response.statusCode).toBe(200);
-    expect(payload).toStrictEqual({
-      id: 2,
-      category: {
-        id: 1,
-        name: 'Felis',
-      },
-      tags: [
-        {
+      expect(response.statusCode).toBe(200);
+      expect(payload).toStrictEqual({
+        id: 2,
+        category: {
           id: 1,
-          name: 'pet',
+          name: 'Felis',
         },
-      ],
-      name: 'Fluffy',
-      status: 'available',
-      photoUrls: [],
+        tags: [
+          {
+            id: 1,
+            name: 'pet',
+          },
+        ],
+        name: 'Fluffy',
+        status: 'available',
+        photoUrls: [],
+      });
     });
-  });
 
   it('returns 500 with error when a non-existent example is requested', async () => {
     const response = await server.fastify.inject({
