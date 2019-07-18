@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-require('yargs')
+const yargs = require('yargs');
+
+yargs
   .scriptName("prism")
-  .commandDir('../src/commands', {
-    extensions: process.env.NODE_ENV !== 'production' ? ['js', 'ts'] : ['js'],
-  })
+  .commandDir('../src/commands', { extensions: ['ts'] })
   .demandCommand()
   .version(false)
   .help(false)
+  .wrap(yargs.terminalWidth())
   .argv

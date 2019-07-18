@@ -36,7 +36,7 @@ const mockCommand: CommandModule = {
 
         multiprocess: {
           char: 'm',
-          description: 'Fork the http server from the CLI',
+          description: 'Forks the http server from the CLI for faster log processing',
           boolean: true,
           default: process.env.NODE_ENV === 'production',
         },
