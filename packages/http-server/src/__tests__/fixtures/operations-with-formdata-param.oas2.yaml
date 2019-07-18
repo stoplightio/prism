@@ -1,0 +1,20 @@
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: integer
+          name: id
+          required: true
+        - in: formData
+          type: string
+          name: status
+          required: true
+          enum:
+            - open
+            - close

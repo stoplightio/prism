@@ -1,0 +1,32 @@
+====test====
+When form data expected in request body return OK if that body is valid.
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      summary: update
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: string
+          name: x
+          required: true
+          description: ''
+          enum:
+            - one
+            - two
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path --data-urlencode "x=one"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+content-length: 0
+Connection: keep-alive
+
+""

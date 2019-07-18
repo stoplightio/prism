@@ -26,7 +26,7 @@ describe('GET /pet?__server', () => {
   let server: IPrismHttpServer<{}>;
 
   beforeAll(async () => {
-    server = await instantiatePrism(resolve(__dirname, 'fixtures', 'templated-server-example.oas3.json'));
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', 'templated-server-example.oas3.yaml'));
   });
 
   afterAll(() => server.fastify.close());
@@ -62,33 +62,11 @@ describe('GET /pet?__server', () => {
   }
 });
 
-describe('POST /pet with invalid body', () => {
-  it('returns correct error message', async () => {
-    const server = await instantiatePrism(resolve(__dirname, 'fixtures', 'getOperationWithBody.oas2.json'));
-
-    const response = await server.fastify.inject({
-      method: 'POST',
-      url: '/pet',
-      payload: {
-        id: 'strings are not valid!',
-      },
-    });
-
-    expect(response.statusCode).toBe(422);
-    const parsed = JSON.parse(response.payload);
-    expect(parsed).toMatchObject({
-      type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
-      validation: [{ location: ['body', 'id'], severity: 'Error', code: 'type', message: 'should be integer' }],
-    });
-    await server.fastify.close();
-  });
-});
-
-describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', file => {
+describe.each([['petstore.oas2.yaml'], ['petstore.oas3.yaml']])('server %s', file => {
   let server: IPrismHttpServer<{}>;
 
   beforeAll(async () => {
-    server = await instantiatePrism(resolve(__dirname, '..', '..', '..', '..', 'examples', file));
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', file));
   });
 
   afterAll(() => server.fastify.close());
@@ -219,40 +197,6 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(payload).toHaveProperty('userStatus');
   });
 
-  it('should validate body params', async () => {
-    const response = await server.fastify.inject({
-      method: 'POST',
-      url: '/store/order',
-      payload: {
-        id: 1,
-        petId: 2,
-        quantity: 3,
-        shipDate: '2002-10-02T10:00:00-05:00',
-        status: 'placed',
-        complete: true,
-      },
-    });
-
-    expect(response.statusCode).toBe(200);
-  });
-
-  it('should validate the body params and return an error code', async () => {
-    const response = await server.fastify.inject({
-      method: 'POST',
-      url: '/pets',
-      payload: {
-        id: 1,
-        petId: 2,
-        quantity: 3,
-        shipDate: '12-01-2018',
-        status: 'placed',
-        complete: true,
-      },
-    });
-    expect(response.statusCode).toBe(422);
-    checkErrorPayloadShape(response.payload);
-  });
-
   it('will return the default response when using the __code property with a non existing code', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
@@ -282,8 +226,8 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     // accorging to the schema
 
     const expectedValues = {
-      'x-rate-limit': file === 'petstore.oas3.json' ? 1000 : expect.any(Number),
-      'x-stats': file === 'petstore.oas3.json' ? 1500 : expect.any(Number),
+      'x-rate-limit': file === 'petstore.oas3.yaml' ? 1000 : expect.any(Number),
+      'x-stats': file === 'petstore.oas3.yaml' ? 1500 : expect.any(Number),
       'x-expires-after': expect.any(String),
       'x-strange-header': null,
     };
@@ -320,7 +264,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     });
 
     // oas2 does not support overriding servers
-    if (file === 'petstore.oas3.json') {
+    if (file === 'petstore.oas3.yaml') {
       describe('and operation overrides global servers', () => {
         it(`when the server is valid then return 200`, async () => {
           const response = await server.fastify.inject({

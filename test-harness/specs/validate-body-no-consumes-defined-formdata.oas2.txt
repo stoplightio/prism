@@ -11,7 +11,7 @@ paths:
       produces:
       - application/json
       parameters:
-      - in: body
+      - in: TODO: THIS IS NOT CORRECT AFAIK, SHOULD BE FORMDATA
         name: body
         schema:
           type: object

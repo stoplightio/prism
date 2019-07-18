@@ -1,0 +1,24 @@
+openapi: '3.0.1'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                status:
+                  type: string
+                  enum:
+                    - open
+                    - close
+              required:
+                - id
+                - status
