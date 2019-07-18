@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 
-require('@oclif/command')
-  .run()
-  .then(require('@oclif/command/flush'))
-  .catch(require('@oclif/errors/handle'));
+require('yargs')
+  .scriptName("prism")
+  .commandDir('../src/commands', {
+    extensions: process.env.NODE_ENV !== 'production' ? ['js', 'ts'] : ['js'],
+  })
+  .demandCommand()
+  .version(false)
+  .help(false)
+  .argv

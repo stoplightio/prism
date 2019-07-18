@@ -100,7 +100,7 @@ function isHttp(spec: string) {
   return !!spec.match(/^https?:\/\//);
 }
 
-type CreatePrismOptions = {
+export type CreatePrismOptions = {
   dynamic: boolean;
   host?: string;
   port: number;
