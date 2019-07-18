@@ -1,12 +1,16 @@
 #!/usr/bin/env node
-
+const fs = require('fs');
 const yargs = require('yargs');
+const path = require('path');
+
+const commandOptions = fs.existsSync(path.join(__dirname, '../src'))
+  ? { path: '../src/commands', extensions: ['ts'] }
+  : { path: '../dist/commands', extensions: ['js'] };
 
 yargs
-  .scriptName("prism")
-  .commandDir('../src/commands', { extensions: ['ts'] })
+  .scriptName('prism')
+  .commandDir(commandOptions.path, { extensions: commandOptions.extensions })
   .demandCommand()
   .version(false)
   .help(false)
-  .wrap(yargs.terminalWidth())
-  .argv
+  .wrap(yargs.terminalWidth()).argv;
