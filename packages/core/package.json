@@ -16,7 +16,7 @@
     "node": ">=8"
   },
   "dependencies": {
-    "@stoplight/graphite": "^8.3.0",
+    "@stoplight/graphite": "^8.4.2",
     "axios": "^0.18.0",
     "lodash": "^4.17.14",
     "mobx": "^5.11.0",
