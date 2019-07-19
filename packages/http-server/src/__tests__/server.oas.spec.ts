@@ -141,13 +141,13 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
     expect(payload).toHaveProperty('name');
   });
 
-  it('returns 500 with error when a non-existent example is requested', async () => {
+  it('returns 404 with error when a non-existent example is requested', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
       url: '/pets/123?__example=non_existent_example',
     });
 
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(404);
     checkErrorPayloadShape(response.payload);
   });
 
