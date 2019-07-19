@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as tmp from 'tmp';
 import { ChildProcess, spawnSync, spawn } from 'child_process';
 import * as split2 from 'split2';
-import { validate } from 'gavel';
+const validate = require('gavel').validate;
 import { parseResponse } from 'http-string-parser';
 
 jest.setTimeout(60000);
@@ -55,12 +55,12 @@ describe('harness', () => {
           );
 
           try {
-            const isValid = validate(expected, output).isValid;
-            if (!!isValid) expect(validate(expected, output).isValid).toBeTruthy();
+            const isValid = validate(expected, output).valid;
+            if (!!isValid) expect(validate(expected, output).valid).toBeTruthy();
             else {
               expect(output).toMatchObject(expected);
             }
-            if (parsed.expect) expect(output.body).toMatchObject(expected.body);
+            if (parsed.expect) expect(output.body).toMatch(expected.body);
           } catch (e) {
             prismMockProcessHandle.kill();
             return prismMockProcessHandle.on('exit', () => done(e));
