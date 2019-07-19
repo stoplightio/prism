@@ -1,6 +1,7 @@
 import { assertLeft, assertRight } from '@stoplight/prism-http/src/__tests__/utils';
 import { IHttpOperation, IServer } from '@stoplight/types';
 import { Chance } from 'chance';
+import { isRight } from 'fp-ts/lib/Either';
 import { IHttpMethod, ProblemJsonError } from '../../';
 import {
   NO_METHOD_MATCHED_ERROR,
@@ -69,8 +70,8 @@ describe('http router', () => {
         const path = randomPath();
 
         return expect(
-          router
-            .route({
+          isRight(
+            router.route({
               resources: [createResource(method, path, [])],
               input: {
                 method,
@@ -79,8 +80,8 @@ describe('http router', () => {
                   path,
                 },
               },
-            })
-            .isRight(),
+            }),
+          ),
         ).toBeTruthy();
       });
 
