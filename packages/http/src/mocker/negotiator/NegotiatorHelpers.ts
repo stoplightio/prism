@@ -7,7 +7,7 @@ import { Logger } from 'pino';
 import { ProblemJsonError } from '@stoplight/prism-core';
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import withLogger from '../../withLogger';
-import { NOT_ACCEPTABLE } from '../errors';
+import { NOT_ACCEPTABLE, NOT_FOUND } from '../errors';
 import {
   contentHasExamples,
   createResponseFromDefault,
@@ -40,7 +40,12 @@ const helpers = {
           bodyExample: example,
         });
       } else {
-        return left(new Error(`Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`));
+        return left(
+          ProblemJsonError.fromTemplate(
+            NOT_FOUND,
+            `Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`,
+          ),
+        );
       }
     } else if (dynamic === true) {
       if (httpContent.schema) {

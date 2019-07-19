@@ -6,6 +6,12 @@ export const UNPROCESSABLE_ENTITY: Omit<ProblemJson, 'detail'> = {
   status: 422,
 };
 
+export const NOT_FOUND: Omit<ProblemJson, 'detail'> = {
+  type: 'NOT_FOUND',
+  title: 'Requested content not found',
+  status: 404,
+};
+
 export const NOT_ACCEPTABLE: Omit<ProblemJson, 'detail'> = {
   type: 'NOT_ACCEPTABLE',
   title: 'The server cannot produce a representation for your accept header',
