@@ -17,6 +17,7 @@ paths:
           style: pipeDelimited
           schema:
             type: array
+            minItems: 2
             items:
               type: string
       responses:
