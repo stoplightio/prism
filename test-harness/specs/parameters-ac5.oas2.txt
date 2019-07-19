@@ -1,0 +1,30 @@
+====test====
+When I send a request to an operation
+And the operation has a required header
+And in the request I sent that header is provided
+And the provided header is of different data type then required (described in its schema)
+Then I should get a 422 response back
+And the payload of the response should be in application/problem+json content-type
+====spec====
+swagger: '2.0'
+paths:
+  /pet:
+    get:
+      parameters:
+        - in: header
+          name: x-age
+          required: true
+          type: number
+      responses:
+        200:
+          description: ok
+          schema:
+            type: string
+            example: "ok"
+====server====
+mock -p 4010
+====command====
+curl -sIXGET -H "x-age: old" http://127.0.0.1:4010/pet
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json

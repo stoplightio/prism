@@ -1,0 +1,28 @@
+====test====
+When I send a request to an operation
+And the operation has a required query param
+And in the request I sent that query param is missing
+Then I should get a 422 response back
+And the payload of the response should be in application/problem+json content-type
+====spec====
+openapi: 3.0.2
+paths:
+  /pet:
+    get:
+      parameters:
+        - in: query
+          name: age
+          required: true
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              example: "abc"
+====server====
+mock -p 4010
+====command====
+curl -sIXGET http://127.0.0.1:4010/pet
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
