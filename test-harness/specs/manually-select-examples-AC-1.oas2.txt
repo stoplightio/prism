@@ -1,0 +1,23 @@
+====test====
+Requesting a resource without specifying __example, returns back the first (and only) example.
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Get Todo Items
+          examples:
+            application/json: "hello"
+====server====
+mock -p 4010
+====command====
+curl -i -X GET http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+
+"hello"
