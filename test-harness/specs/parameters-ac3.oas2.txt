@@ -1,0 +1,29 @@
+====test====
+When I send a request to an operation
+And the operation has a required query param
+And in the request I sent that query param is provided
+And the provided query param is of different data type then required (described in its schema)
+Then I should get a 422 response back
+And the payload of the response should be in application/problem+json content-type
+====spec====
+swagger: '2.0'
+paths:
+  /pet:
+    get:
+      parameters:
+        - in: query
+          name: age
+          required: true
+          type: number
+      responses:
+        '200':
+          description: ok
+          schema:
+            type: string
+====server====
+mock -p 4010
+====command====
+curl -sIXGET http://127.0.0.1:4010/pet?age=old
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
