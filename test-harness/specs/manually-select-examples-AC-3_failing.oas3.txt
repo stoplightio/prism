@@ -1,0 +1,23 @@
+====test====
+Requesting an example when no examples are defined results in 404 response.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: Get Todo Items
+          "content":
+            application/json:
+              schema:
+                type: number
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos?__example=mantis-shrimp
+====expect====
+HTTP/1.1 404 Not Found
+content-type: application/problem+json
+
+{"type":"https://stoplight.io/prism/errors#NO_RESOURCE_PROVIDED_ERROR","title":"Response for contentType: application/json and exampleKey: mantis-shrimp does not exist.","status":404,"detail":""}

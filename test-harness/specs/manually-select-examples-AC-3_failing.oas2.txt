@@ -1,0 +1,24 @@
+====test====
+Requesting a default example when there are multiple examples defined results in 404 response.
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      produces:
+        - application/xml
+        - application/json
+      responses:
+        200:
+          description: Get Todo Items
+          examples:
+            application/xml: "<project><foo>1</foo><bar>2</bar></project>"
+            application/json: "abc"
+====server====
+mock -p 4010
+====command====
+curl -i -X GET http://localhost:4010/todos?__example=default
+====expect====
+HTTP/1.1 404 Not Found
+
+{"type":"https://stoplight.io/prism/errors#NO_RESOURCE_PROVIDED_ERROR","title":"Response for contentType: application/xml and exampleKey: default does not exist.","status":404,"detail":""}
