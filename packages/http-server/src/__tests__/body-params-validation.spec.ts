@@ -26,9 +26,9 @@ describe('body params validation', () => {
     await server.fastify.close();
   });
 
-  describe('oas2 with body param', () => {
+  describe.each([['oas2'], ['oas3']])('%s with body param', oas => {
     beforeEach(async () => {
-      server = await instantiatePrism('operations-with-body-param.oas2.yaml');
+      server = await instantiatePrism(`operations-with-body-param.${oas}.yaml`);
     });
 
     describe('operation with no consumes', () => {
@@ -163,7 +163,7 @@ describe('body params validation', () => {
     });
   });
 
-  describe.only.each([['oas2'], ['oas3']])('%s with form data param', oas => {
+  describe.each([['oas2'], ['oas3']])('%s with form data param', oas => {
     beforeEach(async () => {
       server = await instantiatePrism(`operations-with-formdata-param.${oas}.yaml`);
     });

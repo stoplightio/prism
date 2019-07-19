@@ -1,0 +1,52 @@
+openapi: "3.0.1"
+paths:
+  "/json-body-no-consumes":
+    post:
+      requestBody:
+        content:
+          "":
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+      responses:
+        '200': {}
+  "/json-body-required":
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                status:
+                  type: string
+                  enum:
+                  - placed
+                  - approved
+                  - delivered
+      responses:
+        '200': {}
+  "/json-body-property-required":
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+              required:
+              - id
+      responses:
+        '200':
+          schema:
+            type: string
