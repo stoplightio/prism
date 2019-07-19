@@ -33,7 +33,7 @@ paths:
 mock -d -p 4010
 ====command====
 curl -i http://localhost:4010/todos?__dynamic=true -H "accept: application/json"
-====expect====
+====expect-loose====
 HTTP/1.1 200 OK
 x-secret: abc
 x-number: 123

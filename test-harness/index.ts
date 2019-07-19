@@ -60,7 +60,7 @@ describe('harness', () => {
             else {
               expect(output).toMatchObject(expected);
             }
-            if (parsed.expect) expect(output.body).toEqual(expected.body);
+            if (parsed.expect) expect(output.body).toMatchObject(expected.body);
           } catch (e) {
             prismMockProcessHandle.kill();
             return prismMockProcessHandle.on('exit', () => done(e));
