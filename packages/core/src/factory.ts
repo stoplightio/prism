@@ -1,5 +1,7 @@
 import { DiagnosticSeverity } from '@stoplight/types';
-import { fromEither, left2v, right2v } from 'fp-ts/lib/TaskEither';
+import * as Either from 'fp-ts/lib/Either';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 
@@ -41,13 +43,13 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
         const inputValidations: IPrismDiagnostic[] = [];
 
         if (components.router) {
-          return components.router
-            .route({ resources, input, config: configObj }, defaultComponents.router)
-            .fold(
+          return pipe(
+            components.router.route({ resources, input, config: configObj }, defaultComponents.router),
+            Either.fold(
               error => {
                 // rethrow error we if we're attempting to mock
                 if ((configObj as IPrismConfig).mock) {
-                  return left2v(error);
+                  return TaskEither.left(error);
                 }
 
                 const { message, name, status } = error as ProblemJsonError;
@@ -60,11 +62,11 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
                   severity: DiagnosticSeverity.Warning,
                 });
 
-                return right2v<Error, Resource | undefined>(undefined);
+                return TaskEither.right<Error, Resource | undefined>(undefined);
               },
-              value => right2v(value),
-            )
-            .chain(resource => {
+              value => TaskEither.right(value),
+            ),
+            TaskEither.chain(resource => {
               // validate input
               if (resource && components.validator && components.validator.validateInput) {
                 inputValidations.push(
@@ -81,35 +83,37 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
 
               if (resource && components.mocker && (configObj as IPrismConfig).mock) {
                 // generate the response
-                return fromEither(
-                  components.mocker
-                    .mock(
+                return pipe(
+                  TaskEither.fromEither(
+                    components.mocker.mock(
                       {
                         resource,
                         input: { validations: { input: inputValidations }, data: input },
                         config: configObj,
                       },
                       defaultComponents.mocker,
-                    )
-                    .run(components.logger.child({ name: 'NEGOTIATOR' })),
-                ).map(output => ({ output, resource }));
+                    )(components.logger.child({ name: 'NEGOTIATOR' })),
+                  ),
+                  TaskEither.map(output => ({ output, resource })),
+                );
               } else if (components.forwarder) {
                 // forward request and set output from response
-                return components.forwarder
-                  .fforward(
+                return pipe(
+                  components.forwarder.fforward(
                     {
                       resource,
                       input: { validations: { input: inputValidations }, data: input },
                       config: configObj,
                     },
                     defaultComponents.forwarder,
-                  )
-                  .map(output => ({ output, resource }));
+                  ),
+                  TaskEither.map(output => ({ output, resource })),
+                );
               }
 
-              return left2v(new Error('Nor forwarder nor mocker has been selected. Something is wrong'));
-            })
-            .map(({ output, resource }) => {
+              return TaskEither.left(new Error('Nor forwarder nor mocker has been selected. Something is wrong'));
+            }),
+            TaskEither.map(({ output, resource }) => {
               let outputValidations: IPrismDiagnostic[] = [];
               if (resource && components.validator && components.validator.validateOutput) {
                 outputValidations = components.validator.validateOutput(
@@ -130,16 +134,18 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
                   output: outputValidations,
                 },
               };
-            })
-            .run()
-            .then(v =>
-              v.fold(
+            }),
+          )().then(v =>
+            pipe(
+              v,
+              Either.fold(
                 e => {
                   throw e;
                 },
                 o => o,
               ),
-            );
+            ),
+          );
         }
 
         return {

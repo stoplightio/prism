@@ -2,7 +2,9 @@ import { IForwarder, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
 import axios, { CancelToken } from 'axios';
 import { toError } from 'fp-ts/lib/Either';
-import { TaskEither, tryCatch } from 'fp-ts/lib/TaskEither';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as Task from 'fp-ts/lib/Task';
+import { fold, TaskEither, tryCatch } from 'fp-ts/lib/TaskEither';
 import { URL } from 'url';
 import { NO_BASE_URL_ERROR } from '../router/errors';
 import { IHttpConfig, IHttpNameValue, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
@@ -14,14 +16,12 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
     timeout?: number;
     cancelToken?: CancelToken;
   }): Promise<IHttpResponse> {
-    return this.fforward(opts)
-      .fold(
-        e => {
-          throw e;
-        },
-        o => o,
-      )
-      .run();
+    return pipe(
+      this.fforward(opts),
+      fold<unknown, IHttpResponse, IHttpResponse>(e => {
+        throw e;
+      }, Task.of),
+    )();
   }
 
   public fforward(opts: {
