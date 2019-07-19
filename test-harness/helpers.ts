@@ -1,5 +1,5 @@
 export function parseSpecFile(spec: string) {
-  const regex = /====(server|test|spec|command|expect)====\r?\n/gi;
+  const regex = /====(server|test|spec|command|expect|expect-loose)====\r?\n/gi;
   const splitted = spec.split(regex);
 
   const testIndex = splitted.findIndex(t => t === 'test');
