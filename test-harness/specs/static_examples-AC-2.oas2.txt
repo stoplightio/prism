@@ -1,0 +1,32 @@
+====test====
+When prism is started with the --dynamic flag,
+responses should continue to match expected document structure.
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Get Todo Items
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                example: Work
+              description:
+                type: string
+              priority:
+                type: number
+                default: 0
+====server====
+mock --dynamic -p 4010
+====command====
+curl -i http://localhost:4010/todos?__dynamic=false
+====expect====
+HTTP/1.1 200 OK
+
+{"title":"Work","description":"string","priority":0}

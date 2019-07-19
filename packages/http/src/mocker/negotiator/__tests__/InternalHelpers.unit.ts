@@ -5,12 +5,7 @@ describe('InternalHelpers', () => {
     describe('with multiple content types for a response', () => {
       const avaiableResponses = {
         code: '200',
-        contents: [
-          {
-            mediaType: 'application/xml',
-          },
-          { mediaType: 'application/json' },
-        ],
+        contents: [{ mediaType: 'application/xml' }, { mediaType: 'application/json' }],
       };
 
       it('should respect the q parameter', () => {
@@ -19,7 +14,6 @@ describe('InternalHelpers', () => {
           'application/xml;q=1',
         ]);
 
-        expect(response).toBeDefined();
         expect(response).toHaveProperty('mediaType', 'application/xml');
       });
     });

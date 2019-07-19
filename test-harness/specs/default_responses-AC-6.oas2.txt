@@ -1,0 +1,30 @@
+====test====
+When I send a request to an operation
+And that operation has any 2xx defined
+And the request was valid
+Then I get back the lowest 2xx response (e.g. if 204 and 210 are defined, return 204)
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: ok
+          schema:
+            type: string
+            example: ok
+        204:
+          description: test1
+        210:
+          description: test2
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+Connection: keep-alive
+
+ok

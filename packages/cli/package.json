@@ -7,7 +7,7 @@
   },
   "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
-    "@oclif/command": "^1.5.16",
+    "@oclif/command": "^1.5.17",
     "@oclif/config": "^1.13.2",
     "@oclif/plugin-help": "^2.2.0",
     "@stoplight/prism-core": "^3.0.1",
