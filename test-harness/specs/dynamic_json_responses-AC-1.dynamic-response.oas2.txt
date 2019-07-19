@@ -33,7 +33,7 @@ paths:
 mock -d -p 4010
 ====command====
 curl -i http://localhost:4010/todos -H "accept: application/json"
-====expect====
+====expect-loose====
 HTTP/1.1 200 OK
 
-{"title":"title","description":"description","priority":0}
+{"title": "officia voluptate amet ut","description": "sit","priority": 94921765}
