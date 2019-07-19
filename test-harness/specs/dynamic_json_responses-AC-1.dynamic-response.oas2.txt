@@ -3,7 +3,7 @@ Prism generates dynamic values for schema when no static examples are provided.
 
 Given there are no examples defined for an operation
 And this operation can produce application/json response
-And this operation response defines a JSON Schema (schema field)
+And this operation response defines a Schema Object
 And I make a request to this operation
 And the request has Accept header of application/json
 Then I should get a response with dynamically generated JSON as payload
