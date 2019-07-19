@@ -51,7 +51,7 @@ describe('harness', () => {
           });
           const output: any = parseResponse(clientCommandHandle.stdout.trim());
           const expected: any = parseResponse(
-            parsed.expect.trim() || parsed.expectLooseIndex.trim()
+            parsed.expect.trim() || parsed.expectLoose.trim()
           );
 
           try {

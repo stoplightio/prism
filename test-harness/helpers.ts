@@ -15,6 +15,6 @@ export function parseSpecFile(spec: string) {
     server: splitted[1 + serverIndex],
     command: splitted[1 + commandIndex],
     expect: splitted[1 + expectIndex],
-    expectLooseIndex: splitted[1 + expectLooseIndex],
+    expectLoose: splitted[1 + expectLooseIndex],
   };
 }
