@@ -1,0 +1,34 @@
+====test====
+Making a request to an operation with removed global security results in granted access.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      security: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example: test
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+security:
+  - BasicAuth: []
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+
+"test"

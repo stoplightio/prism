@@ -1,0 +1,58 @@
+====test====
+After a user obtains a cookie from /login, s/he can then use the cookie to access protected endpoint /todos.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example: test
+  /login:
+    post:
+      summary: Logs in and returns the authentication  cookie
+      requestBody:
+        required: true
+        description: A JSON object containing the login and password.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      security: []
+      responses:
+        '200':
+          description: login
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: SESSIONID=abc123; Path=/; HttpOnly
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        user:
+          required: true
+          type: string
+        pass:
+          required: true
+          type: string
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: SESSIONID
+security:
+  - cookieAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos --cookie "SESSIONID=abc123"
+====expect====
+HTTP/1.1 200 OK
+
+"test"

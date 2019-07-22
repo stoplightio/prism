@@ -1,0 +1,33 @@
+====test====
+Making a request (and including invalid credentials) to an endpoint,
+which security depends on global security schemes,
+results in a 403 status code response.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example: test
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+security:
+  - BasicAuth: []
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "Authorization: Basic dGVzdDp0ZXN0"
+====expect====
+HTTP/1.1 403 Forbidden

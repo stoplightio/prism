@@ -1,0 +1,34 @@
+====test====
+Making a request (and not including valid credentials) to an endpoint,
+that is secured by one of the security definitions (selected manually),
+results in a 403 status code response.
+====spec====
+swagger: '2.0'
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      security:
+        - BasicAuth: []
+      responses:
+        200:
+          description: OK
+          examples:
+            application/json: test
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+security:
+  - BasicAuth: []
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "Authorization: Basic dGVzdDp0ZXN0"
+====expect====
+HTTP/1.1 403 Forbidden
