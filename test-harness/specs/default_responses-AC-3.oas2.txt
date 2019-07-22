@@ -21,8 +21,8 @@ mock -p 4010
 ====command====
 curl -i http://localhost:4010/todos?__code=304
 ====expect====
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 404 Not Found
 content-type: application/problem+json
 Connection: keep-alive
 
-{"type":"https://stoplight.io/prism/errors#UNKNOWN","title":"Requested status code is not defined in the schema.","status":500,"detail":""}
+{"type":"https://stoplight.io/prism/errors#UNKNOWN","title":"The server cannot find the requested content","status":404,"detail":""}
