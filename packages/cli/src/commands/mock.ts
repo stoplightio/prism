@@ -54,4 +54,4 @@ const mockCommand: CommandModule = {
   },
 };
 
-module.exports = mockCommand;
+export default mockCommand;

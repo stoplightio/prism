@@ -1,7 +1,8 @@
 import * as yargs from 'yargs';
 import { createMultiProcessPrism, createSingleProcessPrism } from '../../util/createServer';
+import mockCommand from '../mock';
 
-const parser = yargs.commandDir('../', { extensions: ['ts'] });
+const parser = yargs.command(mockCommand);
 
 jest.mock('../../util/createServer');
 
