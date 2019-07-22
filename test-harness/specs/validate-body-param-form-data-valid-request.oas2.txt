@@ -5,6 +5,8 @@ swagger: '2.0'
 paths:
   /path:
     post:
+      consumes:
+        - application/x-www-form-urlencoded
       responses:
         200:
           schema:
@@ -24,11 +26,10 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X POST http://localhost:4010/path -H "application/x-www-form-urlencode" --data-urlencode "id=123&status=open"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "id=123&status=open"
 ====expect====
 HTTP/1.1 200 OK
-content-type: application/json; charset=utf-8
-content-length: 0
+content-type: application/json
 Connection: keep-alive
 
 "string"
