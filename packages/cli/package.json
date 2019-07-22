@@ -35,8 +35,5 @@
     "cli": "node -r ts-node/register -r tsconfig-paths/register bin/run",
     "cli:debug": "node -r ts-node/register -r tsconfig-paths/register --inspect-brk bin/run"
   },
-  "types": "dist/index.d.ts",
-  "devDependencies": {
-    "typescript": "^3.5.3"
-  }
+  "types": "dist/index.d.ts"
 }
