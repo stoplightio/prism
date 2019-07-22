@@ -7,7 +7,7 @@ import { Logger } from 'pino';
 import { ProblemJsonError } from '@stoplight/prism-core';
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import withLogger from '../../withLogger';
-import { NOT_ACCEPTABLE } from '../errors';
+import { NOT_ACCEPTABLE, NOT_FOUND } from '../errors';
 import {
   contentHasExamples,
   createResponseFromDefault,
@@ -211,7 +211,9 @@ const helpers = {
         return withLogger(logger => {
           logger.trace(`Unable to find default response to construct a ${code} response`);
           // if no response found under a status code throw an error
-          return left(new Error('Requested status code is not defined in the schema.'));
+          return left(
+            ProblemJsonError.fromTemplate(NOT_FOUND, `Requested status code ${code} is not defined in the document.`),
+          );
         });
       }),
     );
