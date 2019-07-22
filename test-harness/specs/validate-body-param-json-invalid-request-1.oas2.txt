@@ -1,5 +1,5 @@
 ====test====
-Given form data expected in request body then return 422 when that body is invalid.
+Given body required but not provided returns 422.
 ====spec====
 swagger: '2.0'
 paths:
