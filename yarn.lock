@@ -3839,10 +3839,10 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
-gavel@^6.1.3:
-  version "6.1.3"
-  resolved "https://registry.yarnpkg.com/gavel/-/gavel-6.1.3.tgz#9c8c383b1ccdf080f9a58b9a0fcbccad492e5496"
-  integrity sha512-Ho9Su9qPVmERRjsii9fV4HtLxZdyLDSFmawlZBZ4/I0zkoDIBVG50kL1u7mX9C6hkYVx7unqiPgIvpERwqmiBg==
+gavel@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/gavel/-/gavel-7.0.2.tgz#512d8735222a037394152852120874ca65690e70"
+  integrity sha512-iVxpUS4rarjvA2EojZUsNEwHyNSdqe4J9ioHEfpLd6Qk8gqRYD0o91k6MC+QH8e3O4b751QFJ4oCEOIM68CgrA==
   dependencies:
     amanda "1.0.1"
     caseless "0.12.0"
@@ -3851,12 +3851,12 @@ gavel@^6.1.3:
     content-type "1.0.4"
     curl-trace-parser "0.0.10"
     deep-equal "1.0.1"
-    googlediff "0.1.0"
     http-string-parser "0.0.6"
-    json-parse-helpfulerror "1.0.3"
+    jju "1.4.0"
     json-pointer "0.6.0"
     media-typer "1.1.0"
     tv4 "1.3.0"
+    url "0.11.0"
 
 genfun@^5.0.0:
   version "5.0.0"
@@ -4063,11 +4063,6 @@ globby@^9.2.0:
     ignore "^4.0.3"
     pify "^4.0.1"
     slash "^2.0.0"
-
-googlediff@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/googlediff/-/googlediff-0.1.0.tgz#99acf05cc06223eb66c29008d81f9b2d18c2453d"
-  integrity sha1-mazwXMBiI+tmwpAI2B+bLRjCRT0=
 
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.15"
@@ -5175,7 +5170,7 @@ jiff@~0.7.3:
   resolved "https://registry.yarnpkg.com/jiff/-/jiff-0.7.3.tgz#42db5d9140f1804399bb501747055a9434f40f46"
   integrity sha1-QttdkUDxgEOZu1AXRwValDT0D0Y=
 
-jju@^1.1.0:
+jju@1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/jju/-/jju-1.4.0.tgz#a3abe2718af241a2b2904f84a625970f389ae32a"
   integrity sha1-o6vicYryQaKykE+EpiWXDzia4yo=
@@ -5244,13 +5239,6 @@ json-parse-better-errors@^1.0.0, json-parse-better-errors@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
   integrity sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
-
-json-parse-helpfulerror@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/json-parse-helpfulerror/-/json-parse-helpfulerror-1.0.3.tgz#13f14ce02eed4e981297b64eb9e3b932e2dd13dc"
-  integrity sha1-E/FM4C7tTpgSl7ZOueO5MuLdE9w=
-  dependencies:
-    jju "^1.1.0"
 
 json-pointer@0.6.0, json-pointer@^0.6.0:
   version "0.6.0"
@@ -6962,6 +6950,11 @@ pumpify@^1.3.3:
     inherits "^2.0.3"
     pump "^2.0.0"
 
+punycode@1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.3.2.tgz#9653a036fb7c1ee42342f2325cceefea3926c48d"
+  integrity sha1-llOgNvt8HuQjQvIyXM7v6jkmxI0=
+
 punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
@@ -7005,6 +6998,11 @@ qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
+
+querystring@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
+  integrity sha1-sgmEkgO7Jd+CDadW50cAWHhSFiA=
 
 quick-format-unescaped@^3.0.2:
   version "3.0.2"
@@ -8624,6 +8622,14 @@ url-template@^2.0.8:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/url-template/-/url-template-2.0.8.tgz#fc565a3cccbff7730c775f5641f9555791439f21"
   integrity sha1-/FZaPMy/93MMd19WQflVV5FDnyE=
+
+url@0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/url/-/url-0.11.0.tgz#3838e97cfc60521eb73c525a8e55bfdd9e2e28f1"
+  integrity sha1-ODjpfPxgUh63PFJajlW/3Z4uKPE=
+  dependencies:
+    punycode "1.3.2"
+    querystring "0.2.0"
 
 use@^3.1.0:
   version "3.1.1"
