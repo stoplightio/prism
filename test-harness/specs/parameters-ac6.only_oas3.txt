@@ -1,0 +1,35 @@
+====test====
+When I send a request to an operation
+And the operation has a required query param
+And in the request I sent that param is present
+And the param I sent was not valid style-wise (ie form instead of pipeDelimited)
+Then I should get a 422 response back
+And the payload of the response should be in application/problem+json content-type
+====spec====
+openapi: 3.0.2
+paths:
+  /pet:
+    get:
+      parameters:
+        - in: query
+          name: name
+          required: true
+          style: pipeDelimited
+          schema:
+            type: array
+            minItems: 2
+            items:
+              type: string
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              example: "hello"
+====server====
+mock -p 4010
+====command====
+curl -sIXGET http://127.0.0.1:4010/pet?name=abc,xyz
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
