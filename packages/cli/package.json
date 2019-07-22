@@ -3,7 +3,7 @@
   "version": "3.0.1",
   "author": "Stoplight <support@stoplight.io>",
   "bin": {
-    "prism": "./bin/run"
+    "prism": "./dist/index.js"
   },
   "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
@@ -19,7 +19,6 @@
     "node": ">=8.0.0"
   },
   "files": [
-    "/bin",
     "/dist"
   ],
   "license": "Apache-2.0",
@@ -32,8 +31,8 @@
     "url": "https://github.com/stoplightio/prism.git"
   },
   "scripts": {
-    "cli": "node -r ts-node/register -r tsconfig-paths/register bin/run",
-    "cli:debug": "node -r ts-node/register -r tsconfig-paths/register --inspect-brk bin/run"
+    "cli": "node -r ts-node/register -r tsconfig-paths/register src/index.ts",
+    "cli:debug": "node -r ts-node/register -r tsconfig-paths/register --inspect-brk src/index.ts"
   },
   "types": "dist/index.d.ts"
 }
