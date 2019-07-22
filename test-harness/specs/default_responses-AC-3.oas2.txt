@@ -3,7 +3,7 @@ When I send a request to an operation
 And I force the response by adding __code to the path (ie http://localhost:4010/pets/123?__code=200)
 And this operation has no response with such code defined
 And this operation does not have default response defined
-Then I should get back a response with 500 status code
+Then I should get back a response with 404 status code
 And the response's payload should describe the error
 ====spec====
 swagger: "2.0"
@@ -25,4 +25,4 @@ HTTP/1.1 404 Not Found
 content-type: application/problem+json
 Connection: keep-alive
 
-{"type":"https://stoplight.io/prism/errors#UNKNOWN","title":"The server cannot find the requested content","status":404,"detail":""}
+{"type":"https://stoplight.io/prism/errors#UNKNOWN","title":"The server cannot find the requested content","status":404,"detail":"Requested status code 304 is not defined in the document."}
