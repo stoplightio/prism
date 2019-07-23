@@ -4,7 +4,7 @@ import mockCommand from './commands/mock';
 
 const _v = yargs
   .scriptName('prism')
-  .version(false)
+  .version()
   .help(true)
   .strict()
   .wrap(yargs.terminalWidth())
