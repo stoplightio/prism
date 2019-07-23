@@ -13,7 +13,7 @@ export const NOT_ACCEPTABLE: Omit<ProblemJson, 'detail'> = {
 };
 
 export const NOT_FOUND: Omit<ProblemJson, 'detail'> = {
-  type: 'NOT_ACCEPTABLE',
+  type: 'NOT_FOUND',
   title: 'The server cannot find the requested content',
   status: 404,
 };
