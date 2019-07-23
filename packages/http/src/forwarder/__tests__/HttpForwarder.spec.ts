@@ -141,7 +141,7 @@ describe('HttpForwarder', () => {
             validateStatus: expect.any(Function),
             timeout: 0,
             headers: {
-              'user-agent': 'Prism/3.0.1',
+              'user-agent': `Prism/${prismVersion}`,
             },
           });
         });
