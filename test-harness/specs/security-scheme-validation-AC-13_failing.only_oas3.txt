@@ -12,16 +12,6 @@ paths:
             application/json:
               example: test
 components:
-  schemas:
-    LoginRequest:
-      type: object
-      properties:
-        user:
-          required: true
-          type: string
-        pass:
-          required: true
-          type: string
   securitySchemes:
     cookieAuth:
       type: apiKey
