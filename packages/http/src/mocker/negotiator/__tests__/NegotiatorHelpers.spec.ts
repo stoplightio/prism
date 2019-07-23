@@ -337,7 +337,7 @@ describe('NegotiatorHelpers', () => {
       httpOperation = anHttpOperation(httpOperation).instance();
 
       assertLeft(helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger), error =>
-        expect(error).toHaveProperty('message', 'Requested status code is not defined in the schema.'),
+        expect(error).toHaveProperty('message', 'The server cannot find the requested content'),
       );
     });
   });
