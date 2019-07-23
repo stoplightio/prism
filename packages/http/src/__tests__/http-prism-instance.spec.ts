@@ -16,6 +16,8 @@ const staticExamplesOas2Path = fixturePath('static-examples.oas2.json');
 const serverValidationOas2Path = fixturePath('server-validation.oas2.json');
 const serverValidationOas3Path = fixturePath('server-validation.oas3.json');
 
+const { version: prismVersion } = require('../../package.json');
+
 describe('Http Client .process', () => {
   let prism: IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;
 
@@ -170,6 +172,55 @@ describe('Http Client .process', () => {
           expect(result.output).toBeDefined();
           expect(result.output!.statusCode).toEqual(200);
           expect(result.output!.body).toEqual(reply);
+        });
+      });
+
+      describe('Prism user-agent header', () => {
+        it('adds user-agent header in the form of Prism/<<PRISM_VERSION>>', async () => {
+          const oasBaseUrl = 'http://example.com/api';
+
+          nock(oasBaseUrl)
+            .get('/pet')
+            .reply(function() {
+              expect(this.req.headers['user-agent']).toBe(`Prism/${prismVersion}`);
+
+              return [200, 'reply', {}];
+            });
+
+          await prism.process(
+            {
+              method: 'get',
+              url: {
+                path: '/pet',
+              },
+            },
+            config,
+          );
+        });
+
+        it('specifying user-agent in the options parameter has no impact on user-agent header to be sent', async () => {
+          const oasBaseUrl = 'http://example.com/api';
+
+          nock(oasBaseUrl)
+            .get('/pet')
+            .reply(function() {
+              expect(this.req.headers['user-agent']).toBe(`Prism/${prismVersion}`);
+
+              return [200, 'reply', {}];
+            });
+
+          await prism.process(
+            {
+              method: 'get',
+              url: {
+                path: '/pet',
+              },
+              headers: {
+                'user-agent': 'Other_Agent/1.0.0',
+              },
+            },
+            config,
+          );
         });
       });
     });

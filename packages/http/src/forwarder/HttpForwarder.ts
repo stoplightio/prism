@@ -9,6 +9,8 @@ import { URL } from 'url';
 import { NO_BASE_URL_ERROR } from '../router/errors';
 import { IHttpConfig, IHttpNameValue, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
 
+const { version: prismVersion } = require('../../package.json');
+
 export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   public async forward(opts: {
     resource?: IHttpOperation;
@@ -48,7 +50,7 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
         params: inputData.url.query,
         responseType: 'text',
         data: inputData.body,
-        headers: this.updateHostHeaders(baseUrl, inputData.headers),
+        headers: HttpForwarder.updateHostHeaders(baseUrl, inputData.headers),
         validateStatus: () => true,
         timeout: Math.max(opts.timeout || 0, 0),
         ...(opts.cancelToken !== undefined && { cancelToken: opts.cancelToken }),
@@ -63,20 +65,17 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
     }, toError);
   }
 
-  private updateHostHeaders(baseUrl: string, headers?: IHttpNameValue) {
-    // no headers? do nothing
-    if (!headers) return headers;
+  private static updateHostHeaders(baseUrl: string, headers: IHttpNameValue = {}) {
+    const userAgentHeader = { 'user-agent': `Prism/${prismVersion}` };
+    const headersWithoutUserAgent = headers.hasOwnProperty('host')
+      ? {
+          ...headers,
+          host: new URL(baseUrl).host,
+          forwarded: `host=${headers.host}`,
+        }
+      : headers;
 
-    // host header provided? override with actual hostname
-    if (headers.hasOwnProperty('host')) {
-      return {
-        ...headers,
-        host: new URL(baseUrl).host,
-        forwarded: `host=${headers.host}`,
-      };
-    }
-
-    return headers;
+    return Object.assign({}, headersWithoutUserAgent, userAgentHeader);
   }
 
   private resolveServerUrl(server: IServer) {
