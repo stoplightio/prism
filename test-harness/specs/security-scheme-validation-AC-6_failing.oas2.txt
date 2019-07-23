@@ -1,6 +1,6 @@
 ====test====
 Adding a header of "Authorization: Basic <<TOKEN>>" where TOKEN is NOT base64 encoded <<ID>>:<<PASS>> combination
-for a request to an endpoint, that is secured by one of the security definitions (selected manually), results in denied access.
+for a request to an endpoint, that is secured by BasicAuth (one of the security definitions selected manually), results in denied access.
 ====spec====
 swagger: '2.0'
 paths:

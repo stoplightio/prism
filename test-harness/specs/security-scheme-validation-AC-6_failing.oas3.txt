@@ -1,6 +1,6 @@
 ====test====
 Adding a header of "Authorization: Basic <<TOKEN>>" where TOKEN is NOT base64 encoded <<ID>>:<<PASS>> combination
-for a request to an endpoint, which security depends on global security definitions, results in denied access.
+for a request to an endpoint, that is secured by BasicAuth (one of the security definitions selected manually), results in denied access.
 ====spec====
 openapi: 3.0.2
 paths:
