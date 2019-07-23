@@ -721,7 +721,7 @@ describe('NegotiatorHelpers', () => {
 
         const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
         assertLeft(negotiationResult, e => {
-          expect(e.message).toBe('Requested content not found');
+          expect(e.message).toBe('The server cannot find the requested content');
         });
       });
     });
