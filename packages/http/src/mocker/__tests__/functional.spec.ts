@@ -141,9 +141,7 @@ describe('http mocker', () => {
           },
         })(logger);
 
-        assertLeft(rejection, e =>
-          expect(e).toHaveProperty('message', 'Requested status code is not defined in the schema.'),
-        );
+        assertLeft(rejection, e => expect(e).toHaveProperty('message', 'The server cannot find the requested content'));
       });
 
       test('and example key should return application/json example', async () => {

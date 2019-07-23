@@ -1,0 +1,32 @@
+====test====
+When I send a request to an operation
+And I force the response by adding __code to the path (ie http://localhost:4010/pets/123?__code=201)
+And this operation has no response with such code defined
+And this operation has a default response defined
+Then I should get back the default response
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: ok
+          schema:
+            type: string
+            example: ok
+        default:
+          description: example
+          schema:
+            type: string
+            example: example
+====server====
+mock -p 4010
+====command====
+curl -i -X GET http://localhost:4010/todos?__code=201
+====expect====
+HTTP/1.1 201 Created
+content-type: text/plain
+Connection: keep-alive
+
+example

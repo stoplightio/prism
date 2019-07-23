@@ -1,68 +1,8 @@
 # prism-cli
 
-<!-- toc -->
-* [prism-cli](#prism-cli)
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
+You can install the command line CLI using `npm i -g @stoplight/prism-cli`
 
-# Usage
-
-<!-- usage -->
-```sh-session
-$ npm install -g @stoplight/prism-cli
-$ prism COMMAND
-running command...
-$ prism (-v|--version|version)
-@stoplight/prism-cli/3.0.1 darwin-x64 node-v12.6.0
-$ prism --help [COMMAND]
-USAGE
-  $ prism COMMAND
-...
-```
-<!-- usagestop -->
-
-# Commands
-
-<!-- commands -->
-* [`prism help [COMMAND]`](#prism-help-command)
-* [`prism mock SPEC`](#prism-mock-spec)
-
-## `prism help [COMMAND]`
-
-display help for prism
-
-```
-USAGE
-  $ prism help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
-
-OPTIONS
-  --all  see all commands in CLI
-```
-
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
-
-## `prism mock SPEC`
-
-Start a mock server with the given spec file
-
-```
-USAGE
-  $ prism mock SPEC
-
-ARGUMENTS
-  SPEC  Path to a spec file. Can be both a file or a fetchable resource on the web
-
-OPTIONS
-  -d, --dynamic       Dynamically generate examples.
-  -h, --host=host     [default: 127.0.0.1] Host that Prism will listen to.
-  -m, --multiprocess  Fork the http server from the CLI
-  -p, --port=port     (required) [default: 4010] Port that Prism will run on.
-```
-<!-- commandsstop -->
+To get an overview of all the commands, just do `prism help`
 
 ## Running in production
 
