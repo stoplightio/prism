@@ -11,3 +11,9 @@ export const NOT_ACCEPTABLE: Omit<ProblemJson, 'detail'> = {
   title: 'The server cannot produce a representation for your accept header',
   status: 406,
 };
+
+export const NOT_FOUND: Omit<ProblemJson, 'detail'> = {
+  type: 'NOT_FOUND',
+  title: 'The server cannot find the requested content',
+  status: 404,
+};

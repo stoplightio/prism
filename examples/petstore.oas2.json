@@ -456,7 +456,7 @@
               "$ref": "#/definitions/Pet"
             },
             "examples": {
-              "cat": {
+              "application/json": {
                 "id": 2,
                 "category": {
                   "id": 1,
@@ -472,7 +472,7 @@
                 "status": "available",
                 "photoUrls": []
               },
-              "dog": {
+              "application/xml": {
                 "id": 1,
                 "category": {
                   "id": 2,
