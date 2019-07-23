@@ -1,0 +1,32 @@
+====test====
+Adding ?__example=default returns an example defined with *example* keyword.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: Get Todo Items
+          "content":
+            application/json:
+              example:
+                id: 1
+                category:
+                  id: 2
+                  name: Canis
+                tags:
+                  - id: 2
+                    name: dog
+                name: Sharik
+                status: available
+                photoUrls: []
+====server====
+mock -p 4010
+====command====
+curl -i -X GET http://localhost:4010/todos?__example=default
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+
+{"id":1,"category":{"id":2,"name":"Canis"},"tags":[{"id":2,"name":"dog"}],"name":"Sharik","status":"available","photoUrls":[]}

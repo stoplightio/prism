@@ -3,37 +3,26 @@
   "version": "3.0.1",
   "author": "Stoplight <support@stoplight.io>",
   "bin": {
-    "prism": "./bin/run"
+    "prism": "./dist/index.js"
   },
   "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
-    "@oclif/command": "^1.5.17",
-    "@oclif/config": "^1.13.2",
-    "@oclif/plugin-help": "^2.2.0",
     "@stoplight/prism-core": "^3.0.1",
     "@stoplight/prism-http-server": "^3.0.1",
     "signale": "^1.4.0",
     "split2": "^3.1.1",
     "tslib": "^1.10.0",
-    "urijs": "^1.19.1"
+    "urijs": "^1.19.1",
+    "yargs": "^13.3.0"
   },
   "engines": {
     "node": ">=8.0.0"
   },
   "files": [
-    "/bin",
-    "/dist",
-    "/oclif.manifest.json"
+    "/dist"
   ],
   "license": "Apache-2.0",
   "main": "dist/index.js",
-  "oclif": {
-    "commands": "./dist/commands",
-    "bin": "prism",
-    "plugins": [
-      "@oclif/plugin-help"
-    ]
-  },
   "publishConfig": {
     "access": "public"
   },
@@ -42,13 +31,8 @@
     "url": "https://github.com/stoplightio/prism.git"
   },
   "scripts": {
-    "prepack": "node -r tsconfig-paths/register ../../node_modules/.bin/oclif-dev manifest",
-    "version": "node -r tsconfig-paths/register ../../node_modules/.bin/oclif-dev readme && git add README.md",
-    "cli": "node -r tsconfig-paths/register bin/run",
-    "cli:debug": "node --inspect-brk -r tsconfig-paths/register bin/run"
+    "cli": "node -r ts-node/register -r tsconfig-paths/register src/index.ts",
+    "cli:debug": "node -r ts-node/register -r tsconfig-paths/register --inspect-brk src/index.ts"
   },
-  "types": "dist/index.d.ts",
-  "devDependencies": {
-    "typescript": "^3.5.3"
-  }
+  "types": "dist/index.d.ts"
 }
