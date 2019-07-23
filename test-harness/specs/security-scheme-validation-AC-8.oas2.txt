@@ -1,5 +1,5 @@
 ====test====
-Resource is returned when an api-key is provided as a header.
+Resource is returned when *X-API-Key* required header is provided.
 ====spec====
 swagger: '2.0'
 paths:

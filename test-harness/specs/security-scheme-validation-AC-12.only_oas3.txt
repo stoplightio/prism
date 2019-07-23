@@ -1,5 +1,5 @@
 ====test====
-After a user obtains a cookie from /login, s/he can then use the cookie to access protected endpoint /todos.
+Adding a required cookie with the name of SESSIONID results in granted access.
 ====spec====
 openapi: 3.0.2
 paths:
@@ -11,25 +11,6 @@ paths:
           content:
             application/json:
               example: test
-  /login:
-    post:
-      summary: Logs in and returns the authentication  cookie
-      requestBody:
-        required: true
-        description: A JSON object containing the login and password.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      security: []
-      responses:
-        '200':
-          description: login
-          headers:
-            Set-Cookie:
-              schema:
-                type: string
-                example: SESSIONID=abc123; Path=/; HttpOnly
 components:
   schemas:
     LoginRequest:

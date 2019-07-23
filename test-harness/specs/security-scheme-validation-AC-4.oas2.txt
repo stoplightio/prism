@@ -1,7 +1,6 @@
 ====test====
-Making a request (and including valid credentials) to an endpoint,
-which security depends on global security definitions,
-results in granted access.
+Adding a header of "Authorization: Basic <<TOKEN>>" where TOKEN is base64 encoded <<ID>>:<<PASS>> combination
+for a request to an endpoint, which security depends on global security definitions, results in granted access.
 ====spec====
 swagger: '2.0'
 paths:

@@ -1,5 +1,5 @@
 ====test====
-No access is granted when the provided session cookie is wrong.
+Not adding a required cookie with the name of SESSIONID results in denied access.
 ====spec====
 openapi: 3.0.2
 paths:
@@ -11,25 +11,6 @@ paths:
           content:
             application/json:
               example: test
-  /login:
-    post:
-      summary: Logs in and returns the authentication  cookie
-      requestBody:
-        required: true
-        description: A JSON object containing the login and password.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      security: []
-      responses:
-        '200':
-          description: login
-          headers:
-            Set-Cookie:
-              schema:
-                type: string
-                example: SESSIONID=abc123; Path=/; HttpOnly
 components:
   schemas:
     LoginRequest:
@@ -51,6 +32,6 @@ security:
 ====server====
 mock -p 4010
 ====command====
-curl -i http://localhost:4010/todos --cookie "SESSIONID=xyz987"
+curl -i http://localhost:4010/todos
 ====expect====
 HTTP/1.1 403 Forbidden

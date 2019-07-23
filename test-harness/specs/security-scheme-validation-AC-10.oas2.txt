@@ -1,5 +1,5 @@
 ====test====
-Resource is returned when a bearer token is provided as a header.
+Adding a required header of "Authorization: Bearer <<BEARER_TOKEN>>" results in granted access.
 ====spec====
 swagger: '2.0'
 paths:
