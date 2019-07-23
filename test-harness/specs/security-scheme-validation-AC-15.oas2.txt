@@ -1,0 +1,35 @@
+====test====
+Adding a header of "X-API-Key: <<API_KEY>>" for a request to an endpoint,
+which security depends on manually selected ApiKeyAuth from multiple security definitions, results in granted access.
+====spec====
+swagger: '2.0'
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          examples:
+            application/json: test
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+security:
+  - BasicAuth: []
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "X-API-Key: abc123"
+====expect====
+HTTP/1.1 200 OK
+
+"test"
