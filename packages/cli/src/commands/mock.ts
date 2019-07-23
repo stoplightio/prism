@@ -10,6 +10,10 @@ const mockCommand: CommandModule = {
         description: 'Path to a spec file. Can be both a file or a fetchable resource on the web.',
         type: 'string',
       })
+      .fail(() => {
+        yargs.showHelp();
+        process.exit(1);
+      })
       .options({
         port: {
           alias: 'p',
