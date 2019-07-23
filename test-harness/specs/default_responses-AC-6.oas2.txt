@@ -9,7 +9,7 @@ paths:
   /todos:
     get:
       responses:
-        200:
+        202:
           description: ok
           schema:
             type: string
@@ -23,7 +23,7 @@ mock -p 4010
 ====command====
 curl -i http://localhost:4010/todos
 ====expect====
-HTTP/1.1 200 OK
+HTTP/1.1 202 Accepted
 content-type: text/plain
 Connection: keep-alive
 
