@@ -25,3 +25,4 @@ mock -p 4010
 curl -i http://localhost:4010/todos
 ====expect====
 HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Cookie realm="*" cookie-name=SESSIONID
