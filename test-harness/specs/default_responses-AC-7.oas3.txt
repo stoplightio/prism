@@ -1,0 +1,24 @@
+====test====
+When I send a request to an operation
+And in the path I specify ?__code=404
+And the operation has no 404 status code response defined
+And the operation has 400 status code defined, but no schema or example defined in the response
+Then I get back a 404 response with an error code
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        400:
+          description: test
+====server====
+mock -p 4010
+====command====
+curl -i -X GET http://localhost:4010/todos?__code=404
+====expect====
+HTTP/1.1 404 Not Found
+content-type: application/problem+json
+Connection: keep-alive
+
+{"type":"https://stoplight.io/prism/errors#NOT_FOUND","title":"The server cannot find the requested content","status":404,"detail":"Requested status code 404 is not defined in the document."}

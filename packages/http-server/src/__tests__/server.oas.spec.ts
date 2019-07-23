@@ -241,7 +241,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       url: '/pets/findByStatus?status=available&__code=499',
     });
 
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(404);
     checkErrorPayloadShape(response.payload);
   });
 

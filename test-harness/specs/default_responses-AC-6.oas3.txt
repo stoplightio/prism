@@ -9,7 +9,7 @@ paths:
   /todos:
     get:
       responses:
-        200:
+        202:
           content:
             application/json:
               example: ok
@@ -22,7 +22,7 @@ mock -p 4010
 ====command====
 curl -i http://localhost:4010/todos
 ====expect====
-HTTP/1.1 200 OK
+HTTP/1.1 202 Accepted
 content-type: application/json; charset=utf-8
 Connection: keep-alive
 
