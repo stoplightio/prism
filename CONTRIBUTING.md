@@ -86,14 +86,14 @@ The application will wait for a debugger to be attached and break on the first l
 
 2. I am receiving weird errors from TypeScript, but I didn't touch any part of the build process!
 
-Prism is using TypeScript's incremental compiler capability that, in some cases, could have some stale data. The best way to fix the issue is to simply remove any compiled file as well the incremental files:
+Prism is using TypeScript's incremental compiler capability that sometimes does not work. The best way to fix the issue is to simply remove any compiled file as well the incremental files:
 
 ```sh
 rm -rf packages/**/dist
 rm -rf packages/**/.tsbuildinfo
 ```
 
-…then try again. If it does not work, you can blame Vincenzo and write him.
+…then try again. If it does not work, you can generally blame [Vincenzo](https://github.com/XVincentX) and write him.
 
 ## Creating an issue
 
