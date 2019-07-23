@@ -7,7 +7,7 @@ const mockCommand: CommandModule = {
   builder: yargs =>
     yargs
       .positional('spec', {
-        description: 'Path to a spec file. Can be both a file or a fetchable resource on the web',
+        description: 'Path to a spec file. Can be both a file or a fetchable resource on the web.',
         type: 'string',
       })
       .options({
@@ -36,7 +36,7 @@ const mockCommand: CommandModule = {
 
         multiprocess: {
           alias: 'm',
-          description: 'Forks the http server from the CLI for faster log processing',
+          description: 'Forks the http server from the CLI for faster log processing.',
           boolean: true,
           default: process.env.NODE_ENV === 'production',
         },
