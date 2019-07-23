@@ -4,9 +4,9 @@ import mockCommand from './commands/mock';
 
 const _v = yargs
   .scriptName('prism')
-  .command(mockCommand)
-  .demandCommand()
   .version(false)
   .help(true)
   .strict()
-  .wrap(yargs.terminalWidth()).argv;
+  .wrap(yargs.terminalWidth())
+  .command(mockCommand)
+  .demandCommand(1, '').argv;
