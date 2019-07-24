@@ -67,7 +67,7 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
 
   private static updateHostHeaders(baseUrl: string, headers: IHttpNameValue = {}) {
     const userAgentHeader = { 'user-agent': `Prism/${prismVersion}` };
-    const headersWithoutUserAgent = headers.hasOwnProperty('host')
+    const headersWithHost = headers.hasOwnProperty('host')
       ? {
           ...headers,
           host: new URL(baseUrl).host,
@@ -75,7 +75,7 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
         }
       : headers;
 
-    return Object.assign({}, headersWithoutUserAgent, userAgentHeader);
+    return Object.assign(userAgentHeader, headersWithHost);
   }
 
   private resolveServerUrl(server: IServer) {

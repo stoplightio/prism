@@ -198,13 +198,13 @@ describe('Http Client .process', () => {
           );
         });
 
-        it('specifying user-agent in the options parameter has no impact on user-agent header to be sent', async () => {
+        it('specifying user-agent in the options parameter overrides the default user-agent header to be sent', async () => {
           const oasBaseUrl = 'http://example.com/api';
 
           nock(oasBaseUrl)
             .get('/pet')
             .reply(function() {
-              expect(this.req.headers['user-agent']).toBe(`Prism/${prismVersion}`);
+              expect(this.req.headers['user-agent']).toBe('Other_Agent/1.0.0');
 
               return [200, 'reply', {}];
             });
