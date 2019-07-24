@@ -19,6 +19,11 @@ const expectPayload = (response: fastify.HTTPInjectResponse) => {
   return expect(parsed);
 };
 
+test.only('test matchers', () => {
+  // @ts-ignore
+  expect(123).yourMatcher(123, 123);
+});
+
 describe('body params validation', () => {
   let server: IPrismHttpServer<{}>;
 

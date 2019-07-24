@@ -12,6 +12,9 @@ const projectDefault = {
 };
 
 module.exports = {
+  setupFilesAfterEnv: [
+    '<rootDir>/test-utils/index.js'
+  ],
   projects: [
     {
       ...projectDefault,
