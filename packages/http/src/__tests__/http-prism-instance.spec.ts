@@ -1,6 +1,7 @@
 import { createLogger, IPrism } from '@stoplight/prism-core';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpOperation } from '@stoplight/types';
+import { Scope as NockScope } from 'nock';
 import * as nock from 'nock';
 import { basename, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
@@ -18,8 +19,32 @@ const serverValidationOas3Path = fixturePath('server-validation.oas3.json');
 
 const { version: prismVersion } = require('../../package.json');
 
+type Prism = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;
+type NockResWithInterceptors = NockScope & { interceptors: Array<{ req: { headers: string[] } }> };
+
+async function checkUserAgent(config: IHttpConfig, prism: Prism, headers = {}) {
+  const oasBaseUrl = 'http://example.com/api';
+
+  const nockResult = nock(oasBaseUrl)
+    .get('/pet')
+    .reply(200);
+
+  await prism.process(
+    {
+      method: 'get',
+      url: {
+        path: '/pet',
+      },
+      headers,
+    },
+    config,
+  );
+
+  return (nockResult as NockResWithInterceptors).interceptors['0'].req.headers['user-agent'];
+}
+
 describe('Http Client .process', () => {
-  let prism: IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;
+  let prism: Prism;
 
   describe.each`
     specName                              | specPath
@@ -176,51 +201,22 @@ describe('Http Client .process', () => {
       });
 
       describe('Prism user-agent header', () => {
-        it('adds user-agent header in the form of Prism/<<PRISM_VERSION>>', async () => {
-          const oasBaseUrl = 'http://example.com/api';
+        describe('when the defaults are used', () => {
+          it('should use Prism/<<version>> for the header', async () => {
+            const userAgent = await checkUserAgent(config, prism);
 
-          nock(oasBaseUrl)
-            .get('/pet')
-            .reply(function() {
-              expect(this.req.headers['user-agent']).toBe(`Prism/${prismVersion}`);
-
-              return [200, 'reply', {}];
-            });
-
-          await prism.process(
-            {
-              method: 'get',
-              url: {
-                path: '/pet',
-              },
-            },
-            config,
-          );
+            expect(userAgent).toBe(`Prism/${prismVersion}`);
+          });
         });
 
-        it('specifying user-agent in the options parameter overrides the default user-agent header to be sent', async () => {
-          const oasBaseUrl = 'http://example.com/api';
-
-          nock(oasBaseUrl)
-            .get('/pet')
-            .reply(function() {
-              expect(this.req.headers['user-agent']).toBe('Other_Agent/1.0.0');
-
-              return [200, 'reply', {}];
+        describe('when user-agent is being overwritten', () => {
+          it('should have user specified string as the header', async () => {
+            const userAgent = await checkUserAgent(config, prism, {
+              'user-agent': 'Other_Agent/1.0.0',
             });
 
-          await prism.process(
-            {
-              method: 'get',
-              url: {
-                path: '/pet',
-              },
-              headers: {
-                'user-agent': 'Other_Agent/1.0.0',
-              },
-            },
-            config,
-          );
+            expect(userAgent).toBe('Other_Agent/1.0.0');
+          });
         });
       });
     });
