@@ -5,11 +5,9 @@ import { toError } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Task from 'fp-ts/lib/Task';
 import { fold, TaskEither, tryCatch } from 'fp-ts/lib/TaskEither';
-import { URL } from 'url';
 import { NO_BASE_URL_ERROR } from '../router/errors';
-import { IHttpConfig, IHttpNameValue, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
-
-const { version: prismVersion } = require('../../package.json');
+import { IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
+import updateHostHeaders from './utils/updateHostHeaders';
 
 export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, IHttpConfig, IHttpResponse> {
   public async forward(opts: {
@@ -50,7 +48,7 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
         params: inputData.url.query,
         responseType: 'text',
         data: inputData.body,
-        headers: HttpForwarder.updateHostHeaders(baseUrl, inputData.headers),
+        headers: updateHostHeaders(baseUrl, inputData.headers),
         validateStatus: () => true,
         timeout: Math.max(opts.timeout || 0, 0),
         ...(opts.cancelToken !== undefined && { cancelToken: opts.cancelToken }),
@@ -63,19 +61,6 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
         responseType: (response.request && response.request.responseType) || '',
       };
     }, toError);
-  }
-
-  private static updateHostHeaders(baseUrl: string, headers: IHttpNameValue = {}) {
-    const userAgentHeader = { 'user-agent': `Prism/${prismVersion}` };
-    const headersWithHost = headers.hasOwnProperty('host')
-      ? {
-          ...headers,
-          host: new URL(baseUrl).host,
-          forwarded: `host=${headers.host}`,
-        }
-      : headers;
-
-    return Object.assign(userAgentHeader, headersWithHost);
   }
 
   private resolveServerUrl(server: IServer) {

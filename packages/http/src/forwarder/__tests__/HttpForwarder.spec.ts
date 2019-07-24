@@ -5,7 +5,7 @@ import { httpInputs, httpOperations, httpRequests } from '../../__tests__/fixtur
 import { NO_BASE_URL_ERROR } from '../../router/errors';
 import { HttpForwarder } from '../HttpForwarder';
 
-const { version: prismVersion } = require('../../../package.json');
+import { version as prismVersion } from '../../../package.json';
 
 jest.mock('axios', () => ({
   default: jest.fn().mockResolvedValue({ status: 200 }),
