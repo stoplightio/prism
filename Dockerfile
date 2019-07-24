@@ -5,7 +5,7 @@ WORKDIR /usr/src/prism
 COPY package.json yarn.lock /usr/src/prism/
 COPY packages/ /usr/src/prism/packages/
 
-RUN yarn && yarn build && yarn workspace @stoplight/prism-cli oclif-dev manifest
+RUN yarn && yarn build
 
 ###############################################################
 FROM node:12 as dependencies
@@ -41,9 +41,6 @@ COPY --from=compiler /usr/src/prism/packages/http/dist /usr/src/prism/packages/h
 COPY --from=compiler /usr/src/prism/packages/http-server/dist /usr/src/prism/packages/http-server/dist
 COPY --from=compiler /usr/src/prism/packages/cli/dist /usr/src/prism/packages/cli/dist
 
-COPY --from=compiler /usr/src/prism/packages/cli/oclif.manifest.json /usr/src/prism/packages/cli/oclif.manifest.json
-COPY --from=compiler /usr/src/prism/packages/cli/bin /usr/src/prism/packages/cli/bin
-
 COPY --from=dependencies /usr/src/prism/node_modules/ /usr/src/prism/node_modules/
 COPY --from=dependencies /usr/src/prism/packages/core/node_modules/ /usr/src/prism/packages/core/node_modules/
 COPY --from=dependencies /usr/src/prism/packages/http/node_modules/ /usr/src/prism/packages/http/node_modules/
@@ -53,4 +50,4 @@ WORKDIR /usr/src/prism/packages/cli/
 
 EXPOSE 4010
 
-ENTRYPOINT [ "node", "bin/run" ]
+ENTRYPOINT [ "node", "dist/index.js" ]

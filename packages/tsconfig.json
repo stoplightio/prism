@@ -8,6 +8,8 @@
     "suppressImplicitAnyIndexErrors": true,
     "module": "commonjs",
     "strict": true,
-    "target": "es2018"
+    "target": "es2018",
+    "noEmitHelpers": true,
+    "importHelpers": true
   }
 }
