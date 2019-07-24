@@ -9,12 +9,12 @@ const projectDefault = {
   transform: {
     '^.+\\.(ts)$': 'ts-jest',
   },
-};
-
-module.exports = {
   setupFilesAfterEnv: [
     '<rootDir>/test-utils/index.js'
   ],
+};
+
+module.exports = {
   projects: [
     {
       ...projectDefault,
