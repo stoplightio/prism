@@ -16,7 +16,7 @@ const staticExamplesOas2Path = fixturePath('static-examples.oas2.json');
 const serverValidationOas2Path = fixturePath('server-validation.oas2.json');
 const serverValidationOas3Path = fixturePath('server-validation.oas3.json');
 
-import { version as prismVersion } from '../../package.json';
+const { version: prismVersion } = require('../../package.json');
 
 describe('Http Client .process', () => {
   let prism: IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;

@@ -6,7 +6,6 @@
     "noEmitOnError": true,
     "removeComments": true,
     "suppressImplicitAnyIndexErrors": true,
-    "resolveJsonModule": true,
     "module": "commonjs",
     "strict": true,
     "target": "es2018",
