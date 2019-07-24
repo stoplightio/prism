@@ -12,10 +12,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism now respects the `q` value in the `Accept` header to specify the content type preference
 - Prism is now returning `text/plain` when the document does *not* specify any Content Type for the examples
 - Prism is now returning the example according to the `Accept` header for OAS2 documents
-- Prism is now `404` when requesting a status code that does not exist in the selected response.
+- Prism is now returning `404` instead of `500` in case the requested named example does not exist in the document
 
 ## Changed
 
+- Prism HTTP Client is now adding 'user-agent' header with Prism/<<PRISM_VERSION>> as the value when making HTTP requests
 - Prism is now using `yargs` for its command line interface, replacing oclif.
 
 # 3.0.1 (2019-07-16)
