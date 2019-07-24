@@ -237,7 +237,6 @@ const config = {
 ```
 
 With the above configuration the http client will proxy your requests to a server and will validate the response with the OpenAPI you loaded. However, it will not validate the input (e.g. will not check whether the provided query param is valid).
-Please also note, that the proxied requests will have 'user-agent' header set to Prism/<<PRISM_VERSION>>.
 
 **Validate only request's body and response's headers**
 
