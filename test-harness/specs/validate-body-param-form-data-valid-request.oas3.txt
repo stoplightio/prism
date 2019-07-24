@@ -1,0 +1,37 @@
+====test====
+Given form data expected in request body then return OK when that body is valid.
+====spec====
+openapi: '3.0.1'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                status:
+                  type: string
+                  enum:
+                    - open
+                    - close
+              required:
+                - id
+                - status
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "id=123&status=open"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+Connection: keep-alive
+
+"string"
