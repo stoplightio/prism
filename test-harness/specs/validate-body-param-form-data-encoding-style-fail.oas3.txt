@@ -1,0 +1,34 @@
+====test====
+Given form data expected in request body then return 422 when that body is invalid.
+====spec====
+openapi: '3.0.1'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                arr:
+                  type: array
+            encoding:
+              arr:
+                contentType: application/json
+                style: form
+                explode: true
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "arr=one,two,three"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
+Connection: keep-alive
+
+{"tobe": "done"}
