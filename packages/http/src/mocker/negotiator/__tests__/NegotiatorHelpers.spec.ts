@@ -6,7 +6,6 @@ import {
   INodeExternalExample,
 } from '@stoplight/types';
 import { Chance } from 'chance';
-import { reader } from 'fp-ts/lib/Reader';
 
 import { createLogger } from '@stoplight/prism-core';
 
@@ -722,9 +721,7 @@ describe('NegotiatorHelpers', () => {
 
         const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
         assertLeft(negotiationResult, e => {
-          expect(e.message).toBe(
-            `Response for contentType: ${httpContent.mediaType} and exampleKey: ${exampleKey} does not exist.`,
-          );
+          expect(e.message).toBe('The server cannot find the requested content');
         });
       });
     });

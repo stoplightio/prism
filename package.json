@@ -44,7 +44,7 @@
     "http-string-parser": "^0.0.6",
     "husky": "^3.0.1",
     "jest": "^24.8.0",
-    "lerna": "^3.16.1",
+    "lerna": "^3.16.4",
     "lint-staged": "^9.2.0",
     "nock": "^10.0.6",
     "node-fetch": "^2.6.0",

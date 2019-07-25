@@ -40,7 +40,12 @@ const helpers = {
           bodyExample: example,
         });
       } else {
-        return left(new Error(`Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`));
+        return left(
+          ProblemJsonError.fromTemplate(
+            NOT_FOUND,
+            `Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`,
+          ),
+        );
       }
     } else if (dynamic === true) {
       if (httpContent.schema) {
