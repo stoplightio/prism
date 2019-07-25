@@ -1321,7 +1321,7 @@
     unified "~7.1"
     unist-util-select "~2.0"
 
-"@stoplight/path@^1.0.1":
+"@stoplight/path@^1.0.1", "@stoplight/path@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.1.0.tgz#274f8e6b4353a98c527d9034496515426ab8e43e"
   integrity sha512-z1/nVgc4A0kK1lSorzJaQ+/HpcKrsp2cdI6tsMH99JnaLIASckmgJr+j0zW99gahRoGmxtWQvysFMBQiHNPNrw==
@@ -1964,7 +1964,7 @@ axios@^0.18.0:
     follow-redirects "1.5.10"
     is-buffer "^2.0.2"
 
-axios@~0.19:
+axios@^0.19.0, axios@~0.19:
   version "0.19.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.0.tgz#8e09bff3d9122e133f7b8101c8fbdd00ed3d2ab8"
   integrity sha512-1uvKqKQta3KBxIz14F2v06AEHZ/dIoeKfbTRkK1E5oqjDnuEerLmYTgJB5AiQZHJcljpg1TuRzdjDR06qNk0DQ==
