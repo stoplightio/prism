@@ -19,7 +19,7 @@ const serverValidationOas3Path = fixturePath('server-validation.oas3.json');
 
 const { version: prismVersion } = require('../../package.json');
 
-type Prism = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, { path: string }>;
+type Prism = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
 type NockResWithInterceptors = NockScope & { interceptors: Array<{ req: { headers: string[] } }> };
 
 async function checkUserAgent(config: IHttpConfig, prism: Prism, headers = {}) {
@@ -226,13 +226,6 @@ describe('Http Client .process', () => {
     beforeAll(async () => {
       prism = createInstance({ mock: { dynamic: false } }, { logger });
       await prism.load({ path: noRefsPetstoreMinimalOas2Path });
-    });
-
-    it('keeps the instances separate', async () => {
-      const secondPrism = createInstance({ mock: { dynamic: false } }, { logger });
-      await secondPrism.load({ path: noRefsPetstoreMinimalOas2Path });
-
-      expect(prism.resources).toStrictEqual(secondPrism.resources);
     });
 
     describe('path is invalid', () => {
