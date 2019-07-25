@@ -21,19 +21,21 @@ export default async function getHttpOperations(spec: string) {
 
   const service = transformServiceFn({ document: resolvedContent });
   const paths = keys(get(resolvedContent, 'paths'));
-
+  const methods = ['get', 'post', 'put', 'delete', 'options', 'head', 'patch', 'trace'];
   return flatten(
     map(paths, path =>
-      keys(get(resolvedContent, ['paths', path])).map(method =>
-        Object.assign(
-          transformOperationFn({
-            document: resolvedContent,
-            path,
-            method,
-          }),
-          service,
+      keys(get(resolvedContent, ['paths', path]))
+        .filter(k => methods.includes(k))
+        .map(method =>
+          Object.assign(
+            transformOperationFn({
+              document: resolvedContent,
+              path,
+              method,
+            }),
+            service,
+          ),
         ),
-      ),
     ),
   );
 }
