@@ -1,6 +1,7 @@
 import { ChildProcess, spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
 import { validate } from 'gavel';
+import * as globFs from 'glob-fs';
 import { parseResponse } from 'http-string-parser';
 import * as os from 'os';
 import * as path from 'path';
@@ -8,15 +9,16 @@ import * as split2 from 'split2';
 import * as tmp from 'tmp';
 import { parseSpecFile } from './helpers';
 
+const glob = globFs({ gitignore: true });
 jest.setTimeout(60000);
 
 describe('harness', () => {
   const files = process.env.TESTS
     ? String(process.env.TESTS).split(',')
-    : fs.readdirSync(path.join(__dirname, './specs/'));
+    : glob.readdirSync('**/*.txt', { cwd: path.join(__dirname, './specs') });
 
-  files.forEach(value => {
-    const data = fs.readFileSync(path.join(__dirname, './specs/', value), { encoding: 'utf8' });
+  files.forEach(file => {
+    const data = fs.readFileSync(path.join(__dirname, './specs/', file), { encoding: 'utf8' });
     const parsed = parseSpecFile(data);
 
     let prismMockProcessHandle: ChildProcess;
@@ -38,7 +40,7 @@ describe('harness', () => {
 
     afterAll(() => tmpFileHandle.removeCallback(undefined, undefined, undefined, undefined));
 
-    test(`${value}${os.EOL}${parsed.test}`, done => {
+    test(`${file}${os.EOL}${parsed.test}`, done => {
       const [command, ...args] = parsed.command.split(' ').map(t => t.trim());
       const serverArgs = [...parsed.server.split(' ').map(t => t.trim()), tmpFileHandle.name];
 

@@ -19,7 +19,6 @@ paths:
                   type: array
             encoding:
               arr:
-                contentType: application/json
                 style: form
                 explode: true
 ====server====
