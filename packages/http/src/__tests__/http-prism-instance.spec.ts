@@ -1,3 +1,4 @@
+import getHttpOperations from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { createLogger, IPrism } from '@stoplight/prism-core';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpOperation } from '@stoplight/types';
@@ -53,7 +54,7 @@ describe('Http Client .process', () => {
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
       prism = createInstance({ mock: { dynamic: false } }, { logger });
-      await prism.load({ path: specPath });
+      prism.resources = await getHttpOperations(specPath);
     });
 
     describe('baseUrl not set', () => {
@@ -225,7 +226,7 @@ describe('Http Client .process', () => {
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
       prism = createInstance({ mock: { dynamic: false } }, { logger });
-      await prism.load({ path: noRefsPetstoreMinimalOas2Path });
+      prism.resources = await getHttpOperations(noRefsPetstoreMinimalOas2Path);
     });
 
     describe('path is invalid', () => {
@@ -332,14 +333,14 @@ describe('Http Client .process', () => {
 
   it('loads spec provided in yaml', async () => {
     prism = createInstance(undefined, { logger });
-    await prism.load({ path: petStoreOas2Path });
+    prism.resources = await getHttpOperations(petStoreOas2Path);
 
     expect(prism.resources).toHaveLength(3);
   });
 
   it('returns stringified static example when one defined in spec', async () => {
     prism = createInstance(undefined, { logger });
-    await prism.load({ path: staticExamplesOas2Path });
+    prism.resources = await getHttpOperations(staticExamplesOas2Path);
 
     const response = await prism.process({
       method: 'get',
