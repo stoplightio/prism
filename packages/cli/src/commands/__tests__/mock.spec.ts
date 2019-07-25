@@ -5,12 +5,14 @@ import mockCommand from '../mock';
 const parser = yargs.command(mockCommand);
 
 jest.mock('../../util/createServer');
+jest.mock('../../util/getHttpOperations');
 
 describe('mock command', () => {
   beforeEach(() => {
     (createSingleProcessPrism as jest.Mock).mockClear();
     (createMultiProcessPrism as jest.Mock).mockClear();
   });
+
   test('starts mock server', async () => {
     await new Promise(resolve => {
       parser.parse('mock /path/to', () => resolve());
