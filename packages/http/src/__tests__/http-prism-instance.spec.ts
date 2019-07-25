@@ -331,11 +331,8 @@ describe('Http Client .process', () => {
     });
   });
 
-  it('loads spec provided in yaml', async () => {
-    prism = createInstance(undefined, { logger });
-    prism.resources = await getHttpOperations(petStoreOas2Path);
-
-    expect(prism.resources).toHaveLength(3);
+  it('loads spec provided in yaml', () => {
+    return expect(getHttpOperations(petStoreOas2Path)).resolves.toHaveLength(3);
   });
 
   it('returns stringified static example when one defined in spec', async () => {
