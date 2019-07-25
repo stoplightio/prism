@@ -1,3 +1,4 @@
+import getHttpOperations from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { createLogger } from '@stoplight/prism-core';
 import { relative, resolve } from 'path';
 import { createServer } from '../';
@@ -15,15 +16,15 @@ function checkErrorPayloadShape(payload: string) {
 }
 
 async function instantiatePrism(specPath: string) {
-  const server = createServer({}, { components: { logger }, config: { mock: { dynamic: false } } });
-  await server.prism.load({
-    path: relative(process.cwd(), specPath),
+  const server = createServer(await getHttpOperations(specPath), {
+    components: { logger },
+    config: { mock: { dynamic: false } },
   });
   return server;
 }
 
 describe('GET /pet?__server', () => {
-  let server: IPrismHttpServer<{}>;
+  let server: IPrismHttpServer;
 
   beforeAll(async () => {
     server = await instantiatePrism(resolve(__dirname, 'fixtures', 'templated-server-example.oas3.json'));
@@ -85,7 +86,7 @@ describe('POST /pet with invalid body', () => {
 });
 
 describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', file => {
-  let server: IPrismHttpServer<{}>;
+  let server: IPrismHttpServer;
 
   beforeAll(async () => {
     server = await instantiatePrism(resolve(__dirname, '..', '..', '..', '..', 'examples', file));
