@@ -1245,7 +1245,7 @@
     urijs "1.x.x"
     vscode-uri "2.x.x"
 
-"@stoplight/json-ref-resolver@^2.0.2":
+"@stoplight/json-ref-resolver@^2.0.2", "@stoplight/json-ref-resolver@^2.0.3":
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@stoplight/json-ref-resolver/-/json-ref-resolver-2.0.3.tgz#ee1c3309c1cbc339061b3d16925a6bdbe814910e"
   integrity sha512-nupwxhAKdKVE1BgOJX1HMhJuRyMCk0yHJ1mR4nKE/2CesP0usHdwCBwlPFGlnmegfA40GSLRoNi8DEAq34butg==
@@ -1367,7 +1367,7 @@
   dependencies:
     "@types/json-schema" "^7.0.3"
 
-"@stoplight/yaml@^2.6.0":
+"@stoplight/yaml@^2.6.0", "@stoplight/yaml@^2.8.0":
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-2.8.0.tgz#1a33854f00f4397c67bb08450dd9784b5e9cf890"
   integrity sha512-rokktl+qa3O+SwykhCBe6G+vFEUl55SMFxIbdIcnbjWuFroSVABERF+JLxDBlxiWKl9jdPmdgR4Uxlmo345ekA==
