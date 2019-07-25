@@ -113,19 +113,24 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
 
               return TaskEither.left(new Error('Nor forwarder nor mocker has been selected. Something is wrong'));
             }),
-            TaskEither.map(({ output, resource }) => {
-              let outputValidations: IPrismDiagnostic[] = [];
-              if (resource && components.validator && components.validator.validateOutput) {
-                outputValidations = components.validator.validateOutput(
-                  {
-                    resource,
-                    output,
-                    config: configObj,
-                  },
-                  defaultComponents.validator,
-                );
-              }
+            TaskEither.chain(({ output, resource }) => {
+              const outputValidations =
+                resource && components.validator && components.validator.validateOutput
+                  ? components.validator.validateOutput(
+                      {
+                        resource,
+                        output,
+                        config: configObj,
+                      },
+                      defaultComponents.validator,
+                    )
+                  : [];
 
+              return outputValidations.length
+                ? TaskEither.left(outputValidations[0] as any)
+                : TaskEither.right({ output, resource, outputValidations });
+            }),
+            TaskEither.map(({ output, resource, outputValidations }) => {
               return {
                 input,
                 output,

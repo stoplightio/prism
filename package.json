@@ -40,6 +40,7 @@
     "@types/split2": "^2.1.6",
     "@types/type-is": "^1.6.2",
     "chance": "^1.0.18",
+    "fast-xml-parser": "^3.12.17",
     "gavel": "^7.0.2",
     "http-string-parser": "^0.0.6",
     "husky": "^3.0.1",
