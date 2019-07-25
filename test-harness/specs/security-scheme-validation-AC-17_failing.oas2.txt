@@ -1,5 +1,5 @@
 ====test====
-Supplying a header for Basic Authentication (when Bearer was needed) results in denied access.
+Using wrong type of authorization schema results in denied access.
 ====spec====
 openapi: 3.0.2
 paths:
@@ -28,7 +28,6 @@ security:
 ====server====
 mock -p 4010
 ====command====
-curl -i http://localhost:4010/todos -H "Authorization: Basic dGVzdDp0ZXN0"
+curl -i http://localhost:4010/todos -H "Authorization: Digest abc123"
 ====expect====
 HTTP/1.1 401 Unauthorized
-
