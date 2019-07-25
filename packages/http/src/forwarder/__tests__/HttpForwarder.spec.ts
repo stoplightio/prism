@@ -5,6 +5,8 @@ import { httpInputs, httpOperations, httpRequests } from '../../__tests__/fixtur
 import { NO_BASE_URL_ERROR } from '../../router/errors';
 import { HttpForwarder } from '../HttpForwarder';
 
+const { version: prismVersion } = require('../../../package.json');
+
 jest.mock('axios', () => ({
   default: jest.fn().mockResolvedValue({ status: 200 }),
 }));
@@ -32,6 +34,9 @@ describe('HttpForwarder', () => {
           responseType: 'text',
           validateStatus: expect.any(Function),
           timeout: 0,
+          headers: {
+            'user-agent': `Prism/${prismVersion}`,
+          },
         });
       });
     });
@@ -67,7 +72,10 @@ describe('HttpForwarder', () => {
             baseURL: 'http://api.example.com',
             responseType: 'text',
             validateStatus: expect.any(Function),
-            headers: { 'x-test': 'b' },
+            headers: {
+              'x-test': 'b',
+              'user-agent': `Prism/${prismVersion}`,
+            },
             timeout: 0,
           });
         });
@@ -95,6 +103,7 @@ describe('HttpForwarder', () => {
             headers: {
               host: 'api.example.com',
               forwarded: 'host=localhost',
+              'user-agent': `Prism/${prismVersion}`,
             },
             timeout: 0,
           });
@@ -131,6 +140,9 @@ describe('HttpForwarder', () => {
             responseType: 'text',
             validateStatus: expect.any(Function),
             timeout: 0,
+            headers: {
+              'user-agent': `Prism/${prismVersion}`,
+            },
           });
         });
       });
