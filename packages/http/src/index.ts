@@ -1,4 +1,4 @@
-import { factory, FilesystemLoader, PartialPrismConfig } from '@stoplight/prism-core';
+import { factory, PartialPrismConfig } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import { forwarder } from './forwarder';
 import { HttpMocker } from './mocker';
@@ -20,14 +20,13 @@ import {
 } from './types';
 import { validator } from './validator';
 
-const createInstance = <LoaderInput>(
+const createInstance = (
   config?: PartialPrismConfig<IHttpConfig, IHttpRequest>,
-  overrides?: PickRequired<TPrismHttpComponents<LoaderInput>, 'logger'>,
+  overrides?: PickRequired<TPrismHttpComponents, 'logger'>,
 ) => {
-  return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput>(
+  return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
     { mock: { dynamic: false } },
     {
-      loader: new FilesystemLoader(),
       router,
       forwarder,
       validator,

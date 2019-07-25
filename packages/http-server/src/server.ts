@@ -1,5 +1,6 @@
 import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
+import { IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 // @ts-ignore
 import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
@@ -9,10 +10,7 @@ import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
-export const createServer = <LoaderInput>(
-  loaderInput: LoaderInput,
-  opts: IPrismHttpServerOpts<LoaderInput>,
-): IPrismHttpServer<LoaderInput> => {
+export const createServer = (loaderInput: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
   const server = fastify({
@@ -54,11 +52,11 @@ export const createServer = <LoaderInput>(
 
   const mergedConfig = configMergerFactory({ mock: { dynamic: false } }, config, getHttpConfigFromRequest);
 
-  const prism = createInstance<LoaderInput>(mergedConfig, components);
+  const prism = createInstance(mergedConfig, components);
 
-  server.all('*', {}, replyHandler<LoaderInput>(prism));
+  server.all('*', {}, replyHandler(prism));
 
-  const prismServer: IPrismHttpServer<LoaderInput> = {
+  const prismServer: IPrismHttpServer = {
     get prism() {
       return prism;
     },
@@ -67,13 +65,8 @@ export const createServer = <LoaderInput>(
       return server;
     },
 
-    listen: async (port: number, ...args: any[]) => {
-      try {
-        await prism.load(loaderInput);
-      } catch (e) {
-        console.error('Error loading data into prism.', e);
-        throw e;
-      }
+    listen: (port: number, ...args: any[]) => {
+      prism.resources = loaderInput;
 
       return server.listen(port, ...args);
     },
@@ -82,9 +75,7 @@ export const createServer = <LoaderInput>(
   return prismServer;
 };
 
-const replyHandler = <LoaderInput>(
-  prism: TPrismHttpInstance<LoaderInput>,
-): fastify.RequestHandler<IncomingMessage, ServerResponse> => {
+const replyHandler = (prism: TPrismHttpInstance): fastify.RequestHandler<IncomingMessage, ServerResponse> => {
   return async (request, reply) => {
     const {
       req: { method, url },

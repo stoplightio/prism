@@ -5,19 +5,19 @@ import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 
-export function factory<Resource, Input, Output, Config, LoadOpts>(
+export function factory<Resource, Input, Output, Config>(
   defaultConfig: PrismConfig<Config, Input>,
-  defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
+  defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config>>,
 ): (
   customConfig?: PartialPrismConfig<Config, Input>,
-  customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
-) => IPrism<Resource, Input, Output, Config, LoadOpts> {
+  customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'>,
+) => IPrism<Resource, Input, Output, Config> {
   const prism = (
     customConfig?: PartialPrismConfig<Config, Input>,
-    customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
+    customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'>,
   ) => {
     const components: PickRequired<
-      Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
+      Partial<IPrismComponents<Resource, Input, Output, Config>>,
       'logger'
     > = Object.assign({}, defaultComponents, customComponents);
 
@@ -25,15 +25,11 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
     let resources: Resource[] = [];
 
     return {
-      get resources(): Resource[] {
+      get resources() {
         return resources;
       },
-
-      load: async (opts?: LoadOpts): Promise<void> => {
-        const { loader } = components;
-        if (opts && loader) {
-          resources = await loader.load(opts, defaultComponents.loader);
-        }
+      set resources(val) {
+        resources = val;
       },
 
       process: async (input: Input, c?: Config) => {
