@@ -53,6 +53,7 @@ export const createServer = (loaderInput: IHttpOperation[], opts: IPrismHttpServ
   const mergedConfig = configMergerFactory({ mock: { dynamic: false } }, config, getHttpConfigFromRequest);
 
   const prism = createInstance(mergedConfig, components);
+  prism.resources = loaderInput;
 
   server.all('*', {}, replyHandler(prism));
 
@@ -66,8 +67,6 @@ export const createServer = (loaderInput: IHttpOperation[], opts: IPrismHttpServ
     },
 
     listen: (port: number, ...args: any[]) => {
-      prism.resources = loaderInput;
-
       return server.listen(port, ...args);
     },
   };

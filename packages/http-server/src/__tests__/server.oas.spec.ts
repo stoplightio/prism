@@ -1,6 +1,6 @@
 import getHttpOperations from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { createLogger } from '@stoplight/prism-core';
-import { relative, resolve } from 'path';
+import { resolve } from 'path';
 import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
 
@@ -16,7 +16,8 @@ function checkErrorPayloadShape(payload: string) {
 }
 
 async function instantiatePrism(specPath: string) {
-  const server = createServer(await getHttpOperations(specPath), {
+  const operations = await getHttpOperations(specPath);
+  const server = createServer(operations, {
     components: { logger },
     config: { mock: { dynamic: false } },
   });
