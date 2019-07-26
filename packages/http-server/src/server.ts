@@ -65,9 +65,7 @@ export const createServer = (loaderInput: IHttpOperation[], opts: IPrismHttpServ
       return server;
     },
 
-    listen: (port: number, ...args: any[]) => {
-      return server.listen(port, ...args);
-    },
+    listen: (port: number, ...args: any[]) => server.listen(port, ...args),
   };
 
   function replyHandler(prismInstance: TPrismHttpInstance): fastify.RequestHandler<IncomingMessage, ServerResponse> {
