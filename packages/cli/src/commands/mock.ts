@@ -1,3 +1,4 @@
+import * as signale from 'signale';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreatePrismOptions, createSingleProcessPrism } from '../util/createServer';
 import getHttpOperations from '../util/getHttpOperations';
@@ -14,8 +15,10 @@ const mockCommand: CommandModule = {
       .middleware(async argv => {
         argv.operations = await getHttpOperations(argv.spec!);
       })
-      .fail(() => {
-        yargs.showHelp();
+      .fail((msg, err) => {
+        if (msg) yargs.showHelp();
+        else signale.fatal(err.message);
+
         process.exit(1);
       })
       .options({
