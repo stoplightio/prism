@@ -23,6 +23,9 @@
     "build.binary": "npx pkg --output ./cli-binaries/prism-cli ./packages/cli/",
     "test.harness": "jest -c ./jest.harness.config.js"
   },
+  "resolutions": {
+    "@stoplight/http-spec": "file:.yalc/@stoplight/http-spec"
+  },
   "devDependencies": {
     "@stoplight/types": "^9.1.2",
     "@types/caseless": "^0.12.2",
@@ -41,6 +44,7 @@
     "@types/type-is": "^1.6.2",
     "chance": "^1.0.18",
     "gavel": "^7.0.2",
+    "glob-fs": "^0.1.7",
     "http-string-parser": "^0.0.6",
     "husky": "^3.0.1",
     "jest": "^24.8.0",

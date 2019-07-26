@@ -9,6 +9,9 @@ const projectDefault = {
   transform: {
     '^.+\\.(ts)$': 'ts-jest',
   },
+  setupFilesAfterEnv: [
+    '<rootDir>/test-utils/index.js'
+  ],
 };
 
 module.exports = {

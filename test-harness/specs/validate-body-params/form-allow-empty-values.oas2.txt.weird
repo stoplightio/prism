@@ -1,0 +1,35 @@
+====test====
+Set allowEmptyValue to true, send request with only a key
+and expect to get 200
+
+OK WAIT... THIS IS WEIRD. INSTEAD ALLOWING USERS TO SEND EMPTY VALUES
+WE FORCEFULLY NOT LET THEM TO! 
+
+See @stoplight/http-spec
+```
+if ('allowEmptyValue' in param && param.allowEmptyValue) {
+    schema.minLength = 1;
+}
+```
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: string
+          name: id
+          allowEmptyValue: true
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "id"
+====expect====
+HTTP/1.1 200 OK

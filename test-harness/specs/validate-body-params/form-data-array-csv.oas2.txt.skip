@@ -1,0 +1,26 @@
+====test====
+Request form-data body should be an array of strings (comma separated values)
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: array
+          name: arr
+          items:
+            type: string
+          collectionFormat: csv
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "arr=a,b,c"
+====expect====
+HTTP/1.1 200 OK
