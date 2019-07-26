@@ -1,5 +1,5 @@
 ====test====
-Responding with an XML.
+Responding with an XML - valid schema.
 ====spec====
 swagger: '2.0'
 paths:
@@ -35,7 +35,7 @@ definitions:
 ====server====
 mock -p 4010
 ====command====
-curl -i http://127.0.0.1:4010/pets -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+curl -i http://127.0.0.1:4010/pets -H "Accept: application/xml"
 ====expect====
 HTTP/1.1 200 OK
 

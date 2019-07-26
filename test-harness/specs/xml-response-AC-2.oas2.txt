@@ -1,5 +1,7 @@
 ====test====
-Responding with an XML.
+When an operation produces both application/json and application/xml responses
+and a user specifically requests the response to be in application/xml content-type,
+then that content-type response is sent.
 ====spec====
 swagger: '2.0'
 paths:
@@ -44,7 +46,7 @@ definitions:
 ====server====
 mock -p 4010
 ====command====
-curl -i http://127.0.0.1:4010/pets -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+curl -i http://127.0.0.1:4010/pets -H "Accept: application/xml"
 ====expect====
 HTTP/1.1 200 OK
 
