@@ -1,26 +1,21 @@
 openapi: '3.0.1'
 paths:
-  /path:
+  /allowReserved:
     post:
       responses:
         200:
           content:
             text/plain:
-              schema:
-                type: string
+              example: ok
       requestBody:
         content:
           application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
-                status:
+                reserved:
                   type: string
-                  enum:
-                    - open
-                    - close
-              required:
-                - id
-                - status
+            encoding:
+              reserved:
+                contentType: text/plain
+                allowReserved: false

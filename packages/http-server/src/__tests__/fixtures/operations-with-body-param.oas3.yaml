@@ -51,8 +51,10 @@ paths:
                   - delivered
       responses:
         '200':
-          schema:
-            type: string
+          content:
+            text/plain:
+              schema:
+                type: string
   "/json-body-property-required":
     post:
       requestBody:
