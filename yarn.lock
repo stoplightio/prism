@@ -1162,11 +1162,6 @@
     lodash "^4.17"
     safe-stable-stringify "^1.1"
 
-"@stoplight/path@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.1.0.tgz#274f8e6b4353a98c527d9034496515426ab8e43e"
-  integrity sha512-z1/nVgc4A0kK1lSorzJaQ+/HpcKrsp2cdI6tsMH99JnaLIASckmgJr+j0zW99gahRoGmxtWQvysFMBQiHNPNrw==
-
 "@stoplight/types@^9.1.2":
   version "9.1.2"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-9.1.2.tgz#0b2ed2032ae901491543b9dd19309ff3a0acf12a"

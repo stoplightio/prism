@@ -1,5 +1,4 @@
 import { Resolver } from '@stoplight/json-ref-resolver';
-import { extname } from '@stoplight/path';
 import { parse } from '@stoplight/yaml';
 import * as fs from 'fs';
 
@@ -24,14 +23,7 @@ export const httpAndFileResolver = new Resolver({
   },
 
   parseResolveResult: async opts => {
-    const ext = extname(opts.targetAuthority.toString());
-
-    if (ext === '.yml' || ext === '.yaml') {
-      opts.result = parse(opts.result);
-    } else if (ext === '.json') {
-      opts.result = JSON.parse(opts.result);
-    }
-
+    opts.result = parse(opts.result);
     return opts;
   },
 });
