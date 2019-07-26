@@ -44,6 +44,11 @@ export function createSingleProcessPrism(options: CreatePrismOptions) {
 }
 
 async function createPrismServerWithLogger(options: CreatePrismOptions, logInstance: Logger) {
+  if (options.operations.length === 0) {
+    logInstance.fatal('No operations found in the current file.');
+    cluster.worker.kill();
+  }
+
   const server = createHttpServer(options.operations, {
     config: { mock: { dynamic: options.dynamic } },
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
@@ -51,11 +56,7 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
 
   try {
     const address = await server.listen(options.port, options.host);
-    if (server.prism.resources.length === 0) {
-      logInstance.fatal('No operations found in the current file.');
-      cluster.worker.kill();
-    }
-    server.prism.resources.forEach(resource => {
+    options.operations.forEach(resource => {
       logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
     });
     logInstance.start(`Prism is listening on ${address}`);
