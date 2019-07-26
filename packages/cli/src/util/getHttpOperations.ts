@@ -2,7 +2,8 @@ import { transformOas2Operation, transformOas3Operation } from '@stoplight/http-
 import { parse } from '@stoplight/yaml';
 import axios from 'axios';
 import * as fs from 'fs';
-import { defaults, flatten, get, keys, map } from 'lodash';
+import { defaults, flatten, get, keys, map, uniq } from 'lodash';
+import { EOL } from 'os';
 import { httpAndFileResolver } from '../resolvers/http-and-file';
 
 export default async function getHttpOperations(spec: string) {
@@ -10,7 +11,12 @@ export default async function getHttpOperations(spec: string) {
     ? (await axios.get(spec)).data
     : fs.readFileSync(spec, { encoding: 'utf8' });
   const parsedContent = parse(fileContent);
-  const { result: resolvedContent } = await httpAndFileResolver.resolve(parsedContent);
+  const { result: resolvedContent, errors } = await httpAndFileResolver.resolve(parsedContent);
+
+  if (errors.length) {
+    const uniqueErrors = uniq(errors.map(error => error.message)).join(EOL);
+    throw new Error(uniqueErrors);
+  }
 
   const isOas2 = get(parsedContent, 'swagger');
 
