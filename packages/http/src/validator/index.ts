@@ -36,7 +36,7 @@ export class HttpValidator implements IValidator<IHttpOperation, IHttpRequest, I
       if (request && request.body) {
         if (!body && request.body.required) {
           results.push({ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error });
-        } else {
+        } else if (body) {
           this.bodyValidator
             .validate(body, (request && request.body && request.body.contents) || [], mediaType)
             .forEach(validationResult => results.push(validationResult));

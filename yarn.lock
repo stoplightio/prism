@@ -5984,7 +5984,7 @@ micromatch@^4.0.2, micromatch@~4.0.2:
     braces "^3.0.1"
     picomatch "^2.0.5"
 
-"micromatch@github:jonschlinkert/micromatch#2.2.0":
+micromatch@jonschlinkert/micromatch#2.2.0:
   version "2.2.0"
   resolved "https://codeload.github.com/jonschlinkert/micromatch/tar.gz/5017fd78202e04c684cc31d3c2fb1f469ea222ff"
   dependencies:

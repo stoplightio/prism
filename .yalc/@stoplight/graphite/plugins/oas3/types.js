@@ -1,0 +1,38 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var NodeTypes;
+(function (NodeTypes) {
+    NodeTypes["Info"] = "oas3_info";
+    NodeTypes["Description"] = "oas3_description";
+    NodeTypes["Tags"] = "oas3_tags";
+    NodeTypes["Tag"] = "oas3_tag";
+    NodeTypes["SecurityDefinitions"] = "oas3_security_definitions";
+    NodeTypes["SecurityDefinition"] = "oas3_security_definition";
+    NodeTypes["Paths"] = "oas3_paths";
+    NodeTypes["Path"] = "oas3_path";
+    NodeTypes["PathParameter"] = "oas3_path_parameter";
+    NodeTypes["Operation"] = "oas3_operation";
+    NodeTypes["OperationParameter"] = "oas3_operation_parameter";
+    NodeTypes["OperationResponse"] = "oas3_operation_response";
+    NodeTypes["OperationRequestBody"] = "oas3_operation_requestBody";
+    NodeTypes["OperationRequestBodyContent"] = "oas3_operation_requestBody_content";
+    NodeTypes["Shared"] = "oas3_shared";
+    NodeTypes["SharedParameter"] = "oas3_shared_parameter";
+    NodeTypes["SharedResponse"] = "oas3_shared_response";
+    NodeTypes["SharedExamples"] = "oas3_shared_examples";
+    NodeTypes["SharedRequestBody"] = "oas3_shared_requestBody";
+    NodeTypes["SharedRequestBodyContent"] = "oas3_shared_requestBody_content";
+    NodeTypes["Parameters"] = "oas3_parameters";
+    NodeTypes["Parameter"] = "oas3_parameter";
+    NodeTypes["Response"] = "oas3_response";
+    NodeTypes["ResponseExamples"] = "oas3_response_examples";
+    NodeTypes["Models"] = "oas3_models";
+    NodeTypes["Model"] = "oas3_model";
+    NodeTypes["Schema"] = "oas3_schema";
+    NodeTypes["Header"] = "oas3_header";
+    NodeTypes["Example"] = "oas3_example";
+    NodeTypes["Components"] = "oas3_components";
+    NodeTypes["RequestBodies"] = "oas3_requestBodies";
+    NodeTypes["RequestBodyContent"] = "oas3_requestBodyContent";
+})(NodeTypes = exports.NodeTypes || (exports.NodeTypes = {}));
+//# sourceMappingURL=types.js.map

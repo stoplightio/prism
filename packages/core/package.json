@@ -15,8 +15,11 @@
   "engines": {
     "node": ">=8"
   },
+  "resolutions": {
+    "@stoplight/graphite": "file:../../.yalc/@stoplight/graphite"
+  },
   "dependencies": {
-    "@stoplight/graphite": "^8.4.2",
+    "@stoplight/graphite": "file:../../.yalc/@stoplight/graphite",
     "axios": "^0.18.0",
     "lodash": "^4.17.14",
     "mobx": "^5.11.0",

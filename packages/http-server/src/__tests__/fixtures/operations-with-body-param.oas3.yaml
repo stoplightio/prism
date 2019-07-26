@@ -12,7 +12,25 @@ paths:
                   type: integer
                   format: int64
       responses:
-        '200': {}
+        '200':
+          schema:
+            type: string
+  "/json-body-optional":
+    post:
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+      responses:
+        '200':
+          schema:
+            type: string
   "/json-body-required":
     post:
       requestBody:
@@ -32,7 +50,9 @@ paths:
                   - approved
                   - delivered
       responses:
-        '200': {}
+        '200':
+          schema:
+            type: string
   "/json-body-property-required":
     post:
       requestBody:

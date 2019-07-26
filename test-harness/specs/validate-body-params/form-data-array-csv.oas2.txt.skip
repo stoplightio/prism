@@ -17,6 +17,7 @@ paths:
           name: arr
           items:
             type: string
+          collectionFormat: csv
 ====server====
 mock -p 4010
 ====command====

@@ -10,7 +10,7 @@ import * as tmp from 'tmp';
 import { parseSpecFile } from './helpers';
 
 const glob = globFs({ gitignore: true });
-jest.setTimeout(60000);
+jest.setTimeout(1000);
 
 describe('harness', () => {
   const files = process.env.TESTS

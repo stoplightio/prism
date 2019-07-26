@@ -87,6 +87,19 @@ describe('body params validation', () => {
       });
     });
 
+    describe('operation with optional body', () => {
+      describe('when no body provided', () => {
+        test.only('returns 200', async () => {
+          const response = await server.fastify.inject({
+            method: 'POST',
+            url: '/json-body-optional',
+          });
+
+          expect(response.statusCode).toBe(200);
+        });
+      });
+    });
+
     describe('operation with required body', () => {
       const operation: fastify.HTTPInjectOptions = {
         method: 'POST',
