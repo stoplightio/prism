@@ -20,19 +20,8 @@ export function factory<Resource, Input, Output, Config>(
       Partial<IPrismComponents<Resource, Input, Output, Config>>,
       'logger'
     > = Object.assign({}, defaultComponents, customComponents);
-
-    // our loaded resources (HttpOperation objects, etc)
-    let resources: Resource[] = [];
-
     return {
-      get resources() {
-        return resources;
-      },
-      set resources(val) {
-        resources = val;
-      },
-
-      process: async (input: Input, c?: Config) => {
+      process: async (input: Input, resources: Resource[], c?: Config) => {
         // build the config for this request
         const configMerger = configMergerFactory(defaultConfig, customConfig, c);
         const configObj: Config | undefined = configMerger(input);

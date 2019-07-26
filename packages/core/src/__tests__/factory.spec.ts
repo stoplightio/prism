@@ -1,7 +1,6 @@
 jest.mock('../utils/configMergerFactory');
 
 import { factory } from '../factory';
-import { createLogger } from '../logger';
 import { configMergerFactory } from '../utils/configMergerFactory';
 
 describe('process', () => {
@@ -23,7 +22,7 @@ describe('process', () => {
       const createInstance = factory<any, any, any, any>(defaultConfig, {});
       const prism = await createInstance(customConfig);
 
-      await prism.process(input, paramConfig);
+      await prism.process(input, [], paramConfig);
 
       expect(configMergerFactory).toHaveBeenCalledTimes(1);
       expect(configMergerFactory).toHaveBeenCalledWith(defaultConfig, customConfig, paramConfig);

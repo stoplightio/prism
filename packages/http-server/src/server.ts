@@ -53,7 +53,6 @@ export const createServer = (loaderInput: IHttpOperation[], opts: IPrismHttpServ
   const mergedConfig = configMergerFactory({ mock: { dynamic: false } }, config, getHttpConfigFromRequest);
 
   const prism = createInstance(mergedConfig, components);
-  prism.resources = loaderInput;
 
   server.all('*', {}, replyHandler(prism));
 
@@ -71,58 +70,58 @@ export const createServer = (loaderInput: IHttpOperation[], opts: IPrismHttpServ
     },
   };
 
-  return prismServer;
-};
-
-const replyHandler = (prism: TPrismHttpInstance): fastify.RequestHandler<IncomingMessage, ServerResponse> => {
-  return async (request, reply) => {
-    const {
-      req: { method, url },
-      body,
-      headers,
-      query,
-    } = request;
-
-    const input = {
-      method: (method ? method.toLowerCase() : 'get') as IHttpMethod,
-      url: {
-        path: (url || '/').split('?')[0],
+  function replyHandler(prismInstance: TPrismHttpInstance): fastify.RequestHandler<IncomingMessage, ServerResponse> {
+    return async (request, reply) => {
+      const {
+        req: { method, url },
+        body,
+        headers,
         query,
-        baseUrl: query.__server,
-      },
-      headers,
-      body,
-    };
+      } = request;
 
-    request.log.info({ input }, 'Request received');
-    try {
-      const response = await prism.process(input);
+      const input = {
+        method: (method ? method.toLowerCase() : 'get') as IHttpMethod,
+        url: {
+          path: (url || '/').split('?')[0],
+          query,
+          baseUrl: query.__server,
+        },
+        headers,
+        body,
+      };
 
-      const { output } = response;
+      request.log.info({ input }, 'Request received');
+      try {
+        const response = await prismInstance.process(input, loaderInput);
 
-      if (output) {
-        reply.code(output.statusCode);
+        const { output } = response;
 
-        if (output.headers) {
-          reply.headers(output.headers);
+        if (output) {
+          reply.code(output.statusCode);
+
+          if (output.headers) {
+            reply.headers(output.headers);
+          }
+          reply.send(output.body);
+        } else {
+          throw new Error('Unable to find any decent response for the current request.');
         }
-        reply.send(output.body);
-      } else {
-        throw new Error('Unable to find any decent response for the current request.');
-      }
-    } catch (e) {
-      if (!reply.sent) {
-        const status = 'status' in e ? e.status : 500;
-        reply
-          .type('application/problem+json')
-          .serializer(JSON.stringify)
-          .code(status)
-          .send(ProblemJsonError.fromPlainError(e));
-      } else {
-        reply.res.end();
-      }
+      } catch (e) {
+        if (!reply.sent) {
+          const status = 'status' in e ? e.status : 500;
+          reply
+            .type('application/problem+json')
+            .serializer(JSON.stringify)
+            .code(status)
+            .send(ProblemJsonError.fromPlainError(e));
+        } else {
+          reply.res.end();
+        }
 
-      request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
-    }
-  };
+        request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
+      }
+    };
+  }
+
+  return prismServer;
 };

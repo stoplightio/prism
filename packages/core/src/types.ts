@@ -8,8 +8,7 @@ export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 // END
 
 export interface IPrism<Resource, Input, Output, Config> {
-  process: (input: Input, config?: Config) => Promise<IPrismOutput<Input, Output>>;
-  resources: Resource[];
+  process: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
 }
 
 export type PartialPrismConfigFactory<C, I> = (
