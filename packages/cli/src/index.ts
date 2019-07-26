@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as yargs from 'yargs';
-
 import mockCommand from './commands/mock';
 
 const _v = yargs
