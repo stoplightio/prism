@@ -3,7 +3,12 @@ import { DiagnosticSeverity, Segment } from '@stoplight/types';
 import * as Ajv from 'ajv';
 // @ts-ignore
 import * as AjvOAI from 'ajv-oai';
+import { j2xParser, validate as validateXML } from 'fast-xml-parser';
+import { is } from 'type-is';
 import { JSONSchema } from '../../';
+
+type Validation = { title: string; detail: string; severity: number; message: string };
+type Validator = { test: (a: string) => boolean; validate: (a: string) => Validation[] };
 
 const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' }) as Ajv.Ajv;
 
@@ -35,3 +40,32 @@ export const validateAgainstSchema = (value: any, schema: JSONSchema, prefix?: s
     throw new Error(`AJV validation error: "${error}"`);
   }
 };
+
+const JSONtoXMLParser = new j2xParser({});
+
+const validatorsOfExamples: Validator[] = [
+  {
+    test: (mediaType: string) => !!is(mediaType, ['application/*+xml', 'application/xml']),
+    validate: (target: string | object) => {
+      const validationResult = validateXML(typeof target === 'object' ? JSONtoXMLParser.parse(target) : target);
+
+      return validationResult === true
+        ? []
+        : [
+            {
+              title: 'Provided example is not an XML file',
+              detail: validationResult.err.code,
+              severity: 0,
+              message: validationResult.err.msg,
+            },
+          ];
+    },
+  },
+];
+
+export function checkExamples(target: any, mediaType: string = '') {
+  const matchedValidator = validatorsOfExamples.find((validator: Validator) => validator.test(mediaType));
+  const validation = matchedValidator && matchedValidator.validate(target);
+
+  return validation ? validation : [];
+}
