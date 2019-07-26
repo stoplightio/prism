@@ -1,3 +1,4 @@
+import getHttpOperations from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { createLogger } from '@stoplight/prism-core';
 import fastify = require('fastify');
 import { relative, resolve } from 'path';
@@ -7,10 +8,9 @@ import { IPrismHttpServer } from '../types';
 const logger = createLogger('TEST', { enabled: false });
 
 async function instantiatePrism(fixture: string) {
-  const server = createServer({}, { components: { logger }, config: { mock: { dynamic: false } } });
-  await server.prism.load({
-    path: relative(process.cwd(), resolve(__dirname, 'fixtures', fixture)),
-  });
+  const path = relative(process.cwd(), resolve(__dirname, 'fixtures', fixture));
+  const operations = await getHttpOperations(path);
+  const server = createServer(operations, { components: { logger }, config: { mock: { dynamic: false } } });
   return server;
 }
 
@@ -25,7 +25,7 @@ const expectPayload = (response: fastify.HTTPInjectResponse) => {
 // });
 
 describe('body params validation', () => {
-  let server: IPrismHttpServer<{}>;
+  let server: IPrismHttpServer;
 
   afterAll(async () => {
     await server.fastify.close();
