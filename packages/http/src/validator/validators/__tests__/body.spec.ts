@@ -45,5 +45,20 @@ describe('HttpBodyValidator', () => {
         ).toMatchSnapshot();
       });
     });
+
+    describe('body schema is not provided', () => {
+      it('return validation errors', () => {
+        expect(
+          httpBodyValidator.validate('123', [{ mediaType: 'application/json', examples: [] }], 'application/xml'),
+        ).toStrictEqual([
+          {
+            detail: 'InvalidChar',
+            message: 'char 1 is not expected .',
+            severity: 0,
+            title: 'Provided example is not an XML file',
+          },
+        ]);
+      });
+    });
   });
 });
