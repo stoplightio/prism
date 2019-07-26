@@ -56,10 +56,10 @@ const mockCommand: CommandModule = {
     };
 
     if (multiprocess) {
-      return (parsedArgs.p = createMultiProcessPrism({ dynamic, port, host, operations }));
+      return createMultiProcessPrism({ dynamic, port, host, operations });
     }
 
-    return (parsedArgs.p = createSingleProcessPrism({ dynamic, port, host, operations }));
+    return createSingleProcessPrism({ dynamic, port, host, operations });
   },
 };
 

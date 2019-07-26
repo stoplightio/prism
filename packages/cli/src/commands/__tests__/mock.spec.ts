@@ -18,7 +18,7 @@ describe('mock command', () => {
 
   test('starts mock server', async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to', (_err: Error, argv: Promise<unknown>) => argv.then(resolve));
+      parser.parse('mock /path/to', (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve));
     });
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
@@ -32,7 +32,9 @@ describe('mock command', () => {
 
   test('starts mock server on custom port', async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to -p 666', (_err: Error, argv: Promise<unknown>) => argv.then(resolve));
+      parser.parse('mock /path/to -p 666', (_err: Error, commandPromise: Promise<unknown>) =>
+        commandPromise.then(resolve),
+      );
     });
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
@@ -46,7 +48,9 @@ describe('mock command', () => {
 
   test('starts mock server on custom host', async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to -h 0.0.0.0', (_err: Error, argv: Promise<unknown>) => argv.then(resolve));
+      parser.parse('mock /path/to -h 0.0.0.0', (_err: Error, commandPromise: Promise<unknown>) =>
+        commandPromise.then(resolve),
+      );
     });
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
@@ -60,7 +64,9 @@ describe('mock command', () => {
 
   test('starts mock server on custom host and port', async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to -p 666 -h 0.0.0.0', (_err: Error, argv: Promise<unknown>) => argv.then(resolve));
+      parser.parse('mock /path/to -p 666 -h 0.0.0.0', (_err: Error, commandPromise: Promise<unknown>) =>
+        commandPromise.then(resolve),
+      );
     });
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
@@ -74,7 +80,9 @@ describe('mock command', () => {
 
   test('starts mock server with multiprocess option ', async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to -m -h 0.0.0.0', (_err: Error, argv: Promise<unknown>) => argv.then(resolve));
+      parser.parse('mock /path/to -m -h 0.0.0.0', (_err: Error, commandPromise: Promise<unknown>) =>
+        commandPromise.then(resolve),
+      );
     });
 
     expect(createSingleProcessPrism).not.toHaveBeenCalled();
