@@ -10,7 +10,7 @@ import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
-export const createServer = (loaderInput: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
+export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
   const server = fastify({
@@ -90,7 +90,7 @@ export const createServer = (loaderInput: IHttpOperation[], opts: IPrismHttpServ
 
       request.log.info({ input }, 'Request received');
       try {
-        const response = await prismInstance.process(input, loaderInput);
+        const response = await prismInstance.process(input, operations);
 
         const { output } = response;
 
