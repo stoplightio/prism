@@ -1,5 +1,5 @@
 ====test====
-Responding with an XML - valid example against its schema.
+Responding with an XML — with static example pickup
 ====spec====
 swagger: '2.0'
 paths:
