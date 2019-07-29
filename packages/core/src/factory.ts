@@ -1,138 +1,163 @@
-import { configMergerFactory, createLogger } from '@stoplight/prism-core';
-import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
-import * as fastify from 'fastify';
-// @ts-ignore
-import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
-import * as formbodyParser from 'fastify-formbody';
-import { IncomingMessage, ServerResponse } from 'http';
-import * as typeIs from 'type-is';
-import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
-import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
+import { DiagnosticSeverity } from '@stoplight/types';
+import * as Either from 'fp-ts/lib/Either';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as TaskEither from 'fp-ts/lib/TaskEither';
+import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
+import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 
-export const createServer = <LoaderInput>(
-  loaderInput: LoaderInput,
-  opts: IPrismHttpServerOpts<LoaderInput>,
-): IPrismHttpServer<LoaderInput> => {
-  const { components, config } = opts;
+export function factory<Resource, Input, Output, Config, LoadOpts>(
+  defaultConfig: PrismConfig<Config, Input>,
+  defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
+): (
+  customConfig?: PartialPrismConfig<Config, Input>,
+  customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
+) => IPrism<Resource, Input, Output, Config, LoadOpts> {
+  const prism = (
+    customConfig?: PartialPrismConfig<Config, Input>,
+    customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>, 'logger'>,
+  ) => {
+    const components: PickRequired<
+      Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>,
+      'logger'
+    > = Object.assign({}, defaultComponents, customComponents);
 
-  const server = fastify({
-    logger: (components && components.logger) || createLogger('HTTP SERVER'),
-    disableRequestLogging: true,
-    modifyCoreObjects: false,
-  })
-    .register(formbodyParser)
-    .register(fastifyAcceptsSerializer, {
-      serializers: [
-        {
-          /*
-            This is a workaround, to make Fastify less strict in its json detection.
-            It expects a regexp, but instead we are using typeIs.
-          */
-          regex: {
-            test: (value: string) => !!typeIs.is(value, ['application/*+json']),
-            toString: () => 'application/*+json',
-          },
-          serializer: JSON.stringify,
-        },
-      ],
-      default: 'application/json; charset=utf-8',
-    });
+    // our loaded resources (HttpOperation objects, etc)
+    let resources: Resource[] = [];
 
-  server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
-    if (typeIs(req, ['application/*+json'])) {
-      try {
-        return done(null, JSON.parse(body));
-      } catch (e) {
-        return done(e);
-      }
-    }
-    const error: Error & { status?: number } = new Error(`Unsupported media type.`);
-    error.status = 415;
-    Error.captureStackTrace(error);
-    return done(error);
-  });
-
-  const mergedConfig = configMergerFactory({ mock: { dynamic: false } }, config, getHttpConfigFromRequest);
-
-  const prism = createInstance<LoaderInput>(mergedConfig, components);
-
-  server.all('*', {}, replyHandler<LoaderInput>(prism));
-
-  const prismServer: IPrismHttpServer<LoaderInput> = {
-    get prism() {
-      return prism;
-    },
-
-    get fastify() {
-      return server;
-    },
-
-    listen: async (port: number, ...args: any[]) => {
-      try {
-        await prism.load(loaderInput);
-      } catch (e) {
-        console.error('Error loading data into prism.', e);
-        throw e;
-      }
-
-      return server.listen(port, ...args);
-    },
-  };
-
-  return prismServer;
-};
-
-const replyHandler = <LoaderInput>(
-  prism: TPrismHttpInstance<LoaderInput>,
-): fastify.RequestHandler<IncomingMessage, ServerResponse> => {
-  return async (request, reply) => {
-    const {
-      req: { method, url },
-      body,
-      headers,
-      query,
-    } = request;
-
-    const input = {
-      method: (method ? method.toLowerCase() : 'get') as IHttpMethod,
-      url: {
-        path: (url || '/').split('?')[0],
-        query,
-        baseUrl: query.__server,
+    return {
+      get resources(): Resource[] {
+        return resources;
       },
-      headers,
-      body,
-    };
 
-    request.log.info({ input }, 'Request received');
-    try {
-      const response = await prism.process(input);
-
-      const { output } = response;
-
-      if (output) {
-        reply.code(output.statusCode);
-
-        if (output.headers) {
-          reply.headers(output.headers);
+      load: async (opts?: LoadOpts): Promise<void> => {
+        const { loader } = components;
+        if (opts && loader) {
+          resources = await loader.load(opts, defaultComponents.loader);
         }
-        reply.send(output.body);
-      } else {
-        throw new Error('Unable to find any decent response for the current request.');
-      }
-    } catch (e) {
-      if (!reply.sent) {
-        const status = 'status' in e ? e.status : 500;
-        reply
-          .type('application/problem+json')
-          .serializer(JSON.stringify)
-          .code(status)
-          .send(ProblemJsonError.fromPlainError(e));
-      } else {
-        reply.res.end();
-      }
+      },
 
-      request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
-    }
+      process: async (input: Input, c?: Config) => {
+        // build the config for this request
+        const configMerger = configMergerFactory(defaultConfig, customConfig, c);
+        const configObj: Config | undefined = configMerger(input);
+        const inputValidations: IPrismDiagnostic[] = [];
+
+        if (components.router) {
+          return pipe(
+            components.router.route({ resources, input, config: configObj }, defaultComponents.router),
+            Either.fold(
+              error => {
+                // rethrow error we if we're attempting to mock
+                if ((configObj as IPrismConfig).mock) {
+                  return TaskEither.left(error);
+                }
+
+                const { message, name, status } = error as ProblemJsonError;
+                // otherwise let's just stack it on the inputValidations
+                // when someone simply wants to hit an URL, don't block them
+                inputValidations.push({
+                  message,
+                  source: name,
+                  code: status,
+                  severity: DiagnosticSeverity.Warning,
+                });
+
+                return TaskEither.right<Error, Resource | undefined>(undefined);
+              },
+              value => TaskEither.right(value),
+            ),
+            TaskEither.chain(resource => {
+              // validate input
+              if (resource && components.validator && components.validator.validateInput) {
+                inputValidations.push(
+                  ...components.validator.validateInput(
+                    {
+                      resource,
+                      input,
+                      config: configObj,
+                    },
+                    defaultComponents.validator,
+                  ),
+                );
+              }
+
+              if (resource && components.mocker && (configObj as IPrismConfig).mock) {
+                // generate the response
+                return pipe(
+                  TaskEither.fromEither(
+                    components.mocker.mock(
+                      {
+                        resource,
+                        input: { validations: { input: inputValidations }, data: input },
+                        config: configObj,
+                      },
+                      defaultComponents.mocker,
+                    )(components.logger.child({ name: 'NEGOTIATOR' })),
+                  ),
+                  TaskEither.map(output => ({ output, resource })),
+                );
+              } else if (components.forwarder) {
+                // forward request and set output from response
+                return pipe(
+                  components.forwarder.fforward(
+                    {
+                      resource,
+                      input: { validations: { input: inputValidations }, data: input },
+                      config: configObj,
+                    },
+                    defaultComponents.forwarder,
+                  ),
+                  TaskEither.map(output => ({ output, resource })),
+                );
+              }
+
+              return TaskEither.left(new Error('Nor forwarder nor mocker has been selected. Something is wrong'));
+            }),
+            TaskEither.map(({ output, resource }) => {
+              let outputValidations: IPrismDiagnostic[] = [];
+              if (resource && components.validator && components.validator.validateOutput) {
+                outputValidations = components.validator.validateOutput(
+                  {
+                    resource,
+                    output,
+                    config: configObj,
+                  },
+                  defaultComponents.validator,
+                );
+              }
+
+              return {
+                input,
+                output,
+                validations: {
+                  input: inputValidations,
+                  output: outputValidations,
+                },
+              };
+            }),
+          )().then(v =>
+            pipe(
+              v,
+              Either.fold(
+                e => {
+                  throw e;
+                },
+                o => o,
+              ),
+            ),
+          );
+        }
+
+        return {
+          input,
+          output: undefined,
+          validations: {
+            input: [],
+            output: [],
+          },
+        };
+      },
+    };
   };
-};
+  return prism;
+}
