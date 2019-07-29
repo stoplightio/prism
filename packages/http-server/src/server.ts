@@ -1,7 +1,6 @@
 import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import { IHttpOperation } from '@stoplight/types';
-import { j2xParser } from 'fast-xml-parser';
 import * as fastify from 'fastify';
 // @ts-ignore
 import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
@@ -9,9 +8,8 @@ import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
+import serializers from './serializers';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
-
-const xmlSerializer = new j2xParser({});
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
@@ -22,24 +20,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     modifyCoreObjects: false,
   })
     .register(formbodyParser)
-    .register(fastifyAcceptsSerializer, {
-      serializers: [
-        {
-          regex: {
-            test: (value: string) => !!typeIs.is(value, ['application/*+json']),
-            toString: () => 'application/*+json',
-          },
-          serializer: JSON.stringify,
-        },
-        {
-          regex: {
-            test: (value: string) => !!typeIs.is(value, ['application/xml', 'application/*+xml']),
-            toString: () => 'application/*+xml',
-          },
-          serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse(data)),
-        },
-      ],
-    });
+    .register(fastifyAcceptsSerializer, { serializers });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
     if (typeIs(req, ['application/*+json'])) {
