@@ -1,23 +1,25 @@
 ====test====
-Responding with an XML - invalid example.
+Responding with an XML - valid yaml format example.
 ====spec====
 swagger: '2.0'
 paths:
   "/pets":
     get:
       produces:
-        - application/json
         - application/xml
       responses:
         '200':
           description: successful operation
           examples:
-            application/xml: 123
+           application/xml:
+             id: 1
+             name: Sharik
+             status: available
 ====server====
 mock -p 4010
 ====command====
 curl -i http://127.0.0.1:4010/pets -H "Accept: application/xml"
 ====expect====
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 200 OK
 
-{"type":"https://stoplight.io/prism/errors#UNKNOWN","title":"Start tag expected.","status":500,"detail":"InvalidXml"}
+<id>1</id><name>Sharik</name><status>available</status>
