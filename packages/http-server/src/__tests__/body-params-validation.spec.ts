@@ -45,7 +45,7 @@ describe('body params validation', () => {
       server = await instantiatePrism(`operations-with-body-param.${oas}.yaml`);
     });
 
-    describe('operation with no consumes', () => {
+    describe('operation with no request content type defined', () => {
       const operation: fastify.HTTPInjectOptions = {
         method: 'POST',
         url: '/json-body-no-request-content-type',
