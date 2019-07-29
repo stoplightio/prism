@@ -1,6 +1,7 @@
 import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import { IHttpOperation } from '@stoplight/types';
+import { j2xParser } from 'fast-xml-parser';
 import * as fastify from 'fastify';
 // @ts-ignore
 import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
@@ -9,6 +10,8 @@ import { IncomingMessage, ServerResponse } from 'http';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
+
+const xmlSerializer = new j2xParser({});
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
@@ -22,18 +25,26 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     .register(fastifyAcceptsSerializer, {
       serializers: [
         {
-          /*
-            This is a workaround, to make Fastify less strict in its json detection.
-            It expects a regexp, but instead we are using typeIs.
-          */
           regex: {
-            test: (value: string) => !!typeIs.is(value, ['application/*+json']),
+            test: (value: string) => {
+              const val = !!typeIs.is(value, ['application/*+json']);
+              return val;
+            },
             toString: () => 'application/*+json',
           },
           serializer: JSON.stringify,
         },
+        {
+          regex: {
+            test: (value: string) => {
+              const val = !!typeIs.is(value, ['application/xml', 'application/*+xml']);
+              return val;
+            },
+            toString: () => 'application/*+xml',
+          },
+          serializer: (data: unknown) => xmlSerializer.parse(data),
+        },
       ],
-      default: 'application/json; charset=utf-8',
     });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
