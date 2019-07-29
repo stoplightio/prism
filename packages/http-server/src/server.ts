@@ -1,49 +1,13 @@
 import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
-import { Dictionary } from '@stoplight/types';
-import { j2xParser } from 'fast-xml-parser';
 import * as fastify from 'fastify';
-import { FastifyReply } from 'fastify';
+// @ts-ignore
+import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
 import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
-
-const JSONtoXMLParser = new j2xParser({});
-
-type Serializer = {
-  test: (a: string) => boolean;
-  serialize: (a: string | object) => string;
-};
-
-function optionallySerializeAndSend(
-  reply: FastifyReply<ServerResponse>,
-  output: { headers?: Dictionary<string, string>; body?: string | object },
-  respSerializers: Serializer[],
-) {
-  const contentType = output.headers && output.headers['Content-type'];
-  const serializer = respSerializers.find((srlzr: Serializer) => srlzr.test(contentType || ''));
-
-  reply.send(serializer ? serializer.serialize(output.body || '') : output.body);
-}
-
-const serializers: Serializer[] = [
-  {
-    test: (value: string) => !!typeIs.is(value, ['application/*+json']),
-    serialize: JSON.stringify,
-  },
-  {
-    test: (value: string) => {
-      return !!typeIs.is(value, ['application/*+xml', 'application/xml']);
-    },
-    serialize: (data: string | object) => {
-      const isXMLString = typeof data === 'string';
-
-      return isXMLString ? data : JSONtoXMLParser.parse(data);
-    },
-  },
-];
 
 export const createServer = <LoaderInput>(
   loaderInput: LoaderInput,
@@ -55,7 +19,24 @@ export const createServer = <LoaderInput>(
     logger: (components && components.logger) || createLogger('HTTP SERVER'),
     disableRequestLogging: true,
     modifyCoreObjects: false,
-  }).register(formbodyParser);
+  })
+    .register(formbodyParser)
+    .register(fastifyAcceptsSerializer, {
+      serializers: [
+        {
+          /*
+            This is a workaround, to make Fastify less strict in its json detection.
+            It expects a regexp, but instead we are using typeIs.
+          */
+          regex: {
+            test: (value: string) => !!typeIs.is(value, ['application/*+json']),
+            toString: () => 'application/*+json',
+          },
+          serializer: JSON.stringify,
+        },
+      ],
+      default: 'application/json; charset=utf-8',
+    });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
     if (typeIs(req, ['application/*+json'])) {
@@ -135,7 +116,7 @@ const replyHandler = <LoaderInput>(
         if (output.headers) {
           reply.headers(output.headers);
         }
-        optionallySerializeAndSend(reply, output, serializers);
+        reply.send(output.body);
       } else {
         throw new Error('Unable to find any decent response for the current request.');
       }

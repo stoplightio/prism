@@ -1,7 +1,7 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IMediaTypeContent } from '@stoplight/types';
 
-import { checkExamples, validateAgainstSchema } from '../validators/utils';
+import { validateAgainstSchema } from '../validators/utils';
 import { IHttpValidator } from './types';
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
@@ -16,7 +16,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
     }
 
     if (!content.schema) {
-      return checkExamples(target, mediaType);
+      return [];
     }
 
     return validateAgainstSchema(target, content.schema).map(error =>
