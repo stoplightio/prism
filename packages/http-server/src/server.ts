@@ -27,13 +27,13 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             It expects a regexp, but instead we are using typeIs.
           */
           regex: {
-            test: (value: string) => !!typeIs.is(value, ['application/*+json']),
+            test: (value: string) => !!typeIs.is(value, ['application/json', 'application/*+json']),
             toString: () => 'application/*+json',
           },
           serializer: JSON.stringify,
         },
       ],
-      default: 'application/json; charset=utf-8',
+      default: 'application/json',
     });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {

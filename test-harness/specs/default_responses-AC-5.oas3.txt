@@ -19,7 +19,7 @@ mock -p 4010
 curl -i http://localhost:4010/todos?__code=200
 ====expect====
 HTTP/1.1 200 OK
-content-type: application/json; charset=utf-8
+content-type: application/json
 Connection: keep-alive
 
 "ok"
