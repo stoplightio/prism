@@ -26,23 +26,17 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       serializers: [
         {
           regex: {
-            test: (value: string) => {
-              const val = !!typeIs.is(value, ['application/*+json']);
-              return val;
-            },
+            test: (value: string) => !!typeIs.is(value, ['application/*+json']),
             toString: () => 'application/*+json',
           },
           serializer: JSON.stringify,
         },
         {
           regex: {
-            test: (value: string) => {
-              const val = !!typeIs.is(value, ['application/xml', 'application/*+xml']);
-              return val;
-            },
+            test: (value: string) => !!typeIs.is(value, ['application/xml', 'application/*+xml']),
             toString: () => 'application/*+xml',
           },
-          serializer: (data: unknown) => xmlSerializer.parse(data),
+          serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse(data)),
         },
       ],
     });
