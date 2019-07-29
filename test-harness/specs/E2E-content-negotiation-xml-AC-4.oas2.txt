@@ -1,0 +1,26 @@
+====test====
+Responding with an XML - valid yaml format example.
+====spec====
+swagger: '2.0'
+paths:
+  "/pets":
+    get:
+      produces:
+        - application/xml
+      responses:
+        '200':
+          description: successful operation
+          examples:
+            application/xml:
+              id: 1
+              name: Sharik
+              status: available
+====server====
+mock -p 4010
+====command====
+curl -i http://127.0.0.1:4010/pets -H "Accept: application/xml"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/xml
+
+<id>1</id><name>Sharik</name><status>available</status>
