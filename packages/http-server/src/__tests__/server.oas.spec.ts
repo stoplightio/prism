@@ -406,7 +406,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers).toHaveProperty('content-type', 'application/json');
+      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
     });
 
     it('returns application/json even if the resources have the charset parameter', async () => {
