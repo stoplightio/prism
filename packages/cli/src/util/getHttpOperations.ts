@@ -18,7 +18,9 @@ export default async function getHttpOperations(spec: string) {
 
   if (errors.length) {
     const uniqueErrors = uniq(errors.map(error => error.message)).join(EOL);
-    throw new Error(uniqueErrors);
+    throw new Error(
+      `There\'s been an error while trying to resolve external references in your document: ${uniqueErrors}`,
+    );
   }
 
   const isOas2 = get(parsedContent, 'swagger');
