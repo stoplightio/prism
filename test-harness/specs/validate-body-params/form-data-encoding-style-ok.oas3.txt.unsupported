@@ -1,5 +1,5 @@
 ====test====
-Given form data expected in request body then return 422 when that body is invalid.
+TO BE FIXED BY: https://github.com/stoplightio/prism/issues/498
 ====spec====
 openapi: '3.0.1'
 paths:
@@ -7,8 +7,9 @@ paths:
     post:
       responses:
         200:
-          schema:
-            type: string
+          content:
+            text/plain:
+              example: ok
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -24,10 +25,6 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "arr=one,two,three"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "arr=one&arr=two&arr=three"
 ====expect====
-HTTP/1.1 422 Unprocessable Entity
-content-type: application/problem+json
-Connection: keep-alive
-
-{"tobe": "done"}
+HTTP/1.1 200 OK

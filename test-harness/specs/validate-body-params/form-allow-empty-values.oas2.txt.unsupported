@@ -11,6 +11,8 @@ if ('allowEmptyValue' in param && param.allowEmptyValue) {
     schema.minLength = 1;
 }
 ```
+
+TO BE FIXED BY: https://github.com/stoplightio/prism/issues/499
 ====spec====
 swagger: '2.0'
 paths:

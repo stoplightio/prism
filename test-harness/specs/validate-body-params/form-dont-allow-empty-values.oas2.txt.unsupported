@@ -1,0 +1,30 @@
+====test====
+Set allowEmptyValue to false and try to send an empty key, should fail.
+
+TO BE FIXED BY: https://github.com/stoplightio/prism/issues/499
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: string
+          name: id
+          allowEmptyValue: false
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "id"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
+Connection: keep-alive
+
+{ "tobe": "done" }

@@ -7,8 +7,9 @@ paths:
     post:
       responses:
         200:
-          schema:
-            type: string
+          content:
+            text/plain:
+              example: ok
       requestBody:
         content:
           application/json:

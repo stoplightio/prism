@@ -1,5 +1,5 @@
 ====test====
-Given form data expected in request body then return 422 when that body is invalid.
+Send string value in form data to an endpoint that expects encoded JSON
 ====spec====
 openapi: '3.0.1'
 paths:
@@ -7,8 +7,9 @@ paths:
     post:
       responses:
         200:
-          schema:
-            type: string
+          content:
+            text/plain:
+              example: ok
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -23,6 +24,10 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "json={\"a\":123}"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "json=123"
 ====expect====
-HTTP/1.1 200 OK
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
+Connection: keep-alive
+
+{"tobe": "done"}
