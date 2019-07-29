@@ -1,7 +1,7 @@
 import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
-import { j2xParser } from 'fast-xml-parser';
 import { IHttpOperation } from '@stoplight/types';
+import { j2xParser } from 'fast-xml-parser';
 import * as fastify from 'fastify';
 // @ts-ignore
 import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
@@ -39,7 +39,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           serializer: (data: unknown) => JSONtoXMLParser.parse(data),
         },
       ],
-      default: 'application/json; charset=utf-8',
     });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
