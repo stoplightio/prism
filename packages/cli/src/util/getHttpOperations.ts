@@ -27,7 +27,7 @@ export default async function getHttpOperations(spec: string) {
   return flatten(
     map(paths, path =>
       keys(get(resolvedContent, ['paths', path]))
-        .filter(k => methods.includes(k))
+        .filter(pathKey => methods.includes(pathKey))
         .map(method =>
           defaults(
             transformOperationFn({
