@@ -1,6 +1,6 @@
-import { createLogger, HttpLoader, logLevels } from '@stoplight/prism-core';
-import { IHttpConfig } from '@stoplight/prism-http';
+import { createLogger, logLevels } from '@stoplight/prism-core';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
+import { IHttpOperation } from '@stoplight/types';
 import chalk from 'chalk';
 import * as cluster from 'cluster';
 import { LogDescriptor, Logger } from 'pino';
@@ -8,12 +8,6 @@ import * as signale from 'signale';
 import * as split from 'split2';
 import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
-
-export function createServer(spec: string, config: IHttpConfig, logger: Logger) {
-  return spec && isHttp(spec)
-    ? createHttpServer({ url: spec }, { components: { loader: new HttpLoader(), logger }, config })
-    : createHttpServer({ path: spec }, { config, components: { logger } });
-}
 
 export async function createMultiProcessPrism(options: CreatePrismOptions) {
   if (cluster.isMaster) {
@@ -50,18 +44,19 @@ export function createSingleProcessPrism(options: CreatePrismOptions) {
 }
 
 async function createPrismServerWithLogger(options: CreatePrismOptions, logInstance: Logger) {
-  const server = createServer(
-    options.spec,
-    { mock: { dynamic: options.dynamic } },
-    logInstance.child({ name: 'HTTP SERVER' }),
-  );
+  if (options.operations.length === 0) {
+    logInstance.fatal('No operations found in the current file.');
+    cluster.worker.kill();
+  }
+
+  const server = createHttpServer(options.operations, {
+    config: { mock: { dynamic: options.dynamic } },
+    components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
+  });
+
   try {
     const address = await server.listen(options.port, options.host);
-    if (server.prism.resources.length === 0) {
-      logInstance.fatal('No operations found in the current file.');
-      cluster.worker.kill();
-    }
-    server.prism.resources.forEach(resource => {
+    options.operations.forEach(resource => {
       logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
     });
     logInstance.start(`Prism is listening on ${address}`);
@@ -96,13 +91,9 @@ function logCLIMessage(message: string) {
   });
 }
 
-function isHttp(spec: string) {
-  return !!spec.match(/^https?:\/\//);
-}
-
 export type CreatePrismOptions = {
   dynamic: boolean;
   host?: string;
   port: number;
-  spec: string;
+  operations: IHttpOperation[];
 };

@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`filesystemLoader throws error when supplied with a directory 1`] = `"Non-existing path to spec supplied: a path"`;
-
-exports[`filesystemLoader throws error when supplied with non-existing path 1`] = `"Supplied spec path points to directory. Only files are supported."`;

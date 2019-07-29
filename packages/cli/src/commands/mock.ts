@@ -1,5 +1,7 @@
+import * as signale from 'signale';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreatePrismOptions, createSingleProcessPrism } from '../util/createServer';
+import getHttpOperations from '../util/getHttpOperations';
 
 const mockCommand: CommandModule = {
   describe: 'Start a mock server with the given spec file',
@@ -10,8 +12,11 @@ const mockCommand: CommandModule = {
         description: 'Path to a spec file. Can be both a file or a fetchable resource on the web.',
         type: 'string',
       })
-      .fail(() => {
-        yargs.showHelp();
+      .middleware(async argv => (argv.operations = await getHttpOperations(argv.spec!)))
+      .fail((msg, err) => {
+        if (msg) yargs.showHelp();
+        else signale.fatal(err.message);
+
         process.exit(1);
       })
       .options({
@@ -46,15 +51,15 @@ const mockCommand: CommandModule = {
         },
       }),
   handler: parsedArgs => {
-    const { multiprocess, dynamic, port, host, spec } = (parsedArgs as unknown) as CreatePrismOptions & {
+    const { multiprocess, dynamic, port, host, operations } = (parsedArgs as unknown) as CreatePrismOptions & {
       multiprocess: boolean;
     };
 
     if (multiprocess) {
-      return createMultiProcessPrism({ dynamic, port, host, spec });
+      return createMultiProcessPrism({ dynamic, port, host, operations });
     }
 
-    return createSingleProcessPrism({ dynamic, port, host, spec });
+    return createSingleProcessPrism({ dynamic, port, host, operations });
   },
 };
 
