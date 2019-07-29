@@ -2,8 +2,9 @@ import { transformOas2Operation, transformOas3Operation } from '@stoplight/http-
 import { parse } from '@stoplight/yaml';
 import axios from 'axios';
 import * as fs from 'fs';
-import { defaults, flatten, get, keys, map, uniq } from 'lodash';
+import { flatten, get, keys, map, uniq } from 'lodash';
 import { EOL } from 'os';
+import { resolve } from 'path';
 import { httpAndFileResolver } from '../resolvers/http-and-file';
 
 export default async function getHttpOperations(spec: string) {
@@ -11,11 +12,15 @@ export default async function getHttpOperations(spec: string) {
     ? (await axios.get(spec)).data
     : fs.readFileSync(spec, { encoding: 'utf8' });
   const parsedContent = parse(fileContent);
-  const { result: resolvedContent, errors } = await httpAndFileResolver.resolve(parsedContent);
+  const { result: resolvedContent, errors } = await httpAndFileResolver.resolve(parsedContent, {
+    baseUri: resolve(spec),
+  });
 
   if (errors.length) {
     const uniqueErrors = uniq(errors.map(error => error.message)).join(EOL);
-    throw new Error(uniqueErrors);
+    throw new Error(
+      `There\'s been an error while trying to resolve external references in your document: ${uniqueErrors}`,
+    );
   }
 
   const isOas2 = get(parsedContent, 'swagger');
@@ -27,16 +32,13 @@ export default async function getHttpOperations(spec: string) {
   return flatten(
     map(paths, path =>
       keys(get(resolvedContent, ['paths', path]))
-        .filter(k => methods.includes(k))
+        .filter(pathKey => methods.includes(pathKey))
         .map(method =>
-          defaults(
-            transformOperationFn({
-              document: resolvedContent,
-              path,
-              method,
-            }),
-            { servers: resolvedContent.servers },
-          ),
+          transformOperationFn({
+            document: resolvedContent,
+            path,
+            method,
+          }),
         ),
     ),
   );
