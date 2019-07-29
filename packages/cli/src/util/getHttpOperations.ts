@@ -2,7 +2,7 @@ import { transformOas2Operation, transformOas3Operation } from '@stoplight/http-
 import { parse } from '@stoplight/yaml';
 import axios from 'axios';
 import * as fs from 'fs';
-import { defaults, flatten, get, keys, map, uniq } from 'lodash';
+import { flatten, get, keys, map, uniq } from 'lodash';
 import { EOL } from 'os';
 import { httpAndFileResolver } from '../resolvers/http-and-file';
 
@@ -29,14 +29,11 @@ export default async function getHttpOperations(spec: string) {
       keys(get(resolvedContent, ['paths', path]))
         .filter(pathKey => methods.includes(pathKey))
         .map(method =>
-          defaults(
-            transformOperationFn({
-              document: resolvedContent,
-              path,
-              method,
-            }),
-            { servers: resolvedContent.servers },
-          ),
+          transformOperationFn({
+            document: resolvedContent,
+            path,
+            method,
+          }),
         ),
     ),
   );
