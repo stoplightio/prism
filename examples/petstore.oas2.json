@@ -925,7 +925,7 @@
         "summary": "Get user by user name",
         "description": "",
         "operationId": "getUserByName",
-        "produces": ["application/json; charset=utf-8", "application/xml"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "username",

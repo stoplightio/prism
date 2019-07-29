@@ -371,7 +371,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
+      expect(response.headers).toHaveProperty('content-type', 'application/json');
     });
 
     it('respects the priority when multiple avaiable choices match', async () => {
@@ -384,7 +384,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
+      expect(response.headers).toHaveProperty('content-type', 'application/json');
     });
 
     it('returns 406 response when the requested media type is not offered', async () => {
@@ -406,7 +406,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
+      expect(response.headers).toHaveProperty('content-type', 'application/json');
     });
 
     it('returns application/json even if the resources have the charset parameter', async () => {
@@ -419,7 +419,7 @@ describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', fil
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
+      expect(response.headers).toHaveProperty('content-type', 'application/json');
     });
   });
 });

@@ -1011,7 +1011,7 @@
           "200": {
             "description": "successful operation",
             "content": {
-              "application/json; charset=utf-8": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/User"
                 }
