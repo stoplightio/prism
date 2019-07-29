@@ -18,7 +18,7 @@
   "dependencies": {
     "lodash": "^4.17.14",
     "mobx": "^5.11.0",
-    "pino": "^5.12.6",
+    "pino": "^5.13.1",
     "tslib": "^1.10.0"
   },
   "publishConfig": {
