@@ -47,5 +47,6 @@ mock -p 4010
 curl -i http://127.0.0.1:4010/pets -H 'Accept: application/xml'
 ====expect====
 HTTP/1.1 200 OK
+content-type: application/xml
 
 <id>1</id><name>Sharik</name><status>available</status>
