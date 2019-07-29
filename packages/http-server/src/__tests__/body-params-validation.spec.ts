@@ -14,16 +14,6 @@ async function instantiatePrism(fixture: string) {
   return server;
 }
 
-const expectPayload = (response: fastify.HTTPInjectResponse) => {
-  const parsed = JSON.parse(response.payload);
-  return expect(parsed);
-};
-
-// test.only('test matchers', () => {
-//   // @ts-ignore
-//   expect(123).yourMatcher(123, 123);
-// });
-
 describe('body params validation', () => {
   let server: IPrismHttpServer;
 
@@ -47,12 +37,10 @@ describe('body params validation', () => {
       });
 
       expect(response.statusCode).toEqual(422);
-      // expectPayload(response).toEqual({});
     });
   });
 
-  describe.each([['oas3']])('%s with body param', oas => {
-    // describe.each([['oas2'], ['oas3']])('%s with body param', oas => {
+  describe.each([['oas2'], ['oas3']])('%s with body param', oas => {
     beforeEach(async () => {
       server = await instantiatePrism(`operations-with-body-param.${oas}.yaml`);
     });
@@ -73,7 +61,7 @@ describe('body params validation', () => {
           });
 
           expect(response.statusCode).toBe(422);
-          expectPayload(response).toMatchObject({
+          expect(JSON.parse(response.payload)).toMatchObject({
             validation: [
               {
                 code: 'type',
@@ -101,7 +89,7 @@ describe('body params validation', () => {
           });
 
           expect(response.statusCode).toBe(422);
-          expectPayload(response).toMatchObject({
+          expect(JSON.parse(response.payload)).toMatchObject({
             validation: [{ code: 'required', message: "should have required property 'id'", severity: 'Error' }],
           });
         });
@@ -132,7 +120,7 @@ describe('body params validation', () => {
           const response = await server.fastify.inject(operation);
 
           expect(response.statusCode).toBe(422);
-          expectPayload(response).toMatchObject({
+          expect(JSON.parse(response.payload)).toMatchObject({
             validation: [{ code: 'required', message: 'Body parameter is required', severity: 'Error' }],
           });
         });
@@ -164,7 +152,7 @@ describe('body params validation', () => {
             });
 
             expect(response.statusCode).toBe(422);
-            expectPayload(response).toMatchObject({
+            expect(JSON.parse(response.payload)).toMatchObject({
               validation: [
                 {
                   code: 'type',
@@ -187,7 +175,7 @@ describe('body params validation', () => {
             });
 
             expect(response.statusCode).toBe(422);
-            expectPayload(response).toMatchObject({
+            expect(JSON.parse(response.payload)).toMatchObject({
               validation: [
                 {
                   code: 'enum',
@@ -214,9 +202,6 @@ describe('body params validation', () => {
           method: 'POST',
           url: '/path',
           payload: {},
-          // headers: {
-          // 'content-type': 'application/x-www-form-urlencoded',
-          // },
         });
 
         expect(response.statusCode).toBe(422);
@@ -250,9 +235,6 @@ describe('body params validation', () => {
             id: 'not integer',
             status: 'somerundomestuff',
           },
-          // headers: {
-          // 'content-type': 'application/x-www-form-urlencoded',
-          // },
         });
 
         expect(response.statusCode).toBe(422);
@@ -286,9 +268,6 @@ describe('body params validation', () => {
             id: 123,
             status: 'open',
           },
-          // headers: {
-          // 'content-type': 'application/x-www-form-urlencoded',
-          // },
         });
 
         expect(response.statusCode).toBe(200);
