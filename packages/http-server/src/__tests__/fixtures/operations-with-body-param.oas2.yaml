@@ -1,6 +1,6 @@
 swagger: '2.0'
 paths:
-  "/json-body-no-consumes":
+  "/json-body-no-request-content-type":
     post:
       parameters:
       - in: body
@@ -18,7 +18,7 @@ paths:
   "/json-body-optional":
     post:
       produces:
-      - application/json
+      - text/plain
       consumes:
       - application/json
       parameters:
