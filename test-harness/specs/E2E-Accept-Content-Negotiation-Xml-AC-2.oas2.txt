@@ -1,0 +1,24 @@
+====test====
+Responding with an XML — with the example forwarded directly from the example
+====spec====
+swagger: '2.0'
+paths:
+  "/pets":
+    get:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        '200':
+          description: successful operation
+          examples:
+            application/xml: <abc>1</abc>
+====server====
+mock -p 4010
+====command====
+curl -i http://127.0.0.1:4010/pets -H "Accept: application/xml"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/xml
+
+<abc>1</abc>

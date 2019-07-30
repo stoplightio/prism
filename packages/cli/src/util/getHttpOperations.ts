@@ -10,7 +10,7 @@ import { httpAndFileResolver } from '../resolvers/http-and-file';
 
 export default async function getHttpOperations(spec: string): Promise<IHttpOperation[]> {
   const fileContent = spec.match(/^https?:\/\//)
-    ? (await axios.get(spec)).data
+    ? (await axios.get(spec, { transformResponse: res => res })).data
     : fs.readFileSync(spec, { encoding: 'utf8' });
   const parsedContent = parse(fileContent);
   const { result: resolvedContent, errors } = await httpAndFileResolver.resolve(parsedContent, {

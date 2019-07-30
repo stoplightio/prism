@@ -8,6 +8,7 @@ import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
+import serializers from './serializers';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
@@ -19,22 +20,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     modifyCoreObjects: false,
   })
     .register(formbodyParser)
-    .register(fastifyAcceptsSerializer, {
-      serializers: [
-        {
-          /*
-            This is a workaround, to make Fastify less strict in its json detection.
-            It expects a regexp, but instead we are using typeIs.
-          */
-          regex: {
-            test: (value: string) => !!typeIs.is(value, ['application/*+json']),
-            toString: () => 'application/*+json',
-          },
-          serializer: JSON.stringify,
-        },
-      ],
-      default: 'application/json; charset=utf-8',
-    });
+    .register(fastifyAcceptsSerializer, { serializers });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
     if (typeIs(req, ['application/*+json'])) {
