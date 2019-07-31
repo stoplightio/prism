@@ -27,17 +27,7 @@ describe('body params validation', () => {
     });
 
     // Ref: https://github.com/stoplightio/prism/issues/496
-    test.skip('allowReserved set to true', async () => {
-      const response = await server.fastify.inject({
-        method: 'POST',
-        url: '/allowReserved',
-        payload: {
-          reserved: ":/?#[]@!$&'()*+,;",
-        },
-      });
-
-      expect(response.statusCode).toEqual(422);
-    });
+    test.todo('allowReserved set to true');
   });
 
   describe.each([['oas2'], ['oas3']])('%s with body param', oas => {
@@ -129,17 +119,7 @@ describe('body params validation', () => {
       describe('when body provided', () => {
         describe('and is valid', () => {
           // Ref: https://github.com/stoplightio/prism/issues/500
-          test.skip('returns 200', async () => {
-            const response = await server.fastify.inject({
-              ...operation,
-              payload: {
-                id: 123,
-              },
-            });
-
-            expect(response.statusCode).toBe(200);
-            expect(response.payload).toBe('string');
-          });
+          test.todo('returns 200');
         });
 
         describe('and property type invalid', () => {
