@@ -328,7 +328,7 @@ describe.each([['petstore.oas2.yaml'], ['petstore.oas3.yaml']])('server %s', fil
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
+      expect(response.headers).toHaveProperty('content-type', 'application/json');
     });
 
     it('returns 406 response when the requested media type is not offered', async () => {

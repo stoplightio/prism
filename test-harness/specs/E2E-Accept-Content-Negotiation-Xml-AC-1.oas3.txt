@@ -1,0 +1,58 @@
+====test====
+Responding with an XML — with static example pickup
+====spec====
+openapi: 3.0.0
+paths:
+  /pets:
+    get:
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+              examples:
+                response:
+                  value:
+                    id: 2
+                    name: Fluffy
+                    status: available
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Pet"
+              examples:
+                response:
+                  value:
+                    id: 1
+                    name: Sharik
+                    status: available
+components:
+  schemas:
+    Pet:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          example: doggie
+        status:
+          type: string
+          description: pet status in the store
+          enum:
+            - available
+            - pending
+            - sold
+====server====
+mock -p 4010
+====command====
+curl -i http://127.0.0.1:4010/pets -H 'Accept: application/xml'
+====expect====
+HTTP/1.1 200 OK
+content-type: application/xml
+
+<id>1</id><name>Sharik</name><status>available</status>
