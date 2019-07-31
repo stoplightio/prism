@@ -17,8 +17,8 @@ async function instantiatePrism(fixture: string) {
 describe('body params validation', () => {
   let server: IPrismHttpServer;
 
-  afterAll(async () => {
-    await server.fastify.close();
+  afterAll(() => {
+    return server.fastify.close();
   });
 
   describe('oas3 with encodings', () => {
