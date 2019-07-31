@@ -1,6 +1,6 @@
 ====test====
-Given form data expected in request body 
-but invalid data sent then return 422
+Test sending form data with a missing property and invalid string.
+Expect to get validation errors in return.
 ====spec====
 openapi: '3.0.1'
 paths:
