@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples
 
+## Fixed
+
+- Validate OAS2 `application/x-www-urlencoded` (form data) params correctly (#483)
+
 # 3.0.3 (2019-07-25)
 
 ## Fixed
