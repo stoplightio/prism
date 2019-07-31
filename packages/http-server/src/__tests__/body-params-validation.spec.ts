@@ -23,7 +23,7 @@ describe('body params validation', () => {
 
   describe('oas3 with encodings', () => {
     beforeEach(async () => {
-      server = await instantiatePrism(`encodings.oas3.yaml`);
+      server = await instantiatePrism('encodings.oas3.yaml');
     });
 
     // Ref: https://github.com/stoplightio/prism/issues/496
