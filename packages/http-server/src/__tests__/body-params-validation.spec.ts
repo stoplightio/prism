@@ -1,6 +1,6 @@
 import getHttpOperations from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { createLogger } from '@stoplight/prism-core';
-import fastify = require('fastify');
+import * as fastify from 'fastify';
 import { relative, resolve } from 'path';
 import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
