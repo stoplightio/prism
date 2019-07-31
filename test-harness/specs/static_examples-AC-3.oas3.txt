@@ -1,0 +1,31 @@
+====test====
+When prism is started with the static flag,
+null shall be returned in case the schema fields are nullable
+====spec====
+openapi: "3.0.1"
+paths:
+  "/path":
+      get:
+        responses:
+          '200':
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    ending_before:
+                      type: string
+                      nullable: true
+                      default: null
+                    starting_after:
+                      type: string
+                      nullable: true
+                      default: null
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/path
+====expect====
+HTTP/1.1 200 OK
+
+{"ending_before":null,"starting_after":null}
