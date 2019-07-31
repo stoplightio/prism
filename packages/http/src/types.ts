@@ -1,6 +1,5 @@
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from '@stoplight/prism-core';
 import { Dictionary, HttpMethod, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
-import { DiagnosticSeverity } from '@stoplight/types';
 import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
 export type TPrismHttpInstance = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
