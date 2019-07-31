@@ -1136,10 +1136,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/fast-safe-stringify/-/fast-safe-stringify-2.1.2.tgz#2811eff4989c3d4c5c9a3789f057e25358db0899"
   integrity sha512-ayw3qQ9KNn2K5q6ggrLclh+rdZsSLwYIUz3uAer1NzaCpalJLR4g32G845ylgq7Xy2AunMHnNfD3FC3s0rUcsA==
 
-"@stoplight/http-spec@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-1.0.7.tgz#c10edb9e5bf3816674ecd33af5c5d23ec283970e"
-  integrity sha512-6Po0nRuKm0Re03lTI4HjdaVXfDJ2dZc0uAdG0j8GUimC43Y6XYCRM2+BkAaNxPrjwZNEN2fzvY5iK6z4udpYhw==
+"@stoplight/http-spec@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-1.0.8.tgz#40cb03c17166136cac09ad1bbe7813985cee4bdf"
+  integrity sha512-9qvIYusQa8XfW0I6tc0Bf+OMaBi8b87u+AuSkxaTGIbc/ixEIAR/Wq9D1JrTl/B3RnPi/vlilXZ1ZdEWqpqjwA==
   dependencies:
     "@stoplight/json" "^3.0.1"
     "@stoplight/types" "^9.1.2"
