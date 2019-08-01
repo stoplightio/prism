@@ -1,17 +1,13 @@
-import getHttpOperations from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { createLogger } from '@stoplight/prism-core';
+import { IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
-import { relative, resolve } from 'path';
 import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
 
-async function instantiatePrism(fixture: string) {
-  const path = relative(process.cwd(), resolve(__dirname, 'fixtures', fixture));
-  const operations = await getHttpOperations(path);
-  const server = createServer(operations, { components: { logger }, config: { mock: { dynamic: false } } });
-  return server;
+function instantiatePrism2(operations: IHttpOperation[]) {
+  return createServer(operations, { components: { logger }, config: { mock: { dynamic: false } } });
 }
 
 describe('body params validation', () => {
@@ -22,17 +18,229 @@ describe('body params validation', () => {
   });
 
   describe('oas3 with encodings', () => {
-    beforeEach(async () => {
-      server = await instantiatePrism('encodings.oas3.yaml');
-    });
-
     // Ref: https://github.com/stoplightio/prism/issues/496
     test.todo('allowReserved set to true');
   });
 
   describe.each([['oas2'], ['oas3']])('%s with body param', oas => {
     beforeEach(async () => {
-      server = await instantiatePrism(`operations-with-body-param.${oas}.yaml`);
+      server = instantiatePrism2([
+        {
+          id: '?http-operation-id?',
+          method: 'post',
+          path: '/json-body-no-request-content-type',
+          responses: [
+            {
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            body: {
+              contents: [
+                {
+                  mediaType: '',
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'integer',
+                        format: 'int64',
+                        minimum: -9223372036854776000,
+                        maximum: 9223372036854776000,
+                      },
+                    },
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+        },
+        {
+          id: '?http-operation-id?',
+          method: 'post',
+          path: '/json-body-optional',
+          responses: [
+            {
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            body: {
+              required: false,
+              contents: [
+                {
+                  mediaType: 'application/json',
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'integer',
+                        format: 'int64',
+                        minimum: -9223372036854776000,
+                        maximum: 9223372036854776000,
+                      },
+                    },
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+        },
+        {
+          id: '?http-operation-id?',
+          method: 'post',
+          path: '/json-body-required',
+          responses: [
+            {
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            body: {
+              required: true,
+              contents: [
+                {
+                  mediaType: 'application/json',
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'integer',
+                        format: 'int64',
+                        minimum: -9223372036854776000,
+                        maximum: 9223372036854776000,
+                      },
+                      status: {
+                        type: 'string',
+                        enum: ['placed', 'approved', 'delivered'],
+                      },
+                    },
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+        },
+        {
+          id: '?http-operation-id?',
+          method: 'post',
+          path: '/json-body-property-required',
+          responses: [
+            {
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            body: {
+              contents: [
+                {
+                  mediaType: 'application/json',
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'integer',
+                        format: 'int64',
+                        minimum: -9223372036854776000,
+                        maximum: 9223372036854776000,
+                      },
+                    },
+                    required: ['id'],
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+        },
+      ]);
     });
 
     describe('operation with no request content type defined', () => {
@@ -172,8 +380,63 @@ describe('body params validation', () => {
   });
 
   describe.each([['oas2'], ['oas3']])('%s with form data param', oas => {
-    beforeEach(async () => {
-      server = await instantiatePrism(`operations-with-formdata-param.${oas}.yaml`);
+    beforeEach(() => {
+      server = instantiatePrism2([
+        {
+          id: '?http-operation-id?',
+          method: 'post',
+          path: '/path',
+          responses: [
+            {
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            body: {
+              contents: [
+                {
+                  mediaType: 'application/x-www-form-urlencoded',
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'integer',
+                      },
+                      status: {
+                        type: 'string',
+                        enum: ['open', 'close'],
+                      },
+                    },
+                    required: ['id', 'status'],
+                    $schema: 'http://json-schema.org/draft-04/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+        },
+      ]);
     });
 
     describe('required parameter not in body', () => {
