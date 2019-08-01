@@ -1,22 +1,24 @@
 ====test====
 Making a request (and not including any credentials) to an endpoint,
-which security depends on the one and only global security definition,
+which security depends on the one and only global security scheme,
 results in a 401 status code response.
 ====spec====
-swagger: "2.0"
+openapi: 3.0.2
 paths:
   /todos:
     get:
       responses:
         200:
           description: OK
-          schema:
-            type: string
-            example: test
-securityDefinitions:
-  BasicAuth:
-    type: http
-    scheme: basic
+          content:
+            application/json:
+              schema:
+                type: number
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
 security:
   - BasicAuth: []
 ====server====
@@ -25,4 +27,4 @@ mock -p 4010
 curl -sIXGET http://localhost:4010/todos
 ====expect====
 HTTP/1.1 401 Unauthorized
-WWW-Authenticate: Basic realm="*"
+www-authenticate: Basic realm="*"

@@ -1,5 +1,7 @@
 ====test====
-Access to a resource is denied when *X-API-Key* required header is not provided.
+Making a request (and not including any credentials) to an endpoint,
+which security depends on global security schemes,
+results in a 401 status code response.
 ====spec====
 openapi: 3.0.2
 paths:
@@ -10,19 +12,24 @@ paths:
           description: OK
           content:
             application/json:
-              example: test
+              schema:
+                type: number
 components:
   securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-API-Key
 security:
+  - BasicAuth: []
   - ApiKeyAuth: []
 ====server====
 mock -p 4010
 ====command====
-curl -i http://localhost:4010/todos
+curl -sIXGET http://localhost:4010/todos
 ====expect====
 HTTP/1.1 401 Unauthorized
-WWW-Authenticate: X-API-Key
+www-authenticate: Basic realm="*", X-API-Key

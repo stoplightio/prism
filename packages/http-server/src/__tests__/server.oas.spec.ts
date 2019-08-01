@@ -84,7 +84,7 @@ describe('POST /pet with invalid body', () => {
   });
 });
 
-describe.each([['petstore.oas2.json'], ['petstore.oas3.json']])('server %s', file => {
+describe.each([['petstore.no-auth.oas2.json']])('server %s', file => {
   let server: IPrismHttpServer<{}>;
 
   beforeAll(async () => {

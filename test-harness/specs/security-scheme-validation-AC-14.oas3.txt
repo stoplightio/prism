@@ -1,28 +1,28 @@
 ====test====
 Access to a resource is denied when *X-API-Key* required header is not provided.
 ====spec====
-swagger: '2.0'
+openapi: 3.0.2
 paths:
   /todos:
     get:
-      produces:
-        - application/json
       responses:
         200:
           description: OK
-          examples:
-            application/json: test
-securityDefinitions:
-  ApiKeyAuth:
-    type: apiKey
-    in: header
-    name: X-API-Key
+          content:
+            application/json:
+              example: test
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
 security:
   - ApiKeyAuth: []
 ====server====
 mock -p 4010
 ====command====
-curl -i http://localhost:4010/todos
+curl -sIXGET http://localhost:4010/todos
 ====expect====
 HTTP/1.1 401 Unauthorized
-WWW-Authenticate: X-API-Key
+www-authenticate: X-API-Key

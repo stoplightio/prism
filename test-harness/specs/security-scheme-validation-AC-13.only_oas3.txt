@@ -1,5 +1,5 @@
 ====test====
-Not providing an api key that is required to be in the query, results in denied access.
+Not adding a required cookie with the name of SESSIONID results in denied access.
 ====spec====
 openapi: 3.0.2
 paths:
@@ -13,15 +13,16 @@ paths:
               example: test
 components:
   securitySchemes:
-    ApiKeyAuth:
+    cookieAuth:
       type: apiKey
-      in: query
-      name: apiKey
+      in: cookie
+      name: SESSIONID
 security:
-  - ApiKeyAuth: []
+  - cookieAuth: []
 ====server====
 mock -p 4010
 ====command====
-curl -i http://localhost:4010/todos
+curl -sIXGET http://localhost:4010/todos
 ====expect====
 HTTP/1.1 401 Unauthorized
+www-authenticate: Cookie realm="*" cookie-name=SESSIONID

@@ -127,6 +127,7 @@ const replyHandler = <LoaderInput>(
           .type('application/problem+json')
           .serializer(JSON.stringify)
           .code(status)
+          .headers(e.headers || {})
           .send(ProblemJsonError.fromPlainError(e));
       } else {
         reply.res.end();

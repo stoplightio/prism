@@ -1,11 +1,13 @@
 ====test====
 Adding a header of "Authorization: Basic <<TOKEN>>" where TOKEN is NOT base64 encoded <<ID>>:<<PASS>> combination
-for a request to an endpoint, which security depends on global security definitions, results in denied access.
+for a request to an endpoint, that is secured by BasicAuth (one of the security definitions selected manually), results in denied access.
 ====spec====
 openapi: 3.0.2
 paths:
   /todos:
     get:
+      security:
+        - BasicAuth: []
       responses:
         200:
           description: OK
@@ -27,6 +29,6 @@ security:
 ====server====
 mock -p 4010
 ====command====
-curl -i http://localhost:4010/todos -H "Authorization: Basic abc123"
+curl -sIXGET http://localhost:4010/todos -H "Authorization: Basic abc123"
 ====expect====
 HTTP/1.1 403 Forbidden

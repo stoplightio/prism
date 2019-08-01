@@ -4,6 +4,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
+import { validateSecurity } from './utils/security';
 
 export function factory<Resource, Input, Output, Config, LoadOpts>(
   defaultConfig: PrismConfig<Config, Input>,
@@ -66,6 +67,13 @@ export function factory<Resource, Input, Output, Config, LoadOpts>(
               },
               value => TaskEither.right(value),
             ),
+            TaskEither.chain(resource => {
+              const anyRes = resource as any;
+
+              return anyRes && anyRes.security && anyRes.security.length
+                ? TaskEither.fromEither<Error, Resource | undefined>(validateSecurity(resource, input))
+                : TaskEither.right(resource);
+            }),
             TaskEither.chain(resource => {
               // validate input
               if (resource && components.validator && components.validator.validateInput) {
