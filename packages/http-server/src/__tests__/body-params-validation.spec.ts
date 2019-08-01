@@ -17,12 +17,12 @@ describe('body params validation', () => {
     return server.fastify.close();
   });
 
-  describe('oas3 with encodings', () => {
+  describe('http operation with encodings', () => {
     // Ref: https://github.com/stoplightio/prism/issues/496
     test.todo('allowReserved set to true');
   });
 
-  describe.each([['oas2'], ['oas3']])('%s with body param', oas => {
+  describe('http operation with body param', () => {
     beforeEach(async () => {
       server = instantiatePrism2([
         {
@@ -379,7 +379,7 @@ describe('body params validation', () => {
     });
   });
 
-  describe.each([['oas2'], ['oas3']])('%s with form data param', oas => {
+  describe('http operation with form data param', () => {
     beforeEach(() => {
       server = instantiatePrism2([
         {
