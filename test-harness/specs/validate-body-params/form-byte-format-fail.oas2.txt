@@ -1,0 +1,27 @@
+====test====
+Set expected format of request body parameter to base64.
+Test if it fails when not base64.
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: string
+          format: byte
+          name: id
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "id=%"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","id"],"severity":"Error","code":"format","message":"should match format \"byte\""}]}

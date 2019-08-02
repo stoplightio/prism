@@ -9,6 +9,21 @@
 
 Run `yarn test.harness` from your terminal
 
+### Running a selected tests
+
+You can run one or selected tests using `TESTS` env variable.
+If you want multiple test files to be run separate them with commas.
+Use paths relative to the `./spec` directory.
+
+E.g. run `TESTS=parameters-ac1.oas2.txt,validate-body-params/form-byte-format-fail.oas2.txt yarn test.harness`
+
+### Matching test files
+
+All test files are matched using a glob `**/*.txt`.
+This means that you can:
+- nest test files in subdirectories
+- skip files by suffixing name with `.skip` or some other suffix.
+
 ## Adding a new test
 
 * Create a new file in the `./spec` directory. It can have _any_ name and _any_ extension, it does not really matter.

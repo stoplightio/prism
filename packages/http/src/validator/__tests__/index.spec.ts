@@ -9,9 +9,9 @@ import * as findResponseSpecModule from '../utils/spec';
 import { IHttpValidator } from '../validators/types';
 
 const mockError: IPrismDiagnostic = {
-  message: 'c is required',
+  message: 'mocked C is required',
   code: 'required',
-  path: ['b'],
+  path: ['mocked-b'],
   severity: DiagnosticSeverity.Error,
 };
 
