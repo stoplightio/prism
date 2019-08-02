@@ -1,19 +1,10 @@
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from '@stoplight/prism-core';
 import { Dictionary, HttpMethod, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
-import { DiagnosticSeverity } from '@stoplight/types';
 import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
-export type TPrismHttpInstance<LoaderInput> = IPrism<
-  IHttpOperation,
-  IHttpRequest,
-  IHttpResponse,
-  IHttpConfig,
-  LoaderInput
->;
+export type TPrismHttpInstance = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
 
-export type TPrismHttpComponents<LoaderInput> = Partial<
-  IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput>
->;
+export type TPrismHttpComponents = Partial<IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>>;
 
 // TODO: should be complete | and in the @stoplight/types repo
 export type IHttpMethod = HttpMethod | 'trace';

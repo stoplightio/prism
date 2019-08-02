@@ -1,0 +1,28 @@
+====test====
+Set expected format of request body parameter to base64.
+Test if it's OK when passed base64.
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: string
+          format: byte
+          name: id
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "id=cmFuZG9tc3R1ZmY="
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+string

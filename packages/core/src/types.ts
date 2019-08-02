@@ -7,10 +7,8 @@ export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 // END
 
-export interface IPrism<Resource, Input, Output, Config, LoadOpts> {
-  process: (input: Input, config?: Config) => Promise<IPrismOutput<Input, Output>>;
-  load: (opts?: LoadOpts) => Promise<void>;
-  readonly resources: Resource[];
+export interface IPrism<Resource, Input, Output, Config> {
+  process: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
 }
 
 export type PartialPrismConfigFactory<C, I> = (
@@ -27,18 +25,6 @@ export interface IPrismConfig {
 
 export type PrismConfigFactory<C, I> = (input: I, defaultConfig?: PrismConfig<C, I>) => C;
 export type PrismConfig<C, I> = C | PrismConfigFactory<C, I>;
-
-export interface ILoader<Options, Resource> {
-  load: (opts?: Options, defaultLoader?: ILoader<Options, Resource>) => Promise<Resource[]>;
-}
-
-export interface IFilesystemLoaderOpts {
-  path?: string;
-}
-
-export interface IHttpLoaderOpts {
-  url?: string;
-}
 
 export interface IRouter<Resource, Input, Config> {
   route: (
@@ -82,8 +68,7 @@ export interface IValidator<Resource, Input, Config, Output> {
   ) => IPrismDiagnostic[];
 }
 
-export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
-  loader: ILoader<LoadOpts, Resource>;
+export interface IPrismComponents<Resource, Input, Output, Config> {
   router: IRouter<Resource, Input, Config>;
   forwarder: IForwarder<Resource, Input, Config, Output>;
   mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;

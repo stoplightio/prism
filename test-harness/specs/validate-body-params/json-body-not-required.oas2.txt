@@ -1,7 +1,7 @@
 ====test====
-When I send a request to an operation that has a body parameter
-and such body parameter is not required
-I shuold get 200 response
+When I send a request without a body 
+to an operation that optionally accepts a body
+I should get 200 response
 ====spec====
 swagger: '2.0'
 paths:
