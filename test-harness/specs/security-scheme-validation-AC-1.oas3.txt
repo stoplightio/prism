@@ -10,9 +10,7 @@ paths:
           description: OK
           content:
             application/json:
-              schema:
-                type: string
-                example: test
+              example: test
 ====server====
 mock -p 4010
 ====command====
