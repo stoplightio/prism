@@ -44,7 +44,16 @@ describe('harness', () => {
       const [command, ...args] = parsed.command.split(' ').map(t => t.trim());
       const serverArgs = [...parsed.server.split(' ').map(t => t.trim()), tmpFileHandle.name];
 
-      prismMockProcessHandle = spawn(path.join(__dirname, '../cli-binaries/prism-cli'), serverArgs);
+      const spawnCommand = process.env.FROM_SOURCES
+        ? 'yarn'
+        : path.join(__dirname, '../cli-binaries/prism-cli');
+
+      prismMockProcessHandle = spawn(
+        spawnCommand,
+        process.env.FROM_SOURCES
+          ? ['workspace', '@stoplight/prism-cli', 'run', 'cli'].concat(serverArgs)
+          : serverArgs
+      );
 
       prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
         if (line.includes('Prism is listening')) {
