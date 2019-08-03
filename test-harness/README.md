@@ -24,6 +24,16 @@ This means that you can:
 - nest test files in subdirectories
 - skip files by suffixing name with `.skip` or some other suffix.
 
+## Debugging
+
+In case some test are giving trouble, it's possible to run the harness on the source code directly instead of the built binary. To make this happen, simply set `FROM_SOURCES` variable to a truthy value when running the test suite.
+
+` FROM_SOURCES=1 yarn test.harness`
+
+Keep in mind that the whole source code gets recompiled for **every** harness test. For this reason, it's recommended to use this flag with the `TESTS` env variable to narrow down the runned tests.
+
+The test is also run
+
 ## Adding a new test
 
 * Create a new file in the `./spec` directory. It can have _any_ name and _any_ extension, it does not really matter.
@@ -75,17 +85,17 @@ Connection: keep-alive
 #### Things to keep in mind when creating the files:
 
 * 1 test per file, we do not support multiple splitting.
-* Be precise with the separators. They shuold be 4 *before* **AND** *after* the word. `====`
-* The 4 keywords are `test,spec,server,command,expect,expect-loose`, nothing else at the moment
-* You can run all the tests on the same port `4010`, but you can also choose another one
+* Be precise with the separators. They should be 4 *before* **AND** *after* the word. `====`
+* The 4 keywords are `test,spec,server,command,expect,expect-loose`, nothing else at the moment.
+* You can run all the tests on the same port `4010`, but you can also choose another one.
 * The `curl` command does not support piping stuff into other tools; so if you're trying to be cool and do `curl | grep`, well maybe next time.
-* All the `curl` commands **must** have the `-i` flag, otherwise the trace parser won't understand the output
+* All the `curl` commands **must** have the `-i` flag, otherwise the trace parser won't understand the output.
 
 ## Technical details
 
-* A RegExp is used to split the content
-* A temporany file with the specification file is stored on your disk
-* Prism gets spawn with the specified arguments and waited to be running
-* The curl command is performed
-* The outputs get converted using `http-string-parser`, a veeery old package transforming CURL output in a consumable format
+* A RegExp is used to split the content.
+* A temporany file with the specification file is stored on your disk.
+* Prism gets spawn with the specified arguments (from yarn or from the executable according to the specified env variable) and waited to be running. The detection happens by observing the `stdout` looking for a particular string.
+* The curl command is performed.
+* The outputs get converted using `http-string-parser`, a veeery old package transforming CURL output in a consumable format.
 * Gavel is used to validate the request — it will automagically ignore headers that can change and consider only the "fundamental" one such as content negotiation ones and stuff around.

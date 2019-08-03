@@ -52,11 +52,20 @@ describe('harness', () => {
         spawnCommand,
         process.env.FROM_SOURCES
           ? ['workspace', '@stoplight/prism-cli', 'run', 'cli'].concat(serverArgs)
-          : serverArgs
+          : serverArgs,
+        {
+          env: {
+            NODE_OPTIONS: '--inspect'
+          }, stdio: 'pipe'
+        }
       );
+
+      prismMockProcessHandle.stderr.pipe(split2()).on('data', (line: string) => console.log(line));
 
       prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
         if (line.includes('Prism is listening')) {
+          console.log(parsed.test);
+
           const clientCommandHandle = spawnSync(command, args, {
             shell: true,
             encoding: 'utf8',
