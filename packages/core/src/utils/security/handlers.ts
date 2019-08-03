@@ -1,9 +1,13 @@
+import { Dictionary } from '@stoplight/types/dist';
 import * as Either from 'fp-ts/lib/Either';
 import { fromNullable, getOrElse, mapNullable } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 
-const unauthorisedErr = (msg: string) => ({
+export type Err = { message: string; status: number; headers: Dictionary<string, string> };
+export type Handler = { type: string; name: string; in?: string; scheme?: string };
+
+const unauthorisedErr = (msg: string): Err => ({
   message: '',
   status: 401,
   headers: { 'WWW-Authenticate': msg },
@@ -18,19 +22,19 @@ function isTokenOK(token: string) {
 }
 
 const httpBasic = {
-  test: ({ scheme, type }: any) => {
+  test: ({ scheme, type }: Handler) => {
     return scheme === 'basic' && type === 'http';
   },
-  handle: (someInput: any, resource: any) => {
+  handle: <R, I>(someInput: I, name: string, resource?: R) => {
     const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
     return authorizationHeader
-      ? checkHeader(authorizationHeader, resource)
+      ? checkHeader<R>(authorizationHeader, resource)
       : Either.left(unauthorisedErr('Basic realm="*"'));
   },
 };
 
-function checkHeader(authorizationHeader: string, resource: any) {
+function checkHeader<R>(authorizationHeader: string, resource?: R) {
   const [schema, token] = authorizationHeader.split(' ');
 
   const isTokenOKEY = token && isTokenOK(token);
@@ -62,77 +66,74 @@ function checkHeader(authorizationHeader: string, resource: any) {
 }
 
 const apiKeyInHeader = {
-  test: ({ type, in: where }: any) => {
+  test: ({ type, in: where }: Handler) => {
     return where === 'header' && type === 'apiKey';
   },
-  handle: (someInput: any, resource: any, definedSecSchema: any) => {
-    const isAPIKeyProvided = pipe(
-      fromNullable(someInput.headers),
-      mapNullable(headers => headers[definedSecSchema.name.toLowerCase()]),
-      getOrElse(() => false),
-    );
+  handle: <R, I>(someInput: I, name: string, resource?: R) => {
+    const isAPIKeyProvided = get(someInput, ['headers', name.toLowerCase()]);
 
-    return when(isAPIKeyProvided, resource, definedSecSchema.name);
+    return when<R>(isAPIKeyProvided, name, resource);
   },
 };
 
 const apiKeyInQuery = {
-  test: ({ type, in: where }: any) => {
+  test: ({ type, in: where }: Handler) => {
     return where === 'query' && type === 'apiKey';
   },
-  handle: (someInput: any, resource: any, definedSecSchema: any) => {
-    const isApiKeyInQuery = !!someInput.url.query[definedSecSchema.name];
+  handle: <R, I>(someInput: I, name: string, resource?: R) => {
+    const isApiKeyInQuery = get(someInput, ['url', 'query', name]);
 
-    return when(isApiKeyInQuery, resource, definedSecSchema.name);
+    return when<R>(isApiKeyInQuery, name, resource);
   },
 };
 
 const openIdConnect = {
-  test: ({ type }: any) => {
+  test: ({ type }: Handler) => {
     return type === 'openIdConnect';
   },
-  handle: (someInput: any, resource: any, definedSecSchema: any) => {
-    return when(isBearerToken(someInput), resource, definedSecSchema.name);
+  handle: <R, I>(someInput: I, name: string, resource?: R) => {
+    return when<R>(isBearerToken(get(someInput, 'headers')), name, resource);
   },
 };
 
 const bearer = {
-  test: ({ type, scheme }: any) => {
+  test: ({ type, scheme }: Handler) => {
     return scheme === 'bearer' && type === 'http';
   },
-  handle: (someInput: any, resource: any, definedSecSchema: any) => {
-    return when(isBearerToken(someInput), resource, definedSecSchema.name);
+  handle: <R, I>(someInput: I, name: string, resource?: R) => {
+    return when<R>(isBearerToken(get(someInput, 'headers')), name, resource);
   },
 };
 
 const oauth2 = {
-  test: ({ type }: { type: string }) => {
+  test: ({ type }: Handler) => {
     return type === 'oauth2';
   },
-  handle: (someInput: any, resource: any, definedSecSchema: any) => {
-    return when(isBearerToken(someInput), resource, definedSecSchema.name);
+  handle: <R, I>(someInput: I, name: string, resource?: R) => {
+    return when<R>(isBearerToken(get(someInput, 'headers')), name, resource);
   },
 };
 
 const apiKeyInCookie = {
-  test: ({ type, in: where }: any) => {
+  test: ({ type, in: where }: Handler) => {
     return where === 'cookie' && type === 'apiKey';
   },
-  handle: (someInput: any, resource: any, definedSecSchema: any) => {
+  handle: <R, I>(someInput: I, name: string, resource?: R) => {
+    const probablyCookie = get(someInput, ['headers', 'cookie']);
+
     const isApiKeyInCookie = pipe(
-      fromNullable(someInput.headers),
-      mapNullable(headers => headers.cookie),
+      fromNullable(probablyCookie),
       mapNullable(cookie => {
-        return new RegExp(`${definedSecSchema.name}=.+`).test(cookie);
+        return new RegExp(`${name}=.+`).test(cookie);
       }),
       getOrElse(() => false),
     );
 
-    return when(isApiKeyInCookie, resource, `Cookie realm="*" cookie-name=${definedSecSchema.name}`);
+    return when<R>(isApiKeyInCookie, `Cookie realm="*" cookie-name=${name}`, resource);
   },
 };
 
-function when(isOk: any, resource: any, msg: any) {
+function when<R>(isOk: boolean, msg: string, resource?: R) {
   return isOk ? Either.right(resource) : Either.left(unauthorisedErr(msg));
 }
 
@@ -146,9 +147,9 @@ export const securitySchemaHandlers = [
   openIdConnect,
 ];
 
-function isBearerToken(someInput: any) {
+function isBearerToken(probablyHeaders: Dictionary<string, string>) {
   return pipe(
-    fromNullable(someInput.headers),
+    fromNullable(probablyHeaders),
     mapNullable(headers => headers.authorization),
     mapNullable(authorization => {
       return !!authorization.match(/^Bearer\s.+$/);

@@ -2,6 +2,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
+import { get } from 'lodash';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 import { validateSecurity } from './utils/security';
@@ -53,10 +54,10 @@ export function factory<Resource, Input, Output, Config>(
               value => TaskEither.right(value),
             ),
             TaskEither.chain(resource => {
-              const anyRes = resource as any;
+              const hasSecuritySchemes = get(resource, ['security', 'length']);
 
-              return anyRes && anyRes.security && anyRes.security.length
-                ? TaskEither.fromEither<Error, Resource | undefined>(validateSecurity(resource, input))
+              return hasSecuritySchemes
+                ? TaskEither.fromEither<Error, Resource>(validateSecurity<Resource, Input>(input, resource))
                 : TaskEither.right(resource);
             }),
             TaskEither.chain(resource => {
