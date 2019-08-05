@@ -54,13 +54,6 @@ export function factory<Resource, Input, Output, Config>(
               value => TaskEither.right(value),
             ),
             TaskEither.chain(resource => {
-              const hasSecuritySchemes = get(resource, ['security', 'length']);
-
-              return hasSecuritySchemes
-                ? TaskEither.fromEither<Error, Resource>(validateSecurity<Resource, Input>(input, resource))
-                : TaskEither.right(resource);
-            }),
-            TaskEither.chain(resource => {
               // validate input
               if (resource && components.validator && components.validator.validateInput) {
                 inputValidations.push(
@@ -82,7 +75,13 @@ export function factory<Resource, Input, Output, Config>(
                     components.mocker.mock(
                       {
                         resource,
-                        input: { validations: { input: inputValidations }, data: input },
+                        input: {
+                          validations: {
+                            input: inputValidations,
+                            security: validateSecurity<Resource, Input>(input, resource),
+                          },
+                          data: input,
+                        },
                         config: configObj,
                       },
                       defaultComponents.mocker,
@@ -96,7 +95,13 @@ export function factory<Resource, Input, Output, Config>(
                   components.forwarder.fforward(
                     {
                       resource,
-                      input: { validations: { input: inputValidations }, data: input },
+                      input: {
+                        validations: {
+                          input: inputValidations,
+                          security: validateSecurity<Resource, Input>(input, resource),
+                        },
+                        data: input,
+                      },
                       config: configObj,
                     },
                     defaultComponents.forwarder,

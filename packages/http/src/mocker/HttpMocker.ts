@@ -1,13 +1,14 @@
 import { IMocker, IMockerOpts, IPrismInput } from '@stoplight/prism-core';
+import { AuthErr } from '@stoplight/prism-core/src/utils/security/handlers';
 import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { Either } from 'fp-ts/lib/Either';
-import { map } from 'fp-ts/lib/Either';
+import { fold, map } from 'fp-ts/lib/Either';
+import { Either, isLeft } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
-import { mapLeft } from 'fp-ts/lib/ReaderEither';
-import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
+import { fromEither, mapLeft } from 'fp-ts/lib/ReaderEither';
+import { identity, isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import { Logger } from 'pino';
 import {
   ContentExample,
@@ -60,6 +61,27 @@ function negotiateResponse(
   input: IPrismInput<IHttpRequest>,
   resource: IHttpOperation,
 ) {
+  if (input.validations && input.validations.security && isLeft(input.validations.security)) {
+    return pipe(
+      withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'security failed')),
+      chain(() => {
+        const securityValidation = pipe(
+          input.validations.security,
+          fold<AuthErr, IHttpOperation, AuthErr>(identity, identity),
+        );
+
+        const statusCode = securityValidation && securityValidation.status;
+
+        return statusCode
+          ? pipe(
+              helpers.negotiateOptionsForUnauthorizedRequest(resource.responses, `${statusCode}`),
+              mapLeft(() => securityValidation),
+            )
+          : fromEither<Logger, Error, IHttpNegotiationResult>(input.validations.security);
+      }),
+    );
+  }
+
   if (input.validations.input.length > 0) {
     return pipe(
       withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),

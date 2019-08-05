@@ -235,27 +235,49 @@ const helpers = {
     return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
+  find400Or422(httpResponses: IHttpOperationResponse[], logger: Logger) {
+    let result = findResponseByStatusCode(httpResponses, '422');
+    if (!result) {
+      logger.trace('Unable to find a 422 response definition');
+
+      result = findResponseByStatusCode(httpResponses, '400');
+      if (!result) {
+        logger.trace('Unable to find a 400 response definition.');
+        const response = createResponseFromDefault(httpResponses, '422');
+        if (response) logger.success(`Created a ${response.code} from a default response`);
+        return response;
+      }
+    }
+
+    logger.success(`Found response ${result.code}. I'll try with it.`);
+    return result;
+  },
+
+  findByStatusCode(statusCode: string, httpResponses: IHttpOperationResponse[]) {
+    return findResponseByStatusCode(httpResponses, statusCode);
+  },
+
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
   ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
+    return this.genNegotiateOptionsForInvalidRequest(httpResponses, this.find400Or422);
+  },
+
+  negotiateOptionsForUnauthorizedRequest(
+    httpResponses: IHttpOperationResponse[],
+    statusCode: string,
+  ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
+    return this.genNegotiateOptionsForInvalidRequest(httpResponses, () =>
+      this.findByStatusCode(statusCode, httpResponses),
+    );
+  },
+
+  genNegotiateOptionsForInvalidRequest(
+    httpResponses: IHttpOperationResponse[],
+    finder: (hr: IHttpOperationResponse[], l: Logger) => IHttpOperationResponse | undefined,
+  ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      withLogger(logger => {
-        let result = findResponseByStatusCode(httpResponses, '422');
-        if (!result) {
-          logger.trace('Unable to find a 422 response definition');
-
-          result = findResponseByStatusCode(httpResponses, '400');
-          if (!result) {
-            logger.trace('Unable to find a 400 response definition.');
-            const response = createResponseFromDefault(httpResponses, '422');
-            if (response) logger.success(`Created a ${response.code} from a default response`);
-            return response;
-          }
-        }
-
-        logger.success(`Found response ${result.code}. I'll try with it.`);
-        return result;
-      }),
+      withLogger(logger => finder(httpResponses, logger)),
       chain(response => {
         return withLogger(logger => {
           if (!response) {
