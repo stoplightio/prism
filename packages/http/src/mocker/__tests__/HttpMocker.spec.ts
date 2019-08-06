@@ -63,6 +63,7 @@ describe('HttpMocker', () => {
     const mockInput = {
       validations: {
         input: [],
+        security: [],
       },
       data: {
         method: 'get' as const,
