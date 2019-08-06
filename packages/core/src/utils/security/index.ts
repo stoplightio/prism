@@ -10,7 +10,7 @@ export function validateSecurity<R, I>(someInput: I, resource?: R) {
   const securitySchemas = get(resource, 'security', []);
 
   return !securitySchemas.length
-    ? Either.right(resource)
+    ? []
     : (() => {
         const validatedSecuritySchemas = securitySchemas.map((definedSecSchema: SecurityScheme) => {
           const schemaHandler = securitySchemaHandlers.find(handler => {
@@ -25,7 +25,7 @@ export function validateSecurity<R, I>(someInput: I, resource?: R) {
         const validSecuritySchema = validatedSecuritySchemas.find(isRight);
         const invalidSecuritySchemas = validatedSecuritySchemas.filter(isLeft);
 
-        return validSecuritySchema || Either.left(getAllInvalidSec<R>(invalidSecuritySchemas));
+        return validSecuritySchema ? [] : [getAllInvalidSec<R>(invalidSecuritySchemas)];
       })();
 }
 

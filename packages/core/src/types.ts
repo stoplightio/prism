@@ -81,7 +81,7 @@ export interface IPrismInput<I> {
   data: I;
   validations: {
     input: IPrismDiagnostic[];
-    security?: Either<AuthErr, never>;
+    security: AuthErr[];
   };
 }
 

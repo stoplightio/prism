@@ -25,7 +25,7 @@ describe('HttpForwarder', () => {
 
       const response = await forwarder.forward({
         input: {
-          validations: { input: [] },
+          validations: { input: [], security: [] },
           data: {
             method: 'post',
             url: { path: '/files' },

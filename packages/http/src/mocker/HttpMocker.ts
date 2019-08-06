@@ -1,14 +1,13 @@
 import { IMocker, IMockerOpts, IPrismInput } from '@stoplight/prism-core';
-import { AuthErr } from '@stoplight/prism-core/src/utils/security/handlers';
 import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { fold, map } from 'fp-ts/lib/Either';
-import { Either, isLeft } from 'fp-ts/lib/Either';
+import { left, map } from 'fp-ts/lib/Either';
+import { Either } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import { fromEither, mapLeft } from 'fp-ts/lib/ReaderEither';
-import { identity, isEmpty, isObject, keyBy, mapValues } from 'lodash';
+import { get, isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import { Logger } from 'pino';
 import {
   ContentExample,
@@ -56,55 +55,57 @@ export class HttpMocker
   }
 }
 
+function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
+  return pipe(
+    withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
+    chain(() =>
+      pipe(
+        helpers.negotiateOptionsForInvalidRequest(resource.responses),
+        mapLeft(() =>
+          ProblemJsonError.fromTemplate(
+            UNPROCESSABLE_ENTITY,
+            'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+            {
+              validation: input.validations.input.map(detail => ({
+                location: detail.path,
+                severity: DiagnosticSeverity[detail.severity],
+                code: detail.code,
+                message: detail.message,
+              })),
+            },
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+function handleSecurityValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
+  return pipe(
+    withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass security validation')),
+    chain(() => {
+      const securityValidation = input.validations.security[0];
+      const statusCode = securityValidation && securityValidation.status;
+
+      return statusCode
+        ? pipe(
+            helpers.negotiateOptionsForUnauthorizedRequest(resource.responses, `${statusCode}`),
+            mapLeft(() => securityValidation),
+          )
+        : fromEither<Logger, Error, IHttpNegotiationResult>(left(securityValidation));
+    }),
+  );
+}
+
 function negotiateResponse(
   mockConfig: IHttpOperationConfig,
   input: IPrismInput<IHttpRequest>,
   resource: IHttpOperation,
 ) {
-  if (input.validations && input.validations.security && isLeft(input.validations.security)) {
-    return pipe(
-      withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'security failed')),
-      chain(() => {
-        const securityValidation = pipe(
-          input.validations.security,
-          fold<AuthErr, IHttpOperation, AuthErr>(identity, identity),
-        );
-
-        const statusCode = securityValidation && securityValidation.status;
-
-        return statusCode
-          ? pipe(
-              helpers.negotiateOptionsForUnauthorizedRequest(resource.responses, `${statusCode}`),
-              mapLeft(() => securityValidation),
-            )
-          : fromEither<Logger, Error, IHttpNegotiationResult>(input.validations.security);
-      }),
-    );
-  }
-
-  if (input.validations.input.length > 0) {
-    return pipe(
-      withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
-      chain(() =>
-        pipe(
-          helpers.negotiateOptionsForInvalidRequest(resource.responses),
-          mapLeft(() =>
-            ProblemJsonError.fromTemplate(
-              UNPROCESSABLE_ENTITY,
-              'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-              {
-                validation: input.validations.input.map(detail => ({
-                  location: detail.path,
-                  severity: DiagnosticSeverity[detail.severity],
-                  code: detail.code,
-                  message: detail.message,
-                })),
-              },
-            ),
-          ),
-        ),
-      ),
-    );
+  if (get(input, ['validations', 'security', 'length'])) {
+    return handleSecurityValidation(input, resource);
+  } else if (input.validations.input.length > 0) {
+    return handleInputValidation(input, resource);
   } else {
     return pipe(
       withLogger(logger =>
@@ -122,7 +123,7 @@ function assembleResponse(
   return withLogger(logger =>
     pipe(
       result,
-      map(negotiationResult => {
+      map((negotiationResult: IHttpNegotiationResult) => {
         const mockedBody = computeBody(negotiationResult, payloadGenerator);
         const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
 
