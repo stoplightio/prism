@@ -6,11 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
-- Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples
-
 ## Fixed
-
-- Validate OAS2 `application/x-www-urlencoded` (form data) params correctly (#483)
+- Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples
+- Prism now loads correctly OpenAPI 3.x documents with `encodings` with non specified `style` property
+- Prism got rid of some big internal dependencies that now aren't required anymore, making it faster and lighter.
+- Prism now correctly validates OAS2 `application/x-www-urlencoded` (form data) params (#483)
 
 # 3.0.3 (2019-07-25)
 
