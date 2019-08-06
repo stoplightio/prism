@@ -1,33 +1,32 @@
 ====test====
 Not providing required credentials returns an example for 401.
 ====spec====
-openapi: 3.0.2
+swagger: "2.0"
 paths:
   /todos:
     get:
+      produces:
+        - application/json
       responses:
         200:
           description: OK
-          content:
-            application/json:
-              example: test
+          examples:
+            'application/json': test
         401:
           description: unauthorized
-          content:
-            application/json:
-              example: unauthorized
-components:
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: query
-      name: apiKey
+          examples:
+            'application/json': unauthorized
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: query
+    name: apiKey
 security:
   - ApiKeyAuth: []
 ====server====
 mock -p 4010
 ====command====
-curl -i http://localhost:4010/todos
+curl -i http://localhost:4010/todos -H "Accept: application/json"
 ====expect====
 HTTP/1.1 401 Unauthorized
 
