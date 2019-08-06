@@ -22,7 +22,9 @@ security:
 ====server====
 mock -p 4010
 ====command====
-curl -sIXGET http://localhost:4010/todos
+curl -i http://localhost:4010/todos
 ====expect====
 HTTP/1.1 401 Unauthorized
 www-authenticate: Cookie realm="*" cookie-name=SESSIONID
+
+{"type":"Unauthorised","title":"Invalid security scheme used","status":401,"detail":""}

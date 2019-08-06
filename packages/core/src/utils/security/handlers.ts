@@ -10,8 +10,8 @@ export type AuthErr = { name: string; message: string; status: number; headers: 
 export type SecurityScheme = { type: string; name: string; in?: string; scheme?: string };
 
 const genUnauthorisedErr = (msg: string): AuthErr => ({
-  name: 'unauthorised',
-  message: '',
+  name: 'Unauthorised',
+  message: 'Invalid security scheme used',
   status: 401,
   headers: { 'WWW-Authenticate': msg },
 });
@@ -48,7 +48,7 @@ function checkHeader<R>(authorizationHeader: string, resource?: R) {
     },
     {
       test: () => isBasicSchema,
-      handle: () => Either.left({ status: 403, message: '', headers: {} }),
+      handle: () => Either.left({ name: 'Forbidden', status: 403, message: 'Invalid credentials used', headers: {} }),
     },
   ].find(possibleHandler => possibleHandler.test());
 
