@@ -19,7 +19,7 @@ export function validateSecurity<R, I>(someInput: I, resource?: R) {
 
           return schemaHandler
             ? schemaHandler.handle(someInput, definedSecSchema.name, resource)
-            : Either.left({ message: 'No handler for the security implemented yet.' });
+            : Either.left({ message: 'No handler for the security scheme found.' });
         });
 
         const validSecuritySchema = validatedSecuritySchemas.find(isRight);

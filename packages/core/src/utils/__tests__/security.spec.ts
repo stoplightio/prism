@@ -9,7 +9,7 @@ describe('validateSecurity', () => {
     test('returns a message explaining the issue', () => {
       expect(validateSecurity<any, any>({}, { security: [{}] })).toStrictEqual([
         {
-          message: 'No handler for the security implemented yet.',
+          message: 'No handler for the security scheme found.',
         },
       ]);
     });
