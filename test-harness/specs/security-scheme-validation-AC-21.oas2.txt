@@ -1,5 +1,5 @@
 ====test====
-Not providing required credentials returns an example for 401.
+Not providing required credentials returns the schema generated response for 401.
 ====spec====
 swagger: "2.0"
 paths:
@@ -14,8 +14,8 @@ paths:
             'application/json': test
         401:
           description: unauthorized
-          examples:
-            'application/json': unauthorized
+          schema:
+            type: number
 securityDefinitions:
   ApiKeyAuth:
     type: apiKey
@@ -30,4 +30,4 @@ curl -i http://localhost:4010/todos
 ====expect====
 HTTP/1.1 401 Unauthorized
 
-"unauthorized"
+0
