@@ -52,7 +52,7 @@ function checkHeader<R>(authorizationHeader: string, resource?: R) {
     },
   ].find(possibleHandler => possibleHandler.test());
 
-  return handler ? handler.handle() : genUnauthorisedErr('Basic realm="*"');
+  return handler ? handler.handle() : Either.left(genUnauthorisedErr('Basic realm="*"'));
 }
 
 const apiKeyInHeader = {
@@ -73,23 +73,23 @@ const apiKeyInQuery = {
   },
 };
 
-const bearerHandler = <R, I>(someInput: I, name: string, resource?: R) => {
-  return when<R>(isBearerToken(get(someInput, 'headers')), name, resource);
+const bearerHandler = <R, I>(msg: string, someInput: I, name: string, resource?: R) => {
+  return when<R>(isBearerToken(get(someInput, 'headers')), msg, resource);
 };
 
 const openIdConnect = {
   test: ({ type }: SecurityScheme) => type === 'openIdConnect',
-  handle: bearerHandler,
+  handle: bearerHandler.bind({}, 'OpenID'),
 };
 
 const bearer = {
   test: ({ type, scheme }: SecurityScheme) => scheme === 'bearer' && type === 'http',
-  handle: bearerHandler,
+  handle: bearerHandler.bind({}, 'Bearer'),
 };
 
 const oauth2 = {
   test: ({ type }: SecurityScheme) => type === 'oauth2',
-  handle: bearerHandler,
+  handle: bearerHandler.bind({}, 'OAuth2'),
 };
 
 const apiKeyInCookie = {

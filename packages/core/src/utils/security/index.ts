@@ -18,8 +18,8 @@ export function validateSecurity<R, I>(someInput: I, resource?: R) {
           });
 
           return schemaHandler
-            ? schemaHandler.handle<R, I>(someInput, definedSecSchema.name, resource)
-            : Either.left('no handler for the security implemented yet!!!!');
+            ? schemaHandler.handle(someInput, definedSecSchema.name, resource)
+            : Either.left({ message: 'No handler for the security implemented yet.' });
         });
 
         const validSecuritySchema = validatedSecuritySchemas.find(isRight);
@@ -32,21 +32,22 @@ export function validateSecurity<R, I>(someInput: I, resource?: R) {
 function getAllInvalidSec<R>(invalidSecuritySchemas: Array<Left<AuthErr>>) {
   const pathToHeader = ['headers', 'WWW-Authenticate'];
 
-  const allWWWAuthHeaders = invalidSecuritySchemas.reduce((accumulator: string, currentValue) => {
-    return pipe(
-      currentValue,
-      Either.swap,
-      map(err => {
-        return err.status === 401 ? [accumulator, get(err, pathToHeader)].filter(identity).join(', ') : accumulator;
-      }),
-      getOrElse(() => ''),
-    );
-  }, '');
-
   const firstLeftValue: AuthErr = pipe(
     invalidSecuritySchemas[0],
     Either.fold<AuthErr, R, AuthErr>(identity, identity),
   );
 
-  return set(pathToHeader, allWWWAuthHeaders, firstLeftValue);
+  return firstLeftValue.status !== 401
+    ? firstLeftValue
+    : (() => {
+        const allWWWAuthHeaders = invalidSecuritySchemas.reduce((accumulator: string, currentValue) => {
+          return pipe(
+            currentValue,
+            Either.mapLeft(err => [accumulator, get(err, pathToHeader)].filter(identity).join(', ')),
+            Either.fold(authHeader => authHeader || '', () => ''),
+          );
+        }, '');
+
+        return set(pathToHeader, allWWWAuthHeaders, firstLeftValue);
+      })();
 }
