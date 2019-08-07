@@ -35,19 +35,19 @@ const httpBasic = {
   },
 };
 
-function checkHeader<R>(authorizationHeader: string, resource?: R) {
-  const [schema, token] = authorizationHeader.split(' ');
+function checkHeader<R>(authorizationHeader: string, resource?: any) {
+  const [authScheme, token] = authorizationHeader.split(' ');
 
   const isBasicTokenGiven = token && isBasicToken(token);
-  const isBasicSchema = schema === 'Basic';
+  const isBasicScheme = (authScheme || '').toLowerCase() === 'basic';
 
   const handler = [
     {
-      test: () => isBasicSchema && isBasicTokenGiven,
+      test: () => isBasicScheme && isBasicTokenGiven,
       handle: () => Either.right(resource),
     },
     {
-      test: () => isBasicSchema,
+      test: () => isBasicScheme,
       handle: () => Either.left({ name: 'Forbidden', status: 403, message: 'Invalid credentials used', headers: {} }),
     },
   ].find(possibleHandler => possibleHandler.test());
