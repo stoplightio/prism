@@ -253,10 +253,6 @@ const helpers = {
     return result;
   },
 
-  findByStatusCode(statusCode: string, httpResponses: IHttpOperationResponse[]) {
-    return findResponseByStatusCode(httpResponses, statusCode);
-  },
-
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
   ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
@@ -268,7 +264,7 @@ const helpers = {
     statusCode: string,
   ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return this.genNegotiateOptionsForInvalidRequest(httpResponses, () =>
-      this.findByStatusCode(statusCode, httpResponses),
+      findResponseByStatusCode(httpResponses, statusCode),
     );
   },
 
