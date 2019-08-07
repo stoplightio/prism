@@ -18,9 +18,11 @@ describe('validateSecurity', () => {
   describe('basic auth', () => {
     describe('valid', () => {
       test('passes when the correct header is provided', () => {
+        const token = new Buffer('test:test').toString('base64');
+
         expect(
           validateSecurity<any, any>(
-            { headers: { authorization: 'Basic dGVzdDp0ZXN0' } },
+            { headers: { authorization: `Basic ${token}` } },
             { security: [{ scheme: 'basic', type: 'http' }] },
           ),
         ).toStrictEqual([]);
