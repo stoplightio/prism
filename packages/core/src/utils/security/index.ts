@@ -37,7 +37,7 @@ function getAllInvalidSec<R>(invalidSecuritySchemas: Array<Left<AuthErr>>) {
     Either.fold<AuthErr, R, AuthErr>(identity, identity),
   );
 
-  return firstLeftValue.status !== 401
+  return firstLeftValue.status !== 401 || invalidSecuritySchemas.length === 1
     ? firstLeftValue
     : (() => {
         const allWWWAuthHeaders = invalidSecuritySchemas.reduce((accumulator: string, currentValue) => {

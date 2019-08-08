@@ -216,6 +216,28 @@ describe('validateSecurity', () => {
   });
 
   describe('API KEY', () => {
+    describe('with another security scheme', () => {
+      test('does not add info to WWW-Authenticate header', () => {
+        expect(
+          validateSecurity<any, any>(
+            { headers: {} },
+            {
+              security: [{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }],
+            },
+          ),
+        ).toStrictEqual([
+          {
+            headers: {
+              'WWW-Authenticate': 'Basic realm="*"',
+            },
+            message: 'Invalid security scheme used',
+            name: 'Unauthorised',
+            status: 401,
+          },
+        ]);
+      });
+    });
+
     describe('in header', () => {
       describe('valid', () => {
         test('passes when the correct header is provided', () => {
@@ -237,9 +259,7 @@ describe('validateSecurity', () => {
             ),
           ).toStrictEqual([
             {
-              headers: {
-                'WWW-Authenticate': 'x-api-key',
-              },
+              headers: {},
               message: 'Invalid security scheme used',
               name: 'Unauthorised',
               status: 401,
@@ -267,9 +287,7 @@ describe('validateSecurity', () => {
             validateSecurity<any, any>({}, { security: [{ in: 'query', type: 'apiKey', name: 'key' }] }),
           ).toStrictEqual([
             {
-              headers: {
-                'WWW-Authenticate': 'key',
-              },
+              headers: {},
               message: 'Invalid security scheme used',
               name: 'Unauthorised',
               status: 401,
@@ -297,9 +315,7 @@ describe('validateSecurity', () => {
             validateSecurity<any, any>({}, { security: [{ in: 'cookie', type: 'apiKey', name: 'key' }] }),
           ).toStrictEqual([
             {
-              headers: {
-                'WWW-Authenticate': 'Cookie realm="*" cookie-name=key',
-              },
+              headers: {},
               message: 'Invalid security scheme used',
               name: 'Unauthorised',
               status: 401,

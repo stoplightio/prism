@@ -13,7 +13,7 @@ const genUnauthorisedErr = (msg: string): AuthErr => ({
   name: 'Unauthorised',
   message: 'Invalid security scheme used',
   status: 401,
-  headers: { 'WWW-Authenticate': msg },
+  headers: msg ? { 'WWW-Authenticate': msg } : {},
 });
 
 function isBasicToken(token: string) {
@@ -112,7 +112,7 @@ const apiKeyInHeader = {
   handle: <R, I>(someInput: I, name: string, resource?: R) => {
     const isAPIKeyProvided = get(someInput, ['headers', name.toLowerCase()]);
 
-    return when<R>(isAPIKeyProvided, name, resource);
+    return when<R>(isAPIKeyProvided, '', resource);
   },
 };
 
@@ -121,7 +121,7 @@ const apiKeyInQuery = {
   handle: <R, I>(someInput: I, name: string, resource?: R) => {
     const isApiKeyInQuery = get(someInput, ['url', 'query', name]);
 
-    return when<R>(isApiKeyInQuery, name, resource);
+    return when<R>(isApiKeyInQuery, '', resource);
   },
 };
 
@@ -155,7 +155,7 @@ const apiKeyInCookie = {
       getOrElse(() => false),
     );
 
-    return when<R>(isApiKeyInCookie, `Cookie realm="*" cookie-name=${name}`, resource);
+    return when<R>(isApiKeyInCookie, '', resource);
   },
 };
 
