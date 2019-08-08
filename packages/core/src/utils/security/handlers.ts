@@ -31,29 +31,81 @@ const httpBasic = {
 
     return authorizationHeader
       ? checkHeader<R>(authorizationHeader, resource)
-      : Either.left(genUnauthorisedErr('Basic realm="*"'));
+      : Either.left(genUnauthorisedErr(basicWWWAuthenticate));
   },
 };
 
-function checkHeader<R>(authorizationHeader: string, resource?: any) {
+const digestWWWAuthenticate = 'Digest realm="*", nonce="abc123"';
+
+const httpDigest = {
+  test: ({ scheme, type }: SecurityScheme) => scheme === 'digest' && type === 'http',
+  handle: <R, I>(someInput: I, name: string, resource?: R) => {
+    const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
+
+    return get(someInput, ['headers', 'authorization'], '')
+      ? checkDigestHeader(authorizationHeader, resource)
+      : Either.left(genUnauthorisedErr(digestWWWAuthenticate));
+  },
+};
+
+function isDigestInfo(info: string[]) {
+  const infoAsString = info.join('');
+
+  return (
+    infoAsString.includes('username=') &&
+    infoAsString.includes('realm=') &&
+    infoAsString.includes('nonce=') &&
+    infoAsString.includes('uri=') &&
+    infoAsString.includes('response=') &&
+    info.every((schemeParam: string) => new RegExp(/(?:'|")([a-z0-9]*)(?:'|")/).test(schemeParam))
+  );
+}
+
+const invalidCredsErr = Either.left({
+  name: 'Forbidden',
+  status: 403,
+  message: 'Invalid credentials used',
+  headers: {},
+});
+
+function checkDigestHeader<R>(authorizationHeader: string, resource?: R) {
+  const [authScheme, ...info] = authorizationHeader.split(' ');
+
+  const isDigestInfoGiven = info && isDigestInfo(info);
+  const isDigestScheme = isScheme(authScheme, 'digest');
+
+  return genRespForScheme(isDigestScheme, isDigestInfoGiven, resource, digestWWWAuthenticate);
+}
+
+function isScheme(authScheme: string, shouldBeScheme: string) {
+  return (authScheme || '').toLowerCase() === shouldBeScheme;
+}
+
+function checkHeader<R>(authorizationHeader: string, resource?: R) {
   const [authScheme, token] = authorizationHeader.split(' ');
 
-  const isBasicTokenGiven = token && isBasicToken(token);
-  const isBasicScheme = (authScheme || '').toLowerCase() === 'basic';
+  const isBasicTokenGiven = !!(token && isBasicToken(token));
+  const isBasicScheme = isScheme(authScheme, 'basic');
 
+  return genRespForScheme(isBasicScheme, isBasicTokenGiven, resource, basicWWWAuthenticate);
+}
+
+function genRespForScheme<R>(isSchemeProper: boolean, isCredsGiven: boolean, resource: R, msg: string) {
   const handler = [
     {
-      test: () => isBasicScheme && isBasicTokenGiven,
+      test: () => isSchemeProper && isCredsGiven,
       handle: () => Either.right(resource),
     },
     {
-      test: () => isBasicScheme,
-      handle: () => Either.left({ name: 'Forbidden', status: 403, message: 'Invalid credentials used', headers: {} }),
+      test: () => isSchemeProper,
+      handle: () => invalidCredsErr,
     },
   ].find(possibleHandler => possibleHandler.test());
 
-  return handler ? handler.handle() : Either.left(genUnauthorisedErr('Basic realm="*"'));
+  return handler ? handler.handle() : Either.left(genUnauthorisedErr(msg));
 }
+
+const basicWWWAuthenticate = 'Basic realm="*"';
 
 const apiKeyInHeader = {
   test: ({ type, in: where }: SecurityScheme) => where === 'header' && type === 'apiKey',
@@ -121,6 +173,7 @@ function isBearerToken(inputHeaders: Headers) {
 
 export const securitySchemaHandlers = [
   httpBasic,
+  httpDigest,
   apiKeyInHeader,
   apiKeyInQuery,
   apiKeyInCookie,

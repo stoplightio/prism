@@ -47,6 +47,37 @@ describe('validateSecurity', () => {
       });
     });
 
+    describe('digest auth', () => {
+      describe('valid', () => {
+        test('passes when all of the required parameters are provided', () => {
+          expect(
+            validateSecurity<any, any>(
+              { headers: { authorization: 'Digest username="", realm="", nonce="", uri="", response=""' } },
+              { security: [{ scheme: 'digest', type: 'http' }] },
+            ),
+          ).toStrictEqual([]);
+        });
+      });
+
+      describe('invalid', () => {
+        test('fails when not all of the required parameters are passed', () => {
+          expect(
+            validateSecurity<any, any>(
+              { headers: { authorization: 'Digest username=""' } },
+              { security: [{ scheme: 'digest', type: 'http' }] },
+            ),
+          ).toStrictEqual([
+            {
+              headers: {},
+              message: 'Invalid credentials used',
+              name: 'Forbidden',
+              status: 403,
+            },
+          ]);
+        });
+      });
+    });
+
     describe('incorrect scheme type', () => {
       test('return an error object with 401 code', () => {
         expect(
