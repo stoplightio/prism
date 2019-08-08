@@ -1,33 +1,11 @@
-import { getOrElse, isLeft, isRight, Left, map } from 'fp-ts/lib/Either';
+import { isLeft, isRight, Left } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get, identity } from 'lodash';
 import { set } from 'lodash/fp';
-import { AuthErr, securitySchemaHandlers, SecurityScheme } from './handlers';
+import { securitySchemaHandlers } from './handlers';
+import { AuthErr, SecurityScheme } from './handlers/types';
 
 import * as Either from 'fp-ts/lib/Either';
-
-export function validateSecurity<R, I>(someInput: I, resource?: R) {
-  const securitySchemas = get(resource, 'security', []);
-
-  return !securitySchemas.length
-    ? []
-    : (() => {
-        const validatedSecuritySchemas = securitySchemas.map((definedSecSchema: SecurityScheme) => {
-          const schemaHandler = securitySchemaHandlers.find(handler => {
-            return handler.test(definedSecSchema);
-          });
-
-          return schemaHandler
-            ? schemaHandler.handle(someInput, definedSecSchema.name, resource)
-            : Either.left({ message: 'No handler for the security scheme found.' });
-        });
-
-        const validSecuritySchema = validatedSecuritySchemas.find(isRight);
-        const invalidSecuritySchemas = validatedSecuritySchemas.filter(isLeft);
-
-        return validSecuritySchema ? [] : [getAllInvalidSec<R>(invalidSecuritySchemas)];
-      })();
-}
 
 function getAllInvalidSec<R>(invalidSecuritySchemas: Array<Left<AuthErr>>) {
   const pathToHeader = ['headers', 'WWW-Authenticate'];
@@ -49,5 +27,28 @@ function getAllInvalidSec<R>(invalidSecuritySchemas: Array<Left<AuthErr>>) {
         }, '');
 
         return set(pathToHeader, allWWWAuthHeaders, firstLeftValue);
+      })();
+}
+
+export function validateSecurity<R, I>(someInput: I, resource?: R) {
+  const securitySchemas = get(resource, 'security', []);
+
+  return !securitySchemas.length
+    ? []
+    : (() => {
+        const validatedSecuritySchemas = securitySchemas.map((definedSecSchema: SecurityScheme) => {
+          const schemaHandler = securitySchemaHandlers.find(handler => {
+            return handler.test(definedSecSchema);
+          });
+
+          return schemaHandler
+            ? schemaHandler.handle(someInput, definedSecSchema.name, resource)
+            : Either.left({ message: 'No handler for the security scheme found.' });
+        });
+
+        const validSecuritySchema = validatedSecuritySchemas.find(isRight);
+        const invalidSecuritySchemas = validatedSecuritySchemas.filter(isLeft);
+
+        return validSecuritySchema ? [] : [getAllInvalidSec<R>(invalidSecuritySchemas)];
       })();
 }

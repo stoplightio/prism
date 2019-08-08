@@ -32,6 +32,6 @@ mock -p 4010
 curl -i http://localhost:4010/todos
 ====expect====
 HTTP/1.1 401 Unauthorized
-www-authenticate4: Basic realm="*", df
+www-authenticate: Basic realm="*"
 
 {"type":"Unauthorised","title":"Invalid security scheme used","status":401,"detail":""}
