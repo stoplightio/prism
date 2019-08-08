@@ -26,7 +26,7 @@ This means that you can:
 
 ## Debugging
 
-In case some test are giving trouble, it's possible to run the harness on the source code directly instead of the built binary. To make this happen, simply set `FROM_SOURCES` variable to a truthy value when running the test suite.
+In case some tests are giving trouble, it's possible to run the harness on the source code directly instead of the built binary. To make this happen, set `FROM_SOURCES` variable to a truthy value when running the test suite.
 
 ` FROM_SOURCES=1 yarn test.harness`
 

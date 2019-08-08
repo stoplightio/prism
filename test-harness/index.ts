@@ -54,13 +54,15 @@ describe('harness', () => {
           ? ['workspace', '@stoplight/prism-cli', 'run', 'cli'].concat(serverArgs)
           : serverArgs,
         {
-          env: {
-            NODE_OPTIONS: '--inspect'
-          }, stdio: 'pipe'
+          env: process.env.FROM_SOURCES
+            ? {
+                ...process.env,
+                NODE_OPTIONS: '--inspect',
+              }
+            : undefined,
+          stdio: 'pipe',
         }
       );
-
-      prismMockProcessHandle.stderr.pipe(split2()).on('data', (line: string) => console.log(line));
 
       prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
         if (line.includes('Prism is listening')) {
