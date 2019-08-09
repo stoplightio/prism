@@ -1,12 +1,14 @@
 import { validateSecurity } from '../security';
 
 describe('validateSecurity', () => {
-  test('returns an empty array when no security schemes are defined in a spec', () => {
-    expect(validateSecurity<any, any>({}, { security: [] })).toStrictEqual([]);
+  describe('when no security schemes are defined in a spec', () => {
+    it('passes the validation', () => {
+      expect(validateSecurity<any, any>({}, { security: [] })).toStrictEqual([]);
+    });
   });
 
-  describe('when given an unknown security type', () => {
-    test('returns a message explaining the issue', () => {
+  describe('when given an unknown security scheme type', () => {
+    it('fails with a message explaining the issue', () => {
       expect(validateSecurity<any, any>({}, { security: [{}] })).toStrictEqual([
         {
           message: 'No handler for the security scheme found.',
@@ -16,8 +18,8 @@ describe('validateSecurity', () => {
   });
 
   describe('basic auth', () => {
-    describe('valid', () => {
-      test('passes when the correct header is provided', () => {
+    describe('when a proper Basic authorization token is provided in the header', () => {
+      it('passes the validation', () => {
         const token = new Buffer('test:test').toString('base64');
 
         expect(
@@ -29,8 +31,8 @@ describe('validateSecurity', () => {
       });
     });
 
-    describe('invalid token, not in user:pass base64 form', () => {
-      test('returns an error object with 403 code', () => {
+    describe('when given a token, that is not in <<user>>:<<pass>> base64-encoded format', () => {
+      it('fails with an invalid credentials error', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { authorization: 'Basic abc123' } },
@@ -47,39 +49,8 @@ describe('validateSecurity', () => {
       });
     });
 
-    describe('digest auth', () => {
-      describe('valid', () => {
-        test('passes when all of the required parameters are provided', () => {
-          expect(
-            validateSecurity<any, any>(
-              { headers: { authorization: 'Digest username="", realm="", nonce="", uri="", response=""' } },
-              { security: [{ scheme: 'digest', type: 'http' }] },
-            ),
-          ).toStrictEqual([]);
-        });
-      });
-
-      describe('invalid', () => {
-        test('fails when not all of the required parameters are passed', () => {
-          expect(
-            validateSecurity<any, any>(
-              { headers: { authorization: 'Digest username=""' } },
-              { security: [{ scheme: 'digest', type: 'http' }] },
-            ),
-          ).toStrictEqual([
-            {
-              headers: {},
-              message: 'Invalid credentials used',
-              name: 'Forbidden',
-              status: 403,
-            },
-          ]);
-        });
-      });
-    });
-
-    describe('incorrect scheme type', () => {
-      test('return an error object with 401 code', () => {
+    describe('when authorization header contains an incorrect schema type', () => {
+      it('fails with an invalid security scheme error', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { authorization: 'Bearer abc123' } },
@@ -99,9 +70,40 @@ describe('validateSecurity', () => {
     });
   });
 
-  describe('Bearer token', () => {
-    describe('valid', () => {
-      test('passes when a bearer token is provided', () => {
+  describe('digest auth', () => {
+    describe('when all of the required parameters are provided in the header', () => {
+      it('passes the validation', () => {
+        expect(
+          validateSecurity<any, any>(
+            { headers: { authorization: 'Digest username="", realm="", nonce="", uri="", response=""' } },
+            { security: [{ scheme: 'digest', type: 'http' }] },
+          ),
+        ).toStrictEqual([]);
+      });
+    });
+
+    describe('when not all of the required parameters are provided in the header', () => {
+      it('fails with an invalid credentials error', () => {
+        expect(
+          validateSecurity<any, any>(
+            { headers: { authorization: 'Digest username=""' } },
+            { security: [{ scheme: 'digest', type: 'http' }] },
+          ),
+        ).toStrictEqual([
+          {
+            headers: {},
+            message: 'Invalid credentials used',
+            name: 'Forbidden',
+            status: 403,
+          },
+        ]);
+      });
+    });
+  });
+
+  describe('bearer token', () => {
+    describe('when a bearer token is provided in authorization header', () => {
+      it('passes the validation', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { authorization: 'Bearer abc123' } },
@@ -111,8 +113,8 @@ describe('validateSecurity', () => {
       });
     });
 
-    describe('invalid', () => {
-      test('returns an error object with 401 code', () => {
+    describe('when authorization header contains incorrect schema type', () => {
+      it('fails with an invalid security scheme error', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { authorization: 'Digest abc123' } },
@@ -131,8 +133,8 @@ describe('validateSecurity', () => {
       });
     });
 
-    describe('invalid - no authorization header', () => {
-      test('returns an error object with 401 code', () => {
+    describe('when authorization header is not provided', () => {
+      it('fails with an invalid security scheme error', () => {
         expect(
           validateSecurity<any, any>({ headers: {} }, { security: [{ scheme: 'bearer', type: 'http' }] }),
         ).toStrictEqual([
@@ -150,8 +152,8 @@ describe('validateSecurity', () => {
   });
 
   describe('oauth2', () => {
-    describe('valid', () => {
-      test('passes when a bearer token is provided', () => {
+    describe('when a bearer token is provided', () => {
+      it('it passes the validation', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { authorization: 'Bearer abc123' } },
@@ -161,8 +163,8 @@ describe('validateSecurity', () => {
       });
     });
 
-    describe('invalid', () => {
-      test('returns an error object with 401 code', () => {
+    describe('when authorization header contains an incorrect schema type', () => {
+      it('fails with an invalid security scheme error', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { authorization: 'Digest abc123' } },
@@ -183,8 +185,8 @@ describe('validateSecurity', () => {
   });
 
   describe('openid', () => {
-    describe('valid', () => {
-      test('passes when a bearer token is provided', () => {
+    describe('when a bearer token is provided', () => {
+      it('passes the validation', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { authorization: 'Bearer abc123' } },
@@ -194,8 +196,8 @@ describe('validateSecurity', () => {
       });
     });
 
-    describe('invalid', () => {
-      test('returns an error object with 401 code', () => {
+    describe('when authorization header contains incorrect schema type', () => {
+      it('fails with an invalid security scheme error', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { authorization: 'Digest abc123' } },
@@ -215,32 +217,34 @@ describe('validateSecurity', () => {
     });
   });
 
-  describe('API KEY', () => {
-    describe('with another security scheme', () => {
-      test('does not add info to WWW-Authenticate header', () => {
-        expect(
-          validateSecurity<any, any>(
-            { headers: {} },
+  describe('api key', () => {
+    describe('when api key schema is used with another security scheme', () => {
+      describe('when no auth credentials are presented', () => {
+        it('does not add info to WWW-Authenticate header', () => {
+          expect(
+            validateSecurity<any, any>(
+              { headers: {} },
+              {
+                security: [{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }],
+              },
+            ),
+          ).toStrictEqual([
             {
-              security: [{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }],
+              headers: {
+                'WWW-Authenticate': 'Basic realm="*"',
+              },
+              message: 'Invalid security scheme used',
+              name: 'Unauthorised',
+              status: 401,
             },
-          ),
-        ).toStrictEqual([
-          {
-            headers: {
-              'WWW-Authenticate': 'Basic realm="*"',
-            },
-            message: 'Invalid security scheme used',
-            name: 'Unauthorised',
-            status: 401,
-          },
-        ]);
+          ]);
+        });
       });
     });
 
-    describe('in header', () => {
-      describe('valid', () => {
-        test('passes when the correct header is provided', () => {
+    describe('when api key is expected to be found in a header', () => {
+      describe('when the correct header is provided', () => {
+        it('passes the validation', () => {
           expect(
             validateSecurity<any, any>(
               { headers: { 'x-api-key': 'abc123' } },
@@ -250,8 +254,8 @@ describe('validateSecurity', () => {
         });
       });
 
-      describe('invalid', () => {
-        test('returns an error object with 401 code', () => {
+      describe('when the required header is not provided', () => {
+        it('fails with an invalid security scheme error', () => {
           expect(
             validateSecurity<any, any>(
               { headers: {} },
@@ -269,9 +273,9 @@ describe('validateSecurity', () => {
       });
     });
 
-    describe('in query', () => {
-      describe('valid', () => {
-        test('passes when the correct query is provided', () => {
+    describe('when api key is expected to be found in the query', () => {
+      describe('when the correct query is provided', () => {
+        it('passes the validation', () => {
           expect(
             validateSecurity<any, any>(
               { url: { query: { key: 'abc123' } } },
@@ -281,8 +285,8 @@ describe('validateSecurity', () => {
         });
       });
 
-      describe('invalid', () => {
-        test('returns an error object with 401 code', () => {
+      describe('when the correct query is not provided', () => {
+        it('fails with an invalid security scheme error', () => {
           expect(
             validateSecurity<any, any>({}, { security: [{ in: 'query', type: 'apiKey', name: 'key' }] }),
           ).toStrictEqual([
@@ -297,9 +301,9 @@ describe('validateSecurity', () => {
       });
     });
 
-    describe('in cookie', () => {
-      describe('valid', () => {
-        test('passes when the correct cookie is provided', () => {
+    describe('when api key is expected to be found in a cookie', () => {
+      describe('when the correct cookie is provided', () => {
+        it('passes the validation', () => {
           expect(
             validateSecurity<any, any>(
               { headers: { cookie: 'key=abc123' } },
@@ -309,8 +313,8 @@ describe('validateSecurity', () => {
         });
       });
 
-      describe('invalid', () => {
-        test('returns an error object with 401 code', () => {
+      describe('when the required cookie is not provided', () => {
+        it('fails with an invalid security scheme error', () => {
           expect(
             validateSecurity<any, any>({}, { security: [{ in: 'cookie', type: 'apiKey', name: 'key' }] }),
           ).toStrictEqual([
