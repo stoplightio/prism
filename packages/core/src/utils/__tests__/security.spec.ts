@@ -11,7 +11,7 @@ describe('validateSecurity', () => {
     it('fails with a message explaining the issue', () => {
       expect(validateSecurity<any, any>({}, { security: [{}] })).toStrictEqual([
         {
-          message: 'No handler for the security scheme found.',
+          message: 'We currently do not support this type of security scheme.',
         },
       ]);
     });

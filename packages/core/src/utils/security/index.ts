@@ -43,7 +43,7 @@ export function validateSecurity<R, I>(someInput: I, resource?: R) {
 
           return schemaHandler
             ? schemaHandler.handle(someInput, definedSecSchema.name, resource)
-            : Either.left({ message: 'No handler for the security scheme found.' });
+            : Either.left({ message: 'We currently do not support this type of security scheme.' });
         });
 
         const validSecuritySchema = validatedSecuritySchemas.find(isRight);
