@@ -1,6 +1,6 @@
-# CLI — Quick start
+# Prism CLI
 
-We'll present here only the main use case. For a the complete list of commands, you can consult the relevant [documentation ⇗][cli-docs].
+Prism CLI for now only has one command: `mock`.
 
 ## Mock server
 
@@ -19,6 +19,7 @@ Then in another tab, you can hit the HTTP server with your favorite HTTP client.
 
 ```bash
 curl -s -D "/dev/stderr" http://127.0.0.1:4010/pets/123 | json_pp
+
 HTTP/1.1 200 OK
 content-type: application/json
 content-length: 85
@@ -51,5 +52,8 @@ Connection: keep-alive
 
 The body, headers, etc. for this response will be taken from the API description document.
 
+## Running in Production
 
-[cli-docs]: ../packages/cli/README.md
+When running in development mode (which happens when the `NODE_ENV` environment variable is not set to `production`) or the `-m` flag is set to false, both the HTTP Server and the CLI (which is responsible of parsing and showing the received logs on the screen) will run within the same process.
+
+Processing logs slows down the process significantly. If you're planning to use the CLI in production (for example in a Docker Container) we recommend to run the CLI with the `-m` flag or set the `NODE_ENV` variable to `production`. In this way, the CLI and the HTTP server will run on two different processes, so that logs processing, parsing and printing does not slow down the http requests processing.
