@@ -12,7 +12,7 @@ export function genRespForScheme<R>(isSchemeProper: boolean, isCredsGiven: boole
   const handler = [
     {
       test: () => isSchemeProper && isCredsGiven,
-      handle: () => Either.right(resource),
+      handle: () => Either.right({ headers: { 'WWW-Authenticate': '' } }),
     },
     {
       test: () => isSchemeProper,
@@ -35,5 +35,5 @@ export function isScheme(authScheme: string, shouldBeScheme: string) {
 }
 
 export function when<R>(isOk: boolean, msg: string, resource?: R) {
-  return isOk ? Either.right(resource) : Either.left(genUnauthorisedErr(msg));
+  return isOk ? Either.right({ headers: { 'WWW-Authenticate': msg } }) : Either.left(genUnauthorisedErr(msg));
 }
