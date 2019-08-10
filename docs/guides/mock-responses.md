@@ -113,7 +113,7 @@ When we call `curl http://127.0.0.1:4010/pets/123`, the operation references thi
 
 Notice that `name` had an `example` with a value so Prism used it, but `photoUrls` did not, so it just returned `"string"`. 🤷‍♂️
 
-### Dynamic Response Generation
+### Dynamic Response Generation
 
 Testing against the exact same piece of data over and over again is not the best way to build a robust integration. What happens when a name is longer than you expected, or the value happens to be 0 instead of 6?
 
