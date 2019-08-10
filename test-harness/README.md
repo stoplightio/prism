@@ -32,8 +32,6 @@ In case some tests are giving trouble, it's possible to run the harness on the s
 
 Keep in mind that the whole source code gets recompiled for **every** harness test. For this reason, it's recommended to use this flag with the `TESTS` env variable to narrow down the runned tests.
 
-The test is also run
-
 ## Adding a new test
 
 * Create a new file in the `./spec` directory. It can have _any_ name and _any_ extension, it does not really matter.

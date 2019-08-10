@@ -1,15 +1,17 @@
-# Validation
+# Request Validation
 
-Prism offers multiple validation layers that help you identify potential issues with your client ahead of the time.
+One of the main goals for Prism is to create a realistic fake API when maybe the API does not even exist. Based on the API description document Prism can take educated guesses at all sorts of validation rules for the request body, headers, query parameters, using keywords like `type`, `format`, `maxLength`, etc. 
 
-## Parameters validation
+It can also fail with 401 if security information is missing, and do a bunch of other things the API description document says the real API will do. If the folks implementing the real API do it differently to their shared documents... well you should maybe have words with them.
+
+## Parameter Validation
 
 Requests to operations which expect a request body, a query parameter or a path parameter will be validated.
 
 For example: let's make a a POST with a JSON body which is missing the required `name` parameter. We'll be using the [petstore openapi 2 version][petstore-oas2]
 
 ```bash
-curl -X POST -s -D "/dev/stderr" -H "content-type: application/json" -d '{"tag":"Stowford"}' http://127.0.0.1:4010/pets | json_pp
+curl -X POST -s -D "/dev/stderr" -H "content-type: application/json" -d '{"tag":"Stowford"}' http://127.0.0.1:4010/pets
 ```
 
 In such case, Prism will:
@@ -49,11 +51,11 @@ This error shows effectively that the request is missing a required property `na
 
 ## Server Validation
 
-OpenAPI lets API spec authors make only certain servers available, and they also allow certain
-operations to be restricted to certain servers. Make sure the server URL you plan to use is a valid
-server this the particular operation you are attempting. by providing a `__server` query param.
+OpenAPI allows the entire API, or certain operations, to be associated with specific servers. 
 
-Take this minimalist spec (OpenAPI v3) example:
+To make sure the server URL you plan to use is a valid server for the API, or for the particular operation you are attempting, provide it as a `__server` query param.
+
+Take this minimalist OpenAPI example:
 
 ```yaml
 openapi: 3.0.2
