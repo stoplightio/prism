@@ -1,26 +1,24 @@
-import { isLeft, isRight, Left, left } from 'fp-ts/lib/Either';
+import { Either, fold, isLeft, isRight, Left, left } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { flatten, get, identity } from 'lodash';
 import { set } from 'lodash/fp';
 import { securitySchemaHandlers } from './handlers';
-import { AuthErr, SecurityScheme } from './handlers/types';
-
-import * as Either from 'fp-ts/lib/Either';
+import { AuthResult, SecurityScheme } from './handlers/types';
 
 function gatherWWWAuthHeader(
-  authResults: Array<Array<Either.Either<any, any>>>,
+  authResults: Array<Array<Either<AuthResult, AuthResult>>>,
   pathToHeader: string[],
-  firstAuthErr: AuthErr,
+  firstAuthErr: AuthResult,
 ) {
   const flattenedAuthResults = flatten(authResults);
 
   return flattenedAuthResults.length === 1
     ? firstAuthErr
     : (() => {
-        const wwwAuthenticateHeaders = flattenedAuthResults.map((authResult: Either.Either<AuthErr, any>) => {
+        const wwwAuthenticateHeaders = flattenedAuthResults.map(authResult => {
           const headers = pipe(
             authResult,
-            Either.fold((authErr: AuthErr) => authErr.headers, (authErr: { headers: any }) => authErr.headers),
+            fold((result: AuthResult) => result.headers, (result: AuthResult) => result.headers),
           );
 
           return (headers && headers['WWW-Authenticate']) || '';
@@ -32,12 +30,12 @@ function gatherWWWAuthHeader(
       })();
 }
 
-function getAllInvalidSec<R>(invalidSecuritySchemes: Array<Array<Left<any>>>) {
+function getAllInvalidSec<R>(invalidSecuritySchemes: Array<Array<Left<AuthResult>>>) {
   const pathToHeader = ['headers', 'WWW-Authenticate'];
 
-  const firstLeftValue: AuthErr = pipe(
+  const firstLeftValue: AuthResult = pipe(
     invalidSecuritySchemes[0].find(isLeft) || left({}),
-    Either.fold<AuthErr, R, AuthErr>(identity, identity),
+    fold<AuthResult, R, AuthResult>(identity, identity),
   );
 
   return firstLeftValue.status !== 401
@@ -53,35 +51,33 @@ export function validateSecurity<R, I>(someInput: I, resource?: R) {
     : (() => {
         const authResults = securitySchemes.map((securityScheme: SecurityScheme[]) => {
           const authResult = securityScheme.map((definedSecSchema: SecurityScheme) => {
-            const schemaHandler = securitySchemaHandlers.find(handler => {
+            const schemeHandler = securitySchemaHandlers.find(handler => {
               return handler.test(definedSecSchema);
             });
 
-            return schemaHandler
-              ? schemaHandler.handle(someInput, definedSecSchema.name, resource)
-              : Either.left({ message: 'No handler for the security scheme found.' });
+            return schemeHandler
+              ? schemeHandler.handle(someInput, definedSecSchema.name, resource)
+              : left({ message: 'No handler for the security scheme found.' });
           });
 
           const firstAuthErrAsLeft = authResult.find(isLeft);
 
           return firstAuthErrAsLeft
             ? (() => {
-                const firstAuthErr: AuthErr = pipe(
+                const firstAuthErr: AuthResult = pipe(
                   firstAuthErrAsLeft,
-                  Either.fold<any, any, AuthErr>(identity, identity),
+                  fold<AuthResult, AuthResult, AuthResult>(identity, identity),
                 );
 
-                const authErr = gatherWWWAuthHeader([authResult], ['headers', 'WWW-Authenticate'], firstAuthErr);
-
-                return [Either.left(authErr)];
+                return [left(gatherWWWAuthHeader([authResult], ['headers', 'WWW-Authenticate'], firstAuthErr))];
               })()
             : authResult;
         });
 
-        const validSecuritySchema = authResults.find((authResult: Array<Either.Either<AuthErr, any>>) =>
+        const validSecuritySchema = authResults.find((authResult: Array<Either<AuthResult, AuthResult>>) =>
           authResult.every(isRight),
         );
-        const invalidSecuritySchemes = authResults.filter((authResult: Array<Either.Either<AuthErr, any>>) =>
+        const invalidSecuritySchemes = authResults.filter((authResult: Array<Either<AuthResult, AuthResult>>) =>
           authResult.some(isLeft),
         );
 
