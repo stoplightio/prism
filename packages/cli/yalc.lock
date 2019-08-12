@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "@stoplight/http-spec": {
+      "signature": "c326739230d4686a8a0cbac0de909b5e",
+      "file": true,
+      "replaced": "^1.0.8"
+    }
+  }
+}

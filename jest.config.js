@@ -36,7 +36,7 @@ module.exports = {
     {
       ...projectDefault,
       displayName: 'CORE',
-      testMatch: ['<rootDir>/packages/core/src/**/__tests__/*.*.ts'],
+      testMatch: ['<rootDir>/packages/core/src/utils/__tests__/security.spec.ts'],
       globals: {
         'ts-jest': {
           tsConfig: '<rootDir>/packages/tsconfig.test.json',
