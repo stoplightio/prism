@@ -1,4 +1,4 @@
-import { transformOas2Operation, transformOas3Operation } from '@stoplight/http-spec';
+import { transformOas2Operation, transformOas3Operation } from '@stoplight/http-spec/dist';
 import { IHttpOperation } from '@stoplight/types';
 import { parse } from '@stoplight/yaml';
 import axios from 'axios';
