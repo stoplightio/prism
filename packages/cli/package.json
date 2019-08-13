@@ -7,7 +7,7 @@
   },
   "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
-    "@stoplight/http-spec": "file:.yalc/@stoplight/http-spec",
+    "@stoplight/http-spec": "git://github.com/stoplightio/http-spec.git#feat/and-relation-in-security-schemas",
     "@stoplight/json-ref-resolver": "^2.0.3",
     "@stoplight/prism-core": "^3.0.3",
     "@stoplight/prism-http-server": "^3.0.3",
