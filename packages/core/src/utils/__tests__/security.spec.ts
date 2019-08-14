@@ -331,26 +331,28 @@ describe('validateSecurity', () => {
   });
 
   describe('AND relation between security schemes', () => {
-    describe('when given only one key', () => {
-      test.only('fails with an invalid security scheme error', () => {
+    const securityScheme = [
+      [
+        {
+          in: 'header',
+          type: 'apiKey',
+          name: 'x-api-key',
+        },
+        {
+          in: 'query',
+          type: 'apiKey',
+          name: 'apiKey',
+        },
+      ],
+    ];
+
+    describe('when security scheme expects two key', () => {
+      it('fails with an invalid security scheme error', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { 'x-api-key': 'abc123' } },
             {
-              security: [
-                [
-                  {
-                    in: 'header',
-                    type: 'apiKey',
-                    name: 'x-api-key',
-                  },
-                  {
-                    in: 'query',
-                    type: 'apiKey',
-                    name: 'apiKey',
-                  },
-                ],
-              ],
+              security: securityScheme,
             },
           ),
         ).toStrictEqual([
@@ -362,28 +364,13 @@ describe('validateSecurity', () => {
           },
         ]);
       });
-    });
 
-    describe('when given the two required keys', () => {
       it('passes the validation', () => {
         expect(
           validateSecurity<any, any>(
             { headers: { 'x-api-key': 'abc123' }, url: { query: { apiKey: 'abc123' } } },
             {
-              security: [
-                [
-                  {
-                    in: 'header',
-                    type: 'apiKey',
-                    name: 'x-api-key',
-                  },
-                  {
-                    in: 'query',
-                    type: 'apiKey',
-                    name: 'apiKey',
-                  },
-                ],
-              ],
+              security: securityScheme,
             },
           ),
         ).toStrictEqual([]);
