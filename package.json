@@ -24,7 +24,7 @@
     "test.harness": "jest -c ./jest.harness.config.js"
   },
   "devDependencies": {
-    "@stoplight/types": "git://github.com/stoplightio/types.git#fix/do-not-flatten-security",
+    "@stoplight/types": "^11.0.0",
     "@types/caseless": "^0.12.2",
     "@types/chai": "^4.1.7",
     "@types/chance": "^1.0.5",
