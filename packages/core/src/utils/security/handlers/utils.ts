@@ -1,5 +1,5 @@
 import * as Either from 'fp-ts/lib/Either';
-import { AuthErr } from './types';
+import { AuthResult } from './types';
 
 const invalidCredsErr = Either.left({
   name: 'Forbidden',
@@ -12,7 +12,7 @@ export function genRespForScheme<R>(isSchemeProper: boolean, isCredsGiven: boole
   const handler = [
     {
       test: () => isSchemeProper && isCredsGiven,
-      handle: () => Either.right(resource),
+      handle: () => Either.right({ headers: { 'WWW-Authenticate': '' } }),
     },
     {
       test: () => isSchemeProper,
@@ -23,7 +23,7 @@ export function genRespForScheme<R>(isSchemeProper: boolean, isCredsGiven: boole
   return handler ? handler.handle() : Either.left(genUnauthorisedErr(msg));
 }
 
-export const genUnauthorisedErr = (msg: string): AuthErr => ({
+export const genUnauthorisedErr = (msg: string): AuthResult => ({
   name: 'Unauthorised',
   message: 'Invalid security scheme used',
   status: 401,
@@ -35,5 +35,5 @@ export function isScheme(authScheme: string, shouldBeScheme: string) {
 }
 
 export function when<R>(isOk: boolean, msg: string, resource?: R) {
-  return isOk ? Either.right(resource) : Either.left(genUnauthorisedErr(msg));
+  return isOk ? Either.right({ headers: { 'WWW-Authenticate': msg } }) : Either.left(genUnauthorisedErr(msg));
 }

@@ -253,4 +253,52 @@ describe('validateSecurity', () => {
       });
     });
   });
+
+  describe('AND relation between security schemes', () => {
+    const securityScheme = [
+      [
+        {
+          in: 'header',
+          type: 'apiKey',
+          name: 'x-api-key',
+        },
+        {
+          in: 'query',
+          type: 'apiKey',
+          name: 'apiKey',
+        },
+      ],
+    ];
+
+    describe('when security scheme expects two key', () => {
+      it('fails with an invalid security scheme error', () => {
+        expect(
+          validateSecurity<any, any>(
+            { headers: { 'x-api-key': 'abc123' } },
+            {
+              security: securityScheme,
+            },
+          ),
+        ).toStrictEqual([
+          {
+            headers: {},
+            message: 'Invalid security scheme used',
+            name: 'Unauthorised',
+            status: 401,
+          },
+        ]);
+      });
+
+      it('passes the validation', () => {
+        expect(
+          validateSecurity<any, any>(
+            { headers: { 'x-api-key': 'abc123' }, url: { query: { apiKey: 'abc123' } } },
+            {
+              security: securityScheme,
+            },
+          ),
+        ).toStrictEqual([]);
+      });
+    });
+  });
 });
