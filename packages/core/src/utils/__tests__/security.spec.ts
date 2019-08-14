@@ -2,11 +2,11 @@ import { validateSecurity } from '../security';
 
 describe('validateSecurity', () => {
   it('passes the validation', () => {
-    expect(validateSecurity<any, any>({}, { security: [] })).toStrictEqual([]);
+    expect(validateSecurity<any, any>({}, { security: [[]] })).toStrictEqual([]);
   });
 
   it('fails with a message explaining the issue', () => {
-    expect(validateSecurity<any, any>({}, { security: [{}] })).toStrictEqual([
+    expect(validateSecurity<any, any>({}, { security: [[{}]] })).toStrictEqual([
       {
         message: 'We currently do not support this type of security scheme.',
       },
@@ -14,7 +14,7 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses Basic authorization', () => {
-    const securityScheme = [{ scheme: 'basic', type: 'http' }];
+    const securityScheme = [[{ scheme: 'basic', type: 'http' }]];
 
     it('passes the validation', () => {
       const token = new Buffer('test:test').toString('base64');
@@ -54,7 +54,7 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses Digest authorization', () => {
-    const securityScheme = [{ scheme: 'digest', type: 'http' }];
+    const securityScheme = [[{ scheme: 'digest', type: 'http' }]];
 
     it('passes the validation', () => {
       expect(
@@ -80,7 +80,7 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses Bearer authorization', () => {
-    const securityScheme = [{ scheme: 'bearer', type: 'http' }];
+    const securityScheme = [[{ scheme: 'bearer', type: 'http' }]];
 
     it('passes the validation', () => {
       expect(
@@ -118,7 +118,7 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses OAuth2 authorization', () => {
-    const securityScheme = [{ type: 'oauth2' }];
+    const securityScheme = [[{ type: 'oauth2' }]];
 
     it('it passes the validation', () => {
       expect(
@@ -143,7 +143,7 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses OpenID authorization', () => {
-    const securityScheme = [{ type: 'openIdConnect' }];
+    const securityScheme = [[{ type: 'openIdConnect' }]];
 
     it('passes the validation', () => {
       expect(
@@ -174,7 +174,7 @@ describe('validateSecurity', () => {
           validateSecurity<any, any>(
             { headers: {} },
             {
-              security: [{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }],
+              security: [[{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }]],
             },
           ),
         ).toStrictEqual([
@@ -191,7 +191,7 @@ describe('validateSecurity', () => {
     });
 
     describe('when api key is expected to be found in a header', () => {
-      const securityScheme = [{ in: 'header', type: 'apiKey', name: 'x-api-key' }];
+      const securityScheme = [[{ in: 'header', type: 'apiKey', name: 'x-api-key' }]];
 
       it('passes the validation', () => {
         expect(
@@ -212,7 +212,7 @@ describe('validateSecurity', () => {
     });
 
     describe('when api key is expected to be found in the query', () => {
-      const securityScheme = [{ in: 'query', type: 'apiKey', name: 'key' }];
+      const securityScheme = [[{ in: 'query', type: 'apiKey', name: 'key' }]];
 
       it('passes the validation', () => {
         expect(
@@ -233,7 +233,7 @@ describe('validateSecurity', () => {
     });
 
     describe('when api key is expected to be found in a cookie', () => {
-      const securityScheme = [{ in: 'cookie', type: 'apiKey', name: 'key' }];
+      const securityScheme = [[{ in: 'cookie', type: 'apiKey', name: 'key' }]];
 
       it('passes the validation', () => {
         expect(
