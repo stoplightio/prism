@@ -46,7 +46,7 @@ const mockCommand: CommandModule = {
         cors: {
           description: 'Enables CORS headers.',
           boolean: true,
-          default: false,
+          default: true,
         },
 
         multiprocess: {
