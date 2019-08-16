@@ -26,7 +26,7 @@
     "fp-ts": "^2.0.3",
     "json-schema-faker": "json-schema-faker/json-schema-faker",
     "openapi-sampler": "^1.0.0-beta.15",
-    "pino": "^5.13.1",
+    "pino": "^5.13.2",
     "tslib": "^1.10.0"
   },
   "publishConfig": {
