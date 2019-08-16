@@ -19,6 +19,10 @@ export async function createMultiProcessPrism(options: CreatePrismOptions) {
       logCLIMessage(`Dynamic example generation ${chalk.green('enabled')}.`);
     }
 
+    if (options.cors) {
+      logCLIMessage(`CORS ${chalk.green('enabled')}. OPTIONS verbs in the specification will be skipped.`);
+    }
+
     const worker = cluster.fork();
 
     if (worker.process.stdout) {
@@ -37,6 +41,10 @@ export function createSingleProcessPrism(options: CreatePrismOptions) {
     logCLIMessage(`Dynamic example generation ${chalk.green('enabled')}.`);
   }
 
+  if (options.cors) {
+    logCLIMessage(`CORS ${chalk.green('enabled')}. OPTIONS verbs in the specification will be skipped.`);
+  }
+
   const logStream = new PassThrough();
   const logInstance = createLogger('CLI', undefined, logStream);
   pipeOutputToSignale(logStream);
@@ -50,7 +58,7 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
   }
 
   const server = createHttpServer(options.operations, {
-    config: { mock: { dynamic: options.dynamic } },
+    config: { cors: options.cors, mock: { dynamic: options.dynamic } },
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
   });
 
@@ -93,6 +101,7 @@ function logCLIMessage(message: string) {
 
 export type CreatePrismOptions = {
   dynamic: boolean;
+  cors: boolean;
   host?: string;
   port: number;
   operations: IHttpOperation[];

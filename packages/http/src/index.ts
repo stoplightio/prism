@@ -25,7 +25,7 @@ const createInstance = (
   overrides?: PickRequired<TPrismHttpComponents, 'logger'>,
 ) => {
   return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
-    { mock: { dynamic: false } },
+    { cors: false, mock: { dynamic: false } },
     {
       router,
       forwarder,
