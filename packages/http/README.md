@@ -57,11 +57,8 @@ paths:
 
 ## Mock All Responses
 
-[Try it out!](https://repl.it/@ChrisMiaskowski/prism-http-client-basic-mocking)
-
 ```javascript
 const Prism = require('@stoplight/prism-http');
-const path = require('path');
 
 // Create Prism instance and configure it as a mocker generating static examples
 const prism = Prism.createInstance({
@@ -69,26 +66,17 @@ const prism = Prism.createInstance({
   validate: { request: { query: true } },
 });
 
-// Load openapi spec file
-const specPath = path.resolve(process.cwd(), 'basic.oas3.yaml');
-prism
-  .load({ path: specPath })
-  .then(() => {
-    // Make a "GET /todos" request
-    return prism.process({
-      method: 'get',
-      url: {
-        path: '/todos',
-      },
-      headers: {
-        Accept: 'text/plain',
-      },
-    });
-  })
-  .catch(e => console.error(e))
-  .then(prismResponse => {
-    console.log(prismResponse.output);
-  });
+// Make a "GET /todos" request
+return prism.process({
+  method: 'get',
+  url: {
+    path: '/todos',
+  },
+  headers: {
+    Accept: 'text/plain',
+  },
+}, operations)
+.then(prismResponse => console.log(prismResponse.output))
 ```
 
 Output
@@ -109,35 +97,27 @@ Later we alter than behaviour by passing a config object to the `process` functi
 
 ```javascript
 const Prism = require('@stoplight/prism-http');
-const path = require('path');
 
 // Note that by default we don't want to mock responses
 const prism = Prism.createInstance({ mock: false });
-const specPath = path.resolve(process.cwd(), 'basic.oas3.yaml');
 
-prism
-  .load({ path: specPath })
-  .then(() => {
-    // Make a "GET /todos" request
-    return prism.process(
-      {
-        method: 'get',
-        url: {
-          path: '/facts',
-          baseUrl: 'https://cat-fact.herokuapp.com',
-        },
-      },
-      {
-        // We can override the default behaviour per request.
-        mock: {
-          dynamic: true,
-        },
-      }
-    );
-  })
-  .then(prismResponse => {
-    console.log(prismResponse.output);
-  });
+// Make a "GET /todos" request
+return prism.process(
+  {
+    method: 'get',
+    url: {
+      path: '/facts',
+      baseUrl: 'https://cat-fact.herokuapp.com',
+    },
+  },
+  {
+    // We can override the default behaviour per request.
+    mock: {
+      dynamic: true,
+    },
+  }
+, operations)
+.then(prismResponse => console.log(prismResponse.output));
 ```
 
 ## Make Request To An Upstream Server
@@ -150,7 +130,8 @@ const Prism = require('@stoplight/prism-http');
 // Create Prism instance and configure it to make HTTP requests (mock: false)
 const config = { mock: false };
 const prism = Prism.createInstance(config);
-prism
+
+return prism
   .process({
     method: 'get',
     url: {
@@ -158,9 +139,7 @@ prism
       baseUrl: 'https://cat-fact.herokuapp.com',
     },
   })
-  .then(prismResponse => {
-    console.log(prismResponse.output);
-  });
+  .then(prismResponse => console.log(prismResponse.output));
 ```
 
 In response you'll get some... facts about cats. For example:
@@ -295,13 +274,9 @@ This will enforce a 403 response (given that such response is defined in your Op
 
 ## Loading specs
 
-When you load a spec you "teach" prism how your API looks like.
-You can run prism without loading a spec, but features such as validation will be disabled.
+The Http package does not have any pre-canned loader for the specification files. You need to feed it with an array of operations that can be used for the request/response cycle.
 
-```javascript
-const loaderConfig = { path: '/absolute/file/path.oas3.yaml' };
-const promise = prism.load(loaderConfig);
-```
+You can find an example by looking at the `getHttpOperations.ts` file in the CLI package.
 
 ## Making requests
 
@@ -314,7 +289,7 @@ const request = {
     path: '/path', // must be prefixed with slash
   },
 };
-const promise = prism.process(request);
+const promise = prism.process(request, operations);
 ```
 
 The request object has the following interface
@@ -341,7 +316,7 @@ prism.process({
     path: '/facts', // must be prefixed with slash
     baseUrl: 'https://cat-fact.herokuapp.com',
   },
-});
+}, operations);
 ```
 
 Notice that `baseUrl` is defined.
@@ -381,10 +356,8 @@ prism
       path: '/facts',
       baseUrl: 'https://cat-fact.herokuapp.com',
     },
-  })
-  .then(prismResponse => {
-    console.log(prismResponse.validations.input);
-  });
+  }, operations)
+  .then(prismResponse => console.log(prismResponse.validations.input));
 ```
 
 You would get this in response
