@@ -15,14 +15,6 @@ export async function createMultiProcessPrism(options: CreatePrismOptions) {
 
     signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
-    if (options.dynamic) {
-      logCLIMessage(`Dynamic example generation ${chalk.green('enabled')}.`);
-    }
-
-    if (options.cors) {
-      logCLIMessage(`CORS ${chalk.green('enabled')}. OPTIONS verbs in the specification will be skipped.`);
-    }
-
     const worker = cluster.fork();
 
     if (worker.process.stdout) {
@@ -36,14 +28,6 @@ export async function createMultiProcessPrism(options: CreatePrismOptions) {
 
 export function createSingleProcessPrism(options: CreatePrismOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
-
-  if (options.dynamic) {
-    logCLIMessage(`Dynamic example generation ${chalk.green('enabled')}.`);
-  }
-
-  if (options.cors) {
-    logCLIMessage(`CORS ${chalk.green('enabled')}. OPTIONS verbs in the specification will be skipped.`);
-  }
 
   const logStream = new PassThrough();
   const logInstance = createLogger('CLI', undefined, logStream);
@@ -89,13 +73,6 @@ function pipeOutputToSignale(stream: Readable) {
   stream.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
     const logLevelType = logLevels.labels[logLine.level];
     signale[logLevelType]({ prefix: constructPrefix(logLine), message: logLine.msg });
-  });
-}
-
-function logCLIMessage(message: string) {
-  signale.star({
-    prefix: chalk.bgWhiteBright.black('[CLI]'),
-    message,
   });
 }
 
