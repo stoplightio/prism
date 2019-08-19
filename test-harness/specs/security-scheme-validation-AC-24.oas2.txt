@@ -5,13 +5,9 @@ swagger: '2.0'
 paths:
   /todos:
     get:
-      produces:
-        - application/json
       responses:
         200:
           description: OK
-          examples:
-            application/json: test
 securityDefinitions:
   ApiKeyOne:
     type: apiKey
@@ -27,8 +23,7 @@ security:
 ====server====
 mock -p 4010
 ====command====
-curl -i http://localhost:4010/todos?apiKey=abc123 -H "X-API-Key: xyz987"
+curl -sIXGET http://localhost:4010/todos?apiKey=abc123 -H "X-API-Key: xyz987"
 ====expect====
 HTTP/1.1 200 OK
 
-"test"
