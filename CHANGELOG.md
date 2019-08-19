@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Added
+- Prism is now returning CORS headers by default and responding to all the preflights requests. You can disable this behaviour by running Prism with the `--cors` flag set to false #525
+
 ## Fixed
 - Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples
 - Prism now loads correctly OpenAPI 3.x documents with `encodings` with non specified `style` property
