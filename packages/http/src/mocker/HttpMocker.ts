@@ -61,39 +61,32 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
     chain(() =>
       pipe(
         helpers.negotiateOptionsForInvalidRequest(resource.responses),
-        mapLeft(() =>
-          ProblemJsonError.fromTemplate(
-            UNPROCESSABLE_ENTITY,
-            'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-            {
-              validation: input.validations.input.map(detail => ({
-                location: detail.path,
-                severity: DiagnosticSeverity[detail.severity],
-                code: detail.code,
-                message: detail.message,
-              })),
-            },
-          ),
-        ),
+        mapLeft(() => {
+          const securityValidation = input.validations.input.find(i => i.code === 401 || i.code === 403);
+
+          return securityValidation
+            ? new ProblemJsonError(
+                `https://stoplight.io/prism/errors#${securityValidation.code === 401 ? 'UNAUTHORIZED' : 'FORBIDDEN'}`,
+                securityValidation.message,
+                securityValidation.code as number,
+                '',
+                { headers: securityValidation.headers },
+              )
+            : ProblemJsonError.fromTemplate(
+                UNPROCESSABLE_ENTITY,
+                'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+                {
+                  validation: input.validations.input.map(detail => ({
+                    location: detail.path,
+                    severity: DiagnosticSeverity[detail.severity],
+                    code: detail.code,
+                    message: detail.message,
+                  })),
+                },
+              );
+        }),
       ),
     ),
-  );
-}
-
-function handleSecurityValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
-  return pipe(
-    withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass security validation')),
-    chain(() => {
-      const securityValidation = input.validations.security[0];
-      const statusCode = securityValidation && securityValidation.status;
-
-      return statusCode
-        ? pipe(
-            helpers.negotiateOptionsForUnauthorizedRequest(resource.responses, `${statusCode}`),
-            mapLeft(() => securityValidation),
-          )
-        : fromEither<Logger, Error, IHttpNegotiationResult>(left(securityValidation));
-    }),
   );
 }
 
@@ -102,9 +95,7 @@ function negotiateResponse(
   input: IPrismInput<IHttpRequest>,
   resource: IHttpOperation,
 ) {
-  if (get(input, ['validations', 'security', 'length'])) {
-    return handleSecurityValidation(input, resource);
-  } else if (input.validations.input.length > 0) {
+  if (input.validations.input.length > 0) {
     return handleInputValidation(input, resource);
   } else {
     return pipe(

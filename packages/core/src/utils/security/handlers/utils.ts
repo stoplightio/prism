@@ -1,14 +1,22 @@
+import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
-import { AuthErr } from './types';
+import { IPrismDiagnostic } from '../../../types';
 
-const invalidCredsErr = Either.left({
-  name: 'Forbidden',
-  status: 403,
+const forbiddenErr: IPrismDiagnostic = {
+  code: 403,
   message: 'Invalid credentials used',
   headers: {},
-});
+  severity: DiagnosticSeverity.Error,
+};
 
-export function genRespForScheme<R>(isSchemeProper: boolean, isCredsGiven: boolean, resource: R, msg: string) {
+const invalidCredsErr = Either.left(forbiddenErr);
+
+export function genRespForScheme<R>(
+  isSchemeProper: boolean,
+  isCredsGiven: boolean,
+  resource: R,
+  msg: string,
+): Either.Either<IPrismDiagnostic, R> {
   const handler = [
     {
       test: () => isSchemeProper && isCredsGiven,
@@ -23,10 +31,10 @@ export function genRespForScheme<R>(isSchemeProper: boolean, isCredsGiven: boole
   return handler ? handler.handle() : Either.left(genUnauthorisedErr(msg));
 }
 
-export const genUnauthorisedErr = (msg: string): AuthErr => ({
-  name: 'Unauthorised',
+export const genUnauthorisedErr = (msg: string): IPrismDiagnostic => ({
+  severity: DiagnosticSeverity.Error,
   message: 'Invalid security scheme used',
-  status: 401,
+  code: 401,
   headers: msg ? { 'WWW-Authenticate': msg } : {},
 });
 
@@ -34,6 +42,6 @@ export function isScheme(authScheme: string, shouldBeScheme: string) {
   return (authScheme || '').toLowerCase() === shouldBeScheme;
 }
 
-export function when<R>(isOk: boolean, msg: string, resource?: R) {
-  return isOk ? Either.right(resource) : Either.left(genUnauthorisedErr(msg));
+export function when<R>(condition: boolean, errorMessage: string, resource?: R) {
+  return condition ? Either.right(resource) : Either.left(genUnauthorisedErr(errorMessage));
 }

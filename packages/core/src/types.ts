@@ -1,10 +1,10 @@
 import { IDiagnostic } from '@stoplight/types';
+import { Dictionary } from '@stoplight/types/dist';
 import { Either } from 'fp-ts/lib/Either';
 import { Reader } from 'fp-ts/lib/Reader';
 import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
-import { AuthErr } from './utils/security/handlers/types';
-export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
+export type IPrismDiagnostic = Omit<IDiagnostic, 'range'> & { headers?: Dictionary<string, string> };
 
 // END
 
@@ -81,7 +81,6 @@ export interface IPrismInput<I> {
   data: I;
   validations: {
     input: IPrismDiagnostic[];
-    security: AuthErr[];
   };
 }
 

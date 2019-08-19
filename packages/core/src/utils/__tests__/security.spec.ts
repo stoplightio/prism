@@ -29,10 +29,10 @@ describe('validateSecurity', () => {
         validateSecurity<any, any>({ headers: { authorization: 'Basic abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
+          code: 403,
           headers: {},
           message: 'Invalid credentials used',
-          name: 'Forbidden',
-          status: 403,
+          severity: 0,
         },
       ]);
     });
@@ -42,12 +42,12 @@ describe('validateSecurity', () => {
         validateSecurity<any, any>({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
+          code: 401,
           headers: {
             'WWW-Authenticate': 'Basic realm="*"',
           },
           message: 'Invalid security scheme used',
-          name: 'Unauthorised',
-          status: 401,
+          severity: 0,
         },
       ]);
     });
@@ -70,10 +70,10 @@ describe('validateSecurity', () => {
         validateSecurity<any, any>({ headers: { authorization: 'Digest username=""' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
+          code: 403,
           headers: {},
           message: 'Invalid credentials used',
-          name: 'Forbidden',
-          status: 403,
+          severity: 0,
         },
       ]);
     });
@@ -93,12 +93,12 @@ describe('validateSecurity', () => {
         validateSecurity<any, any>({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
+          code: 401,
           headers: {
             'WWW-Authenticate': 'Bearer',
           },
           message: 'Invalid security scheme used',
-          name: 'Unauthorised',
-          status: 401,
+          severity: 0,
         },
       ]);
     });
@@ -106,12 +106,12 @@ describe('validateSecurity', () => {
     it('fails with an invalid security scheme error', () => {
       expect(validateSecurity<any, any>({ headers: {} }, { security: securityScheme })).toStrictEqual([
         {
+          code: 401,
           headers: {
             'WWW-Authenticate': 'Bearer',
           },
           message: 'Invalid security scheme used',
-          name: 'Unauthorised',
-          status: 401,
+          severity: 0,
         },
       ]);
     });
@@ -131,12 +131,12 @@ describe('validateSecurity', () => {
         validateSecurity<any, any>({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
+          code: 401,
           headers: {
             'WWW-Authenticate': 'OAuth2',
           },
           message: 'Invalid security scheme used',
-          name: 'Unauthorised',
-          status: 401,
+          severity: 0,
         },
       ]);
     });
@@ -156,12 +156,12 @@ describe('validateSecurity', () => {
         validateSecurity<any, any>({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
+          code: 401,
           headers: {
             'WWW-Authenticate': 'OpenID',
           },
           message: 'Invalid security scheme used',
-          name: 'Unauthorised',
-          status: 401,
+          severity: 0,
         },
       ]);
     });
@@ -179,12 +179,12 @@ describe('validateSecurity', () => {
           ),
         ).toStrictEqual([
           {
+            code: 401,
             headers: {
               'WWW-Authenticate': 'Basic realm="*"',
             },
             message: 'Invalid security scheme used',
-            name: 'Unauthorised',
-            status: 401,
+            severity: 0,
           },
         ]);
       });
@@ -202,10 +202,10 @@ describe('validateSecurity', () => {
       it('fails with an invalid security scheme error', () => {
         expect(validateSecurity<any, any>({ headers: {} }, { security: securityScheme })).toStrictEqual([
           {
+            code: 401,
             headers: {},
             message: 'Invalid security scheme used',
-            name: 'Unauthorised',
-            status: 401,
+            severity: 0,
           },
         ]);
       });
@@ -223,10 +223,10 @@ describe('validateSecurity', () => {
       it('fails with an invalid security scheme error', () => {
         expect(validateSecurity<any, any>({}, { security: securityScheme })).toStrictEqual([
           {
+            code: 401,
             headers: {},
             message: 'Invalid security scheme used',
-            name: 'Unauthorised',
-            status: 401,
+            severity: 0,
           },
         ]);
       });
@@ -244,10 +244,10 @@ describe('validateSecurity', () => {
       it('fails with an invalid security scheme error', () => {
         expect(validateSecurity<any, any>({}, { security: securityScheme })).toStrictEqual([
           {
+            code: 401,
             headers: {},
             message: 'Invalid security scheme used',
-            name: 'Unauthorised',
-            status: 401,
+            severity: 0,
           },
         ]);
       });

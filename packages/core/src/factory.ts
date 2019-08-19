@@ -76,8 +76,7 @@ export function factory<Resource, Input, Output, Config>(
                         resource,
                         input: {
                           validations: {
-                            input: inputValidations,
-                            security: validateSecurity<Resource, Input>(input, resource),
+                            input: inputValidations.concat(validateSecurity(input, resource)),
                           },
                           data: input,
                         },
@@ -96,8 +95,7 @@ export function factory<Resource, Input, Output, Config>(
                       resource,
                       input: {
                         validations: {
-                          input: inputValidations,
-                          security: validateSecurity<Resource, Input>(input, resource),
+                          input: inputValidations.concat(validateSecurity(input, resource)),
                         },
                         data: input,
                       },
