@@ -2,7 +2,7 @@
 If I run Prism with a document that has not the OPTION verb handled
 And the CORS support is not enabled
 And I do a request with OPTIONS as verb
-I should get a 404 response
+I should get a 405 response
 ====spec====
 swagger: "2.0"
 paths:
