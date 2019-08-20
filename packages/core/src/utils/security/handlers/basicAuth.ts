@@ -28,7 +28,7 @@ export const httpBasic = {
     const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
     return authorizationHeader
-      ? checkHeader<R>(authorizationHeader, resource)
+      ? checkHeader(authorizationHeader, resource)
       : Either.left(genUnauthorisedErr(basicWWWAuthenticate));
   },
 };

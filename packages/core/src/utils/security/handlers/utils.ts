@@ -1,5 +1,5 @@
 import { DiagnosticSeverity } from '@stoplight/types';
-import * as Either from 'fp-ts/lib/Either';
+import { Either, left, right } from 'fp-ts/lib/Either';
 import { IPrismDiagnostic } from '../../../types';
 
 const forbiddenErr: IPrismDiagnostic = {
@@ -9,18 +9,18 @@ const forbiddenErr: IPrismDiagnostic = {
   severity: DiagnosticSeverity.Error,
 };
 
-const invalidCredsErr = Either.left(forbiddenErr);
+const invalidCredsErr = left(forbiddenErr);
 
 export function genRespForScheme<R>(
   isSchemeProper: boolean,
   isCredsGiven: boolean,
   resource: R,
   msg: string,
-): Either.Either<IPrismDiagnostic, R> {
+): Either<IPrismDiagnostic, R> {
   const handler = [
     {
       test: () => isSchemeProper && isCredsGiven,
-      handle: () => Either.right(resource),
+      handle: () => right(resource),
     },
     {
       test: () => isSchemeProper,
@@ -28,7 +28,7 @@ export function genRespForScheme<R>(
     },
   ].find(possibleHandler => possibleHandler.test());
 
-  return handler ? handler.handle() : Either.left(genUnauthorisedErr(msg));
+  return handler ? handler.handle() : left(genUnauthorisedErr(msg));
 }
 
 export const genUnauthorisedErr = (msg: string): IPrismDiagnostic => ({
@@ -43,5 +43,5 @@ export function isScheme(authScheme: string, shouldBeScheme: string) {
 }
 
 export function when<R>(condition: boolean, errorMessage: string, resource?: R) {
-  return condition ? Either.right(resource) : Either.left(genUnauthorisedErr(errorMessage));
+  return condition ? right(resource) : left(genUnauthorisedErr(errorMessage));
 }

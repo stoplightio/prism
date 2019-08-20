@@ -15,7 +15,7 @@ export const apiKeyInCookie = {
       getOrElse(() => false),
     );
 
-    return when<R>(isApiKeyInCookie, '', resource);
+    return when(isApiKeyInCookie, '', resource);
   },
 };
 
@@ -24,7 +24,7 @@ export const apiKeyInHeader = {
   handle: <R, I>(someInput: I, name: string, resource?: R) => {
     const isAPIKeyProvided = get(someInput, ['headers', name.toLowerCase()]);
 
-    return when<R>(isAPIKeyProvided, '', resource);
+    return when(isAPIKeyProvided, '', resource);
   },
 };
 
@@ -33,6 +33,6 @@ export const apiKeyInQuery = {
   handle: <R, I>(someInput: I, name: string, resource?: R) => {
     const isApiKeyInQuery = get(someInput, ['url', 'query', name]);
 
-    return when<R>(isApiKeyInQuery, '', resource);
+    return when(isApiKeyInQuery, '', resource);
   },
 };

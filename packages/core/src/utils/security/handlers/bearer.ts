@@ -5,7 +5,7 @@ import { SecurityScheme } from './types';
 import { when } from './utils';
 
 const bearerHandler = <R, I>(msg: string, someInput: I, name: string, resource?: R) => {
-  return when<R>(isBearerToken(get(someInput, 'headers')), msg, resource);
+  return when(isBearerToken(get(someInput, 'headers')), msg, resource);
 };
 
 function isBearerToken(inputHeaders: Headers) {
