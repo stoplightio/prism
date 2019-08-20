@@ -1,5 +1,5 @@
 import { IDiagnostic } from '@stoplight/types';
-import { Dictionary } from '@stoplight/types/dist';
+import { Dictionary } from '@stoplight/types';
 import { Either } from 'fp-ts/lib/Either';
 import { Reader } from 'fp-ts/lib/Reader';
 import { TaskEither } from 'fp-ts/lib/TaskEither';

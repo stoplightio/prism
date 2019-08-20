@@ -67,6 +67,8 @@ export function factory<Resource, Input, Output, Config>(
                 );
               }
 
+              const inputValidationResult = inputValidations.concat(validateSecurity(input, resource));
+
               if (resource && components.mocker && (configObj as IPrismConfig).mock) {
                 // generate the response
                 return pipe(
@@ -76,7 +78,7 @@ export function factory<Resource, Input, Output, Config>(
                         resource,
                         input: {
                           validations: {
-                            input: inputValidations.concat(validateSecurity(input, resource)),
+                            input: inputValidationResult,
                           },
                           data: input,
                         },
@@ -95,7 +97,7 @@ export function factory<Resource, Input, Output, Config>(
                       resource,
                       input: {
                         validations: {
-                          input: inputValidations.concat(validateSecurity(input, resource)),
+                          input: inputValidationResult,
                         },
                         data: input,
                       },

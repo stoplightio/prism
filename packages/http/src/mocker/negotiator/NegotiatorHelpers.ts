@@ -235,7 +235,7 @@ const helpers = {
     return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
-  find400Or422(httpResponses: IHttpOperationResponse[], logger: Logger) {
+  findResponse(httpResponses: IHttpOperationResponse[], logger: Logger) {
     let result = findResponseByStatusCode(httpResponses, '422');
     if (!result) {
       logger.trace('Unable to find a 422 response definition');
@@ -259,24 +259,8 @@ const helpers = {
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
   ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
-    return this.genNegotiateOptionsForInvalidRequest(httpResponses, this.find400Or422);
-  },
-
-  negotiateOptionsForUnauthorizedRequest(
-    httpResponses: IHttpOperationResponse[],
-    statusCode: string,
-  ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
-    return this.genNegotiateOptionsForInvalidRequest(httpResponses, () =>
-      findResponseByStatusCode(httpResponses, statusCode),
-    );
-  },
-
-  genNegotiateOptionsForInvalidRequest(
-    httpResponses: IHttpOperationResponse[],
-    finder: (hr: IHttpOperationResponse[], l: Logger) => IHttpOperationResponse | undefined,
-  ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      withLogger(logger => finder(httpResponses, logger)),
+      withLogger(logger => this.findResponse(httpResponses, logger)),
       chain(response => {
         return withLogger(logger => {
           if (!response) {

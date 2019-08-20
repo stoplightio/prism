@@ -1,3 +1,4 @@
+import { DiagnosticSeverity } from '@stoplight/types';
 import { validateSecurity } from '../security';
 
 describe('validateSecurity', () => {
@@ -6,11 +7,9 @@ describe('validateSecurity', () => {
   });
 
   it('fails with a message explaining the issue', () => {
-    expect(validateSecurity<any, any>({}, { security: [{}] })).toStrictEqual([
-      {
-        message: 'We currently do not support this type of security scheme.',
-      },
-    ]);
+    expect(validateSecurity<any, any>({}, { security: [{}] })[0]).toStrictEqual(
+      new Error('We currently do not support this type of security scheme.'),
+    );
   });
 
   describe('when security scheme uses Basic authorization', () => {
@@ -32,7 +31,7 @@ describe('validateSecurity', () => {
           code: 403,
           headers: {},
           message: 'Invalid credentials used',
-          severity: 0,
+          severity: DiagnosticSeverity.Error,
         },
       ]);
     });
@@ -47,7 +46,7 @@ describe('validateSecurity', () => {
             'WWW-Authenticate': 'Basic realm="*"',
           },
           message: 'Invalid security scheme used',
-          severity: 0,
+          severity: DiagnosticSeverity.Error,
         },
       ]);
     });
@@ -73,7 +72,7 @@ describe('validateSecurity', () => {
           code: 403,
           headers: {},
           message: 'Invalid credentials used',
-          severity: 0,
+          severity: DiagnosticSeverity.Error,
         },
       ]);
     });
@@ -98,7 +97,7 @@ describe('validateSecurity', () => {
             'WWW-Authenticate': 'Bearer',
           },
           message: 'Invalid security scheme used',
-          severity: 0,
+          severity: DiagnosticSeverity.Error,
         },
       ]);
     });
@@ -111,7 +110,7 @@ describe('validateSecurity', () => {
             'WWW-Authenticate': 'Bearer',
           },
           message: 'Invalid security scheme used',
-          severity: 0,
+          severity: DiagnosticSeverity.Error,
         },
       ]);
     });
@@ -136,7 +135,7 @@ describe('validateSecurity', () => {
             'WWW-Authenticate': 'OAuth2',
           },
           message: 'Invalid security scheme used',
-          severity: 0,
+          severity: DiagnosticSeverity.Error,
         },
       ]);
     });
@@ -161,7 +160,7 @@ describe('validateSecurity', () => {
             'WWW-Authenticate': 'OpenID',
           },
           message: 'Invalid security scheme used',
-          severity: 0,
+          severity: DiagnosticSeverity.Error,
         },
       ]);
     });
@@ -184,7 +183,7 @@ describe('validateSecurity', () => {
               'WWW-Authenticate': 'Basic realm="*"',
             },
             message: 'Invalid security scheme used',
-            severity: 0,
+            severity: DiagnosticSeverity.Error,
           },
         ]);
       });
@@ -205,7 +204,7 @@ describe('validateSecurity', () => {
             code: 401,
             headers: {},
             message: 'Invalid security scheme used',
-            severity: 0,
+            severity: DiagnosticSeverity.Error,
           },
         ]);
       });
@@ -226,7 +225,7 @@ describe('validateSecurity', () => {
             code: 401,
             headers: {},
             message: 'Invalid security scheme used',
-            severity: 0,
+            severity: DiagnosticSeverity.Error,
           },
         ]);
       });
@@ -247,7 +246,7 @@ describe('validateSecurity', () => {
             code: 401,
             headers: {},
             message: 'Invalid security scheme used',
-            severity: 0,
+            severity: DiagnosticSeverity.Error,
           },
         ]);
       });

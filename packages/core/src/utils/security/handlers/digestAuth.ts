@@ -23,7 +23,7 @@ function isDigestInfo(info: string[]) {
     infoAsString.includes('nonce=') &&
     infoAsString.includes('uri=') &&
     infoAsString.includes('response=') &&
-    info.every((schemeParam: string) => new RegExp(/(?:'|")([a-z0-9]*)(?:'|")/).test(schemeParam))
+    info.every(schemeParam => new RegExp(/(?:'|")([a-z0-9]*)(?:'|")/).test(schemeParam))
   );
 }
 

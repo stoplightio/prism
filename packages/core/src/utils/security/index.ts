@@ -16,40 +16,40 @@ function getAllInvalidSec<R>(invalidSecuritySchemes: Array<Left<IPrismDiagnostic
     Either.fold<IPrismDiagnostic, R, IPrismDiagnostic>(identity, identity),
   );
 
-  return firstLeftValue.code !== 401 || invalidSecuritySchemes.length === 1
-    ? firstLeftValue
-    : (() => {
-        const allWWWAuthHeaders = invalidSecuritySchemes.reduce((accumulator: string, currentValue) => {
-          return pipe(
-            currentValue,
-            Either.mapLeft(err => [accumulator, get(err, pathToHeader)].filter(identity).join(', ')),
-            Either.fold(authHeader => authHeader || '', () => ''),
-          );
-        }, '');
+  if (firstLeftValue.code !== 401 || invalidSecuritySchemes.length === 1) {
+    return firstLeftValue;
+  } else {
+    const allWWWAuthHeaders = invalidSecuritySchemes.reduce((accumulator: string, currentValue) => {
+      return pipe(
+        currentValue,
+        Either.mapLeft(err => [accumulator, get(err, pathToHeader)].filter(identity).join(', ')),
+        Either.fold(authHeader => authHeader || '', () => ''),
+      );
+    }, '');
 
-        return set(pathToHeader, allWWWAuthHeaders, firstLeftValue);
-      })();
+    return set(pathToHeader, allWWWAuthHeaders, firstLeftValue);
+  }
 }
 
 export function validateSecurity<R, I>(someInput: I, resource?: R): IPrismDiagnostic[] {
   const securitySchemes = get(resource, 'security', []);
 
-  return !securitySchemes.length
-    ? []
-    : (() => {
-        const validatedSecuritySchemes = securitySchemes.map((definedSecScheme: SecurityScheme) => {
-          const schemeHandler = securitySchemeHandlers.find(handler => {
-            return handler.test(definedSecScheme);
-          });
+  if (!securitySchemes.length) {
+    return [];
+  } else {
+    const validatedSecuritySchemes = securitySchemes.map((definedSecScheme: SecurityScheme) => {
+      const schemeHandler = securitySchemeHandlers.find(handler => {
+        return handler.test(definedSecScheme);
+      });
 
-          return schemeHandler
-            ? schemeHandler.handle(someInput, definedSecScheme.name, resource)
-            : Either.left({ message: 'We currently do not support this type of security scheme.' });
-        });
+      return schemeHandler
+        ? schemeHandler.handle(someInput, definedSecScheme.name, resource)
+        : Either.left(new Error('We currently do not support this type of security scheme.'));
+    });
 
-        const validSecuritySchema = validatedSecuritySchemes.find(isRight);
-        const invalidSecuritySchemes = validatedSecuritySchemes.filter(isLeft);
+    const validSecuritySchema = validatedSecuritySchemes.find(isRight);
+    const invalidSecuritySchemes = validatedSecuritySchemes.filter(isLeft);
 
-        return validSecuritySchema ? [] : [getAllInvalidSec<R>(invalidSecuritySchemes)];
-      })();
+    return validSecuritySchema ? [] : [getAllInvalidSec<R>(invalidSecuritySchemes)];
+  }
 }
