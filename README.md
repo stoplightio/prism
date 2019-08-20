@@ -43,7 +43,7 @@ curl https://raw.githubusercontent.com/stoplightio/prism/2.x/install.sh | sh
 With Docker
 
 ```
-docker pull stoplight/prism
+docker pull stoplight/prism:2
 ```
 
 On Windows download [binary](https://github.com/stoplightio/prism/releases).
