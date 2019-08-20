@@ -1488,7 +1488,7 @@ ajv-oai@^1.0.0:
     ajv "^6.1.1"
     decimal.js "^9.0.1"
 
-ajv@^6.1.1, ajv@^6.5.5, ajv@^6.8.1, ajv@^6.9.2:
+ajv@^6.1.1, ajv@^6.5.5, ajv@^6.8.1:
   version "6.10.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.10.0.tgz#90d0d54439da587cd7e843bfb7045f50bd22bdf1"
   integrity sha512-nffhOpkymDECQyR0mnsUtoCE8RlX38G0rYP+wgLWFyZuUyuuojSSvi/+euOiQBIn63whYwYVIIH1TvE3tu4OEg==
@@ -3137,10 +3137,10 @@ fast-safe-stringify@^2.0.6:
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.6.tgz#04b26106cc56681f51a044cfc0d76cf0008ac2c2"
   integrity sha512-q8BZ89jjc+mz08rSxROs8VsrBBcn1SIw1kq9NjolL509tkABRk9io01RAjSaEv1Xb2uFLt8VtRiZbGp5H8iDtg==
 
-fast-xml-parser@^3.12.19:
-  version "3.12.19"
-  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.12.19.tgz#be70984fc61d870ce72bbcda474a0ffe6440524e"
-  integrity sha512-DB93FtI9FCn4DDxjDSFW91vdAo+Y1La6jNDRxKCO3F4WxyodeHtXo/HwWum/Qy/XunTdXEAdwiSVYAFvHeJOIw==
+fast-xml-parser@^3.12.20:
+  version "3.12.20"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.12.20.tgz#1bf60f1860b06bd1e5cad02736ce96714bdf81ed"
+  integrity sha512-viadHdefuuqkyJWUhF2r2Ymb5LJ0T7uQhzSRv4OZzYxpoPQnY05KtaX0pLkolabD7tLzIE8q/OytIAEhqPyYbw==
   dependencies:
     nimnjs "^1.3.2"
 
@@ -3160,6 +3160,14 @@ fastify-accepts@>=0.5.0:
     accepts "^1.3.3"
     fastify-plugin "^0.2.1"
 
+fastify-cors@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/fastify-cors/-/fastify-cors-2.1.3.tgz#5ae8fcc620a47270cd68d46acc3b8dd7919b538b"
+  integrity sha512-ZHFzKn1DddymsxzvdtjEQfkuMfGgwcp++FKuTTMmAN2KFB7hJRmOINffjfRdmUcgXdE4LoSy5XJROWKx/b+CPQ==
+  dependencies:
+    fastify-plugin "^1.5.0"
+    vary "^1.1.2"
+
 fastify-formbody@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/fastify-formbody/-/fastify-formbody-3.1.0.tgz#604cdafdb9e3af6068e6d9940985baf692d6e922"
@@ -3175,27 +3183,27 @@ fastify-plugin@^0.2.1:
   dependencies:
     semver "^5.4.1"
 
-fastify-plugin@^1.0.0, fastify-plugin@^1.2.1:
+fastify-plugin@^1.0.0, fastify-plugin@^1.2.1, fastify-plugin@^1.5.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-1.6.0.tgz#c8198b08608f20c502b5dad26b36e9ae27206d7c"
   integrity sha512-lFa9txg8LZx4tljj33oG53nUXhVg0baZxtP9Pxi0dJmI0NQxzkDk5DS9kr3D7iMalUAp3mvIq16OQumc7eIvLA==
   dependencies:
     semver "^6.0.0"
 
-fastify@^2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-2.7.0.tgz#088f0123f6e85e0d64bdce79fcb577ba6603e213"
-  integrity sha512-TFQoHKMXfE8Of9W/5qH7PUSW0pk98tnS2IWUgYNY4FbiD9U/La1VVlaaV8nXd52Sm+3dD3A0QncoRlPKpWlkiA==
+fastify@^2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-2.7.1.tgz#09ec9dfaa67b453f90537501a1e148b0d98486ac"
+  integrity sha512-ScKPXD84lkdCgz7q0zjyBr1aLxKbXRt9HYL3XIt/L8ZD2f3fAcsLEyQ2/rHxLUzLGjPlEjIvprWUL3RZvlLRLw==
   dependencies:
     abstract-logging "^1.0.0"
-    ajv "^6.9.2"
+    ajv "^6.10.2"
     avvio "^6.1.1"
     fast-json-stringify "^1.15.0"
     find-my-way "^2.0.0"
     flatstr "^1.0.12"
-    light-my-request "^3.2.0"
+    light-my-request "^3.4.1"
     middie "^4.0.1"
-    pino "^5.11.1"
+    pino "^5.13.1"
     proxy-addr "^2.0.4"
     readable-stream "^3.1.1"
     rfdc "^1.1.2"
@@ -5152,10 +5160,10 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-light-my-request@^3.2.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/light-my-request/-/light-my-request-3.3.0.tgz#5cdb3c75c50bc57429f20b08e3be805662e23232"
-  integrity sha512-dLtwhjzbuHJ+KMMUBSlVid6Iqxx+KKvULWLnBD06WMgPHxiPkEh1cVyj+Xc8HGU64hULlSw/sZVCdFsvjNQeNA==
+light-my-request@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/light-my-request/-/light-my-request-3.4.1.tgz#c30087005f6ae64ce5ef92c2484b1ab93c71ad3e"
+  integrity sha512-E1zMvRWjqsaCS60dTkD7c//xKV1KOFD2zo92Ru3o3e95lCfQSDCC9aS8MZm1V+zXaA/SeKDwK9gvrfaCseTusg==
   dependencies:
     ajv "^6.8.1"
     readable-stream "^3.1.1"
@@ -6557,22 +6565,22 @@ pino-std-serializers@^2.3.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-2.4.1.tgz#7fefc2dba56700494ac8b9ce0d027f7b648e438f"
   integrity sha512-v/JglhO0aFcvkMV9VUxhgyuJo8K1si857Ww86Tx8H2cjC/kp0ndzzcF6Vbxr4RgKFYJdHfLVpEuD55znMZuxnw==
 
-pino@^5.11.1:
-  version "5.12.5"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-5.12.5.tgz#4cf008b91a13338a4198277a30a9b5eef8ab81b7"
-  integrity sha512-Y493vt9ci7Jez3WZ/aUArijTQZXbHgWvDB3TMZlTu731p2kan/qyJk5k46aveEmYFnTlEommc+PSncUcuiMrBg==
+pino@^5.13.1:
+  version "5.13.1"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-5.13.1.tgz#583eb92be0ccbaa2a98ab2842817a1fa103cb26e"
+  integrity sha512-IxusG28L0g50uuf21kZELypdFOeNrJ/kRhktdi7LtdZQWCxLliMxG5iOrGUQ/ng7MiJ4XqXi/hfyXwZeKc1MxA==
   dependencies:
     fast-redact "^1.4.4"
     fast-safe-stringify "^2.0.6"
     flatstr "^1.0.9"
     pino-std-serializers "^2.3.0"
     quick-format-unescaped "^3.0.2"
-    sonic-boom "^0.7.3"
+    sonic-boom "^0.7.5"
 
-pino@^5.13.1:
-  version "5.13.1"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-5.13.1.tgz#583eb92be0ccbaa2a98ab2842817a1fa103cb26e"
-  integrity sha512-IxusG28L0g50uuf21kZELypdFOeNrJ/kRhktdi7LtdZQWCxLliMxG5iOrGUQ/ng7MiJ4XqXi/hfyXwZeKc1MxA==
+pino@^5.13.2:
+  version "5.13.2"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-5.13.2.tgz#773416c9764634276e7b2ae021357679ff7b5634"
+  integrity sha512-WwOSCy36/gWhinsqWqAnuwIi2WtcH+jvoyeLm3bjUALIrzWIst0AovQjK4jVvSN2l64KFPfi3gd2fjsTovjdLQ==
   dependencies:
     fast-redact "^1.4.4"
     fast-safe-stringify "^2.0.6"
@@ -7419,13 +7427,6 @@ socks@~2.3.2:
     ip "^1.1.5"
     smart-buffer "4.0.2"
 
-sonic-boom@^0.7.3:
-  version "0.7.4"
-  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-0.7.4.tgz#dc1740a900cf8646471f6ac1f4933a5c66c0ca60"
-  integrity sha512-8JRAJg0RxZtFLQMxolwETvWd2JSlH3ZGo/Z4xPxMbpqF14xCgVYPVeFCFOR3zyr3pcfG82QDVj6537Sx5ZWdNw==
-  dependencies:
-    flatstr "^1.0.9"
-
 sonic-boom@^0.7.5:
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-0.7.5.tgz#b383d92cdaaa8e66d1f77bdec71b49806d01b5f1"
@@ -8265,6 +8266,11 @@ validate-npm-package-name@^3.0.0:
   integrity sha1-X6kS2B630MdK/BQN5zF/DKffQ34=
   dependencies:
     builtins "^1.0.3"
+
+vary@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
+  integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
 verror@1.10.0:
   version "1.10.0"

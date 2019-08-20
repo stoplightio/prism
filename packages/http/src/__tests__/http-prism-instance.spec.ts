@@ -128,7 +128,7 @@ describe('Http Client .process', () => {
     });
 
     describe('mocking is off', () => {
-      const config: IHttpConfig = { mock: false };
+      const config: IHttpConfig = { mock: false, cors: false };
       const baseUrl = 'http://stoplight.io';
       const serverReply = 'hello world';
 
