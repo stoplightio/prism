@@ -1,0 +1,17 @@
+name: Auto-Dependabot
+
+on: 
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kjvalencik/github-actions/approve@master
+        if: github.event_name == 'pull_request' && (github.actor == 'dependabot-preview[bot]' || github.actor == 'dependabot[bot]')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_PR_SELF: ${{ github.event.pull_request._links.self.href }}
