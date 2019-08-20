@@ -1,10 +1,9 @@
 import { IDiagnostic } from '@stoplight/types';
-import { Dictionary } from '@stoplight/types';
 import { Either } from 'fp-ts/lib/Either';
 import { Reader } from 'fp-ts/lib/Reader';
 import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
-export type IPrismDiagnostic = Omit<IDiagnostic, 'range'> & { headers?: Dictionary<string, string> };
+export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 // END
 
