@@ -18,7 +18,6 @@ import {
   findLowest2xx,
   findResponseByStatusCode,
   hasContents,
-  IWithExampleMediaContent,
 } from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 

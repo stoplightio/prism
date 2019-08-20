@@ -1,4 +1,4 @@
-import * as Either from 'fp-ts/lib/Either';
+import { left } from 'fp-ts/lib/Either';
 import { get } from 'lodash';
 import { SecurityScheme } from './types';
 import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
@@ -29,6 +29,6 @@ export const httpBasic = {
 
     return authorizationHeader
       ? checkHeader(authorizationHeader, resource)
-      : Either.left(genUnauthorisedErr(basicWWWAuthenticate));
+      : left(genUnauthorisedErr(basicWWWAuthenticate));
   },
 };
