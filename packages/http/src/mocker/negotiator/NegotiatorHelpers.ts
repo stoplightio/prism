@@ -269,8 +269,7 @@ const helpers = {
           }
 
           // find first response with any static examples
-          const contentWithExamples =
-            response.contents && response.contents.find<IWithExampleMediaContent>(contentHasExamples);
+          const contentWithExamples = response.contents && response.contents.find(contentHasExamples);
 
           if (contentWithExamples) {
             logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
