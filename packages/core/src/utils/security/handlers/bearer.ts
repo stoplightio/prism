@@ -1,4 +1,4 @@
-import { fromNullable, getOrElse, mapNullable } from 'fp-ts/lib/Option';
+import { fromNullable, getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 import { SecurityScheme } from './types';
@@ -11,7 +11,7 @@ const bearerHandler = <R, I>(msg: string, someInput: I, name: string, resource?:
 function isBearerToken(inputHeaders: Headers) {
   return pipe(
     fromNullable(get(inputHeaders, 'authorization')),
-    mapNullable(authorization => !!authorization.match(/^Bearer\s.+$/)),
+    map(authorization => !!authorization.match(/^Bearer\s.+$/)),
     getOrElse(() => false),
   );
 }

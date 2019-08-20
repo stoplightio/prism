@@ -1,4 +1,4 @@
-import { fromNullable, getOrElse, mapNullable } from 'fp-ts/lib/Option';
+import { fromNullable, getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 import { SecurityScheme } from './types';
@@ -11,7 +11,7 @@ export const apiKeyInCookie = {
 
     const isApiKeyInCookie = pipe(
       fromNullable(probablyCookie),
-      mapNullable(cookie => new RegExp(`${name}=.+`).test(cookie)),
+      map(cookie => new RegExp(`${name}=.+`).test(cookie)),
       getOrElse(() => false),
     );
 
