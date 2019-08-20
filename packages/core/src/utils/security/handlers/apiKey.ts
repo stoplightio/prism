@@ -6,7 +6,7 @@ import { when } from './utils';
 
 export const apiKeyInCookie = {
   test: ({ type, in: where }: SecurityScheme) => where === 'cookie' && type === 'apiKey',
-  handle: <R>(someInput: unknown, name: string, resource?: R) => {
+  handle: (someInput: unknown, name: string, resource?: unknown) => {
     const probablyCookie = get(someInput, ['headers', 'cookie']);
 
     const isApiKeyInCookie = pipe(
@@ -21,7 +21,7 @@ export const apiKeyInCookie = {
 
 export const apiKeyInHeader = {
   test: ({ type, in: where }: SecurityScheme) => where === 'header' && type === 'apiKey',
-  handle: <R>(someInput: unknown, name: string, resource?: R) => {
+  handle: (someInput: unknown, name: string, resource?: unknown) => {
     const isAPIKeyProvided = get(someInput, ['headers', name.toLowerCase()]);
 
     return when(isAPIKeyProvided, '', resource);
@@ -30,7 +30,7 @@ export const apiKeyInHeader = {
 
 export const apiKeyInQuery = {
   test: ({ type, in: where }: SecurityScheme) => where === 'query' && type === 'apiKey',
-  handle: <R>(someInput: unknown, name: string, resource?: R) => {
+  handle: (someInput: unknown, name: string, resource?: unknown) => {
     const isApiKeyInQuery = get(someInput, ['url', 'query', name]);
 
     return when(isApiKeyInQuery, '', resource);

@@ -5,7 +5,7 @@ import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
 
 const digestWWWAuthenticate = 'Digest realm="*", nonce="abc123"';
 
-function checkDigestHeader<R>(authorizationHeader: string, resource?: R) {
+function checkDigestHeader(authorizationHeader: string, resource?: unknown) {
   const [authScheme, ...info] = authorizationHeader.split(' ');
 
   const isDigestInfoGiven = info && isDigestInfo(info);
@@ -29,7 +29,7 @@ function isDigestInfo(info: string[]) {
 
 export const httpDigest = {
   test: ({ scheme, type }: SecurityScheme) => scheme === 'digest' && type === 'http',
-  handle: <R>(someInput: unknown, name: string, resource?: R) => {
+  handle: (someInput: unknown, name: string, resource?: unknown) => {
     const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
     return authorizationHeader

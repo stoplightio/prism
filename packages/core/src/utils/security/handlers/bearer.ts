@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { SecurityScheme } from './types';
 import { when } from './utils';
 
-const bearerHandler = <R, I>(msg: string, someInput: I, name: string, resource?: R) => {
+const bearerHandler = (msg: string, someInput: unknown, name: string, resource?: unknown) => {
   return when(isBearerToken(get(someInput, 'headers')), msg, resource);
 };
 

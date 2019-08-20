@@ -5,7 +5,7 @@ import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
 
 const basicWWWAuthenticate = 'Basic realm="*"';
 
-function checkHeader<R>(authorizationHeader: string, resource?: R) {
+function checkHeader(authorizationHeader: string, resource?: unknown) {
   const [authScheme, token] = authorizationHeader.split(' ');
 
   const isBasicTokenGiven = !!(token && isBasicToken(token));
@@ -24,7 +24,7 @@ function isBasicToken(token: string) {
 
 export const httpBasic = {
   test: ({ scheme, type }: SecurityScheme) => scheme === 'basic' && type === 'http',
-  handle: <R>(someInput: unknown, name: string, resource?: R) => {
+  handle: (someInput: unknown, name: string, resource?: unknown) => {
     const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
     return authorizationHeader
