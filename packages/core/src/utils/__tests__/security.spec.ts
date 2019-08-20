@@ -3,11 +3,11 @@ import { validateSecurity } from '../security';
 
 describe('validateSecurity', () => {
   it('passes the validation', () => {
-    expect(validateSecurity<any, any>({}, { security: [] })).toStrictEqual([]);
+    expect(validateSecurity({}, { security: [] })).toStrictEqual([]);
   });
 
   it('fails with a message explaining the issue', () => {
-    expect(validateSecurity<any, any>({}, { security: [{}] })[0]).toStrictEqual(
+    expect(validateSecurity({}, { security: [{}] })[0]).toStrictEqual(
       new Error('We currently do not support this type of security scheme.'),
     );
   });
@@ -19,13 +19,13 @@ describe('validateSecurity', () => {
       const token = new Buffer('test:test').toString('base64');
 
       expect(
-        validateSecurity<any, any>({ headers: { authorization: `Basic ${token}` } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: `Basic ${token}` } }, { security: securityScheme }),
       ).toStrictEqual([]);
     });
 
     it('fails with an invalid credentials error', () => {
       expect(
-        validateSecurity<any, any>({ headers: { authorization: 'Basic abc123' } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: 'Basic abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
           code: 403,
@@ -38,7 +38,7 @@ describe('validateSecurity', () => {
 
     it('fails with an invalid security scheme error', () => {
       expect(
-        validateSecurity<any, any>({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
           code: 401,
@@ -57,7 +57,7 @@ describe('validateSecurity', () => {
 
     it('passes the validation', () => {
       expect(
-        validateSecurity<any, any>(
+        validateSecurity(
           { headers: { authorization: 'Digest username="", realm="", nonce="", uri="", response=""' } },
           { security: securityScheme },
         ),
@@ -66,7 +66,7 @@ describe('validateSecurity', () => {
 
     it('fails with an invalid credentials error', () => {
       expect(
-        validateSecurity<any, any>({ headers: { authorization: 'Digest username=""' } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: 'Digest username=""' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
           code: 403,
@@ -83,13 +83,13 @@ describe('validateSecurity', () => {
 
     it('passes the validation', () => {
       expect(
-        validateSecurity<any, any>({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
       ).toStrictEqual([]);
     });
 
     it('fails with an invalid security scheme error', () => {
       expect(
-        validateSecurity<any, any>({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
           code: 401,
@@ -103,7 +103,7 @@ describe('validateSecurity', () => {
     });
 
     it('fails with an invalid security scheme error', () => {
-      expect(validateSecurity<any, any>({ headers: {} }, { security: securityScheme })).toStrictEqual([
+      expect(validateSecurity({ headers: {} }, { security: securityScheme })).toStrictEqual([
         {
           code: 401,
           headers: {
@@ -121,13 +121,13 @@ describe('validateSecurity', () => {
 
     it('it passes the validation', () => {
       expect(
-        validateSecurity<any, any>({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
       ).toStrictEqual([]);
     });
 
     it('fails with an invalid security scheme error', () => {
       expect(
-        validateSecurity<any, any>({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
           code: 401,
@@ -146,13 +146,13 @@ describe('validateSecurity', () => {
 
     it('passes the validation', () => {
       expect(
-        validateSecurity<any, any>({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
       ).toStrictEqual([]);
     });
 
     it('fails with an invalid security scheme error', () => {
       expect(
-        validateSecurity<any, any>({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
+        validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual([
         {
           code: 401,
@@ -170,7 +170,7 @@ describe('validateSecurity', () => {
     describe('when api key schema is used with another security scheme', () => {
       it('does not add info to WWW-Authenticate header', () => {
         expect(
-          validateSecurity<any, any>(
+          validateSecurity(
             { headers: {} },
             {
               security: [{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }],
@@ -193,13 +193,13 @@ describe('validateSecurity', () => {
       const securityScheme = [{ in: 'header', type: 'apiKey', name: 'x-api-key' }];
 
       it('passes the validation', () => {
-        expect(
-          validateSecurity<any, any>({ headers: { 'x-api-key': 'abc123' } }, { security: securityScheme }),
-        ).toStrictEqual([]);
+        expect(validateSecurity({ headers: { 'x-api-key': 'abc123' } }, { security: securityScheme })).toStrictEqual(
+          [],
+        );
       });
 
       it('fails with an invalid security scheme error', () => {
-        expect(validateSecurity<any, any>({ headers: {} }, { security: securityScheme })).toStrictEqual([
+        expect(validateSecurity({ headers: {} }, { security: securityScheme })).toStrictEqual([
           {
             code: 401,
             headers: {},
@@ -214,13 +214,11 @@ describe('validateSecurity', () => {
       const securityScheme = [{ in: 'query', type: 'apiKey', name: 'key' }];
 
       it('passes the validation', () => {
-        expect(
-          validateSecurity<any, any>({ url: { query: { key: 'abc123' } } }, { security: securityScheme }),
-        ).toStrictEqual([]);
+        expect(validateSecurity({ url: { query: { key: 'abc123' } } }, { security: securityScheme })).toStrictEqual([]);
       });
 
       it('fails with an invalid security scheme error', () => {
-        expect(validateSecurity<any, any>({}, { security: securityScheme })).toStrictEqual([
+        expect(validateSecurity({}, { security: securityScheme })).toStrictEqual([
           {
             code: 401,
             headers: {},
@@ -235,13 +233,11 @@ describe('validateSecurity', () => {
       const securityScheme = [{ in: 'cookie', type: 'apiKey', name: 'key' }];
 
       it('passes the validation', () => {
-        expect(
-          validateSecurity<any, any>({ headers: { cookie: 'key=abc123' } }, { security: securityScheme }),
-        ).toStrictEqual([]);
+        expect(validateSecurity({ headers: { cookie: 'key=abc123' } }, { security: securityScheme })).toStrictEqual([]);
       });
 
       it('fails with an invalid security scheme error', () => {
-        expect(validateSecurity<any, any>({}, { security: securityScheme })).toStrictEqual([
+        expect(validateSecurity({}, { security: securityScheme })).toStrictEqual([
           {
             code: 401,
             headers: {},
