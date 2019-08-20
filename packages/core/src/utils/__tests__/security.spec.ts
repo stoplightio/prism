@@ -3,11 +3,11 @@ import { validateSecurity } from '../security';
 
 describe('validateSecurity', () => {
   it('passes the validation', () => {
-    expect(validateSecurity({}, { security: [] })).toStrictEqual([]);
+    expect(validateSecurity({}, { security: [] })).toBeUndefined();
   });
 
   it('fails with a message explaining the issue', () => {
-    expect(validateSecurity({}, { security: [{}] })[0]).toStrictEqual(
+    expect(validateSecurity({}, { security: [{}] })).toStrictEqual(
       new Error('We currently do not support this type of security scheme.'),
     );
   });
@@ -20,35 +20,31 @@ describe('validateSecurity', () => {
 
       expect(
         validateSecurity({ headers: { authorization: `Basic ${token}` } }, { security: securityScheme }),
-      ).toStrictEqual([]);
+      ).toBeUndefined();
     });
 
     it('fails with an invalid credentials error', () => {
       expect(
         validateSecurity({ headers: { authorization: 'Basic abc123' } }, { security: securityScheme }),
-      ).toStrictEqual([
-        {
-          code: 403,
-          headers: {},
-          message: 'Invalid credentials used',
-          severity: DiagnosticSeverity.Error,
-        },
-      ]);
+      ).toStrictEqual({
+        code: 403,
+        headers: {},
+        message: 'Invalid credentials used',
+        severity: DiagnosticSeverity.Error,
+      });
     });
 
     it('fails with an invalid security scheme error', () => {
       expect(
         validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
-      ).toStrictEqual([
-        {
-          code: 401,
-          headers: {
-            'WWW-Authenticate': 'Basic realm="*"',
-          },
-          message: 'Invalid security scheme used',
-          severity: DiagnosticSeverity.Error,
+      ).toStrictEqual({
+        code: 401,
+        headers: {
+          'WWW-Authenticate': 'Basic realm="*"',
         },
-      ]);
+        message: 'Invalid security scheme used',
+        severity: DiagnosticSeverity.Error,
+      });
     });
   });
 
@@ -61,20 +57,18 @@ describe('validateSecurity', () => {
           { headers: { authorization: 'Digest username="", realm="", nonce="", uri="", response=""' } },
           { security: securityScheme },
         ),
-      ).toStrictEqual([]);
+      ).toBeUndefined();
     });
 
     it('fails with an invalid credentials error', () => {
       expect(
         validateSecurity({ headers: { authorization: 'Digest username=""' } }, { security: securityScheme }),
-      ).toStrictEqual([
-        {
-          code: 403,
-          headers: {},
-          message: 'Invalid credentials used',
-          severity: DiagnosticSeverity.Error,
-        },
-      ]);
+      ).toStrictEqual({
+        code: 403,
+        headers: {},
+        message: 'Invalid credentials used',
+        severity: DiagnosticSeverity.Error,
+      });
     });
   });
 
@@ -84,35 +78,31 @@ describe('validateSecurity', () => {
     it('passes the validation', () => {
       expect(
         validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
-      ).toStrictEqual([]);
+      ).toBeUndefined();
     });
 
     it('fails with an invalid security scheme error', () => {
       expect(
         validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
-      ).toStrictEqual([
-        {
-          code: 401,
-          headers: {
-            'WWW-Authenticate': 'Bearer',
-          },
-          message: 'Invalid security scheme used',
-          severity: DiagnosticSeverity.Error,
+      ).toStrictEqual({
+        code: 401,
+        headers: {
+          'WWW-Authenticate': 'Bearer',
         },
-      ]);
+        message: 'Invalid security scheme used',
+        severity: DiagnosticSeverity.Error,
+      });
     });
 
     it('fails with an invalid security scheme error', () => {
-      expect(validateSecurity({ headers: {} }, { security: securityScheme })).toStrictEqual([
-        {
-          code: 401,
-          headers: {
-            'WWW-Authenticate': 'Bearer',
-          },
-          message: 'Invalid security scheme used',
-          severity: DiagnosticSeverity.Error,
+      expect(validateSecurity({ headers: {} }, { security: securityScheme })).toStrictEqual({
+        code: 401,
+        headers: {
+          'WWW-Authenticate': 'Bearer',
         },
-      ]);
+        message: 'Invalid security scheme used',
+        severity: DiagnosticSeverity.Error,
+      });
     });
   });
 
@@ -122,22 +112,20 @@ describe('validateSecurity', () => {
     it('it passes the validation', () => {
       expect(
         validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
-      ).toStrictEqual([]);
+      ).toBeUndefined();
     });
 
     it('fails with an invalid security scheme error', () => {
       expect(
         validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
-      ).toStrictEqual([
-        {
-          code: 401,
-          headers: {
-            'WWW-Authenticate': 'OAuth2',
-          },
-          message: 'Invalid security scheme used',
-          severity: DiagnosticSeverity.Error,
+      ).toStrictEqual({
+        code: 401,
+        headers: {
+          'WWW-Authenticate': 'OAuth2',
         },
-      ]);
+        message: 'Invalid security scheme used',
+        severity: DiagnosticSeverity.Error,
+      });
     });
   });
 
@@ -147,22 +135,20 @@ describe('validateSecurity', () => {
     it('passes the validation', () => {
       expect(
         validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
-      ).toStrictEqual([]);
+      ).toBeUndefined();
     });
 
     it('fails with an invalid security scheme error', () => {
       expect(
         validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
-      ).toStrictEqual([
-        {
-          code: 401,
-          headers: {
-            'WWW-Authenticate': 'OpenID',
-          },
-          message: 'Invalid security scheme used',
-          severity: DiagnosticSeverity.Error,
+      ).toStrictEqual({
+        code: 401,
+        headers: {
+          'WWW-Authenticate': 'OpenID',
         },
-      ]);
+        message: 'Invalid security scheme used',
+        severity: DiagnosticSeverity.Error,
+      });
     });
   });
 
@@ -176,16 +162,14 @@ describe('validateSecurity', () => {
               security: [{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }],
             },
           ),
-        ).toStrictEqual([
-          {
-            code: 401,
-            headers: {
-              'WWW-Authenticate': 'Basic realm="*"',
-            },
-            message: 'Invalid security scheme used',
-            severity: DiagnosticSeverity.Error,
+        ).toStrictEqual({
+          code: 401,
+          headers: {
+            'WWW-Authenticate': 'Basic realm="*"',
           },
-        ]);
+          message: 'Invalid security scheme used',
+          severity: DiagnosticSeverity.Error,
+        });
       });
     });
 
@@ -193,20 +177,16 @@ describe('validateSecurity', () => {
       const securityScheme = [{ in: 'header', type: 'apiKey', name: 'x-api-key' }];
 
       it('passes the validation', () => {
-        expect(validateSecurity({ headers: { 'x-api-key': 'abc123' } }, { security: securityScheme })).toStrictEqual(
-          [],
-        );
+        expect(validateSecurity({ headers: { 'x-api-key': 'abc123' } }, { security: securityScheme })).toBeUndefined();
       });
 
       it('fails with an invalid security scheme error', () => {
-        expect(validateSecurity({ headers: {} }, { security: securityScheme })).toStrictEqual([
-          {
-            code: 401,
-            headers: {},
-            message: 'Invalid security scheme used',
-            severity: DiagnosticSeverity.Error,
-          },
-        ]);
+        expect(validateSecurity({ headers: {} }, { security: securityScheme })).toStrictEqual({
+          code: 401,
+          headers: {},
+          message: 'Invalid security scheme used',
+          severity: DiagnosticSeverity.Error,
+        });
       });
     });
 
@@ -214,18 +194,16 @@ describe('validateSecurity', () => {
       const securityScheme = [{ in: 'query', type: 'apiKey', name: 'key' }];
 
       it('passes the validation', () => {
-        expect(validateSecurity({ url: { query: { key: 'abc123' } } }, { security: securityScheme })).toStrictEqual([]);
+        expect(validateSecurity({ url: { query: { key: 'abc123' } } }, { security: securityScheme })).toBeUndefined();
       });
 
       it('fails with an invalid security scheme error', () => {
-        expect(validateSecurity({}, { security: securityScheme })).toStrictEqual([
-          {
-            code: 401,
-            headers: {},
-            message: 'Invalid security scheme used',
-            severity: DiagnosticSeverity.Error,
-          },
-        ]);
+        expect(validateSecurity({}, { security: securityScheme })).toStrictEqual({
+          code: 401,
+          headers: {},
+          message: 'Invalid security scheme used',
+          severity: DiagnosticSeverity.Error,
+        });
       });
     });
 
@@ -233,18 +211,16 @@ describe('validateSecurity', () => {
       const securityScheme = [{ in: 'cookie', type: 'apiKey', name: 'key' }];
 
       it('passes the validation', () => {
-        expect(validateSecurity({ headers: { cookie: 'key=abc123' } }, { security: securityScheme })).toStrictEqual([]);
+        expect(validateSecurity({ headers: { cookie: 'key=abc123' } }, { security: securityScheme })).toBeUndefined();
       });
 
       it('fails with an invalid security scheme error', () => {
-        expect(validateSecurity({}, { security: securityScheme })).toStrictEqual([
-          {
-            code: 401,
-            headers: {},
-            message: 'Invalid security scheme used',
-            severity: DiagnosticSeverity.Error,
-          },
-        ]);
+        expect(validateSecurity({}, { security: securityScheme })).toStrictEqual({
+          code: 401,
+          headers: {},
+          message: 'Invalid security scheme used',
+          severity: DiagnosticSeverity.Error,
+        });
       });
     });
   });
