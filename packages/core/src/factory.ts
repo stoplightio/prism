@@ -25,7 +25,7 @@ export function factory<Resource, Input, Output, Config>(
       process: async (input: Input, resources: Resource[], c?: Config) => {
         // build the config for this request
         const configMerger = configMergerFactory(defaultConfig, customConfig, c);
-        const configObj: Config | undefined = configMerger(input);
+        const configObj = configMerger(input);
         const inputValidations: IPrismDiagnostic[] = [];
 
         if (components.router) {

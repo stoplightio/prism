@@ -18,15 +18,15 @@ function isBearerToken(inputHeaders: Headers) {
 
 export const bearer = {
   test: ({ type, scheme }: SecurityScheme) => scheme === 'bearer' && type === 'http',
-  handle: () => bearerHandler.bind(undefined, 'Bearer'),
+  handle: bearerHandler.bind(undefined, 'Bearer'),
 };
 
 export const oauth2 = {
   test: ({ type }: SecurityScheme) => type === 'oauth2',
-  handle: () => bearerHandler.bind(undefined, 'OAuth2'),
+  handle: bearerHandler.bind(undefined, 'OAuth2'),
 };
 
 export const openIdConnect = {
   test: ({ type }: SecurityScheme) => type === 'openIdConnect',
-  handle: () => bearerHandler.bind(undefined, 'OpenID'),
+  handle: bearerHandler.bind(undefined, 'OpenID'),
 };

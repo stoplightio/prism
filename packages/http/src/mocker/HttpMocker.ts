@@ -19,7 +19,7 @@ import {
   ProblemJsonError,
 } from '../types';
 import withLogger from '../withLogger';
-import { UNPROCESSABLE_ENTITY } from './errors';
+import { FORBIDDEN, UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './errors';
 import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
@@ -65,13 +65,9 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
           const securityValidation = input.validations.input.find(i => i.code === 401 || i.code === 403);
 
           return securityValidation
-            ? new ProblemJsonError(
-                `https://stoplight.io/prism/errors#${securityValidation.code === 401 ? 'UNAUTHORIZED' : 'FORBIDDEN'}`,
-                securityValidation.message,
-                securityValidation.code as number,
-                '',
-                { headers: securityValidation.headers },
-              )
+            ? ProblemJsonError.fromTemplate(securityValidation.code === 401 ? UNAUTHORIZED : FORBIDDEN, '', {
+                headers: securityValidation.headers,
+              })
             : ProblemJsonError.fromTemplate(
                 UNPROCESSABLE_ENTITY,
                 'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
