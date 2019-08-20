@@ -1332,12 +1332,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*":
-  version "12.0.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.2.tgz#3452a24edf9fea138b48fad4a0a028a683da1e40"
-  integrity sha512-5tabW/i+9mhrfEOUcLDu2xBPsHJ+X5Orqy9FKpale3SjDA17j5AEpYq5vfy3oAeAHGcvANRCO3NV3d2D6q3NiA==
-
-"@types/node@^12.6.8":
+"@types/node@*", "@types/node@^12.6.8":
   version "12.6.8"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.6.8.tgz#e469b4bf9d1c9832aee4907ba8a051494357c12c"
   integrity sha512-aX+gFgA5GHcDi89KG5keey2zf0WfZk/HAQotEamsK2kbey+8yGKcson0hbK8E+v0NArlCJQCqMP161YhV6ZXLg==
@@ -1387,9 +1382,9 @@
   integrity sha512-zQsYKjtPf7Hvnp6KR4DTypXZ12tlH7k670d4QXuxzkofefBy9e2GwRKyV06lgTi3qw/OH/JFTDYe/x3uQmnusQ==
 
 "@types/type-is@^1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@types/type-is/-/type-is-1.6.2.tgz#38ee37fed94b4d2b88650292c3941600bda2815f"
-  integrity sha512-q8d51ZdF/D8xebrtNDsZH+4XBUFdz8xEgWhE4U4F4WWmcBZ8+i/r/qs9DmjAprYh5qQTYlY4BxaVKDrWIwNQ9w==
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@types/type-is/-/type-is-1.6.3.tgz#45285b3be846a4afc9d488910a8e4b7bc2e8a169"
+  integrity sha512-PNs5wHaNcBgCQG5nAeeZ7OvosrEsI9O4W2jAOO9BCCg4ux9ZZvH2+0iSCOIDBiKuQsiNS8CBlmfX9f5YBQ22cA==
   dependencies:
     "@types/node" "*"
 
