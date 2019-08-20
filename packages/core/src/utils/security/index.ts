@@ -6,12 +6,12 @@ import { IPrismDiagnostic } from '../../types';
 import { securitySchemeHandlers } from './handlers';
 import { SecurityScheme } from './handlers/types';
 
-function getAllInvalidSec<R>(invalidSecuritySchemes: Array<Left<IPrismDiagnostic>>): IPrismDiagnostic {
+function getAllInvalidSec(invalidSecuritySchemes: Array<Left<IPrismDiagnostic>>): IPrismDiagnostic {
   const pathToHeader = ['headers', 'WWW-Authenticate'];
 
   const firstLeftValue: IPrismDiagnostic = pipe(
     invalidSecuritySchemes[0],
-    fold<IPrismDiagnostic, R, IPrismDiagnostic>(identity, identity),
+    fold<IPrismDiagnostic, unknown, IPrismDiagnostic>(identity, identity),
   );
 
   if (firstLeftValue.code !== 401 || invalidSecuritySchemes.length === 1) {
