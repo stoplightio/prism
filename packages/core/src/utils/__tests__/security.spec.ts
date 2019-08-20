@@ -28,7 +28,7 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Basic abc123' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 403,
-        headers: {},
+        tags: [],
         message: 'Invalid credentials used',
         severity: DiagnosticSeverity.Error,
       });
@@ -39,9 +39,7 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 401,
-        headers: {
-          'WWW-Authenticate': 'Basic realm="*"',
-        },
+        tags: ['Basic realm = "*"'],
         message: 'Invalid security scheme used',
         severity: DiagnosticSeverity.Error,
       });
@@ -65,7 +63,7 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Digest username=""' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 403,
-        headers: {},
+        tags: [],
         message: 'Invalid credentials used',
         severity: DiagnosticSeverity.Error,
       });
@@ -86,20 +84,16 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 401,
-        headers: {
-          'WWW-Authenticate': 'Bearer',
-        },
+        headers: ['Bearer'],
         message: 'Invalid security scheme used',
         severity: DiagnosticSeverity.Error,
       });
     });
 
     it('fails with an invalid security scheme error', () => {
-      expect(validateSecurity({ headers: {} }, { security: securityScheme })).toStrictEqual({
+      expect(validateSecurity({ tags: [] }, { security: securityScheme })).toStrictEqual({
         code: 401,
-        headers: {
-          'WWW-Authenticate': 'Bearer',
-        },
+        headers: ['Bearer'],
         message: 'Invalid security scheme used',
         severity: DiagnosticSeverity.Error,
       });
@@ -120,9 +114,7 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 401,
-        headers: {
-          'WWW-Authenticate': 'OAuth2',
-        },
+        headers: ['OAuth2'],
         message: 'Invalid security scheme used',
         severity: DiagnosticSeverity.Error,
       });
@@ -143,9 +135,7 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 401,
-        headers: {
-          'WWW-Authenticate': 'OpenID',
-        },
+        tags: ['OpenID'],
         message: 'Invalid security scheme used',
         severity: DiagnosticSeverity.Error,
       });
@@ -157,16 +147,14 @@ describe('validateSecurity', () => {
       it('does not add info to WWW-Authenticate header', () => {
         expect(
           validateSecurity(
-            { headers: {} },
+            { tags: [] },
             {
               security: [{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }],
             },
           ),
         ).toStrictEqual({
           code: 401,
-          headers: {
-            'WWW-Authenticate': 'Basic realm="*"',
-          },
+          tags: ['Basic realm="*"'],
           message: 'Invalid security scheme used',
           severity: DiagnosticSeverity.Error,
         });
@@ -181,9 +169,9 @@ describe('validateSecurity', () => {
       });
 
       it('fails with an invalid security scheme error', () => {
-        expect(validateSecurity({ headers: {} }, { security: securityScheme })).toStrictEqual({
+        expect(validateSecurity({ tags: [] }, { security: securityScheme })).toStrictEqual({
           code: 401,
-          headers: {},
+          tags: [],
           message: 'Invalid security scheme used',
           severity: DiagnosticSeverity.Error,
         });
@@ -200,7 +188,7 @@ describe('validateSecurity', () => {
       it('fails with an invalid security scheme error', () => {
         expect(validateSecurity({}, { security: securityScheme })).toStrictEqual({
           code: 401,
-          headers: {},
+          tags: [],
           message: 'Invalid security scheme used',
           severity: DiagnosticSeverity.Error,
         });
@@ -217,7 +205,7 @@ describe('validateSecurity', () => {
       it('fails with an invalid security scheme error', () => {
         expect(validateSecurity({}, { security: securityScheme })).toStrictEqual({
           code: 401,
-          headers: {},
+          tags: [],
           message: 'Invalid security scheme used',
           severity: DiagnosticSeverity.Error,
         });

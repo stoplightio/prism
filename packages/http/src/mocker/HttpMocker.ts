@@ -65,7 +65,7 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
 
           return securityValidation
             ? ProblemJsonError.fromTemplate(securityValidation.code === 401 ? UNAUTHORIZED : FORBIDDEN, '', {
-                headers: securityValidation.headers,
+                headers: { 'WWW-Authenticate': (securityValidation.tags || []).join(',') },
               })
             : ProblemJsonError.fromTemplate(
                 UNPROCESSABLE_ENTITY,
