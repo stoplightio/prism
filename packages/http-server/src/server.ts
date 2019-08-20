@@ -7,7 +7,6 @@ import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
 import * as fastifyCors from 'fastify-cors';
 import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
-import { omit } from 'lodash';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import serializers from './serializers';
@@ -106,9 +105,11 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           reply
             .type('application/problem+json')
             .serializer(JSON.stringify)
-            .code(status)
-            .headers((e.additional && e.additional.headers) || {})
-            .send(omit(ProblemJsonError.fromPlainError(e), 'headers'));
+            .code(status);
+
+          if (e.additional && e.additional.headers) reply.headers(e.additional.headers);
+
+          reply.send(ProblemJsonError.fromPlainError(e));
         } else {
           reply.res.end();
         }
