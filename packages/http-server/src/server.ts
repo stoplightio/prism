@@ -4,6 +4,7 @@ import { IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 // @ts-ignore
 import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
+import * as fastifyCors from 'fastify-cors';
 import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as typeIs from 'type-is';
@@ -22,6 +23,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     .register(formbodyParser)
     .register(fastifyAcceptsSerializer, { serializers });
 
+  if (opts.config.cors) server.register(fastifyCors);
+
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
     if (typeIs(req, ['application/*+json'])) {
       try {
@@ -36,11 +39,17 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(error);
   });
 
-  const mergedConfig = configMergerFactory({ mock: { dynamic: false } }, config, getHttpConfigFromRequest);
+  const mergedConfig = configMergerFactory({ cors: false, mock: { dynamic: false } }, config, getHttpConfigFromRequest);
 
   const prism = createInstance(mergedConfig, components);
 
-  server.all('*', {}, replyHandler(prism));
+  opts.config.cors
+    ? server.route({
+        url: '*',
+        method: ['GET', 'DELETE', 'HEAD', 'PATCH', 'POST', 'PUT'],
+        handler: replyHandler(prism),
+      })
+    : server.all('*', replyHandler(prism));
 
   const prismServer: IPrismHttpServer = {
     get prism() {

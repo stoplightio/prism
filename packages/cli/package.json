@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-cli",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "author": "Stoplight <support@stoplight.io>",
   "bin": {
     "prism": "./dist/index.js"
@@ -9,8 +9,8 @@
   "dependencies": {
     "@stoplight/http-spec": "^1.0.8",
     "@stoplight/json-ref-resolver": "^2.0.3",
-    "@stoplight/prism-core": "^3.0.3",
-    "@stoplight/prism-http-server": "^3.0.3",
+    "@stoplight/prism-core": "^3.0.4",
+    "@stoplight/prism-http-server": "^3.0.4",
     "@stoplight/yaml": "^2.8.0",
     "axios": "^0.18.0",
     "signale": "^1.4.0",

@@ -51,7 +51,7 @@ describe('HttpValidator', () => {
               extendResource,
             ),
             input: { method: 'get', url: { path: '/' } },
-            config: { mock: { dynamic: false }, validate: { request: { body: true } } },
+            config: { cors: false, mock: { dynamic: false }, validate: { request: { body: true } } },
           }),
         ).toEqual(expectedError);
 
@@ -124,7 +124,7 @@ describe('HttpValidator', () => {
               extendResource,
             ),
             input: { method: 'get', url: { path: '/' } },
-            config: { mock: { dynamic: false }, validate: { request: { headers: true } } },
+            config: { cors: false, mock: { dynamic: false }, validate: { request: { headers: true } } },
           }),
         ).toEqual([mockError]);
 
@@ -168,7 +168,7 @@ describe('HttpValidator', () => {
               extendResource,
             ),
             input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, extendInput),
-            config: { mock: { dynamic: false }, validate: { request: { query: true } } },
+            config: { cors: false, mock: { dynamic: false }, validate: { request: { query: true } } },
           }),
         ).toEqual([mockError]);
 
@@ -210,7 +210,7 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            config: { mock: { dynamic: false }, validate: { response: { body: true } } },
+            config: { cors: false, mock: { dynamic: false }, validate: { response: { body: true } } },
           }),
         ).toEqual([]);
 
@@ -235,7 +235,7 @@ describe('HttpValidator', () => {
                 responses: [{ code: '200' }],
               },
               output: { statusCode: 200 },
-              config: { mock: { dynamic: false }, validate: { response: { body: true } } },
+              config: { cors: false, mock: { dynamic: false }, validate: { response: { body: true } } },
             }),
           ).toEqual([mockError]);
 
@@ -262,7 +262,7 @@ describe('HttpValidator', () => {
                 responses: [{ code: '200' }],
               },
               output: { statusCode: 200 },
-              config: { mock: { dynamic: false }, validate: { response: { headers: true } } },
+              config: { cors: false, mock: { dynamic: false }, validate: { response: { headers: true } } },
             }),
           ).toEqual([mockError]);
 

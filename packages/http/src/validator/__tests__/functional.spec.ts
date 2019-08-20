@@ -37,7 +37,7 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: { mock: false, validate: { request: { headers: true, query: false, body: false } } },
+            config: { cors: false, mock: false, validate: { request: { headers: true, query: false, body: false } } },
           }),
         ).toMatchSnapshot();
       });
@@ -76,7 +76,7 @@ describe('HttpValidator', () => {
                 api_Key: 'ha',
               },
             },
-            config: { mock: false, validate: { request: { headers: true, query: false, body: false } } },
+            config: { cors: false, mock: false, validate: { request: { headers: true, query: false, body: false } } },
           }),
         ).toEqual([]);
       });
@@ -88,7 +88,7 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: { mock: false, validate: { request: { headers: false, query: true, body: false } } },
+            config: { cors: false, mock: false, validate: { request: { headers: false, query: true, body: false } } },
           }),
         ).toMatchSnapshot();
       });
@@ -99,7 +99,7 @@ describe('HttpValidator', () => {
             await validator.validateInput({
               resource: httpOperations[0],
               input: GOOD_INPUT,
-              config: { mock: false, validate: { request: { headers: false, query: true, body: false } } },
+              config: { cors: false, mock: false, validate: { request: { headers: false, query: true, body: false } } },
             }),
           ).toEqual([]);
         });
@@ -112,7 +112,7 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: { mock: false, validate: { request: { headers: false, query: false, body: true } } },
+            config: { cors: false, mock: false, validate: { request: { headers: false, query: false, body: true } } },
           }),
         ).toMatchSnapshot();
       });
@@ -124,7 +124,7 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: { mock: false, validate: { request: false } },
+            config: { cors: false, mock: false, validate: { request: false } },
           }),
         ).toMatchSnapshot();
       });
@@ -144,7 +144,7 @@ describe('HttpValidator', () => {
           await validator.validateOutput({
             resource: httpOperations[1],
             output: BAD_OUTPUT,
-            config: { mock: false, validate: { response: { headers: true, body: false } } },
+            config: { cors: false, mock: false, validate: { response: { headers: true, body: false } } },
           }),
         ).toMatchSnapshot();
       });
@@ -156,7 +156,7 @@ describe('HttpValidator', () => {
           await validator.validateOutput({
             resource: httpOperations[1],
             output: BAD_OUTPUT,
-            config: { mock: false, validate: { response: { headers: false, body: true } } },
+            config: { cors: false, mock: false, validate: { response: { headers: false, body: true } } },
           }),
         ).toMatchSnapshot();
       });
@@ -168,7 +168,7 @@ describe('HttpValidator', () => {
           await validator.validateOutput({
             resource: httpOperations[1],
             output: BAD_OUTPUT,
-            config: { mock: false, validate: { response: false } },
+            config: { cors: false, mock: false, validate: { response: false } },
           }),
         ).toMatchSnapshot();
       });

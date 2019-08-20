@@ -6,10 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 3.0.4 (2019-08-20)
+
+## Added
+- Prism is now returning CORS headers by default and responding to all the preflights requests. You can disable this behaviour by running Prism with the `--cors` flag set to false #525
+
 ## Fixed
-- Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples
-- Prism now loads correctly OpenAPI 3.x documents with `encodings` with non specified `style` property
-- Prism got rid of some big internal dependencies that now aren't required anymore, making it faster and lighter.
+- Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples #506
+- Prism now loads correctly OpenAPI 3.x documents with `encodings` with non specified `style` property #507
+- Prism got rid of some big internal dependencies that now aren't required anymore, making it faster and lighter. #490
 - Prism now correctly validates OAS2 `application/x-www-urlencoded` (form data) params (#483)
 
 # 3.0.3 (2019-07-25)

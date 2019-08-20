@@ -1,0 +1,24 @@
+====test====
+If I run Prism with a document that has not the OPTION verb handled
+And the CORS support is enabled
+And I do a request with OPTIONS as verb
+I should get a 204 response with the CORS headers
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: ok
+          schema:
+            type: string
+            example: ok
+====server====
+mock -p 4010
+====command====
+curl -i -X OPTIONS http://localhost:4010/todos
+====expect====
+HTTP/1.1 204 No Content
+access-control-allow-origin: *
+access-control-allow-methods: GET,HEAD,PUT,PATCH,POST,DELETE

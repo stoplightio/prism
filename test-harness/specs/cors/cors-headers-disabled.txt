@@ -1,0 +1,24 @@
+====test====
+If I run Prism with a document that has not the OPTION verb handled
+And the CORS support is not enabled
+And I do a request with OPTIONS as verb
+I should get a 405 response
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: ok
+          schema:
+            type: string
+            example: ok
+====server====
+mock --cors=false -p 4010
+====command====
+curl -i -X OPTIONS http://localhost:4010/todos
+====expect====
+HTTP/1.1 405 Method Not Allowed
+
+{"type":"https://stoplight.io/prism/errors#NO_METHOD_MATCHED_ERROR","title":"Route resolved, but no path matched.","status":405,"detail":"The route /todos has been matched, but it does not have \"options\" method defined"}

@@ -43,6 +43,12 @@ const mockCommand: CommandModule = {
           default: false,
         },
 
+        cors: {
+          description: 'Enables CORS headers.',
+          boolean: true,
+          default: true,
+        },
+
         multiprocess: {
           alias: 'm',
           description: 'Forks the http server from the CLI for faster log processing.',
@@ -51,15 +57,15 @@ const mockCommand: CommandModule = {
         },
       }),
   handler: parsedArgs => {
-    const { multiprocess, dynamic, port, host, operations } = (parsedArgs as unknown) as CreatePrismOptions & {
+    const { multiprocess, dynamic, port, host, cors, operations } = (parsedArgs as unknown) as CreatePrismOptions & {
       multiprocess: boolean;
     };
 
     if (multiprocess) {
-      return createMultiProcessPrism({ dynamic, port, host, operations });
+      return createMultiProcessPrism({ cors, dynamic, port, host, operations });
     }
 
-    return createSingleProcessPrism({ dynamic, port, host, operations });
+    return createSingleProcessPrism({ cors, dynamic, port, host, operations });
   },
 };
 
