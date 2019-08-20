@@ -29,7 +29,7 @@ function getAllInvalidSec<R>(invalidSecuritySchemes: Array<Left<IPrismDiagnostic
   }
 }
 
-export function validateSecurity<R, I>(someInput: I, resource?: R): IPrismDiagnostic | undefined {
+export function validateSecurity(someInput: unknown, resource?: unknown): IPrismDiagnostic | undefined {
   const securitySchemes = get(resource, 'security', []);
 
   if (!securitySchemes.length) return;
@@ -45,5 +45,5 @@ export function validateSecurity<R, I>(someInput: I, resource?: R): IPrismDiagno
   const validSecuritySchema = validatedSecuritySchemes.find(isRight);
   const invalidSecuritySchemes = validatedSecuritySchemes.filter(isLeft);
 
-  return validSecuritySchema ? undefined : getAllInvalidSec<R>(invalidSecuritySchemes);
+  return validSecuritySchema ? undefined : getAllInvalidSec(invalidSecuritySchemes);
 }
