@@ -260,7 +260,7 @@ const helpers = {
     httpResponses: IHttpOperationResponse[],
   ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      withLogger(logger => this.findResponse(httpResponses, logger)),
+      withLogger(logger => helpers.findResponse(httpResponses, logger)),
       chain(response => {
         return withLogger(logger => {
           if (!response) {
