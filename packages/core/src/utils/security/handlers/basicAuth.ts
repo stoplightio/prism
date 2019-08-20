@@ -24,7 +24,7 @@ function isBasicToken(token: string) {
 
 export const httpBasic = {
   test: ({ scheme, type }: SecurityScheme) => scheme === 'basic' && type === 'http',
-  handle: <R, I>(someInput: I, name: string, resource?: R) => {
+  handle: <R>(someInput: unknown, name: string, resource?: R) => {
     const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
     return authorizationHeader

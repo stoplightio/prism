@@ -29,7 +29,7 @@ function isDigestInfo(info: string[]) {
 
 export const httpDigest = {
   test: ({ scheme, type }: SecurityScheme) => scheme === 'digest' && type === 'http',
-  handle: <R, I>(someInput: I, name: string, resource?: R) => {
+  handle: <R>(someInput: unknown, name: string, resource?: R) => {
     const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
     return authorizationHeader
