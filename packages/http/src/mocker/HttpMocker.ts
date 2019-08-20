@@ -114,7 +114,7 @@ function assembleResponse(
   return withLogger(logger =>
     pipe(
       result,
-      map((negotiationResult: IHttpNegotiationResult) => {
+      map(negotiationResult => {
         const mockedBody = computeBody(negotiationResult, payloadGenerator);
         const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
 
