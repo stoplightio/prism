@@ -2,12 +2,11 @@ import { IMocker, IMockerOpts, IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { left, map } from 'fp-ts/lib/Either';
-import { Either } from 'fp-ts/lib/Either';
+import { Either, map } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
-import { fromEither, mapLeft } from 'fp-ts/lib/ReaderEither';
-import { get, isEmpty, isObject, keyBy, mapValues } from 'lodash';
+import { mapLeft } from 'fp-ts/lib/ReaderEither';
+import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import { Logger } from 'pino';
 import {
   ContentExample,
