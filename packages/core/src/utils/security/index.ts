@@ -34,22 +34,18 @@ function getAllInvalidSec<R>(invalidSecuritySchemes: Array<Left<IPrismDiagnostic
 export function validateSecurity<R, I>(someInput: I, resource?: R): IPrismDiagnostic[] {
   const securitySchemes = get(resource, 'security', []);
 
-  if (!securitySchemes.length) {
-    return [];
-  } else {
-    const validatedSecuritySchemes = securitySchemes.map((definedSecScheme: SecurityScheme) => {
-      const schemeHandler = securitySchemeHandlers.find(handler => {
-        return handler.test(definedSecScheme);
-      });
+  if (!securitySchemes.length) return [];
 
-      return schemeHandler
-        ? schemeHandler.handle(someInput, definedSecScheme.name, resource)
-        : Either.left(new Error('We currently do not support this type of security scheme.'));
-    });
+  const validatedSecuritySchemes = securitySchemes.map((definedSecScheme: SecurityScheme) => {
+    const schemeHandler = securitySchemeHandlers.find(handler => handler.test(definedSecScheme));
 
-    const validSecuritySchema = validatedSecuritySchemes.find(isRight);
-    const invalidSecuritySchemes = validatedSecuritySchemes.filter(isLeft);
+    return schemeHandler
+      ? schemeHandler.handle(someInput, definedSecScheme.name, resource)
+      : Either.left(new Error('We currently do not support this type of security scheme.'));
+  });
 
-    return validSecuritySchema ? [] : [getAllInvalidSec<R>(invalidSecuritySchemes)];
-  }
+  const validSecuritySchema = validatedSecuritySchemes.find(isRight);
+  const invalidSecuritySchemes = validatedSecuritySchemes.filter(isLeft);
+
+  return validSecuritySchema ? [] : [getAllInvalidSec<R>(invalidSecuritySchemes)];
 }
