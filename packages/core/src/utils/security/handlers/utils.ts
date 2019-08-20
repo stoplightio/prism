@@ -5,7 +5,6 @@ import { IPrismDiagnostic } from '../../../types';
 const forbiddenErr: IPrismDiagnostic = {
   code: 403,
   message: 'Invalid credentials used',
-  headers: {},
   severity: DiagnosticSeverity.Error,
 };
 
@@ -35,7 +34,7 @@ export const genUnauthorisedErr = (msg: string): IPrismDiagnostic => ({
   severity: DiagnosticSeverity.Error,
   message: 'Invalid security scheme used',
   code: 401,
-  headers: msg ? { 'WWW-Authenticate': msg } : {},
+  tags: msg ? [msg] : [],
 });
 
 export function isScheme(authScheme: string, shouldBeScheme: string) {
