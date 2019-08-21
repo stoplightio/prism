@@ -9,7 +9,7 @@ function checkDigestHeader(authorizationHeader: string, resource?: unknown) {
   const [authScheme, ...info] = authorizationHeader.split(' ');
 
   const isDigestInfoGiven = info && isDigestInfo(info);
-  const isDigestScheme = isScheme(authScheme, 'digest');
+  const isDigestScheme = isScheme('digest', authScheme);
 
   return genRespForScheme(isDigestScheme, isDigestInfoGiven, resource, digestWWWAuthenticate);
 }

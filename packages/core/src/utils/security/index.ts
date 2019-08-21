@@ -22,8 +22,9 @@ function getAllInvalidSec(invalidSecuritySchemes: Array<Left<IPrismDiagnostic>>)
       );
     }, '');
 
-    if (allWWWAuthHeaders !== '')
+    if (allWWWAuthHeaders !== '') {
       firstLeftValue.tags ? firstLeftValue.tags.push(allWWWAuthHeaders) : (firstLeftValue.tags = [allWWWAuthHeaders]);
+    }
 
     return firstLeftValue;
   }

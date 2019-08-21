@@ -64,12 +64,15 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
           const securityValidation = input.validations.input.find(i => i.code === 401 || i.code === 403);
 
           return securityValidation
-            ? ProblemJsonError.fromTemplate(securityValidation.code === 401 ? UNAUTHORIZED : FORBIDDEN, '', {
-                headers:
-                  securityValidation.tags && securityValidation.tags.length
-                    ? { 'WWW-Authenticate': securityValidation.tags.join(',') }
-                    : undefined,
-              })
+            ? ProblemJsonError.fromTemplate(
+                securityValidation.code === 401 ? UNAUTHORIZED : FORBIDDEN,
+                '',
+                securityValidation.tags && securityValidation.tags.length
+                  ? {
+                      headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
+                    }
+                  : undefined,
+              )
             : ProblemJsonError.fromTemplate(
                 UNPROCESSABLE_ENTITY,
                 'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',

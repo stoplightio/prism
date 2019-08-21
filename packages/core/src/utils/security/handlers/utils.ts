@@ -37,7 +37,7 @@ export const genUnauthorisedErr = (msg: string): IPrismDiagnostic => ({
   tags: msg ? [msg] : [],
 });
 
-export function isScheme(authScheme: string, shouldBeScheme: string) {
+export function isScheme(shouldBeScheme: string, authScheme: string) {
   return (authScheme || '').toLowerCase() === shouldBeScheme;
 }
 

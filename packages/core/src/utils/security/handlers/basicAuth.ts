@@ -9,7 +9,7 @@ function checkHeader(authorizationHeader: string, resource?: unknown) {
   const [authScheme, token] = authorizationHeader.split(' ');
 
   const isBasicTokenGiven = !!(token && isBasicToken(token));
-  const isBasicScheme = isScheme(authScheme, 'basic');
+  const isBasicScheme = isScheme('basic', authScheme);
 
   return genRespForScheme(isBasicScheme, isBasicTokenGiven, resource, basicWWWAuthenticate);
 }
