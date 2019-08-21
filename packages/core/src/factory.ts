@@ -1,6 +1,5 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
-import { identity } from 'fp-ts/lib/function';
 import { fold } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
