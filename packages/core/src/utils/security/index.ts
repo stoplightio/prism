@@ -24,17 +24,21 @@ function getAllInvalidSec(invalidSecuritySchemes: Array<Left<IPrismDiagnostic>>)
     }, '');
 
     if (allWWWAuthHeaders !== '') {
-      firstLeftValue.tags ? firstLeftValue.tags.push(allWWWAuthHeaders) : (firstLeftValue.tags = [allWWWAuthHeaders]);
+      return firstLeftValue.tags
+        ? Object.assign({}, firstLeftValue, { tags: firstLeftValue.tags.concat(allWWWAuthHeaders) })
+        : Object.assign({}, firstLeftValue, { tags: [allWWWAuthHeaders] });
+    } else {
+      return firstLeftValue;
     }
-
-    return firstLeftValue;
   }
 }
 
 export function validateSecurity(someInput: unknown, resource?: unknown): Option<IPrismDiagnostic> {
   const securitySchemes = get(resource, 'security', []);
 
-  if (!securitySchemes.length) return none;
+  if (!securitySchemes.length) {
+    return none;
+  }
 
   const validatedSecuritySchemes = securitySchemes.map((definedSecScheme: SecurityScheme) => {
     const schemeHandler = securitySchemeHandlers.find(handler => handler.test(definedSecScheme));

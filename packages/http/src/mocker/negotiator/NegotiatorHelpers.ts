@@ -247,7 +247,9 @@ const helpers = {
             findResponseByStatusCode(httpResponses, '401') ||
             findResponseByStatusCode(httpResponses, '403') ||
             createResponseFromDefault(httpResponses, '422');
-          if (response) logger.success(`Created a ${response.code} from a default response`);
+          if (response) {
+            logger.success(`Created a ${response.code} from a default response`);
+          }
           return response;
         }
       }
