@@ -31,7 +31,7 @@ After [installation](https://stoplight.io/p/docs/gh/stoplightio/prism/docs/getti
 
 - [x] Server Validation
 - [x] Content Negotiation
-- [ ] Security Validation
+- [x] Security Validation
 - [ ] Custom Mocking
 - [ ] Validation Proxy
 - [ ] Recording / "Learning" mode to create spec files
