@@ -198,7 +198,7 @@ describe('HttpMocker', () => {
             const response = await httpMocker.mock({
               input: mockInput,
               resource: mockResource,
-              config: { mock: { dynamic: true } },
+              config: { cors: false, mock: { dynamic: true } },
             })(logger);
 
             expect(JSONSchemaGenerator.generate).toHaveBeenCalled();
@@ -226,7 +226,7 @@ describe('HttpMocker', () => {
             const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,
-              config: { mock: { dynamic: false, exampleKey: 'test key' } },
+              config: { cors: false, mock: { dynamic: false, exampleKey: 'test key' } },
             })(logger);
 
             it('should return the selected example', () => {
@@ -244,7 +244,7 @@ describe('HttpMocker', () => {
             const response = httpMocker.mock({
               input: mockInput,
               resource: mockResource,
-              config: { mock: { dynamic: false } },
+              config: { cors: false, mock: { dynamic: false } },
             })(logger);
 
             it('returns the first example', () => {
@@ -285,7 +285,7 @@ describe('HttpMocker', () => {
             return httpMocker.mock({
               input: mockInput,
               resource: createOperationWithSchema(schema),
-              config: { mock: { dynamic: false } },
+              config: { cors: false, mock: { dynamic: false } },
             })(logger);
           }
 
