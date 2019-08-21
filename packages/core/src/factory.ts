@@ -1,5 +1,7 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
+import { identity } from 'fp-ts/lib/function';
+import { fold } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
@@ -67,7 +69,12 @@ export function factory<Resource, Input, Output, Config>(
                 );
               }
 
-              const inputValidationResult = inputValidations.concat(validateSecurity(input, resource) || []);
+              const inputValidationResult = inputValidations.concat(
+                pipe(
+                  validateSecurity(input, resource),
+                  fold<IPrismDiagnostic, IPrismDiagnostic[]>(() => [], value => [value]),
+                ),
+              );
 
               if (resource && components.mocker && (configObj as IPrismConfig).mock) {
                 // generate the response

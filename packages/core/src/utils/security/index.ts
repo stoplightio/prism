@@ -1,4 +1,5 @@
 import { fold, isLeft, isRight, Left, left, mapLeft } from 'fp-ts/lib/Either';
+import { none, Option, some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get, identity } from 'lodash';
 import { IPrismDiagnostic } from '../../types';
@@ -30,10 +31,10 @@ function getAllInvalidSec(invalidSecuritySchemes: Array<Left<IPrismDiagnostic>>)
   }
 }
 
-export function validateSecurity(someInput: unknown, resource?: unknown): IPrismDiagnostic | undefined {
+export function validateSecurity(someInput: unknown, resource?: unknown): Option<IPrismDiagnostic> {
   const securitySchemes = get(resource, 'security', []);
 
-  if (!securitySchemes.length) return;
+  if (!securitySchemes.length) return none;
 
   const validatedSecuritySchemes = securitySchemes.map((definedSecScheme: SecurityScheme) => {
     const schemeHandler = securitySchemeHandlers.find(handler => handler.test(definedSecScheme));
@@ -46,5 +47,5 @@ export function validateSecurity(someInput: unknown, resource?: unknown): IPrism
   const validSecuritySchema = validatedSecuritySchemes.find(isRight);
   const invalidSecuritySchemes = validatedSecuritySchemes.filter(isLeft);
 
-  return validSecuritySchema ? undefined : getAllInvalidSec(invalidSecuritySchemes);
+  return validSecuritySchema ? none : some(getAllInvalidSec(invalidSecuritySchemes));
 }
