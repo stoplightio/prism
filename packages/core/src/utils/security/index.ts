@@ -1,7 +1,6 @@
 import { fold, isLeft, isRight, Left, left, mapLeft } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get, identity } from 'lodash';
-import { set } from 'lodash/fp';
 import { IPrismDiagnostic } from '../../types';
 import { securitySchemeHandlers } from './handlers';
 import { SecurityScheme } from './handlers/types';
@@ -9,7 +8,7 @@ import { SecurityScheme } from './handlers/types';
 function getAllInvalidSec(invalidSecuritySchemes: Array<Left<IPrismDiagnostic>>): IPrismDiagnostic {
   const pathToHeader = ['headers', 'WWW-Authenticate'];
 
-  const firstLeftValue: IPrismDiagnostic = pipe(
+  const firstLeftValue = pipe(
     invalidSecuritySchemes[0],
     fold<IPrismDiagnostic, unknown, IPrismDiagnostic>(identity, identity),
   );
@@ -25,7 +24,10 @@ function getAllInvalidSec(invalidSecuritySchemes: Array<Left<IPrismDiagnostic>>)
       );
     }, '');
 
-    return set(pathToHeader, allWWWAuthHeaders, firstLeftValue);
+    if (allWWWAuthHeaders !== '')
+      firstLeftValue.tags ? firstLeftValue.tags.push(allWWWAuthHeaders) : (firstLeftValue.tags = [allWWWAuthHeaders]);
+
+    return firstLeftValue;
   }
 }
 
