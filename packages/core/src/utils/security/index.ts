@@ -6,8 +6,6 @@ import { securitySchemeHandlers } from './handlers';
 import { SecurityScheme } from './handlers/types';
 
 function getAllInvalidSec(invalidSecuritySchemes: Array<Left<IPrismDiagnostic>>): IPrismDiagnostic {
-  const pathToHeader = ['headers', 'WWW-Authenticate'];
-
   const firstLeftValue = pipe(
     invalidSecuritySchemes[0],
     fold<IPrismDiagnostic, unknown, IPrismDiagnostic>(identity, identity),
@@ -19,7 +17,7 @@ function getAllInvalidSec(invalidSecuritySchemes: Array<Left<IPrismDiagnostic>>)
     const allWWWAuthHeaders = invalidSecuritySchemes.reduce((accumulator, currentValue) => {
       return pipe(
         currentValue,
-        mapLeft(err => [accumulator, get(err, pathToHeader)].filter(identity).join(', ')),
+        mapLeft(err => [accumulator, get(err, ['headers', 'WWW-Authenticate'])].filter(identity).join(', ')),
         fold(authHeader => authHeader || '', () => ''),
       );
     }, '');
