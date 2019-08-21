@@ -28,7 +28,6 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Basic abc123' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 403,
-        tags: [],
         message: 'Invalid credentials used',
         severity: DiagnosticSeverity.Error,
       });
@@ -39,7 +38,7 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Bearer abc123' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 401,
-        tags: ['Basic realm = "*"'],
+        tags: ['Basic realm="*"'],
         message: 'Invalid security scheme used',
         severity: DiagnosticSeverity.Error,
       });
@@ -63,7 +62,6 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Digest username=""' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 403,
-        tags: [],
         message: 'Invalid credentials used',
         severity: DiagnosticSeverity.Error,
       });
@@ -84,7 +82,7 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 401,
-        headers: ['Bearer'],
+        tags: ['Bearer'],
         message: 'Invalid security scheme used',
         severity: DiagnosticSeverity.Error,
       });
@@ -93,7 +91,7 @@ describe('validateSecurity', () => {
     it('fails with an invalid security scheme error', () => {
       expect(validateSecurity({ tags: [] }, { security: securityScheme })).toStrictEqual({
         code: 401,
-        headers: ['Bearer'],
+        tags: ['Bearer'],
         message: 'Invalid security scheme used',
         severity: DiagnosticSeverity.Error,
       });
@@ -114,7 +112,7 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Digest abc123' } }, { security: securityScheme }),
       ).toStrictEqual({
         code: 401,
-        headers: ['OAuth2'],
+        tags: ['OAuth2'],
         message: 'Invalid security scheme used',
         severity: DiagnosticSeverity.Error,
       });
