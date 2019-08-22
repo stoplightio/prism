@@ -336,7 +336,7 @@ describe('NegotiatorHelpers', () => {
       httpOperation = anHttpOperation(httpOperation).instance();
 
       assertLeft(helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger), error =>
-        expect(error).toHaveProperty('message', 'The server cannot find the requested content'),
+        expect(error).toHaveProperty('message', 'The server cannot find the requested content.'),
       );
     });
   });
@@ -721,7 +721,7 @@ describe('NegotiatorHelpers', () => {
 
         const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
         assertLeft(negotiationResult, e => {
-          expect(e.message).toBe('The server cannot find the requested content');
+          expect(e.message).toBe('The server cannot find the requested content.');
         });
       });
     });

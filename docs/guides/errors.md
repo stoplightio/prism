@@ -1,0 +1,156 @@
+# Errors
+
+All the errors that Prism returns conform to the [RFC7807](https://tools.ietf.org/html/rfc7807). In a nutshell, this means that you'll always get a **JSON object** with the following properties:
+
+* `type` (string)
+* `title` (string)
+* `status` (number)
+* `detail` (string)
+
+This document enumerates all the possible errors returned by Prism and provides some further informations on how to solve them.
+
+## Routing errors
+
+This class of error is returned when Prism is trying to identify the right resource to use to respond to the provided HTTP Request.
+
+### NO_BASE_URL_ERROR
+#### Message: Attempted to make a request to a server but neither baseUrl param provided nor servers defined in the spec.
+#### Returned Status Code: `400`
+**Explanation:** This error occurs when Prism is being used as a proxy and the current document is missing at least a server in the dedicated array (both globally and locally). The proxy functionality is currently disabled in Prism, so this error should never happen.
+
+---
+
+### NO_RESOURCE_PROVIDED_ERROR
+#### Message: Route not resolved, no resource provided.
+#### Returned Status Code: `404`
+**Explanation:** This error occurs when the current document does not have any endpoint.
+
+##### Example
+
+```yaml
+openapi: 3.0.1
+paths:
+```
+
+`curl -X POST http://localhost:4010/pets`
+
+---
+
+### NO_PATH_MATCHED_ERROR
+#### Message: Route not resolved, no path matched.
+#### Returned Status Code: `404`
+**Explanation:** This error occurs when the current document does not have any endpoint matching the requested URL.
+
+##### Example
+
+```yaml
+openapi: 3.0.1
+paths:
+  /pets:
+    get:
+      responses:
+        200:
+          description: Hey
+```
+
+`curl -X POST http://localhost:4010/hello`
+
+---
+
+### NO_SERVER_MATCHED_ERROR
+#### Message: Route not resolved, no server matched.
+#### Returned Status Code: `404`
+**Explanation:** This error occurs when the server validation is enabled, and the current request has **not** sent the current server or the provided one is not among the defined in the relative array in the file.
+
+---
+
+### NO_METHOD_MATCHED_ERROR
+#### Message: Route resolved, but no path matched.
+#### Returned Status Code: `405`
+**Explanation:** This error occurs when the current document has an endpoint with the requested URL, but the specified Verb is not listed.
+
+##### Example
+
+```yaml
+openapi: 3.0.1
+paths:
+  /pets:
+    get:
+      responses:
+        200:
+          description: Hey
+```
+
+`curl -X POST http://localhost:4010/pets`
+
+---
+
+### NO_SERVER_CONFIGURATION_PROVIDED_ERROR
+#### Message: Route not resolved, no server configuration provided.
+#### Returned Status Code: `404`
+**Explanation:**
+
+## Validation errors
+
+This class of error is returned when Prism is validating the request/response against the provided OpenAPI file.
+
+### UNPROCESSABLE_ENTITY
+#### Message: Invalid request body payload.
+#### Returned Status Code: `422`
+**Explanation:** This error occurs when the current request has not passed the validation rules specified in the current OpenAPI file *and* the current resource is missing an error message (`422`, `400`, `default`). Note that this is an error _genered_ by Prism.
+
+The `detail` field contains further information on the error (whether it's on the body, the headers or the query string).
+
+---
+
+### NOT_ACCEPTABLE
+#### Message: The server cannot produce a representation for your accept header.
+#### Returned Status Code: `406`
+**Explanation:** This error occurs when the current request has asked the response in a format that the current document is not able to produce.
+
+##### Example
+
+```yaml
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: Get Todo Items
+          examples:
+            text/plain: hello
+```
+
+`curl http://localhost:4010/todos -H "accept: application/json"`
+
+---
+
+### NOT_FOUND
+#### Message: The server cannot find the requested content.
+#### Returned Status Code: `404`
+**Explanation:** This error occurs when the current request is asking for a specific status code that the document is not listing or it's asking for a specific example that does not exist in the current document
+
+---
+
+## Security errors
+
+This class of error is returned when the current request is not satisfying the security requirements specified in the current resource
+
+### UNAUTHORIZED
+#### Message: Invalid security scheme used.
+#### Returned Status Code: `401`
+**Explanation:** This error occurs when the security scheme for the current resource does not match the one that the one that the request being processed has provided.
+
+---
+
+### FORBIDDEN
+#### Message: Invalid credentials used.
+#### Returned Status Code: `403`
+**Explanation:** This error occurs when the current request is using the correct security scheme, but its content results invalid. This might be an error in the decoding process (such as a not valid base64 payload)
+
+---
+
+## Unknown error
+
+In case you get an `UNKNOWN` error, it likely means we **screwed it up** and we haven't handled this particular edge case. If you encounter one of these, opening an [issue](https://github.com/stoplightio/prism/issues/new?labels=bug&template=bug_report.md) might be a good idea.

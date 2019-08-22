@@ -1,6 +1,6 @@
 # Request Validation
 
-One of the main goals for Prism is to create a realistic fake API when maybe the API does not even exist. Based on the API description document Prism can take educated guesses at all sorts of validation rules for the request body, headers, query parameters, using keywords like `type`, `format`, `maxLength`, etc. 
+One of the main goals for Prism is to create a realistic fake API when maybe the API does not even exist. Based on the API description document Prism can take educated guesses at all sorts of validation rules for the request body, headers, query parameters, using keywords like `type`, `format`, `maxLength`, etc.
 
 It can also fail with 401 if security information is missing, and do a bunch of other things the API description document says the real API will do. If the folks implementing the real API do it differently to their shared documents... well you should maybe have words with them.
 
@@ -31,7 +31,7 @@ Connection: keep-alive
 
 {
    "type" : "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY",
-   "title" : "Invalid request body payload",
+   "title" : "Invalid request body payload.",
    "detail" : "Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.",
    "status" : 422,
    "validation" : [
@@ -51,7 +51,7 @@ This error shows effectively that the request is missing a required property `na
 
 ## Server Validation
 
-OpenAPI allows the entire API, or certain operations, to be associated with specific servers. 
+OpenAPI allows the entire API, or certain operations, to be associated with specific servers.
 
 To make sure the server URL you plan to use is a valid server for the API, or for the particular operation you are attempting, provide it as a `__server` query param.
 
