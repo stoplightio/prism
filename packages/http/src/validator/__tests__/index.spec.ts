@@ -1,6 +1,5 @@
-import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
-
 import { IPrismDiagnostic } from '@stoplight/prism-core';
+import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
 import { IHttpNameValue, IHttpNameValues } from '../../types';
 import { IHttpRequest } from '../../types';
 import { HttpValidator } from '../index';
@@ -30,7 +29,7 @@ describe('HttpValidator', () => {
 
   describe('validateInput()', () => {
     describe('body validation in enabled', () => {
-      const test = (extendResource: Partial<IHttpOperation> | undefined, expectedError: IPrismDiagnostic[]) => () => {
+      const test = (extendResource: Partial<IHttpOperation> | undefined, errorsNumber: number) => () => {
         expect(
           httpValidator.validateInput({
             resource: Object.assign(
@@ -46,7 +45,7 @@ describe('HttpValidator', () => {
             input: { method: 'get', url: { path: '/' } },
             config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
-        ).toEqual(expectedError);
+        ).toHaveLength(errorsNumber);
       };
 
       describe('request.body is set', () => {
@@ -57,7 +56,7 @@ describe('HttpValidator', () => {
               {
                 request: { body: { contents: [] }, path: [], query: [], headers: [], cookie: [] },
               },
-              [],
+              2,
             ),
           );
         });
@@ -73,7 +72,7 @@ describe('HttpValidator', () => {
                 request: { body: { contents: [], required: true } },
                 responses: [{ code: '200' }],
               },
-              [{ message: 'Body parameter is required', code: 'required', severity: DiagnosticSeverity.Error }],
+              3,
             ),
           );
         });
@@ -82,7 +81,7 @@ describe('HttpValidator', () => {
   });
 
   describe('headers validation in enabled', () => {
-    const test = (extendResource?: Partial<IHttpOperation>) => () => {
+    const test = (extendResource?: Partial<IHttpOperation>, length: number = 1) => () => {
       expect(
         httpValidator.validateInput({
           resource: Object.assign(
@@ -98,26 +97,20 @@ describe('HttpValidator', () => {
           input: { method: 'get', url: { path: '/' } },
           config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
         }),
-      ).toEqual([mockError]);
+      ).toHaveLength(length);
     };
 
     describe('request is not set', () => {
-      it('validates headers', test());
-    });
-
-    describe('request is set', () => {
-      describe('request.headers is not set', () => {
-        it('validates headers', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
-      });
-
-      describe('request.headers is set', () => {
-        it('validates headers', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
-      });
+      it('validates headers', test(undefined, 2));
     });
   });
 
   describe('query validation in enabled', () => {
-    const test = (extendResource?: Partial<IHttpOperation>, extendInput?: Partial<IHttpRequest>) => () => {
+    const test = (
+      extendResource?: Partial<IHttpOperation>,
+      extendInput?: Partial<IHttpRequest>,
+      lenght: number = 2,
+    ) => () => {
       expect(
         httpValidator.validateInput({
           resource: Object.assign(
@@ -133,24 +126,24 @@ describe('HttpValidator', () => {
           input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, extendInput),
           config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
         }),
-      ).toEqual([mockError]);
+      ).toHaveLength(lenght);
 
       expect(httpBodyValidator.validate).not.toHaveBeenCalled();
-      expect(httpHeadersValidator.validate).not.toHaveBeenCalled();
+      expect(httpHeadersValidator.validate).toHaveBeenCalled();
       expect(httpQueryValidator.validate).toHaveBeenCalledWith({}, [], undefined);
     };
 
     describe('request is not set', () => {
-      it('validates query', test());
+      it('validates query', test(undefined, undefined, 2));
     });
 
     describe('request is set', () => {
       describe('request.query is not set', () => {
-        it('validates query', test({ request: {} }));
+        it('validates query', test({ request: {} }, undefined, 2));
       });
 
       describe('request.query is set', () => {
-        it('validates query', test({ request: {} }));
+        it('validates query', test({ request: {} }, undefined, 2));
       });
     });
 
@@ -173,55 +166,31 @@ describe('HttpValidator', () => {
             },
             config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
-        ).toEqual([]);
+        ).toHaveLength(0);
 
         expect(httpBodyValidator.validate).not.toHaveBeenCalled();
       });
     });
 
     describe('output is set', () => {
-      describe('body validation is enabled', () => {
-        it('validates the body', async () => {
-          await expect(
-            httpValidator.validateOutput({
-              resource: {
-                method: 'get',
-                path: '/',
-                id: '1',
-                request: {},
-                responses: [{ code: '200' }],
-              },
-              output: { statusCode: 200 },
-              config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
-            }),
-          ).toEqual([mockError]);
+      it('validates the body and headers', async () => {
+        await expect(
+          httpValidator.validateOutput({
+            resource: {
+              method: 'get',
+              path: '/',
+              id: '1',
+              request: {},
+              responses: [{ code: '200' }],
+            },
+            output: { statusCode: 200 },
+            config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+          }),
+        ).toHaveLength(2);
 
-          expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
-          expect(httpBodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
-          expect(httpHeadersValidator.validate).not.toHaveBeenCalled();
-        });
-      });
-
-      describe('headers validation is enabled', () => {
-        it('validates headers', () => {
-          expect(
-            httpValidator.validateOutput({
-              resource: {
-                method: 'get',
-                path: '/',
-                id: '1',
-                request: {},
-                responses: [{ code: '200' }],
-              },
-              output: { statusCode: 200 },
-              config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
-            }),
-          ).toEqual([mockError]);
-
-          expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
-          expect(httpBodyValidator.validate).not.toHaveBeenCalled();
-          expect(httpHeadersValidator.validate).toHaveBeenCalledWith({}, [], undefined);
-        });
+        expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
+        expect(httpBodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
+        expect(httpHeadersValidator.validate).toHaveBeenCalled();
       });
     });
   });
