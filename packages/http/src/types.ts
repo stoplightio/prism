@@ -20,23 +20,8 @@ export interface IHttpConfig extends IPrismConfig {
   mock: false | IHttpOperationConfig;
   cors: boolean;
 
-  validate?: {
-    request?:
-      | boolean
-      | {
-          hijack?: boolean;
-          headers?: boolean;
-          query?: boolean;
-          body?: boolean;
-        };
-
-    response?:
-      | boolean
-      | {
-          headers?: boolean;
-          body?: boolean;
-        };
-  };
+  validateRequest: boolean;
+  validateResponse: boolean;
 }
 
 export type IHttpNameValues = Dictionary<string | string[]>;
