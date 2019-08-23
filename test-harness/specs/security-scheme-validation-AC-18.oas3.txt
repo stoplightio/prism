@@ -1,0 +1,29 @@
+====test====
+Providing an api key that is required to be in the query, results in granted access.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example: test
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: apiKey
+security:
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos?apiKey=foo
+====expect====
+HTTP/1.1 200 OK
+
+"test"

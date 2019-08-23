@@ -64,7 +64,7 @@ describe('GET /pet?__server', () => {
   }
 });
 
-describe.each([['petstore.oas2.yaml'], ['petstore.oas3.yaml']])('server %s', file => {
+describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('server %s', file => {
   let server: IPrismHttpServer;
 
   beforeAll(async () => {

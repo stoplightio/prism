@@ -2,8 +2,7 @@ import { IMocker, IMockerOpts, IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { Either } from 'fp-ts/lib/Either';
-import { map } from 'fp-ts/lib/Either';
+import { Either, map } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import { mapLeft } from 'fp-ts/lib/ReaderEither';
@@ -19,7 +18,7 @@ import {
   ProblemJsonError,
 } from '../types';
 import withLogger from '../withLogger';
-import { UNPROCESSABLE_ENTITY } from './errors';
+import { FORBIDDEN, UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './errors';
 import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
@@ -55,34 +54,50 @@ export class HttpMocker
   }
 }
 
+function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
+  return pipe(
+    withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
+    chain(() =>
+      pipe(
+        helpers.negotiateOptionsForInvalidRequest(resource.responses),
+        mapLeft(() => {
+          const securityValidation = input.validations.input.find(i => i.code === 401 || i.code === 403);
+
+          return securityValidation
+            ? ProblemJsonError.fromTemplate(
+                securityValidation.code === 401 ? UNAUTHORIZED : FORBIDDEN,
+                '',
+                securityValidation.tags && securityValidation.tags.length
+                  ? {
+                      headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
+                    }
+                  : undefined,
+              )
+            : ProblemJsonError.fromTemplate(
+                UNPROCESSABLE_ENTITY,
+                'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+                {
+                  validation: input.validations.input.map(detail => ({
+                    location: detail.path,
+                    severity: DiagnosticSeverity[detail.severity],
+                    code: detail.code,
+                    message: detail.message,
+                  })),
+                },
+              );
+        }),
+      ),
+    ),
+  );
+}
+
 function negotiateResponse(
   mockConfig: IHttpOperationConfig,
   input: IPrismInput<IHttpRequest>,
   resource: IHttpOperation,
 ) {
   if (input.validations.input.length > 0) {
-    return pipe(
-      withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
-      chain(() =>
-        pipe(
-          helpers.negotiateOptionsForInvalidRequest(resource.responses),
-          mapLeft(() =>
-            ProblemJsonError.fromTemplate(
-              UNPROCESSABLE_ENTITY,
-              'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-              {
-                validation: input.validations.input.map(detail => ({
-                  location: detail.path,
-                  severity: DiagnosticSeverity[detail.severity],
-                  code: detail.code,
-                  message: detail.message,
-                })),
-              },
-            ),
-          ),
-        ),
-      ),
-    );
+    return handleInputValidation(input, resource);
   } else {
     return pipe(
       withLogger(logger =>

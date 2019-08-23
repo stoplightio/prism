@@ -1,0 +1,29 @@
+====test====
+Access to a resource is denied when *X-API-Key* required header is not provided.
+====spec====
+swagger: '2.0'
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          examples:
+            application/json: test
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+security:
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 401 Unauthorized
+
+{"type":"https://stoplight.io/prism/errors#UNAUTHORIZED","title":"Invalid security scheme used","status":401,"detail":""}

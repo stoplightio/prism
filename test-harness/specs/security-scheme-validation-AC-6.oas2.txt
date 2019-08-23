@@ -1,0 +1,35 @@
+====test====
+Adding a header of "Authorization: Basic <<TOKEN>>" where TOKEN is NOT base64 encoded <<ID>>:<<PASS>> combination
+for a request to an endpoint, that is secured by BasicAuth (one of the security definitions selected manually), results in denied access.
+====spec====
+swagger: '2.0'
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      security:
+        - BasicAuth: []
+      responses:
+        200:
+          description: OK
+          examples:
+            application/json: test
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+security:
+  - BasicAuth: []
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "Authorization: Basic abc123"
+====expect====
+HTTP/1.1 403 Forbidden
+
+{"type":"https://stoplight.io/prism/errors#FORBIDDEN","title":"Invalid credentials used","status":403,"detail":""}

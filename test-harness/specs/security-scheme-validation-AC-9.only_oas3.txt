@@ -1,0 +1,28 @@
+====test====
+Adding a required header of "Authorization: Bearer <<BEARER_TOKEN>>" results in granted access.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example: test
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - BearerAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "Authorization: Bearer abc123"
+====expect====
+HTTP/1.1 200 OK
+
+"test"

@@ -1,0 +1,34 @@
+====test====
+Adding a required header of "Authorization: Bearer <<BEARER_TOKEN>>" results in granted access.
+====spec====
+swagger: '2.0'
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          examples:
+            application/json: test
+securityDefinitions:
+  OAuth2:
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: /oauth/authorize
+    tokenUrl: /oauth/token
+    scopes:
+      read: Grants read access
+      write: Grants write access
+      admin: Grants read and write access to administrative information
+security:
+  - OAuth2: [read, write]
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "Authorization: Bearer abc123"
+====expect====
+HTTP/1.1 200 OK
+
+"test"

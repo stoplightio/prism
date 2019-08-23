@@ -1,6 +1,6 @@
 import { Either, left, map, right } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { chain } from 'fp-ts/lib/Reader';
+import { chain, Reader } from 'fp-ts/lib/Reader';
 import { left as releft, mapLeft, orElse, ReaderEither } from 'fp-ts/lib/ReaderEither';
 import { Logger } from 'pino';
 
@@ -18,7 +18,6 @@ import {
   findLowest2xx,
   findResponseByStatusCode,
   hasContents,
-  IWithExampleMediaContent,
 } from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
@@ -235,37 +234,45 @@ const helpers = {
     return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
+  findResponse(httpResponses: IHttpOperationResponse[]): Reader<Logger, IHttpOperationResponse | undefined> {
+    return withLogger<IHttpOperationResponse | undefined>(logger => {
+      let result = findResponseByStatusCode(httpResponses, '422');
+      if (!result) {
+        logger.trace('Unable to find a 422 response definition');
+
+        result = findResponseByStatusCode(httpResponses, '400');
+        if (!result) {
+          logger.trace('Unable to find a 400 response definition.');
+          const response =
+            findResponseByStatusCode(httpResponses, '401') ||
+            findResponseByStatusCode(httpResponses, '403') ||
+            createResponseFromDefault(httpResponses, '422');
+          if (response) {
+            logger.success(`Created a ${response.code} from a default response`);
+          }
+          return response;
+        }
+      }
+
+      logger.success(`Found response ${result.code}. I'll try with it.`);
+      return result;
+    });
+  },
+
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
   ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      withLogger(logger => {
-        let result = findResponseByStatusCode(httpResponses, '422');
-        if (!result) {
-          logger.trace('Unable to find a 422 response definition');
-
-          result = findResponseByStatusCode(httpResponses, '400');
-          if (!result) {
-            logger.trace('Unable to find a 400 response definition.');
-            const response = createResponseFromDefault(httpResponses, '422');
-            if (response) logger.success(`Created a ${response.code} from a default response`);
-            return response;
-          }
-        }
-
-        logger.success(`Found response ${result.code}. I'll try with it.`);
-        return result;
-      }),
-      chain(response => {
-        return withLogger(logger => {
+      helpers.findResponse(httpResponses),
+      chain(response =>
+        withLogger(logger => {
           if (!response) {
             logger.trace('Unable to find a default response definition.');
             return left(new Error('No 422, 400, or default responses defined'));
           }
 
           // find first response with any static examples
-          const contentWithExamples =
-            response.contents && response.contents.find<IWithExampleMediaContent>(contentHasExamples);
+          const contentWithExamples = response.contents && response.contents.find(contentHasExamples);
 
           if (contentWithExamples) {
             logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
@@ -292,8 +299,8 @@ const helpers = {
               return left(new Error(`Neither schema nor example defined for ${response.code} response.`));
             }
           }
-        });
-      }),
+        }),
+      ),
     );
   },
 };

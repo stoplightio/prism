@@ -1,0 +1,29 @@
+====test====
+Making a request (and not including any credentials) to an endpoint,
+which security depends on the one and only global security definition,
+results in a 401 status code response.
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          schema:
+            type: string
+            example: test
+securityDefinitions:
+  BasicAuth:
+    type: basic
+security:
+  - BasicAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 401 Unauthorized
+www-authenticate: Basic realm="*"
+
+{"type":"https://stoplight.io/prism/errors#UNAUTHORIZED","title":"Invalid security scheme used","status":401,"detail":"","headers":{"WWW-Authenticate":"Basic realm=\"*\""}}

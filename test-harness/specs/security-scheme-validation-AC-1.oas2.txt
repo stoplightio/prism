@@ -1,0 +1,21 @@
+====test====
+Making a request (and not including any credentials) to an endpoint, which is not secured, results in granted access.
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          schema:
+            type: string
+            example: test
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+
+test

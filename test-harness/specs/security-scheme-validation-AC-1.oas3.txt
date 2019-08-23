@@ -1,0 +1,22 @@
+====test====
+Making a request (and not including any credentials) to an endpoint, which is not secured, results in granted access.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example: test
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+
+"test"

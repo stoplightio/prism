@@ -1,0 +1,32 @@
+====test====
+Not providing required credentials returns the schema generated response for 401.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+        401:
+          description: unauthorized
+          content:
+            application/json:
+              schema:
+                type: number
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: apiKey
+security:
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 401 Unauthorized
+
+0

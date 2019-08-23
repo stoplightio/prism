@@ -1,0 +1,34 @@
+====test====
+Adding a header of "Authorization: Basic <<TOKEN>>" where TOKEN is base64 encoded <<ID>>:<<PASS>> combination
+for a request to an endpoint, which security depends on global security definitions, results in granted access.
+====spec====
+swagger: '2.0'
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          examples:
+            application/json: test
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+security:
+  - BasicAuth: []
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "Authorization: Basic dGVzdDp0ZXN0"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+
+"test"

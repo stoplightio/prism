@@ -1,4 +1,8 @@
 {
+  "info": {
+    "version": "2.0",
+    "title": "abc"
+  },
   "swagger": "2.0",
   "paths": {
     "/pet/findByStatus": {
@@ -20,6 +24,7 @@
         ],
         "responses": {
           "200": {
+            "description": "abc",
             "schema": {
               "type": "string"
             }
@@ -49,6 +54,7 @@
         ],
         "responses": {
           "200": {
+            "description": "abc",
             "schema": {
               "type": "string"
             }
@@ -76,9 +82,7 @@
           }
         },
         "security": [
-          {
-            "petstore_auth": ["write:pets", "read:pets"]
-          }
+
         ]
       }
     }

@@ -105,8 +105,13 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           reply
             .type('application/problem+json')
             .serializer(JSON.stringify)
-            .code(status)
-            .send(ProblemJsonError.fromPlainError(e));
+            .code(status);
+
+          if (e.additional && e.additional.headers) {
+            reply.headers(e.additional.headers);
+          }
+
+          reply.send(ProblemJsonError.fromPlainError(e));
         } else {
           reply.res.end();
         }

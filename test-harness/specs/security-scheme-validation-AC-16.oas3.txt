@@ -1,0 +1,35 @@
+====test====
+Supplying a header for Basic Authentication (when Bearer was needed) results in denied access.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example: test
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+            admin: Grants read and write access to administrative information
+security:
+  - OAuth2: [read, write]
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "Authorization: Basic dGVzdDp0ZXN0"
+====expect====
+HTTP/1.1 401 Unauthorized
+
+{"type":"https://stoplight.io/prism/errors#UNAUTHORIZED","title":"Invalid security scheme used","status":401,"detail":"","headers":{"WWW-Authenticate":"OAuth2"}}

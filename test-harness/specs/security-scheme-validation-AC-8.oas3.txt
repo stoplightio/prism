@@ -1,0 +1,29 @@
+====test====
+Resource is returned when *X-API-Key* required header is provided.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example: test
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+security:
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "X-API-Key: abc123"
+====expect====
+HTTP/1.1 200 OK
+
+"test"

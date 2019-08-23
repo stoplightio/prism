@@ -1,9 +1,11 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
+import { fold } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
+import { validateSecurity } from './utils/security';
 
 export function factory<Resource, Input, Output, Config>(
   defaultConfig: PrismConfig<Config, Input>,
@@ -24,7 +26,7 @@ export function factory<Resource, Input, Output, Config>(
       process: async (input: Input, resources: Resource[], c?: Config) => {
         // build the config for this request
         const configMerger = configMergerFactory(defaultConfig, customConfig, c);
-        const configObj: Config | undefined = configMerger(input);
+        const configObj = configMerger(input);
         const inputValidations: IPrismDiagnostic[] = [];
 
         if (components.router) {
@@ -66,6 +68,13 @@ export function factory<Resource, Input, Output, Config>(
                 );
               }
 
+              const inputValidationResult = inputValidations.concat(
+                pipe(
+                  validateSecurity(input, resource),
+                  fold<IPrismDiagnostic, IPrismDiagnostic[]>(() => [], value => [value]),
+                ),
+              );
+
               if (resource && components.mocker && (configObj as IPrismConfig).mock) {
                 // generate the response
                 return pipe(
@@ -73,7 +82,12 @@ export function factory<Resource, Input, Output, Config>(
                     components.mocker.mock(
                       {
                         resource,
-                        input: { validations: { input: inputValidations }, data: input },
+                        input: {
+                          validations: {
+                            input: inputValidationResult,
+                          },
+                          data: input,
+                        },
                         config: configObj,
                       },
                       defaultComponents.mocker,
@@ -87,7 +101,12 @@ export function factory<Resource, Input, Output, Config>(
                   components.forwarder.fforward(
                     {
                       resource,
-                      input: { validations: { input: inputValidations }, data: input },
+                      input: {
+                        validations: {
+                          input: inputValidationResult,
+                        },
+                        data: input,
+                      },
                       config: configObj,
                     },
                     defaultComponents.forwarder,

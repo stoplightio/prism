@@ -1,0 +1,33 @@
+====test====
+Not providing required credentials returns an example for 401.
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          examples:
+            'application/json': test
+        401:
+          description: unauthorized
+          examples:
+            'application/json': unauthorized
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: query
+    name: apiKey
+security:
+  - ApiKeyAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 401 Unauthorized
+
+"unauthorized"

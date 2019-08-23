@@ -1,0 +1,29 @@
+====test====
+Adding a required cookie with the name of SESSIONID results in granted access.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              example: test
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: SESSIONID
+security:
+  - cookieAuth: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos --cookie "SESSIONID=abc123"
+====expect====
+HTTP/1.1 200 OK
+
+"test"
