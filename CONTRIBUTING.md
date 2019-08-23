@@ -77,6 +77,24 @@ yarn cli:debug mock file.oas.yml
 
 The application will wait for a debugger to be attached and break on the first line; from there, you can put your breakpoint here and there and help us debug the software!
 
+#### Every single function I use is stepping into the `fp-ts` code, and this is boring. What do I do?
+
+According to your IDE, you might be able to skip the code. In case you're using Visual Studio Code, you can use the `skipFiles` section of your `launch.json` file:
+
+```json
+{
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Launch Program",
+      "skipFiles": ["node_modules/fp-ts/*.js"]
+    }
+  ]
+}
+
+```
+
 ### Common issues
 
 1. `jest --watch` throws ENOSPC error
