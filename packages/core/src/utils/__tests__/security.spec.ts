@@ -3,6 +3,8 @@ import { validateSecurity } from '../security';
 import { assertNone, assertSome } from './utils';
 
 describe('validateSecurity', () => {
+  const token = new Buffer('test:test').toString('base64');
+
   it('passes the validation', () => {
     assertNone(validateSecurity({}, { security: [[]] }));
   });
@@ -20,8 +22,6 @@ describe('validateSecurity', () => {
     const securityScheme = [[{ scheme: 'basic', type: 'http' }]];
 
     it('passes the validation', () => {
-      const token = new Buffer('test:test').toString('base64');
-
       assertNone(validateSecurity({ headers: { authorization: `Basic ${token}` } }, { security: securityScheme }));
     });
 
@@ -145,7 +145,7 @@ describe('validateSecurity', () => {
       it('does not add info to WWW-Authenticate header', () => {
         assertSome(
           validateSecurity(
-            { headers: [] },
+            { headers: {} },
             {
               security: [[{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }]],
             },
@@ -169,7 +169,7 @@ describe('validateSecurity', () => {
       });
 
       it('fails with an invalid security scheme error', () => {
-        assertSome(validateSecurity({ headers: [] }, { security: securityScheme }), res =>
+        assertSome(validateSecurity({ headers: {} }, { security: securityScheme }), res =>
           expect(res).toStrictEqual({
             code: 401,
             tags: [],
@@ -216,6 +216,50 @@ describe('validateSecurity', () => {
           }),
         );
       });
+    });
+  });
+
+  describe('OR relation between security schemes', () => {
+    const securityScheme = [[{ scheme: 'bearer', type: 'http' }], [{ scheme: 'basic', type: 'http' }]];
+
+    it('fails with an invalid security scheme error', () => {
+      assertSome(
+        validateSecurity(
+          {},
+          {
+            security: securityScheme,
+          },
+        ),
+        res =>
+          expect(res).toStrictEqual({
+            code: 401,
+            message: 'Invalid security scheme used',
+            severity: DiagnosticSeverity.Error,
+            tags: ['Bearer', 'Basic realm="*"'],
+          }),
+      );
+    });
+
+    it('passes the validation', () => {
+      assertNone(
+        validateSecurity(
+          { headers: { authorization: 'Bearer abc123' } },
+          {
+            security: securityScheme,
+          },
+        ),
+      );
+    });
+
+    it('passes the validation', () => {
+      assertNone(
+        validateSecurity(
+          { headers: { authorization: `Basic ${token}` } },
+          {
+            security: securityScheme,
+          },
+        ),
+      );
     });
   });
 
