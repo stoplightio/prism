@@ -7,7 +7,7 @@ All the errors that Prism returns conform to the [RFC7807](https://tools.ietf.or
 * `status` (number)
 * `detail` (string)
 
-This document enumerates all the possible errors returned by Prism and provides some further informations on how to solve them.
+This document enumerates all the possible errors returned by Prism and provides some further information on how to solve them.
 
 ## Routing errors
 
