@@ -1,6 +1,9 @@
-import { HttpParamStyles } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
+import { IHttpConfig } from '../../types';
 import { validator } from '../index';
+
+const defaultConfig: IHttpConfig = { cors: false, mock: false, validateRequest: true, validateResponse: true };
 
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
   body: { name: 'Shopping', completed: 'yes' },
@@ -66,9 +69,26 @@ describe('HttpValidator', () => {
                 api_Key: 'ha',
               },
             },
-            config: { cors: false, mock: false, validateRequest: true, validateResponse: false },
+            config: defaultConfig,
           }),
         ).toEqual([]);
+      });
+    });
+
+    describe('query validation', () => {
+      it('returns only query validation errors', () => {
+        expect(
+          validator.validateInput({
+            resource: httpOperations[2],
+            input: BAD_INPUT,
+            config: defaultConfig,
+          }),
+        ).toContainEqual({
+          code: 'pattern',
+          message: 'should match pattern "^(yes|no)$"',
+          path: ['query', 'overwrite'],
+          severity: DiagnosticSeverity.Error,
+        });
       });
     });
 
@@ -78,7 +98,7 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: { cors: false, mock: false, validateRequest: false, validateResponse: false },
+            config: Object.assign(defaultConfig, { validateRequest: false }),
           }),
         ).toMatchSnapshot();
       });
@@ -98,7 +118,7 @@ describe('HttpValidator', () => {
           await validator.validateOutput({
             resource: httpOperations[1],
             output: BAD_OUTPUT,
-            config: { cors: false, mock: false, validateRequest: false, validateResponse: false },
+            config: Object.assign(defaultConfig, { validateResponse: false }),
           }),
         ).toMatchSnapshot();
       });
