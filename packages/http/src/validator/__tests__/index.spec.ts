@@ -1,10 +1,8 @@
-import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
-
 import { IPrismDiagnostic } from '@stoplight/prism-core';
+import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
 import { IHttpNameValue, IHttpNameValues } from '../../types';
 import { IHttpRequest } from '../../types';
 import { HttpValidator } from '../index';
-import * as resolveValidationConfigModule from '../utils/config';
 import * as findResponseSpecModule from '../utils/spec';
 import { IHttpValidator } from '../validators/types';
 
@@ -23,8 +21,6 @@ describe('HttpValidator', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig');
-    jest.spyOn(resolveValidationConfigModule, 'resolveResponseValidationConfig');
     jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue(undefined);
     jest.spyOn(httpBodyValidator, 'validate');
     jest.spyOn(httpHeadersValidator, 'validate');
@@ -33,11 +29,7 @@ describe('HttpValidator', () => {
 
   describe('validateInput()', () => {
     describe('body validation in enabled', () => {
-      const test = (extendResource: Partial<IHttpOperation> | undefined, expectedError: IPrismDiagnostic[]) => () => {
-        jest
-          .spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig')
-          .mockReturnValueOnce({ body: true, headers: false, hijack: false, query: false });
-
+      const validate = (resourceExtension: Partial<IHttpOperation> | undefined, errorsNumber: number) => () => {
         expect(
           httpValidator.validateInput({
             resource: Object.assign(
@@ -48,153 +40,115 @@ describe('HttpValidator', () => {
                 request: {},
                 responses: [{ code: '200' }],
               },
-              extendResource,
+              resourceExtension,
             ),
             input: { method: 'get', url: { path: '/' } },
-            config: { cors: false, mock: { dynamic: false }, validate: { request: { body: true } } },
+            config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
-        ).toEqual(expectedError);
-
-        expect(resolveValidationConfigModule.resolveRequestValidationConfig).toHaveBeenCalled();
-        expect(httpBodyValidator.validate).not.toHaveBeenCalled();
-        expect(httpHeadersValidator.validate).not.toHaveBeenCalled();
-        expect(httpQueryValidator.validate).not.toHaveBeenCalled();
+        ).toHaveLength(errorsNumber);
       };
 
-      describe('request is not set', () => {
-        it('does not try to validate the body', test(undefined, []));
-      });
-
-      describe('request is set', () => {
-        describe('request.body is not set', () => {
+      describe('request.body is set', () => {
+        describe('request body is not required', () => {
           it(
             'does not try to validate the body',
-            test({ request: { path: [], headers: [], query: [], cookie: [] } }, []),
+            validate(
+              {
+                request: { body: { contents: [] }, path: [], query: [], headers: [], cookie: [] },
+              },
+              2,
+            ),
           );
         });
 
-        describe('request.body is set', () => {
-          describe('request body is not required', () => {
-            it(
-              'does not try to validate the body',
-              test(
-                {
-                  request: { body: { contents: [] }, path: [], query: [], headers: [], cookie: [] },
-                },
-                [],
-              ),
-            );
-          });
-
-          describe('request body is required', () => {
-            it(
-              'tries to validate the body',
-              test(
-                {
-                  method: 'get',
-                  path: '/',
-                  id: '1',
-                  request: { body: { contents: [], required: true } },
-                  responses: [{ code: '200' }],
-                },
-                [{ message: 'Body parameter is required', code: 'required', severity: DiagnosticSeverity.Error }],
-              ),
-            );
-          });
-        });
-      });
-    });
-
-    describe('headers validation in enabled', () => {
-      const test = (extendResource?: Partial<IHttpOperation>) => () => {
-        jest
-          .spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig')
-          .mockReturnValueOnce({ body: false, headers: true, hijack: false, query: false });
-
-        expect(
-          httpValidator.validateInput({
-            resource: Object.assign(
+        describe('request body is required', () => {
+          it(
+            'tries to validate the body',
+            validate(
               {
                 method: 'get',
                 path: '/',
                 id: '1',
-                request: {},
+                request: { body: { contents: [], required: true } },
                 responses: [{ code: '200' }],
               },
-              extendResource,
+              3,
             ),
-            input: { method: 'get', url: { path: '/' } },
-            config: { cors: false, mock: { dynamic: false }, validate: { request: { headers: true } } },
-          }),
-        ).toEqual([mockError]);
-
-        expect(resolveValidationConfigModule.resolveRequestValidationConfig).toHaveBeenCalled();
-        expect(httpBodyValidator.validate).not.toHaveBeenCalled();
-        expect(httpHeadersValidator.validate).toHaveBeenCalledWith({}, [], undefined);
-        expect(httpQueryValidator.validate).not.toHaveBeenCalled();
-      };
-
-      describe('request is not set', () => {
-        it('validates headers', test());
-      });
-
-      describe('request is set', () => {
-        describe('request.headers is not set', () => {
-          it('validates headers', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
-        });
-
-        describe('request.headers is set', () => {
-          it('validates headers', test({ request: { path: [], query: [], cookie: [], headers: [] } }));
+          );
         });
       });
     });
+  });
 
-    describe('query validation in enabled', () => {
-      const test = (extendResource?: Partial<IHttpOperation>, extendInput?: Partial<IHttpRequest>) => () => {
-        jest
-          .spyOn(resolveValidationConfigModule, 'resolveRequestValidationConfig')
-          .mockReturnValueOnce({ body: false, headers: false, hijack: false, query: true });
+  describe('headers validation in enabled', () => {
+    const validate = (resourceExtension?: Partial<IHttpOperation>, length: number = 1) => () => {
+      expect(
+        httpValidator.validateInput({
+          resource: Object.assign(
+            {
+              method: 'get',
+              path: '/',
+              id: '1',
+              request: {},
+              responses: [{ code: '200' }],
+            },
+            resourceExtension,
+          ),
+          input: { method: 'get', url: { path: '/' } },
+          config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+        }),
+      ).toHaveLength(length);
+    };
 
-        expect(
-          httpValidator.validateInput({
-            resource: Object.assign(
-              {
-                method: 'get',
-                path: '/',
-                id: '1',
-                request: {},
-                responses: [{ code: '200' }],
-              },
-              extendResource,
-            ),
-            input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, extendInput),
-            config: { cors: false, mock: { dynamic: false }, validate: { request: { query: true } } },
-          }),
-        ).toEqual([mockError]);
+    describe('request is not set', () => {
+      it('validates headers', validate(undefined, 2));
+    });
+  });
 
-        expect(resolveValidationConfigModule.resolveRequestValidationConfig).toHaveBeenCalled();
-        expect(httpBodyValidator.validate).not.toHaveBeenCalled();
-        expect(httpHeadersValidator.validate).not.toHaveBeenCalled();
-        expect(httpQueryValidator.validate).toHaveBeenCalledWith({}, [], undefined);
-      };
+  describe('query validation in enabled', () => {
+    const validate = (
+      resourceExtension?: Partial<IHttpOperation>,
+      inputExtension?: Partial<IHttpRequest>,
+      length: number = 2,
+    ) => () => {
+      expect(
+        httpValidator.validateInput({
+          resource: Object.assign(
+            {
+              method: 'get',
+              path: '/',
+              id: '1',
+              request: {},
+              responses: [{ code: '200' }],
+            },
+            resourceExtension,
+          ),
+          input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
+          config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+        }),
+      ).toHaveLength(length);
 
-      describe('request is not set', () => {
-        it('validates query', test());
+      expect(httpBodyValidator.validate).not.toHaveBeenCalled();
+      expect(httpHeadersValidator.validate).toHaveBeenCalled();
+      expect(httpQueryValidator.validate).toHaveBeenCalledWith({}, [], undefined);
+    };
+
+    describe('request is not set', () => {
+      it('validates query', validate(undefined, undefined, 2));
+    });
+
+    describe('request is set', () => {
+      describe('request.query is not set', () => {
+        it('validates query', validate({ request: {} }, undefined, 2));
       });
 
-      describe('request is set', () => {
-        describe('request.query is not set', () => {
-          it('validates query', test({ request: {} }));
-        });
-
-        describe('request.query is set', () => {
-          it('validates query', test({ request: {} }));
-        });
+      describe('request.query is set', () => {
+        it('validates query', validate({ request: {} }, undefined, 2));
       });
+    });
 
-      describe('input.url.query is not set', () => {
-        it("validates query assuming it's empty", test(undefined, { url: { path: '/' } }));
-      });
+    describe('input.url.query is not set', () => {
+      it("validates query assuming it's empty", validate(undefined, { url: { path: '/' } }));
     });
   });
 
@@ -210,67 +164,33 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            config: { cors: false, mock: { dynamic: false }, validate: { response: { body: true } } },
+            config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
-        ).toEqual([]);
+        ).toHaveLength(0);
 
         expect(httpBodyValidator.validate).not.toHaveBeenCalled();
       });
     });
 
     describe('output is set', () => {
-      describe('body validation is enabled', () => {
-        it('validates the body', async () => {
-          jest
-            .spyOn(resolveValidationConfigModule, 'resolveResponseValidationConfig')
-            .mockReturnValueOnce({ headers: false, body: true });
+      it('validates the body and headers', async () => {
+        await expect(
+          httpValidator.validateOutput({
+            resource: {
+              method: 'get',
+              path: '/',
+              id: '1',
+              request: {},
+              responses: [{ code: '200' }],
+            },
+            output: { statusCode: 200 },
+            config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+          }),
+        ).toHaveLength(2);
 
-          await expect(
-            httpValidator.validateOutput({
-              resource: {
-                method: 'get',
-                path: '/',
-                id: '1',
-                request: {},
-                responses: [{ code: '200' }],
-              },
-              output: { statusCode: 200 },
-              config: { cors: false, mock: { dynamic: false }, validate: { response: { body: true } } },
-            }),
-          ).toEqual([mockError]);
-
-          expect(resolveValidationConfigModule.resolveResponseValidationConfig).toHaveBeenCalled();
-          expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
-          expect(httpBodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
-          expect(httpHeadersValidator.validate).not.toHaveBeenCalled();
-        });
-      });
-
-      describe('headers validation is enabled', () => {
-        it('validates headers', () => {
-          jest
-            .spyOn(resolveValidationConfigModule, 'resolveResponseValidationConfig')
-            .mockReturnValueOnce({ headers: true, body: false });
-
-          expect(
-            httpValidator.validateOutput({
-              resource: {
-                method: 'get',
-                path: '/',
-                id: '1',
-                request: {},
-                responses: [{ code: '200' }],
-              },
-              output: { statusCode: 200 },
-              config: { cors: false, mock: { dynamic: false }, validate: { response: { headers: true } } },
-            }),
-          ).toEqual([mockError]);
-
-          expect(resolveValidationConfigModule.resolveResponseValidationConfig).toHaveBeenCalled();
-          expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
-          expect(httpBodyValidator.validate).not.toHaveBeenCalled();
-          expect(httpHeadersValidator.validate).toHaveBeenCalledWith({}, [], undefined);
-        });
+        expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
+        expect(httpBodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
+        expect(httpHeadersValidator.validate).toHaveBeenCalled();
       });
     });
   });

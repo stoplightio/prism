@@ -39,7 +39,11 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(error);
   });
 
-  const mergedConfig = configMergerFactory({ cors: false, mock: { dynamic: false } }, config, getHttpConfigFromRequest);
+  const mergedConfig = configMergerFactory(
+    { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+    config,
+    getHttpConfigFromRequest,
+  );
 
   const prism = createInstance(mergedConfig, components);
 

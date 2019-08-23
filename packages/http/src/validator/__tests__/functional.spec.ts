@@ -1,6 +1,9 @@
-import { HttpParamStyles } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
+import { IHttpConfig } from '../../types';
 import { validator } from '../index';
+
+const defaultConfig: IHttpConfig = { cors: false, mock: false, validateRequest: true, validateResponse: true };
 
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
   body: { name: 'Shopping', completed: 'yes' },
@@ -31,17 +34,7 @@ describe('HttpValidator', () => {
       });
     });
 
-    describe('only headers validation is turned on', () => {
-      it('returns only headers validation errors', async () => {
-        expect(
-          await validator.validateInput({
-            resource: httpOperations[2],
-            input: BAD_INPUT,
-            config: { cors: false, mock: false, validate: { request: { headers: true, query: false, body: false } } },
-          }),
-        ).toMatchSnapshot();
-      });
-
+    describe('headers validation', () => {
       it('is case insensitive', async () => {
         expect(
           await validator.validateInput({
@@ -76,45 +69,26 @@ describe('HttpValidator', () => {
                 api_Key: 'ha',
               },
             },
-            config: { cors: false, mock: false, validate: { request: { headers: true, query: false, body: false } } },
+            config: defaultConfig,
           }),
         ).toEqual([]);
       });
     });
 
-    describe('only query validation is turned on', () => {
-      it('returns only query validation errors', async () => {
+    describe('query validation', () => {
+      it('returns only query validation errors', () => {
         expect(
-          await validator.validateInput({
+          validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: { cors: false, mock: false, validate: { request: { headers: false, query: true, body: false } } },
+            config: defaultConfig,
           }),
-        ).toMatchSnapshot();
-      });
-
-      describe('when all required params are provided', () => {
-        it('returns no validation errors', async () => {
-          expect(
-            await validator.validateInput({
-              resource: httpOperations[0],
-              input: GOOD_INPUT,
-              config: { cors: false, mock: false, validate: { request: { headers: false, query: true, body: false } } },
-            }),
-          ).toEqual([]);
+        ).toContainEqual({
+          code: 'pattern',
+          message: 'should match pattern "^(yes|no)$"',
+          path: ['query', 'overwrite'],
+          severity: DiagnosticSeverity.Error,
         });
-      });
-    });
-
-    describe('only body validation is turned on', () => {
-      it('returns only body validation errors', async () => {
-        expect(
-          await validator.validateInput({
-            resource: httpOperations[2],
-            input: BAD_INPUT,
-            config: { cors: false, mock: false, validate: { request: { headers: false, query: false, body: true } } },
-          }),
-        ).toMatchSnapshot();
       });
     });
 
@@ -124,7 +98,7 @@ describe('HttpValidator', () => {
           await validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: { cors: false, mock: false, validate: { request: false } },
+            config: Object.assign(defaultConfig, { validateRequest: false }),
           }),
         ).toMatchSnapshot();
       });
@@ -138,37 +112,13 @@ describe('HttpValidator', () => {
       });
     });
 
-    describe('only headers validation is turned on', () => {
-      it('returns only headers validation errors', async () => {
-        expect(
-          await validator.validateOutput({
-            resource: httpOperations[1],
-            output: BAD_OUTPUT,
-            config: { cors: false, mock: false, validate: { response: { headers: true, body: false } } },
-          }),
-        ).toMatchSnapshot();
-      });
-    });
-
-    describe('only body validation is turned on', () => {
-      it('returns only body validation errors', async () => {
-        expect(
-          await validator.validateOutput({
-            resource: httpOperations[1],
-            output: BAD_OUTPUT,
-            config: { cors: false, mock: false, validate: { response: { headers: false, body: true } } },
-          }),
-        ).toMatchSnapshot();
-      });
-    });
-
     describe('all validations are turned off', () => {
       it('returns no validation errors', async () => {
         expect(
           await validator.validateOutput({
             resource: httpOperations[1],
             output: BAD_OUTPUT,
-            config: { cors: false, mock: false, validate: { response: false } },
+            config: Object.assign(defaultConfig, { validateResponse: false }),
           }),
         ).toMatchSnapshot();
       });
