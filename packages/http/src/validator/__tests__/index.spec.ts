@@ -29,7 +29,7 @@ describe('HttpValidator', () => {
 
   describe('validateInput()', () => {
     describe('body validation in enabled', () => {
-      const test = (extendResource: Partial<IHttpOperation> | undefined, errorsNumber: number) => () => {
+      const validate = (resourceExtension: Partial<IHttpOperation> | undefined, errorsNumber: number) => () => {
         expect(
           httpValidator.validateInput({
             resource: Object.assign(
@@ -40,7 +40,7 @@ describe('HttpValidator', () => {
                 request: {},
                 responses: [{ code: '200' }],
               },
-              extendResource,
+              resourceExtension,
             ),
             input: { method: 'get', url: { path: '/' } },
             config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
@@ -52,7 +52,7 @@ describe('HttpValidator', () => {
         describe('request body is not required', () => {
           it(
             'does not try to validate the body',
-            test(
+            validate(
               {
                 request: { body: { contents: [] }, path: [], query: [], headers: [], cookie: [] },
               },
@@ -64,7 +64,7 @@ describe('HttpValidator', () => {
         describe('request body is required', () => {
           it(
             'tries to validate the body',
-            test(
+            validate(
               {
                 method: 'get',
                 path: '/',
@@ -81,7 +81,7 @@ describe('HttpValidator', () => {
   });
 
   describe('headers validation in enabled', () => {
-    const test = (extendResource?: Partial<IHttpOperation>, length: number = 1) => () => {
+    const validate = (resourceExtension?: Partial<IHttpOperation>, length: number = 1) => () => {
       expect(
         httpValidator.validateInput({
           resource: Object.assign(
@@ -92,7 +92,7 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            extendResource,
+            resourceExtension,
           ),
           input: { method: 'get', url: { path: '/' } },
           config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
@@ -101,15 +101,15 @@ describe('HttpValidator', () => {
     };
 
     describe('request is not set', () => {
-      it('validates headers', test(undefined, 2));
+      it('validates headers', validate(undefined, 2));
     });
   });
 
   describe('query validation in enabled', () => {
-    const test = (
-      extendResource?: Partial<IHttpOperation>,
-      extendInput?: Partial<IHttpRequest>,
-      lenght: number = 2,
+    const validate = (
+      resourceExtension?: Partial<IHttpOperation>,
+      inputExtension?: Partial<IHttpRequest>,
+      length: number = 2,
     ) => () => {
       expect(
         httpValidator.validateInput({
@@ -121,12 +121,12 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            extendResource,
+            resourceExtension,
           ),
-          input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, extendInput),
+          input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
           config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
         }),
-      ).toHaveLength(lenght);
+      ).toHaveLength(length);
 
       expect(httpBodyValidator.validate).not.toHaveBeenCalled();
       expect(httpHeadersValidator.validate).toHaveBeenCalled();
@@ -134,21 +134,21 @@ describe('HttpValidator', () => {
     };
 
     describe('request is not set', () => {
-      it('validates query', test(undefined, undefined, 2));
+      it('validates query', validate(undefined, undefined, 2));
     });
 
     describe('request is set', () => {
       describe('request.query is not set', () => {
-        it('validates query', test({ request: {} }, undefined, 2));
+        it('validates query', validate({ request: {} }, undefined, 2));
       });
 
       describe('request.query is set', () => {
-        it('validates query', test({ request: {} }, undefined, 2));
+        it('validates query', validate({ request: {} }, undefined, 2));
       });
     });
 
     describe('input.url.query is not set', () => {
-      it("validates query assuming it's empty", test(undefined, { url: { path: '/' } }));
+      it("validates query assuming it's empty", validate(undefined, { url: { path: '/' } }));
     });
   });
 
