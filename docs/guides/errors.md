@@ -1,6 +1,6 @@
 # Errors
 
-All the errors that Prism returns conform to the [RFC7807](https://tools.ietf.org/html/rfc7807). In a nutshell, this means that you'll always get a **JSON object** with the following properties:
+All the errors that Prism returns conform to [RFC7807](https://tools.ietf.org/html/rfc7807) - Problem Details for HTTP APIs, which means you'll always get a **JSON object** with the following properties:
 
 * `type` (string)
 * `title` (string)
