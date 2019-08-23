@@ -35,7 +35,7 @@ export function factory<Resource, Input, Output, Config>(
             Either.fold(
               error => {
                 // rethrow error we if we're attempting to mock
-                if ((configObj as IPrismConfig).mock) {
+                if (((configObj as unknown) as IPrismConfig).mock) {
                   return TaskEither.left(error);
                 }
 
@@ -75,7 +75,7 @@ export function factory<Resource, Input, Output, Config>(
                 ),
               );
 
-              if (resource && components.mocker && (configObj as IPrismConfig).mock) {
+              if (resource && components.mocker && ((configObj as unknown) as IPrismConfig).mock) {
                 // generate the response
                 return pipe(
                   TaskEither.fromEither(
