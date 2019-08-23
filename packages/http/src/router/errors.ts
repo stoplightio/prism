@@ -6,27 +6,27 @@ export const NO_BASE_URL_ERROR: Omit<ProblemJson, 'detail'> = {
   status: 400,
 };
 export const NO_RESOURCE_PROVIDED_ERROR: Omit<ProblemJson, 'detail'> = {
-  title: 'Route not resolved, no resource provided.',
+  title: 'Route not resolved, no resource provided',
   type: 'NO_RESOURCE_PROVIDED_ERROR',
   status: 404,
 };
 export const NO_PATH_MATCHED_ERROR: Omit<ProblemJson, 'detail'> = {
-  title: 'Route not resolved, no path matched.',
+  title: 'Route not resolved, no path matched',
   type: 'NO_PATH_MATCHED_ERROR',
   status: 404,
 };
 export const NO_SERVER_MATCHED_ERROR: Omit<ProblemJson, 'detail'> = {
-  title: 'Route not resolved, no server matched.',
+  title: 'Route not resolved, no server matched',
   type: 'NO_SERVER_MATCHED_ERROR',
   status: 404,
 };
 export const NO_METHOD_MATCHED_ERROR: Omit<ProblemJson, 'detail'> = {
-  title: 'Route resolved, but no path matched.',
+  title: 'Route resolved, but no path matched',
   type: 'NO_METHOD_MATCHED_ERROR',
   status: 405,
 };
 export const NO_SERVER_CONFIGURATION_PROVIDED_ERROR: Omit<ProblemJson, 'detail'> = {
-  title: 'Route not resolved, no server configuration provided.',
+  title: 'Route not resolved, no server configuration provided',
   type: 'NO_SERVER_CONFIGURATION_PROVIDED_ERROR',
   status: 404,
 };

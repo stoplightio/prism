@@ -54,7 +54,7 @@ describe('GET /pet?__server', () => {
   );
 
   const expectedPayload = (serverUrl: string) =>
-    `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The server url ${serverUrl} hasn\'t been matched with any of the provided servers"}`;
+    `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url ${serverUrl} hasn\'t been matched with any of the provided servers"}`;
 
   function requestPetGivenServer(serverUrl: string) {
     return server.fastify.inject({
@@ -285,7 +285,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
 
           expect(response.statusCode).toBe(404);
           expect(response.payload).toEqual(
-            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}',
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}',
           );
         });
 
@@ -297,7 +297,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
 
           expect(response.statusCode).toBe(404);
           expect(response.payload).toEqual(
-            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched.","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}',
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}',
           );
         });
       });
