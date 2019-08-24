@@ -180,24 +180,9 @@ The actual interface looks like this (but rather than explain each property we'r
 ```ts
 export interface IHttpConfig extends IPrismConfig {
   mock: false | IHttpOperationConfig;
-
-  validate?: {
-    request?:
-      | boolean
-      | {
-          hijack?: boolean;
-          headers?: boolean;
-          query?: boolean;
-          body?: boolean;
-        };
-
-    response?:
-      | boolean
-      | {
-          headers?: boolean;
-          body?: boolean;
-        };
-  };
+  cors: boolean;
+  validateRequest: boolean;
+  validateResponse: boolean;
 }
 ```
 
@@ -208,29 +193,13 @@ export interface IHttpConfig extends IPrismConfig {
 ```javascript
 const config = {
   mock: false,
-  validate: {
-    request: false,
-    // response is set to true by default
-  },
+  cors: false,
+  validateRequest: false,
+  validareResponse: true
 };
 ```
 
 With the above configuration the http client will proxy your requests to a server and will validate the response with the OpenAPI you loaded. However, it will not validate the input (e.g. will not check whether the provided query param is valid).
-
-**Validate only request's body and response's headers**
-
-```javascript
-const config = {
-  validate: {
-    request: {
-      body: true,
-    },
-    response: {
-      headers: true,
-    },
-  },
-};
-```
 
 **When mocking a response generate static response**
 

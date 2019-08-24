@@ -17,6 +17,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            validateRequest: true,
+            validateResponse: true,
             cors: false,
             mock: {
               dynamic: false,
@@ -33,6 +35,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            validateRequest: true,
+            validateResponse: true,
             cors: false,
             mock: {
               dynamic: false,
@@ -51,6 +55,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            validateRequest: true,
+            validateResponse: true,
             cors: false,
             mock: {
               dynamic: false,
@@ -71,6 +77,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            validateRequest: true,
+            validateResponse: true,
             cors: false,
             mock: {
               dynamic: false,
@@ -90,6 +98,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            validateRequest: true,
+            validateResponse: true,
             cors: false,
             mock: {
               dynamic: false,
@@ -106,6 +116,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            validateRequest: true,
+            validateResponse: true,
             cors: false,
             mock: {
               dynamic: false,
@@ -125,6 +137,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            validateRequest: true,
+            validateResponse: true,
             cors: false,
             mock: {
               dynamic: false,
@@ -141,6 +155,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            validateRequest: true,
+            validateResponse: true,
             cors: false,
             mock: {
               dynamic: false,
@@ -157,6 +173,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            validateRequest: true,
+            validateResponse: true,
             cors: false,
             mock: {
               dynamic: false,
@@ -231,6 +249,8 @@ describe('http mocker', () => {
             resource: httpOperations[1],
             input: httpRequests[0],
             config: {
+              validateRequest: true,
+              validateResponse: true,
               cors: false,
               mock: {
                 dynamic: true,

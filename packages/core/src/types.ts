@@ -20,7 +20,8 @@ export type PartialPrismConfig<C, I> = Partial<C> | PrismConfigFactory<C, I> | P
 export interface IPrismConfig {
   mock?: boolean | object;
   security?: boolean | object;
-  validate?: boolean | object;
+  validateRequest: boolean;
+  validateResponse: boolean;
 }
 
 export type PrismConfigFactory<C, I> = (input: I, defaultConfig?: PrismConfig<C, I>) => C;
