@@ -3,7 +3,7 @@ name: Auto-Dependabot
 on: 
   pull_request:
     branches:
-      - develop
+      - master
 
 jobs:
   build:
