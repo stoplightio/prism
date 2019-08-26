@@ -6,8 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+
 ## Added
 - Prism is now able to validate the security specification of the loaded document #484
+
+## Fixed
+
+- Prism is not crashing anymore when referencing the same model multiple times in the specification document #552
 
 # 3.0.4 (2019-08-20)
 
@@ -15,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is now returning CORS headers by default and responding to all the preflights requests. You can disable this behaviour by running Prism with the `--cors` flag set to false #525
 
 ## Fixed
+
 - Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples #506
 - Prism now loads correctly OpenAPI 3.x documents with `encodings` with non specified `style` property #507
 - Prism got rid of some big internal dependencies that now aren't required anymore, making it faster and lighter. #490
