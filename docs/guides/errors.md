@@ -62,6 +62,34 @@ paths:
 #### Returned Status Code: `404`
 **Explanation:** This error occurs when the server validation is enabled, and the current request has **not** sent the current server or the provided one is not among the defined in the relative array in the file.
 
+##### Example
+
+```yaml
+openapi: 3.0.0
+paths:
+  "/pet":
+    get:
+      responses:
+        '200': {}
+servers:
+- url: "{schema}://{host}/{basePath}"
+  variables:
+    schema:
+      default: http
+      enum:
+      - http
+      - https
+    host:
+      default: stoplight.io
+      enum:
+      - stoplight.io
+      - dev.stoplight.io
+    basePath:
+      default: api
+```
+
+`curl "http://localhost:4010/pet?__server=http%3A%2F%2Finvalidserver.com"`
+
 ---
 
 ### NO_METHOD_MATCHED_ERROR
