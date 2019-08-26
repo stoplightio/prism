@@ -6,8 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+
 ## Added
 - Prism is now able to validate the security specification of the loaded document #484
+
+## Fixed
+
+- Prism is not crashing anymore when referencing the same model multiple times in the specification document #552
 
 # 3.0.4 (2019-08-20)
 
