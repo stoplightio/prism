@@ -13,7 +13,7 @@ function gatherInvalidResults(
   invalidSecuritySchemes: Array<Array<Either<IPrismDiagnostic, unknown>>>,
 ) {
   const firstLeftValue = pipe(
-    firstLeft,
+    error,
     fold<IPrismDiagnostic, unknown, IPrismDiagnostic>(identity, identity),
   );
 
@@ -28,12 +28,8 @@ function gatherInvalidResults(
 function gatherValidationResults(securitySchemes: SecurityScheme[][], someInput: unknown, resource: unknown) {
   const authResults = getAuthResults(securitySchemes, someInput, resource);
 
-  const validSecurityScheme = authResults.find((authRes: Array<Either<IPrismDiagnostic, unknown>>) =>
-    authRes.every(isRight),
-  );
-  const invalidSecuritySchemes = authResults.filter((authRes: Array<Either<IPrismDiagnostic, unknown>>) =>
-    authRes.some(isLeft),
-  );
+  const validSecurityScheme = authResults.find(authRes => authRes.every(isRight));
+  const invalidSecuritySchemes = authResults.filter(authRes => authRes.some(isLeft));
 
   const firstLeft = invalidSecuritySchemes[0] && invalidSecuritySchemes[0].find(isLeft);
 
@@ -82,8 +78,8 @@ function getAuthResult(
 }
 
 function getAuthResults(securitySchemes: SecurityScheme[][], someInput: unknown, resource: unknown) {
-  return securitySchemes.map((securitySchemePairs: SecurityScheme[]) => {
-    const authResult = securitySchemePairs.map((securityScheme: SecurityScheme) => {
+  return securitySchemes.map(securitySchemePairs => {
+    const authResult = securitySchemePairs.map(securityScheme => {
       const schemeHandler = securitySchemeHandlers.find(handler => handler.test(securityScheme));
 
       return schemeHandler
