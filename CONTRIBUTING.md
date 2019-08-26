@@ -77,9 +77,9 @@ yarn cli:debug mock file.oas.yml
 
 The application will wait for a debugger to be attached and break on the first line; from there, you can put your breakpoint here and there and help us debug the software!
 
-#### Every single function I use is stepping into the `fp-ts` code, and this is boring. What do I do?
+#### What is this `fp-ts` all about?
 
-According to your IDE, you might be able to skip the code. In case you're using Visual Studio Code, you can use the `skipFiles` section of your `launch.json` file:
+`fp-ts` is the library containing functions and data structures that help Prism lean toward a functional style. It might be annoying to step into its functions; fortunately according to your IDE, you might be able to skip the code. In case you're using Visual Studio Code, you can use the `skipFiles` section of your `launch.json` file:
 
 ```json
 {
