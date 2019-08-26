@@ -14,7 +14,7 @@ This document enumerates all the possible errors returned by Prism and provides 
 This class of errors is returned when Prism is trying to identify the right resource to use to respond to the provided HTTP Request.
 
 ### NO_BASE_URL_ERROR
-**Message: Attempted to make a request to a server but neither baseUrl param provided nor servers defined in the spec**
+**Message: Attempted to make a request to a server but neither baseUrl param were provided nor servers were defined in the spec**
 #### Returned Status Code: `400`
 **Explanation:** This error occurs when Prism is being used as a proxy and the current document is missing at least a server in the dedicated array (both globally and locally). The proxy functionality is currently disabled in Prism, so this error should never happen.
 
@@ -88,7 +88,7 @@ paths:
 ### NO_SERVER_CONFIGURATION_PROVIDED_ERROR
 **Message: Route not resolved, no server configuration provided**
 #### Returned Status Code: `404`
-**Explanation:**
+**Explanation:** This error occurs when a base URL has been provided in the current request (enabling the server validation feature) but the current document does not have any `servers` field/entry.
 
 ## Validation errors
 
