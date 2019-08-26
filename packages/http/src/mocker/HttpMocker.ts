@@ -23,7 +23,7 @@ import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
-export class HttpMocker
+class HttpMocker
   implements IMocker<IHttpOperation, IHttpRequest, IHttpConfig, Reader<Logger, Either<Error, IHttpResponse>>> {
   public mock({
     resource,
@@ -168,3 +168,5 @@ function computeBody(
   }
   return undefined;
 }
+
+export const mocker = new HttpMocker();
