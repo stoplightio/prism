@@ -24,7 +24,7 @@
     "test.harness": "jest -c ./jest.harness.config.js"
   },
   "devDependencies": {
-    "@stoplight/types": "^9.1.2",
+    "@stoplight/types": "^11.0.0",
     "@types/caseless": "^0.12.2",
     "@types/chai": "^4.2.0",
     "@types/chance": "^1.0.6",

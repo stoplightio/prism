@@ -1,0 +1,29 @@
+====test====
+Providing two required API KEYS grants access to a resource.
+====spec====
+swagger: '2.0'
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+securityDefinitions:
+  ApiKeyOne:
+    type: apiKey
+    in: header
+    name: X-API-Key
+  ApiKeyTwo:
+    type: apiKey
+    in: query
+    name: apiKey
+security:
+  - ApiKeyOne: []
+    ApiKeyTwo: []
+====server====
+mock -p 4010
+====command====
+curl -sIXGET http://localhost:4010/todos?apiKey=abc123 -H "X-API-Key: xyz987"
+====expect====
+HTTP/1.1 200 OK
+

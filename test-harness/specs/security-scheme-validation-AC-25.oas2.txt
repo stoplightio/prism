@@ -1,0 +1,30 @@
+====test====
+Providing just one of the two required API KEYS denies access to a resource.
+====spec====
+swagger: '2.0'
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: OK
+securityDefinitions:
+  ApiKeyOne:
+    type: apiKey
+    in: header
+    name: X-API-Key
+  ApiKeyTwo:
+    type: apiKey
+    in: query
+    name: apiKey
+security:
+  - ApiKeyOne: []
+    ApiKeyTwo: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos?apiKey=abc123
+====expect====
+HTTP/1.1 401 Unauthorized
+
+{"type":"https://stoplight.io/prism/errors#UNAUTHORIZED","title":"Invalid security scheme used","status":401,"detail":""}
