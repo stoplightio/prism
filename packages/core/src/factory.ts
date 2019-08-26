@@ -3,19 +3,19 @@ import * as Either from 'fp-ts/lib/Either';
 import { fold } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
-import { configMergerFactory, PartialPrismConfig, PrismConfig } from '.';
+import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 import { validateSecurity } from './utils/security';
 
 export function factory<Resource, Input, Output, Config>(
-  defaultConfig: PrismConfig<Config, Input>,
+  defaultConfig: Config,
   defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config>>,
 ): (
-  customConfig?: PartialPrismConfig<Config, Input>,
+  customConfig?: Partial<Config>,
   customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'>,
 ) => IPrism<Resource, Input, Output, Config> {
   const prism = (
-    customConfig?: PartialPrismConfig<Config, Input>,
+    customConfig?: Partial<Config>,
     customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'>,
   ) => {
     const components: PickRequired<
@@ -25,8 +25,8 @@ export function factory<Resource, Input, Output, Config>(
     return {
       process: async (input: Input, resources: Resource[], c?: Config) => {
         // build the config for this request
-        const configMerger = configMergerFactory(defaultConfig, customConfig, c);
-        const configObj = configMerger(input);
+        const configObj = defaults(c, customConfig, defaultConfig);
+
         const inputValidations: IPrismDiagnostic[] = [];
 
         if (components.router) {
