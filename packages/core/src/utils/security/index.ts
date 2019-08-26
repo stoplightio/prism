@@ -9,7 +9,7 @@ import { securitySchemeHandlers } from './handlers';
 import { SecurityScheme } from './handlers/types';
 
 function gatherInvalidResults(
-  firstLeft: Left<IPrismDiagnostic>,
+  error: Left<IPrismDiagnostic>,
   invalidSecuritySchemes: Array<Array<Either<IPrismDiagnostic, unknown>>>,
 ) {
   const firstLeftValue = pipe(
