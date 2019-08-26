@@ -1,5 +1,4 @@
-import { IHttpRequest } from '@stoplight/prism-http';
-import { NegotiatePartialOptions } from 'http/src/mocker/negotiator/types';
+import { IHttpRequest, NegotiatePartialOptions } from '@stoplight/prism-http';
 
 export const getHttpConfigFromRequest = (req: IHttpRequest): Partial<NegotiatePartialOptions> => {
   const httpOperationConfig: Partial<NegotiatePartialOptions> = {};
