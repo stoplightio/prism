@@ -1,4 +1,6 @@
+import { ProblemJsonError } from '@stoplight/prism-http';
 import { j2xParser } from 'fast-xml-parser';
+import { NOT_ACCEPTABLE } from 'http/src/mocker/errors';
 import typeIs = require('type-is');
 
 const xmlSerializer = new j2xParser({});
@@ -17,5 +19,12 @@ export default [
       toString: () => 'application/*+xml',
     },
     serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse(data)),
+  },
+  {
+    regex: /text\/plain/,
+    serializer: (data: unknown) => {
+      if (typeof data === 'string') return data;
+      throw ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, 'Cannot serialise complex objects as text/plain');
+    },
   },
 ];
