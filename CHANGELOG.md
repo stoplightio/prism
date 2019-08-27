@@ -7,16 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 # Unreleased
 
 
-## Added
+## Added
+
 - Prism is now able to validate the security specification of the loaded document #484
 
 ## Fixed
 
 - Prism is not crashing anymore when referencing the same model multiple times in the specification document #552
+- Prism won't crash anymore in case you're trying to return a primitive type as a `text/plain` #560
 
 # 3.0.4 (2019-08-20)
 
-## Added
+## Added
+
 - Prism is now returning CORS headers by default and responding to all the preflights requests. You can disable this behaviour by running Prism with the `--cors` flag set to false #525
 
 ## Fixed

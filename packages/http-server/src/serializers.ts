@@ -1,7 +1,7 @@
 import { ProblemJsonError } from '@stoplight/prism-http';
+import { NOT_ACCEPTABLE } from '@stoplight/prism-http';
 import { j2xParser } from 'fast-xml-parser';
 import typeIs = require('type-is');
-import { NOT_ACCEPTABLE } from './errors';
 
 const xmlSerializer = new j2xParser({});
 

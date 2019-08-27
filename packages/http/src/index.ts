@@ -4,6 +4,7 @@ import { forwarder } from './forwarder';
 import { HttpMocker } from './mocker';
 import { router } from './router';
 export * from './types';
+export * from './mocker/errors';
 import {
   IHttpConfig,
   IHttpMethod,
