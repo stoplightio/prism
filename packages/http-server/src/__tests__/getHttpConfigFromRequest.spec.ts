@@ -46,19 +46,11 @@ describe('getHttpConfigFromRequest()', () => {
 
   describe('given default config function', () => {
     test('and that function returns a mock should combine with query params', () => {
-      const spy = jest.fn().mockReturnValue({
-        mock: {
-          exampleKey: 'key',
-        },
-      });
       return expect(
-        getHttpConfigFromRequest(
-          {
-            method: 'get',
-            url: { path: '/', query: { __code: '400' } },
-          },
-          spy,
-        ),
+        getHttpConfigFromRequest({
+          method: 'get',
+          url: { path: '/', query: { __code: '400' } },
+        }),
       ).toMatchSnapshot();
     });
   });
@@ -66,43 +58,28 @@ describe('getHttpConfigFromRequest()', () => {
   describe('given default config object', () => {
     test('that is boolean and no matching query params should return that config object', () => {
       return expect(
-        getHttpConfigFromRequest(
-          {
-            method: 'get',
-            url: { path: '/', query: {} },
-          },
-          { mock: false },
-        ),
+        getHttpConfigFromRequest({
+          method: 'get',
+          url: { path: '/', query: {} },
+        }),
       ).toMatchSnapshot();
     });
 
     test('that is boolean and matching query should return that query', () => {
       return expect(
-        getHttpConfigFromRequest(
-          {
-            method: 'get',
-            url: { path: '/', query: { __code: '200', __example: 'bear' } },
-          },
-          { mock: false },
-        ),
+        getHttpConfigFromRequest({
+          method: 'get',
+          url: { path: '/', query: { __code: '200', __example: 'bear' } },
+        }),
       ).toMatchSnapshot();
     });
 
     test('that is a map and matching query should return combined', () => {
       return expect(
-        getHttpConfigFromRequest(
-          {
-            method: 'get',
-            url: { path: '/', query: { __code: '200', __example: 'bear' } },
-          },
-          {
-            mock: {
-              dynamic: false,
-              exampleKey: 'wolf',
-              mediaTypes: ['plain/text'],
-            },
-          },
-        ),
+        getHttpConfigFromRequest({
+          method: 'get',
+          url: { path: '/', query: { __code: '200', __example: 'bear' } },
+        }),
       ).toMatchSnapshot();
     });
   });
