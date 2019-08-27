@@ -1,0 +1,25 @@
+====test====
+When I send a request to an operation
+And this operation has only a 204 response defined
+Then I should get back the 204 response code
+====spec====
+openapi: 3.0.2
+info:
+  description: 204 responses
+  version: 1.0.0
+  title: 204 responses
+paths:
+  /foo:
+   post:
+     summary: No response body, 204 code
+     operationId: 204_no_response_body
+     responses:
+       204:
+         description: No Content
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/foo -H "accept: application/json"
+====expect====
+HTTP/1.1 204 No Content
+content-type: application/json
