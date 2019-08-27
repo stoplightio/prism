@@ -1,7 +1,7 @@
 import { ProblemJsonError } from '@stoplight/prism-http';
 import { j2xParser } from 'fast-xml-parser';
-import { NOT_ACCEPTABLE } from 'http/src/mocker/errors';
 import typeIs = require('type-is');
+import { NOT_ACCEPTABLE } from './errors';
 
 const xmlSerializer = new j2xParser({});
 
