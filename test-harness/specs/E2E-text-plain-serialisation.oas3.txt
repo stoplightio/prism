@@ -3,7 +3,7 @@ When I send a request to an operation
 And this operation returns a text/plain string
 Then I should get back the response as a string
 ====spec====
-swagger: "2.0"
+openapi: "3.0.1"
 paths:
   /:
     get:
