@@ -22,4 +22,4 @@ curl -i http://localhost:4010/ -H 'accept: text/plain'
 HTTP/1.1 200 OK
 content-type: text/plain
 
-string
+pong
