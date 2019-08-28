@@ -179,6 +179,39 @@ This class of errors is returned when the current request is not satisfying the 
 
 ---
 
+## Negotiation errors
+
+This class of errors is returned when anything goes wrong in between your **valid** request and returning a suitable response
+
+### NO_COMPLEX_OBJECT_TEXT_PLAIN
+**Message: Cannot serialise complex objects as text/plain**
+**Returned Status Code: `500`**
+**Explanation:** This error occurs when the current request accepts the `text/plain` as the response content type and Prism decided to respond with that, but the schema associated with the selected response of the operation generated a non primive payload and Prism has no idea how to serialise it.
+
+##### Example
+
+```yaml
+openapi: "3.0.1"
+paths:
+  /:
+    get:
+      responses:
+        200:
+          content:
+            text/plain:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Clark
+                  surname:
+                    type: string
+                    example: Kent
+```
+
+`curl -X POST http://localhost:4010/ -A 'Accept: text/plain'`
+
 ## Unknown error
 
 In case you get an `UNKNOWN` error, it likely means we **screwed it up** and we haven't handled this particular edge case. If you encounter one of these, opening an [issue](https://github.com/stoplightio/prism/issues/new?labels=bug&template=bug_report.md) might be a good idea.
