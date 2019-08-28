@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## Fixed
 
 - Prism is not crashing anymore when referencing the same model multiple times in the specification document #552
-- Prism won't crash anymore in case you're trying to return a primitive type as a `text/plain` #560
+- Prism won't return 406 when users request a simple `text/plain` #560
 
 # 3.0.4 (2019-08-20)
 
