@@ -22,7 +22,9 @@ export default [
   {
     regex: /text\/plain/,
     serializer: (data: unknown) => {
-      if (typeof data === 'string') return data;
+      if (typeof data === 'string') {
+        return data;
+      }
       throw ProblemJsonError.fromPlainError(
         Object.assign(new Error('Unable to serialize the current conten'), {
           name: 'INTERNAL_SERVER_ERROR',
