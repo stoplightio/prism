@@ -5,7 +5,7 @@ function fragmentarize(path: string): string[] {
 }
 
 function getTemplateParamName(pathFragment: string) {
-  const match = pathFragment.match(/^{(.*)}$/);
+  const match = pathFragment.match(/{(.*)}/);
   return match && match[1];
 }
 
