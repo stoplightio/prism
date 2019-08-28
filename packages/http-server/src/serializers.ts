@@ -1,5 +1,4 @@
 import { ProblemJsonError } from '@stoplight/prism-http';
-import { NOT_ACCEPTABLE } from '@stoplight/prism-http';
 import { j2xParser } from 'fast-xml-parser';
 import typeIs = require('type-is');
 
@@ -24,7 +23,13 @@ export default [
     regex: /text\/plain/,
     serializer: (data: unknown) => {
       if (typeof data === 'string') return data;
-      throw ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, 'Cannot serialise complex objects as text/plain');
+      throw ProblemJsonError.fromPlainError(
+        Object.assign(new Error('Unable to serialize the current conten'), {
+          name: 'INTERNAL_SERVER_ERROR',
+          detail: 'Cannot serialise complex objects as text/plain',
+          status: 500,
+        }),
+      );
     },
   },
 ];
