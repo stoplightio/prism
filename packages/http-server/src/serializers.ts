@@ -5,16 +5,21 @@ const xmlSerializer = new j2xParser({});
 
 export default [
   {
-    regex: {
-      test: (value: string) => !!typeIs.is(value, ['application/*+json']),
-      toString: () => 'application/*+json',
+    test: (value: string) => !!typeIs.is(value, ['application/json', 'application/*+json']),
+    serializer: (data: any) => {
+      try {
+        JSON.parse(data);
+      } catch (e) {
+        return JSON.stringify(data);
+      }
+
+      // might be more edge cases, not just number ?
+      return typeof data === 'number' ? JSON.stringify(data) : data;
     },
-    serializer: JSON.stringify,
   },
   {
-    regex: {
-      test: (value: string) => !!typeIs.is(value, ['application/xml', 'application/*+xml']),
-      toString: () => 'application/*+xml',
+    test: (value: string) => {
+      return !!typeIs.is(value, ['application/xml', 'application/*+xml']);
     },
     serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse(data)),
   },

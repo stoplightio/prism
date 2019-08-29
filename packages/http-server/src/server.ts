@@ -1,9 +1,9 @@
 import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import { IHttpOperation } from '@stoplight/types';
+import { Dictionary } from '@stoplight/types';
 import * as fastify from 'fastify';
 // @ts-ignore
-import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
 import * as fastifyCors from 'fastify-cors';
 import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
@@ -12,6 +12,36 @@ import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import serializers from './serializers';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
+import { FastifyReply } from 'fastify';
+
+type Serializer = {
+  test: (x: string) => boolean;
+  serializer: (a: string | object) => string;
+};
+
+function optionallySerializeAndSend(
+  reply: FastifyReply<ServerResponse>,
+  output: { headers?: Dictionary<string, string>; body?: string | object },
+  respSerializers: Serializer[],
+) {
+  const contentType = output.headers && output.headers['Content-type'];
+  const serializer = respSerializers.find((s: Serializer) => s.test(contentType || ''));
+
+  const data = serializer && output.body ? serializer.serializer(output.body) : output.body;
+
+  if (serializer) {
+    reply.serializer(serializer.serializer);
+  }
+
+  // TODO: do we need charset=utf-8 at all ???
+  if (output && output.headers && output.headers['Content-type'].includes('application/json')) {
+    // why would only application/json have the charset?
+    reply.header('content-type', output.headers['Content-type'] + '; charset=utf-8');
+  }
+
+  reply.send(data);
+}
+
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
@@ -19,9 +49,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     logger: (components && components.logger) || createLogger('HTTP SERVER'),
     disableRequestLogging: true,
     modifyCoreObjects: false,
-  })
-    .register(formbodyParser)
-    .register(fastifyAcceptsSerializer, { serializers });
+  }).register(formbodyParser);
 
   if (opts.config.cors) server.register(fastifyCors);
 
@@ -99,7 +127,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           if (output.headers) {
             reply.headers(output.headers);
           }
-          reply.send(output.body);
+
+          optionallySerializeAndSend(reply, output, serializers);
         } else {
           throw new Error('Unable to find any decent response for the current request.');
         }
