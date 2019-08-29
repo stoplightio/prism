@@ -1,5 +1,7 @@
 ====test====
-Set allowEmptyValue to false and try to send an empty key, should fail.
+If I have an operation with a parameter with the allowEmptyValue set to false to false
+and I send a request with a correcly encoded parameter but with an empty key
+I should get a 422 error
 ====spec====
 swagger: '2.0'
 paths:
@@ -24,5 +26,3 @@ curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-f
 HTTP/1.1 422 Unprocessable Entity
 content-type: application/problem+json
 Connection: keep-alive
-
-{ "tobe": "done" }
