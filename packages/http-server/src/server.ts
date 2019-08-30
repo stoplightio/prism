@@ -1,7 +1,6 @@
 import { configMergerFactory, createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import { IHttpOperation } from '@stoplight/types';
-import { Dictionary } from '@stoplight/types';
 import * as fastify from 'fastify';
 // @ts-ignore
 import * as fastifyCors from 'fastify-cors';
@@ -9,37 +8,8 @@ import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
-import serializers from './serializers';
+import { optionallySerializeAndSend, serializers } from './serializers';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
-
-import { FastifyReply } from 'fastify';
-
-type Serializer = {
-  test: (contentType: string) => boolean;
-  serialize: (value: string | object) => string;
-};
-
-function optionallySerializeAndSend(
-  reply: FastifyReply<ServerResponse>,
-  output: { headers?: Dictionary<string, string>; body?: string | object },
-  respSerializers: Serializer[],
-) {
-  const contentType = output.headers && output.headers['Content-type'];
-  const serializer = respSerializers.find((s: Serializer) => s.test(contentType || ''));
-
-  const data = serializer && output.body ? serializer.serialize(output.body) : output.body;
-  const isInUTF8 = contentType && contentType.includes('charset=utf-8');
-
-  if (serializer) {
-    reply.serializer(serializer.serialize);
-  }
-
-  if (contentType && contentType.includes('application/json')) {
-    reply.header('content-type', isInUTF8 ? contentType : contentType + '; charset=utf-8');
-  }
-
-  reply.send(data);
-}
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
