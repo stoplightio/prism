@@ -7,7 +7,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as split2 from 'split2';
 import * as tmp from 'tmp';
-import { parseSpecFile } from './helpers';
+import { parseSpecFile, validateLoosely } from './helpers';
 
 const glob = globFs({ gitignore: true });
 jest.setTimeout(5000);
@@ -58,10 +58,13 @@ describe('harness', () => {
 
           try {
             const isValid = validate(expected, output).valid;
-            if (!!isValid) expect(validate(expected, output).valid).toBeTruthy();
-            else {
-              expect(output).toMatchObject(expected);
+
+            if (!!isValid) {
+              expect(validate(expected, output).valid).toBeTruthy();
+            } else {
+              validateLoosely(expected, output);
             }
+
             if (parsed.expect) expect(output.body).toMatch(expected.body);
           } catch (e) {
             prismMockProcessHandle.kill();

@@ -1,3 +1,31 @@
+import { Dictionary } from '@stoplight/types/dist';
+import * as xmlDiff from 'diff-js-xml';
+import * as parser from 'fast-xml-parser';
+import { get, omit } from 'lodash';
+
+type Result = { body: string; headers: Dictionary<string, string> };
+
+const xmlValidator = {
+  test: (contentType: string, content: string) => {
+    const doesContentTypeMatch = !!contentType.match(/application\/.*xml/);
+    const isContentXML = parser.validate(content) === true;
+
+    return doesContentTypeMatch || isContentXML;
+  },
+  validate: (expected: Result, output: Result) => {
+    const expectedInRootEl = `<root>${expected.body}</root>`;
+    const outputInRootEl = `<root>${output.body}</root>`;
+
+    xmlDiff.diffAsXml(expectedInRootEl, outputInRootEl, {}, { compareElementValues: false }, result =>
+      expect(result).toStrictEqual([]),
+    );
+
+    expect(omit(output, 'body')).toMatchObject(omit(expected, 'body'));
+  },
+};
+
+const validators = [xmlValidator];
+
 export function parseSpecFile(spec: string) {
   const regex = /====(server|test|spec|command|expect|expect-loose)====\r?\n/gi;
   const splitted = spec.split(regex);
@@ -18,3 +46,15 @@ export function parseSpecFile(spec: string) {
     expectLoose: splitted[1 + expectLooseIndex],
   };
 }
+
+export const validateLoosely = (expected: Result, output: Result) => {
+  const foundValidator = validators.find(validator => {
+    return validator.test(get(output, ['header', 'content-type'], ''), expected.body);
+  });
+
+  if (!!foundValidator) {
+    foundValidator.validate(expected, output);
+  } else {
+    expect(output).toMatchObject(expected);
+  }
+};
