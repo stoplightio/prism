@@ -15,8 +15,8 @@ import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 import { FastifyReply } from 'fastify';
 
 type Serializer = {
-  test: (x: string) => boolean;
-  serializer: (a: string | object) => string;
+  test: (contentType: string) => boolean;
+  serialize: (value: string | object) => string;
 };
 
 function optionallySerializeAndSend(
@@ -27,11 +27,11 @@ function optionallySerializeAndSend(
   const contentType = output.headers && output.headers['Content-type'];
   const serializer = respSerializers.find((s: Serializer) => s.test(contentType || ''));
 
-  const data = serializer && output.body ? serializer.serializer(output.body) : output.body;
+  const data = serializer && output.body ? serializer.serialize(output.body) : output.body;
   const isInUTF8 = contentType && contentType.includes('charset=utf-8');
 
   if (serializer) {
-    reply.serializer(serializer.serializer);
+    reply.serializer(serializer.serialize);
   }
 
   if (contentType && contentType.includes('application/json')) {

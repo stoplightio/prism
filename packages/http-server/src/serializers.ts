@@ -6,7 +6,7 @@ const xmlSerializer = new j2xParser({});
 export default [
   {
     test: (value: string) => !!typeIs.is(value, ['application/json', 'application/*+json']),
-    serializer: (data: any) => {
+    serialize: (data: any) => {
       try {
         JSON.parse(data);
       } catch (e) {
@@ -20,11 +20,11 @@ export default [
     test: (value: string) => {
       return !!typeIs.is(value, ['application/xml', 'application/*+xml']);
     },
-    serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse(data)),
+    serialize: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse(data)),
   },
   {
     test: (value: string) => !!value.match(/text\/plain/),
-    serializer: (data: unknown) => {
+    serialize: (data: unknown) => {
       if (typeof data === 'string') {
         return data;
       }
