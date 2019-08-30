@@ -24,3 +24,5 @@ mock -p 4010
 curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "id"
 ====expect====
 HTTP/1.1 200 OK
+
+string
