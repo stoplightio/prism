@@ -1151,13 +1151,13 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@stoplight/http-spec@^2.1.3":
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.1.3.tgz#6fb2dab7f5266a80bf0840641fe47f71b9ba4f8f"
-  integrity sha512-lb6t0BoA0DaHgoufSIGWxDBrvkBb0FzbrNLdvkpkWjrNVmtEKjicqLt5Ys1EFeu/IyAiaDZuq+uq//bWhkUi7Q==
+"@stoplight/http-spec@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.1.4.tgz#27cfdba7d2458da7499ba33a44e0d90e45daae70"
+  integrity sha512-+QyFh7XtuA+t2Ue8LD7qVfMiLCom2ZMMDMDMP9n5YekYdrb4KcS5oR8UhxsgRqjZ0jL2+bY4NKYDsZRATrkLSA==
   dependencies:
-    "@stoplight/json" "^3.1.0"
-    "@stoplight/types" "^11.0.0"
+    "@stoplight/json" "^3.1.1"
+    "@stoplight/types" "^11.1.0"
     "@types/swagger-schema-official" "~2.0.18"
     "@types/urijs" "~1.19.1"
     lodash "^4.17.15"
@@ -1189,7 +1189,17 @@
     lodash "^4.17.15"
     safe-stable-stringify "^1.1"
 
-"@stoplight/types@^11.0.0":
+"@stoplight/json@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.1.1.tgz#531d966a62247bf2ab1e8a06a685fa62e36cf890"
+  integrity sha512-DK2ufmnPvfW9Mv0q4DYtldjicTTcBY+j4kiEUOEmc9hL+mzMDV08+5ix4tmPtheUDZH6OtEqEmGcf8ZKCHFbpg==
+  dependencies:
+    "@stoplight/types" "^11.0.0"
+    jsonc-parser "~2.1.1"
+    lodash "^4.17.15"
+    safe-stable-stringify "^1.1"
+
+"@stoplight/types@^11.0.0", "@stoplight/types@^11.1.0":
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.1.0.tgz#b29ecd8c8ad27bb564c7820c99f93c27f1d11bf1"
   integrity sha512-z4VqnYIDTcj9R0f8AIDitBWkiAKKJ4W/Z5GJz/3fnBZBa/TD9Oak0xHbicXFXUvqTVCv/7D32PjPYiUX6W/EfQ==
