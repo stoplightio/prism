@@ -11,7 +11,7 @@ type Serializer = {
 
 const xmlSerializer = new j2xParser({});
 
-export const serializers = [
+export const serializers: Serializer[] = [
   {
     test: (value: string) => !!typeIs.is(value, ['application/json', 'application/*+json']),
     serialize: (data: any) => {
