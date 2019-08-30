@@ -31,3 +31,5 @@ mock -p 4010
 curl -i http://localhost:4010/
 ====expect====
 HTTP/1.1 200 OK
+
+{"first":{"output":null},"second":{"output":null}}

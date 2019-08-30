@@ -1,0 +1,28 @@
+====test====
+If I have an operation with a parameter with the allowEmptyValue set to false to false
+and I send a request with a correcly encoded parameter but with an empty key
+I should get a 422 error
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: string
+          name: id
+          allowEmptyValue: false
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "id"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","id"],"severity":"Error","code":"minLength","message":"should NOT be shorter than 1 characters"}]}

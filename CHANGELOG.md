@@ -7,16 +7,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 # Unreleased
 
 
-## Added
+## Added
+
 - Prism is now able to validate the security specification of the loaded document #484
 
 ## Fixed
 
 - Prism is not crashing anymore when referencing the same model multiple times in the specification document #552
+- Prism will now correctly use the `example` keyword for a Schema Object in OpenAPI 3.0 documents #560
+- Prism won't return 406 when users request a `text/plain` response whose content is a primitive (string, number) #560
+- Prism's router is now able to correctly handle a path ending with a parameter, such as `/test.{format}`, while it would previously not match with anything. #561
+- Prism is correctly handling the `allowEmptyValue` property in OAS2 documents
 
 # 3.0.4 (2019-08-20)
 
-## Added
+## Added
+
 - Prism is now returning CORS headers by default and responding to all the preflights requests. You can disable this behaviour by running Prism with the `--cors` flag set to false #525
 
 ## Fixed
