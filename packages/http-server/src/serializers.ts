@@ -13,8 +13,7 @@ export default [
         return JSON.stringify(data);
       }
 
-      // might be more edge cases, not just number ?
-      return typeof data === 'number' ? JSON.stringify(data) : data;
+      return typeof data === 'string' ? data : JSON.stringify(data);
     },
   },
   {
