@@ -1,0 +1,25 @@
+====test====
+When I send a request to an operation
+And this operation returns a text/plain string
+Then I should get back the response as a string
+====spec====
+openapi: "3.0.1"
+paths:
+  /:
+    get:
+      responses:
+        200:
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: pong
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/ -H 'accept: text/plain'
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+pong

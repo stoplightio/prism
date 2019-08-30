@@ -75,6 +75,8 @@ describe('matchPath()', () => {
     expect(matchPath('/a/b', '/{a}/{b}')).toEqual(MatchType.TEMPLATED);
 
     expect(matchPath('/a/b', '/a/{b}')).toEqual(MatchType.TEMPLATED);
+
+    expect(matchPath('/test.json', '/test.{format}')).toEqual(MatchType.TEMPLATED);
   });
 
   test('request path should match a template path and resolve undefined variables', () => {
@@ -97,6 +99,7 @@ describe('matchPath()', () => {
       includeTemplates: false,
       trailingSlash: false,
     });
+
     const operationPath = randomPath({
       pathFragments: chance.natural({ min: 4, max: 6 }),
       includeTemplates: false,

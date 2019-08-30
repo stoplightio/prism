@@ -1,3 +1,4 @@
+import { ProblemJsonError } from '@stoplight/prism-http';
 import { j2xParser } from 'fast-xml-parser';
 import typeIs = require('type-is');
 
@@ -17,5 +18,19 @@ export default [
       toString: () => 'application/*+xml',
     },
     serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse(data)),
+  },
+  {
+    regex: /text\/plain/,
+    serializer: (data: unknown) => {
+      if (typeof data === 'string') {
+        return data;
+      }
+
+      throw Object.assign(new Error('Cannot serialise complex objects as text/plain'), {
+        detail: 'Cannot serialise complex objects as text/plain',
+        status: 500,
+        name: 'https://stoplight.io/prism/errors#NO_COMPLEX_OBJECT_TEXT_PLAIN',
+      });
+    },
   },
 ];
