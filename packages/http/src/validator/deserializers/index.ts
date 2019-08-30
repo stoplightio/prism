@@ -14,5 +14,8 @@ export const query = new HttpParamDeserializerRegistry([
   new FormStyleDeserializer(),
   new DelimitedStyleDeserializer('%20', HttpParamStyles.SpaceDelimited),
   new DelimitedStyleDeserializer('|', HttpParamStyles.PipeDelimited),
+  new DelimitedStyleDeserializer(',', HttpParamStyles.CommaDelimited),
   new DeepObjectStyleDeserializer(),
 ]);
+
+export const body = query;
