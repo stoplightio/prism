@@ -353,7 +353,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
       expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
     });
 
-    xit('returns application/json even if the resources have the charset parameter', async () => {
+    it('returns application/json even if the resources have the charset parameter', async () => {
       const response = await server.fastify.inject({
         method: 'GET',
         url: '/user/user1',

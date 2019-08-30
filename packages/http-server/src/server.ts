@@ -28,15 +28,14 @@ function optionallySerializeAndSend(
   const serializer = respSerializers.find((s: Serializer) => s.test(contentType || ''));
 
   const data = serializer && output.body ? serializer.serializer(output.body) : output.body;
+  const isInUTF8 = contentType && contentType.includes('charset=utf-8');
 
   if (serializer) {
     reply.serializer(serializer.serializer);
   }
 
-  // TODO: do we need charset=utf-8 at all ???
-  if (output && output.headers && output.headers['Content-type'].includes('application/json')) {
-    // why would only application/json have the charset?
-    reply.header('content-type', output.headers['Content-type'] + '; charset=utf-8');
+  if (contentType && contentType.includes('application/json')) {
+    reply.header('content-type', isInUTF8 ? contentType : contentType + '; charset=utf-8');
   }
 
   reply.send(data);
