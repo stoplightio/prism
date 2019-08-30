@@ -1,0 +1,27 @@
+====test====
+Sending a GET request with no Accept header specified returns
+the first example - content in application/xml.
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      produces:
+        - application/xml
+        - application/json
+      responses:
+        200:
+          description: Get Todo Items
+          examples:
+            'application/xml': <node>abc</node>
+            'application/json': '"abc"'
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+content-type: application/xml
+Connection: keep-alive
+
+<node>abc</node>
