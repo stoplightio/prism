@@ -12,11 +12,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
     const { _prefix: prefix } = this;
     const content = this.getContent(specs, mediaType);
 
-    if (!content) {
-      return [];
-    }
-
-    if (!content.schema) {
+    if (!content || !content.schema) {
       return [];
     }
 
