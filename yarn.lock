@@ -1337,12 +1337,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*":
-  version "12.0.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.2.tgz#3452a24edf9fea138b48fad4a0a028a683da1e40"
-  integrity sha512-5tabW/i+9mhrfEOUcLDu2xBPsHJ+X5Orqy9FKpale3SjDA17j5AEpYq5vfy3oAeAHGcvANRCO3NV3d2D6q3NiA==
-
-"@types/node@^12.7.2":
+"@types/node@*", "@types/node@^12.7.2":
   version "12.7.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.2.tgz#c4e63af5e8823ce9cc3f0b34f7b998c2171f0c44"
   integrity sha512-dyYO+f6ihZEtNPDcWNR1fkoTDf3zAK3lAABDze3mz6POyIercH0lEUawUFXlG8xaQZmm1yEBON/4TsYv/laDYg==
@@ -1358,9 +1353,9 @@
   integrity sha512-eAdu+NW1IkCdmp85SnhyKha+OOREQMT9lXaoICQxa7bhSauRiLzu3WSNt9Mf2piuJvWeXF/G0hGWHr63xNpIRA==
 
 "@types/pino@^5.8.9":
-  version "5.8.9"
-  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-5.8.9.tgz#17d8e2a7f2f6d9683ddef14fc8a172a2a306ca72"
-  integrity sha512-ybOTk+Ax54aKKHy4ZMDAVYBzuRhHn5NTGVyFTdH6vDrjTj3sQnP+TAlIJaKKbKu9J8NioRrj1kUGKDtvPPesmA==
+  version "5.8.10"
+  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-5.8.10.tgz#42061f8ca77327f97841ac673987d64c6ce8b3f7"
+  integrity sha512-pw9ZxNyeVcVwSZJNCcpFz9RKNi8Ymv76hbwsEzrxZOAxM/EV8TjMdQXcpJ3sBzlFL2WSZ9HGCFt2PMSQjV98ug==
   dependencies:
     "@types/node" "*"
     "@types/pino-std-serializers" "*"
