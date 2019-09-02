@@ -1,8 +1,5 @@
 ====test====
-When I have a document with a Request with form-data body that should
-be an array of strings (comma separated values)
-And I send the correct values
-I should receive a 200 response
+Request form-data body should be an array of strings (comma separated values)
 ====spec====
 swagger: '2.0'
 paths:
@@ -24,7 +21,7 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "arr=a,b,c"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "a/b/c"
 ====expect====
 HTTP/1.1 200 OK
 content-type: text/plain
