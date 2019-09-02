@@ -35,6 +35,6 @@ export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeseriali
       value = value[value.length - 1];
     }
 
-    return value.split(this.separator);
+    return value ? value.split(this.separator) : '';
   }
 }
