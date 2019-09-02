@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism won't return 406 when users request a `text/plain` response whose content is a primitive (string, number) #560
 - Prism's router is now able to correctly handle a path ending with a parameter, such as `/test.{format}`, while it would previously not match with anything. #561
 - Prism is correctly handling the `allowEmptyValue` property in OAS2 documents
+- Prism is correctly handling the `csv` collection format argument property in OAS2 documents
 
 # 3.0.4 (2019-08-20)
 
