@@ -8,17 +8,13 @@ import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired,
 import { validateSecurity } from './utils/security';
 
 export function factory<Resource, Input, Output, Config>(
-  customConfig?: Config,
-  customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'>,
+  config: Config,
+  components: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'>,
 ): IPrism<Resource, Input, Output, Config> {
-  const components: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'> = Object.assign(
-    {},
-    customComponents,
-  );
   return {
     process: async (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
-      const configObj = defaults(c, customConfig);
+      const configObj = defaults(c, config);
       const inputValidations: IPrismDiagnostic[] = [];
 
       if (components.router) {
