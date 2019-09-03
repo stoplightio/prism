@@ -53,7 +53,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   });
 
   const mergedConfig = configMergerFactory(
-    { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+    { cors: true, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
     config,
     getHttpConfigFromRequest,
   );
