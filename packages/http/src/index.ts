@@ -21,10 +21,10 @@ import {
   TPrismHttpInstance,
 } from './types';
 
-const createInstance = (config: IHttpConfig, overrides?: PickRequired<TPrismHttpComponents, 'logger'>) => {
+const createInstance = (config: IHttpConfig, components?: PickRequired<TPrismHttpComponents, 'logger'>) => {
   return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>()(
     config,
-    defaults(overrides, {
+    defaults(components, {
       router,
       forwarder,
       validator,

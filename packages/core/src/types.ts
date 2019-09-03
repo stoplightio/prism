@@ -5,8 +5,6 @@ import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
-// END
-
 export interface IPrism<Resource, Input, Output, Config> {
   process: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
 }
