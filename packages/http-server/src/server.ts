@@ -1,12 +1,5 @@
-import { configMergerFactory, createLogger } from '@stoplight/prism-core';
-import {
-  createInstance,
-  IHttpConfig,
-  IHttpMethod,
-  IHttpRequest,
-  ProblemJsonError,
-  TPrismHttpInstance,
-} from '@stoplight/prism-http';
+import { createLogger } from '@stoplight/prism-core';
+import { createInstance, IHttpConfig, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import { IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 // @ts-ignore
@@ -14,6 +7,7 @@ import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
 import * as fastifyCors from 'fastify-cors';
 import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
+import { defaults } from 'lodash';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import serializers from './serializers';
@@ -59,10 +53,12 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(undefined, payload);
   });
 
-  const mergedConfig = configMergerFactory<IHttpConfig, IHttpRequest>(
-    { cors: true, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
-    config,
-  );
+  const mergedConfig = defaults<Partial<IHttpConfig>, IHttpConfig>(config, {
+    cors: true,
+    mock: { dynamic: false },
+    validateRequest: true,
+    validateResponse: true,
+  });
 
   const prism = createInstance(mergedConfig, components);
 
