@@ -5,7 +5,10 @@ import { IHttpQueryParamStyleDeserializer } from '../types';
 export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeserializer {
   constructor(
     private readonly separator: string,
-    private readonly styleName: HttpParamStyles.PipeDelimited | HttpParamStyles.SpaceDelimited,
+    private readonly styleName:
+      | HttpParamStyles.PipeDelimited
+      | HttpParamStyles.SpaceDelimited
+      | HttpParamStyles.CommaDelimited,
   ) {}
   public supports(style: HttpParamStyles) {
     return style === this.styleName;
@@ -18,7 +21,7 @@ export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeseriali
     if (type === 'array') {
       return explode ? this.deserializeImplodeArray(values) : this.deserializeArray(values);
     } else {
-      throw new Error('Space/pipe/.. delimited style is only applicable to array parameter');
+      throw new Error('Space/pipe/comma.. delimited style is only applicable to array parameter');
     }
   }
 
@@ -32,6 +35,6 @@ export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeseriali
       value = value[value.length - 1];
     }
 
-    return value.split(this.separator);
+    return value ? value.split(this.separator) : '';
   }
 }

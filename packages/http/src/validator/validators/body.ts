@@ -1,5 +1,7 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IMediaTypeContent } from '@stoplight/types';
+import { get } from 'lodash';
+import { body } from '../deserializers';
 
 import { validateAgainstSchema } from '../validators/utils';
 import { IHttpValidator } from './types';
@@ -11,15 +13,29 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
     const { _prefix: prefix } = this;
     const content = this.getContent(specs, mediaType);
 
-    if (!content) {
+    const schema = get(content, 'schema');
+
+    if (!schema) {
       return [];
     }
 
-    if (!content.schema) {
-      return [];
+    const encodingStyle = get(content, 'encodings[0].style');
+
+    if (encodingStyle) {
+      const deserializer = body.get(encodingStyle);
+      if (deserializer && deserializer.supports(encodingStyle) && schema.properties) {
+        const propertySchema = Object.keys(schema.properties)[0];
+        const deserializedObject = deserializer.deserialize(propertySchema, target, Object.values(
+          schema.properties,
+        )[0] as any);
+
+        return validateAgainstSchema(deserializedObject, Object.values(schema.properties)[0] as any).map(error =>
+          Object.assign({}, error, { path: [prefix, ...(error.path || [])] }),
+        );
+      }
     }
 
-    return validateAgainstSchema(target, content.schema).map(error =>
+    return validateAgainstSchema(target, schema).map(error =>
       Object.assign({}, error, { path: [prefix, ...(error.path || [])] }),
     );
   }
