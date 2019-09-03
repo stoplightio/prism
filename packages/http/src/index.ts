@@ -22,7 +22,7 @@ import {
 } from './types';
 
 const createInstance = (config: IHttpConfig, components?: PickRequired<TPrismHttpComponents, 'logger'>) => {
-  return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>()(
+  return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
     config,
     defaults(components, {
       router,
