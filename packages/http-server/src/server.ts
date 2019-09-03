@@ -1,5 +1,12 @@
 import { configMergerFactory, createLogger } from '@stoplight/prism-core';
-import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
+import {
+  createInstance,
+  IHttpConfig,
+  IHttpMethod,
+  IHttpRequest,
+  ProblemJsonError,
+  TPrismHttpInstance,
+} from '@stoplight/prism-http';
 import { IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 // @ts-ignore
@@ -52,10 +59,9 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(undefined, payload);
   });
 
-  const mergedConfig = configMergerFactory(
+  const mergedConfig = configMergerFactory<IHttpConfig, IHttpRequest>(
     { cors: true, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
     config,
-    getHttpConfigFromRequest,
   );
 
   const prism = createInstance(mergedConfig, components);
@@ -102,7 +108,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
       request.log.info({ input }, 'Request received');
       try {
-        const response = await prismInstance.process(input, operations);
+        const cnfg = getHttpConfigFromRequest(input, opts.config) as IHttpConfig;
+        const response = await prismInstance.process(input, operations, cnfg);
 
         const { output } = response;
 

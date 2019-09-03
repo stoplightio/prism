@@ -4,7 +4,7 @@ import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
 export const getHttpConfigFromRequest: PartialPrismConfigFactory<IHttpConfig, IHttpRequest> = (
   req: IHttpRequest,
   defaultConfig?: PartialPrismConfig<IHttpConfig, IHttpRequest>,
-) => {
+): IHttpConfig => {
   // For some reason this fixed the code coverage.
   let config: Partial<IHttpConfig> = {};
 
@@ -16,7 +16,7 @@ export const getHttpConfigFromRequest: PartialPrismConfigFactory<IHttpConfig, IH
   const query = req.url.query;
 
   if (!query) {
-    return config;
+    return config as IHttpConfig;
   }
 
   const { __code, __dynamic, __example } = query;
@@ -39,8 +39,8 @@ export const getHttpConfigFromRequest: PartialPrismConfigFactory<IHttpConfig, IH
     } else {
       config.mock = Object.assign({}, config.mock, httpOperationConfig);
     }
-    return config;
+    return config as IHttpConfig;
   }
 
-  return config;
+  return config as IHttpConfig;
 };
