@@ -1,4 +1,4 @@
-import { factory, PartialPrismConfig } from '@stoplight/prism-core';
+import { factory } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import { forwarder } from './forwarder';
 import { mocker } from './mocker';
@@ -20,10 +20,7 @@ import {
 } from './types';
 import { validator } from './validator';
 
-const createInstance = (
-  config?: PartialPrismConfig<IHttpConfig, IHttpRequest>,
-  overrides?: PickRequired<TPrismHttpComponents, 'logger'>,
-) => {
+const createInstance = (config?: IHttpConfig, overrides?: PickRequired<TPrismHttpComponents, 'logger'>) => {
   return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
     { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
     {

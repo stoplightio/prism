@@ -11,21 +11,12 @@ export interface IPrism<Resource, Input, Output, Config> {
   process: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
 }
 
-export type PartialPrismConfigFactory<C, I> = (
-  input: I,
-  defaultConfig?: PartialPrismConfig<C, I> | PrismConfig<C, I>,
-) => Partial<C>;
-export type PartialPrismConfig<C, I> = Partial<C> | PrismConfigFactory<C, I> | PartialPrismConfigFactory<C, I>;
-
 export interface IPrismConfig {
   mock?: boolean | object;
   security?: boolean | object;
   validateRequest: boolean;
   validateResponse: boolean;
 }
-
-export type PrismConfigFactory<C, I> = (input: I, defaultConfig?: PrismConfig<C, I>) => C;
-export type PrismConfig<C, I> = C | PrismConfigFactory<C, I>;
 
 export interface IRouter<Resource, Input, Config> {
   route: (
