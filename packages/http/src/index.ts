@@ -1,7 +1,7 @@
 import { factory, PartialPrismConfig } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import { forwarder } from './forwarder';
-import { HttpMocker } from './mocker';
+import { mocker } from './mocker';
 import { router } from './router';
 export * from './types';
 import {
@@ -30,7 +30,7 @@ const createInstance = (
       router,
       forwarder,
       validator,
-      mocker: new HttpMocker(),
+      mocker,
     },
   )(config, overrides);
 };

@@ -4,16 +4,14 @@ import { right } from 'fp-ts/lib/Either';
 import { reader } from 'fp-ts/lib/Reader';
 import { flatMap } from 'lodash';
 import { assertRight } from '../../__tests__/utils';
-import { HttpMocker } from '../../mocker';
+import { mocker } from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import { JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
 
 const logger = createLogger('TEST', { enabled: false });
 
-describe('HttpMocker', () => {
-  const httpMocker = new HttpMocker();
-
+describe('mocker', () => {
   afterEach(() => jest.restoreAllMocks());
 
   describe('mock()', () => {
@@ -79,7 +77,7 @@ describe('HttpMocker', () => {
           .spyOn(helpers, 'negotiateOptionsForValidRequest')
           .mockReturnValue(reader.of(right({ code: '202', mediaType: 'test', headers: [] })));
 
-        const mockResult = httpMocker.mock({
+        const mockResult = mocker.mock({
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -99,7 +97,7 @@ describe('HttpMocker', () => {
           ),
         );
 
-        const mockResult = httpMocker.mock({
+        const mockResult = mocker.mock({
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -119,7 +117,7 @@ describe('HttpMocker', () => {
           ),
         );
 
-        const response = httpMocker.mock({
+        const response = mocker.mock({
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -146,7 +144,7 @@ describe('HttpMocker', () => {
           ),
         );
 
-        const mockResult = httpMocker.mock({
+        const mockResult = mocker.mock({
           resource: mockResource,
           input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
         })(logger);
@@ -171,7 +169,7 @@ describe('HttpMocker', () => {
 
         jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue('example value chelsea');
 
-        const mockResult = httpMocker.mock({
+        const mockResult = mocker.mock({
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -195,7 +193,7 @@ describe('HttpMocker', () => {
           });
 
           it('the dynamic response should not be an example one', async () => {
-            const response = await httpMocker.mock({
+            const response = await mocker.mock({
               input: mockInput,
               resource: mockResource,
               config: { cors: false, mock: { dynamic: true }, validateRequest: true, validateResponse: true },
@@ -223,7 +221,7 @@ describe('HttpMocker', () => {
       describe('and dynamic flag is false', () => {
         describe('and the response has an example', () => {
           describe('and the example has been explicited', () => {
-            const response = httpMocker.mock({
+            const response = mocker.mock({
               input: mockInput,
               resource: mockResource,
               config: {
@@ -246,7 +244,7 @@ describe('HttpMocker', () => {
           });
 
           describe('no response example is requested', () => {
-            const response = httpMocker.mock({
+            const response = mocker.mock({
               input: mockInput,
               resource: mockResource,
               config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
@@ -287,7 +285,7 @@ describe('HttpMocker', () => {
           }
 
           function mockResponseWithSchema(schema: JSONSchema) {
-            return httpMocker.mock({
+            return mocker.mock({
               input: mockInput,
               resource: createOperationWithSchema(schema),
               config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
