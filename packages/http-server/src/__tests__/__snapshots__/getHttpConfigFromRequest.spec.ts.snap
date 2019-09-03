@@ -2,40 +2,25 @@
 
 exports[`getHttpConfigFromRequest() given default config function and that function returns a mock should combine with query params 1`] = `
 Object {
-  "mock": Object {
-    "code": "400",
-    "exampleKey": "key",
-  },
+  "code": "400",
 }
 `;
 
 exports[`getHttpConfigFromRequest() given default config object that is a map and matching query should return combined 1`] = `
 Object {
-  "mock": Object {
-    "code": "200",
-    "dynamic": false,
-    "exampleKey": "bear",
-    "mediaTypes": Array [
-      "plain/text",
-    ],
-  },
+  "code": "200",
+  "exampleKey": "bear",
 }
 `;
 
 exports[`getHttpConfigFromRequest() given default config object that is boolean and matching query should return that query 1`] = `
 Object {
-  "mock": Object {
-    "code": "200",
-    "exampleKey": "bear",
-  },
+  "code": "200",
+  "exampleKey": "bear",
 }
 `;
 
-exports[`getHttpConfigFromRequest() given default config object that is boolean and no matching query params should return that config object 1`] = `
-Object {
-  "mock": false,
-}
-`;
+exports[`getHttpConfigFromRequest() given default config object that is boolean and no matching query params should return that config object 1`] = `Object {}`;
 
 exports[`getHttpConfigFromRequest() given no default config and no matching query should return my own default 1`] = `Object {}`;
 
@@ -43,24 +28,18 @@ exports[`getHttpConfigFromRequest() given no default config and no query should 
 
 exports[`getHttpConfigFromRequest() given no default config extracts code 1`] = `
 Object {
-  "mock": Object {
-    "code": "202",
-  },
+  "code": "202",
 }
 `;
 
 exports[`getHttpConfigFromRequest() given no default config extracts dynamic 1`] = `
 Object {
-  "mock": Object {
-    "dynamic": true,
-  },
+  "dynamic": true,
 }
 `;
 
 exports[`getHttpConfigFromRequest() given no default config extracts example 1`] = `
 Object {
-  "mock": Object {
-    "exampleKey": "bear",
-  },
+  "exampleKey": "bear",
 }
 `;

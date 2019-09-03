@@ -22,7 +22,7 @@ import { validator } from './validator';
 
 const createInstance = (config?: IHttpConfig, overrides?: PickRequired<TPrismHttpComponents, 'logger'>) => {
   return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
-    { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+    { cors: true, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
     {
       router,
       forwarder,
