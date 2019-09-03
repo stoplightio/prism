@@ -39,6 +39,19 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(error);
   });
 
+  server.addHook('onSend', (request, reply, payload, done) => {
+    if (request.headers.accept === '*/*' && typeof payload !== 'string') {
+      const serializer = reply.hasHeader('content-type')
+        ? serializers.find(s => s.regex.test(reply.getHeader('content-type')!))
+        : serializers[0];
+      if (serializer) {
+        return done(undefined, serializer.serializer(payload));
+      }
+    }
+
+    return done(undefined, payload);
+  });
+
   const mergedConfig = configMergerFactory(
     { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
     config,

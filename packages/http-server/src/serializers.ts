@@ -1,4 +1,3 @@
-import { ProblemJsonError } from '@stoplight/prism-http';
 import { j2xParser } from 'fast-xml-parser';
 import typeIs = require('type-is');
 
@@ -17,7 +16,7 @@ export default [
       test: (value: string) => !!typeIs.is(value, ['application/xml', 'application/*+xml']),
       toString: () => 'application/*+xml',
     },
-    serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse(data)),
+    serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse({ xml: data })),
   },
   {
     regex: /text\/plain/,

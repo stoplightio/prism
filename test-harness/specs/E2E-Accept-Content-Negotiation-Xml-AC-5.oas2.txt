@@ -40,4 +40,4 @@ curl -i http://127.0.0.1:4010/pets -H "Accept: application/xml"
 HTTP/1.1 200 OK
 content-type: application/xml
 
-<id>0</id><name>doggie</name><status>available</status>
+<xml><id>0</id><name>doggie</name><status>available</status></xml>

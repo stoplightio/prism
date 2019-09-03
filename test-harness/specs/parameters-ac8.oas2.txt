@@ -1,0 +1,32 @@
+====test====
+When I have a document with a Request with form-data body that should
+be an array of strings (comma separated values)
+And I send something encoded with the missing property
+I should receive a validation error
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      consumes:
+        - application/x-www-form-urlencoded
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: array
+          name: arr
+          items:
+            type: string
+          collectionFormat: csv
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "a/b/c"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
+
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body"],"severity":"Error","code":"type","message":"should be array"}]}

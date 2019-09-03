@@ -1,0 +1,25 @@
+====test====
+Sending a GET request with no Accept header specified returns
+the first example - content in application/xml.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        "200":
+          description: Get Todo Items
+          content:
+            application/xml:
+              example: <node>abc</node>
+            application/json:
+              example: '"abc"'
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+content-type: application/xml
+
+<node>abc</node>
