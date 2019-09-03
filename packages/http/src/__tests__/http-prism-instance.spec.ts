@@ -54,7 +54,10 @@ describe('Http Client .process', () => {
     ${basename(serverValidationOas3Path)} | ${serverValidationOas3Path}
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
-      prism = createInstance({ mock: { dynamic: false } }, { logger });
+      prism = createInstance(
+        { cors: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+        { logger },
+      );
       resources = await getHttpOperations(specPath);
     });
 
@@ -240,7 +243,10 @@ describe('Http Client .process', () => {
 
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
-      prism = createInstance({ mock: { dynamic: false } }, { logger });
+      prism = createInstance(
+        { cors: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+        { logger },
+      );
       resources = await getHttpOperations(noRefsPetstoreMinimalOas2Path);
     });
 

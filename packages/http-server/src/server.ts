@@ -105,9 +105,12 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       request.log.info({ input }, 'Request received');
       try {
         const operationSpecificConfig = getHttpConfigFromRequest(input);
-        Object.assign(opts.config.mock, operationSpecificConfig);
+        const mockConfig = Object.assign({}, opts.config.mock, operationSpecificConfig);
 
-        const response = await prismInstance.process(input, operations, opts.config as IHttpConfig);
+        const response = await prismInstance.process(input, operations, {
+          ...opts.config,
+          mock: mockConfig,
+        } as IHttpConfig);
 
         const { output } = response;
 
