@@ -1,8 +1,10 @@
 import { factory } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
+import { defaults } from 'lodash';
 import { forwarder } from './forwarder';
 import { mocker } from './mocker';
 import { router } from './router';
+import { validator } from './validator';
 export * from './types';
 import {
   IHttpConfig,
@@ -18,18 +20,17 @@ import {
   TPrismHttpComponents,
   TPrismHttpInstance,
 } from './types';
-import { validator } from './validator';
 
-const createInstance = (config?: IHttpConfig, overrides?: PickRequired<TPrismHttpComponents, 'logger'>) => {
-  return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
-    { cors: true, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
-    {
+const createInstance = (config: IHttpConfig, overrides?: PickRequired<TPrismHttpComponents, 'logger'>) => {
+  return factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>()(
+    config,
+    defaults(overrides, {
       router,
       forwarder,
       validator,
       mocker,
-    },
-  )(config, overrides);
+    }),
+  );
 };
 
 export {

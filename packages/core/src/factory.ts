@@ -7,10 +7,7 @@ import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 import { validateSecurity } from './utils/security';
 
-export function factory<Resource, Input, Output, Config>(
-  defaultConfig: Config,
-  defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config>>,
-): (
+export function factory<Resource, Input, Output, Config>(): (
   customConfig?: Config,
   customComponents?: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'>,
 ) => IPrism<Resource, Input, Output, Config> {
@@ -21,16 +18,16 @@ export function factory<Resource, Input, Output, Config>(
     const components: PickRequired<
       Partial<IPrismComponents<Resource, Input, Output, Config>>,
       'logger'
-    > = Object.assign({}, defaultComponents, customComponents);
+    > = Object.assign({}, customComponents);
     return {
       process: async (input: Input, resources: Resource[], c?: Config) => {
         // build the config for this request
-        const configObj = defaults(c, customConfig, defaultConfig);
+        const configObj = defaults(c, customConfig);
         const inputValidations: IPrismDiagnostic[] = [];
 
         if (components.router) {
           return pipe(
-            components.router.route({ resources, input, config: configObj }, defaultComponents.router),
+            components.router.route({ resources, input, config: configObj }),
             Either.fold(
               error => {
                 // rethrow error we if we're attempting to mock
@@ -56,14 +53,11 @@ export function factory<Resource, Input, Output, Config>(
               // validate input
               if (resource && components.validator && components.validator.validateInput) {
                 inputValidations.push(
-                  ...components.validator.validateInput(
-                    {
-                      resource,
-                      input,
-                      config: configObj,
-                    },
-                    defaultComponents.validator,
-                  ),
+                  ...components.validator.validateInput({
+                    resource,
+                    input,
+                    config: configObj,
+                  }),
                 );
               }
 
@@ -78,27 +72,7 @@ export function factory<Resource, Input, Output, Config>(
                 // generate the response
                 return pipe(
                   TaskEither.fromEither(
-                    components.mocker.mock(
-                      {
-                        resource,
-                        input: {
-                          validations: {
-                            input: inputValidationResult,
-                          },
-                          data: input,
-                        },
-                        config: configObj,
-                      },
-                      defaultComponents.mocker,
-                    )(components.logger.child({ name: 'NEGOTIATOR' })),
-                  ),
-                  TaskEither.map(output => ({ output, resource })),
-                );
-              } else if (components.forwarder) {
-                // forward request and set output from response
-                return pipe(
-                  components.forwarder.fforward(
-                    {
+                    components.mocker.mock({
                       resource,
                       input: {
                         validations: {
@@ -107,9 +81,23 @@ export function factory<Resource, Input, Output, Config>(
                         data: input,
                       },
                       config: configObj,
-                    },
-                    defaultComponents.forwarder,
+                    })(components.logger.child({ name: 'NEGOTIATOR' })),
                   ),
+                  TaskEither.map(output => ({ output, resource })),
+                );
+              } else if (components.forwarder) {
+                // forward request and set output from response
+                return pipe(
+                  components.forwarder.fforward({
+                    resource,
+                    input: {
+                      validations: {
+                        input: inputValidationResult,
+                      },
+                      data: input,
+                    },
+                    config: configObj,
+                  }),
                   TaskEither.map(output => ({ output, resource })),
                 );
               }
@@ -119,14 +107,11 @@ export function factory<Resource, Input, Output, Config>(
             TaskEither.map(({ output, resource }) => {
               let outputValidations: IPrismDiagnostic[] = [];
               if (resource && components.validator && components.validator.validateOutput) {
-                outputValidations = components.validator.validateOutput(
-                  {
-                    resource,
-                    output,
-                    config: configObj,
-                  },
-                  defaultComponents.validator,
-                );
+                outputValidations = components.validator.validateOutput({
+                  resource,
+                  output,
+                  config: configObj,
+                });
               }
 
               return {

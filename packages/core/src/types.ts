@@ -19,28 +19,16 @@ export interface IPrismConfig {
 }
 
 export interface IRouter<Resource, Input, Config> {
-  route: (
-    opts: { resources: Resource[]; input: Input; config?: Config },
-    defaultRouter?: IRouter<Resource, Input, Config>,
-  ) => Either<Error, Resource>;
+  route: (opts: { resources: Resource[]; input: Input; config?: Config }) => Either<Error, Resource>;
 }
 
 export interface IForwarder<Resource, Input, Config, Output> {
-  forward: (
-    opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config },
-    defaultForwarder?: IForwarder<Resource, Input, Config, Output>,
-  ) => Promise<Output>;
-  fforward: (
-    opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config },
-    defaultForwarder?: IForwarder<Resource, Input, Config, Output>,
-  ) => TaskEither<Error, Output>;
+  forward: (opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config }) => Promise<Output>;
+  fforward: (opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config }) => TaskEither<Error, Output>;
 }
 
 export interface IMocker<Resource, Input, Config, Output> {
-  mock: (
-    opts: IMockerOpts<Resource, Input, Config>,
-    defaultMocker?: IMocker<Resource, Input, Config, Output>,
-  ) => Output;
+  mock: (opts: IMockerOpts<Resource, Input, Config>) => Output;
 }
 
 export interface IMockerOpts<Resource, Input, Config> {
@@ -50,14 +38,8 @@ export interface IMockerOpts<Resource, Input, Config> {
 }
 
 export interface IValidator<Resource, Input, Config, Output> {
-  validateInput?: (
-    opts: { resource: Resource; input: Input; config?: Config },
-    defaultValidator?: IValidator<Resource, Input, Config, Output>,
-  ) => IPrismDiagnostic[];
-  validateOutput?: (
-    opts: { resource: Resource; output?: Output; config?: Config },
-    defaultValidator?: IValidator<Resource, Input, Config, Output>,
-  ) => IPrismDiagnostic[];
+  validateInput?: (opts: { resource: Resource; input: Input; config?: Config }) => IPrismDiagnostic[];
+  validateOutput?: (opts: { resource: Resource; output?: Output; config?: Config }) => IPrismDiagnostic[];
 }
 
 export interface IPrismComponents<Resource, Input, Output, Config> {

@@ -375,7 +375,10 @@ describe('Http Client .process', () => {
   });
 
   it('returns stringified static example when one defined in spec', async () => {
-    prism = createInstance(undefined, { logger });
+    prism = createInstance(
+      { cors: true, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+      { logger },
+    );
     resources = await getHttpOperations(staticExamplesOas2Path);
 
     const response = await prism.process(
