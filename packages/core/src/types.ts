@@ -6,7 +6,7 @@ import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 export interface IPrism<Resource, Input, Output, Config> {
-  process: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
+  request: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
 }
 
 export interface IPrismConfig {

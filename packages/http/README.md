@@ -67,7 +67,7 @@ const prism = Prism.createInstance({
 });
 
 // Make a "GET /todos" request
-return prism.process({
+return prism.request({
   method: 'get',
   url: {
     path: '/todos',
@@ -93,7 +93,7 @@ Output
 
 In the following example we will first instantiate Prism to make requests to an actual server.
 
-Later we alter than behaviour by passing a config object to the `process` function.
+Later we alter than behaviour by passing a config object to the `request` function.
 
 ```javascript
 const Prism = require('@stoplight/prism-http');
@@ -102,7 +102,7 @@ const Prism = require('@stoplight/prism-http');
 const prism = Prism.createInstance({ mock: false });
 
 // Make a "GET /todos" request
-return prism.process(
+return prism.request(
   {
     method: 'get',
     url: {
@@ -132,7 +132,7 @@ const config = { mock: false };
 const prism = Prism.createInstance(config);
 
 return prism
-  .process({
+  .request({
     method: 'get',
     url: {
       path: '/facts',
@@ -258,7 +258,7 @@ const request = {
     path: '/path', // must be prefixed with slash
   },
 };
-const promise = prism.process(request, operations);
+const promise = prism.request(request, operations);
 ```
 
 The request object has the following interface
@@ -279,7 +279,7 @@ All of this is pretty standard except the `url.baseUrl` which we will describe i
 Consider a request
 
 ```javascript
-prism.process({
+prism.request({
   method: 'get',
   url: {
     path: '/facts', // must be prefixed with slash
@@ -294,13 +294,13 @@ This will instruct Prism to do one of the two:
 
 - if mocking is **disabled** (`{ mock: false }`)
   - it will use that `baseUrl` to make a request to the server (`GET https://cat-fact.herokuapp.com/facts`)
-  - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OpenAPI and **add an input warning to the .process return value if it is not valid**
+  - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OpenAPI and **add an input warning to the .request return value if it is not valid**
 - if mocking is **enabled**
   - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OpenAPI and **return an error if it is not valid**
 
 ## Understanding response
 
-The `prism.process` resolved (it's a Promise!) value consists of:
+The `prism.request` resolved (it's a Promise!) value consists of:
 
 - input - copy of the request object you provided
 - output - the HTTP response
@@ -319,7 +319,7 @@ const Prism = require('@stoplight/prism-http');
 const config = { mock: false };
 const prism = Prism.createInstance(config);
 prism
-  .process({
+  .request({
     method: 'get',
     url: {
       path: '/facts',
