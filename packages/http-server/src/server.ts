@@ -110,7 +110,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         const response = await prismInstance.process(input, operations, {
           ...opts.config,
           mock: mockConfig,
-        } as IHttpConfig);
+        });
 
         const { output } = response;
 
