@@ -27,5 +27,5 @@ curl -i http://localhost:4010/todos -H "accept: application/xml"
 ====expect-loose====
 HTTP/1.1 200 OK
 
-<title>enim</title><description>id dolore</description><priority>90439782</priority>
+<xml><title>enim</title><description>id dolore</description><priority>90439782</priority></xml>
 

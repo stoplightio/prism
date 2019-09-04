@@ -13,10 +13,7 @@ const xmlValidator = {
     return doesContentTypeMatch || isContentXML;
   },
   validate: (expected: Result, output: Result) => {
-    const expectedInRootEl = `<root>${expected.body}</root>`;
-    const outputInRootEl = `<root>${output.body}</root>`;
-
-    xmlDiff.diffAsXml(expectedInRootEl, outputInRootEl, {}, { compareElementValues: false }, result =>
+    xmlDiff.diffAsXml(expected.body, output.body, {}, { compareElementValues: false }, result =>
       expect(result).toStrictEqual([]),
     );
 
