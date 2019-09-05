@@ -1,6 +1,6 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
-import { fold } from 'fp-ts/lib/Option';
+import { getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults } from 'lodash';
@@ -56,7 +56,8 @@ export function factory<Resource, Input, Output, Config>(
             const inputValidationResult = inputValidations.concat(
               pipe(
                 validateSecurity(input, resource),
-                fold<IPrismDiagnostic, IPrismDiagnostic[]>(() => [], value => [value]),
+                map(sec => [sec]),
+                getOrElse<IPrismDiagnostic[]>(() => []),
               ),
             );
 
