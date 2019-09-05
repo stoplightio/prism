@@ -19,7 +19,8 @@ async function instantiatePrism(specPath: string) {
   const operations = await getHttpOperations(specPath);
   const server = createServer(operations, {
     components: { logger },
-    config: { validateRequest: true, validateResponse: true, cors: true, mock: { dynamic: false } },
+    config: { validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+    cors: true,
   });
   return server;
 }
