@@ -30,6 +30,8 @@ const createNewClientInstance = (
 
     if (!parsedUrl.pathname) throw new Error('path name must alwasy be specified');
 
+    const res = resources || defaultResources || [];
+
     const data = await obj.request(
       {
         ...input,
@@ -39,7 +41,7 @@ const createNewClientInstance = (
           query: parseQueryString(parsedUrl.query || ''),
         },
       },
-      resources || defaultResources || [],
+      res,
       config,
     );
 
@@ -60,22 +62,14 @@ const createNewClientInstance = (
 
   return {
     request,
-    get: (url, input, resources, config) =>
-      request(url, { method: 'get', ...input }, resources || defaultResources || [], config),
-    put: (url, input, resources, config) =>
-      request(url, { method: 'put', ...input }, resources || defaultResources || [], config),
-    post: (url, input, resources, config) =>
-      request(url, { method: 'post', ...input }, resources || defaultResources || [], config),
-    delete: (url, input, resources, config) =>
-      request(url, { method: 'delete', ...input }, resources || defaultResources || [], config),
-    options: (url, input, resources, config) =>
-      request(url, { method: 'options', ...input }, resources || defaultResources || [], config),
-    head: (url, input, resources, config) =>
-      request(url, { method: 'head', ...input }, resources || defaultResources || [], config),
-    patch: (url, input, resources, config) =>
-      request(url, { method: 'patch', ...input }, resources || defaultResources || [], config),
-    trace: (url, input, resources, config) =>
-      request(url, { method: 'trace', ...input }, resources || defaultResources || [], config),
+    get: (url, input, resources, config) => request(url, { method: 'get', ...input }, resources, config),
+    put: (url, input, resources, config) => request(url, { method: 'put', ...input }, resources, config),
+    post: (url, input, resources, config) => request(url, { method: 'post', ...input }, resources, config),
+    delete: (url, input, resources, config) => request(url, { method: 'delete', ...input }, resources, config),
+    options: (url, input, resources, config) => request(url, { method: 'options', ...input }, resources, config),
+    head: (url, input, resources, config) => request(url, { method: 'head', ...input }, resources, config),
+    patch: (url, input, resources, config) => request(url, { method: 'patch', ...input }, resources, config),
+    trace: (url, input, resources, config) => request(url, { method: 'trace', ...input }, resources, config),
   };
 };
 
