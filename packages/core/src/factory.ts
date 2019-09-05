@@ -7,14 +7,14 @@ import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired, ProblemJsonError } from './types';
 import { validateSecurity } from './utils/security';
 
-export function factory<Resource, Input, Output, Config>(
+export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
   components: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'>,
 ): IPrism<Resource, Input, Output, Config> {
   return {
     request: async (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
-      const config = defaults(c, defaultConfig);
+      const config = defaults(c || {}, defaultConfig);
       const inputValidations: IPrismDiagnostic[] = [];
 
       if (components.router) {
@@ -23,7 +23,7 @@ export function factory<Resource, Input, Output, Config>(
           Either.fold(
             error => {
               // rethrow error we if we're attempting to mock
-              if (((config as unknown) as IPrismConfig).mock) {
+              if (config.mock) {
                 return TaskEither.left(error);
               }
 
@@ -61,7 +61,7 @@ export function factory<Resource, Input, Output, Config>(
               ),
             );
 
-            if (resource && components.mocker && ((config as unknown) as IPrismConfig).mock) {
+            if (resource && components.mocker && config.mock) {
               // generate the response
               return pipe(
                 TaskEither.fromEither(
