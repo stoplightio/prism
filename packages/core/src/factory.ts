@@ -8,22 +8,22 @@ import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, PickRequired,
 import { validateSecurity } from './utils/security';
 
 export function factory<Resource, Input, Output, Config>(
-  config: Config,
+  defaultConfig: Config,
   components: PickRequired<Partial<IPrismComponents<Resource, Input, Output, Config>>, 'logger'>,
 ): IPrism<Resource, Input, Output, Config> {
   return {
     process: async (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
-      const configObj = defaults(c, config);
+      const config = defaults(c, defaultConfig);
       const inputValidations: IPrismDiagnostic[] = [];
 
       if (components.router) {
         return pipe(
-          components.router.route({ resources, input, config: configObj }),
+          components.router.route({ resources, input, config }),
           Either.fold(
             error => {
               // rethrow error we if we're attempting to mock
-              if (((configObj as unknown) as IPrismConfig).mock) {
+              if (((config as unknown) as IPrismConfig).mock) {
                 return TaskEither.left(error);
               }
 
@@ -48,7 +48,7 @@ export function factory<Resource, Input, Output, Config>(
                 ...components.validator.validateInput({
                   resource,
                   input,
-                  config: configObj,
+                  config,
                 }),
               );
             }
@@ -61,7 +61,7 @@ export function factory<Resource, Input, Output, Config>(
               ),
             );
 
-            if (resource && components.mocker && ((configObj as unknown) as IPrismConfig).mock) {
+            if (resource && components.mocker && ((config as unknown) as IPrismConfig).mock) {
               // generate the response
               return pipe(
                 TaskEither.fromEither(
@@ -73,7 +73,7 @@ export function factory<Resource, Input, Output, Config>(
                       },
                       data: input,
                     },
-                    config: configObj,
+                    config,
                   })(components.logger.child({ name: 'NEGOTIATOR' })),
                 ),
                 TaskEither.map(output => ({ output, resource })),
@@ -89,7 +89,7 @@ export function factory<Resource, Input, Output, Config>(
                     },
                     data: input,
                   },
-                  config: configObj,
+                  config,
                 }),
                 TaskEither.map(output => ({ output, resource })),
               );
@@ -103,7 +103,7 @@ export function factory<Resource, Input, Output, Config>(
               outputValidations = components.validator.validateOutput({
                 resource,
                 output,
-                config: configObj,
+                config,
               });
             }
 
