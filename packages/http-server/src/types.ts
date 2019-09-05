@@ -3,7 +3,7 @@ import { FastifyInstance } from 'fastify';
 
 export interface IPrismHttpServerOpts {
   components?: PickRequired<TPrismHttpComponents, 'logger'>;
-  config: Partial<IHttpConfig>;
+  config: IHttpConfig;
 }
 
 export interface IPrismHttpServer {

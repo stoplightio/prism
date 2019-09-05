@@ -7,7 +7,10 @@ import { IPrismHttpServer } from '../types';
 const logger = createLogger('TEST', { enabled: false });
 
 function instantiatePrism2(operations: IHttpOperation[]) {
-  return createServer(operations, { components: { logger }, config: { mock: { dynamic: false } } });
+  return createServer(operations, {
+    components: { logger },
+    config: { validateRequest: true, validateResponse: true, cors: true, mock: { dynamic: false } },
+  });
 }
 
 describe('body params validation', () => {

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HttpMocker mock() when example is of type INodeExternalExample generates a dynamic example 1`] = `
+exports[`mocker mock() when example is of type INodeExternalExample generates a dynamic example 1`] = `
 Object {
   "body": "test value",
   "headers": Object {
@@ -10,7 +10,7 @@ Object {
 }
 `;
 
-exports[`HttpMocker mock() with invalid negotiator response returns static example 1`] = `
+exports[`mocker mock() with invalid negotiator response returns static example 1`] = `
 Object {
   "body": "hello",
   "headers": Object {
@@ -20,7 +20,7 @@ Object {
 }
 `;
 
-exports[`HttpMocker mock() with valid negotiator response returns static example 1`] = `
+exports[`mocker mock() with valid negotiator response returns static example 1`] = `
 Object {
   "body": "hello",
   "headers": Object {

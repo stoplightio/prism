@@ -1,5 +1,5 @@
-import { configMergerFactory, createLogger } from '@stoplight/prism-core';
-import { createInstance, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
+import { createLogger } from '@stoplight/prism-core';
+import { createInstance, IHttpConfig, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
 import { IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 // @ts-ignore
@@ -7,6 +7,7 @@ import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
 import * as fastifyCors from 'fastify-cors';
 import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
+import { defaults } from 'lodash';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import serializers from './serializers';
@@ -52,11 +53,12 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(undefined, payload);
   });
 
-  const mergedConfig = configMergerFactory(
-    { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
-    config,
-    getHttpConfigFromRequest,
-  );
+  const mergedConfig = defaults<Partial<IHttpConfig>, IHttpConfig>(config, {
+    cors: true,
+    mock: { dynamic: false },
+    validateRequest: true,
+    validateResponse: true,
+  });
 
   const prism = createInstance(mergedConfig, components);
 
@@ -102,7 +104,13 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
       request.log.info({ input }, 'Request received');
       try {
-        const response = await prismInstance.process(input, operations);
+        const operationSpecificConfig = getHttpConfigFromRequest(input);
+        const mockConfig = Object.assign({}, opts.config.mock, operationSpecificConfig);
+
+        const response = await prismInstance.process(input, operations, {
+          ...opts.config,
+          mock: mockConfig,
+        });
 
         const { output } = response;
 

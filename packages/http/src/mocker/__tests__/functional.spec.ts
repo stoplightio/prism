@@ -3,13 +3,11 @@ import * as Ajv from 'ajv';
 import { createLogger } from '@stoplight/prism-core';
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
 import { assertLeft, assertRight } from '../../__tests__/utils';
-import { HttpMocker } from '../index';
+import { mocker } from '../index';
 
 const logger = createLogger('TEST', { enabled: false });
 
 describe('http mocker', () => {
-  const mocker = new HttpMocker();
-
   describe('request is valid', () => {
     describe('given only enforced content type', () => {
       test('and that content type exists should first 200 static example', () => {
