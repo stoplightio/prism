@@ -24,7 +24,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     .register(formbodyParser)
     .register(fastifyAcceptsSerializer, { serializers });
 
-  if (opts.config.cors) server.register(fastifyCors);
+  if (opts.cors) server.register(fastifyCors);
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
     if (typeIs(req, ['application/*+json'])) {
@@ -54,7 +54,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   });
 
   const mergedConfig = defaults<Partial<IHttpConfig>, IHttpConfig>(config, {
-    cors: true,
     mock: { dynamic: false },
     validateRequest: true,
     validateResponse: true,
@@ -62,7 +61,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
   const prism = createInstance(mergedConfig, components);
 
-  opts.config.cors
+  opts.cors
     ? server.route({
         url: '*',
         method: ['GET', 'DELETE', 'HEAD', 'PATCH', 'POST', 'PUT'],

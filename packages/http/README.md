@@ -180,7 +180,6 @@ The actual interface looks like this (but rather than explain each property we'r
 ```ts
 export interface IHttpConfig extends IPrismConfig {
   mock: false | IHttpOperationConfig;
-  cors: boolean;
   validateRequest: boolean;
   validateResponse: boolean;
 }
@@ -193,7 +192,6 @@ export interface IHttpConfig extends IPrismConfig {
 ```javascript
 const config = {
   mock: false,
-  cors: false,
   validateRequest: false,
   validareResponse: true
 };
