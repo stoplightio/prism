@@ -1,4 +1,4 @@
-import { factory, PickRequired } from '@stoplight/prism-core';
+import { factory } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import { defaults } from 'lodash';
 import { forwarder } from './forwarder';
@@ -8,9 +8,12 @@ import { validator } from './validator';
 export * from './types';
 export * from './getHttpOperations';
 
-import { IHttpConfig, IHttpRequest, IHttpResponse, TPrismHttpComponents } from './types';
+import { IHttpConfig, IHttpRequest, IHttpResponse, PickRequired, PrismHttpComponents } from './types';
 
-const createInstance = (defaultConfig: IHttpConfig, components?: PickRequired<TPrismHttpComponents, 'logger'>) =>
+const createInstance = (
+  defaultConfig: IHttpConfig,
+  components?: PickRequired<Partial<PrismHttpComponents>, 'logger'>,
+) =>
   factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
     defaultConfig,
     defaults(components, {

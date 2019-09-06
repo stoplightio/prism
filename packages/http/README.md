@@ -163,7 +163,7 @@ const prism = Prism.createInstance(config /*, components */);
 There are two (both optional) arguments you can supply `createInstance` with:
 
 - config (of `IHttpConfig` type)
-- components (of `TPrismHttpComponents` type)
+- components (of `PrismHttpComponents` type)
 
 We will cover the `config` argument in next section and we'll leave `components` for some other time (overriding default `components` is the _ultimate advanced stuff_).
 
