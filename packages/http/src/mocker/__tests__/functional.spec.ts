@@ -17,7 +17,6 @@ describe('http mocker', () => {
           config: {
             validateRequest: true,
             validateResponse: true,
-            cors: false,
             mock: {
               dynamic: false,
               mediaTypes: ['text/plain'],
@@ -35,7 +34,6 @@ describe('http mocker', () => {
           config: {
             validateRequest: true,
             validateResponse: true,
-            cors: false,
             mock: {
               dynamic: false,
               mediaTypes: ['text/funky'],
@@ -55,7 +53,6 @@ describe('http mocker', () => {
           config: {
             validateRequest: true,
             validateResponse: true,
-            cors: false,
             mock: {
               dynamic: false,
               code: '201',
@@ -77,7 +74,6 @@ describe('http mocker', () => {
           config: {
             validateRequest: true,
             validateResponse: true,
-            cors: false,
             mock: {
               dynamic: false,
               code: '201',
@@ -98,7 +94,6 @@ describe('http mocker', () => {
           config: {
             validateRequest: true,
             validateResponse: true,
-            cors: false,
             mock: {
               dynamic: false,
               exampleKey: 'bear',
@@ -116,7 +111,6 @@ describe('http mocker', () => {
           config: {
             validateRequest: true,
             validateResponse: true,
-            cors: false,
             mock: {
               dynamic: false,
               exampleKey: 'second',
@@ -137,7 +131,6 @@ describe('http mocker', () => {
           config: {
             validateRequest: true,
             validateResponse: true,
-            cors: false,
             mock: {
               dynamic: false,
               code: '201',
@@ -155,7 +148,6 @@ describe('http mocker', () => {
           config: {
             validateRequest: true,
             validateResponse: true,
-            cors: false,
             mock: {
               dynamic: false,
               code: '205',
@@ -173,7 +165,6 @@ describe('http mocker', () => {
           config: {
             validateRequest: true,
             validateResponse: true,
-            cors: false,
             mock: {
               dynamic: false,
               code: '201',
@@ -249,7 +240,6 @@ describe('http mocker', () => {
             config: {
               validateRequest: true,
               validateResponse: true,
-              cors: false,
               mock: {
                 dynamic: true,
               },

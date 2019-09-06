@@ -5,7 +5,7 @@ import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
-export interface IPrism<Resource, Input, Output, Config> {
+export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
   process: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
 }
 
@@ -16,11 +16,11 @@ export interface IPrismConfig {
   validateResponse: boolean;
 }
 
-export interface IRouter<Resource, Input, Config> {
+export interface IRouter<Resource, Input, Config extends IPrismConfig> {
   route: (opts: { resources: Resource[]; input: Input; config?: Config }) => Either<Error, Resource>;
 }
 
-export interface IForwarder<Resource, Input, Config, Output> {
+export interface IForwarder<Resource, Input, Config extends IPrismConfig, Output> {
   forward: (opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config }) => Promise<Output>;
   fforward: (opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config }) => TaskEither<Error, Output>;
 }
@@ -40,7 +40,7 @@ export interface IValidator<Resource, Input, Config, Output> {
   validateOutput?: (opts: { resource: Resource; output?: Output; config?: Config }) => IPrismDiagnostic[];
 }
 
-export interface IPrismComponents<Resource, Input, Output, Config> {
+export interface IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> {
   router: IRouter<Resource, Input, Config>;
   forwarder: IForwarder<Resource, Input, Config, Output>;
   mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;
