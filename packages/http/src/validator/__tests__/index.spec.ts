@@ -43,7 +43,7 @@ describe('HttpValidator', () => {
               resourceExtension,
             ),
             input: { method: 'get', url: { path: '/' } },
-            config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+            config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
         ).toHaveLength(errorsNumber);
       };
@@ -95,7 +95,7 @@ describe('HttpValidator', () => {
             resourceExtension,
           ),
           input: { method: 'get', url: { path: '/' } },
-          config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+          config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
         }),
       ).toHaveLength(length);
     };
@@ -124,7 +124,7 @@ describe('HttpValidator', () => {
             resourceExtension,
           ),
           input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
-          config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+          config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
         }),
       ).toHaveLength(length);
 
@@ -164,7 +164,7 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+            config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
         ).toHaveLength(0);
 
@@ -184,7 +184,7 @@ describe('HttpValidator', () => {
               responses: [{ code: '200' }],
             },
             output: { statusCode: 200 },
-            config: { cors: false, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+            config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
         ).toHaveLength(2);
 

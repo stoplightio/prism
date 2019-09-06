@@ -9,7 +9,8 @@ const logger = createLogger('TEST', { enabled: false });
 function instantiatePrism2(operations: IHttpOperation[]) {
   return createServer(operations, {
     components: { logger },
-    config: { validateRequest: true, validateResponse: true, cors: true, mock: { dynamic: false } },
+    cors: true,
+    config: { validateRequest: true, validateResponse: true, mock: { dynamic: false } },
   });
 }
 

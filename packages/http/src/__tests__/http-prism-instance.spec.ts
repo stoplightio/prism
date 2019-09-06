@@ -54,10 +54,7 @@ describe('Http Client .process', () => {
     ${basename(serverValidationOas3Path)} | ${serverValidationOas3Path}
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
-      prism = createInstance(
-        { cors: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
-        { logger },
-      );
+      prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
       resources = await getHttpOperations(specPath);
     });
 
@@ -131,7 +128,7 @@ describe('Http Client .process', () => {
     });
 
     describe('mocking is off', () => {
-      const config: IHttpConfig = { mock: false, cors: false, validateRequest: true, validateResponse: true };
+      const config: IHttpConfig = { mock: false, validateRequest: true, validateResponse: true };
       const baseUrl = 'http://stoplight.io';
       const serverReply = 'hello world';
 
@@ -243,10 +240,7 @@ describe('Http Client .process', () => {
 
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
-      prism = createInstance(
-        { cors: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
-        { logger },
-      );
+      prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
       resources = await getHttpOperations(noRefsPetstoreMinimalOas2Path);
     });
 
@@ -375,10 +369,7 @@ describe('Http Client .process', () => {
   });
 
   it('returns stringified static example when one defined in spec', async () => {
-    prism = createInstance(
-      { cors: true, mock: { dynamic: false }, validateRequest: true, validateResponse: true },
-      { logger },
-    );
+    prism = createInstance({ mock: { dynamic: false }, validateRequest: true, validateResponse: true }, { logger });
     resources = await getHttpOperations(staticExamplesOas2Path);
 
     const response = await prism.process(
