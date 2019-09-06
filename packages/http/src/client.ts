@@ -1,4 +1,3 @@
-import { getHttpOperationsFromFile } from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { IPrism } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 // @ts-ignore
@@ -9,6 +8,7 @@ import { parse as parseQueryString } from 'querystring';
 import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
 import { forwarder } from './forwarder';
+import { getHttpOperationsFromFile } from './getHttpOperations';
 import { mocker } from './mocker';
 import { router } from './router';
 import { IHttpConfig, IHttpRequest, IHttpResponse } from './types';

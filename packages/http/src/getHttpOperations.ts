@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { flatten, get, keys, map, uniq } from 'lodash';
 import { EOL } from 'os';
 import { resolve } from 'path';
-import { httpAndFileResolver } from '../resolvers/http-and-file';
+import { httpAndFileResolver } from './resolvers/http-and-file';
 
 export async function getHttpOperationsFromFile(file: string): Promise<IHttpOperation[]> {
   const fileContent = file.match(/^https?:\/\//)

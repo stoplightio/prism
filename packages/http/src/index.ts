@@ -6,6 +6,7 @@ import { mocker } from './mocker';
 import { router } from './router';
 import { validator } from './validator';
 export * from './types';
+export * from './getHttpOperations';
 
 import { IHttpConfig, IHttpRequest, IHttpResponse, TPrismHttpComponents } from './types';
 

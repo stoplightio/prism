@@ -1,5 +1,5 @@
-import { getHttpOperationsFromFile } from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { createLogger } from '@stoplight/prism-core';
+import { getHttpOperationsFromFile } from '@stoplight/prism-http';
 import { resolve } from 'path';
 import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
