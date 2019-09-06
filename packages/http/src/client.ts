@@ -1,5 +1,4 @@
-import { IPrism } from '@stoplight/prism-core';
-import { IHttpOperation } from '@stoplight/types';
+import { IPrismOutput } from '@stoplight/prism-core';
 // @ts-ignore
 import logger from 'abstract-logging';
 import { getStatusText } from 'http-status-codes';
@@ -11,7 +10,7 @@ import { forwarder } from './forwarder';
 import { getHttpOperationsFromFile } from './getHttpOperations';
 import { mocker } from './mocker';
 import { router } from './router';
-import { IHttpConfig, IHttpRequest, IHttpResponse } from './types';
+import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { validator } from './validator';
 
 const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string): Promise<PrismHttp> => {
@@ -30,32 +29,32 @@ const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string)
 
     if (!parsedUrl.pathname) throw new Error('path name must alwasy be specified');
 
+    const httpUrl: IHttpUrl = {
+      baseUrl: parsedUrl.host ? `${parsedUrl.protocol}//${parsedUrl.host}` : undefined,
+      path: parsedUrl.pathname,
+      query: parseQueryString(parsedUrl.query || ''),
+    };
+
     const data = await obj.request(
       {
         ...input,
-        url: {
-          baseUrl: parsedUrl.host ? `${parsedUrl.protocol}//${parsedUrl.host}` : undefined,
-          path: parsedUrl.pathname,
-          query: parseQueryString(parsedUrl.query || ''),
-        },
+        url: httpUrl,
       },
       resources,
       config,
     );
 
-    if (data.output) {
-      return {
-        status: data.output.statusCode,
-        statusText: getStatusText(data.output.statusCode),
-        headers: data.output.headers || [],
-        data: data.output.body || {},
-        config: defaults(config, defaultConfig),
-        request: { ...input, url },
-        validations: data.validations,
-      };
-    }
+    const o: PrismOutput = {
+      status: data.output.statusCode,
+      statusText: getStatusText(data.output.statusCode),
+      headers: data.output.headers || {},
+      data: data.output.body || {},
+      config: defaults(config, defaultConfig),
+      request: { ...input, url: httpUrl },
+      validations: data.validations,
+    };
 
-    return data;
+    return o;
   };
 
   return {
@@ -71,15 +70,23 @@ const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string)
   };
 };
 
-type PrismOutput = ReturnType<IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>['request']>;
+type PrismOutput = {
+  status: IHttpResponse['statusCode'];
+  statusText: string;
+  headers: IHttpResponse['headers'];
+  data: IHttpResponse['body'];
+  config: IHttpConfig;
+  request: IHttpRequest;
+  validations: IPrismOutput<IHttpRequest, IHttpResponse>['validations'];
+};
 
-type genericRequestFn = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IHttpConfig) => PrismOutput;
+type genericRequestFn = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IHttpConfig) => Promise<PrismOutput>;
 
 type requestImplicitVerbFn = (
   url: string,
   input: Omit<IHttpRequest, 'url' | 'method'>,
   config?: IHttpConfig,
-) => PrismOutput;
+) => Promise<PrismOutput>;
 
 export type PrismHttp = {
   request: genericRequestFn;
