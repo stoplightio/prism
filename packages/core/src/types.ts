@@ -56,8 +56,8 @@ export interface IPrismInput<I> {
 }
 
 export interface IPrismOutput<I, O> {
-  input?: I;
-  output?: O;
+  input: I;
+  output: O;
   validations: {
     input: IPrismDiagnostic[];
     output: IPrismDiagnostic[];
