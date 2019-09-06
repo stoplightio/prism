@@ -24,7 +24,7 @@ const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string)
 
   const resources = await getHttpOperationsFromFile(spec);
 
-  const request: genericRequestFn = async (url, input, config) => {
+  const request: RequestFunction = async (url, input, config) => {
     const parsedUrl = parseUrl(url);
 
     if (!parsedUrl.pathname) throw new Error('path name must alwasy be specified');
@@ -60,12 +60,12 @@ const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string)
   return {
     request,
     get: (url, input, config) => request(url, { method: 'get', ...input }, config),
-    put: (url, input, config) => request(url, { method: 'put', ...input }, config),
-    post: (url, input, config) => request(url, { method: 'post', ...input }, config),
+    put: (url, body, input, config) => request(url, { method: 'put', ...input, body }, config),
+    post: (url, body, input, config) => request(url, { method: 'post', ...input, body }, config),
     delete: (url, input, config) => request(url, { method: 'delete', ...input }, config),
     options: (url, input, config) => request(url, { method: 'options', ...input }, config),
     head: (url, input, config) => request(url, { method: 'head', ...input }, config),
-    patch: (url, input, config) => request(url, { method: 'patch', ...input }, config),
+    patch: (url, body, input, config) => request(url, { method: 'patch', ...input, body }, config),
     trace: (url, input, config) => request(url, { method: 'trace', ...input }, config),
   };
 };
@@ -80,24 +80,31 @@ type PrismOutput = {
   validations: IPrismOutput<IHttpRequest, IHttpResponse>['validations'];
 };
 
-type genericRequestFn = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IHttpConfig) => Promise<PrismOutput>;
+type RequestFunction = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IHttpConfig) => Promise<PrismOutput>;
 
-type requestImplicitVerbFn = (
+type RequestFunctionWithVerb = (
   url: string,
   input: Omit<IHttpRequest, 'url' | 'method'>,
   config?: IHttpConfig,
 ) => Promise<PrismOutput>;
 
+type RequestFunctionWithVerbWithBody = (
+  url: string,
+  body: unknown,
+  input: Omit<IHttpRequest, 'url' | 'method' | 'body'>,
+  config?: IHttpConfig,
+) => Promise<PrismOutput>;
+
 export type PrismHttp = {
-  request: genericRequestFn;
-  get: requestImplicitVerbFn;
-  put: requestImplicitVerbFn;
-  post: requestImplicitVerbFn;
-  delete: requestImplicitVerbFn;
-  options: requestImplicitVerbFn;
-  head: requestImplicitVerbFn;
-  patch: requestImplicitVerbFn;
-  trace: requestImplicitVerbFn;
+  request: RequestFunction;
+  get: RequestFunctionWithVerb;
+  put: RequestFunctionWithVerbWithBody;
+  post: RequestFunctionWithVerbWithBody;
+  delete: RequestFunctionWithVerb;
+  options: RequestFunctionWithVerb;
+  head: RequestFunctionWithVerb;
+  patch: RequestFunctionWithVerbWithBody;
+  trace: RequestFunctionWithVerb;
 };
 
 export default createNewClientInstance;
