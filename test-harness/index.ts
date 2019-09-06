@@ -60,7 +60,7 @@ describe('harness', () => {
             const isValid = validate(expected, output).valid;
 
             if (!!isValid) {
-              expect(validate(expected, output).valid).toBeTruthy();
+              expect(isValid).toBeTruthy();
             } else {
               validateLoosely(expected, output);
             }

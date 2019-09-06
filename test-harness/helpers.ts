@@ -22,8 +22,6 @@ const xmlValidator = {
   },
 };
 
-const validators = [xmlValidator];
-
 export function parseSpecFile(spec: string) {
   const regex = /====(server|test|spec|command|expect|expect-loose)====\r?\n/gi;
   const splitted = spec.split(regex);
@@ -46,12 +44,8 @@ export function parseSpecFile(spec: string) {
 }
 
 export const validateLoosely = (expected: Result, output: Result) => {
-  const foundValidator = validators.find(validator => {
-    return validator.test(get(output, ['header', 'content-type'], ''), expected.body);
-  });
-
-  if (!!foundValidator) {
-    foundValidator.validate(expected, output);
+  if (xmlValidator.test(get(output, ['header', 'content-type'], ''), expected.body)) {
+    xmlValidator.validate(expected, output);
   } else {
     expect(output).toMatchObject(expected);
   }
