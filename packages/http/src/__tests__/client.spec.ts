@@ -1,30 +1,45 @@
 import * as nock from 'nock';
-import createNewClientInstance from '../client';
+import createNewClientInstance, { PrismHttp } from '../client';
+import { forwarder } from '../forwarder';
+import { mocker } from '../mocker';
+
+type PromiseType<T> = T extends Promise<infer U> ? U : T;
 
 describe('User Http Client', () => {
   afterEach(() => nock.cleanAll());
 
-  test('with mocking set to false', async () => {
-    beforeAll(() =>
-      nock('https://petstore.swagger.io/v2')
-        .get('/pet/10')
-        .reply(200, {
-          license: {
-            key: 'mit',
-            name: 'MIT License',
-            spdx_id: 'MIT',
-            url: 'https://api.github.com/licenses/mit',
-            node_id: 'MDc6TGljZW5zZTEz',
-          },
-        }));
+  describe('with mocking set to false', () => {
+    describe('get a resource', () => {
+      let response: PromiseType<ReturnType<PrismHttp['get']>>;
+      beforeAll(async () => {
+        jest.spyOn(forwarder, 'fforward');
+        jest.spyOn(mocker, 'mock');
 
-    const client = await createNewClientInstance(
-      { mock: false, validateRequest: true, validateResponse: true },
-      require.resolve('../../../../examples/petstore.oas2.yaml'),
-    );
+        nock('https://petstore.swagger.io/v2')
+          .get('/pet/10')
+          .reply(200, {
+            license: {
+              key: 'mit',
+              name: 'MIT License',
+              spdx_id: 'MIT',
+              url: 'https://api.github.com/licenses/mit',
+              node_id: 'MDc6TGljZW5zZTEz',
+            },
+          });
 
-    const response = await client.get('/pet/10', {});
+        const client = await createNewClientInstance(
+          { mock: false, validateRequest: true, validateResponse: true },
+          require.resolve('../../../../examples/petstore.oas2.yaml'),
+        );
 
-    expect(response).toBeDefined();
+        response = await client.get('/pet/10', {});
+      });
+
+      test('should not call the mocker', () => expect(mocker.mock).not.toHaveBeenCalled());
+      test('should call the forwarder', () => expect(forwarder.fforward).toHaveBeenCalled());
+      test('should receive a response', () => expect(response).toBeDefined());
+      test('should have output validations errors', () =>
+        expect(response.validations.output.length).toBeGreaterThan(0));
+    });
   });
 });
