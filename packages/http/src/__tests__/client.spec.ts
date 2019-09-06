@@ -40,6 +40,16 @@ describe('User Http Client', () => {
       test('should receive a response', () => expect(response).toBeDefined());
       test('should have output validations errors', () =>
         expect(response.validations.output.length).toBeGreaterThan(0));
+
+      test('should have output validations errors', async () => {
+        const client = await createNewClientInstance(
+          { mock: false, validateRequest: true, validateResponse: true },
+          require.resolve('../../../../examples/petstore.oas2.yaml'),
+        );
+
+        response = await client.get('/pet/10', {}, { validateResponse: false, mock: false, validateRequest: true });
+        expect(response.validations.output).toHaveLength(0);
+      });
     });
   });
 });

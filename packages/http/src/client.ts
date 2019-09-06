@@ -84,14 +84,14 @@ type RequestFunction = (url: string, input: Omit<IHttpRequest, 'url'>, config?: 
 
 type RequestFunctionWithVerb = (
   url: string,
-  input: Omit<IHttpRequest, 'url' | 'method'>,
+  input: Pick<IHttpRequest, 'headers'>,
   config?: IHttpConfig,
 ) => Promise<PrismOutput>;
 
 type RequestFunctionWithVerbWithBody = (
   url: string,
   body: unknown,
-  input: Omit<IHttpRequest, 'url' | 'method' | 'body'>,
+  input: Pick<IHttpRequest, 'headers'>,
   config?: IHttpConfig,
 ) => Promise<PrismOutput>;
 
