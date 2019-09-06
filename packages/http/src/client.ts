@@ -1,3 +1,4 @@
+import { getHttpOperationsFromFile } from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { IPrism } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 // @ts-ignore
@@ -13,7 +14,7 @@ import { router } from './router';
 import { IHttpConfig, IHttpRequest, IHttpResponse } from './types';
 import { validator } from './validator';
 
-const createNewClientInstance = (defaultConfig: IHttpConfig, resources: IHttpOperation[]): PrismHttp => {
+const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string): Promise<PrismHttp> => {
   const obj = createInstance(defaultConfig, {
     logger,
     router,
@@ -21,6 +22,8 @@ const createNewClientInstance = (defaultConfig: IHttpConfig, resources: IHttpOpe
     validator,
     mocker,
   });
+
+  const resources = await getHttpOperationsFromFile(spec);
 
   const request: genericRequestFn = async (url, input, config) => {
     const parsedUrl = parseUrl(url);

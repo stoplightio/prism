@@ -1,4 +1,4 @@
-import getHttpOperations from '@stoplight/prism-cli/src/util/getHttpOperations';
+import { getHttpOperationsFromFile } from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { createLogger, IPrism } from '@stoplight/prism-core';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpOperation } from '@stoplight/types';
@@ -55,7 +55,7 @@ describe('Http Client .request', () => {
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
       prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
-      resources = await getHttpOperations(specPath);
+      resources = await getHttpOperationsFromFile(specPath);
     });
 
     describe('baseUrl not set', () => {
@@ -241,7 +241,7 @@ describe('Http Client .request', () => {
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
       prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
-      resources = await getHttpOperations(noRefsPetstoreMinimalOas2Path);
+      resources = await getHttpOperationsFromFile(noRefsPetstoreMinimalOas2Path);
     });
 
     describe('path is invalid', () => {
@@ -365,12 +365,12 @@ describe('Http Client .request', () => {
   });
 
   it('loads spec provided in yaml', () => {
-    return expect(getHttpOperations(petStoreOas2Path)).resolves.toHaveLength(3);
+    return expect(getHttpOperationsFromFile(petStoreOas2Path)).resolves.toHaveLength(3);
   });
 
   it('returns stringified static example when one defined in spec', async () => {
     prism = createInstance({ mock: { dynamic: false }, validateRequest: true, validateResponse: true }, { logger });
-    resources = await getHttpOperations(staticExamplesOas2Path);
+    resources = await getHttpOperationsFromFile(staticExamplesOas2Path);
 
     const response = await prism.request(
       {
