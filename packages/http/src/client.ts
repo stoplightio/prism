@@ -59,14 +59,38 @@ const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string)
 
   return {
     request,
-    get: (url, input, config) => request(url, { method: 'get', ...input }, config),
-    put: (url, body, input, config) => request(url, { method: 'put', ...input, body }, config),
-    post: (url, body, input, config) => request(url, { method: 'post', ...input, body }, config),
-    delete: (url, input, config) => request(url, { method: 'delete', ...input }, config),
-    options: (url, input, config) => request(url, { method: 'options', ...input }, config),
-    head: (url, input, config) => request(url, { method: 'head', ...input }, config),
-    patch: (url, body, input, config) => request(url, { method: 'patch', ...input, body }, config),
-    trace: (url, input, config) => request(url, { method: 'trace', ...input }, config),
+    get: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+      input && 'headers' in input
+        ? request(url, { method: 'get', ...input }, config)
+        : request(url, { method: 'get' }, config),
+    put: (url: string, body: unknown, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+      input && 'headers' in input
+        ? request(url, { method: 'put', ...input, body }, config)
+        : request(url, { method: 'put', body }, config),
+    post: (url: string, body: unknown, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+      input && 'headers' in input
+        ? request(url, { method: 'post', ...input, body }, config)
+        : request(url, { method: 'post', body }, config),
+    delete: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+      input && 'headers' in input
+        ? request(url, { method: 'delete', ...input }, config)
+        : request(url, { method: 'delete' }, config),
+    options: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+      input && 'headers' in input
+        ? request(url, { method: 'options', ...input }, config)
+        : request(url, { method: 'options' }, config),
+    head: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+      input && 'headers' in input
+        ? request(url, { method: 'head', ...input }, config)
+        : request(url, { method: 'head' }, config),
+    patch: (url: string, body: unknown, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+      input && 'headers' in input
+        ? request(url, { method: 'patch', ...input, body }, config)
+        : request(url, { method: 'patch', body }, config),
+    trace: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+      input && 'headers' in input
+        ? request(url, { method: 'trace', ...input }, config)
+        : request(url, { method: 'trace' }, config),
   };
 };
 
@@ -82,29 +106,26 @@ type PrismOutput = {
 
 type RequestFunction = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IHttpConfig) => Promise<PrismOutput>;
 
-type RequestFunctionWithVerb = (
-  url: string,
-  input: Pick<IHttpRequest, 'headers'>,
-  config?: IHttpConfig,
-) => Promise<PrismOutput>;
+interface IRequestFunctionWithVerb {
+  (url: string, input: Pick<IHttpRequest, 'headers'>, config?: IHttpConfig): Promise<PrismOutput>;
+  (url: string, config?: IHttpConfig): Promise<PrismOutput>;
+}
 
-type RequestFunctionWithVerbWithBody = (
-  url: string,
-  body: unknown,
-  input: Pick<IHttpRequest, 'headers'>,
-  config?: IHttpConfig,
-) => Promise<PrismOutput>;
+interface IRequestFunctionWithVerbWithBody {
+  (url: string, body: unknown, input: Pick<IHttpRequest, 'headers'>, config?: IHttpConfig): Promise<PrismOutput>;
+  (url: string, body: unknown, config?: IHttpConfig): Promise<PrismOutput>;
+}
 
 export type PrismHttp = {
   request: RequestFunction;
-  get: RequestFunctionWithVerb;
-  put: RequestFunctionWithVerbWithBody;
-  post: RequestFunctionWithVerbWithBody;
-  delete: RequestFunctionWithVerb;
-  options: RequestFunctionWithVerb;
-  head: RequestFunctionWithVerb;
-  patch: RequestFunctionWithVerbWithBody;
-  trace: RequestFunctionWithVerb;
+  get: IRequestFunctionWithVerb;
+  put: IRequestFunctionWithVerbWithBody;
+  post: IRequestFunctionWithVerbWithBody;
+  delete: IRequestFunctionWithVerb;
+  options: IRequestFunctionWithVerb;
+  head: IRequestFunctionWithVerb;
+  patch: IRequestFunctionWithVerbWithBody;
+  trace: IRequestFunctionWithVerb;
 };
 
 export default createNewClientInstance;
