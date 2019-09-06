@@ -1,5 +1,5 @@
 import { createLogger } from '@stoplight/prism-core';
-import { createInstance, IHttpConfig, IHttpMethod, ProblemJsonError, TPrismHttpInstance } from '@stoplight/prism-http';
+import { createInstance, IHttpConfig, IHttpMethod, PrismHttpInstance, ProblemJsonError } from '@stoplight/prism-http';
 import { IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 // @ts-ignore
@@ -81,7 +81,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     listen: (port: number, ...args: any[]) => server.listen(port, ...args),
   };
 
-  function replyHandler(prismInstance: TPrismHttpInstance): fastify.RequestHandler<IncomingMessage, ServerResponse> {
+  function replyHandler(prismInstance: PrismHttpInstance): fastify.RequestHandler<IncomingMessage, ServerResponse> {
     return async (request, reply) => {
       const {
         req: { method, url },

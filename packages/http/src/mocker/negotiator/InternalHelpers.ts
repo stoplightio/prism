@@ -1,8 +1,7 @@
-import { PickRequired } from '@stoplight/prism-core';
 import { IHttpContent, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 // @ts-ignore
 import * as accepts from 'accepts';
-import { ContentExample, NonEmptyArray } from '../../';
+import { ContentExample, NonEmptyArray, PickRequired } from '../../';
 
 export type IWithExampleMediaContent = IMediaTypeContent & { examples: NonEmptyArray<ContentExample> };
 
