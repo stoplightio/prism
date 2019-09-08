@@ -106,26 +106,26 @@ type PrismOutput = {
 
 type RequestFunction = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IHttpConfig) => Promise<PrismOutput>;
 
-interface IRequestFunctionWithVerb {
+interface IRequestFunctionWithMethod {
   (url: string, input: Pick<IHttpRequest, 'headers'>, config?: IHttpConfig): Promise<PrismOutput>;
   (url: string, config?: IHttpConfig): Promise<PrismOutput>;
 }
 
-interface IRequestFunctionWithVerbWithBody {
+interface IRequestFunctionWithMethodWithBody {
   (url: string, body: unknown, input: Pick<IHttpRequest, 'headers'>, config?: IHttpConfig): Promise<PrismOutput>;
   (url: string, body: unknown, config?: IHttpConfig): Promise<PrismOutput>;
 }
 
 export type PrismHttp = {
   request: RequestFunction;
-  get: IRequestFunctionWithVerb;
-  put: IRequestFunctionWithVerbWithBody;
-  post: IRequestFunctionWithVerbWithBody;
-  delete: IRequestFunctionWithVerb;
-  options: IRequestFunctionWithVerb;
-  head: IRequestFunctionWithVerb;
-  patch: IRequestFunctionWithVerbWithBody;
-  trace: IRequestFunctionWithVerb;
+  get: IRequestFunctionWithMethod;
+  put: IRequestFunctionWithMethodWithBody;
+  post: IRequestFunctionWithMethodWithBody;
+  delete: IRequestFunctionWithMethod;
+  options: IRequestFunctionWithMethod;
+  head: IRequestFunctionWithMethod;
+  patch: IRequestFunctionWithMethodWithBody;
+  trace: IRequestFunctionWithMethod;
 };
 
 export default createNewClientInstance;
