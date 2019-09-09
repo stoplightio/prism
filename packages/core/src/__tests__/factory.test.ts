@@ -43,5 +43,15 @@ describe('validation', () => {
       test('should not call the relative other function', () =>
         expect(validator[reverseFnName]).not.toHaveBeenCalled());
     });
+
+    describe('when disabled', () => {
+      beforeAll(() => prismInstance.request('', []));
+      afterEach(() => jest.clearAllMocks());
+      afterAll(() => jest.restoreAllMocks());
+
+      test('should not call the relative validate function', () => expect(validator[fnName]).not.toHaveBeenCalled());
+      test('should not call the relative other function', () =>
+        expect(validator[reverseFnName]).not.toHaveBeenCalled());
+    });
   });
 });
