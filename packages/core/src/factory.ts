@@ -94,7 +94,11 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             );
           }
 
-          return TaskEither.left(new Error('Nor forwarder nor mocker has been selected. Something is wrong'));
+          return TaskEither.left(
+            new Error(
+              'Something is TERRIBLY wrong here. Neither forwarder or mocker has been selected, and this should never happen',
+            ),
+          );
         }),
         TaskEither.map(({ output, resource }) => {
           let outputValidations: IPrismDiagnostic[] = [];
