@@ -33,13 +33,23 @@ describe('validation', () => {
       beforeAll(async () => {
         const obj: any = {};
         obj[fieldType] = true;
-        await prismInstance.request('', [], obj);
+        await prismInstance.process('', [], obj);
       });
 
       afterEach(() => jest.clearAllMocks());
       afterAll(() => jest.restoreAllMocks());
 
       test('should call the relative validate function', () => expect(validator[fnName]).toHaveBeenCalled());
+      test('should not call the relative other function', () =>
+        expect(validator[reverseFnName]).not.toHaveBeenCalled());
+    });
+
+    describe('when disabled', () => {
+      beforeAll(() => prismInstance.process('', []));
+      afterEach(() => jest.clearAllMocks());
+      afterAll(() => jest.restoreAllMocks());
+
+      test('should not call the relative validate function', () => expect(validator[fnName]).not.toHaveBeenCalled());
       test('should not call the relative other function', () =>
         expect(validator[reverseFnName]).not.toHaveBeenCalled());
     });
