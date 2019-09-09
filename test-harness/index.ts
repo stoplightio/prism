@@ -54,7 +54,7 @@ describe('harness', () => {
             windowsVerbatimArguments: false,
           });
           const output: any = parseResponse(clientCommandHandle.stdout.trim());
-          const expected: any = parseResponse(parsed.expect.trim() || parsed.expectLoose.trim());
+          const expected: any = parseResponse((parsed.expect || parsed.expectLoose).trim());
 
           try {
             const isValid = validate(expected, output).valid;
