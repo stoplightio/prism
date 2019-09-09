@@ -1,6 +1,7 @@
 import { IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
 
+import { none } from 'fp-ts/lib/Option';
 import { IHttpRequest, IHttpResponse } from '../../types';
 
 export const httpOperations: IHttpOperation[] = [
@@ -311,9 +312,11 @@ export const httpRequests: Array<IPrismInput<IHttpRequest>> = [
 export const httpOutputs: IHttpResponse[] = [
   {
     statusCode: 200,
+    statusText: none,
   },
   {
     statusCode: 200,
+    statusText: none,
     headers: {
       'x-todos-publish': '2018-11-01T11:42:00.05Z',
     },

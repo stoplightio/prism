@@ -7,6 +7,9 @@ Object {
     "Content-type": "application/xml",
   },
   "statusCode": 200,
+  "statusText": Object {
+    "_tag": "None",
+  },
 }
 `;
 
@@ -23,6 +26,9 @@ Object {
     "Content-type": "application/json",
   },
   "statusCode": 200,
+  "statusText": Object {
+    "_tag": "None",
+  },
 }
 `;
 
@@ -33,6 +39,9 @@ Object {
     "Content-type": "application/xml",
   },
   "statusCode": 201,
+  "statusText": Object {
+    "_tag": "None",
+  },
 }
 `;
 
@@ -43,6 +52,9 @@ Object {
     "Content-type": "application/xml",
   },
   "statusCode": 201,
+  "statusText": Object {
+    "_tag": "None",
+  },
 }
 `;
 
@@ -53,6 +65,9 @@ Object {
     "Content-type": "application/json",
   },
   "statusCode": 201,
+  "statusText": Object {
+    "_tag": "None",
+  },
 }
 `;
 
@@ -63,6 +78,9 @@ Object {
     "Content-type": "application/json",
   },
   "statusCode": 201,
+  "statusText": Object {
+    "_tag": "None",
+  },
 }
 `;
 
@@ -73,5 +91,8 @@ Object {
     "Content-type": "text/plain",
   },
   "statusCode": 200,
+  "statusText": Object {
+    "_tag": "None",
+  },
 }
 `;

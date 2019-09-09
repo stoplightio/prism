@@ -13,5 +13,9 @@ Content-Disposition: form-data; name=\\"test\\"
   },
   "responseType": "",
   "statusCode": 200,
+  "statusText": Object {
+    "_tag": "Some",
+    "value": "ok",
+  },
 }
 `;

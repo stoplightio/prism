@@ -3,6 +3,7 @@ import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INode
 
 import * as caseless from 'caseless';
 import { Either, map } from 'fp-ts/lib/Either';
+import { none } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import { mapLeft } from 'fp-ts/lib/ReaderEither';
@@ -121,6 +122,7 @@ function assembleResponse(
 
         const response: IHttpResponse = {
           statusCode: parseInt(negotiationResult.code),
+          statusText: none,
           headers: {
             ...mockedHeaders,
             'Content-type': negotiationResult.mediaType,

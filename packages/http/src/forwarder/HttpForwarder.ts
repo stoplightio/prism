@@ -2,6 +2,7 @@ import { IForwarder, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
 import axios, { CancelToken } from 'axios';
 import { toError } from 'fp-ts/lib/Either';
+import { some } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Task from 'fp-ts/lib/Task';
 import { fold, TaskEither, tryCatch } from 'fp-ts/lib/TaskEither';
@@ -56,6 +57,7 @@ export class HttpForwarder implements IForwarder<IHttpOperation, IHttpRequest, I
 
       return {
         statusCode: response.status,
+        statusText: some(response.statusText),
         headers: response.headers,
         body: response.data,
         responseType: (response.request && response.request.responseType) || '',

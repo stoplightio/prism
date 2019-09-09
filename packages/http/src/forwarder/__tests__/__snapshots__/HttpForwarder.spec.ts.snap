@@ -8,6 +8,10 @@ Object {
   },
   "responseType": "",
   "statusCode": 200,
+  "statusText": Object {
+    "_tag": "Some",
+    "value": "ok",
+  },
 }
 `;
 

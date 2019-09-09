@@ -32,7 +32,7 @@ describe('User Http Client', () => {
           require.resolve('../../../../examples/petstore.oas2.yaml'),
         );
 
-        response = await client.get('/pet/10', {});
+        response = await client.get('/pet/10');
       });
 
       test('should not call the mocker', () => expect(mocker.mock).not.toHaveBeenCalled());

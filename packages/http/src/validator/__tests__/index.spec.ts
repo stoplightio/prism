@@ -1,5 +1,6 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
+import { some } from 'fp-ts/lib/Option';
 import { IHttpNameValue, IHttpNameValues } from '../../types';
 import { IHttpRequest } from '../../types';
 import { HttpValidator } from '../index';
@@ -173,8 +174,8 @@ describe('HttpValidator', () => {
     });
 
     describe('output is set', () => {
-      it('validates the body and headers', async () => {
-        await expect(
+      it('validates the body and headers', () => {
+        expect(
           httpValidator.validateOutput({
             resource: {
               method: 'get',
@@ -183,7 +184,7 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            output: { statusCode: 200 },
+            output: { statusCode: 200, statusText: some('ok') },
             config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
         ).toHaveLength(2);
