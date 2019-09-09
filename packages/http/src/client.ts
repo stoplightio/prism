@@ -1,4 +1,5 @@
 import { IPrismOutput } from '@stoplight/prism-core';
+import { IHttpOperation } from '@stoplight/types';
 // @ts-ignore
 import logger from 'abstract-logging';
 import { getOrElse } from 'fp-ts/lib/Option';
@@ -8,13 +9,23 @@ import { parse as parseQueryString } from 'querystring';
 import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
 import { forwarder } from './forwarder';
-import { getHttpOperationsFromFile } from './getHttpOperations';
+import getHttpOperations, { getHttpOperationsFromFile } from './getHttpOperations';
 import { mocker } from './mocker';
 import { router } from './router';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { validator } from './validator';
 
-const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string): Promise<PrismHttp> => {
+async function createNewClientInstanceFromFile(defaultConfig: IHttpConfig, specFile: string): Promise<PrismHttp> {
+  const resources = await getHttpOperationsFromFile(specFile);
+  return createNewClientFromOperations(defaultConfig, resources);
+}
+
+async function createNewClientInstanceFromString(defaultConfig: IHttpConfig, spec: string): Promise<PrismHttp> {
+  const resources = await getHttpOperations(spec);
+  return createNewClientFromOperations(defaultConfig, resources);
+}
+
+function createNewClientFromOperations(defaultConfig: IHttpConfig, resources: IHttpOperation[]) {
   const obj = createInstance(defaultConfig, {
     logger,
     router,
@@ -22,8 +33,6 @@ const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string)
     validator,
     mocker,
   });
-
-  const resources = await getHttpOperationsFromFile(spec);
 
   const request: RequestFunction = async (url, input, config) => {
     const parsedUrl = parseUrl(url);
@@ -89,7 +98,7 @@ const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string)
     trace: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
       isInput(input) ? request(url, { method: 'trace', ...input }, config) : request(url, { method: 'trace' }, input),
   };
-};
+}
 
 type PrismOutput = {
   status: IHttpResponse['statusCode'];
@@ -125,4 +134,4 @@ export type PrismHttp = {
   trace: IRequestFunctionWithMethod;
 };
 
-export default createNewClientInstance;
+export { createNewClientInstanceFromFile, createNewClientInstanceFromString, createNewClientFromOperations };

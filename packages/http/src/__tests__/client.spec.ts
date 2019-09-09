@@ -1,5 +1,5 @@
 import * as nock from 'nock';
-import createNewClientInstance, { PrismHttp } from '../client';
+import { createNewClientInstanceFromFile, PrismHttp } from '../client';
 import { forwarder } from '../forwarder';
 import { mocker } from '../mocker';
 
@@ -27,7 +27,7 @@ describe('User Http Client', () => {
             },
           });
 
-        const client = await createNewClientInstance(
+        const client = await createNewClientInstanceFromFile(
           { mock: false, validateRequest: true, validateResponse: true },
           require.resolve('../../../../examples/petstore.oas2.yaml'),
         );
@@ -42,7 +42,7 @@ describe('User Http Client', () => {
         expect(response.validations.output.length).toBeGreaterThan(0));
 
       test('should have output validations errors', async () => {
-        const client = await createNewClientInstance(
+        const client = await createNewClientInstanceFromFile(
           { mock: false, validateRequest: true, validateResponse: true },
           require.resolve('../../../../examples/petstore.oas2.yaml'),
         );
