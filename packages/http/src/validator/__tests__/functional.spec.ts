@@ -69,7 +69,6 @@ describe('HttpValidator', () => {
                 api_Key: 'ha',
               },
             },
-            config: defaultConfig,
           }),
         ).toEqual([]);
       });
@@ -81,7 +80,6 @@ describe('HttpValidator', () => {
           validator.validateInput({
             resource: httpOperations[2],
             input: BAD_INPUT,
-            config: defaultConfig,
           }),
         ).toContainEqual({
           code: 'pattern',
@@ -91,36 +89,12 @@ describe('HttpValidator', () => {
         });
       });
     });
-
-    describe('all validations are turned off', () => {
-      it('returns no validation errors', async () => {
-        expect(
-          await validator.validateInput({
-            resource: httpOperations[2],
-            input: BAD_INPUT,
-            config: Object.assign(defaultConfig, { validateRequest: false }),
-          }),
-        ).toMatchSnapshot();
-      });
-    });
   });
 
   describe('validateOutput()', () => {
     describe('all validations are turned on', () => {
       it('returns validation errors for whole request structure', async () => {
         expect(await validator.validateOutput({ resource: httpOperations[1], output: BAD_OUTPUT })).toMatchSnapshot();
-      });
-    });
-
-    describe('all validations are turned off', () => {
-      it('returns no validation errors', async () => {
-        expect(
-          await validator.validateOutput({
-            resource: httpOperations[1],
-            output: BAD_OUTPUT,
-            config: Object.assign(defaultConfig, { validateResponse: false }),
-          }),
-        ).toMatchSnapshot();
       });
     });
   });

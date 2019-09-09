@@ -43,7 +43,6 @@ describe('HttpValidator', () => {
               resourceExtension,
             ),
             input: { method: 'get', url: { path: '/' } },
-            config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
         ).toHaveLength(errorsNumber);
       };
@@ -95,7 +94,6 @@ describe('HttpValidator', () => {
             resourceExtension,
           ),
           input: { method: 'get', url: { path: '/' } },
-          config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
         }),
       ).toHaveLength(length);
     };
@@ -124,7 +122,6 @@ describe('HttpValidator', () => {
             resourceExtension,
           ),
           input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
-          config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
         }),
       ).toHaveLength(length);
 
@@ -153,8 +150,8 @@ describe('HttpValidator', () => {
   });
 
   describe('validateOutput()', () => {
-    describe('output is not set', () => {
-      it('omits validation', () => {
+    describe('output is set', () => {
+      it('validates the body and headers', () => {
         expect(
           httpValidator.validateOutput({
             resource: {
@@ -164,27 +161,7 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
-          }),
-        ).toHaveLength(0);
-
-        expect(httpBodyValidator.validate).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('output is set', () => {
-      it('validates the body and headers', async () => {
-        await expect(
-          httpValidator.validateOutput({
-            resource: {
-              method: 'get',
-              path: '/',
-              id: '1',
-              request: {},
-              responses: [{ code: '200' }],
-            },
             output: { statusCode: 200 },
-            config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
           }),
         ).toHaveLength(2);
 
