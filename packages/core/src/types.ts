@@ -40,13 +40,21 @@ export interface IValidator<Resource, Input, Config, Output> {
   validateOutput?: (opts: { resource: Resource; output?: Output; config?: Config }) => IPrismDiagnostic[];
 }
 
-export interface IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> {
+type MockerOrForwarder<Resource, Input, Output, Config extends IPrismConfig> =
+  | {
+      forwarder?: IForwarder<Resource, Input, Config, Output>;
+      mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;
+    }
+  | {
+      forwarder: IForwarder<Resource, Input, Config, Output>;
+      mocker?: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;
+    };
+
+export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   router: IRouter<Resource, Input, Config>;
-  forwarder: IForwarder<Resource, Input, Config, Output>;
-  mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;
   validator: IValidator<Resource, Input, Config, Output>;
   logger: Logger;
-}
+} & MockerOrForwarder<Resource, Input, Output, Config>;
 
 export interface IPrismInput<I> {
   data: I;
@@ -56,8 +64,8 @@ export interface IPrismInput<I> {
 }
 
 export interface IPrismOutput<I, O> {
-  input?: I;
-  output?: O;
+  input: I;
+  output: O;
   validations: {
     input: IPrismDiagnostic[];
     output: IPrismDiagnostic[];
@@ -70,8 +78,6 @@ export type ProblemJson = {
   status: number;
   detail: string;
 };
-
-export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
 export class ProblemJsonError extends Error {
   public static fromTemplate(template: Omit<ProblemJson, 'detail'>, detail?: string): ProblemJsonError {
