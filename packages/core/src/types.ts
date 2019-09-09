@@ -35,9 +35,9 @@ export interface IMockerOpts<Resource, Input, Config> {
   config?: Config;
 }
 
-export interface IValidator<Resource, Input, Config, Output> {
-  validateInput?: (opts: { resource: Resource; input: Input; config?: Config }) => IPrismDiagnostic[];
-  validateOutput?: (opts: { resource: Resource; output?: Output; config?: Config }) => IPrismDiagnostic[];
+export interface IValidator<Resource, Input, Output> {
+  validateInput?: (opts: { resource: Resource; input: Input }) => IPrismDiagnostic[];
+  validateOutput?: (opts: { resource: Resource; output: Output }) => IPrismDiagnostic[];
 }
 
 type MockerOrForwarder<Resource, Input, Output, Config extends IPrismConfig> =
@@ -52,7 +52,7 @@ type MockerOrForwarder<Resource, Input, Output, Config extends IPrismConfig> =
 
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   router: IRouter<Resource, Input, Config>;
-  validator: IValidator<Resource, Input, Config, Output>;
+  validator: IValidator<Resource, Input, Output>;
   logger: Logger;
 } & MockerOrForwarder<Resource, Input, Output, Config>;
 

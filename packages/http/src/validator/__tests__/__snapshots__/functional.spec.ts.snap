@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`HttpValidator validateInput() all validations are turned off returns no validation errors 1`] = `Array []`;
-
 exports[`HttpValidator validateInput() all validations are turned on returns validation errors for whole request structure 1`] = `
 Array [
   Object {
@@ -32,8 +30,6 @@ Array [
   },
 ]
 `;
-
-exports[`HttpValidator validateOutput() all validations are turned off returns no validation errors 1`] = `Array []`;
 
 exports[`HttpValidator validateOutput() all validations are turned on returns validation errors for whole request structure 1`] = `
 Array [
