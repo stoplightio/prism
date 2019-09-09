@@ -44,7 +44,7 @@ const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string)
       config,
     );
 
-    const o: PrismOutput = {
+    const output: PrismOutput = {
       status: data.output.statusCode,
       statusText: getStatusText(data.output.statusCode),
       headers: data.output.headers || {},
@@ -54,7 +54,7 @@ const createNewClientInstance = async (defaultConfig: IHttpConfig, spec: string)
       validations: data.validations,
     };
 
-    return o;
+    return output;
   };
 
   return {
