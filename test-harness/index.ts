@@ -4,10 +4,11 @@ import { validate } from 'gavel';
 import * as globFs from 'glob-fs';
 import { parseResponse } from 'http-string-parser';
 import * as os from 'os';
+import { get } from 'lodash';
 import * as path from 'path';
 import * as split2 from 'split2';
 import * as tmp from 'tmp';
-import { parseSpecFile } from './helpers';
+import { parseSpecFile, xmlValidator } from './helpers';
 
 const glob = globFs({ gitignore: true });
 jest.setTimeout(5000);
@@ -54,23 +55,47 @@ describe('harness', () => {
             windowsVerbatimArguments: false,
           });
           const output: any = parseResponse(clientCommandHandle.stdout.trim());
-          const expected: any = parseResponse(parsed.expect.trim() || parsed.expectLoose.trim());
+          const expected: any = parseResponse((parsed.expect || parsed.expectLoose).trim());
+
+          const isXml = xmlValidator.test(
+            get(output, ['header', 'content-type'], ''),
+            expected.body
+          );
 
           try {
+            if (isXml) {
+              return xmlValidator.validate(expected, output).then(res => {
+                expect(res).toStrictEqual([]);
+                delete expected.body;
+                delete output.body;
+
+                const isValid = validate(expected, output).valid;
+                expect(isValid).toBeTruthy();
+
+                return shutdownPrism(prismMockProcessHandle, done);
+              });
+            }
+
             const isValid = validate(expected, output).valid;
-            if (!!isValid) expect(validate(expected, output).valid).toBeTruthy();
-            else {
+
+            if (!!isValid) {
+              expect(isValid).toBeTruthy();
+            } else {
               expect(output).toMatchObject(expected);
             }
+
             if (parsed.expect) expect(output.body).toMatch(expected.body);
           } catch (e) {
-            prismMockProcessHandle.kill();
-            return prismMockProcessHandle.on('exit', () => done(e));
+            return shutdownPrism(prismMockProcessHandle, done);
           }
-          prismMockProcessHandle.kill();
-          prismMockProcessHandle.on('exit', done);
+          shutdownPrism(prismMockProcessHandle, done);
         }
       });
     });
   });
 });
+
+function shutdownPrism(processHandle: ChildProcess, done: Function) {
+  processHandle.kill();
+  return processHandle.on('exit', () => done());
+}

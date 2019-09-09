@@ -1,3 +1,30 @@
+import { Dictionary } from '@stoplight/types/dist';
+import * as xmlDiff from 'diff-js-xml';
+import * as parser from 'fast-xml-parser';
+import * as typeIs from 'type-is';
+
+type Result = { body: string; headers: Dictionary<string, string> };
+
+export const xmlValidator = {
+  test: (contentType: string, content: string) => {
+    const doesContentTypeMatch = !!typeIs.is(contentType, [
+      'application/xml',
+      'application/*+xml',
+      'text/xml',
+    ]);
+    const isContentXML = parser.validate(content) === true;
+
+    return doesContentTypeMatch || isContentXML;
+  },
+  validate: (expected: Result, output: Result) => {
+    return new Promise(res =>
+      xmlDiff.diffAsXml(expected.body, output.body, {}, { compareElementValues: false }, result =>
+        res(result)
+      )
+    );
+  },
+};
+
 export function parseSpecFile(spec: string) {
   const regex = /====(server|test|spec|command|expect|expect-loose)====\r?\n/gi;
   const splitted = spec.split(regex);

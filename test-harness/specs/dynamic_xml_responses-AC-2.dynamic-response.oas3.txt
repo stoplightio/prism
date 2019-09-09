@@ -1,0 +1,31 @@
+====test====
+A dynamic XML response can be generated from the schema when "application/xml" Accept header is provided
+and a dynamic response is forced.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        "200":
+          description: Get Todo Items
+          content:
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  priority:
+                    type: integer
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/todos?__dynamic=true -H "accept: application/xml"
+====expect-loose====
+HTTP/1.1 200 OK
+
+<xml><title>enim</title><description>id dolore</description><priority>90439782</priority></xml>
+

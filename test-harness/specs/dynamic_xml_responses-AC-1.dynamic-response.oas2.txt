@@ -1,0 +1,31 @@
+====test====
+A dynamic XML response can be generated from the schema when "application/xml" Accept header is provided
+and Prism is started in dynamic mode.
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      produces:
+        - application/xml
+      responses:
+        200:
+          description: Get Todo Items
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              description:
+                type: string
+              priority:
+                type: integer
+====server====
+mock -d -p 4010
+====command====
+curl -i http://localhost:4010/todos -H "accept: application/xml"
+====expect-loose====
+HTTP/1.1 200 OK
+
+<xml><title>enim</title><description>id dolore</description><priority>90439782</priority></xml>
+

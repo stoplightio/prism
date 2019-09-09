@@ -39,6 +39,7 @@
     "@types/split2": "^2.1.6",
     "@types/type-is": "^1.6.3",
     "chance": "^1.0.18",
+    "diff-js-xml": "^1.0.5",
     "gavel": "^8.0.3",
     "glob-fs": "^0.1.7",
     "http-string-parser": "^0.0.6",
