@@ -1,0 +1,34 @@
+openapi: 3.0.0
+info:
+  title: Example API
+  version: '1.0'
+  contact:
+    name: Bear
+    url: 'https://bear.dojo'
+    email: pooh@bear.dojo
+  termsOfService: 'https://bear.dojo/terms'
+  description: The Bear Dojo API
+paths:
+  /honey:
+    get:
+      summary: Get Raw Honey
+      responses:
+        '200':
+          description: 'Success, found the bears can have some honey.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  honey:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      species:
+                        type: string
+                        example: killer bees
+                required:
+                - honey
+      description: Get some raw honey.
+      operationId: getRawHoney
