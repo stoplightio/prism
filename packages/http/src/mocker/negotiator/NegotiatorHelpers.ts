@@ -260,7 +260,7 @@ const helpers = {
       chain(response =>
         withLogger(logger => {
           if (!response) {
-            return left(new Error('No 422, 400, or default responses defined'));
+            return left(new Error('No 401, 403, 422, 400 or default responses defined'));
           }
 
           // find first response with any static examples

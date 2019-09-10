@@ -202,7 +202,7 @@ describe('NegotiatorHelpers', () => {
 
       test('should return an error', () => {
         assertLeft(helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger), error =>
-          expect(error).toHaveProperty('message', 'No 422, 400, or default responses defined'),
+          expect(error).toHaveProperty('message', 'No 401, 403, 422, 400 or default responses defined'),
         );
       });
     });
