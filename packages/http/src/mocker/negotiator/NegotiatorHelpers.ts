@@ -1,7 +1,14 @@
-import { Either, left, map, right } from 'fp-ts/lib/Either';
+import { chain as echain, Either, fromOption as EitherFromOption, left, map, right } from 'fp-ts/lib/Either';
+import { alt, map as omap, Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
-import { left as releft, mapLeft, orElse, ReaderEither } from 'fp-ts/lib/ReaderEither';
+import {
+  chain as rechain,
+  fromOption as ReaderEitherfromOption,
+  mapLeft,
+  orElse,
+  ReaderEither,
+} from 'fp-ts/lib/ReaderEither';
 import { Logger } from 'pino';
 
 import { ProblemJsonError } from '@stoplight/prism-core';
@@ -175,12 +182,13 @@ const helpers = {
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
   ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
-    const lowest2xxResponse = findLowest2xx(httpOperation.responses);
-    if (lowest2xxResponse) {
-      return helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, lowest2xxResponse);
-    }
-
-    return releft(new Error('No 2** response defined, cannot mock'));
+    return pipe(
+      findLowest2xx(httpOperation.responses),
+      ReaderEitherfromOption(() => new Error('No 2** response defined, cannot mock')),
+      rechain(lowest2xxResponse =>
+        helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, lowest2xxResponse),
+      ),
+    );
   },
 
   negotiateOptionsBySpecificCode(
@@ -199,27 +207,25 @@ const helpers = {
 
         return result;
       }),
-      chain(responseByForcedStatusCode => {
-        if (responseByForcedStatusCode) {
-          return pipe(
-            helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, responseByForcedStatusCode),
-            orElse(() =>
-              pipe(
-                helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions),
-                mapLeft(error => new Error(`${error}. We tried default response, but we got ${error}`)),
+      chain(responseByForcedStatusCode =>
+        pipe(
+          responseByForcedStatusCode,
+          ReaderEitherfromOption(() =>
+            ProblemJsonError.fromTemplate(NOT_FOUND, `Requested status code ${code} is not defined in the document.`),
+          ),
+          rechain(response =>
+            pipe(
+              helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, response),
+              orElse(() =>
+                pipe(
+                  helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions),
+                  mapLeft(error => new Error(`${error}. We tried default response, but we got ${error}`)),
+                ),
               ),
             ),
-          );
-        }
-
-        return withLogger(logger => {
-          logger.trace(`Unable to find default response to construct a ${code} response`);
-          // if no response found under a status code throw an error
-          return left(
-            ProblemJsonError.fromTemplate(NOT_FOUND, `Requested status code ${code} is not defined in the document.`),
-          );
-        });
-      }),
+          ),
+        ),
+      ),
     );
   },
 
@@ -234,29 +240,34 @@ const helpers = {
     return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
-  findResponse(httpResponses: IHttpOperationResponse[]): Reader<Logger, IHttpOperationResponse | undefined> {
-    return withLogger<IHttpOperationResponse | undefined>(logger => {
-      let result = findResponseByStatusCode(httpResponses, '422');
-      if (!result) {
-        logger.trace('Unable to find a 422 response definition');
-
-        result = findResponseByStatusCode(httpResponses, '400');
-        if (!result) {
+  findResponse(httpResponses: IHttpOperationResponse[]): Reader<Logger, Option<IHttpOperationResponse>> {
+    return withLogger<Option<IHttpOperationResponse>>(logger =>
+      pipe(
+        findResponseByStatusCode(httpResponses, '422'),
+        alt(() => {
+          logger.trace('Unable to find a 422 response definition');
+          return findResponseByStatusCode(httpResponses, '400');
+        }),
+        alt(() => {
           logger.trace('Unable to find a 400 response definition.');
-          const response =
-            findResponseByStatusCode(httpResponses, '401') ||
-            findResponseByStatusCode(httpResponses, '403') ||
-            createResponseFromDefault(httpResponses, '422');
-          if (response) {
-            logger.success(`Created a ${response.code} from a default response`);
-          }
+          return findResponseByStatusCode(httpResponses, '401');
+        }),
+        alt(() => findResponseByStatusCode(httpResponses, '403')),
+        alt(() =>
+          pipe(
+            createResponseFromDefault(httpResponses, '422'),
+            omap(response => {
+              logger.success(`Created a ${response.code} from a default response`);
+              return response;
+            }),
+          ),
+        ),
+        omap(response => {
+          logger.success(`Found response ${response.code}. I'll try with it.`);
           return response;
-        }
-      }
-
-      logger.success(`Found response ${result.code}. I'll try with it.`);
-      return result;
-    });
+        }),
+      ),
+    );
   },
 
   negotiateOptionsForInvalidRequest(
@@ -265,41 +276,42 @@ const helpers = {
     return pipe(
       helpers.findResponse(httpResponses),
       chain(response =>
-        withLogger(logger => {
-          if (!response) {
-            logger.trace('Unable to find a default response definition.');
-            return left(new Error('No 422, 400, or default responses defined'));
-          }
+        withLogger(logger =>
+          pipe(
+            response,
+            EitherFromOption(() => new Error('No 422, 400, or default responses defined')),
+            echain(response => {
+              // find first response with any static examples
+              const contentWithExamples = response.contents && response.contents.find(contentHasExamples);
 
-          // find first response with any static examples
-          const contentWithExamples = response.contents && response.contents.find(contentHasExamples);
-
-          if (contentWithExamples) {
-            logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
-            return right({
-              code: response.code,
-              mediaType: contentWithExamples.mediaType,
-              bodyExample: contentWithExamples.examples[0],
-              headers: response.headers || [],
-            });
-          } else {
-            logger.trace(`Unable to find a content with an example defined for the response ${response.code}`);
-            // find first response with a schema
-            const responseWithSchema = response.contents && response.contents.find(content => !!content.schema);
-            if (responseWithSchema) {
-              logger.success(`The response ${response.code} has a schema. I'll keep going with this one`);
-              return right({
-                code: response.code,
-                mediaType: responseWithSchema.mediaType,
-                schema: responseWithSchema.schema,
-                headers: response.headers || [],
-              });
-            } else {
-              logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
-              return left(new Error(`Neither schema nor example defined for ${response.code} response.`));
-            }
-          }
-        }),
+              if (contentWithExamples) {
+                logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
+                return right({
+                  code: response.code,
+                  mediaType: contentWithExamples.mediaType,
+                  bodyExample: contentWithExamples.examples[0],
+                  headers: response.headers || [],
+                });
+              } else {
+                logger.trace(`Unable to find a content with an example defined for the response ${response.code}`);
+                // find first response with a schema
+                const responseWithSchema = response.contents && response.contents.find(content => !!content.schema);
+                if (responseWithSchema) {
+                  logger.success(`The response ${response.code} has a schema. I'll keep going with this one`);
+                  return right({
+                    code: response.code,
+                    mediaType: responseWithSchema.mediaType,
+                    schema: responseWithSchema.schema,
+                    headers: response.headers || [],
+                  });
+                } else {
+                  logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
+                  return left(new Error(`Neither schema nor example defined for ${response.code} response.`));
+                }
+              }
+            }),
+          ),
+        ),
       ),
     );
   },
