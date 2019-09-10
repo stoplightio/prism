@@ -3,6 +3,7 @@ import { IHttpOperation } from '@stoplight/types';
 // @ts-ignore
 import logger from 'abstract-logging';
 import { getOrElse } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { getStatusText } from 'http-status-codes';
 import { defaults } from 'lodash';
 import { parse as parseQueryString } from 'querystring';
@@ -56,7 +57,10 @@ function createNewClientFromOperations(defaultConfig: IHttpConfig, resources: IH
 
     const output: PrismOutput = {
       status: data.output.statusCode,
-      statusText: getOrElse(() => getStatusText(data.output.statusCode))(data.output.statusText),
+      statusText: pipe(
+        data.output.statusText,
+        getOrElse(() => getStatusText(data.output.statusCode)),
+      ),
       headers: data.output.headers || {},
       data: data.output.body || {},
       config: defaults(config, defaultConfig),
