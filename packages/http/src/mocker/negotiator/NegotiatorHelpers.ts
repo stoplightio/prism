@@ -1,4 +1,5 @@
 import { Either, left, map, right } from 'fp-ts/lib/Either';
+import { fold } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import { left as releft, mapLeft, orElse, ReaderEither } from 'fp-ts/lib/ReaderEither';
@@ -19,6 +20,7 @@ import {
   findResponseByStatusCode,
   hasContents,
 } from './InternalHelpers';
+import matchResponse from './responseFinder';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
 const helpers = {
@@ -236,26 +238,17 @@ const helpers = {
 
   findResponse(httpResponses: IHttpOperationResponse[]): Reader<Logger, IHttpOperationResponse | undefined> {
     return withLogger<IHttpOperationResponse | undefined>(logger => {
-      let result = findResponseByStatusCode(httpResponses, '422');
-      if (!result) {
-        logger.trace('Unable to find a 422 response definition');
+      return pipe(
+        matchResponse(httpResponses, logger),
+        fold(
+          () => undefined,
+          result => {
+            logger.success(`Found response ${result.code}. I'll try with it.`);
 
-        result = findResponseByStatusCode(httpResponses, '400');
-        if (!result) {
-          logger.trace('Unable to find a 400 response definition.');
-          const response =
-            findResponseByStatusCode(httpResponses, '401') ||
-            findResponseByStatusCode(httpResponses, '403') ||
-            createResponseFromDefault(httpResponses, '422');
-          if (response) {
-            logger.success(`Created a ${response.code} from a default response`);
-          }
-          return response;
-        }
-      }
-
-      logger.success(`Found response ${result.code}. I'll try with it.`);
-      return result;
+            return result;
+          },
+        ),
+      );
     });
   },
 
@@ -267,7 +260,6 @@ const helpers = {
       chain(response =>
         withLogger(logger => {
           if (!response) {
-            logger.trace('Unable to find a default response definition.');
             return left(new Error('No 422, 400, or default responses defined'));
           }
 
