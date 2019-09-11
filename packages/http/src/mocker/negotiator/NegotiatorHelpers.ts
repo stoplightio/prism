@@ -1,5 +1,5 @@
 import { chain as echain, Either, fromOption as EitherFromOption, left, map, right } from 'fp-ts/lib/Either';
-import { alt, map as omap, Option } from 'fp-ts/lib/Option';
+import { alt, fold, map as omap, none, Option } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import {
@@ -93,38 +93,43 @@ const helpers = {
     response: IHttpOperationResponse,
   ): Either<Error, IHttpNegotiationResult> {
     const { code, dynamic, exampleKey } = partialOptions;
-    const httpContent =
-      hasContents(response) &&
-      (findDefaultContentType(response) || findBestHttpContentByMediaType(response, ['application/json']));
+    const httpContent = hasContents(response)
+      ? pipe(
+          findDefaultContentType(response),
+          alt(() => findBestHttpContentByMediaType(response, ['application/json'])),
+        )
+      : none;
 
-    if (httpContent) {
-      // a httpContent for default mediaType exists
-      return pipe(
-        helpers.negotiateByPartialOptionsAndHttpContent(
-          {
+    return pipe(
+      httpContent,
+      fold(
+        () =>
+          right<Error, IHttpNegotiationResult>({
             code,
-            dynamic,
-            exampleKey,
-          },
-          httpContent,
-        ),
-        map(contentNegotiationResult => ({
-          headers: response.headers || [],
-          ...contentNegotiationResult,
-        })),
-      );
-    } else {
-      // no httpContent found, returning empty body
-      return right({
-        code,
-        mediaType: 'text/plain',
-        bodyExample: {
-          value: undefined,
-          key: 'default',
-        },
-        headers: response.headers || [],
-      });
-    }
+            mediaType: 'text/plain',
+            bodyExample: {
+              value: undefined,
+              key: 'default',
+            },
+            headers: response.headers || [],
+          }),
+        content =>
+          pipe(
+            helpers.negotiateByPartialOptionsAndHttpContent(
+              {
+                code,
+                dynamic,
+                exampleKey,
+              },
+              content,
+            ),
+            map(contentNegotiationResult => ({
+              headers: response.headers || [],
+              ...contentNegotiationResult,
+            })),
+          ),
+      ),
+    );
   },
 
   negotiateOptionsBySpecificResponse(
