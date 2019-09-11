@@ -108,7 +108,7 @@ Prism is using TypeScript's incremental compiler capability that sometimes does 
 
 ```sh
 rm -rf packages/**/dist
-rm -rf packages/**/.tsbuildinfo
+rm -rf packages/**/*.tsbuildinfo
 ```
 
 …then try again. If it does not work, you can generally blame [Vincenzo](https://github.com/XVincentX) and write him.
