@@ -1,8 +1,9 @@
 import { IHttpContent, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 // @ts-ignore
 import * as accepts from 'accepts';
-import { filter, findFirst, head } from 'fp-ts/lib/Array';
+import { filter, findFirst, head, sort } from 'fp-ts/lib/Array';
 import { alt, map, Option } from 'fp-ts/lib/Option';
+import { ord, ordNumber } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { ContentExample, NonEmptyArray, PickRequired } from '../../';
 
@@ -45,6 +46,8 @@ export function findDefaultContentType(
   );
 }
 
+const byResponseCode = ord.contramap<number, IHttpOperationResponse>(ordNumber, response => parseInt(response.code));
+
 export function findLowest2xx(httpResponses: IHttpOperationResponse[]): Option<IHttpOperationResponse> {
   const generic2xxResponse = pipe(
     findResponseByStatusCode(httpResponses, '2XX'),
@@ -54,7 +57,7 @@ export function findLowest2xx(httpResponses: IHttpOperationResponse[]): Option<I
   const first2xxResponse = pipe(
     httpResponses,
     filter(response => /2\d\d/.test(response.code)),
-    // sort
+    sort(byResponseCode),
     head,
   );
 
