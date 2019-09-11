@@ -6,7 +6,7 @@ import { Either, map } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import { mapLeft } from 'fp-ts/lib/ReaderEither';
-import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
+import { identity, isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import { Logger } from 'pino';
 import {
   ContentExample,
@@ -59,7 +59,17 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
     chain(() =>
       pipe(
-        helpers.negotiateOptionsForInvalidRequest(resource.responses),
+        helpers.negotiateOptionsForInvalidRequest(
+          resource.responses,
+          [
+            input.validations.input.find(
+              inputValidation => inputValidation.code === 401 || inputValidation.code === 403,
+            ),
+          ]
+            .filter(identity)
+            .map(securityValidation => (securityValidation as { code: number }).code)
+            .concat([422, 400]),
+        ),
         mapLeft(() => {
           const securityValidation = input.validations.input.find(i => i.code === 401 || i.code === 403);
 

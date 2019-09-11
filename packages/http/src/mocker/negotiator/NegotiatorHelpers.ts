@@ -236,10 +236,13 @@ const helpers = {
     return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
-  findResponse(httpResponses: IHttpOperationResponse[]): Reader<Logger, IHttpOperationResponse | undefined> {
+  findResponse(
+    httpResponses: IHttpOperationResponse[],
+    order: number[],
+  ): Reader<Logger, IHttpOperationResponse | undefined> {
     return withLogger<IHttpOperationResponse | undefined>(logger => {
       return pipe(
-        matchResponse(httpResponses, logger),
+        matchResponse(httpResponses, logger, order),
         fold(
           () => undefined,
           result => {
@@ -254,9 +257,10 @@ const helpers = {
 
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
+    order: number[],
   ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      helpers.findResponse(httpResponses),
+      helpers.findResponse(httpResponses, order),
       chain(response =>
         withLogger(logger => {
           if (!response) {
