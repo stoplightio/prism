@@ -32,7 +32,7 @@ export function findBestHttpContentByMediaType(
 
   return pipe(
     response.contents,
-    findFirst<IMediaTypeContent>(content => content.mediaType === bestType),
+    findFirst(content => content.mediaType === bestType),
   );
 }
 
@@ -41,7 +41,7 @@ export function findDefaultContentType(
 ): Option<IMediaTypeContent> {
   return pipe(
     response.contents,
-    findFirst<IMediaTypeContent>(content => content.mediaType === '*/*'),
+    findFirst(content => content.mediaType === '*/*'),
   );
 }
 
@@ -70,7 +70,7 @@ export function findResponseByStatusCode(
 ): Option<IHttpOperationResponse> {
   return pipe(
     responses,
-    findFirst<IHttpOperationResponse>(response => response.code.toLowerCase() === statusCode.toLowerCase()),
+    findFirst(response => response.code.toLowerCase() === statusCode.toLowerCase()),
   );
 }
 
@@ -80,7 +80,7 @@ export function createResponseFromDefault(
 ): Option<IHttpOperationResponse> {
   return pipe(
     responses,
-    findFirst<IHttpOperationResponse>(response => response.code === 'default'),
+    findFirst(response => response.code === 'default'),
     map(response => Object.assign({}, response, { code: statusCode })),
   );
 }
