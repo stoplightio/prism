@@ -85,12 +85,12 @@ describe('harness', () => {
             } else {
               expect(output).toMatchObject(expected);
             }
-
-            if (parsed.expect) expect(output.body).toMatch(expected.body);
-          } catch (e) {
-            return shutdownPrism(prismMockProcessHandle, done);
+            if (parsed.expect) {
+              expect(output.body).toStrictEqual(expected.body);
+            }
+          } finally {
+            shutdownPrism(prismMockProcessHandle, done);
           }
-          shutdownPrism(prismMockProcessHandle, done);
         }
       });
     });
