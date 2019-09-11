@@ -213,13 +213,13 @@ const helpers = {
     // find response by provided status code
     return pipe(
       withLogger(logger => {
-        const result = findResponseByStatusCode(httpOperation.responses, code);
-        if (!result) {
-          logger.info(`Unable to find a ${code} response definition`);
-          return createResponseFromDefault(httpOperation.responses, code);
-        }
-
-        return result;
+        return pipe(
+          findResponseByStatusCode(httpOperation.responses, code),
+          alt(() => {
+            logger.info(`Unable to find a ${code} response definition`);
+            return createResponseFromDefault(httpOperation.responses, code);
+          }),
+        );
       }),
       chain(responseByForcedStatusCode =>
         pipe(
