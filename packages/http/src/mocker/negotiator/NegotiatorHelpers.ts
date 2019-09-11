@@ -143,30 +143,39 @@ const helpers = {
     return withLogger(logger => {
       if (mediaTypes) {
         // a user provided mediaType
-        const httpContent = hasContents(response) && findBestHttpContentByMediaType(response, mediaTypes);
-        if (httpContent) {
-          logger.success(`Found a compatible content for ${mediaTypes}`);
-          // a httpContent for a provided mediaType exists
-          return pipe(
-            helpers.negotiateByPartialOptionsAndHttpContent(
-              {
-                code,
-                dynamic,
-                exampleKey,
-              },
-              httpContent,
-            ),
-            map(contentNegotiationResult => ({
-              headers: headers || [],
-              ...contentNegotiationResult,
-              mediaType:
-                contentNegotiationResult.mediaType === '*/*' ? 'text/plain' : contentNegotiationResult.mediaType,
-            })),
-          );
-        } else {
-          logger.warn(`Unable to find a content for ${mediaTypes}`);
-          return left(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`));
-        }
+        const httpContent = hasContents(response) ? findBestHttpContentByMediaType(response, mediaTypes) : none;
+
+        return pipe(
+          httpContent,
+          fold(
+            () => {
+              logger.warn(`Unable to find a content for ${mediaTypes}`);
+              return left<Error, IHttpNegotiationResult>(
+                ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
+              );
+            },
+            content => {
+              logger.success(`Found a compatible content for ${mediaTypes}`);
+              // a httpContent for a provided mediaType exists
+              return pipe(
+                helpers.negotiateByPartialOptionsAndHttpContent(
+                  {
+                    code,
+                    dynamic,
+                    exampleKey,
+                  },
+                  content,
+                ),
+                map(contentNegotiationResult => ({
+                  headers: headers || [],
+                  ...contentNegotiationResult,
+                  mediaType:
+                    contentNegotiationResult.mediaType === '*/*' ? 'text/plain' : contentNegotiationResult.mediaType,
+                })),
+              );
+            },
+          ),
+        );
       }
       // user did not provide mediaType
       // OR
@@ -280,10 +289,10 @@ const helpers = {
   ): ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
       helpers.findResponse(httpResponses),
-      chain(response =>
+      chain(foundResponse =>
         withLogger(logger =>
           pipe(
-            response,
+            foundResponse,
             EitherFromOption(() => new Error('No 422, 400, or default responses defined')),
             echain(response => {
               // find first response with any static examples
