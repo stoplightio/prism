@@ -53,7 +53,7 @@ export function findLowest2xx(httpResponses: IHttpOperationResponse[]): Option<I
 
   const first2xxResponse = pipe(
     httpResponses,
-    filter(response => !!response.code.match(/2\d\d/)),
+    filter(response => /2\d\d/.test(response.code)),
     // sort
     head,
   );
