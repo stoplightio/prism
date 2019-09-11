@@ -1,11 +1,11 @@
+import { ProblemJsonError } from '@stoplight/prism-core';
+import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import { Either, left, map, right } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import { left as releft, mapLeft, orElse, ReaderEither } from 'fp-ts/lib/ReaderEither';
+import { get } from 'lodash';
 import { Logger } from 'pino';
-
-import { ProblemJsonError } from '@stoplight/prism-core';
-import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import withLogger from '../../withLogger';
 import { NOT_ACCEPTABLE, NOT_FOUND } from '../errors';
 import {
@@ -153,7 +153,16 @@ const helpers = {
           );
         } else {
           logger.warn(`Unable to find a content for ${mediaTypes}`);
-          return left(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`));
+
+          if (_httpOperation.method === 'head') {
+            return right({
+              code: response.code,
+              mediaType: get(mediaTypes, '0', '*/*'),
+              headers: response.headers || [],
+            });
+          } else {
+            return left(ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`));
+          }
         }
       }
       // user did not provide mediaType
