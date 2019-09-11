@@ -41,7 +41,9 @@ describe('harness', () => {
 
     afterAll(() => tmpFileHandle.removeCallback(undefined, undefined, undefined, undefined));
 
-    test(`${file}${os.EOL}${parsed.test}`, done => {
+    const testText = `${file}${os.EOL}${parsed.test}`;
+
+    test(testText, done => {
       const [command, ...args] = parsed.command.split(' ').map(t => t.trim());
       const serverArgs = [...parsed.server.split(' ').map(t => t.trim()), tmpFileHandle.name];
 
@@ -83,19 +85,19 @@ describe('harness', () => {
             } else {
               expect(output).toMatchObject(expected);
             }
-
-            if (parsed.expect) expect(output.body).toMatch(expected.body);
-          } catch (e) {
-            return shutdownPrism(prismMockProcessHandle, done);
+            if (parsed.expect) {
+              expect(output.body).toStrictEqual(expected.body);
+            }
+          } finally {
+            shutdownPrism(prismMockProcessHandle, done);
           }
-          shutdownPrism(prismMockProcessHandle, done);
         }
       });
     });
   });
 });
 
-function shutdownPrism(processHandle: ChildProcess, done: Function) {
+function shutdownPrism(processHandle: ChildProcess, done: jest.DoneCallback) {
   processHandle.kill();
-  return processHandle.on('exit', () => done());
+  return processHandle.on('exit', done);
 }
