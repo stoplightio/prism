@@ -142,7 +142,9 @@ describe('NegotiatorHelpers', () => {
             ])
             .instance();
 
-          const negotiationResult = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, [422, 400])(logger);
+          const negotiationResult = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, [422, 400])(
+            logger,
+          );
 
           assertLeft(negotiationResult, e =>
             expect(e.message).toBe('Neither schema nor example defined for 422 response.'),
