@@ -1,0 +1,21 @@
+====test====
+Sending multiple values in Accept header selects the first one matched.
+====spec====
+openapi: 3.0.2
+paths:
+  /check-email:
+    get:
+      responses:
+        "204":
+          description: OK, the email is available
+          content:
+            application/json:
+              schema:
+                nullable: true
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/check-email -H "Accept: application/json, text/plain, */*"
+====expect====
+HTTP/1.1 204 No Content
+content-type: application/json; charset=utf-8

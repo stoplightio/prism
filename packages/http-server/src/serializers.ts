@@ -13,6 +13,13 @@ export default [
   },
   {
     regex: {
+      test: (value: string) => !!typeIs.is(value, ['application/json']),
+      toString: () => 'application/json',
+    },
+    serializer: JSON.stringify,
+  },
+  {
+    regex: {
       test: (value: string) => !!typeIs.is(value, ['application/xml', 'application/*+xml']),
       toString: () => 'application/*+xml',
     },
