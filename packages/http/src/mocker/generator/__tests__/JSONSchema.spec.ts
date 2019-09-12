@@ -77,5 +77,263 @@ describe('JSONSchema generator', () => {
 
       return expect(generate(schema)).toBeTruthy();
     });
+
+    describe('multiple properties', () => {
+      describe('no required properties specified', () => {
+        it('generates all of the properties', () => {
+          const schema: JSONSchema = {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              abc: { type: 'string' },
+              xyz: { type: 'string' },
+            },
+          };
+
+          const instance = generate(schema);
+
+          expect(instance).toHaveProperty('name');
+          expect(instance).toHaveProperty('abc');
+          expect(instance).toHaveProperty('xyz');
+        });
+      });
+
+      describe('with required properties specified', () => {
+        it('generates all of the properties', () => {
+          const schema: JSONSchema = {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              abc: { type: 'string' },
+              xyz: { type: 'string' },
+            },
+            required: ['name', 'abc'],
+          };
+
+          const instance = generate(schema);
+
+          expect(instance).toHaveProperty('name');
+          expect(instance).toHaveProperty('abc');
+          expect(instance).toHaveProperty('xyz');
+        });
+      });
+    });
+
+    describe('allOf', () => {
+      describe('no required properties specified in any of the 2 allOfs', () => {
+        it('generates all of the properties', () => {
+          const schema: JSONSchema = {
+            type: 'object',
+            allOf: [
+              {
+                properties: {
+                  name: {
+                    type: 'string',
+                  },
+                },
+              },
+              {
+                properties: {
+                  color: {
+                    type: 'string',
+                  },
+                },
+              },
+            ],
+          };
+
+          const instance = generate(schema);
+
+          expect(instance).toHaveProperty('name');
+          expect(instance).toHaveProperty('color');
+        });
+      });
+
+      describe('with required properties specified for the 2 of the 2 allOfs', () => {
+        it('generates all of the properties', () => {
+          const schema: JSONSchema = {
+            type: 'object',
+            allOf: [
+              {
+                required: ['name', 'length'],
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                  },
+                  length: {
+                    type: 'integer',
+                  },
+                },
+              },
+              {
+                required: ['color'],
+                type: 'object',
+                properties: {
+                  color: {
+                    type: 'string',
+                  },
+                },
+              },
+            ],
+          };
+
+          const instance = generate(schema);
+
+          expect(instance).toHaveProperty('name');
+          expect(instance).toHaveProperty('length');
+          expect(instance).toHaveProperty('color');
+        });
+      });
+
+      describe('with required properties specified in 1 of the 2 allOfs', () => {
+        it('generates all of the properties', () => {
+          const schema: JSONSchema = {
+            type: 'object',
+            allOf: [
+              {
+                required: ['name', 'length'],
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                  },
+                  length: {
+                    type: 'integer',
+                  },
+                },
+              },
+              {
+                type: 'object',
+                properties: {
+                  color: {
+                    type: 'string',
+                  },
+                },
+              },
+            ],
+          };
+
+          const instance = generate(schema);
+
+          expect(instance).toHaveProperty('name');
+          expect(instance).toHaveProperty('length');
+          expect(instance).toHaveProperty('color');
+        });
+      });
+    });
+
+    describe('oneOf', () => {
+      describe('no required properties specified in any of the 2 oneOfs', () => {
+        it('generates all of the properties', () => {
+          const schema: JSONSchema = {
+            type: 'object',
+            oneOf: [
+              {
+                type: 'object',
+                properties: {
+                  color: {
+                    type: 'string',
+                  },
+                },
+              },
+              {
+                type: 'object',
+                properties: {
+                  age: {
+                    type: 'integer',
+                  },
+                },
+              },
+            ],
+          };
+
+          const instance = generate(schema);
+
+          try {
+            expect(instance).toHaveProperty('color');
+          } catch (e) {
+            expect(instance).toHaveProperty('age');
+          }
+        });
+      });
+
+      describe('with required properties specified in 1 of the 2 oneOfs', () => {
+        it('generates proper properties', () => {
+          const schema: JSONSchema = {
+            type: 'object',
+            oneOf: [
+              {
+                required: ['name'],
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                  },
+                  color: {
+                    type: 'string',
+                  },
+                },
+              },
+              {
+                type: 'object',
+                properties: {
+                  age: {
+                    type: 'integer',
+                  },
+                },
+              },
+            ],
+          };
+
+          const instance = generate(schema);
+
+          if ((instance as any).name) {
+            expect(instance).toHaveProperty('color');
+          } else {
+            expect(instance).toHaveProperty('age');
+          }
+        });
+      });
+
+      describe('with required properties specified in the 2 of the 2 oneOfs', () => {
+        it('generates proper properties', () => {
+          const schema: JSONSchema = {
+            type: 'object',
+            oneOf: [
+              {
+                required: ['name'],
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                  },
+                  color: {
+                    type: 'string',
+                  },
+                },
+              },
+              {
+                required: ['age'],
+                type: 'object',
+                properties: {
+                  age: {
+                    type: 'integer',
+                  },
+                },
+              },
+            ],
+          };
+
+          const instance = generate(schema);
+
+          if ((instance as any).name) {
+            expect(instance).toHaveProperty('color');
+          } else {
+            expect(instance).toHaveProperty('age');
+          }
+        });
+      });
+    });
   });
 });

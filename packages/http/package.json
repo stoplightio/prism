@@ -22,6 +22,7 @@
     "ajv-oai": "^1.0.0",
     "axios": "^0.18.0",
     "caseless": "^0.12.0",
+    "deep-cleaner": "^1.2.1",
     "faker": "^4.1.0",
     "fp-ts": "^2.0.5",
     "json-schema-faker": "json-schema-faker/json-schema-faker",

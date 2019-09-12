@@ -7,6 +7,8 @@ import * as jsf from 'json-schema-faker';
 // @ts-ignore
 import * as sampler from 'openapi-sampler';
 
+const dc = require('deep-cleaner');
+
 jsf.extend('faker', () => faker);
 
 jsf.option({
@@ -21,7 +23,7 @@ jsf.option({
 });
 
 export function generate(source: JSONSchema): unknown {
-  return jsf.generate(cloneDeep(source));
+  return jsf.generate(dc(cloneDeep(source), 'required'));
 }
 
 export function generateStatic(source: JSONSchema): unknown {
