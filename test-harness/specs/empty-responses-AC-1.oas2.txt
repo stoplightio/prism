@@ -1,0 +1,16 @@
+====test====
+Prism is able to respond with an empty response.
+====spec====
+swagger: "2.0"
+paths:
+  /path:
+    get:
+      responses:
+        '204':
+          description: No Content
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/path
+====expect====
+HTTP/1.1 204 No Content

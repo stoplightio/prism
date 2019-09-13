@@ -525,26 +525,61 @@ describe('NegotiatorHelpers', () => {
         });
       });
 
-      it('and httpContent not exist should throw an error', () => {
-        const desiredOptions: NegotiationOptions = {
-          mediaTypes: [chance.string()],
-          dynamic: chance.bool(),
-          exampleKey: chance.string(),
-        };
+      describe('httpContent does not exist', () => {
+        it('returns an empty payload response', () => {
+          const desiredOptions: NegotiationOptions = {
+            dynamic: false,
+            mediaTypes: ['*/*'],
+          };
 
-        const httpResponseSchema: IHttpOperationResponse = {
-          code: chance.integer({ min: 100, max: 599 }).toString(),
-          contents: [],
-          headers: [],
-        };
+          const httpResponseSchema: IHttpOperationResponse = {
+            code: '200',
+            contents: [],
+          };
 
-        const actualResponse = helpers.negotiateOptionsBySpecificResponse(
-          httpOperation,
-          desiredOptions,
-          httpResponseSchema,
-        )(logger);
+          const actualResponse = helpers.negotiateOptionsBySpecificResponse(
+            { ...httpOperation, responses: [{ code: '200', contents: [{ mediaType: 'text/plain ' }] }] },
+            desiredOptions,
+            httpResponseSchema,
+          )(logger);
 
-        expect(Either.isLeft(actualResponse)).toBeTruthy();
+          assertRight(actualResponse, abc => {
+            expect(abc).not.toHaveProperty('bodyExample');
+            expect(abc).not.toHaveProperty('schema');
+
+            expect(abc).toHaveProperty('code');
+            expect(abc).toHaveProperty('headers');
+            expect(abc).toHaveProperty('mediaType');
+          });
+        });
+      });
+
+      describe('the content-type from Accept header cannot be matched', () => {
+        it('returns 406', () => {
+          const desiredOptions: NegotiationOptions = {
+            dynamic: false,
+            mediaTypes: ['application/json'],
+          };
+
+          const httpResponseSchema: IHttpOperationResponse = {
+            code: '200',
+            contents: [
+              {
+                mediaType: 'text/plain',
+              },
+            ],
+          };
+
+          const actualResponse = helpers.negotiateOptionsBySpecificResponse(
+            { ...httpOperation, responses: [{ code: '200', contents: [{ mediaType: 'text/plain ' }] }] },
+            desiredOptions,
+            httpResponseSchema,
+          )(logger);
+
+          assertLeft(actualResponse, e =>
+            expect(e.message).toBe('The server cannot produce a representation for your accept header'),
+          );
+        });
       });
     });
 
