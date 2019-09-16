@@ -1,6 +1,8 @@
 import { IHttpOperationResponse } from '@stoplight/types';
-import { none, Option, some } from 'fp-ts/lib/Option';
-import { head, tail } from 'lodash';
+import { head } from 'fp-ts/lib/Array';
+import { flatten, fold, none, Option, some } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { tail } from 'lodash';
 import { Logger } from 'pino';
 import { createResponseFromDefault, findResponseByStatusCode } from './InternalHelpers';
 
@@ -14,21 +16,25 @@ export default function matchResponse(
   logger: Logger,
   order: number[] = matchingOrder,
 ): Option<IHttpOperationResponse> {
-  const possibleMatch = order.length && head(order);
+  return pipe(
+    head(order),
+    fold(
+      () => flatten(tryToFindDefaultResponse(httpResponses, logger)),
+      possibleMatch => {
+        return pipe(
+          findResponseByStatusCode(httpResponses, `${possibleMatch}`),
+          fold(
+            () => {
+              logger.trace(msg(possibleMatch));
 
-  if (!!possibleMatch) {
-    const matchedResponse = findResponseByStatusCode(httpResponses, `${possibleMatch}`);
-
-    if (!!matchedResponse) {
-      return some(matchedResponse);
-    } else {
-      logger.trace(msg(possibleMatch));
-
-      return matchResponse(httpResponses, logger, tail(order));
-    }
-  } else {
-    return tryToFindDefaultResponse(httpResponses, logger);
-  }
+              return matchResponse(httpResponses, logger, tail(order));
+            },
+            matchedResponse => some(matchedResponse),
+          ),
+        );
+      },
+    ),
+  );
 }
 
 function tryToFindDefaultResponse(httpResponses: IHttpOperationResponse[], logger: Logger) {

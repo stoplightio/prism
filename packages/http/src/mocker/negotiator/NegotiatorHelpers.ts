@@ -20,6 +20,7 @@ import {
   findResponseByStatusCode,
   hasContents,
 } from './InternalHelpers';
+import matchResponse from './responseFinder';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
 const helpers = {
@@ -248,46 +249,33 @@ const helpers = {
     return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
-  findResponse(httpResponses: IHttpOperationResponse[]): Reader.Reader<Logger, Option.Option<IHttpOperationResponse>> {
-    return withLogger<Option.Option<IHttpOperationResponse>>(logger =>
-      pipe(
-        findResponseByStatusCode(httpResponses, '422'),
-        Option.alt(() => {
-          logger.trace('Unable to find a 422 response definition');
-          return findResponseByStatusCode(httpResponses, '400');
+  findResponse(
+    httpResponses: IHttpOperationResponse[],
+    order: number[],
+  ): Reader.Reader<Logger, Option.Option<IHttpOperationResponse>> {
+    return withLogger<Option.Option<IHttpOperationResponse>>(logger => {
+      return pipe(
+        matchResponse(httpResponses, logger, order),
+        Option.map(result => {
+          logger.success(`Found response ${result.code}. I'll try with it.`);
+
+          return result;
         }),
-        Option.alt(() => {
-          logger.trace('Unable to find a 400 response definition.');
-          return findResponseByStatusCode(httpResponses, '401');
-        }),
-        Option.alt(() => findResponseByStatusCode(httpResponses, '403')),
-        Option.alt(() =>
-          pipe(
-            createResponseFromDefault(httpResponses, '422'),
-            Option.map(response => {
-              logger.success(`Created a ${response.code} from a default response`);
-              return response;
-            }),
-          ),
-        ),
-        Option.map(response => {
-          logger.success(`Found response ${response.code}. I'll try with it.`);
-          return response;
-        }),
-      ),
-    );
+      );
+    });
   },
 
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
+    order: number[],
   ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      helpers.findResponse(httpResponses),
+      helpers.findResponse(httpResponses, order),
       Reader.chain(foundResponse =>
         withLogger(logger =>
           pipe(
             foundResponse,
-            Either.fromOption(() => new Error('No 422, 400, or default responses defined')),
+            Either.fromOption(() => new Error('No 401, 403, 422, 400 or default responses defined')),
             Either.chain(response => {
               // find first response with any static examples
               const contentWithExamples = response.contents && response.contents.find(contentHasExamples);
