@@ -3160,10 +3160,10 @@ fast-redact@^1.4.4:
   resolved "https://registry.yarnpkg.com/fast-redact/-/fast-redact-1.5.0.tgz#302892f566750c4f5eec7b830bfc9bc473484034"
   integrity sha512-Afo61CgUjkzdvOKDHn08qnZ0kwck38AOGcMlvSGzvJbIab6soAP5rdoQayecGCDsD69AiF9vJBXyq31eoEO2tQ==
 
-fast-safe-stringify@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.6.tgz#04b26106cc56681f51a044cfc0d76cf0008ac2c2"
-  integrity sha512-q8BZ89jjc+mz08rSxROs8VsrBBcn1SIw1kq9NjolL509tkABRk9io01RAjSaEv1Xb2uFLt8VtRiZbGp5H8iDtg==
+fast-safe-stringify@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.7.tgz#124aa885899261f68aedb42a7c080de9da608743"
+  integrity sha512-Utm6CdzT+6xsDk2m8S6uL8VHxNwI6Jub+e9NYTcAms28T84pTa25GJQV9j0CY0N1rM8hK4x6grpF2BQf+2qwVA==
 
 fast-xml-parser@^3.12.20:
   version "3.12.20"
@@ -6605,12 +6605,12 @@ pino-std-serializers@^2.3.0:
   integrity sha512-v/JglhO0aFcvkMV9VUxhgyuJo8K1si857Ww86Tx8H2cjC/kp0ndzzcF6Vbxr4RgKFYJdHfLVpEuD55znMZuxnw==
 
 pino@^5.13.2:
-  version "5.13.2"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-5.13.2.tgz#773416c9764634276e7b2ae021357679ff7b5634"
-  integrity sha512-WwOSCy36/gWhinsqWqAnuwIi2WtcH+jvoyeLm3bjUALIrzWIst0AovQjK4jVvSN2l64KFPfi3gd2fjsTovjdLQ==
+  version "5.13.3"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-5.13.3.tgz#26cd6f69b4bd03d6408af28eddcd9313687f143d"
+  integrity sha512-FL12DKlPwBlbhztlUz6kseR03PRR8nD+wvLdN/Sji9UiBYYfSjX+k8ocU7/NwW55JdFRONTn3iACoelXnMFVVQ==
   dependencies:
     fast-redact "^1.4.4"
-    fast-safe-stringify "^2.0.6"
+    fast-safe-stringify "^2.0.7"
     flatstr "^1.0.9"
     pino-std-serializers "^2.3.0"
     quick-format-unescaped "^3.0.2"
