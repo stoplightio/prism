@@ -1,0 +1,31 @@
+====test====
+A defined 401 response is returned when security validation is not passed.
+====spec====
+swagger: "2.0"
+paths:
+  /users:
+    get:
+      description: returns users
+      responses:
+        200:
+          description: ok
+        401:
+          $ref: '#/responses/InvalidAuthorization'
+responses:
+  InvalidAuthorization:
+    description: InvalidAuthorization
+    examples:
+      '*/*': abc
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/users
+====expect====
+HTTP/1.1 401 Unauthorized
+
+abc
