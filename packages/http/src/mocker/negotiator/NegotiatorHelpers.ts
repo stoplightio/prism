@@ -1,12 +1,12 @@
+import { ProblemJsonError } from '@stoplight/prism-core';
+import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Reader from 'fp-ts/lib/Reader';
 import * as ReaderEither from 'fp-ts/lib/ReaderEither';
+import { get } from 'lodash';
 import { Logger } from 'pino';
-
-import { ProblemJsonError } from '@stoplight/prism-core';
-import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import withLogger from '../../withLogger';
 import { NOT_ACCEPTABLE, NOT_FOUND } from '../errors';
 import {
@@ -144,9 +144,18 @@ const helpers = {
           Option.fold(
             () => {
               logger.warn(`Unable to find a content for ${mediaTypes}`);
-              return Either.left<Error, IHttpNegotiationResult>(
-                ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
-              );
+
+              if (_httpOperation.method === 'head') {
+                return Either.right({
+                  code: response.code,
+                  mediaType: get(mediaTypes, '0', '*/*'),
+                  headers: response.headers || [],
+                });
+              } else {
+                return Either.left(
+                  ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
+                );
+              }
             },
             content => {
               logger.success(`Found a compatible content for ${mediaTypes}`);
