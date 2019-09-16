@@ -89,7 +89,7 @@ describe('JSONSchema generator', () => {
       });
     });
 
-    describe('when example value is set', () => {
+    describe('when examples are set', () => {
       it('uses it instead of generating one', () => {
         const schema: JSONSchema = {
           type: 'string',
@@ -97,6 +97,22 @@ describe('JSONSchema generator', () => {
         };
 
         expect(generate(schema)).toEqual('a-string-which-is-hard-to-be-randomly-generated-although-who-knows?');
+      });
+    });
+
+    describe('when default value and examples are set', () => {
+      it('uses either default value or examples', () => {
+        const schema: JSONSchema = {
+          type: 'string',
+          examples: ['an-examples-string-which-is-hard-to-be-randomly-generated-although-who-knows?'],
+          default: 'a-default-string-which-is-hard-to-be-randomly-generated-although-who-knows?',
+        };
+
+        expect(generate(schema)).toEqual(
+          expect.stringMatching(
+            /^a(n-examples|-default)-string-which-is-hard-to-be-randomly-generated-although-who-knows\?$/,
+          ),
+        );
       });
     });
   });
