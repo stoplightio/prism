@@ -313,8 +313,11 @@ const helpers = {
                     headers: response.headers || [],
                   });
                 } else {
-                  logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
-                  return Either.left(new Error(`Neither schema nor example defined for ${response.code} response.`));
+                  return Either.right({
+                    code: response.code,
+                    mediaType: 'text/plain',
+                    headers: response.headers || [],
+                  });
                 }
               }
             }),

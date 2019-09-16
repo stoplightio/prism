@@ -25,6 +25,10 @@ export default [
         return data;
       }
 
+      if (typeof data === 'undefined') {
+        return '';
+      }
+
       throw Object.assign(new Error('Cannot serialise complex objects as text/plain'), {
         detail: 'Cannot serialise complex objects as text/plain',
         status: 500,
