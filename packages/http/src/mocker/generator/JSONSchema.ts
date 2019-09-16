@@ -18,6 +18,8 @@ jsf.option({
   ignoreMissingRefs: true,
   maxItems: 20,
   maxLength: 100,
+  useDefaultValue: true,
+  useExamplesValue: true,
 });
 
 export function generate(source: JSONSchema): unknown {

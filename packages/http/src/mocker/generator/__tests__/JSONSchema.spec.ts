@@ -77,5 +77,27 @@ describe('JSONSchema generator', () => {
 
       return expect(generate(schema)).toBeTruthy();
     });
+
+    describe('when default value is set', () => {
+      it('uses it instead of generating one', () => {
+        const schema: JSONSchema = {
+          type: 'string',
+          default: 'a-string-which-is-hard-to-be-randomly-generated-although-who-knows?',
+        };
+
+        expect(generate(schema)).toEqual('a-string-which-is-hard-to-be-randomly-generated-although-who-knows?');
+      });
+    });
+
+    describe('when example value is set', () => {
+      it('uses it instead of generating one', () => {
+        const schema: JSONSchema = {
+          type: 'string',
+          examples: ['a-string-which-is-hard-to-be-randomly-generated-although-who-knows?'],
+        };
+
+        expect(generate(schema)).toEqual('a-string-which-is-hard-to-be-randomly-generated-although-who-knows?');
+      });
+    });
   });
 });
