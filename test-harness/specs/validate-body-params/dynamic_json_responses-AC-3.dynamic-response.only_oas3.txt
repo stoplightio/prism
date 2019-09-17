@@ -16,30 +16,26 @@ paths:
                 discriminator:
                   propertyName: resourceType
                 oneOf:
-                  - $ref: '#/components/schemas/A'
-                  - $ref: '#/components/schemas/B'
-              A:
-                required:
-                  - resourceType
-                type: object
-                properties:
-                  resourceType:
-                    type: string
-                  name:
-                    type: string
-                  color:
-                    type: string
-              B:
-                required:
-                  - resourceType
-                type: object
-                properties:
-                  resourceType:
-                    type: string
-                  name:
-                    type: string
-                  description:
-                    type: string
+                - required:
+                    - resourceType
+                  type: object
+                  properties:
+                    resourceType:
+                      type: string
+                    name:
+                      type: string
+                    color:
+                      type: string
+                - required:
+                    - resourceType
+                  type: object
+                  properties:
+                    resourceType:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
 ====server====
 mock -p 4010 -d
 ====command====
