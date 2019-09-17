@@ -23,30 +23,27 @@ import {
 } from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
+export const warnMsg = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
+
 const whenNoContent = (
   logger: Logger,
   response: IHttpOperationResponse,
   headers: IHttpHeaderParam[],
   mediaTypes: string[],
 ) => {
-  const isContentEmpty = response.contents && response.contents.length === 0;
-  const wasAcceptHeaderLeftUnspecified = mediaTypes.filter(mt => mt !== '*/*').length === 0;
-  const warnMsg = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
+  const contents = (response.contents && response.contents.filter(c => !c.mediaType.includes('*/*'))) || [];
+  const isContentEmpty = contents.length === 0;
+  const wasAcceptHeaderLeftUnspecified = mediaTypes.filter(mt => !mt.includes('*/*')).length === 0;
 
   if (isContentEmpty && wasAcceptHeaderLeftUnspecified) {
     logger.warn(`${warnMsg(mediaTypes)}. Sending an empty response.`);
 
-    return Either.right({
+    return Option.some({
       code: response.code,
       headers,
-      mediaType: get(mediaTypes, '0', '*/*'),
     });
   } else {
-    logger.warn(warnMsg(mediaTypes));
-
-    return Either.left<Error, IHttpNegotiationResult>(
-      ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
-    );
+    return Option.none;
   }
 };
 
@@ -170,7 +167,21 @@ const helpers = {
         return pipe(
           httpContent,
           Option.fold(
-            () => whenNoContent(logger, response, headers || [], mediaTypes),
+            () => {
+              return pipe(
+                whenNoContent(logger, response, headers || [], mediaTypes),
+                Option.fold(
+                  () => {
+                    logger.warn(warnMsg(mediaTypes));
+
+                    return Either.left<Error, IHttpNegotiationResult>(
+                      ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
+                    );
+                  },
+                  r => Either.right(r),
+                ),
+              );
+            },
             content => {
               logger.success(`Found a compatible content for ${mediaTypes}`);
               // a httpContent for a provided mediaType exists
@@ -336,8 +347,25 @@ const helpers = {
                     headers: response.headers || [],
                   });
                 } else {
-                  logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
-                  return Either.left(new Error(`Neither schema nor example defined for ${response.code} response.`));
+                  return pipe(
+                    whenNoContent(
+                      logger,
+                      response,
+                      response.headers || [],
+                      get(contentWithExamples, 'mediaType', get(responseWithSchema, 'schema')) || ['*/*'],
+                    ),
+                    Option.fold(
+                      () => {
+                        logger.trace(
+                          `Unable to find a content with a schema defined for the response ${response.code}`,
+                        );
+                        return Either.left(
+                          new Error(`Neither schema nor example defined for ${response.code} response.`),
+                        );
+                      },
+                      r => Either.right(r),
+                    ),
+                  );
                 }
               }
             }),

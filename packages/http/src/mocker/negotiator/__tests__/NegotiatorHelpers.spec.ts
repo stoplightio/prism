@@ -18,6 +18,17 @@ import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 const chance = new Chance();
 const logger = createLogger('TEST', { enabled: false });
 
+const assertPayloadlessResponse = (actualResponse: Either.Either<Error, IHttpNegotiationResult>) => {
+  assertRight(actualResponse, response => {
+    expect(response).not.toHaveProperty('bodyExample');
+    expect(response).not.toHaveProperty('mediaType');
+    expect(response).not.toHaveProperty('schema');
+
+    expect(response).toHaveProperty('code');
+    expect(response).toHaveProperty('headers');
+  });
+};
+
 function anHttpOperation(givenHttpOperation?: IHttpOperation) {
   const httpOperation = givenHttpOperation || {
     method: chance.string(),
@@ -86,6 +97,22 @@ describe('NegotiatorHelpers', () => {
       });
 
       describe('and has no static contents', () => {
+        it('returns an empty payload response', () => {
+          httpOperation = anHttpOperation(httpOperation)
+            .withResponses([
+              {
+                code: actualCode,
+                headers: [],
+                contents: [],
+              },
+            ])
+            .instance();
+
+          const actualResponse = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
+
+          assertPayloadlessResponse(actualResponse);
+        });
+
         test('and has schemable contents should return first such contents', () => {
           httpOperation = anHttpOperation(httpOperation)
             .withResponses([
@@ -543,14 +570,7 @@ describe('NegotiatorHelpers', () => {
             httpResponseSchema,
           )(logger);
 
-          assertRight(actualResponse, abc => {
-            expect(abc).not.toHaveProperty('bodyExample');
-            expect(abc).not.toHaveProperty('schema');
-
-            expect(abc).toHaveProperty('code');
-            expect(abc).toHaveProperty('headers');
-            expect(abc).toHaveProperty('mediaType');
-          });
+          assertPayloadlessResponse(actualResponse);
         });
       });
 
