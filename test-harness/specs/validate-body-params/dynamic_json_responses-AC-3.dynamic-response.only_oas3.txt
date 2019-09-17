@@ -3,47 +3,47 @@ Prism generates dynamic properties for both required and not-required ones.
 ====spec====
 openapi: 3.0.2
 paths:
-	/service:
-		get:
-			description: Returns a single resource.
-			responses:
-				200:
-					description: get a resource
-					content:
-						application/json:
-							schema:
-								$ref: '#/components/schemas/Resource'
+  /service:
+    get:
+      description: Returns a single resource.
+      responses:
+        200:
+          description: get a resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
 components:
-	schemas:
-		Resource:
-			type: object
-			discriminator:
-				propertyName: resourceType
-			oneOf:
-				- $ref: '#/components/schemas/A'
-				- $ref: '#/components/schemas/B'
-		A:
-			required:
-				- resourceType
-			type: object
-			properties:
-				resourceType:
-					type: string
-				name:
-					type: string
-				color:
-					type: string
-		B:
-			required:
-				- resourceType
-			type: object
-			properties:
-				resourceType:
-					type: string
-				name:
-					type: string
-				description:
-					type: string
+  schemas:
+    Resource:
+      type: object
+      discriminator:
+        propertyName: resourceType
+      oneOf:
+        - $ref: '#/components/schemas/A'
+        - $ref: '#/components/schemas/B'
+    A:
+      required:
+        - resourceType
+      type: object
+      properties:
+        resourceType:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+    B:
+      required:
+        - resourceType
+      type: object
+      properties:
+        resourceType:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
 ====server====
 mock -p 4010 -d
 ====command====
