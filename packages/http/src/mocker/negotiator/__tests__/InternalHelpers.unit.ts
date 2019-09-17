@@ -1,3 +1,4 @@
+import { assertSome } from '@stoplight/prism-core/src/utils/__tests__/utils';
 import { findBestHttpContentByMediaType } from '../InternalHelpers';
 
 describe('InternalHelpers', () => {
@@ -9,12 +10,12 @@ describe('InternalHelpers', () => {
       };
 
       it('should respect the q parameter', () => {
-        const response = findBestHttpContentByMediaType(avaiableResponses, [
+        const possibleResponse = findBestHttpContentByMediaType(avaiableResponses, [
           'application/json;q=0.8',
           'application/xml;q=1',
         ]);
 
-        expect(response).toHaveProperty('mediaType', 'application/xml');
+        assertSome(possibleResponse, response => expect(response).toHaveProperty('mediaType', 'application/xml'));
       });
     });
   });
