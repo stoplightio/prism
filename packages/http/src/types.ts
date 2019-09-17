@@ -97,7 +97,6 @@ export class ProblemJsonError extends Error {
 }
 
 export type ContentExample = INodeExample | INodeExternalExample;
-export type NonEmptyArray<T> = T[] & { 0: T };
 export type PayloadGenerator = (f: JSONSchema) => unknown;
 
 export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
