@@ -3,8 +3,8 @@ import { Either, left, right } from 'fp-ts/lib/Either';
 import { IPrismDiagnostic } from '../../../types';
 
 const forbiddenErr: IPrismDiagnostic = {
-  code: 403,
-  message: 'Invalid credentials used',
+  code: 401,
+  message: 'Invalid security scheme used',
   severity: DiagnosticSeverity.Error,
 };
 

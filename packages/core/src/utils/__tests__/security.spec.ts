@@ -28,8 +28,8 @@ describe('validateSecurity', () => {
     it('fails with an invalid credentials error', () => {
       assertSome(validateSecurity({ headers: { authorization: 'Basic abc123' } }, { security: securityScheme }), res =>
         expect(res).toStrictEqual({
-          code: 403,
-          message: 'Invalid credentials used',
+          code: 401,
+          message: 'Invalid security scheme used',
           severity: DiagnosticSeverity.Error,
         }),
       );
@@ -64,8 +64,8 @@ describe('validateSecurity', () => {
         validateSecurity({ headers: { authorization: 'Digest username=""' } }, { security: securityScheme }),
         res =>
           expect(res).toStrictEqual({
-            code: 403,
-            message: 'Invalid credentials used',
+            code: 401,
+            message: 'Invalid security scheme used',
             severity: DiagnosticSeverity.Error,
           }),
       );
