@@ -6,15 +6,8 @@ const xmlSerializer = new j2xParser({});
 export default [
   {
     regex: {
-      test: (value: string) => !!typeIs.is(value, ['application/*+json']),
+      test: (value: string) => !!typeIs.is(value, ['application/*+json', 'application/json']),
       toString: () => 'application/*+json',
-    },
-    serializer: JSON.stringify,
-  },
-  {
-    regex: {
-      test: (value: string) => !!typeIs.is(value, ['application/json']),
-      toString: () => 'application/json',
     },
     serializer: JSON.stringify,
   },
