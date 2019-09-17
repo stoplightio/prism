@@ -10,7 +10,6 @@ import { Chance } from 'chance';
 import { createLogger } from '@stoplight/prism-core';
 
 import * as Either from 'fp-ts/lib/Either';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertLeft, assertRight } from '../../../__tests__/utils';
 import helpers from '../NegotiatorHelpers';
@@ -526,28 +525,26 @@ describe('NegotiatorHelpers', () => {
         });
       });
 
-      describe('httpContent does not exist ', () => {
+      it('and httpContent not exist should throw an error', () => {
+        const desiredOptions: NegotiationOptions = {
+          mediaTypes: [chance.string()],
+          dynamic: chance.bool(),
+          exampleKey: chance.string(),
+        };
+
         const httpResponseSchema: IHttpOperationResponse = {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           contents: [],
           headers: [],
         };
 
-        it('should throw an error', () => {
-          const desiredOptions: NegotiationOptions = {
-            mediaTypes: [chance.string()],
-            dynamic: chance.bool(),
-            exampleKey: chance.string(),
-          };
+        const actualResponse = helpers.negotiateOptionsBySpecificResponse(
+          httpOperation,
+          desiredOptions,
+          httpResponseSchema,
+        )(logger);
 
-          const actualResponse = helpers.negotiateOptionsBySpecificResponse(
-            httpOperation,
-            desiredOptions,
-            httpResponseSchema,
-          )(logger);
-
-          expect(Either.isLeft(actualResponse)).toBeTruthy();
-        });
+        expect(Either.isLeft(actualResponse)).toBeTruthy();
       });
     });
 
