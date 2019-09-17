@@ -1,6 +1,10 @@
 import { IHttpContent, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 // @ts-ignore
 import * as accepts from 'accepts';
+import { filter, findFirst, head, sort } from 'fp-ts/lib/Array';
+import { alt, map, Option } from 'fp-ts/lib/Option';
+import { ord, ordNumber } from 'fp-ts/lib/Ord';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { ContentExample, NonEmptyArray, PickRequired } from '../../';
 
 export type IWithExampleMediaContent = IMediaTypeContent & { examples: NonEmptyArray<ContentExample> };
@@ -20,48 +24,69 @@ export function hasContents(v: IHttpOperationResponse): v is PickRequired<IHttpO
 export function findBestHttpContentByMediaType(
   response: PickRequired<IHttpOperationResponse, 'contents'>,
   mediaType: string[],
-): IMediaTypeContent | undefined {
+): Option<IMediaTypeContent> {
   const bestType = accepts({
     headers: {
       accept: mediaType.join(','),
     },
   }).type(response.contents.map(c => c.mediaType));
 
-  return response.contents.find(content => content.mediaType === bestType);
+  return pipe(
+    response.contents,
+    findFirst(content => content.mediaType === bestType),
+  );
 }
 
 export function findDefaultContentType(
   response: PickRequired<IHttpOperationResponse, 'contents'>,
-): IMediaTypeContent | undefined {
-  return response.contents.find(content => content.mediaType === '*/*');
+): Option<IMediaTypeContent> {
+  return pipe(
+    response.contents,
+    findFirst(content => content.mediaType === '*/*'),
+  );
 }
 
-export function findLowest2xx(httpResponses: IHttpOperationResponse[]): IHttpOperationResponse | undefined {
-  const generic2xxResponse =
-    findResponseByStatusCode(httpResponses, '2XX') || createResponseFromDefault(httpResponses, '200');
-  const sorted2xxResponses = httpResponses
-    .filter(response => response.code.match(/2\d\d/))
-    .sort((a: IHttpOperationResponse, b: IHttpOperationResponse) => Number(a.code) - Number(b.code));
+const byResponseCode = ord.contramap<number, IHttpOperationResponse>(ordNumber, response => parseInt(response.code));
 
-  return sorted2xxResponses[0] || generic2xxResponse;
+export function findLowest2xx(httpResponses: IHttpOperationResponse[]): Option<IHttpOperationResponse> {
+  const generic2xxResponse = () =>
+    pipe(
+      findResponseByStatusCode(httpResponses, '2XX'),
+      alt(() => createResponseFromDefault(httpResponses, '200')),
+    );
+
+  const first2xxResponse = pipe(
+    httpResponses,
+    filter(response => /2\d\d/.test(response.code)),
+    sort(byResponseCode),
+    head,
+  );
+
+  return pipe(
+    first2xxResponse,
+    alt(generic2xxResponse),
+  );
 }
 
 export function findResponseByStatusCode(
   responses: IHttpOperationResponse[],
   statusCode: string,
-): IHttpOperationResponse | undefined {
-  return responses.find(response => response.code.toLowerCase() === statusCode.toLowerCase());
+): Option<IHttpOperationResponse> {
+  return pipe(
+    responses,
+    findFirst(response => response.code.toLowerCase() === statusCode.toLowerCase()),
+  );
 }
 
 export function createResponseFromDefault(
   responses: IHttpOperationResponse[],
   statusCode: string,
-): IHttpOperationResponse | undefined {
-  const defaultResponse = responses.find(response => response.code === 'default');
-  if (defaultResponse) {
-    return Object.assign({}, defaultResponse, { code: statusCode });
-  }
-  return undefined;
+): Option<IHttpOperationResponse> {
+  return pipe(
+    responses,
+    findFirst(response => response.code === 'default'),
+    map(response => Object.assign({}, response, { code: statusCode })),
+  );
 }
 
 export function contentHasExamples(content: IMediaTypeContent): content is IWithExampleMediaContent {
