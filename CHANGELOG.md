@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## Fixed
 
 - Prism is now giving precedence to `application/json` instead of using it as a "fallback" serializer, fixing some conditions where it wouldn't get triggered correctly. #604
+- Prism is now taking in consideration the `required` properties for combined schemas (`oneOf, allOf`). This is coming through an update to the Json Schema Faker Library #623
 
 # 3.1.0 (2019-09-03)
 
