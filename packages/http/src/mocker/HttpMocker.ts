@@ -2,11 +2,11 @@ import { IMocker, IMockerOpts, IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { Either, map } from 'fp-ts/lib/Either';
+import { Either, map, right } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import { mapLeft } from 'fp-ts/lib/ReaderEither';
-import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
+import { get, isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import { Logger } from 'pino';
 import {
   ContentExample,
@@ -33,24 +33,36 @@ class HttpMocker
     const payloadGenerator: PayloadGenerator =
       config && typeof config.mock !== 'boolean' && config.mock.dynamic ? generate : generateStatic;
 
-    return pipe(
-      withLogger(logger => {
-        // setting default values
-        const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
-        config = config || { mock: false, validateRequest: true, validateResponse: true };
-        const mockConfig: IHttpOperationConfig =
-          config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
+    const isHead = input.data.method === 'head';
+    const r = get(resource, ['responses', '0'], { code: 200, headers: [] });
 
-        if (!mockConfig.mediaTypes && acceptMediaType) {
-          logger.info(`Request contains an accept header: ${acceptMediaType}`);
-          mockConfig.mediaTypes = acceptMediaType.split(',');
-        }
+    return isHead
+      ? withLogger(logger => {
+          logger.info('Returning an empty response for a HEAD request.');
 
-        return mockConfig;
-      }),
-      chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
-      chain(result => assembleResponse(result, payloadGenerator)),
-    );
+          return right({
+            statusCode: +r.code,
+            headers: computeMockedHeaders(r.headers || [], payloadGenerator),
+          });
+        })
+      : pipe(
+          withLogger(logger => {
+            // setting default values
+            const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
+            config = config || { mock: false, validateRequest: true, validateResponse: true };
+            const mockConfig: IHttpOperationConfig =
+              config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
+
+            if (!mockConfig.mediaTypes && acceptMediaType) {
+              logger.info(`Request contains an accept header: ${acceptMediaType}`);
+              mockConfig.mediaTypes = acceptMediaType.split(',');
+            }
+
+            return mockConfig;
+          }),
+          chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
+          chain(result => assembleResponse(result, payloadGenerator)),
+        );
   }
 }
 

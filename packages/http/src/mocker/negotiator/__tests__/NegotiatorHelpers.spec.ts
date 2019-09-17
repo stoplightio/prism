@@ -549,7 +549,7 @@ describe('NegotiatorHelpers', () => {
           expect(Either.isLeft(actualResponse)).toBeTruthy();
         });
 
-        it('should return a payload-less response', () => {
+        xit('should return a payload-less response', () => {
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
             { ...httpOperation, method: 'head' },
             { dynamic: false, mediaTypes: ['*/*'] },

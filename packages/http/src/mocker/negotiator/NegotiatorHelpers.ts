@@ -145,17 +145,9 @@ const helpers = {
             () => {
               logger.warn(`Unable to find a content for ${mediaTypes}`);
 
-              if (_httpOperation.method === 'head') {
-                return Either.right({
-                  code: response.code,
-                  mediaType: get(mediaTypes, '0', '*/*'),
-                  headers: response.headers || [],
-                });
-              } else {
-                return Either.left(
-                  ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
-                );
-              }
+              return Either.left(
+                ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
+              );
             },
             content => {
               logger.success(`Found a compatible content for ${mediaTypes}`);
