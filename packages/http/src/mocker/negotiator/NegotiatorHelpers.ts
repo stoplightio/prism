@@ -144,8 +144,7 @@ const helpers = {
           Option.fold(
             () => {
               logger.warn(`Unable to find a content for ${mediaTypes}`);
-
-              return Either.left(
+              return Either.left<Error, IHttpNegotiationResult>(
                 ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
               );
             },
