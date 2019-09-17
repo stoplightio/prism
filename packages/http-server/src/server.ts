@@ -20,6 +20,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     modifyCoreObjects: false,
   }).register(formbodyParser);
 
+  server.setReplySerializer(payload => payload as string);
+
   if (opts.cors) server.register(fastifyCors);
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
@@ -34,20 +36,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     error.status = 415;
     Error.captureStackTrace(error);
     return done(error);
-  });
-
-  server.addHook('onSend', (request, reply, payload, done) => {
-    if (typeof payload !== 'string') {
-      const serializer = reply.hasHeader('content-type')
-        ? serializers.find(s => s.regex.test(reply.getHeader('content-type')!))
-        : serializers[0];
-
-      if (serializer) {
-        return done(undefined, serializer.serializer(payload));
-      }
-    }
-
-    return done(undefined, payload);
   });
 
   const mergedConfig = defaults<Partial<IHttpConfig>, IHttpConfig>(config, {
@@ -98,6 +86,27 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         body,
       };
 
+      function serialize(payload: unknown) {
+        if (!reply.getHeader('content-type') && !payload) {
+          return;
+        }
+
+        const serializer = reply.hasHeader('content-type')
+          ? serializers.find(s => s.regex.test(reply.getHeader('content-type')!))
+          : undefined;
+
+        if (!serializer) {
+          const error: Error & { status?: number } = new Error(
+            `Cannot find serializer for ${reply.getHeader('content-type')}`,
+          );
+          error.status = 500;
+          Error.captureStackTrace(error);
+          throw error;
+        }
+
+        return serializer.serializer(payload);
+      }
+
       request.log.info({ input }, 'Request received');
       try {
         const operationSpecificConfig = getHttpConfigFromRequest(input);
@@ -116,7 +125,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           if (output.headers) {
             reply.headers(output.headers);
           }
-          reply.send(output.body);
+
+          reply.send(serialize(output.body));
         } else {
           throw new Error('Unable to find any decent response for the current request.');
         }
