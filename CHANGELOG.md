@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Added
+
+## Fixed
+
+- Prism is now giving precedence to `application/json` instead of using it as a "fallback" serializer, fixing some conditions where it wouldn't get triggered correctly. #604
+
 # 3.1.0 (2019-09-03)
 
 ## Added
