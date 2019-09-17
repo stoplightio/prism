@@ -74,9 +74,9 @@ Connection: keep-alive
 
 #### Things to keep in mind when creating the files:
 
-* 1 test per file, we do not support multiple splitting.
-* Be precise with the separators. They shuold be 4 *before* **AND** *after* the word. `====`
-* The 4 keywords are `test,spec,server,command,expect,expect-loose`, nothing else at the moment
+* 1 scenario per file.
+* Be precise with the separators. They should be 4 *before* **AND** *after* the word. `====`
+* The 6 keywords are `test,spec,server,command,expect,expect-loose`, nothing else at the moment
 * You can run all the tests on the same port `4010`, but you can also choose another one
 * The `curl` command does not support piping stuff into other tools; so if you're trying to be cool and do `curl | grep`, well maybe next time.
 * All the `curl` commands **must** have the `-i` flag, otherwise the trace parser won't understand the output
@@ -84,8 +84,8 @@ Connection: keep-alive
 ## Technical details
 
 * A RegExp is used to split the content
-* A temporany file with the specification file is stored on your disk
+* A temporary file with the specification file is stored on your disk
 * Prism gets spawn with the specified arguments and waited to be running
 * The curl command is performed
-* The outputs get converted using `http-string-parser`, a veeery old package transforming CURL output in a consumable format
+* The outputs get converted using `http-string-parser`, a veeery old package transforming curl output to a consumable format
 * Gavel is used to validate the request — it will automagically ignore headers that can change and consider only the "fundamental" one such as content negotiation ones and stuff around.
