@@ -79,7 +79,7 @@ describe('JSONSchema generator', () => {
     });
 
     describe('when default value is set', () => {
-      it('uses it instead of generating one', () => {
+      it('uses it instead of generating value', () => {
         const schema: JSONSchema = {
           type: 'string',
           default: 'a-string-which-is-hard-to-be-randomly-generated-although-who-knows?',
@@ -90,7 +90,7 @@ describe('JSONSchema generator', () => {
     });
 
     describe('when examples are set', () => {
-      it('uses it instead of generating one', () => {
+      it('uses it instead of generating value', () => {
         const schema: JSONSchema = {
           type: 'string',
           examples: ['a-string-which-is-hard-to-be-randomly-generated-although-who-knows?'],

@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is correctly handling the `csv` collection format argument property in OAS2 documents #577
 - Prism is correctly returning the response when the request has `*/*` as Accept header #578
 - Prism is correctly returning a single root node with the payload for XML data #578
+- Prism utilizes schema's default value and/or examples when dynamically generating content #621
 
 # 3.0.4 (2019-08-20)
 
