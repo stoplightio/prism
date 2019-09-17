@@ -548,29 +548,6 @@ describe('NegotiatorHelpers', () => {
 
           expect(Either.isLeft(actualResponse)).toBeTruthy();
         });
-
-        xit('should return a payload-less response', () => {
-          const actualResponse = helpers.negotiateOptionsBySpecificResponse(
-            { ...httpOperation, method: 'head' },
-            { dynamic: false, mediaTypes: ['*/*'] },
-            { code: '200' },
-          )(logger);
-
-          expect(Either.isRight(actualResponse)).toBeTruthy();
-
-          pipe(
-            actualResponse,
-            Either.fold(
-              () => {
-                throw Error('Expected Right.');
-              },
-              response => {
-                expect(response).not.toHaveProperty('bodyExample');
-                expect(response).not.toHaveProperty('schema');
-              },
-            ),
-          );
-        });
       });
     });
 
