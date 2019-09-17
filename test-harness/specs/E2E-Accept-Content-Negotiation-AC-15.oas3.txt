@@ -6,16 +6,18 @@ paths:
   /check-email:
     get:
       responses:
-        "204":
+        200:
           description: OK, the email is available
           content:
             application/json:
               schema:
-                nullable: true
+                type: string
 ====server====
 mock -p 4010
 ====command====
 curl -i http://localhost:4010/check-email -H "Accept: application/json, text/plain, */*"
 ====expect====
-HTTP/1.1 204 No Content
-content-type: application/json; charset=utf-8
+HTTP/1.1 200 OK
+content-type: application/json
+
+"string"

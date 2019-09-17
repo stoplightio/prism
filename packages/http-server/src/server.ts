@@ -41,10 +41,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   });
 
   server.addHook('onSend', (request, reply, payload, done) => {
-    if (reply.getHeader('content-type') === 'application/json') {
-      reply.header('content-type', 'application/json; charset=utf-8');
-    }
-
     if (request.headers.accept === '*/*' && typeof payload !== 'string') {
       const serializer = reply.hasHeader('content-type')
         ? serializers.find(s => s.regex.test(reply.getHeader('content-type')!))
