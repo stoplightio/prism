@@ -1,0 +1,24 @@
+====test====
+Sending multiple values in Accept header selects the first one matched.
+====spec====
+swagger: "2.0"
+paths:
+  /check-email:
+    get:
+      produces:
+        - application/json
+        - text/plain
+      responses:
+        200:
+          description: OK, the email is available
+          schema:
+            type: string
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/check-email -H "Accept: application/json, text/plain, */*"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+"string"
