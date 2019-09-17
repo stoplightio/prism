@@ -23,5 +23,4 @@ mock -p 4010
 curl --head http://localhost:4010/todos
 ====expect====
 HTTP/1.1 200 OK
-content-type: */*
 nonce: abc
