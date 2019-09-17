@@ -5013,10 +5013,10 @@ json-pointer@0.6.0, json-pointer@^0.6.0:
   dependencies:
     foreach "^2.0.4"
 
-json-schema-faker@json-schema-faker/json-schema-faker:
-  version "0.5.0-rc19"
-  uid "75e69e776efa2df4536f8c9cb23854adc00e6e53"
-  resolved "https://codeload.github.com/json-schema-faker/json-schema-faker/tar.gz/75e69e776efa2df4536f8c9cb23854adc00e6e53"
+json-schema-faker@0.5.0-rc20:
+  version "0.5.0-rc20"
+  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rc20.tgz#7e1c588185a16da8b7797409456467190818c03e"
+  integrity sha512-pmGqRvkU6xtJqJN0Py9yYtWaWfsb2DXvCXHwouxLiD18XNe3Ah96atf39kia1eaHGX9fPlinSRgsxZd+k2LVpw==
   dependencies:
     json-schema-ref-parser "^6.1.0"
     jsonpath-plus "^1.0.0"
