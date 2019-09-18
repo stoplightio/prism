@@ -178,16 +178,14 @@ const helpers = {
             () => {
               return pipe(
                 whenNoContent(logger, response, headers || [], mediaTypes),
-                Option.fold(
-                  () => {
-                    logger.warn(warnMsg(mediaTypes));
+                Either.fromOption(() => {
+                  logger.warn(warnMsg(mediaTypes));
 
-                    return Either.left<Error, IHttpNegotiationResult>(
-                      ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
-                    );
-                  },
-                  r => Either.right(r),
-                ),
+                  return ProblemJsonError.fromTemplate(
+                    NOT_ACCEPTABLE,
+                    `Unable to find content for ${mediaTypes}`,
+                  ) as Error;
+                }),
               );
             },
             content => {
@@ -362,17 +360,11 @@ const helpers = {
                       response.headers || [],
                       get(contentWithExamples, 'mediaType', get(responseWithSchema, 'schema')) || ['*/*'],
                     ),
-                    Option.fold(
-                      () => {
-                        logger.trace(
-                          `Unable to find a content with a schema defined for the response ${response.code}`,
-                        );
-                        return Either.left(
-                          new Error(`Neither schema nor example defined for ${response.code} response.`),
-                        );
-                      },
-                      r => Either.right(r),
-                    ),
+                    Either.fromOption(() => {
+                      logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
+
+                      return new Error(`Neither schema nor example defined for ${response.code} response.`);
+                    }),
                   );
                 }
               }
