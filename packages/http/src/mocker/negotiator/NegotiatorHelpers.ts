@@ -287,9 +287,10 @@ const helpers = {
 
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
+    statusCodes: NonEmptyArray<string>,
   ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      helpers.findResponse(httpResponses, ['422', '400', '401']),
+      helpers.findResponse(httpResponses, statusCodes),
       Reader.chain(foundResponse =>
         withLogger(logger =>
           pipe(

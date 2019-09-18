@@ -59,7 +59,7 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
     chain(() =>
       pipe(
-        helpers.negotiateOptionsForInvalidRequest(resource.responses),
+        helpers.negotiateOptionsForInvalidRequest(resource.responses, ['422', '400', '401']),
         mapLeft(() => {
           const securityValidation = input.validations.input.find(valiation => valiation.code === 401);
 
