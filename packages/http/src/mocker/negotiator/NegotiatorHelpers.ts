@@ -27,7 +27,6 @@ import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } f
 const warnMsg = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
 const whenNoContent = (
-  logger: Logger,
   response: IHttpOperationResponse,
   headers: IHttpHeaderParam[],
   mediaTypes: string[],
@@ -45,8 +44,6 @@ const whenNoContent = (
       })(filteredContents);
     }),
     Option.map(() => {
-      logger.warn(`${warnMsg(mediaTypes)}. Sending an empty response.`);
-
       return {
         code: response.code,
         headers,
@@ -177,7 +174,12 @@ const helpers = {
           Option.fold(
             () => {
               return pipe(
-                whenNoContent(logger, response, headers || [], mediaTypes),
+                whenNoContent(response, headers || [], mediaTypes),
+                Option.map(payloadlessResponse => {
+                  logger.warn(`${warnMsg(mediaTypes)}. Sending an empty response.`);
+
+                  return payloadlessResponse;
+                }),
                 Either.fromOption(() => {
                   logger.warn(warnMsg(mediaTypes));
 
@@ -355,7 +357,6 @@ const helpers = {
                 } else {
                   return pipe(
                     whenNoContent(
-                      logger,
                       response,
                       response.headers || [],
                       get(contentWithExamples, 'mediaType', get(responseWithSchema, 'schema')) || ['*/*'],
