@@ -1,15 +1,13 @@
 import { ProblemJsonError } from '@stoplight/prism-core';
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Reader from 'fp-ts/lib/Reader';
 import * as ReaderEither from 'fp-ts/lib/ReaderEither';
 import { tail } from 'lodash';
 import { Logger } from 'pino';
-import { ProblemJsonError } from '@stoplight/prism-core';
-import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import withLogger from '../../withLogger';
 import { NOT_ACCEPTABLE, NOT_FOUND } from '../errors';
 import {
