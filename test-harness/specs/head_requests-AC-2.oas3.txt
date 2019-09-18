@@ -1,0 +1,22 @@
+====test====
+Sending a HEAD request results in a 405 when no HEAD operation is defined.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    description: todos
+    get:
+      description: todos-head
+      responses:
+        default:
+          description: abc
+          content:
+            text/plain:
+              example:
+                abc
+====server====
+mock -p 4010
+====command====
+curl --head http://localhost:4010/todos
+====expect====
+HTTP/1.1 405 Method Not Allowed
