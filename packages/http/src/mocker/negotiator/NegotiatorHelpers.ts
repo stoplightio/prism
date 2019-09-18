@@ -135,7 +135,7 @@ const helpers = {
 
     return withLogger(logger => {
       if (_httpOperation.method === 'head') {
-        logger.warn(`Responding with an empty body to a HEAD request.`);
+        logger.info(`Responding with an empty body to a HEAD request.`);
 
         return Either.right({
           code: response.code,
