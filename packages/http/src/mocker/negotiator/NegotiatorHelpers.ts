@@ -7,6 +7,7 @@ import { Logger } from 'pino';
 
 import { ProblemJsonError } from '@stoplight/prism-core';
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import withLogger from '../../withLogger';
 import { NOT_ACCEPTABLE, NOT_FOUND } from '../errors';
 import {
@@ -248,8 +249,10 @@ const helpers = {
     return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
-  findResponse(httpResponses: IHttpOperationResponse[]): Reader.Reader<Logger, Option.Option<IHttpOperationResponse>> {
-    const statusCodes = ['422', '400', '401', '403'];
+  findResponse(
+    httpResponses: IHttpOperationResponse[],
+    statusCodes: NonEmptyArray<string>,
+  ): Reader.Reader<Logger, Option.Option<IHttpOperationResponse>> {
     const [first, ...others] = statusCodes;
 
     return withLogger<Option.Option<IHttpOperationResponse>>(logger =>
@@ -286,7 +289,7 @@ const helpers = {
     httpResponses: IHttpOperationResponse[],
   ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      helpers.findResponse(httpResponses),
+      helpers.findResponse(httpResponses, ['422', '400', '401', '403']),
       Reader.chain(foundResponse =>
         withLogger(logger =>
           pipe(
