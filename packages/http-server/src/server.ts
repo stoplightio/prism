@@ -20,8 +20,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     modifyCoreObjects: false,
   }).register(formbodyParser);
 
-  server.setReplySerializer(payload => payload as string);
-
   if (opts.cors) server.register(fastifyCors);
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
@@ -105,7 +103,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             reply.headers(output.headers);
           }
 
-          reply.send(serialize(output.body, reply.getHeader('content-type')));
+          reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
         } else {
           throw new Error('Unable to find any decent response for the current request.');
         }
