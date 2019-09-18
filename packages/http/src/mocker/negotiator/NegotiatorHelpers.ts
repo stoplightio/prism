@@ -249,21 +249,25 @@ const helpers = {
   },
 
   findResponse(httpResponses: IHttpOperationResponse[]): Reader.Reader<Logger, Option.Option<IHttpOperationResponse>> {
+    const statusCodes = ['422', '400', '401', '403'];
+    const [first, ...others] = statusCodes;
+
     return withLogger<Option.Option<IHttpOperationResponse>>(logger =>
       pipe(
-        findResponseByStatusCode(httpResponses, '422'),
-        Option.alt(() => {
-          logger.trace('Unable to find a 422 response definition');
-          return findResponseByStatusCode(httpResponses, '400');
-        }),
-        Option.alt(() => {
-          logger.trace('Unable to find a 400 response definition.');
-          return findResponseByStatusCode(httpResponses, '401');
-        }),
-        Option.alt(() => findResponseByStatusCode(httpResponses, '403')),
+        others.reduce(
+          (previous, current, index) =>
+            pipe(
+              previous,
+              Option.alt(() => {
+                logger.trace(`Unable to find a ${statusCodes[index === 0 ? first : 1 + index]} response definition`);
+                return findResponseByStatusCode(httpResponses, current);
+              }),
+            ),
+          pipe(findResponseByStatusCode(httpResponses, first)),
+        ),
         Option.alt(() =>
           pipe(
-            createResponseFromDefault(httpResponses, '422'),
+            createResponseFromDefault(httpResponses, first),
             Option.map(response => {
               logger.success(`Created a ${response.code} from a default response`);
               return response;
