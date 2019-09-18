@@ -32,7 +32,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is correctly returning a single root node with the payload for XML data [#578](https://github.com/stoplightio/prism/pulls/578)
 - HEAD requests no longer fail with 406 Not Acceptable #603
 
-
 # 3.0.4 (2019-08-20)
 
 ## Added
