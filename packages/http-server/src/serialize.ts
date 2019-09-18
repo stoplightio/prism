@@ -42,10 +42,7 @@ export const serialize = (payload: unknown, contentType?: string) => {
   const serializer = contentType ? serializers.find(s => s.regex.test(contentType)) : undefined;
 
   if (!serializer) {
-    const error: Error & { status?: number } = new Error(`Cannot find serializer for ${contentType}`);
-    error.status = 500;
-    Error.captureStackTrace(error);
-    throw error;
+    throw new Error(`Cannot find serializer for ${contentType}`);
   }
 
   return serializer.serializer(payload);
