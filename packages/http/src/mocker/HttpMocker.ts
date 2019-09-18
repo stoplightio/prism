@@ -18,7 +18,7 @@ import {
   ProblemJsonError,
 } from '../types';
 import withLogger from '../withLogger';
-import { FORBIDDEN, UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './errors';
+import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './errors';
 import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
@@ -61,11 +61,11 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
       pipe(
         helpers.negotiateOptionsForInvalidRequest(resource.responses),
         mapLeft(() => {
-          const securityValidation = input.validations.input.find(i => i.code === 401 || i.code === 403);
+          const securityValidation = input.validations.input.find(valiation => valiation.code === 401);
 
           return securityValidation
             ? ProblemJsonError.fromTemplate(
-                securityValidation.code === 401 ? UNAUTHORIZED : FORBIDDEN,
+                UNAUTHORIZED,
                 '',
                 securityValidation.tags && securityValidation.tags.length
                   ? {
