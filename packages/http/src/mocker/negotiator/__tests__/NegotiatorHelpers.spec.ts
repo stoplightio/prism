@@ -558,19 +558,11 @@ describe('NegotiatorHelpers', () => {
 
           expect(Either.isRight(actualResponse)).toBeTruthy();
 
-          pipe(
-            actualResponse,
-            Either.fold(
-              () => {
-                throw Error('Expected Right.');
-              },
-              response => {
-                expect(response).not.toHaveProperty('bodyExample');
-                expect(response).not.toHaveProperty('mediaType');
-                expect(response).not.toHaveProperty('schema');
-              },
-            ),
-          );
+          assertRight(actualResponse, response => {
+            expect(response).not.toHaveProperty('bodyExample');
+            expect(response).not.toHaveProperty('mediaType');
+            expect(response).not.toHaveProperty('schema');
+          });
         });
       });
     });
