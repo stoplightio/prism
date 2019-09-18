@@ -42,4 +42,4 @@ curl -i http://localhost:4010/users -H "Authorization: Basic dGVzdDp0ZXN0"
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 
-"xyz"
+"abc"

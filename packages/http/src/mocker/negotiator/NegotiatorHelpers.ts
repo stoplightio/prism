@@ -3,6 +3,7 @@ import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Reader from 'fp-ts/lib/Reader';
 import * as ReaderEither from 'fp-ts/lib/ReaderEither';
+import { tail } from 'lodash';
 import { Logger } from 'pino';
 
 import { ProblemJsonError } from '@stoplight/prism-core';
@@ -262,21 +263,28 @@ const helpers = {
             pipe(
               previous,
               Option.alt(() => {
-                logger.trace(`Unable to find a ${index === 0 ? first : statusCodes[1 + index]} response definition`);
+                logger.trace(`Unable to find a ${statusCodes[index]} response definition`);
                 return findResponseByStatusCode(httpResponses, current);
               }),
             ),
           pipe(findResponseByStatusCode(httpResponses, first)),
         ),
-        Option.alt(() =>
-          pipe(
+        Option.alt(() => {
+          logger.trace(`Unable to find a ${tail(statusCodes)} response definition`);
+          return pipe(
             createResponseFromDefault(httpResponses, first),
-            Option.map(response => {
-              logger.success(`Created a ${response.code} from a default response`);
-              return response;
-            }),
-          ),
-        ),
+            Option.fold(
+              () => {
+                logger.trace("Unable to find a 'default' response definition");
+                return Option.none;
+              },
+              response => {
+                logger.success(`Created a ${response.code} from a default response`);
+                return Option.some(response);
+              },
+            ),
+          );
+        }),
         Option.map(response => {
           logger.success(`Found response ${response.code}. I'll try with it.`);
           return response;
