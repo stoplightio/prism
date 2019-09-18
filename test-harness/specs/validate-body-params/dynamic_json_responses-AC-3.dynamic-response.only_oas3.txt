@@ -1,0 +1,46 @@
+====test====
+Prism generates dynamic properties for both required and not-required ones.
+====spec====
+openapi: 3.0.2
+paths:
+  /service:
+    get:
+      description: Returns a single resource.
+      responses:
+        200:
+          description: get a resource
+          content:
+            application/json:
+              schema:
+                type: object
+                discriminator:
+                  propertyName: resourceType
+                oneOf:
+                - required:
+                    - resourceType
+                  type: object
+                  properties:
+                    resourceType:
+                      type: string
+                    name:
+                      type: string
+                    color:
+                      type: string
+                - required:
+                    - resourceType
+                  type: object
+                  properties:
+                    resourceType:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+====server====
+mock -p 4010 -d
+====command====
+curl -i http://localhost:4010/service
+====expect-loose====
+HTTP/1.1 200 OK
+
+{"resourceType": "officia voluptate amet ut","name": "sit"}
