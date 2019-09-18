@@ -2,6 +2,7 @@ import { ProblemJsonError } from '@stoplight/prism-core';
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import { IHttpHeaderParam } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
+import { fromNullable } from 'fp-ts/lib/Option';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Reader from 'fp-ts/lib/Reader';
@@ -23,28 +24,35 @@ import {
 } from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
-export const warnMsg = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
+const warnMsg = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
 const whenNoContent = (
   logger: Logger,
   response: IHttpOperationResponse,
   headers: IHttpHeaderParam[],
   mediaTypes: string[],
-) => {
-  const contents = (response.contents && response.contents.filter(c => !c.mediaType.includes('*/*'))) || [];
-  const isContentEmpty = contents.length === 0;
-  const wasAcceptHeaderLeftUnspecified = mediaTypes.filter(mt => !mt.includes('*/*')).length === 0;
+): Option.Option<IHttpNegotiationResult> => {
+  return pipe(
+    fromNullable(response.contents),
+    Option.map(contents => contents.filter(c => !c.mediaType.includes('*/*'))),
+    Option.chain(filteredContents => {
+      const wasAcceptHeaderLeftUnspecified = mediaTypes.filter(mt => !mt.includes('*/*')).length === 0;
 
-  if (isContentEmpty && wasAcceptHeaderLeftUnspecified) {
-    logger.warn(`${warnMsg(mediaTypes)}. Sending an empty response.`);
+      return Option.fromPredicate((c: { length: number }) => {
+        const isContentEmpty = c.length === 0;
 
-    return Option.some({
-      code: response.code,
-      headers,
-    });
-  } else {
-    return Option.none;
-  }
+        return isContentEmpty && wasAcceptHeaderLeftUnspecified;
+      })(filteredContents);
+    }),
+    Option.map(() => {
+      logger.warn(`${warnMsg(mediaTypes)}. Sending an empty response.`);
+
+      return {
+        code: response.code,
+        headers,
+      };
+    }),
+  );
 };
 
 const helpers = {
