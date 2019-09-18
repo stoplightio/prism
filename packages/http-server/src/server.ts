@@ -8,7 +8,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { defaults } from 'lodash';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
-import serializers from './serializers';
+import { serialize } from './serialize';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
@@ -86,27 +86,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         body,
       };
 
-      function serialize(payload: unknown) {
-        if (!reply.getHeader('content-type') && !payload) {
-          return;
-        }
-
-        const serializer = reply.hasHeader('content-type')
-          ? serializers.find(s => s.regex.test(reply.getHeader('content-type')!))
-          : undefined;
-
-        if (!serializer) {
-          const error: Error & { status?: number } = new Error(
-            `Cannot find serializer for ${reply.getHeader('content-type')}`,
-          );
-          error.status = 500;
-          Error.captureStackTrace(error);
-          throw error;
-        }
-
-        return serializer.serializer(payload);
-      }
-
       request.log.info({ input }, 'Request received');
       try {
         const operationSpecificConfig = getHttpConfigFromRequest(input);
@@ -126,7 +105,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             reply.headers(output.headers);
           }
 
-          reply.send(serialize(output.body));
+          reply.send(serialize(output.body, reply.getHeader('content-type')));
         } else {
           throw new Error('Unable to find any decent response for the current request.');
         }
