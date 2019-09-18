@@ -2,11 +2,11 @@ import { IMocker, IMockerOpts, IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { Either, map, right } from 'fp-ts/lib/Either';
+import { Either, map } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import { mapLeft } from 'fp-ts/lib/ReaderEither';
-import { get, isEmpty, isObject, keyBy, mapValues } from 'lodash';
+import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import { Logger } from 'pino';
 import {
   ContentExample,
@@ -18,7 +18,7 @@ import {
   ProblemJsonError,
 } from '../types';
 import withLogger from '../withLogger';
-import { FORBIDDEN, UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './errors';
+import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './errors';
 import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
@@ -33,36 +33,24 @@ class HttpMocker
     const payloadGenerator: PayloadGenerator =
       config && typeof config.mock !== 'boolean' && config.mock.dynamic ? generate : generateStatic;
 
-    const isHead = input.data.method === 'head';
-    const r = get(resource, ['responses', '0'], { code: 200, headers: [] });
+    return pipe(
+      withLogger(logger => {
+        // setting default values
+        const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
+        config = config || { mock: false, validateRequest: true, validateResponse: true };
+        const mockConfig: IHttpOperationConfig =
+          config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
 
-    return isHead
-      ? withLogger(logger => {
-          logger.info('Returning an empty response for a HEAD request.');
+        if (!mockConfig.mediaTypes && acceptMediaType) {
+          logger.info(`Request contains an accept header: ${acceptMediaType}`);
+          mockConfig.mediaTypes = acceptMediaType.split(',');
+        }
 
-          return right({
-            statusCode: +r.code,
-            headers: computeMockedHeaders(r.headers || [], payloadGenerator),
-          });
-        })
-      : pipe(
-          withLogger(logger => {
-            // setting default values
-            const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
-            config = config || { mock: false, validateRequest: true, validateResponse: true };
-            const mockConfig: IHttpOperationConfig =
-              config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
-
-            if (!mockConfig.mediaTypes && acceptMediaType) {
-              logger.info(`Request contains an accept header: ${acceptMediaType}`);
-              mockConfig.mediaTypes = acceptMediaType.split(',');
-            }
-
-            return mockConfig;
-          }),
-          chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
-          chain(result => assembleResponse(result, payloadGenerator)),
-        );
+        return mockConfig;
+      }),
+      chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
+      chain(result => assembleResponse(result, payloadGenerator)),
+    );
   }
 }
 
@@ -73,11 +61,11 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
       pipe(
         helpers.negotiateOptionsForInvalidRequest(resource.responses),
         mapLeft(() => {
-          const securityValidation = input.validations.input.find(i => i.code === 401 || i.code === 403);
+          const securityValidation = input.validations.input.find(valiation => valiation.code === 401);
 
           return securityValidation
             ? ProblemJsonError.fromTemplate(
-                securityValidation.code === 401 ? UNAUTHORIZED : FORBIDDEN,
+                UNAUTHORIZED,
                 '',
                 securityValidation.tags && securityValidation.tags.length
                   ? {
@@ -131,12 +119,16 @@ function assembleResponse(
         const mockedBody = computeBody(negotiationResult, payloadGenerator);
         const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
 
+        const h = negotiationResult.mediaType
+          ? {
+              ...mockedHeaders,
+              'Content-type': negotiationResult.mediaType,
+            }
+          : mockedHeaders;
+
         const response: IHttpResponse = {
           statusCode: parseInt(negotiationResult.code),
-          headers: {
-            ...mockedHeaders,
-            'Content-type': negotiationResult.mediaType,
-          },
+          headers: h,
           body: mockedBody,
         };
 

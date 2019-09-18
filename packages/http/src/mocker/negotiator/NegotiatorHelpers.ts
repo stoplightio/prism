@@ -135,8 +135,19 @@ const helpers = {
     const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
     return withLogger(logger => {
+      if (_httpOperation.method === 'head') {
+        logger.warn(`head`);
+
+        return Either.right({
+          code: response.code,
+          // mediaType: get(mediaTypes, '0', '*/*'),
+          headers: response.headers || [],
+        });
+      }
+
       if (mediaTypes) {
         // a user provided mediaType
+
         const httpContent = hasContents(response) ? findBestHttpContentByMediaType(response, mediaTypes) : Option.none;
 
         return pipe(
@@ -144,8 +155,7 @@ const helpers = {
           Option.fold(
             () => {
               logger.warn(`Unable to find a content for ${mediaTypes}`);
-
-              return Either.left(
+              return Either.left<Error, IHttpNegotiationResult>(
                 ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
               );
             },
