@@ -10,7 +10,7 @@ import { Chance } from 'chance';
 import { createLogger } from '@stoplight/prism-core';
 
 import * as Either from 'fp-ts/lib/Either';
-import {pipe} from "fp-ts/lib/pipeable";
+import { pipe } from 'fp-ts/lib/pipeable';
 import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertLeft, assertRight } from '../../../__tests__/utils';
 import helpers from '../NegotiatorHelpers';
