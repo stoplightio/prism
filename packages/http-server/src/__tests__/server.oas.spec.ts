@@ -316,7 +316,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers).toHaveProperty('content-type', 'application/json');
+      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
     });
 
     it('respects the priority when multiple available choices match', async () => {
