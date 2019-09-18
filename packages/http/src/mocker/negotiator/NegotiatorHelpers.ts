@@ -262,7 +262,7 @@ const helpers = {
             pipe(
               previous,
               Option.alt(() => {
-                logger.trace(`Unable to find a ${statusCodes[index === 0 ? first : 1 + index]} response definition`);
+                logger.trace(`Unable to find a ${index === 0 ? first : statusCodes[1 + index]} response definition`);
                 return findResponseByStatusCode(httpResponses, current);
               }),
             ),
