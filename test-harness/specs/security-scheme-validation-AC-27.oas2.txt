@@ -2,6 +2,8 @@
 A defined 422 response is returned when security validation is passed.
 ====spec====
 swagger: "2.0"
+produces:
+  - application/json
 paths:
   /users:
     get:
@@ -43,4 +45,4 @@ curl -i http://localhost:4010/users -H "Authorization: Basic dGVzdDp0ZXN0"
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 
-xyz
+"xyz"
