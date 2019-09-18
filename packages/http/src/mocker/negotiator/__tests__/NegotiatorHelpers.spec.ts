@@ -1,3 +1,4 @@
+import { createLogger } from '@stoplight/prism-core';
 import {
   IHttpOperation,
   IHttpOperationResponse,
@@ -6,11 +7,7 @@ import {
   INodeExternalExample,
 } from '@stoplight/types';
 import { Chance } from 'chance';
-
-import { createLogger } from '@stoplight/prism-core';
-
 import * as Either from 'fp-ts/lib/Either';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertLeft, assertRight } from '../../../__tests__/utils';
 import helpers from '../NegotiatorHelpers';

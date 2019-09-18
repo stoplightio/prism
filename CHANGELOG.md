@@ -13,8 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is now giving precedence to `application/json` instead of using it as a "fallback" serializer, fixing some conditions where it wouldn't get triggered correctly. [#604](https://github.com/stoplightio/prism/pulls/604)
 - Prism is now taking in consideration the `required` properties for combined schemas (`oneOf, allOf`). This is coming through an update to the Json Schema Faker Library [#623](https://github.com/stoplightio/prism/pulls/623)
 - Prism will never have enough information to return a `403` status code; all these occurences have been now replaced with a `401` status code which is more appropriate [#625](https://github.com/stoplightio/prism/pulls/625)
-- Prism is now selecting proper serializer when Accept header contains content type which is missing in spec. This is a result of simplifying serializer selection approach. [#628](https://github.com/stoplightio/prism/pull/628) 
-
+- Prism is now selecting proper serializer when Accept header contains content type which is missing in spec. This is a result of simplifying serializer selection approach. [#628](https://github.com/stoplightio/prism/pull/628)
+- HEAD requests no longer fail with 406 Not Acceptable [#603](https://github.com/stoplightio/prism/pull/603)
 # 3.1.0 (2019-09-03)
 
 ## Added
@@ -31,7 +31,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is correctly handling the `csv` collection format argument property in OAS2 documents [#577](https://github.com/stoplightio/prism/pulls/577)
 - Prism is correctly returning the response when the request has `*/*` as Accept header [#578](https://github.com/stoplightio/prism/pulls/578)
 - Prism is correctly returning a single root node with the payload for XML data [#578](https://github.com/stoplightio/prism/pulls/578)
-- HEAD requests no longer fail with 406 Not Acceptable #603
 
 # 3.0.4 (2019-08-20)
 
