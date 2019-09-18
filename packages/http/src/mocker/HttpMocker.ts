@@ -119,16 +119,14 @@ function assembleResponse(
         const mockedBody = computeBody(negotiationResult, payloadGenerator);
         const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
 
-        const h = negotiationResult.mediaType
-          ? {
-              ...mockedHeaders,
-              'Content-type': negotiationResult.mediaType,
-            }
-          : mockedHeaders;
-
         const response: IHttpResponse = {
           statusCode: parseInt(negotiationResult.code),
-          headers: h,
+          headers: negotiationResult.mediaType
+            ? {
+                ...mockedHeaders,
+                'Content-type': negotiationResult.mediaType,
+              }
+            : mockedHeaders,
           body: mockedBody,
         };
 

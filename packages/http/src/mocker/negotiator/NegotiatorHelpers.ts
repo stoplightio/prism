@@ -136,18 +136,16 @@ const helpers = {
 
     return withLogger(logger => {
       if (_httpOperation.method === 'head') {
-        logger.warn(`head`);
+        logger.warn(`Responding with an empty body to a HEAD request.`);
 
         return Either.right({
           code: response.code,
-          // mediaType: get(mediaTypes, '0', '*/*'),
           headers: response.headers || [],
         });
       }
 
       if (mediaTypes) {
         // a user provided mediaType
-
         const httpContent = hasContents(response) ? findBestHttpContentByMediaType(response, mediaTypes) : Option.none;
 
         return pipe(
