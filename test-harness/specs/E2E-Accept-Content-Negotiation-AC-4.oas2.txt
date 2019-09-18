@@ -15,7 +15,7 @@ paths:
         200:
           description: Get Todo Items
           examples:
-            application/json: '"hello"'
+            application/json: hello
 ====server====
 mock -p 4010
 ====command====

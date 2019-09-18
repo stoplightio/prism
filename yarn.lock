@@ -1448,7 +1448,7 @@ abstract-logging@^1.0.0:
   resolved "https://registry.yarnpkg.com/abstract-logging/-/abstract-logging-1.0.0.tgz#8b7deafd310559bc28f77724dd1bb30177278c1b"
   integrity sha1-i33q/TEFWbwo93ck3RuzAXcnjBs=
 
-accepts@^1.3.3, accepts@^1.3.7:
+accepts@^1.3.7:
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/accepts/-/accepts-1.3.7.tgz#531bc726517a3b2b41f850021c6cc15eaab507cd"
   integrity sha512-Il80Qs2WjYlJIBNzNkK6KYqlVMTbZLXgHx2oT0pU/fjRHyEp+PEfEPY0R3WCwAGVOtauxh1hOxNgIf5bv7dQpA==
@@ -3167,22 +3167,6 @@ fast-xml-parser@^3.12.20:
   dependencies:
     nimnjs "^1.3.2"
 
-fastify-accepts-serializer@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/fastify-accepts-serializer/-/fastify-accepts-serializer-2.0.1.tgz#4857e79a917b247fe88ead170eca8d8043fe9fe2"
-  integrity sha512-6mMcjupZh6CkMMN01ZE3275jNaO67j3RC2x6zUjn/sqdhxzezppbTpWpHUFtF+x2YKRGGxTBYZ+v3TBn1mdFSA==
-  dependencies:
-    fastify-accepts ">=0.5.0"
-    fastify-plugin "^1.2.1"
-
-fastify-accepts@>=0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/fastify-accepts/-/fastify-accepts-0.5.0.tgz#c17c201278f2bfc51bfb93ffe48efc4fc40fd363"
-  integrity sha1-wXwgEnjyv8Ub+5P/5I78T8QP02M=
-  dependencies:
-    accepts "^1.3.3"
-    fastify-plugin "^0.2.1"
-
 fastify-cors@^2.1.3:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/fastify-cors/-/fastify-cors-2.1.3.tgz#5ae8fcc620a47270cd68d46acc3b8dd7919b538b"
@@ -3199,14 +3183,7 @@ fastify-formbody@^3.1.0:
     fastify-plugin "^1.0.0"
     qs "^6.5.1"
 
-fastify-plugin@^0.2.1:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-0.2.2.tgz#e01b67685fd02e87edc98670ce2acfe251a2c715"
-  integrity sha512-oRJdjdudgCkQQUARNeh2rkbxFAmj2OhCJSVBNBLUbhS0orF+IMQ4u/bc661N1jh/wDI2J+YKmXmmHSVFQI4e7A==
-  dependencies:
-    semver "^5.4.1"
-
-fastify-plugin@^1.0.0, fastify-plugin@^1.2.1, fastify-plugin@^1.5.0:
+fastify-plugin@^1.0.0, fastify-plugin@^1.5.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-1.6.0.tgz#c8198b08608f20c502b5dad26b36e9ae27206d7c"
   integrity sha512-lFa9txg8LZx4tljj33oG53nUXhVg0baZxtP9Pxi0dJmI0NQxzkDk5DS9kr3D7iMalUAp3mvIq16OQumc7eIvLA==
