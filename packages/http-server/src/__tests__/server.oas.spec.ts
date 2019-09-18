@@ -319,7 +319,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
       expect(response.headers).toHaveProperty('content-type', 'application/json');
     });
 
-    it('respects the priority when multiple avaiable choices match', async () => {
+    it('respects the priority when multiple available choices match', async () => {
       const response = await server.fastify.inject({
         method: 'GET',
         url: '/pets/10',
@@ -351,7 +351,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.headers).toHaveProperty('content-type', 'application/json; charset=utf-8');
+      expect(response.headers).toHaveProperty('content-type', 'application/json');
     });
 
     it('returns application/json even if the resources have the charset parameter', async () => {

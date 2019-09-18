@@ -1,3 +1,4 @@
+import { createLogger } from '@stoplight/prism-core';
 import {
   IHttpOperation,
   IHttpOperationResponse,
@@ -6,9 +7,6 @@ import {
   INodeExternalExample,
 } from '@stoplight/types';
 import { Chance } from 'chance';
-
-import { createLogger } from '@stoplight/prism-core';
-
 import * as Either from 'fp-ts/lib/Either';
 import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertLeft, assertRight } from '../../../__tests__/utils';
@@ -529,26 +527,44 @@ describe('NegotiatorHelpers', () => {
         });
       });
 
-      it('and httpContent not exist should throw an error', () => {
-        const desiredOptions: NegotiationOptions = {
-          mediaTypes: [chance.string()],
-          dynamic: chance.bool(),
-          exampleKey: chance.string(),
-        };
-
+      describe('httpContent does not exist ', () => {
         const httpResponseSchema: IHttpOperationResponse = {
           code: chance.integer({ min: 100, max: 599 }).toString(),
           contents: [],
           headers: [],
         };
 
-        const actualResponse = helpers.negotiateOptionsBySpecificResponse(
-          httpOperation,
-          desiredOptions,
-          httpResponseSchema,
-        )(logger);
+        it('should throw an error', () => {
+          const desiredOptions: NegotiationOptions = {
+            mediaTypes: [chance.string()],
+            dynamic: chance.bool(),
+            exampleKey: chance.string(),
+          };
 
-        expect(Either.isLeft(actualResponse)).toBeTruthy();
+          const actualResponse = helpers.negotiateOptionsBySpecificResponse(
+            httpOperation,
+            desiredOptions,
+            httpResponseSchema,
+          )(logger);
+
+          expect(Either.isLeft(actualResponse)).toBeTruthy();
+        });
+
+        it('should return a payload-less response', () => {
+          const actualResponse = helpers.negotiateOptionsBySpecificResponse(
+            { ...httpOperation, method: 'head' },
+            { dynamic: false, mediaTypes: ['*/*'] },
+            { code: '200' },
+          )(logger);
+
+          expect(Either.isRight(actualResponse)).toBeTruthy();
+
+          assertRight(actualResponse, response => {
+            expect(response).not.toHaveProperty('bodyExample');
+            expect(response).not.toHaveProperty('mediaType');
+            expect(response).not.toHaveProperty('schema');
+          });
+        });
       });
     });
 

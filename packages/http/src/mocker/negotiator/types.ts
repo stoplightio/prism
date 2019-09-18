@@ -4,7 +4,7 @@ import { IHttpOperationConfig, JSONSchema } from '../../';
 
 export interface IHttpNegotiationResult {
   code: string;
-  mediaType: string;
+  mediaType?: string;
   bodyExample?: ContentExample;
   headers: IHttpHeaderParam[];
   schema?: JSONSchema;

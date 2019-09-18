@@ -3,10 +3,10 @@ import typeIs = require('type-is');
 
 const xmlSerializer = new j2xParser({});
 
-export default [
+const serializers = [
   {
     regex: {
-      test: (value: string) => !!typeIs.is(value, ['application/*+json', 'application/json']),
+      test: (value: string) => !!typeIs.is(value, ['application/json', 'application/*+json']),
       toString: () => 'application/*+json',
     },
     serializer: JSON.stringify,
@@ -21,7 +21,7 @@ export default [
   {
     regex: /text\/plain/,
     serializer: (data: unknown) => {
-      if (typeof data === 'string') {
+      if (['string', 'undefined'].includes(typeof data)) {
         return data;
       }
 
@@ -33,3 +33,17 @@ export default [
     },
   },
 ];
+
+export const serialize = (payload: unknown, contentType?: string) => {
+  if (!contentType && !payload) {
+    return;
+  }
+
+  const serializer = contentType ? serializers.find(s => s.regex.test(contentType)) : undefined;
+
+  if (!serializer) {
+    throw new Error(`Cannot find serializer for ${contentType}`);
+  }
+
+  return serializer.serializer(payload);
+};
