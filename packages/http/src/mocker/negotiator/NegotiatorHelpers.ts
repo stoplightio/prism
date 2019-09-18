@@ -289,7 +289,7 @@ const helpers = {
     httpResponses: IHttpOperationResponse[],
   ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      helpers.findResponse(httpResponses, ['422', '400', '401', '403']),
+      helpers.findResponse(httpResponses, ['422', '400', '401']),
       Reader.chain(foundResponse =>
         withLogger(logger =>
           pipe(
