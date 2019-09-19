@@ -1,6 +1,5 @@
 import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
 import { Dictionary, HttpMethod, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
-import { Option } from 'fp-ts/lib/Option';
 import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
 export type PrismHttpInstance = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
@@ -44,7 +43,6 @@ export interface IHttpRequest {
 
 export interface IHttpResponse {
   statusCode: number;
-  statusText: Option<string>;
   headers?: IHttpNameValue;
   body?: unknown;
   responseType?: XMLHttpRequestResponseType;

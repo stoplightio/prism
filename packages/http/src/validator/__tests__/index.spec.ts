@@ -162,7 +162,7 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            output: { statusCode: 200, statusText: some('ok') },
+            output: { statusCode: 200 },
           }),
         ).toHaveLength(2);
 

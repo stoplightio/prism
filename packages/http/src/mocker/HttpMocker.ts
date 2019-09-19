@@ -126,7 +126,6 @@ function assembleResponse(
 
         const response: IHttpResponse = {
           statusCode: parseInt(negotiationResult.code),
-          statusText: none,
           headers: negotiationResult.mediaType
             ? {
                 ...mockedHeaders,

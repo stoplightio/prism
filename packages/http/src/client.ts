@@ -2,14 +2,10 @@ import { IPrismOutput } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 // @ts-ignore
 import logger from 'abstract-logging';
-import { getOrElse } from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
-import { getStatusText } from 'http-status-codes';
 import { defaults, partial } from 'lodash';
 import { parse as parseQueryString } from 'querystring';
 import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
-import { forwarder } from './forwarder';
 import getHttpOperations, { getHttpOperationsFromResource } from './getHttpOperations';
 import { mocker } from './mocker';
 import { router } from './router';
@@ -35,7 +31,6 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
   const obj = createInstance(defaultConfig, {
     logger,
     router,
-    forwarder,
     validator,
     mocker,
   });
@@ -63,10 +58,6 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
 
     const output: PrismOutput = {
       status: data.output.statusCode,
-      statusText: pipe(
-        data.output.statusText,
-        getOrElse(() => getStatusText(data.output.statusCode)),
-      ),
       headers: data.output.headers || {},
       data: data.output.body || {},
       config: mergedConf,
@@ -114,7 +105,6 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
 
 type PrismOutput = {
   status: IHttpResponse['statusCode'];
-  statusText: string;
   headers: IHttpResponse['headers'];
   data: unknown;
   config: IClientConfig;

@@ -3919,11 +3919,6 @@ http-signature@~1.2.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
-http-status-codes@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/http-status-codes/-/http-status-codes-1.3.2.tgz#181dfa4455ef454e5e4d827718fca3936680d10d"
-  integrity sha512-nDUtj0ltIt08tGi2VWSpSzNNFye0v3YSe9lX3lIqLTuVvvRiYCvs4QQBSHo0eomFYw1wlUuofurUAlTm+vHnXg==
-
 http-string-parser@0.0.6, http-string-parser@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/http-string-parser/-/http-string-parser-0.0.6.tgz#4088a1aba2b89155ce13918bcfb5cbbea6c4e7e9"
