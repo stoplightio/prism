@@ -51,13 +51,15 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             );
           }
 
-          const inputValidationResult = inputValidations.concat(
-            pipe(
-              validateSecurity(input, resource),
-              map(sec => [sec]),
-              getOrElse<IPrismDiagnostic[]>(() => []),
-            ),
-          );
+          const inputValidationResult = config.validateSecurity
+            ? inputValidations.concat(
+                pipe(
+                  validateSecurity(input, resource),
+                  map(sec => [sec]),
+                  getOrElse<IPrismDiagnostic[]>(() => []),
+                ),
+              )
+            : inputValidations;
 
           if (resource && components.mocker && config.mock) {
             // generate the response

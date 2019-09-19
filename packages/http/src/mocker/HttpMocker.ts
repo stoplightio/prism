@@ -38,7 +38,7 @@ class HttpMocker
       withLogger(logger => {
         // setting default values
         const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
-        config = config || { mock: false, validateRequest: true, validateResponse: true };
+        config = config || { mock: false, validateRequest: true, validateResponse: true, validateSecurity: true };
         const mockConfig: IHttpOperationConfig =
           config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
 

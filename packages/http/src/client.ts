@@ -13,7 +13,7 @@ import { forwarder } from './forwarder';
 import getHttpOperations, { getHttpOperationsFromResource } from './getHttpOperations';
 import { mocker } from './mocker';
 import { router } from './router';
-import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl, PickRequired } from './types';
+import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { validator } from './validator';
 
 function createClientFrom(
