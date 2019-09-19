@@ -99,7 +99,7 @@ Later we alter than behaviour by passing a config object to the `process` functi
 const Prism = require('@stoplight/prism-http');
 
 // Note that by default we don't want to mock responses
-const prism = Prism.createInstance({ mock: false });
+const prism = Prism.createInstance({ mock: {dynamic: false} });
 
 // Make a "GET /todos" request
 return prism.process(
@@ -127,8 +127,8 @@ We don't want to mock a reqeust, we simply want to make the request, hit the act
 ```javascript
 const Prism = require('@stoplight/prism-http');
 
-// Create Prism instance and configure it to make HTTP requests (mock: false)
-const config = { mock: false };
+// Create Prism instance and configure it to make HTTP requests (mock: {dynamic: false})
+const config = { mock: {dynamic: false} };
 const prism = Prism.createInstance(config);
 
 return prism
@@ -156,7 +156,7 @@ In order to create and instance of HTTP Client (later referred to as `prism` for
 
 ```javascript
 const Prism = require('@stoplight/prism-http');
-const config = { mock: false };
+const config = { mock: {dynamic: false} };
 const prism = Prism.createInstance(config /*, components */);
 ```
 
@@ -179,7 +179,7 @@ The actual interface looks like this (but rather than explain each property we'r
 
 ```ts
 export interface IHttpConfig extends IPrismConfig {
-  mock: false | IHttpOperationConfig;
+  mock: {dynamic: false} | IHttpOperationConfig;
   validateRequest: boolean;
   validateResponse: boolean;
 }
@@ -191,7 +191,7 @@ export interface IHttpConfig extends IPrismConfig {
 
 ```javascript
 const config = {
-  mock: false,
+  mock: {dynamic: false},
   validateRequest: false,
   validareResponse: true
 };
@@ -290,7 +290,7 @@ Notice that `baseUrl` is defined.
 
 This will instruct Prism to do one of the two:
 
-- if mocking is **disabled** (`{ mock: false }`)
+- if mocking is **disabled** (`{ mock: {dynamic: false} }`)
   - it will use that `baseUrl` to make a request to the server (`GET https://cat-fact.herokuapp.com/facts`)
   - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OpenAPI and **add an input warning to the .process return value if it is not valid**
 - if mocking is **enabled**
@@ -314,7 +314,7 @@ One example however is that for a given example
 const Prism = require('@stoplight/prism-http');
 
 // Create Prism instance and configure it to make http requests
-const config = { mock: false };
+const config = { mock: {dynamic: false} };
 const prism = Prism.createInstance(config);
 prism
   .process({

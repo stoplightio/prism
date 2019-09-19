@@ -17,7 +17,7 @@ export interface IHttpOperationConfig {
 }
 
 export interface IHttpConfig extends IPrismConfig {
-  mock: false | IHttpOperationConfig;
+  mock: IHttpOperationConfig;
 
   validateRequest: boolean;
   validateResponse: boolean;
