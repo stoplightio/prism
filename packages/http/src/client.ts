@@ -108,7 +108,7 @@ type PrismOutput = {
   status: IHttpResponse['statusCode'];
   statusText: string;
   headers: IHttpResponse['headers'];
-  data: IHttpResponse['body'];
+  data: unknown;
   config: IHttpConfig;
   request: IHttpRequest;
   validations: IPrismOutput<IHttpRequest, IHttpResponse>['validations'];
