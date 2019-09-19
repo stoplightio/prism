@@ -3,7 +3,7 @@ import { createNewClientInstanceFromFile, PrismHttp } from '../client';
 import { forwarder } from '../forwarder';
 import { mocker } from '../mocker';
 
-type PromiseType<T> = T extends Promise<infer U> ? U : T;
+type PromiseType<T> = T extends Promise<infer U> ? U : never;
 
 describe('User Http Client', () => {
   afterEach(() => nock.cleanAll());
@@ -41,14 +41,16 @@ describe('User Http Client', () => {
       test('should have output validations errors', () =>
         expect(response.validations.output.length).toBeGreaterThan(0));
 
-      test('should have output validations errors', async () => {
-        const client = await createNewClientInstanceFromFile(
-          { mock: false, validateRequest: true, validateResponse: true },
-          require.resolve('../../../../examples/petstore.oas2.yaml'),
-        );
+      describe('when setting the validateResopnse false on request level', () => {
+        test('should not have output validations errors', async () => {
+          const client = await createNewClientInstanceFromFile(
+            { mock: false, validateRequest: true, validateResponse: true },
+            require.resolve('../../../../examples/petstore.oas2.yaml'),
+          );
 
-        response = await client.get('/pet/10', {}, { validateResponse: false, mock: false, validateRequest: true });
-        expect(response.validations.output).toHaveLength(0);
+          response = await client.get('/pet/10', {}, { validateResponse: false, mock: false, validateRequest: true });
+          expect(response.validations.output).toHaveLength(0);
+        });
       });
     });
   });
