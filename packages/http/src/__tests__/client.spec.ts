@@ -1,5 +1,5 @@
 import * as nock from 'nock';
-import { createNewClientInstanceFromResource, PrismHttp } from '../client';
+import { createClientFromResource, PrismHttp } from '../client';
 import { forwarder } from '../forwarder';
 import { mocker } from '../mocker';
 
@@ -27,10 +27,11 @@ describe('User Http Client', () => {
             },
           });
 
-        const client = await createNewClientInstanceFromResource(
-          require.resolve('../../../../examples/petstore.oas2.yaml'),
-          { mock: false, validateRequest: true, validateResponse: true },
-        );
+        const client = await createClientFromResource(require.resolve('../../../../examples/petstore.oas2.yaml'), {
+          mock: false,
+          validateRequest: true,
+          validateResponse: true,
+        });
 
         response = await client.get('/pet/10');
       });
@@ -43,10 +44,11 @@ describe('User Http Client', () => {
 
       describe('when setting the validateResopnse false on request level', () => {
         test('should not have output validations errors', async () => {
-          const client = await createNewClientInstanceFromResource(
-            require.resolve('../../../../examples/petstore.oas2.yaml'),
-            { mock: false, validateRequest: true, validateResponse: true },
-          );
+          const client = await createClientFromResource(require.resolve('../../../../examples/petstore.oas2.yaml'), {
+            mock: false,
+            validateRequest: true,
+            validateResponse: true,
+          });
 
           response = await client.get('/pet/10', {}, { validateResponse: false, mock: false, validateRequest: true });
           expect(response.validations.output).toHaveLength(0);

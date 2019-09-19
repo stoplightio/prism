@@ -16,17 +16,17 @@ import { router } from './router';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { validator } from './validator';
 
-async function createNewClientInstanceFromResource(specFile: string, defaultConfig: IHttpConfig): Promise<PrismHttp> {
+async function createClientFromResource(specFile: string, defaultConfig: IHttpConfig): Promise<PrismHttp> {
   const resources = await getHttpOperationsFromResource(specFile);
-  return createNewClientFromOperations(resources, defaultConfig);
+  return createClientFromOperations(resources, defaultConfig);
 }
 
-async function createNewClientInstanceFromString(spec: string, defaultConfig: IHttpConfig): Promise<PrismHttp> {
+async function createClientFromString(spec: string, defaultConfig: IHttpConfig): Promise<PrismHttp> {
   const resources = await getHttpOperations(spec);
-  return createNewClientFromOperations(resources, defaultConfig);
+  return createClientFromOperations(resources, defaultConfig);
 }
 
-function createNewClientFromOperations(resources: IHttpOperation[], defaultConfig: IHttpConfig) {
+function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IHttpConfig) {
   const obj = createInstance(defaultConfig, {
     logger,
     router,
@@ -138,4 +138,4 @@ export type PrismHttp = {
   trace: IRequestFunctionWithMethod;
 };
 
-export { createNewClientInstanceFromResource, createNewClientInstanceFromString, createNewClientFromOperations };
+export { createClientFromResource, createClientFromString, createClientFromOperations };
