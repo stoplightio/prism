@@ -5,7 +5,7 @@ import logger from 'abstract-logging';
 import { getOrElse } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { getStatusText } from 'http-status-codes';
-import { defaults } from 'lodash';
+import { defaults, partial } from 'lodash';
 import { parse as parseQueryString } from 'querystring';
 import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
@@ -24,8 +24,8 @@ function createClientFrom(
   return getResource(spec).then(resources => createClientFromOperations(resources, defaultConfig));
 }
 
-const createClientFromResource = createClientFrom.bind(undefined, getHttpOperationsFromResource);
-const createClientFromString = createClientFrom.bind(undefined, getHttpOperations);
+const createClientFromResource = partial(createClientFrom, getHttpOperationsFromResource);
+const createClientFromString = partial(createClientFrom, getHttpOperations);
 
 function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IHttpConfig) {
   const obj = createInstance(defaultConfig, {

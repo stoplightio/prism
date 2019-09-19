@@ -50,7 +50,7 @@ describe('User Http Client', () => {
             validateResponse: true,
           });
 
-          response = await client.get('/pet/10', {}, { validateResponse: false, mock: false, validateRequest: true });
+          response = await client.get('/pet/10', { validateResponse: false, mock: false, validateRequest: true });
           expect(response.validations.output).toHaveLength(0);
         });
       });
