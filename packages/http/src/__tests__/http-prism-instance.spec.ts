@@ -54,7 +54,10 @@ describe('Http Client .request', () => {
     ${basename(serverValidationOas3Path)} | ${serverValidationOas3Path}
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
-      prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
+      prism = createInstance(
+        { validateRequest: true, validateSecurity: true, validateResponse: true, mock: { dynamic: false } },
+        { logger },
+      );
       resources = await getHttpOperationsFromResource(specPath);
     });
 
@@ -128,7 +131,12 @@ describe('Http Client .request', () => {
     });
 
     describe('mocking is off', () => {
-      const config: IHttpConfig = { mock: false, validateRequest: true, validateResponse: true };
+      const config: IHttpConfig = {
+        mock: false,
+        validateSecurity: true,
+        validateRequest: true,
+        validateResponse: true,
+      };
       const baseUrl = 'http://stoplight.io';
       const serverReply = 'hello world';
 
@@ -240,7 +248,10 @@ describe('Http Client .request', () => {
 
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
-      prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
+      prism = createInstance(
+        { validateSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+        { logger },
+      );
       resources = await getHttpOperationsFromResource(noRefsPetstoreMinimalOas2Path);
     });
 
@@ -369,7 +380,10 @@ describe('Http Client .request', () => {
   });
 
   it('returns stringified static example when one defined in spec', async () => {
-    prism = createInstance({ mock: { dynamic: false }, validateRequest: true, validateResponse: true }, { logger });
+    prism = createInstance(
+      { mock: { dynamic: false }, validateSecurity: true, validateRequest: true, validateResponse: true },
+      { logger },
+    );
     resources = await getHttpOperationsFromResource(staticExamplesOas2Path);
 
     const response = await prism.request(

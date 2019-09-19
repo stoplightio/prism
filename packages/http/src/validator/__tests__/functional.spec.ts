@@ -3,8 +3,6 @@ import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixture
 import { IHttpConfig } from '../../types';
 import { validator } from '../index';
 
-const defaultConfig: IHttpConfig = { mock: false, validateRequest: true, validateResponse: true };
-
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
   body: { name: 'Shopping', completed: 'yes' },
   url: Object.assign({}, httpInputs[2].url, { query: { overwrite: 'true' } }),
