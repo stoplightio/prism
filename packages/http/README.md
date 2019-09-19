@@ -172,7 +172,6 @@ We will cover the `config` argument in next section and we'll leave `components`
 Prism's config object (`IHttpConfig`) allows you to manipulate Prism's behaviour in many ways. For instance:
 
 - turn validation on and off
-- turn mocking on and off
 - influence Prism's mocked response generation strategy
 
 The actual interface looks like this (but rather than explain each property we're going to look at some examples)
@@ -186,18 +185,6 @@ export interface IHttpConfig extends IPrismConfig {
 ```
 
 #### Config Examples
-
-**Do not mock and do not validate requests**
-
-```javascript
-const config = {
-  mock: {dynamic: false},
-  validateRequest: false,
-  validareResponse: true
-};
-```
-
-With the above configuration the http client will proxy your requests to a server and will validate the response with the OpenAPI you loaded. However, it will not validate the input (e.g. will not check whether the provided query param is valid).
 
 **When mocking a response generate static response**
 
@@ -345,7 +332,3 @@ You would get this in response
 The below diagram represents all logical decision we make to figure out the best HTTP response to the specific request.
 
 ![Decision Flow Diagram](./docs/images/mock-server-dfd.png)
-
-## Gotchas
-
-If provided request object contains `Host` header it will be replaced with `baseUrl` host. The original value will be set to `Forwarded` header with `host=` prefix.
