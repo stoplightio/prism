@@ -2,10 +2,11 @@ import { IHttpContent, IHttpOperationResponse, IMediaTypeContent } from '@stopli
 // @ts-ignore
 import * as accepts from 'accepts';
 import { filter, findFirst, head, sort } from 'fp-ts/lib/Array';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { alt, map, Option } from 'fp-ts/lib/Option';
 import { ord, ordNumber } from 'fp-ts/lib/Ord';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { ContentExample, NonEmptyArray, PickRequired } from '../../';
+import { ContentExample, PickRequired } from '../../';
 
 export type IWithExampleMediaContent = IMediaTypeContent & { examples: NonEmptyArray<ContentExample> };
 

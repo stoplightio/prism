@@ -172,13 +172,6 @@ This class of errors is returned when the current request is not satisfying the 
 
 ---
 
-### FORBIDDEN
-**Message: Invalid credentials used**
-**Returned Status Code: `403`**
-**Explanation:** This error occurs when the current request is using the correct security scheme, but its content was invalid. This might be an error in the decoding process (such as a not valid base64 payload)
-
----
-
 ## Negotiation errors
 
 This class of errors is returned when anything goes wrong in between your **valid** request and returning a suitable response

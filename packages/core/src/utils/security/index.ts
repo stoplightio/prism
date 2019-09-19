@@ -12,16 +12,7 @@ function gatherInvalidResults(
   error: Left<IPrismDiagnostic>,
   invalidSecuritySchemes: Array<Array<Either<IPrismDiagnostic, unknown>>>,
 ) {
-  const firstLeftValue = pipe(
-    error,
-    fold<IPrismDiagnostic, unknown, IPrismDiagnostic>(identity, identity),
-  );
-
-  const invalidSecurity =
-    firstLeftValue.code !== 401
-      ? firstLeftValue
-      : gatherWWWAuthHeader(invalidSecuritySchemes, ['tags'], firstLeftValue);
-
+  const invalidSecurity = gatherWWWAuthHeader(invalidSecuritySchemes, ['tags'], error.left);
   return some(invalidSecurity);
 }
 

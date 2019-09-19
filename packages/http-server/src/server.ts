@@ -2,15 +2,13 @@ import { createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpConfig, IHttpMethod, PrismHttpInstance, ProblemJsonError } from '@stoplight/prism-http';
 import { IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
-// @ts-ignore
-import * as fastifyAcceptsSerializer from 'fastify-accepts-serializer';
 import * as fastifyCors from 'fastify-cors';
 import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
 import { defaults } from 'lodash';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
-import serializers from './serializers';
+import { serialize } from './serialize';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
@@ -20,9 +18,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     logger: (components && components.logger) || createLogger('HTTP SERVER'),
     disableRequestLogging: true,
     modifyCoreObjects: false,
-  })
-    .register(formbodyParser)
-    .register(fastifyAcceptsSerializer, { serializers });
+  }).register(formbodyParser);
 
   if (opts.cors) server.register(fastifyCors);
 
@@ -38,19 +34,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     error.status = 415;
     Error.captureStackTrace(error);
     return done(error);
-  });
-
-  server.addHook('onSend', (request, reply, payload, done) => {
-    if (request.headers.accept === '*/*' && typeof payload !== 'string') {
-      const serializer = reply.hasHeader('content-type')
-        ? serializers.find(s => s.regex.test(reply.getHeader('content-type')!))
-        : serializers[0];
-      if (serializer) {
-        return done(undefined, serializer.serializer(payload));
-      }
-    }
-
-    return done(undefined, payload);
   });
 
   const mergedConfig = defaults<Partial<IHttpConfig>, IHttpConfig>(config, {
@@ -119,7 +102,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           if (output.headers) {
             reply.headers(output.headers);
           }
-          reply.send(output.body);
+
+          reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
         } else {
           throw new Error('Unable to find any decent response for the current request.');
         }

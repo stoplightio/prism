@@ -1,0 +1,48 @@
+====test====
+A defined 422 response is returned when security validation is passed.
+====spec====
+swagger: "2.0"
+produces:
+  - application/json
+paths:
+  /users:
+    get:
+      description: returns users
+      parameters:
+        - in: query
+          name: age
+          required: true
+          type: number
+      responses:
+        200:
+          description: ok
+        401:
+          $ref: '#/responses/InvalidAuthorization'
+        422:
+          $ref: '#/responses/InvalidPayload'
+responses:
+  InvalidAuthorization:
+    description: InvalidAuthorization
+    schema:
+      type: string
+      example:
+        abc
+  InvalidPayload:
+    description: InvalidPayload
+    schema:
+      type: string
+      example:
+        xyz
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/users -H "Authorization: Basic dGVzdDp0ZXN0"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+
+"xyz"
