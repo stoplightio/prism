@@ -19,4 +19,4 @@ mock -p 4010
 ====command====
 curl -sIXGET http://localhost:4010/users
 ====expect====
-HTTP/1.1 400 Bad Request
+HTTP/1.1 401 Unauthorized
