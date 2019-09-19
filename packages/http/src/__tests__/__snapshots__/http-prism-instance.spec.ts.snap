@@ -20,9 +20,6 @@ Object {
       "Content-type": "application/json",
     },
     "statusCode": 200,
-    "statusText": Object {
-      "_tag": "None",
-    },
   },
   "validations": Object {
     "input": Array [],

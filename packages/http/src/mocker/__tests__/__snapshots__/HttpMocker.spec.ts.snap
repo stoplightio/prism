@@ -7,9 +7,6 @@ Object {
     "Content-type": "test",
   },
   "statusCode": 202,
-  "statusText": Object {
-    "_tag": "None",
-  },
 }
 `;
 
@@ -20,9 +17,6 @@ Object {
     "Content-type": "test",
   },
   "statusCode": 202,
-  "statusText": Object {
-    "_tag": "None",
-  },
 }
 `;
 
@@ -33,8 +27,5 @@ Object {
     "Content-type": "test",
   },
   "statusCode": 202,
-  "statusText": Object {
-    "_tag": "None",
-  },
 }
 `;
