@@ -1,7 +1,6 @@
 import { factory } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import { defaults } from 'lodash';
-import { forwarder } from './forwarder';
 import { mocker } from './mocker';
 import { router } from './router';
 import { validator } from './validator';
@@ -18,7 +17,6 @@ const createInstance = (
     defaultConfig,
     defaults(components, {
       router,
-      forwarder,
       validator,
       mocker,
     }),

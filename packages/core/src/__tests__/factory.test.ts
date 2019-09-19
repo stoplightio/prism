@@ -12,7 +12,7 @@ describe('validation', () => {
   };
 
   const prismInstance = factory<string, string, string, IPrismConfig>(
-    { mock: true, validateRequest: false, validateResponse: false, validateSecurity: true },
+    { mock: { dynamic: false }, validateRequest: false, validateResponse: false, validateSecurity: true },
     {
       validator,
       router: {
