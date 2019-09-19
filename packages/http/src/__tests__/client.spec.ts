@@ -42,7 +42,7 @@ describe('User Http Client', () => {
       test('should have output validations errors', () =>
         expect(response.validations.output.length).toBeGreaterThan(0));
 
-      describe('when setting the validateResopnse false on request level', () => {
+      describe('when setting the validateResponse false on request level', () => {
         test('should not have output validations errors', async () => {
           const client = await createClientFromResource(require.resolve('../../../../examples/petstore.oas2.yaml'), {
             mock: false,
