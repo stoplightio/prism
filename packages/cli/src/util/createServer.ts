@@ -43,7 +43,12 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
 
   const server = createHttpServer(options.operations, {
     cors: options.cors,
-    config: { mock: { dynamic: options.dynamic }, validateRequest: true, validateResponse: true },
+    config: {
+      mock: { dynamic: options.dynamic },
+      validateRequest: true,
+      validateResponse: true,
+      validateSecurity: true,
+    },
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
   });
 

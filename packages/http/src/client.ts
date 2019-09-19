@@ -72,52 +72,37 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
     return output;
   };
 
-  function isInput(
-    input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig,
-  ): input is Required<Pick<IHttpRequest, 'headers'>> {
+  type headersFromRequest = Required<Pick<IHttpRequest, 'headers'>>;
+
+  function isInput(input?: headersFromRequest | IHttpConfig): input is headersFromRequest {
     return !!input && 'headers' in input;
   }
 
   return {
     request,
-    get: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
+    get: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
       isInput(input) ? request(url, { method: 'get', ...input }, config) : request(url, { method: 'get' }, input),
-    put: (
-      url: string,
-      body: unknown,
-      input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig,
-      config?: IHttpConfig,
-    ) =>
+    put: (url: string, body: unknown, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
       isInput(input)
         ? request(url, { method: 'put', ...input, body }, config)
         : request(url, { method: 'put', body }, input),
-    post: (
-      url: string,
-      body: unknown,
-      input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig,
-      config?: IHttpConfig,
-    ) =>
+    post: (url: string, body: unknown, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
       isInput(input)
         ? request(url, { method: 'post', ...input, body }, config)
         : request(url, { method: 'post', body }, input),
-    delete: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
+    delete: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
       isInput(input) ? request(url, { method: 'delete', ...input }, config) : request(url, { method: 'delete' }, input),
-    options: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
+    options: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
       isInput(input)
         ? request(url, { method: 'options', ...input }, config)
         : request(url, { method: 'options' }, input),
-    head: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
+    head: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
       isInput(input) ? request(url, { method: 'head', ...input }, config) : request(url, { method: 'head' }, input),
-    patch: (
-      url: string,
-      body: unknown,
-      input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig,
-      config?: IHttpConfig,
-    ) =>
+    patch: (url: string, body: unknown, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
       isInput(input)
         ? request(url, { method: 'patch', ...input, body }, config)
         : request(url, { method: 'patch', body }, input),
-    trace: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
+    trace: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
       isInput(input) ? request(url, { method: 'trace', ...input }, config) : request(url, { method: 'trace' }, input),
   };
 }
