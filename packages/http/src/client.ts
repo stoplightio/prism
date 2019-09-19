@@ -16,15 +16,16 @@ import { router } from './router';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { validator } from './validator';
 
-async function createClientFromResource(specFile: string, defaultConfig: IHttpConfig): Promise<PrismHttp> {
-  const resources = await getHttpOperationsFromResource(specFile);
-  return createClientFromOperations(resources, defaultConfig);
+function createClientFrom(
+  getResource: (v: string) => Promise<IHttpOperation[]>,
+  spec: string,
+  defaultConfig: IHttpConfig,
+): Promise<PrismHttp> {
+  return getResource(spec).then(resources => createClientFromOperations(resources, defaultConfig));
 }
 
-async function createClientFromString(spec: string, defaultConfig: IHttpConfig): Promise<PrismHttp> {
-  const resources = await getHttpOperations(spec);
-  return createClientFromOperations(resources, defaultConfig);
-}
+const createClientFromResource = createClientFrom.bind(undefined, getHttpOperationsFromResource);
+const createClientFromString = createClientFrom.bind(undefined, getHttpOperations);
 
 function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IHttpConfig) {
   const obj = createInstance(defaultConfig, {
