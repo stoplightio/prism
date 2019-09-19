@@ -28,8 +28,10 @@ const createClientFromResource = partial(createClientFrom, getHttpOperationsFrom
 const createClientFromString = partial(createClientFrom, getHttpOperations);
 
 function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IClientConfig) {
+  const lg = { ...logger, child: () => lg, success: logger.info };
+
   const obj = createInstance(defaultConfig, {
-    logger: { ...logger, child: () => logger },
+    logger: lg,
     router,
     validator,
     mocker,

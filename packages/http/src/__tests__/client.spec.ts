@@ -14,7 +14,7 @@ describe('User Http Client', () => {
           mock: { dynamic: false },
           validateRequest: true,
           validateResponse: true,
-          validateSecurity: true,
+          validateSecurity: false,
         });
 
         response = await client.get('/pet/10');
@@ -22,27 +22,7 @@ describe('User Http Client', () => {
 
       test('should not call the mocker', () => expect(mocker.mock).toHaveBeenCalled());
       test('should receive a response', () => expect(response).toBeDefined());
-      test('should have output validations errors', () =>
-        expect(response.validations.output.length).toBeGreaterThan(0));
-
-      describe('when setting the validateResponse false on request level', () => {
-        test('should not have output validations errors', async () => {
-          const client = await createClientFromResource(require.resolve('../../../../examples/petstore.oas2.yaml'), {
-            mock: { dynamic: false },
-            validateRequest: true,
-            validateResponse: true,
-            validateSecurity: true,
-          });
-
-          response = await client.get('/pet/10', {
-            validateResponse: false,
-            mock: { dynamic: false },
-            validateRequest: true,
-            validateSecurity: true,
-          });
-          expect(response.validations.output).toHaveLength(0);
-        });
-      });
+      test('should not output validations errors', () => expect(response.validations.output).toHaveLength(0));
     });
   });
 });
