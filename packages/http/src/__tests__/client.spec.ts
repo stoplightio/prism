@@ -31,6 +31,7 @@ describe('User Http Client', () => {
           mock: false,
           validateRequest: true,
           validateResponse: true,
+          security: true,
         });
 
         response = await client.get('/pet/10');
@@ -48,9 +49,15 @@ describe('User Http Client', () => {
             mock: false,
             validateRequest: true,
             validateResponse: true,
+            security: true,
           });
 
-          response = await client.get('/pet/10', { validateResponse: false, mock: false, validateRequest: true });
+          response = await client.get('/pet/10', {
+            validateResponse: false,
+            mock: false,
+            validateRequest: true,
+            security: true,
+          });
           expect(response.validations.output).toHaveLength(0);
         });
       });
