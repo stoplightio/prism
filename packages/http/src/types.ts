@@ -38,14 +38,14 @@ export interface IHttpRequest {
   method: IHttpMethod;
   url: IHttpUrl;
   headers?: IHttpNameValue;
-  body?: any;
+  body?: unknown;
 }
 
 export interface IHttpResponse {
   statusCode: number;
   statusText: Option<string>;
   headers?: IHttpNameValue;
-  body?: any;
+  body?: unknown;
   responseType?: XMLHttpRequestResponseType;
 }
 

@@ -13,7 +13,7 @@ import { forwarder } from './forwarder';
 import getHttpOperations, { getHttpOperationsFromResource } from './getHttpOperations';
 import { mocker } from './mocker';
 import { router } from './router';
-import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
+import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl, PickRequired } from './types';
 import { validator } from './validator';
 
 function createClientFrom(
@@ -72,35 +72,52 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
     return output;
   };
 
-  function isInput(input?: Pick<IHttpRequest, 'headers'> | IHttpConfig): input is Pick<IHttpRequest, 'headers'> {
+  function isInput(
+    input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig,
+  ): input is Required<Pick<IHttpRequest, 'headers'>> {
     return !!input && 'headers' in input;
   }
 
   return {
     request,
-    get: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+    get: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
       isInput(input) ? request(url, { method: 'get', ...input }, config) : request(url, { method: 'get' }, input),
-    put: (url: string, body: unknown, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+    put: (
+      url: string,
+      body: unknown,
+      input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig,
+      config?: IHttpConfig,
+    ) =>
       isInput(input)
         ? request(url, { method: 'put', ...input, body }, config)
         : request(url, { method: 'put', body }, input),
-    post: (url: string, body: unknown, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+    post: (
+      url: string,
+      body: unknown,
+      input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig,
+      config?: IHttpConfig,
+    ) =>
       isInput(input)
         ? request(url, { method: 'post', ...input, body }, config)
         : request(url, { method: 'post', body }, input),
-    delete: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+    delete: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
       isInput(input) ? request(url, { method: 'delete', ...input }, config) : request(url, { method: 'delete' }, input),
-    options: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+    options: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
       isInput(input)
         ? request(url, { method: 'options', ...input }, config)
         : request(url, { method: 'options' }, input),
-    head: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+    head: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
       isInput(input) ? request(url, { method: 'head', ...input }, config) : request(url, { method: 'head' }, input),
-    patch: (url: string, body: unknown, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+    patch: (
+      url: string,
+      body: unknown,
+      input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig,
+      config?: IHttpConfig,
+    ) =>
       isInput(input)
         ? request(url, { method: 'patch', ...input, body }, config)
         : request(url, { method: 'patch', body }, input),
-    trace: (url: string, input?: Pick<IHttpRequest, 'headers'> | IHttpConfig, config?: IHttpConfig) =>
+    trace: (url: string, input?: Required<Pick<IHttpRequest, 'headers'>> | IHttpConfig, config?: IHttpConfig) =>
       isInput(input) ? request(url, { method: 'trace', ...input }, config) : request(url, { method: 'trace' }, input),
   };
 }
@@ -118,12 +135,14 @@ type PrismOutput = {
 type RequestFunction = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IHttpConfig) => Promise<PrismOutput>;
 
 interface IRequestFunctionWithMethod {
-  (url: string, input: Pick<IHttpRequest, 'headers'>, config?: IHttpConfig): Promise<PrismOutput>;
+  (url: string, input: Required<Pick<IHttpRequest, 'headers'>>, config?: IHttpConfig): Promise<PrismOutput>;
   (url: string, config?: IHttpConfig): Promise<PrismOutput>;
 }
 
 interface IRequestFunctionWithMethodWithBody {
-  (url: string, body: unknown, input: Pick<IHttpRequest, 'headers'>, config?: IHttpConfig): Promise<PrismOutput>;
+  (url: string, body: unknown, input: Required<Pick<IHttpRequest, 'headers'>>, config?: IHttpConfig): Promise<
+    PrismOutput
+  >;
   (url: string, body: unknown, config?: IHttpConfig): Promise<PrismOutput>;
 }
 
