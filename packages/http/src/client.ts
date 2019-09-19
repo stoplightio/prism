@@ -16,17 +16,17 @@ import { router } from './router';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { validator } from './validator';
 
-async function createNewClientInstanceFromResource(defaultConfig: IHttpConfig, specFile: string): Promise<PrismHttp> {
+async function createNewClientInstanceFromResource(specFile: string, defaultConfig: IHttpConfig): Promise<PrismHttp> {
   const resources = await getHttpOperationsFromResource(specFile);
-  return createNewClientFromOperations(defaultConfig, resources);
+  return createNewClientFromOperations(resources, defaultConfig);
 }
 
-async function createNewClientInstanceFromString(defaultConfig: IHttpConfig, spec: string): Promise<PrismHttp> {
+async function createNewClientInstanceFromString(spec: string, defaultConfig: IHttpConfig): Promise<PrismHttp> {
   const resources = await getHttpOperations(spec);
-  return createNewClientFromOperations(defaultConfig, resources);
+  return createNewClientFromOperations(resources, defaultConfig);
 }
 
-function createNewClientFromOperations(defaultConfig: IHttpConfig, resources: IHttpOperation[]) {
+function createNewClientFromOperations(resources: IHttpOperation[], defaultConfig: IHttpConfig) {
   const obj = createInstance(defaultConfig, {
     logger,
     router,

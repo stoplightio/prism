@@ -28,8 +28,8 @@ describe('User Http Client', () => {
           });
 
         const client = await createNewClientInstanceFromResource(
-          { mock: false, validateRequest: true, validateResponse: true },
           require.resolve('../../../../examples/petstore.oas2.yaml'),
+          { mock: false, validateRequest: true, validateResponse: true },
         );
 
         response = await client.get('/pet/10');
@@ -44,8 +44,8 @@ describe('User Http Client', () => {
       describe('when setting the validateResopnse false on request level', () => {
         test('should not have output validations errors', async () => {
           const client = await createNewClientInstanceFromResource(
-            { mock: false, validateRequest: true, validateResponse: true },
             require.resolve('../../../../examples/petstore.oas2.yaml'),
+            { mock: false, validateRequest: true, validateResponse: true },
           );
 
           response = await client.get('/pet/10', {}, { validateResponse: false, mock: false, validateRequest: true });
