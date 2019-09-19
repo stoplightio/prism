@@ -8,7 +8,7 @@ import { EOL } from 'os';
 import { resolve } from 'path';
 import { httpAndFileResolver } from './resolvers/http-and-file';
 
-export async function getHttpOperationsFromFile(file: string): Promise<IHttpOperation[]> {
+export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
   const fileContent = file.match(/^https?:\/\//)
     ? (await axios.get(file, { transformResponse: res => res })).data
     : fs.readFileSync(file, { encoding: 'utf8' });

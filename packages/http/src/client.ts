@@ -10,14 +10,14 @@ import { parse as parseQueryString } from 'querystring';
 import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
 import { forwarder } from './forwarder';
-import getHttpOperations, { getHttpOperationsFromFile } from './getHttpOperations';
+import getHttpOperations, { getHttpOperationsFromResource } from './getHttpOperations';
 import { mocker } from './mocker';
 import { router } from './router';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { validator } from './validator';
 
 async function createNewClientInstanceFromFile(defaultConfig: IHttpConfig, specFile: string): Promise<PrismHttp> {
-  const resources = await getHttpOperationsFromFile(specFile);
+  const resources = await getHttpOperationsFromResource(specFile);
   return createNewClientFromOperations(defaultConfig, resources);
 }
 

@@ -10,7 +10,7 @@ jest.mock('../../util/createServer', () => ({
   createSingleProcessPrism: jest.fn(),
 }));
 
-jest.spyOn(utils, 'getHttpOperationsFromFile').mockResolvedValue([]);
+jest.spyOn(utils, 'getHttpOperationsFromResource').mockResolvedValue([]);
 
 describe('mock command', () => {
   beforeEach(() => {

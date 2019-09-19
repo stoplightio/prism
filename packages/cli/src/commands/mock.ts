@@ -1,4 +1,4 @@
-import { getHttpOperationsFromFile } from '@stoplight/prism-http';
+import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import * as signale from 'signale';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreatePrismOptions, createSingleProcessPrism } from '../util/createServer';
@@ -12,7 +12,7 @@ const mockCommand: CommandModule = {
         description: 'Path to a spec file. Can be both a file or a fetchable resource on the web.',
         type: 'string',
       })
-      .middleware(async argv => (argv.operations = await getHttpOperationsFromFile(argv.spec!)))
+      .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.spec!)))
       .fail((msg, err) => {
         if (msg) yargs.showHelp();
         else signale.fatal(err.message);

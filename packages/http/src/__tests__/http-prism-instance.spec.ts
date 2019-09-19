@@ -5,7 +5,7 @@ import { Scope as NockScope } from 'nock';
 import * as nock from 'nock';
 import { basename, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
-import { getHttpOperationsFromFile } from '../getHttpOperations';
+import { getHttpOperationsFromResource } from '../getHttpOperations';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_BASE_URL_ERROR, NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
 
@@ -55,7 +55,7 @@ describe('Http Client .request', () => {
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
       prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
-      resources = await getHttpOperationsFromFile(specPath);
+      resources = await getHttpOperationsFromResource(specPath);
     });
 
     describe('baseUrl not set', () => {
@@ -241,7 +241,7 @@ describe('Http Client .request', () => {
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
       prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
-      resources = await getHttpOperationsFromFile(noRefsPetstoreMinimalOas2Path);
+      resources = await getHttpOperationsFromResource(noRefsPetstoreMinimalOas2Path);
     });
 
     describe('path is invalid', () => {
@@ -365,12 +365,12 @@ describe('Http Client .request', () => {
   });
 
   it('loads spec provided in yaml', () => {
-    return expect(getHttpOperationsFromFile(petStoreOas2Path)).resolves.toHaveLength(3);
+    return expect(getHttpOperationsFromResource(petStoreOas2Path)).resolves.toHaveLength(3);
   });
 
   it('returns stringified static example when one defined in spec', async () => {
     prism = createInstance({ mock: { dynamic: false }, validateRequest: true, validateResponse: true }, { logger });
-    resources = await getHttpOperationsFromFile(staticExamplesOas2Path);
+    resources = await getHttpOperationsFromResource(staticExamplesOas2Path);
 
     const response = await prism.request(
       {
