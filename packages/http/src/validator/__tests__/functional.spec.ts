@@ -1,6 +1,5 @@
 import { DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
-import { IHttpConfig } from '../../types';
 import { validator } from '../index';
 
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
@@ -22,20 +21,20 @@ describe('HttpValidator', () => {
   describe('validateInput()', () => {
     describe('all validations are turned on', () => {
       it('returns validation errors for whole request structure', async () => {
-        expect(await validator.validateInput({ resource: httpOperations[2], input: BAD_INPUT })).toMatchSnapshot();
+        expect(validator.validateInput({ resource: httpOperations[2], input: BAD_INPUT })).toMatchSnapshot();
       });
 
       describe('when all required params are provided', () => {
         it('returns no validation errors', async () => {
-          expect(await validator.validateInput({ resource: httpOperations[0], input: GOOD_INPUT })).toEqual([]);
+          expect(validator.validateInput({ resource: httpOperations[0], input: GOOD_INPUT })).toEqual([]);
         });
       });
     });
 
     describe('headers validation', () => {
-      it('is case insensitive', async () => {
+      it('is case insensitive', () => {
         expect(
-          await validator.validateInput({
+          validator.validateInput({
             resource: {
               method: 'GET',
               path: '/hey',
@@ -91,8 +90,8 @@ describe('HttpValidator', () => {
 
   describe('validateOutput()', () => {
     describe('all validations are turned on', () => {
-      it('returns validation errors for whole request structure', async () => {
-        expect(await validator.validateOutput({ resource: httpOperations[1], output: BAD_OUTPUT })).toMatchSnapshot();
+      it('returns validation errors for whole request structure', () => {
+        expect(validator.validateOutput({ resource: httpOperations[1], output: BAD_OUTPUT })).toMatchSnapshot();
       });
     });
   });
