@@ -1,0 +1,36 @@
+====test====
+When I send a request to an operation with Accept header containing multiple types.
+And this operation can produce a response that matches one of them.
+And matched response's Content-Type is not first one from Accept header.
+Then I should get back a response matching that format
+And this response should have Content-Type header matching that format
+And this response should have 200 status code
+====spec====
+openapi: 3.0.0
+paths:
+  /honey:
+    get:
+      summary: Get Raw Honey
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  honey:
+                    type: string
+                    example: killer bees
+                required:
+                - honey
+====server====
+mock -p 4010
+====command====
+curl -i -X GET http://localhost:4010/honey -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+content-length: 23
+Connection: keep-alive
+
+{"honey":"killer bees"}
