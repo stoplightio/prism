@@ -1,7 +1,7 @@
 import { IPrismOutput } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 // @ts-ignore
-import logger from 'abstract-logging';
+import * as logger from 'abstract-logging';
 import { defaults, partial } from 'lodash';
 import { parse as parseQueryString } from 'querystring';
 import { parse as parseUrl } from 'url';
@@ -29,7 +29,7 @@ const createClientFromString = partial(createClientFrom, getHttpOperations);
 
 function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IClientConfig) {
   const obj = createInstance(defaultConfig, {
-    logger,
+    logger: { ...logger, child: () => logger },
     router,
     validator,
     mocker,
@@ -37,9 +37,10 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
 
   const request: RequestFunction = async (url, input, config) => {
     const parsedUrl = parseUrl(url);
-    const mergedConf = defaults(config, defaultConfig);
 
-    if (!parsedUrl.pathname) throw new Error('path name must alwasy be specified');
+    if (!parsedUrl.pathname) throw new Error('Path name must always be specified');
+
+    const mergedConf = defaults(config, defaultConfig);
 
     const httpUrl: IHttpUrl = {
       baseUrl: parsedUrl.host ? `${parsedUrl.protocol}//${parsedUrl.host}` : mergedConf.baseUrl,
