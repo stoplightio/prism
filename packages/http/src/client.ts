@@ -27,7 +27,7 @@ function createClientFrom(
 const createClientFromResource = partial(createClientFrom, getHttpOperationsFromResource);
 const createClientFromString = partial(createClientFrom, getHttpOperations);
 
-function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IClientConfig) {
+function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IClientConfig): PrismHttp {
   const lg = { ...logger, child: () => lg, success: logger.info };
 
   const obj = createInstance(defaultConfig, {
@@ -56,7 +56,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
         url: httpUrl,
       },
       resources,
-      config,
+      mergedConf,
     );
 
     const output: PrismOutput = {
@@ -73,35 +73,50 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
 
   type headersFromRequest = Required<Pick<IHttpRequest, 'headers'>>;
 
-  function isInput(input?: headersFromRequest | IClientConfig): input is headersFromRequest {
+  function isInput(input?: headersFromRequest | Partial<IClientConfig>): input is headersFromRequest {
     return !!input && 'headers' in input;
   }
 
   return {
     request,
-    get: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
+    get: (url: string, input?: headersFromRequest | Partial<IClientConfig>, config?: Partial<IClientConfig>) =>
       isInput(input) ? request(url, { method: 'get', ...input }, config) : request(url, { method: 'get' }, input),
-    put: (url: string, body: unknown, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
+    put: (
+      url: string,
+      body: unknown,
+      input?: headersFromRequest | Partial<IClientConfig>,
+      config?: Partial<IClientConfig>,
+    ) =>
       isInput(input)
         ? request(url, { method: 'put', ...input, body }, config)
         : request(url, { method: 'put', body }, input),
-    post: (url: string, body: unknown, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
+    post: (
+      url: string,
+      body: unknown,
+      input?: headersFromRequest | Partial<IClientConfig>,
+      config?: Partial<IClientConfig>,
+    ) =>
       isInput(input)
         ? request(url, { method: 'post', ...input, body }, config)
         : request(url, { method: 'post', body }, input),
-    delete: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
+    delete: (url: string, input?: headersFromRequest | Partial<IClientConfig>, config?: Partial<IClientConfig>) =>
       isInput(input) ? request(url, { method: 'delete', ...input }, config) : request(url, { method: 'delete' }, input),
-    options: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
+    options: (url: string, input?: headersFromRequest | Partial<IClientConfig>, config?: Partial<IClientConfig>) =>
       isInput(input)
         ? request(url, { method: 'options', ...input }, config)
         : request(url, { method: 'options' }, input),
-    head: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
+    head: (url: string, input?: headersFromRequest | Partial<IClientConfig>, config?: Partial<IClientConfig>) =>
       isInput(input) ? request(url, { method: 'head', ...input }, config) : request(url, { method: 'head' }, input),
-    patch: (url: string, body: unknown, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
+    patch: (
+      url: string,
+      body: unknown,
+      input?: headersFromRequest | Partial<IClientConfig>,
+      config?: Partial<IClientConfig>,
+    ) =>
       isInput(input)
         ? request(url, { method: 'patch', ...input, body }, config)
         : request(url, { method: 'patch', body }, input),
-    trace: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
+    trace: (url: string, input?: headersFromRequest | Partial<IClientConfig>, config?: Partial<IClientConfig>) =>
       isInput(input) ? request(url, { method: 'trace', ...input }, config) : request(url, { method: 'trace' }, input),
   };
 }
@@ -115,18 +130,25 @@ type PrismOutput = {
   validations: IPrismOutput<IHttpRequest, IHttpResponse>['validations'];
 };
 
-type RequestFunction = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IClientConfig) => Promise<PrismOutput>;
+type RequestFunction = (
+  url: string,
+  input: Omit<IHttpRequest, 'url'>,
+  config?: Partial<IClientConfig>,
+) => Promise<PrismOutput>;
 
 interface IRequestFunctionWithMethod {
-  (url: string, input: Required<Pick<IHttpRequest, 'headers'>>, config?: IClientConfig): Promise<PrismOutput>;
-  (url: string, config?: IClientConfig): Promise<PrismOutput>;
+  (url: string, input: Required<Pick<IHttpRequest, 'headers'>>, config?: Partial<IClientConfig>): Promise<PrismOutput>;
+  (url: string, config?: Partial<IClientConfig>): Promise<PrismOutput>;
 }
 
 interface IRequestFunctionWithMethodWithBody {
-  (url: string, body: unknown, input: Required<Pick<IHttpRequest, 'headers'>>, config?: IClientConfig): Promise<
-    PrismOutput
-  >;
-  (url: string, body: unknown, config?: IClientConfig): Promise<PrismOutput>;
+  (
+    url: string,
+    body: unknown,
+    input: Required<Pick<IHttpRequest, 'headers'>>,
+    config?: Partial<IClientConfig>,
+  ): Promise<PrismOutput>;
+  (url: string, body: unknown, config?: Partial<IClientConfig>): Promise<PrismOutput>;
 }
 
 export type PrismHttp = {
