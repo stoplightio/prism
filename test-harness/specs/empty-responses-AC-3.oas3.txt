@@ -7,7 +7,7 @@ paths:
     get:
       description: "abc"
       responses:
-        400:
+        401:
           description: "abc"
 components:
   securitySchemes:
