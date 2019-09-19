@@ -2,12 +2,13 @@ import { ProblemJsonError } from '@stoplight/prism-core';
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import { IHttpHeaderParam } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { fromNullable } from 'fp-ts/lib/Option';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Reader from 'fp-ts/lib/Reader';
 import * as ReaderEither from 'fp-ts/lib/ReaderEither';
-import { get } from 'lodash';
+import { get, tail } from 'lodash';
 import { Logger } from 'pino';
 import withLogger from '../../withLogger';
 import { NOT_ACCEPTABLE, NOT_FOUND } from '../errors';
@@ -165,6 +166,15 @@ const helpers = {
     const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
     return withLogger(logger => {
+      if (_httpOperation.method === 'head') {
+        logger.info(`Responding with an empty body to a HEAD request.`);
+
+        return Either.right({
+          code: response.code,
+          headers: response.headers || [],
+        });
+      }
+
       if (mediaTypes) {
         // a user provided mediaType
         const httpContent = hasContents(response) ? findBestHttpContentByMediaType(response, mediaTypes) : Option.none;
@@ -290,28 +300,41 @@ const helpers = {
     return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
   },
 
-  findResponse(httpResponses: IHttpOperationResponse[]): Reader.Reader<Logger, Option.Option<IHttpOperationResponse>> {
+  findResponse(
+    httpResponses: IHttpOperationResponse[],
+    statusCodes: NonEmptyArray<string>,
+  ): Reader.Reader<Logger, Option.Option<IHttpOperationResponse>> {
+    const [first, ...others] = statusCodes;
+
     return withLogger<Option.Option<IHttpOperationResponse>>(logger =>
       pipe(
-        findResponseByStatusCode(httpResponses, '422'),
-        Option.alt(() => {
-          logger.trace('Unable to find a 422 response definition');
-          return findResponseByStatusCode(httpResponses, '400');
-        }),
-        Option.alt(() => {
-          logger.trace('Unable to find a 400 response definition.');
-          return findResponseByStatusCode(httpResponses, '401');
-        }),
-        Option.alt(() => findResponseByStatusCode(httpResponses, '403')),
-        Option.alt(() =>
-          pipe(
-            createResponseFromDefault(httpResponses, '422'),
-            Option.map(response => {
-              logger.success(`Created a ${response.code} from a default response`);
-              return response;
-            }),
-          ),
+        others.reduce(
+          (previous, current, index) =>
+            pipe(
+              previous,
+              Option.alt(() => {
+                logger.trace(`Unable to find a ${statusCodes[index]} response definition`);
+                return findResponseByStatusCode(httpResponses, current);
+              }),
+            ),
+          pipe(findResponseByStatusCode(httpResponses, first)),
         ),
+        Option.alt(() => {
+          logger.trace(`Unable to find a ${tail(statusCodes)} response definition`);
+          return pipe(
+            createResponseFromDefault(httpResponses, first),
+            Option.fold(
+              () => {
+                logger.trace("Unable to find a 'default' response definition");
+                return Option.none;
+              },
+              response => {
+                logger.success(`Created a ${response.code} from a default response`);
+                return Option.some(response);
+              },
+            ),
+          );
+        }),
         Option.map(response => {
           logger.success(`Found response ${response.code}. I'll try with it.`);
           return response;
@@ -322,9 +345,10 @@ const helpers = {
 
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
+    statusCodes: NonEmptyArray<string>,
   ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
-      helpers.findResponse(httpResponses),
+      helpers.findResponse(httpResponses, statusCodes),
       Reader.chain(foundResponse =>
         withLogger(logger =>
           pipe(

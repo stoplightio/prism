@@ -1,0 +1,26 @@
+====test====
+Sending a HEAD request results in a response with an empty payload.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    description: todos
+    head:
+      description: todos-head
+      responses:
+        '200':
+          description: todos-head-200
+          headers:
+            nonce:
+              description: nonce
+              schema:
+                type: string
+                example:
+                  abc
+====server====
+mock -p 4010
+====command====
+curl --head http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+nonce: abc

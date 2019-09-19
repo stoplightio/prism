@@ -1,0 +1,22 @@
+====test====
+Sending a HEAD request results in a response with an empty payload.
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    head:
+      description: todos-head
+      responses:
+        '200':
+          description: todos-head-200
+          headers:
+            nonce:
+              type: string
+              default: abc
+====server====
+mock -p 4010
+====command====
+curl --head http://localhost:4010/todos -H "Accept: application/json"
+====expect====
+HTTP/1.1 200 OK
+nonce: abc

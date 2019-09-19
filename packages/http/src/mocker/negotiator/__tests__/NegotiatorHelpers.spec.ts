@@ -1,3 +1,4 @@
+import { createLogger } from '@stoplight/prism-core';
 import {
   IHttpOperation,
   IHttpOperationResponse,
@@ -6,9 +7,6 @@ import {
   INodeExternalExample,
 } from '@stoplight/types';
 import { Chance } from 'chance';
-
-import { createLogger } from '@stoplight/prism-core';
-
 import * as Either from 'fp-ts/lib/Either';
 import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertLeft, assertRight } from '../../../__tests__/utils';
@@ -85,7 +83,7 @@ describe('NegotiatorHelpers', () => {
           ])
           .instance();
 
-        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
+        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(logger);
         const expectedConfig: IHttpNegotiationResult = {
           code: actualCode,
           mediaType: actualMediaType,
@@ -108,7 +106,9 @@ describe('NegotiatorHelpers', () => {
             ])
             .instance();
 
-          const actualResponse = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
+          const actualResponse = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(
+            logger,
+          );
 
           assertPayloadlessResponse(actualResponse);
         });
@@ -136,7 +136,9 @@ describe('NegotiatorHelpers', () => {
             ])
             .instance();
 
-          const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
+          const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(
+            logger,
+          );
           const expectedConfig: IHttpNegotiationResult = {
             code: actualCode,
             mediaType: actualMediaType,
@@ -169,7 +171,9 @@ describe('NegotiatorHelpers', () => {
             ])
             .instance();
 
-          const negotiationResult = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
+          const negotiationResult = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(
+            logger,
+          );
 
           assertLeft(negotiationResult, e =>
             expect(e.message).toBe('Neither schema nor example defined for 422 response.'),
@@ -199,7 +203,7 @@ describe('NegotiatorHelpers', () => {
           ])
           .instance();
 
-        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
+        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(logger);
         assertRight(actualConfig, c => expect(c).toHaveProperty('code', '400'));
       });
 
@@ -223,12 +227,12 @@ describe('NegotiatorHelpers', () => {
           ])
           .instance();
 
-        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger);
+        const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(logger);
         assertRight(actualConfig, config => expect(config).toHaveProperty('code', '422'));
       });
 
       test('should return an error', () => {
-        assertLeft(helpers.negotiateOptionsForInvalidRequest(httpOperation.responses)(logger), error =>
+        assertLeft(helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(logger), error =>
           expect(error).toHaveProperty('message', 'No 422, 400, or default responses defined'),
         );
       });
@@ -553,15 +557,15 @@ describe('NegotiatorHelpers', () => {
       });
 
       describe('httpContent does not exist', () => {
+        const httpResponseSchema: IHttpOperationResponse = {
+          code: '200',
+          contents: [],
+        };
+
         it('returns an empty payload response', () => {
           const desiredOptions: NegotiationOptions = {
             dynamic: false,
             mediaTypes: ['*/*'],
-          };
-
-          const httpResponseSchema: IHttpOperationResponse = {
-            code: '200',
-            contents: [],
           };
 
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
@@ -571,6 +575,22 @@ describe('NegotiatorHelpers', () => {
           )(logger);
 
           assertPayloadlessResponse(actualResponse);
+        });
+
+        it('should throw an error', () => {
+          const desiredOptions: NegotiationOptions = {
+            mediaTypes: [chance.string()],
+            dynamic: chance.bool(),
+            exampleKey: chance.string(),
+          };
+
+          const actualResponse = helpers.negotiateOptionsBySpecificResponse(
+            httpOperation,
+            desiredOptions,
+            httpResponseSchema,
+          )(logger);
+
+          expect(Either.isLeft(actualResponse)).toBeTruthy();
         });
       });
 

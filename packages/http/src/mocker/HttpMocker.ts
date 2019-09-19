@@ -55,37 +55,38 @@ class HttpMocker
 }
 
 function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
+  const securityValidation = input.validations.input.find(valiation => valiation.code === 401);
+
   return pipe(
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
     chain(() =>
       pipe(
-        helpers.negotiateOptionsForInvalidRequest(resource.responses),
-        mapLeft(() => {
-          const securityValidation = input.validations.input.find(valiation => valiation.code === 401);
-
-          return securityValidation
-            ? ProblemJsonError.fromTemplate(
-                UNAUTHORIZED,
-                '',
-                securityValidation.tags && securityValidation.tags.length
-                  ? {
-                      headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
-                    }
-                  : undefined,
-              )
-            : ProblemJsonError.fromTemplate(
-                UNPROCESSABLE_ENTITY,
-                'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-                {
-                  validation: input.validations.input.map(detail => ({
-                    location: detail.path,
-                    severity: DiagnosticSeverity[detail.severity],
-                    code: detail.code,
-                    message: detail.message,
-                  })),
-                },
-              );
-        }),
+        helpers.negotiateOptionsForInvalidRequest(resource.responses, securityValidation ? ['401'] : ['422', '400']),
+        mapLeft(
+          () =>
+            securityValidation
+              ? ProblemJsonError.fromTemplate(
+                  UNAUTHORIZED,
+                  '',
+                  securityValidation.tags && securityValidation.tags.length
+                    ? {
+                        headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
+                      }
+                    : undefined,
+                )
+              : ProblemJsonError.fromTemplate(
+                  UNPROCESSABLE_ENTITY,
+                  'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+                  {
+                    validation: input.validations.input.map(detail => ({
+                      location: detail.path,
+                      severity: DiagnosticSeverity[detail.severity],
+                      code: detail.code,
+                      message: detail.message,
+                    })),
+                  },
+                ),
+        ),
       ),
     ),
   );

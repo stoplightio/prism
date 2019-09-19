@@ -1,0 +1,45 @@
+====test====
+A defined 422 response is returned when security validation is passed.
+====spec====
+openapi: 3.0.2
+security:
+  - Basic: []
+paths:
+  /users:
+    get:
+      description: returns users
+      parameters:
+        - in: query
+          name: age
+          required: true
+      responses:
+        200:
+          description: ok
+        401:
+          $ref: '#/components/responses/InvalidAuthorization'
+        422:
+          $ref: '#/components/responses/InvalidPayload'
+components:
+  responses:
+    InvalidAuthorization:
+      description: InvalidAuthorization
+      content:
+        application/json:
+          example: xyz
+    InvalidPayload:
+      description: InvalidPayload
+      content:
+        application/json:
+          example: abc
+  securitySchemes:
+    Basic:
+      type: http
+      scheme: basic
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/users -H "Authorization: Basic dGVzdDp0ZXN0"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+
+"abc"
