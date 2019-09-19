@@ -16,6 +16,10 @@ import { router } from './router';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { validator } from './validator';
 
+interface IClientConfig extends IHttpConfig {
+  baseUrl?: string;
+}
+
 function createClientFrom(
   getResource: (v: string) => Promise<IHttpOperation[]>,
   spec: string,
@@ -27,7 +31,7 @@ function createClientFrom(
 const createClientFromResource = partial(createClientFrom, getHttpOperationsFromResource);
 const createClientFromString = partial(createClientFrom, getHttpOperations);
 
-function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IHttpConfig) {
+function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IClientConfig) {
   const obj = createInstance(defaultConfig, {
     logger,
     router,
@@ -38,11 +42,12 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
 
   const request: RequestFunction = async (url, input, config) => {
     const parsedUrl = parseUrl(url);
+    const mergedConf = defaults(config, defaultConfig);
 
     if (!parsedUrl.pathname) throw new Error('path name must alwasy be specified');
 
     const httpUrl: IHttpUrl = {
-      baseUrl: parsedUrl.host ? `${parsedUrl.protocol}//${parsedUrl.host}` : undefined,
+      baseUrl: parsedUrl.host ? `${parsedUrl.protocol}//${parsedUrl.host}` : mergedConf.baseUrl,
       path: parsedUrl.pathname,
       query: parseQueryString(parsedUrl.query || ''),
     };
@@ -64,7 +69,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
       ),
       headers: data.output.headers || {},
       data: data.output.body || {},
-      config: defaults(config, defaultConfig),
+      config: mergedConf,
       request: { ...input, url: httpUrl },
       validations: data.validations,
     };
@@ -74,35 +79,35 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
 
   type headersFromRequest = Required<Pick<IHttpRequest, 'headers'>>;
 
-  function isInput(input?: headersFromRequest | IHttpConfig): input is headersFromRequest {
+  function isInput(input?: headersFromRequest | IClientConfig): input is headersFromRequest {
     return !!input && 'headers' in input;
   }
 
   return {
     request,
-    get: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
+    get: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
       isInput(input) ? request(url, { method: 'get', ...input }, config) : request(url, { method: 'get' }, input),
-    put: (url: string, body: unknown, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
+    put: (url: string, body: unknown, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
       isInput(input)
         ? request(url, { method: 'put', ...input, body }, config)
         : request(url, { method: 'put', body }, input),
-    post: (url: string, body: unknown, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
+    post: (url: string, body: unknown, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
       isInput(input)
         ? request(url, { method: 'post', ...input, body }, config)
         : request(url, { method: 'post', body }, input),
-    delete: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
+    delete: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
       isInput(input) ? request(url, { method: 'delete', ...input }, config) : request(url, { method: 'delete' }, input),
-    options: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
+    options: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
       isInput(input)
         ? request(url, { method: 'options', ...input }, config)
         : request(url, { method: 'options' }, input),
-    head: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
+    head: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
       isInput(input) ? request(url, { method: 'head', ...input }, config) : request(url, { method: 'head' }, input),
-    patch: (url: string, body: unknown, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
+    patch: (url: string, body: unknown, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
       isInput(input)
         ? request(url, { method: 'patch', ...input, body }, config)
         : request(url, { method: 'patch', body }, input),
-    trace: (url: string, input?: headersFromRequest | IHttpConfig, config?: IHttpConfig) =>
+    trace: (url: string, input?: headersFromRequest | IClientConfig, config?: IClientConfig) =>
       isInput(input) ? request(url, { method: 'trace', ...input }, config) : request(url, { method: 'trace' }, input),
   };
 }
@@ -112,23 +117,23 @@ type PrismOutput = {
   statusText: string;
   headers: IHttpResponse['headers'];
   data: unknown;
-  config: IHttpConfig;
+  config: IClientConfig;
   request: IHttpRequest;
   validations: IPrismOutput<IHttpRequest, IHttpResponse>['validations'];
 };
 
-type RequestFunction = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IHttpConfig) => Promise<PrismOutput>;
+type RequestFunction = (url: string, input: Omit<IHttpRequest, 'url'>, config?: IClientConfig) => Promise<PrismOutput>;
 
 interface IRequestFunctionWithMethod {
-  (url: string, input: Required<Pick<IHttpRequest, 'headers'>>, config?: IHttpConfig): Promise<PrismOutput>;
-  (url: string, config?: IHttpConfig): Promise<PrismOutput>;
+  (url: string, input: Required<Pick<IHttpRequest, 'headers'>>, config?: IClientConfig): Promise<PrismOutput>;
+  (url: string, config?: IClientConfig): Promise<PrismOutput>;
 }
 
 interface IRequestFunctionWithMethodWithBody {
-  (url: string, body: unknown, input: Required<Pick<IHttpRequest, 'headers'>>, config?: IHttpConfig): Promise<
+  (url: string, body: unknown, input: Required<Pick<IHttpRequest, 'headers'>>, config?: IClientConfig): Promise<
     PrismOutput
   >;
-  (url: string, body: unknown, config?: IHttpConfig): Promise<PrismOutput>;
+  (url: string, body: unknown, config?: IClientConfig): Promise<PrismOutput>;
 }
 
 export type PrismHttp = {
