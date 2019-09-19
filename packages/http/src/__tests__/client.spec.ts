@@ -1,5 +1,5 @@
 import * as nock from 'nock';
-import { createNewClientInstanceFromFile, PrismHttp } from '../client';
+import { createNewClientInstanceFromResource, PrismHttp } from '../client';
 import { forwarder } from '../forwarder';
 import { mocker } from '../mocker';
 
@@ -27,7 +27,7 @@ describe('User Http Client', () => {
             },
           });
 
-        const client = await createNewClientInstanceFromFile(
+        const client = await createNewClientInstanceFromResource(
           { mock: false, validateRequest: true, validateResponse: true },
           require.resolve('../../../../examples/petstore.oas2.yaml'),
         );
@@ -43,7 +43,7 @@ describe('User Http Client', () => {
 
       describe('when setting the validateResopnse false on request level', () => {
         test('should not have output validations errors', async () => {
-          const client = await createNewClientInstanceFromFile(
+          const client = await createNewClientInstanceFromResource(
             { mock: false, validateRequest: true, validateResponse: true },
             require.resolve('../../../../examples/petstore.oas2.yaml'),
           );
