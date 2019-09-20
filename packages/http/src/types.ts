@@ -18,10 +18,6 @@ export interface IHttpOperationConfig {
 
 export interface IHttpConfig extends IPrismConfig {
   mock: IHttpOperationConfig;
-
-  validateRequest: boolean;
-  validateResponse: boolean;
-  securityChecks: boolean;
 }
 
 export type IHttpNameValues = Dictionary<string | string[]>;
