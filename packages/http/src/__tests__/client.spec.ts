@@ -43,9 +43,8 @@ describe('User Http Client', () => {
         test('shall call the mocker with the default options', () =>
           expect(mocker.mock).toHaveBeenCalledWith({ input: expect.anything(), resource: expect.anything(), config }));
 
-        test('shall ultimately call the main request method', () => {
-          expect(client.request).toHaveBeenCalled();
-        });
+        test('shall ultimately call the main request method with the current HTTP Method', () =>
+          expect(client.request).toHaveBeenCalledWith('/pet', { method: 'get' }, undefined));
       });
 
       describe('when overriding a config parameter on the request level', () => {
