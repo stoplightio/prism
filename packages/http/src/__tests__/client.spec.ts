@@ -1,28 +1,64 @@
-import { createClientFromResource, PrismHttp } from '../client';
+import { createClientFromOperations } from '../client';
 import { mocker } from '../mocker';
-
-type PromiseType<T> = T extends Promise<infer U> ? U : never;
+import { IHttpConfig } from '../types';
 
 describe('User Http Client', () => {
   describe('with mocking set to true', () => {
     describe('get a resource', () => {
-      let response: PromiseType<ReturnType<PrismHttp['get']>>;
+      let client: ReturnType<typeof createClientFromOperations>;
+
+      const config: IHttpConfig = {
+        mock: { dynamic: false },
+        validateRequest: true,
+        validateResponse: true,
+        validateSecurity: true,
+      };
+
       beforeAll(async () => {
+        client = await createClientFromOperations(
+          [
+            {
+              id: 'operation',
+              method: 'get',
+              path: '/pet',
+              responses: [
+                {
+                  code: '200',
+                },
+              ],
+            },
+          ],
+          config,
+        );
+
         jest.spyOn(mocker, 'mock');
-
-        const client = await createClientFromResource(require.resolve('../../../../examples/petstore.oas2.yaml'), {
-          mock: { dynamic: false },
-          validateRequest: true,
-          validateResponse: true,
-          validateSecurity: false,
-        });
-
-        response = await client.get('/pet/10');
+        jest.spyOn(client, 'request');
       });
 
-      test('should not call the mocker', () => expect(mocker.mock).toHaveBeenCalled());
-      test('should receive a response', () => expect(response).toBeDefined());
-      test('should not output validations errors', () => expect(response.validations.output).toHaveLength(0));
+      afterAll(() => jest.clearAllMocks());
+
+      describe('when calling with no options', () => {
+        beforeAll(() => client.get('/pet'));
+
+        test('shall call the mocker with the default options', () =>
+          expect(mocker.mock).toHaveBeenCalledWith({ input: expect.anything(), resource: expect.anything(), config }));
+
+        test('shall ultimately call the main request method', () => {
+          expect(client.request).toHaveBeenCalled();
+        });
+      });
+
+      describe('when overriding a config parameter on the request level', () => {
+        beforeAll(() => client.get('/pet', { validateSecurity: false }));
+
+        test('shall call the mocker with the modified options', () => {
+          expect(mocker.mock).toHaveBeenCalledWith({
+            input: expect.anything(),
+            resource: expect.anything(),
+            config: { ...config, validateSecurity: false },
+          });
+        });
+      });
     });
   });
 });
