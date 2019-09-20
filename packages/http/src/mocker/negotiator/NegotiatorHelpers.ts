@@ -45,7 +45,10 @@ const optionallyGetPayloadlessResponse = (
     ),
     Option.chain(responses => {
       return Option.fromPredicate((noContentResponses: { length: number }) => {
-        return !noContentResponses.length && !mediaTypes.filter((mt: string) => !mt.includes('*/*')).length;
+        const noAcceptAndNoContentResponses =
+          !noContentResponses.length && !mediaTypes.filter((mt: string) => !mt.includes('*/*')).length;
+
+        return noAcceptAndNoContentResponses || ['400', '422'].includes(response.code);
       })(responses);
     }),
     Option.map(() => {
