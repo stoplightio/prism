@@ -35,7 +35,7 @@ describe('HttpValidator', () => {
               },
               resourceExtension,
             ),
-            input: { method: 'get', url: { path: '/' } },
+            element: { method: 'get', url: { path: '/' } },
           }),
         ).toHaveLength(errorsNumber);
       };
@@ -86,7 +86,7 @@ describe('HttpValidator', () => {
             },
             resourceExtension,
           ),
-          input: { method: 'get', url: { path: '/' } },
+          element: { method: 'get', url: { path: '/' } },
         }),
       ).toHaveLength(length);
     };
@@ -114,7 +114,7 @@ describe('HttpValidator', () => {
             },
             resourceExtension,
           ),
-          input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
+          element: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
         }),
       ).toHaveLength(length);
 
@@ -154,7 +154,7 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            output: { statusCode: 200 },
+            element: { statusCode: 200 },
           }),
         ).toHaveLength(2);
 

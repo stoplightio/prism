@@ -46,7 +46,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             inputValidations.push(
               ...components.validateInput({
                 resource,
-                input,
+                element: input,
               }),
             );
           }
@@ -85,7 +85,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           if (config.validateResponse && resource && components.validateOutput) {
             outputValidations = components.validateOutput({
               resource,
-              output,
+              element: output,
             });
           }
 

@@ -1,8 +1,8 @@
-import { IPrismComponents, IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
+import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import * as caseless from 'caseless';
 
-import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
+import { IHttpRequest, IHttpResponse } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
@@ -29,15 +29,9 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
     }
   }
 
-  headersValidator
-    .validate(element.headers || {}, (request && request.headers) || [])
-    .forEach(validationResult => results.push(validationResult));
-
-  queryValidator
-    .validate(element.url.query || {}, (request && request.query) || [])
-    .forEach(validationResult => results.push(validationResult));
-
-  return results;
+  return results
+    .concat(headersValidator.validate(element.headers || {}, (request && request.headers) || []))
+    .concat(queryValidator.validate(element.url.query || {}, (request && request.query) || []));
 };
 
 const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
@@ -45,15 +39,9 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
   const mediaType = caseless(element.headers || {}).get('content-type');
   const responseSpec = resource.responses && findOperationResponse(resource.responses, element.statusCode);
 
-  bodyValidator
-    .validate(element.body, (responseSpec && responseSpec.contents) || [], mediaType)
-    .forEach(validationResult => results.push(validationResult));
-
-  headersValidator
-    .validate(element.headers || {}, (responseSpec && responseSpec.headers) || [])
-    .forEach(validationResult => results.push(validationResult));
-
-  return results;
+  return results
+    .concat(bodyValidator.validate(element.body, (responseSpec && responseSpec.contents) || [], mediaType))
+    .concat(headersValidator.validate(element.headers || {}, (responseSpec && responseSpec.headers) || []));
 };
 
 export { validateInput, validateOutput };

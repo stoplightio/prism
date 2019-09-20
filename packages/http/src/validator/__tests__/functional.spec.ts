@@ -21,20 +21,20 @@ describe('HttpValidator', () => {
   describe('validateInput()', () => {
     describe('all validations are turned on', () => {
       it('returns validation errors for whole request structure', () => {
-        expect(validateInput({ resource: httpOperations[2], input: BAD_INPUT })).toMatchSnapshot();
+        expect(validateInput({ resource: httpOperations[2], element: BAD_INPUT })).toMatchSnapshot();
       });
 
       describe('when all required params are provided', () => {
         it('returns no validation errors', () => {
-          expect(validateInput({ resource: httpOperations[0], input: GOOD_INPUT })).toEqual([]);
+          expect(validateInput({ resource: httpOperations[0], element: GOOD_INPUT })).toEqual([]);
         });
       });
     });
 
     describe('headers validation', () => {
-      it('is case insensitive', async () => {
+      it('is case insensitive', () => {
         expect(
-          await validateInput({
+          validateInput({
             resource: {
               method: 'GET',
               path: '/hey',
@@ -57,7 +57,7 @@ describe('HttpValidator', () => {
                 ],
               },
             },
-            input: {
+            element: {
               method: 'get',
               url: {
                 path: '/hey',
@@ -76,7 +76,7 @@ describe('HttpValidator', () => {
         expect(
           validateInput({
             resource: httpOperations[2],
-            input: BAD_INPUT,
+            element: BAD_INPUT,
           }),
         ).toContainEqual({
           code: 'pattern',
@@ -90,8 +90,8 @@ describe('HttpValidator', () => {
 
   describe('validateOutput()', () => {
     describe('all validations are turned on', () => {
-      it('returns validation errors for whole request structure', async () => {
-        expect(await validateOutput({ resource: httpOperations[1], output: BAD_OUTPUT })).toMatchSnapshot();
+      it('returns validation errors for whole request structure', () => {
+        expect(validateOutput({ resource: httpOperations[1], element: BAD_OUTPUT })).toMatchSnapshot();
       });
     });
   });
