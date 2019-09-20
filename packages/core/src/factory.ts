@@ -59,7 +59,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             ),
           );
 
-          if (resource && components.mocker && config.mock) {
+          if (resource && config.mock) {
             // generate the response
             return pipe(
               TaskEither.fromEither(
@@ -76,24 +76,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               ),
               TaskEither.map(output => ({ output, resource })),
             );
-          } else if (components.forwarder) {
-            // forward request and set output from response
-            return pipe(
-              components.forwarder.fforward({
-                resource,
-                input: {
-                  validations: {
-                    input: inputValidationResult,
-                  },
-                  data: input,
-                },
-                config,
-              }),
-              TaskEither.map(output => ({ output, resource })),
-            );
           }
 
-          return TaskEither.left(new Error('Nor forwarder nor mocker has been selected. Something is wrong'));
+          return TaskEither.left(new Error('Resource not defined. This should never happen.'));
         }),
         TaskEither.map(({ output, resource }) => {
           let outputValidations: IPrismDiagnostic[] = [];
