@@ -1,8 +1,12 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IMediaTypeContent } from '@stoplight/types';
 import { get } from 'lodash';
+import { parse } from 'qs';
+import * as typeIs from 'type-is';
 import { body } from '../deserializers';
 
+import { DiagnosticSeverity } from '@stoplight/types/dist';
+import { JSONSchema } from '../../types';
 import { validateAgainstSchema } from '../validators/utils';
 import { IHttpValidator } from './types';
 
@@ -12,6 +16,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
   public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
     const { _prefix: prefix } = this;
     const content = this.getContent(specs, mediaType);
+    const parsedBody = parse(target);
 
     const schema = get(content, 'schema');
 
@@ -19,23 +24,44 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
       return [];
     }
 
-    const encodingStyle = get(content, 'encodings[0].style');
+    if (mediaType && typeIs.is(mediaType, 'application/x-www-form-urlencoded')) {
+      const encodings = get(content, 'encodings', []);
+      for (const encoding of encodings) {
+        const allowReserved = get(encoding, 'allowReserved', false);
+        const property = encoding.property;
+        const value = parsedBody[property];
+        const schemaType = get(schema, ['properties', property, 'type']);
 
-    if (encodingStyle) {
-      const deserializer = body.get(encodingStyle);
-      if (deserializer && deserializer.supports(encodingStyle) && schema.properties) {
-        const propertySchema = Object.keys(schema.properties)[0];
-        const deserializedObject = deserializer.deserialize(propertySchema, target, Object.values(
-          schema.properties,
-        )[0] as any);
+        if (
+          !allowReserved &&
+          schemaType === 'string' &&
+          typeof value === 'string' &&
+          value.match(/[\/?#\[\]@!$&'()*+,;=]/)
+        ) {
+          return [
+            {
+              path: [prefix, property],
+              message: 'Reserved characters used in request body',
+              severity: DiagnosticSeverity.Error,
+            },
+          ];
+        }
 
-        return validateAgainstSchema(deserializedObject, Object.values(schema.properties)[0] as any).map(error =>
-          Object.assign({}, error, { path: [prefix, ...(error.path || [])] }),
-        );
+        if (encoding.style) {
+          const deserializer = body.get(encoding.style);
+          if (deserializer && schema.properties) {
+            const propertySchema = schema.properties[encoding.property];
+            parsedBody[encoding.property] = deserializer.deserialize(
+              encoding.property,
+              parsedBody,
+              propertySchema as JSONSchema,
+            );
+          }
+        }
       }
     }
 
-    return validateAgainstSchema(target, schema).map(error =>
+    return validateAgainstSchema(parsedBody, schema).map(error =>
       Object.assign({}, error, { path: [prefix, ...(error.path || [])] }),
     );
   }

@@ -1,0 +1,35 @@
+====test====
+Send reserved characters in body and expect to fail validation.
+====spec====
+openapi: '3.0.1'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          content:
+            text/plain:
+              example: ok
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                reserved:
+                  type: string
+            encoding:
+              reserved:
+                contentType: text/plain
+                allowReserved: false
+                style: form
+====server====
+mock -p 4010
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "reserved=:/?#[]@!$&'()*+,;"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
+Connection: keep-alive
+
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","reserved"],"severity":"Error","message":"Reserved characters used in request body"}]}
