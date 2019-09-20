@@ -35,23 +35,18 @@ const optionallyGetPayloadlessResponse = (
     Option.fromNullable(response.contents),
     Option.map(contents =>
       contents.filter(c => {
-        // @ts-ignore
-        return !c.mediaType === '*/*';
+        return !(c.mediaType === '*/*');
       }),
     ),
     Option.map(contents =>
       contents.filter(c => {
-        // @ts-ignore
         return !c.schema && !(c.examples || []).length;
       }),
     ),
-    Option.chain(t => {
-      return Option.fromPredicate((noContentResponses: any) => {
-        const acceptAllAndNoAcceptGiven =
-          !noContentResponses.length && !mediaTypes.filter((er: any) => !er.includes('*/*')).length;
-
-        return acceptAllAndNoAcceptGiven;
-      })(t);
+    Option.chain(responses => {
+      return Option.fromPredicate((noContentResponses: { length: number }) => {
+        return !noContentResponses.length && !mediaTypes.filter((mt: string) => !mt.includes('*/*')).length;
+      })(responses);
     }),
     Option.map(() => {
       return {
