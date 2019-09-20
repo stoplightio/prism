@@ -1,4 +1,4 @@
-import { IPrismComponents, IPrismDiagnostic } from '@stoplight/prism-core';
+import { IPrismComponents, IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import * as caseless from 'caseless';
 
@@ -11,16 +11,14 @@ export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 
-const validateInput: NonNullable<
-  IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig>['validateInput']
-> = ({ resource, input }) => {
+const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
   const results: IPrismDiagnostic[] = [];
-  const mediaType = caseless(input.headers || {}).get('content-type');
+  const mediaType = caseless(element.headers || {}).get('content-type');
 
   // Replace resource.request in this function with request
   const { request } = resource;
 
-  const { body } = input;
+  const { body } = element;
   if (request && request.body) {
     if (!body && request.body.required) {
       results.push({ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error });
@@ -32,29 +30,27 @@ const validateInput: NonNullable<
   }
 
   headersValidator
-    .validate(input.headers || {}, (request && request.headers) || [])
+    .validate(element.headers || {}, (request && request.headers) || [])
     .forEach(validationResult => results.push(validationResult));
 
   queryValidator
-    .validate(input.url.query || {}, (request && request.query) || [])
+    .validate(element.url.query || {}, (request && request.query) || [])
     .forEach(validationResult => results.push(validationResult));
 
   return results;
 };
 
-const validateOutput: NonNullable<
-  IPrismComponents<IHttpOperation, unknown, IHttpResponse, IHttpConfig>['validateOutput']
-> = ({ resource, output }) => {
+const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
   const results: IPrismDiagnostic[] = [];
-  const mediaType = caseless(output.headers || {}).get('content-type');
-  const responseSpec = resource.responses && findOperationResponse(resource.responses, output.statusCode);
+  const mediaType = caseless(element.headers || {}).get('content-type');
+  const responseSpec = resource.responses && findOperationResponse(resource.responses, element.statusCode);
 
   bodyValidator
-    .validate(output.body, (responseSpec && responseSpec.contents) || [], mediaType)
+    .validate(element.body, (responseSpec && responseSpec.contents) || [], mediaType)
     .forEach(validationResult => results.push(validationResult));
 
   headersValidator
-    .validate(output.headers || {}, (responseSpec && responseSpec.headers) || [])
+    .validate(element.headers || {}, (responseSpec && responseSpec.headers) || [])
     .forEach(validationResult => results.push(validationResult));
 
   return results;

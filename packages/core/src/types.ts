@@ -15,10 +15,12 @@ export interface IPrismConfig {
   validateResponse: boolean;
 }
 
+export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => IPrismDiagnostic[];
+
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   route: (opts: { resources: Resource[]; input: Input; config?: Config }) => Either<Error, Resource>;
-  validateInput?: (opts: { resource: Resource; input: Input }) => IPrismDiagnostic[];
-  validateOutput?: (opts: { resource: Resource; output: Output }) => IPrismDiagnostic[];
+  validateInput?: ValidatorFn<Resource, Input>;
+  validateOutput?: ValidatorFn<Resource, Output>;
   mock: (
     opts: {
       resource: Resource;
