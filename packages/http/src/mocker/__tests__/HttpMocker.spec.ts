@@ -4,7 +4,7 @@ import { right } from 'fp-ts/lib/Either';
 import { reader } from 'fp-ts/lib/Reader';
 import { flatMap } from 'lodash';
 import { assertRight } from '../../__tests__/utils';
-import { mocker } from '../../mocker';
+import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import { JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
@@ -77,7 +77,7 @@ describe('mocker', () => {
           .spyOn(helpers, 'negotiateOptionsForValidRequest')
           .mockReturnValue(reader.of(right({ code: '202', mediaType: 'test', headers: [] })));
 
-        const mockResult = mocker.mock({
+        const mockResult = mock({
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -97,7 +97,7 @@ describe('mocker', () => {
           ),
         );
 
-        const mockResult = mocker.mock({
+        const mockResult = mock({
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -117,7 +117,7 @@ describe('mocker', () => {
           ),
         );
 
-        const response = mocker.mock({
+        const response = mock({
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -144,7 +144,7 @@ describe('mocker', () => {
           ),
         );
 
-        const mockResult = mocker.mock({
+        const mockResult = mock({
           resource: mockResource,
           input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
         })(logger);
@@ -169,7 +169,7 @@ describe('mocker', () => {
 
         jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue('example value chelsea');
 
-        const mockResult = mocker.mock({
+        const mockResult = mock({
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -193,7 +193,7 @@ describe('mocker', () => {
           });
 
           it('the dynamic response should not be an example one', async () => {
-            const response = await mocker.mock({
+            const response = await mock({
               input: mockInput,
               resource: mockResource,
               config: { mock: { dynamic: true }, validateRequest: true, validateResponse: true },
@@ -221,7 +221,7 @@ describe('mocker', () => {
       describe('and dynamic flag is false', () => {
         describe('and the response has an example', () => {
           describe('and the example has been explicited', () => {
-            const response = mocker.mock({
+            const response = mock({
               input: mockInput,
               resource: mockResource,
               config: {
@@ -243,7 +243,7 @@ describe('mocker', () => {
           });
 
           describe('no response example is requested', () => {
-            const response = mocker.mock({
+            const response = mock({
               input: mockInput,
               resource: mockResource,
               config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
@@ -284,7 +284,7 @@ describe('mocker', () => {
           }
 
           function mockResponseWithSchema(schema: JSONSchema) {
-            return mocker.mock({
+            return mock({
               input: mockInput,
               resource: createOperationWithSchema(schema),
               config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },

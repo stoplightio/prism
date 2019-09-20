@@ -3,7 +3,7 @@ import * as Ajv from 'ajv';
 import { createLogger } from '@stoplight/prism-core';
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
 import { assertLeft, assertRight } from '../../__tests__/utils';
-import { mocker } from '../index';
+import mock from '../index';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -11,7 +11,7 @@ describe('http mocker', () => {
   describe('request is valid', () => {
     describe('given only enforced content type', () => {
       test('and that content type exists should first 200 static example', () => {
-        const response = mocker.mock({
+        const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -28,7 +28,7 @@ describe('http mocker', () => {
       });
 
       test('and that content type does not exist should return a 406 error', () => {
-        const mockResult = mocker.mock({
+        const mockResult = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -47,7 +47,7 @@ describe('http mocker', () => {
 
     describe('given enforced status code and contentType and exampleKey', () => {
       test('should return the matching example', async () => {
-        const response = mocker.mock({
+        const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -68,7 +68,7 @@ describe('http mocker', () => {
 
     describe('given enforced status code and contentType', () => {
       test('should return the first matching example', async () => {
-        const response = mocker.mock({
+        const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -88,7 +88,7 @@ describe('http mocker', () => {
 
     describe('given enforced example key', () => {
       test('should return application/json, 200 response', async () => {
-        const response = mocker.mock({
+        const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -105,7 +105,7 @@ describe('http mocker', () => {
       });
 
       test('and mediaType should return 200 response', async () => {
-        const response = mocker.mock({
+        const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -125,7 +125,7 @@ describe('http mocker', () => {
 
     describe('given enforced status code', () => {
       test('should return the first matching example of application/json', async () => {
-        const response = mocker.mock({
+        const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -142,7 +142,7 @@ describe('http mocker', () => {
       });
 
       test('given that status code is not defined should throw an error', () => {
-        const rejection = mocker.mock({
+        const rejection = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -159,7 +159,7 @@ describe('http mocker', () => {
       });
 
       test('and example key should return application/json example', async () => {
-        const response = mocker.mock({
+        const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
@@ -178,7 +178,7 @@ describe('http mocker', () => {
 
       describe('HttpOperation contains example', () => {
         test('return lowest 2xx code and match response example to media type accepted by request', async () => {
-          const response = mocker.mock({
+          const response = mock({
             resource: httpOperations[0],
             input: httpRequests[0],
           })(logger);
@@ -194,7 +194,7 @@ describe('http mocker', () => {
         });
 
         test('return lowest 2xx response and the first example matching the media type', () => {
-          const response = mocker.mock({
+          const response = mock({
             resource: httpOperations[1],
             input: Object.assign({}, httpRequests[0], {
               data: Object.assign({}, httpRequests[0].data, {
@@ -211,7 +211,7 @@ describe('http mocker', () => {
 
         describe('the media type requested does not match the example', () => {
           test('returns an error', () => {
-            const mockResult = mocker.mock({
+            const mockResult = mock({
               resource: httpOperations[0],
               input: Object.assign({}, httpRequests[0], {
                 data: Object.assign({}, httpRequests[0].data, {
@@ -234,7 +234,7 @@ describe('http mocker', () => {
           const ajv = new Ajv();
           const validate = ajv.compile(httpOperations[1].responses[0].contents![0].schema);
 
-          const response = mocker.mock({
+          const response = mock({
             resource: httpOperations[1],
             input: httpRequests[0],
             config: {
@@ -261,7 +261,7 @@ describe('http mocker', () => {
 
     describe('request is invalid', () => {
       test('returns 422 and static error response', async () => {
-        const response = mocker.mock({
+        const response = mock({
           resource: httpOperations[0],
           input: httpRequests[1],
         })(logger);
@@ -278,7 +278,7 @@ describe('http mocker', () => {
         throw new Error('Missing test');
       }
 
-      const response = mocker.mock({
+      const response = mock({
         resource: httpOperations[1],
         input: httpRequests[1],
       })(logger);

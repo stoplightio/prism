@@ -15,29 +15,17 @@ export interface IPrismConfig {
   validateResponse: boolean;
 }
 
-export interface IRouter<Resource, Input, Config extends IPrismConfig> {
+export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   route: (opts: { resources: Resource[]; input: Input; config?: Config }) => Either<Error, Resource>;
-}
-
-export interface IMocker<Resource, Input, Config, Output> {
-  mock: (opts: IMockerOpts<Resource, Input, Config>) => Output;
-}
-
-export interface IMockerOpts<Resource, Input, Config> {
-  resource: Resource;
-  input: IPrismInput<Input>;
-  config?: Config;
-}
-
-export interface IValidator<Resource, Input, Output> {
   validateInput?: (opts: { resource: Resource; input: Input }) => IPrismDiagnostic[];
   validateOutput?: (opts: { resource: Resource; output: Output }) => IPrismDiagnostic[];
-}
-
-export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
-  router: IRouter<Resource, Input, Config>;
-  validator: IValidator<Resource, Input, Output>;
-  mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;
+  mock: (
+    opts: {
+      resource: Resource;
+      input: IPrismInput<Input>;
+      config?: Config;
+    },
+  ) => Reader<Logger, Either<Error, Output>>;
   logger: Logger;
 };
 
