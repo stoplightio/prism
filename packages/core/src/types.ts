@@ -1,7 +1,6 @@
 import { IDiagnostic } from '@stoplight/types';
 import { Either } from 'fp-ts/lib/Either';
 import { Reader } from 'fp-ts/lib/Reader';
-import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
@@ -10,7 +9,7 @@ export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
 }
 
 export interface IPrismConfig {
-  mock?: boolean | object;
+  mock?: object;
   security?: boolean | object;
   validateRequest: boolean;
   validateResponse: boolean;
@@ -18,11 +17,6 @@ export interface IPrismConfig {
 
 export interface IRouter<Resource, Input, Config extends IPrismConfig> {
   route: (opts: { resources: Resource[]; input: Input; config?: Config }) => Either<Error, Resource>;
-}
-
-export interface IForwarder<Resource, Input, Config extends IPrismConfig, Output> {
-  forward: (opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config }) => Promise<Output>;
-  fforward: (opts: { resource?: Resource; input: IPrismInput<Input>; config?: Config }) => TaskEither<Error, Output>;
 }
 
 export interface IMocker<Resource, Input, Config, Output> {
@@ -40,21 +34,12 @@ export interface IValidator<Resource, Input, Output> {
   validateOutput?: (opts: { resource: Resource; output: Output }) => IPrismDiagnostic[];
 }
 
-type MockerOrForwarder<Resource, Input, Output, Config extends IPrismConfig> =
-  | {
-      forwarder?: IForwarder<Resource, Input, Config, Output>;
-      mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;
-    }
-  | {
-      forwarder: IForwarder<Resource, Input, Config, Output>;
-      mocker?: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;
-    };
-
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   router: IRouter<Resource, Input, Config>;
   validator: IValidator<Resource, Input, Output>;
+  mocker: IMocker<Resource, Input, Config, Reader<Logger, Either<Error, Output>>>;
   logger: Logger;
-} & MockerOrForwarder<Resource, Input, Output, Config>;
+};
 
 export interface IPrismInput<I> {
   data: I;

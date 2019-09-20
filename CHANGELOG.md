@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is now negotiating the error response dynamically based on the validation result (security or schema validation) instead of always returning a static order of responses [#628](https://github.com/stoplightio/prism/pulls/628)
 - Prism is now selecting proper serializer when Accept header contains content type which is missing in spec. This is a result of simplifying serializer selection approach. [#620](https://github.com/stoplightio/prism/pull/620)
 - HEAD requests no longer fail with 406 Not Acceptable [#603](https://github.com/stoplightio/prism/pull/603)
+- The internal `Forwarder` concept has been deleted, it will be reimplemented back as a real proxy server[#629](https://github.com/stoplightio/prism/pull/629)
 
 # 3.1.0 (2019-09-03)
 

@@ -37,16 +37,14 @@ class HttpMocker
       withLogger(logger => {
         // setting default values
         const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
-        config = config || { mock: false, validateRequest: true, validateResponse: true };
-        const mockConfig: IHttpOperationConfig =
-          config.mock === false ? { dynamic: false } : Object.assign({}, config.mock);
+        config = config || { mock: { dynamic: false }, validateRequest: true, validateResponse: true };
 
-        if (!mockConfig.mediaTypes && acceptMediaType) {
+        if (!config.mock.mediaTypes && acceptMediaType) {
           logger.info(`Request contains an accept header: ${acceptMediaType}`);
-          mockConfig.mediaTypes = acceptMediaType.split(',');
+          config.mock.mediaTypes = acceptMediaType.split(',');
         }
 
-        return mockConfig;
+        return config.mock;
       }),
       chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
       chain(result => assembleResponse(result, payloadGenerator)),

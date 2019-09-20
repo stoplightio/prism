@@ -99,7 +99,7 @@ Later we alter than behaviour by passing a config object to the `process` functi
 const Prism = require('@stoplight/prism-http');
 
 // Note that by default we don't want to mock responses
-const prism = Prism.createInstance({ mock: false });
+const prism = Prism.createInstance({ mock: {dynamic: false} });
 
 // Make a "GET /todos" request
 return prism.process(
@@ -127,8 +127,8 @@ We don't want to mock a reqeust, we simply want to make the request, hit the act
 ```javascript
 const Prism = require('@stoplight/prism-http');
 
-// Create Prism instance and configure it to make HTTP requests (mock: false)
-const config = { mock: false };
+// Create Prism instance and configure it to make HTTP requests (mock: {dynamic: false})
+const config = { mock: {dynamic: false} };
 const prism = Prism.createInstance(config);
 
 return prism
@@ -156,7 +156,7 @@ In order to create and instance of HTTP Client (later referred to as `prism` for
 
 ```javascript
 const Prism = require('@stoplight/prism-http');
-const config = { mock: false };
+const config = { mock: {dynamic: false} };
 const prism = Prism.createInstance(config /*, components */);
 ```
 
@@ -172,32 +172,19 @@ We will cover the `config` argument in next section and we'll leave `components`
 Prism's config object (`IHttpConfig`) allows you to manipulate Prism's behaviour in many ways. For instance:
 
 - turn validation on and off
-- turn mocking on and off
 - influence Prism's mocked response generation strategy
 
 The actual interface looks like this (but rather than explain each property we're going to look at some examples)
 
 ```ts
 export interface IHttpConfig extends IPrismConfig {
-  mock: false | IHttpOperationConfig;
+  mock: {dynamic: false} | IHttpOperationConfig;
   validateRequest: boolean;
   validateResponse: boolean;
 }
 ```
 
 #### Config Examples
-
-**Do not mock and do not validate requests**
-
-```javascript
-const config = {
-  mock: false,
-  validateRequest: false,
-  validareResponse: true
-};
-```
-
-With the above configuration the http client will proxy your requests to a server and will validate the response with the OpenAPI you loaded. However, it will not validate the input (e.g. will not check whether the provided query param is valid).
 
 **When mocking a response generate static response**
 
@@ -290,7 +277,7 @@ Notice that `baseUrl` is defined.
 
 This will instruct Prism to do one of the two:
 
-- if mocking is **disabled** (`{ mock: false }`)
+- if mocking is **disabled** (`{ mock: {dynamic: false} }`)
   - it will use that `baseUrl` to make a request to the server (`GET https://cat-fact.herokuapp.com/facts`)
   - it will **verify** whether the provided `baseUrl` matches any of the servers defined in your OpenAPI and **add an input warning to the .process return value if it is not valid**
 - if mocking is **enabled**
@@ -314,7 +301,7 @@ One example however is that for a given example
 const Prism = require('@stoplight/prism-http');
 
 // Create Prism instance and configure it to make http requests
-const config = { mock: false };
+const config = { mock: {dynamic: false} };
 const prism = Prism.createInstance(config);
 prism
   .process({
@@ -345,7 +332,3 @@ You would get this in response
 The below diagram represents all logical decision we make to figure out the best HTTP response to the specific request.
 
 ![Decision Flow Diagram](./docs/images/mock-server-dfd.png)
-
-## Gotchas
-
-If provided request object contains `Host` header it will be replaced with `baseUrl` host. The original value will be set to `Forwarded` header with `host=` prefix.
