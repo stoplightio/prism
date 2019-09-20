@@ -42,7 +42,7 @@ class HttpMocker
           mock: { dynamic: false },
           validateRequest: true,
           validateResponse: true,
-          validateSecurity: true,
+          securityChecks: true,
         };
 
         if (!config.mock.mediaTypes && acceptMediaType) {

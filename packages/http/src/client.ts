@@ -72,7 +72,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
         data: data.output.body || {},
         config: mergedConf,
         request: { ...input, url: httpUrl },
-        validations: data.validations,
+        violations: data.validations,
       };
 
       return output;
@@ -143,7 +143,7 @@ type PrismOutput = {
   data: unknown;
   config: IClientConfig;
   request: IHttpRequest;
-  validations: IPrismOutput<IHttpRequest, IHttpResponse>['validations'];
+  violations: IPrismOutput<IHttpRequest, IHttpResponse>['validations'];
 };
 
 type RequestFunction = (

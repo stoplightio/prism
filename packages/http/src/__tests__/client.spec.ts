@@ -11,7 +11,7 @@ describe('User Http Client', () => {
         mock: { dynamic: false },
         validateRequest: true,
         validateResponse: true,
-        validateSecurity: true,
+        securityChecks: true,
       };
 
       beforeAll(async () => {
@@ -48,15 +48,14 @@ describe('User Http Client', () => {
       });
 
       describe('when overriding a config parameter on the request level', () => {
-        beforeAll(() => client.get('/pet', { validateSecurity: false }));
+        beforeAll(() => client.get('/pet', { securityChecks: false }));
 
-        test('shall call the mocker with the modified options', () => {
+        test('shall call the mocker with the modified options', () =>
           expect(mocker.mock).toHaveBeenCalledWith({
             input: expect.anything(),
             resource: expect.anything(),
-            config: { ...config, validateSecurity: false },
-          });
-        });
+            config: { ...config, securityChecks: false },
+          }));
       });
     });
   });

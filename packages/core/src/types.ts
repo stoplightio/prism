@@ -10,7 +10,7 @@ export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
 
 export interface IPrismConfig {
   mock: unknown;
-  validateSecurity: boolean;
+  securityChecks: boolean;
   validateRequest: boolean;
   validateResponse: boolean;
 }

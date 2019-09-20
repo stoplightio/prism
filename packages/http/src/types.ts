@@ -21,7 +21,7 @@ export interface IHttpConfig extends IPrismConfig {
 
   validateRequest: boolean;
   validateResponse: boolean;
-  validateSecurity: boolean;
+  securityChecks: boolean;
 }
 
 export type IHttpNameValues = Dictionary<string | string[]>;

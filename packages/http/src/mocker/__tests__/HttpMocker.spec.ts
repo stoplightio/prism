@@ -200,7 +200,7 @@ describe('mocker', () => {
                 mock: { dynamic: true },
                 validateRequest: true,
                 validateResponse: true,
-                validateSecurity: true,
+                securityChecks: true,
               },
             })(logger);
 
@@ -233,7 +233,7 @@ describe('mocker', () => {
                 mock: { dynamic: false, exampleKey: 'test key' },
                 validateRequest: true,
                 validateResponse: true,
-                validateSecurity: true,
+                securityChecks: true,
               },
             })(logger);
 
@@ -256,7 +256,7 @@ describe('mocker', () => {
                 mock: { dynamic: false },
                 validateRequest: true,
                 validateResponse: true,
-                validateSecurity: true,
+                securityChecks: true,
               },
             })(logger);
 
@@ -302,7 +302,7 @@ describe('mocker', () => {
                 mock: { dynamic: false },
                 validateRequest: true,
                 validateResponse: true,
-                validateSecurity: true,
+                securityChecks: true,
               },
             })(logger);
           }
