@@ -34,15 +34,25 @@ const optionallyGetPayloadlessResponse = (
 ): Option.Option<IHttpNegotiationResult> => {
   return pipe(
     fromNullable(response.contents),
-    Option.map(contents => contents.filter(c => !c.mediaType.includes('*/*'))),
-    Option.chain(filteredContents => {
-      const wasAcceptHeaderLeftUnspecified = mediaTypes.filter(mt => !mt.includes('*/*')).length === 0;
+    Option.map(contents =>
+      contents.filter(c => {
+        // @ts-ignore
+        return !c.mediaType === '*/*';
+      }),
+    ),
+    Option.map(contents =>
+      contents.filter(c => {
+        // @ts-ignore
+        return !c.schema && !(c.examples || []).length;
+      }),
+    ),
+    Option.chain(t => {
+      return Option.fromPredicate((noContentResponses: any) => {
+        const acceptAllAndNoAcceptGiven =
+          !noContentResponses.length && !mediaTypes.filter((er: any) => !er.includes('*/*')).length;
 
-      return Option.fromPredicate((c: { length: number }) => {
-        const isContentEmpty = c.length === 0;
-
-        return isContentEmpty && wasAcceptHeaderLeftUnspecified;
-      })(filteredContents);
+        return acceptAllAndNoAcceptGiven;
+      })(t);
     }),
     Option.map(() => {
       return {
@@ -212,6 +222,27 @@ const helpers = {
                   },
                   content,
                 ),
+                // Either.map(contentNegotiationResult => {
+                //   const { mediaType, ...rest } = contentNegotiationResult;
+                //
+                //   const yo =
+                //     contentNegotiationResult.bodyExample || contentNegotiationResult.schema
+                //       ? {
+                //         mediaType:
+                //           contentNegotiationResult.mediaType === '*/*'
+                //             ? 'text/plain'
+                //             : contentNegotiationResult.mediaType,
+                //       }
+                //       : {};
+                //
+                //   return Object.assign(
+                //     {
+                //       headers: headers || [],
+                //       ...rest,
+                //     },
+                //     yo,
+                //   );
+                // }),
                 Either.map(contentNegotiationResult => ({
                   headers: headers || [],
                   ...contentNegotiationResult,

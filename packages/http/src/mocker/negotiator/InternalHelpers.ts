@@ -19,7 +19,9 @@ export function findExampleByKey(httpContent: IHttpContent, exampleKey: string) 
 }
 
 export function hasContents(v: IHttpOperationResponse): v is PickRequired<IHttpOperationResponse, 'contents'> {
-  return !!v.contents;
+  const x = v.contents || [];
+
+  return !!x.filter(y => !y.mediaType.includes('*/*')).length;
 }
 
 export function findBestHttpContentByMediaType(

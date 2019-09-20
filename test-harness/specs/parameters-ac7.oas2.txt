@@ -8,6 +8,8 @@ swagger: '2.0'
 paths:
   /path:
     post:
+      produces:
+        - text/plain
       consumes:
         - application/x-www-form-urlencoded
       responses:

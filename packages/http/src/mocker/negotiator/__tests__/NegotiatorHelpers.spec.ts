@@ -175,9 +175,7 @@ describe('NegotiatorHelpers', () => {
             logger,
           );
 
-          assertLeft(negotiationResult, e =>
-            expect(e.message).toBe('Neither schema nor example defined for 422 response.'),
-          );
+          assertRight(negotiationResult, e => expect(e).toStrictEqual({ code: '422', headers: [] }));
         });
       });
     });
