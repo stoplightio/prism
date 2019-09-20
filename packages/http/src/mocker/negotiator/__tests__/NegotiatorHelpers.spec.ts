@@ -554,7 +554,7 @@ describe('NegotiatorHelpers', () => {
         });
       });
 
-      describe('httpContent does not exist', () => {
+      describe('the response exists, but there is no httpContent', () => {
         const httpResponseSchema: IHttpOperationResponse = {
           code: '200',
           contents: [],

@@ -222,27 +222,6 @@ const helpers = {
                   },
                   content,
                 ),
-                // Either.map(contentNegotiationResult => {
-                //   const { mediaType, ...rest } = contentNegotiationResult;
-                //
-                //   const yo =
-                //     contentNegotiationResult.bodyExample || contentNegotiationResult.schema
-                //       ? {
-                //         mediaType:
-                //           contentNegotiationResult.mediaType === '*/*'
-                //             ? 'text/plain'
-                //             : contentNegotiationResult.mediaType,
-                //       }
-                //       : {};
-                //
-                //   return Object.assign(
-                //     {
-                //       headers: headers || [],
-                //       ...rest,
-                //     },
-                //     yo,
-                //   );
-                // }),
                 Either.map(contentNegotiationResult => ({
                   headers: headers || [],
                   ...contentNegotiationResult,
