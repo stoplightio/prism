@@ -21,6 +21,11 @@ describe('User Http Client', () => {
               id: 'operation',
               method: 'get',
               path: '/pet',
+              servers: [
+                {
+                  url: 'https://www.google.it',
+                },
+              ],
               responses: [
                 {
                   code: '200',
@@ -35,7 +40,7 @@ describe('User Http Client', () => {
         jest.spyOn(client, 'request');
       });
 
-      afterAll(() => jest.clearAllMocks());
+      afterEach(() => jest.clearAllMocks());
 
       describe('when calling with no options', () => {
         beforeAll(() => client.get('/pet'));
@@ -56,6 +61,25 @@ describe('User Http Client', () => {
             resource: expect.anything(),
             config: { ...config, securityChecks: false },
           }));
+      });
+
+      describe('when calling a method with overridden url', () => {
+        beforeAll(() => client.get('/pet', { baseUrl: 'https://www.google.it' }));
+
+        test('should call the mocker with the replaced full url', () => {
+          expect(mocker.mock).toBeCalledWith({
+            resource: expect.anything(),
+            input: expect.objectContaining({
+              data: expect.objectContaining({
+                url: expect.objectContaining({
+                  baseUrl: 'https://www.google.it',
+                  path: '/pet',
+                }),
+              }),
+            }),
+            config: expect.anything(),
+          });
+        });
       });
     });
   });
