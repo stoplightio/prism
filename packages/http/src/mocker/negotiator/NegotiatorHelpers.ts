@@ -190,7 +190,7 @@ const helpers = {
               return pipe(
                 optionallyGetPayloadlessResponse(response, headers || [], mediaTypes),
                 Option.map(payloadlessResponse => {
-                  logger.warn(`${warnMsg(mediaTypes)}. Sending an empty response.`);
+                  logger.info(`${warnMsg(mediaTypes)}. Sending an empty response.`);
 
                   return payloadlessResponse;
                 }),
