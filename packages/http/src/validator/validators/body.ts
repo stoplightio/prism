@@ -16,7 +16,6 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
   public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
     const { _prefix: prefix } = this;
     const content = this.getContent(specs, mediaType);
-    const parsedBody = parse(target);
 
     const schema = get(content, 'schema');
 
@@ -25,11 +24,13 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
     }
 
     if (mediaType && typeIs.is(mediaType, 'application/x-www-form-urlencoded')) {
+      target = parse(target);
+
       const encodings = get(content, 'encodings', []);
       for (const encoding of encodings) {
         const allowReserved = get(encoding, 'allowReserved', false);
         const property = encoding.property;
-        const value = parsedBody[property];
+        const value = target[property];
         const schemaType = get(schema, ['properties', property, 'type']);
 
         if (
@@ -51,9 +52,9 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
           const deserializer = body.get(encoding.style);
           if (deserializer && schema.properties) {
             const propertySchema = schema.properties[encoding.property];
-            parsedBody[encoding.property] = deserializer.deserialize(
+            target[encoding.property] = deserializer.deserialize(
               encoding.property,
-              parsedBody,
+              target,
               propertySchema as JSONSchema,
             );
           }
@@ -61,7 +62,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
       }
     }
 
-    return validateAgainstSchema(parsedBody, schema).map(error =>
+    return validateAgainstSchema(target, schema).map(error =>
       Object.assign({}, error, { path: [prefix, ...(error.path || [])] }),
     );
   }
