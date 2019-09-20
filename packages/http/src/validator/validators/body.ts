@@ -5,7 +5,7 @@ import { parse } from 'qs';
 import * as typeIs from 'type-is';
 import { body } from '../deserializers';
 
-import { DiagnosticSeverity } from '@stoplight/types/dist';
+import { DiagnosticSeverity, Dictionary } from '@stoplight/types/dist';
 import { JSONSchema } from '../../types';
 import { validateAgainstSchema } from '../validators/utils';
 import { IHttpValidator } from './types';
@@ -24,21 +24,21 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
     }
 
     if (mediaType && typeIs.is(mediaType, 'application/x-www-form-urlencoded')) {
+      const shallowParsedTarget = target.split('&').reduce((result: Dictionary<string, string>, pair: string) => {
+        const [key, ...rest] = pair.split('=');
+        result[key] = rest.join('=');
+        return result;
+      }, {});
+
       target = parse(target);
 
       const encodings = get(content, 'encodings', []);
       for (const encoding of encodings) {
         const allowReserved = get(encoding, 'allowReserved', false);
         const property = encoding.property;
-        const value = target[property];
-        const schemaType = get(schema, ['properties', property, 'type']);
+        const value = shallowParsedTarget[property];
 
-        if (
-          !allowReserved &&
-          schemaType === 'string' &&
-          typeof value === 'string' &&
-          value.match(/[\/?#\[\]@!$&'()*+,;=]/)
-        ) {
+        if (!allowReserved && typeof value === 'string' && value.match(/[\/?#\[\]@!$&'()*+,;=]/)) {
           return [
             {
               path: [prefix, property],

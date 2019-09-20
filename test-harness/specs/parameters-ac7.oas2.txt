@@ -24,7 +24,7 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "arr=a,b,c"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "arr=a%2Cb%2Cc"
 ====expect====
 HTTP/1.1 200 OK
 content-type: text/plain
