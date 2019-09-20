@@ -127,8 +127,8 @@ describe('Http Client .process', () => {
       });
     });
 
-    describe('mocking is off', () => {
-      const config: IHttpConfig = { mock: false, validateRequest: true, validateResponse: true };
+    describe.skip('mocking is off', () => {
+      const config: IHttpConfig = { mock: { dynamic: false }, validateRequest: true, validateResponse: true };
       const baseUrl = 'http://stoplight.io';
       const serverReply = 'hello world';
 
