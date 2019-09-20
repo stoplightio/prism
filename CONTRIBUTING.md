@@ -101,7 +101,6 @@ The application will wait for a debugger to be attached and break on the first l
     }
   ]
 }
-
 ```
 
 ### Common issues

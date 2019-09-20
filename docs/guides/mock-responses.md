@@ -16,7 +16,7 @@ responses:
     content:
       application/json:
         schema:
-          "$ref": "#/components/schemas/Pet"
+          '$ref': '#/components/schemas/Pet'
         examples:
           cat:
             summary: An example of a cat
@@ -29,17 +29,17 @@ responses:
             value:
               id: 1
               name: Spot
-              photoUrls: 
-              - https://images.dog.ceo/breeds/kelpie/n02105412_893.jpg
+              photoUrls:
+                - https://images.dog.ceo/breeds/kelpie/n02105412_893.jpg
 ```
 
 Calling `curl http://127.0.0.1:4010/pets/123` on this will give:
 
 ```json
 {
-    "id": 2,
-    "name": "Fluffy",
-    "photoUrls": []
+  "id": 2,
+  "name": "Fluffy",
+  "photoUrls": []
 }
 ```
 
@@ -47,11 +47,9 @@ Changing the URL to `http://127.0.0.1:4010/pets/123?__example=dog`
 
 ```json
 {
-    "id": 2,
-    "name": "Spot",
-    "photoUrls": [
-      "https://images.dog.ceo/breeds/kelpie/n02105412_893.jpg"
-    ]
+  "id": 2,
+  "name": "Spot",
+  "photoUrls": ["https://images.dog.ceo/breeds/kelpie/n02105412_893.jpg"]
 }
 ```
 
@@ -73,41 +71,39 @@ If the provided OpenAPI Schema Object has a response body example then it'll use
 
 If not, an response body will be created by looking through the whole `schema` object (following any `$ref`'s it finds along the way) to create a full fake response.
 
-* If the property has a default value, then it will return the specified value
-* If the property has an `examples` value, then it will return the first element in the array
-* If the property has nor an example or a default value and it's **nullable**, it will return null
-* If the property has nor an example or a default value and it's **not** nullable, and has a `format` specified it will return a meaningful static value according to the format
-* If the property has nor an example or a default value and it's **not** nullable, and has not a `format` specified it will return `'string'` in case of a number and `0` in case of a string
+- If the property has a default value, then it will return the specified value
+- If the property has an `examples` value, then it will return the first element in the array
+- If the property has nor an example or a default value and it's **nullable**, it will return null
+- If the property has nor an example or a default value and it's **not** nullable, and has a `format` specified it will return a meaningful static value according to the format
+- If the property has nor an example or a default value and it's **not** nullable, and has not a `format` specified it will return `'string'` in case of a number and `0` in case of a string
 
 Let's try an example! 🐶
 
 This is a schema component found in our OpenAPI description document:
 
 ```yaml
-  Pet:
-    type: object
-    properties: 
-      id: 
-        type: integer
-        format: int64
-      name: 
+Pet:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    name:
+      type: string
+      example: doggie
+    photoUrls:
+      type: array
+      items:
         type: string
-        example: doggie
-      photoUrls: 
-        type: array
-        items: 
-          type: string
 ```
 
 When we call `curl http://127.0.0.1:4010/pets/123`, the operation references this component so we get a doggie:
 
 ```json
 {
-    "id": 0,
-    "name": "doggie",
-    "photoUrls": [
-        "string"
-    ]
+  "id": 0,
+  "name": "doggie",
+  "photoUrls": ["string"]
 }
 ```
 
@@ -122,38 +118,38 @@ Dynamic mode solves this by generating a random value for all the properties acc
 All the random properties are generated using [Faker.js](https://github.com/marak/Faker.js) under the hood, via [JSON Schema Faker](https://github.com/json-schema-faker/json-schema-faker). The `x-faker` keyword is optional, but when present allows for a specific Faker API method to be used (of which there [are a lot](https://github.com/marak/Faker.js#api-methods)) so you get a lot of control over the response.
 
 ```yaml
-  Pet:
-    type: object
-    properties: 
-      id: 
-        type: integer
-        format: int64
-      name: 
+Pet:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    name:
+      type: string
+      x-faker: name.firstName
+      example: doggie
+    photoUrls:
+      type: array
+      items:
         type: string
-        x-faker: name.firstName
-        example: doggie
-      photoUrls: 
-        type: array
-        items: 
-          type: string
-          x-faker: image.imageUrl
+        x-faker: image.imageUrl
 ```
 
 When we call `curl http://127.0.0.1:4010/pets/123?__dynamic=true`, the operation references this component so we get a doggie:
 
 ```json
 {
-    "id": 12608726,
-    "name": "Addison",
-    "photoUrls": [
-        "http://lorempixel.com/640/480",
-        "http://lorempixel.com/640/480",
-        "http://lorempixel.com/640/480",
-        "http://lorempixel.com/640/480"
-    ]
+  "id": 12608726,
+  "name": "Addison",
+  "photoUrls": [
+    "http://lorempixel.com/640/480",
+    "http://lorempixel.com/640/480",
+    "http://lorempixel.com/640/480",
+    "http://lorempixel.com/640/480"
+  ]
 }
 ```
 
-The more descriptive your description is, the better job Prism can do at creating a mock response. 
+The more descriptive your description is, the better job Prism can do at creating a mock response.
 
 _**Tip:** If your team needs help creating better quality API description documents, take a look at [Spectral](https://stoplight.io/spectral/). You could enforce the use of `example` properties, or similar._
