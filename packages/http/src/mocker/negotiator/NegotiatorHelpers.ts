@@ -3,7 +3,6 @@ import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stop
 import { IHttpHeaderParam } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { fromNullable } from 'fp-ts/lib/Option';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Reader from 'fp-ts/lib/Reader';
@@ -33,7 +32,7 @@ const optionallyGetPayloadlessResponse = (
   mediaTypes: string[],
 ): Option.Option<IHttpNegotiationResult> => {
   return pipe(
-    fromNullable(response.contents),
+    Option.fromNullable(response.contents),
     Option.map(contents =>
       contents.filter(c => {
         // @ts-ignore
