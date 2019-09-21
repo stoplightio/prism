@@ -7,10 +7,10 @@ import { parse as parseQueryString } from 'querystring';
 import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
 import getHttpOperations, { getHttpOperationsFromResource } from './getHttpOperations';
-import { mocker } from './mocker';
-import { router } from './router';
+import mock from './mocker';
+import route from './router';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
-import { validator } from './validator';
+import { validateInput, validateOutput } from './validator';
 
 interface IClientConfig extends IHttpConfig {
   baseUrl?: string;
@@ -32,9 +32,10 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
 
   const obj = createInstance(defaultConfig, {
     logger: lg,
-    router,
-    validator,
-    mocker,
+    route,
+    validateInput,
+    validateOutput,
+    mock,
   });
 
   type headersFromRequest = Required<Pick<IHttpRequest, 'headers'>>;

@@ -51,7 +51,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             );
           }
 
-          const inputValidationResult = config.securityChecks
+          const inputValidationResult = config.checkSecurity
             ? inputValidations.concat(
                 pipe(
                   validateSecurity(input, resource),

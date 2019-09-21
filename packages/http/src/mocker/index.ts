@@ -35,7 +35,12 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpC
     withLogger(logger => {
       // setting default values
       const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
-      config = config || { mock: { dynamic: false }, validateRequest: true, validateResponse: true };
+      config = config || {
+        mock: { dynamic: false },
+        validateRequest: true,
+        validateResponse: true,
+        checkSecurity: true,
+      };
 
       if (!config.mock.mediaTypes && acceptMediaType) {
         logger.info(`Request contains an accept header: ${acceptMediaType}`);

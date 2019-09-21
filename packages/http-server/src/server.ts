@@ -40,7 +40,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     mock: { dynamic: false },
     validateRequest: true,
     validateResponse: true,
-    securityChecks: true,
+    checkSecurity: true,
   });
 
   const prism = createInstance(mergedConfig, components);

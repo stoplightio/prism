@@ -1,5 +1,5 @@
 import { createClientFromOperations } from '../client';
-import { mocker } from '../mocker';
+import * as mock from '../mocker';
 import { IHttpConfig } from '../types';
 
 describe('User Http Client', () => {
@@ -11,7 +11,7 @@ describe('User Http Client', () => {
         mock: { dynamic: false },
         validateRequest: true,
         validateResponse: true,
-        securityChecks: true,
+        checkSecurity: true,
       };
 
       beforeAll(async () => {
@@ -36,7 +36,7 @@ describe('User Http Client', () => {
           config,
         );
 
-        jest.spyOn(mocker, 'mock');
+        jest.spyOn(mock, 'default');
         jest.spyOn(client, 'request');
       });
 
@@ -46,20 +46,20 @@ describe('User Http Client', () => {
         beforeAll(() => client.get('/pet'));
 
         test('shall call the mocker with the default options', () =>
-          expect(mocker.mock).toHaveBeenCalledWith({ input: expect.anything(), resource: expect.anything(), config }));
+          expect(mock.default).toHaveBeenCalledWith({ input: expect.anything(), resource: expect.anything(), config }));
 
         test('shall ultimately call the main request method with the current HTTP Method', () =>
           expect(client.request).toHaveBeenCalledWith('/pet', { method: 'get' }, undefined));
       });
 
       describe('when overriding a config parameter on the request level', () => {
-        beforeAll(() => client.get('/pet', { securityChecks: false }));
+        beforeAll(() => client.get('/pet', { checkSecurity: false }));
 
         test('shall call the mocker with the modified options', () =>
-          expect(mocker.mock).toHaveBeenCalledWith({
+          expect(mock.default).toHaveBeenCalledWith({
             input: expect.anything(),
             resource: expect.anything(),
-            config: { ...config, securityChecks: false },
+            config: { ...config, checkSecurity: false },
           }));
       });
 
@@ -67,7 +67,7 @@ describe('User Http Client', () => {
         beforeAll(() => client.get('/pet', { baseUrl: 'https://www.google.it' }));
 
         test('should call the mocker with the replaced full url', () => {
-          expect(mocker.mock).toBeCalledWith({
+          expect(mock.default).toBeCalledWith({
             resource: expect.anything(),
             input: expect.objectContaining({
               data: expect.objectContaining({
@@ -86,7 +86,7 @@ describe('User Http Client', () => {
         beforeAll(() => client.get('https://www.google.it/pet'));
 
         test('should call the mocker with the replaced full url', () => {
-          expect(mocker.mock).toBeCalledWith({
+          expect(mock.default).toBeCalledWith({
             resource: expect.anything(),
             input: expect.objectContaining({
               data: expect.objectContaining({
