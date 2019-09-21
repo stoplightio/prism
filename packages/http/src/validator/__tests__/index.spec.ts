@@ -1,11 +1,8 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpContent, IHttpHeaderParam, IHttpOperation, IHttpQueryParam } from '@stoplight/types';
-import { some } from 'fp-ts/lib/Option';
-import { IHttpNameValue, IHttpNameValues } from '../../types';
+import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import { IHttpRequest } from '../../types';
-import { HttpValidator } from '../index';
+import { bodyValidator, headersValidator, queryValidator, validateInput, validateOutput } from '../index';
 import * as findResponseSpecModule from '../utils/spec';
-import { IHttpValidator } from '../validators/types';
 
 const mockError: IPrismDiagnostic = {
   message: 'mocked C is required',
@@ -15,24 +12,19 @@ const mockError: IPrismDiagnostic = {
 };
 
 describe('HttpValidator', () => {
-  const httpBodyValidator = { validate: () => [mockError] } as IHttpValidator<any, IHttpContent>;
-  const httpHeadersValidator = { validate: () => [mockError] } as IHttpValidator<IHttpNameValue, IHttpHeaderParam>;
-  const httpQueryValidator = { validate: () => [mockError] } as IHttpValidator<IHttpNameValues, IHttpQueryParam>;
-  const httpValidator = new HttpValidator(httpBodyValidator, httpHeadersValidator, httpQueryValidator);
-
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue(undefined);
-    jest.spyOn(httpBodyValidator, 'validate');
-    jest.spyOn(httpHeadersValidator, 'validate');
-    jest.spyOn(httpQueryValidator, 'validate');
+    jest.spyOn(bodyValidator, 'validate').mockReturnValue([mockError]);
+    jest.spyOn(headersValidator, 'validate').mockReturnValue([mockError]);
+    jest.spyOn(queryValidator, 'validate').mockReturnValue([mockError]);
   });
 
   describe('validateInput()', () => {
     describe('body validation in enabled', () => {
       const validate = (resourceExtension: Partial<IHttpOperation> | undefined, errorsNumber: number) => () => {
         expect(
-          httpValidator.validateInput({
+          validateInput({
             resource: Object.assign(
               {
                 method: 'get',
@@ -43,7 +35,7 @@ describe('HttpValidator', () => {
               },
               resourceExtension,
             ),
-            input: { method: 'get', url: { path: '/' } },
+            element: { method: 'get', url: { path: '/' } },
           }),
         ).toHaveLength(errorsNumber);
       };
@@ -83,7 +75,7 @@ describe('HttpValidator', () => {
   describe('headers validation in enabled', () => {
     const validate = (resourceExtension?: Partial<IHttpOperation>, length: number = 1) => () => {
       expect(
-        httpValidator.validateInput({
+        validateInput({
           resource: Object.assign(
             {
               method: 'get',
@@ -94,7 +86,7 @@ describe('HttpValidator', () => {
             },
             resourceExtension,
           ),
-          input: { method: 'get', url: { path: '/' } },
+          element: { method: 'get', url: { path: '/' } },
         }),
       ).toHaveLength(length);
     };
@@ -111,7 +103,7 @@ describe('HttpValidator', () => {
       length: number = 2,
     ) => () => {
       expect(
-        httpValidator.validateInput({
+        validateInput({
           resource: Object.assign(
             {
               method: 'get',
@@ -122,13 +114,13 @@ describe('HttpValidator', () => {
             },
             resourceExtension,
           ),
-          input: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
+          element: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
         }),
       ).toHaveLength(length);
 
-      expect(httpBodyValidator.validate).not.toHaveBeenCalled();
-      expect(httpHeadersValidator.validate).toHaveBeenCalled();
-      expect(httpQueryValidator.validate).toHaveBeenCalledWith({}, [], undefined);
+      expect(bodyValidator.validate).not.toHaveBeenCalled();
+      expect(headersValidator.validate).toHaveBeenCalled();
+      expect(queryValidator.validate).toHaveBeenCalledWith({}, []);
     };
 
     describe('request is not set', () => {
@@ -154,7 +146,7 @@ describe('HttpValidator', () => {
     describe('output is set', () => {
       it('validates the body and headers', () => {
         expect(
-          httpValidator.validateOutput({
+          validateOutput({
             resource: {
               method: 'get',
               path: '/',
@@ -162,13 +154,13 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            output: { statusCode: 200 },
+            element: { statusCode: 200 },
           }),
         ).toHaveLength(2);
 
         expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
-        expect(httpBodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
-        expect(httpHeadersValidator.validate).toHaveBeenCalled();
+        expect(bodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
+        expect(headersValidator.validate).toHaveBeenCalled();
       });
     });
   });

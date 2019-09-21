@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-* Install the project dependencies with `yarn`
-* Generate the binary for your platform with `yarn build.binary`. This will *also* compile the project from TS -> JS
+- Install the project dependencies with `yarn`
+- Generate the binary for your platform with `yarn build.binary`. This will _also_ compile the project from TS -> JS
 
 ## Running the suite
 
@@ -21,13 +21,14 @@ E.g. run `TESTS=parameters-ac1.oas2.txt,validate-body-params/form-byte-format-fa
 
 All test files are matched using a glob `**/*.txt`.
 This means that you can:
+
 - nest test files in subdirectories
 - skip files by suffixing name with `.skip` or some other suffix.
 
 ## Adding a new test
 
-* Create a new file in the `./spec` directory. It can have _any_ name and _any_ extension, it does not really matter.
-* Use the following template and put your stuff:
+- Create a new file in the `./spec` directory. It can have _any_ name and _any_ extension, it does not really matter.
+- Use the following template and put your stuff:
 
 ```
 ====test====
@@ -74,18 +75,18 @@ Connection: keep-alive
 
 #### Things to keep in mind when creating the files:
 
-* 1 scenario per file.
-* Be precise with the separators. They should be 4 *before* **AND** *after* the word. `====`
-* The 6 keywords are `test,spec,server,command,expect,expect-loose`, nothing else at the moment
-* You can run all the tests on the same port `4010`, but you can also choose another one
-* The `curl` command does not support piping stuff into other tools; so if you're trying to be cool and do `curl | grep`, well maybe next time.
-* All the `curl` commands **must** have the `-i` flag, otherwise the trace parser won't understand the output
+- 1 scenario per file.
+- Be precise with the separators. They should be 4 _before_ **AND** _after_ the word. `====`
+- The 6 keywords are `test,spec,server,command,expect,expect-loose`, nothing else at the moment
+- You can run all the tests on the same port `4010`, but you can also choose another one
+- The `curl` command does not support piping stuff into other tools; so if you're trying to be cool and do `curl | grep`, well maybe next time.
+- All the `curl` commands **must** have the `-i` flag, otherwise the trace parser won't understand the output
 
 ## Technical details
 
-* A RegExp is used to split the content
-* A temporary file with the specification file is stored on your disk
-* Prism gets spawn with the specified arguments and waited to be running
-* The curl command is performed
-* The outputs get converted using `http-string-parser`, a veeery old package transforming curl output to a consumable format
-* Gavel is used to validate the request — it will automagically ignore headers that can change and consider only the "fundamental" one such as content negotiation ones and stuff around.
+- A RegExp is used to split the content
+- A temporary file with the specification file is stored on your disk
+- Prism gets spawn with the specified arguments and waited to be running
+- The curl command is performed
+- The outputs get converted using `http-string-parser`, a veeery old package transforming curl output to a consumable format
+- Gavel is used to validate the request — it will automagically ignore headers that can change and consider only the "fundamental" one such as content negotiation ones and stuff around.

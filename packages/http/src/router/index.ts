@@ -1,6 +1,6 @@
-import { IRouter } from '@stoplight/prism-core';
+import { IPrismComponents } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
-import { Either, left, right } from 'fp-ts/lib/Either';
+import { left, right } from 'fp-ts/lib/Either';
 import { IHttpConfig, IHttpRequest, ProblemJsonError } from '../types';
 import {
   NO_METHOD_MATCHED_ERROR,
@@ -13,105 +13,103 @@ import { matchBaseUrl } from './matchBaseUrl';
 import { matchPath } from './matchPath';
 import { IMatch, MatchType } from './types';
 
-export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
-  route: ({ resources, input }): Either<Error, IHttpOperation> => {
-    const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
+const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig>['route'] = ({ resources, input }) => {
+  const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
 
-    if (!resources.length) {
-      return left(
-        ProblemJsonError.fromTemplate(
-          NO_RESOURCE_PROVIDED_ERROR,
-          `The current document does not have any resource to match with.`,
-        ),
-      );
+  if (!resources.length) {
+    return left(
+      ProblemJsonError.fromTemplate(
+        NO_RESOURCE_PROVIDED_ERROR,
+        `The current document does not have any resource to match with.`,
+      ),
+    );
+  }
+
+  let matches = resources.map<IMatch>(resource => {
+    const pathMatch = matchPath(requestPath, resource.path);
+    if (pathMatch === MatchType.NOMATCH)
+      return {
+        pathMatch,
+        methodMatch: MatchType.NOMATCH,
+        resource,
+      };
+
+    const methodMatch = matchByMethod(input, resource) ? MatchType.CONCRETE : MatchType.NOMATCH;
+
+    if (methodMatch === MatchType.NOMATCH) {
+      return {
+        pathMatch,
+        methodMatch,
+        resource,
+      };
     }
 
-    let matches = resources.map<IMatch>(resource => {
-      const pathMatch = matchPath(requestPath, resource.path);
-      if (pathMatch === MatchType.NOMATCH)
-        return {
-          pathMatch,
-          methodMatch: MatchType.NOMATCH,
-          resource,
-        };
+    const { servers = [] } = resource;
 
-      const methodMatch = matchByMethod(input, resource) ? MatchType.CONCRETE : MatchType.NOMATCH;
-
-      if (methodMatch === MatchType.NOMATCH) {
-        return {
-          pathMatch,
-          methodMatch,
-          resource,
-        };
-      }
-
-      const { servers = [] } = resource;
-
-      if (requestBaseUrl && servers.length > 0) {
-        const serverMatch = matchServer(servers, requestBaseUrl);
-
-        return {
-          pathMatch,
-          methodMatch,
-          serverMatch,
-          resource,
-        };
-      }
+    if (requestBaseUrl && servers.length > 0) {
+      const serverMatch = matchServer(servers, requestBaseUrl);
 
       return {
         pathMatch,
         methodMatch,
-        serverMatch: null,
+        serverMatch,
         resource,
       };
-    });
+    }
 
-    matches = matches.filter(match => match.pathMatch !== MatchType.NOMATCH);
+    return {
+      pathMatch,
+      methodMatch,
+      serverMatch: null,
+      resource,
+    };
+  });
 
-    if (!matches.length) {
+  matches = matches.filter(match => match.pathMatch !== MatchType.NOMATCH);
+
+  if (!matches.length) {
+    return left(
+      ProblemJsonError.fromTemplate(
+        NO_PATH_MATCHED_ERROR,
+        `The route ${requestPath} hasn't been found in the specification file`,
+      ),
+    );
+  }
+
+  matches = matches.filter(match => match.methodMatch !== MatchType.NOMATCH);
+
+  if (!matches.length) {
+    return left(
+      ProblemJsonError.fromTemplate(
+        NO_METHOD_MATCHED_ERROR,
+        `The route ${requestPath} has been matched, but it does not have "${input.method}" method defined`,
+      ),
+    );
+  }
+
+  if (requestBaseUrl) {
+    if (resources.every(resource => !resource.servers || resource.servers.length === 0)) {
       return left(
         ProblemJsonError.fromTemplate(
-          NO_PATH_MATCHED_ERROR,
-          `The route ${requestPath} hasn't been found in the specification file`,
+          NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
+          `No server configuration has been provided, although ${requestBaseUrl} is set as server url`,
         ),
       );
     }
 
-    matches = matches.filter(match => match.methodMatch !== MatchType.NOMATCH);
+    matches = matches.filter(match => !!match.serverMatch && match.serverMatch !== MatchType.NOMATCH);
 
     if (!matches.length) {
       return left(
         ProblemJsonError.fromTemplate(
-          NO_METHOD_MATCHED_ERROR,
-          `The route ${requestPath} has been matched, but it does not have "${input.method}" method defined`,
+          NO_SERVER_MATCHED_ERROR,
+          `The server url ${requestBaseUrl} hasn't been matched with any of the provided servers`,
         ),
       );
     }
+  }
 
-    if (requestBaseUrl) {
-      if (resources.every(resource => !resource.servers || resource.servers.length === 0)) {
-        return left(
-          ProblemJsonError.fromTemplate(
-            NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
-            `No server configuration has been provided, although ${requestBaseUrl} is set as server url`,
-          ),
-        );
-      }
-
-      matches = matches.filter(match => !!match.serverMatch && match.serverMatch !== MatchType.NOMATCH);
-
-      if (!matches.length) {
-        return left(
-          ProblemJsonError.fromTemplate(
-            NO_SERVER_MATCHED_ERROR,
-            `The server url ${requestBaseUrl} hasn't been matched with any of the provided servers`,
-          ),
-        );
-      }
-    }
-
-    return right(disambiguateMatches(matches));
-  },
+  return right(disambiguateMatches(matches));
 };
 
 function matchServer(servers: IServer[], requestBaseUrl: string) {
@@ -158,3 +156,5 @@ function disambiguateServers(serverMatches: MatchType[]): MatchType {
   const concreteMatch = serverMatches.find(serverMatch => serverMatch === MatchType.CONCRETE);
   return concreteMatch || serverMatches[0] || MatchType.NOMATCH;
 }
+
+export default route;

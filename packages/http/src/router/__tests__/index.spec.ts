@@ -10,7 +10,7 @@ import {
   NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
   NO_SERVER_MATCHED_ERROR,
 } from '../errors';
-import { router } from '../index';
+import route from '../index';
 import { pickOneHttpMethod, pickSetOfHttpMethods, randomPath } from './utils';
 
 const chance = new Chance();
@@ -34,7 +34,7 @@ describe('http router', () => {
       const path = randomPath();
 
       assertLeft(
-        router.route({
+        route({
           resources: [createResource(method, path, [])],
           input: {
             method,
@@ -50,7 +50,7 @@ describe('http router', () => {
 
     test('should not match if no resources given', () => {
       assertLeft(
-        router.route({
+        route({
           resources: [],
           input: {
             method: pickOneHttpMethod(),
@@ -71,7 +71,7 @@ describe('http router', () => {
 
         return expect(
           isRight(
-            router.route({
+            route({
               resources: [createResource(method, path, [])],
               input: {
                 method,
@@ -90,7 +90,7 @@ describe('http router', () => {
         const [resourceMethod, requestMethod] = pickSetOfHttpMethods(2);
 
         assertLeft(
-          router.route({
+          route({
             resources: [
               createResource(resourceMethod, randomPath(), [
                 {
@@ -118,7 +118,7 @@ describe('http router', () => {
           const path = randomPath({ trailingSlash: false });
 
           assertLeft(
-            router.route({
+            route({
               resources: [
                 createResource(method, path, [
                   {
@@ -147,7 +147,7 @@ describe('http router', () => {
             },
           ]);
           assertRight(
-            router.route({
+            route({
               resources: [expectedResource],
               input: {
                 method,
@@ -166,7 +166,7 @@ describe('http router', () => {
               with path matching of one of the resources
               throws an error`, () => {
           assertLeft(
-            router.route({
+            route({
               resources: [
                 createResource(method, '/pet', [{ url: 'http://example.com/api' }]),
                 createResource(method, '/owner', [{ url: 'http://stg.example.com/api/v2' }]),
@@ -198,7 +198,7 @@ describe('http router', () => {
           ]);
 
           assertRight(
-            router.route({
+            route({
               resources: [expectedResource],
               input: {
                 method,
@@ -227,7 +227,7 @@ describe('http router', () => {
           ]);
 
           assertRight(
-            router.route({
+            route({
               resources: [expectedResource],
               input: {
                 method,
@@ -252,7 +252,7 @@ describe('http router', () => {
           ]);
 
           assertRight(
-            router.route({
+            route({
               resources: [expectedResource],
               input: {
                 method,
@@ -277,7 +277,7 @@ describe('http router', () => {
           ]);
 
           assertLeft(
-            router.route({
+            route({
               resources: [expectedResource],
               input: {
                 method,
@@ -299,7 +299,7 @@ describe('http router', () => {
           const resourceWithTemplatedPath = createResource(method, templatedPath, [{ url }]);
 
           assertRight(
-            router.route({
+            route({
               resources: [resourceWithTemplatedPath, resourceWithConcretePath],
               input: {
                 method,
@@ -321,7 +321,7 @@ describe('http router', () => {
           const secondResource = createResource(method, templatedPathB, [{ url }]);
 
           assertRight(
-            router.route({
+            route({
               resources: [firstResource, secondResource],
               input: {
                 method,
@@ -348,7 +348,7 @@ describe('http router', () => {
           ]);
 
           assertRight(
-            router.route({
+            route({
               resources: [resourceWithConcreteMatch, resourceWithTemplatedMatch],
               input: {
                 method,
@@ -370,7 +370,7 @@ describe('http router', () => {
           const resourceWithNonMatchingPath = createResource(method, nonMatchingPath, [{ url }]);
 
           assertRight(
-            router.route({
+            route({
               resources: [resourceWithNonMatchingPath, resourceWithMatchingPath],
               input: {
                 method,
@@ -390,7 +390,7 @@ describe('http router', () => {
           const expectedResource = createResource(method, path, [{ url }]);
 
           assertRight(
-            router.route({
+            route({
               resources: [expectedResource],
               input: {
                 method,
@@ -409,7 +409,7 @@ describe('http router', () => {
           const url = 'concrete.com';
 
           assertLeft(
-            router.route({
+            route({
               resources: [createResource(method, path, [{ url }])],
               input: {
                 method,
@@ -429,7 +429,7 @@ describe('http router', () => {
           const expectedResource = createResource(method, path, [{ url }]);
 
           assertRight(
-            router.route({
+            route({
               resources: [expectedResource],
               input: {
                 method,
@@ -448,7 +448,7 @@ describe('http router', () => {
           const expectedResource = createResource(method, path, [{ url: 'www.stoplight.io/v1' }]);
 
           assertRight(
-            router.route({
+            route({
               resources: [expectedResource],
               input: {
                 method,
@@ -468,7 +468,7 @@ describe('http router', () => {
         const url = 'concrete.com';
 
         assertLeft(
-          router.route({
+          route({
             resources: [createResource(method, path, [{ url }])],
             input: {
               method: 'post',

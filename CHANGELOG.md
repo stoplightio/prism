@@ -42,6 +42,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is now returning CORS headers by default and responding to all the preflights requests. You can disable this behaviour by running Prism with the `--cors` flag set to false [#525](https://github.com/stoplightio/prism/pulls/525)
 
 ## Fixed
+
 - Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples [#506](https://github.com/stoplightio/prism/pulls/506)
 - Prism now loads correctly OpenAPI 3.x documents with `encodings` with non specified `style` property [#507](https://github.com/stoplightio/prism/pulls/507)
 - Prism got rid of some big internal dependencies that now aren't required anymore, making it faster and lighter. [#490](https://github.com/stoplightio/prism/pulls/490)
@@ -53,7 +54,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Prism is now returning a `406` error instead of an empty response in case it is not able to find a response whose content type satisfies the provided `Accept` Header
 - Prism now respects the `q` value in the `Accept` header to specify the content type preference
-- Prism is now returning `text/plain` when the document does *not* specify any Content Type for the examples
+- Prism is now returning `text/plain` when the document does _not_ specify any Content Type for the examples
 - Prism is now returning the example according to the `Accept` header for OAS2 documents
 - Prism is now returning `404` instead of `500` in case the requested named example does not exist in the document
 

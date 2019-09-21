@@ -1,6 +1,6 @@
 import { DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
-import { validator } from '../index';
+import { validateInput, validateOutput } from '../index';
 
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
   body: { name: 'Shopping', completed: 'yes' },
@@ -20,13 +20,13 @@ const BAD_OUTPUT = Object.assign({}, httpOutputs[1], {
 describe('HttpValidator', () => {
   describe('validateInput()', () => {
     describe('all validations are turned on', () => {
-      it('returns validation errors for whole request structure', async () => {
-        expect(validator.validateInput({ resource: httpOperations[2], input: BAD_INPUT })).toMatchSnapshot();
+      it('returns validation errors for whole request structure', () => {
+        expect(validateInput({ resource: httpOperations[2], element: BAD_INPUT })).toMatchSnapshot();
       });
 
       describe('when all required params are provided', () => {
-        it('returns no validation errors', async () => {
-          expect(validator.validateInput({ resource: httpOperations[0], input: GOOD_INPUT })).toEqual([]);
+        it('returns no validation errors', () => {
+          expect(validateInput({ resource: httpOperations[0], element: GOOD_INPUT })).toEqual([]);
         });
       });
     });
@@ -34,7 +34,7 @@ describe('HttpValidator', () => {
     describe('headers validation', () => {
       it('is case insensitive', () => {
         expect(
-          validator.validateInput({
+          validateInput({
             resource: {
               method: 'GET',
               path: '/hey',
@@ -57,7 +57,7 @@ describe('HttpValidator', () => {
                 ],
               },
             },
-            input: {
+            element: {
               method: 'get',
               url: {
                 path: '/hey',
@@ -74,9 +74,9 @@ describe('HttpValidator', () => {
     describe('query validation', () => {
       it('returns only query validation errors', () => {
         expect(
-          validator.validateInput({
+          validateInput({
             resource: httpOperations[2],
-            input: BAD_INPUT,
+            element: BAD_INPUT,
           }),
         ).toContainEqual({
           code: 'pattern',
@@ -91,7 +91,7 @@ describe('HttpValidator', () => {
   describe('validateOutput()', () => {
     describe('all validations are turned on', () => {
       it('returns validation errors for whole request structure', () => {
-        expect(validator.validateOutput({ resource: httpOperations[1], output: BAD_OUTPUT })).toMatchSnapshot();
+        expect(validateOutput({ resource: httpOperations[1], element: BAD_OUTPUT })).toMatchSnapshot();
       });
     });
   });

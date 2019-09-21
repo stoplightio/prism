@@ -1,9 +1,9 @@
 import { factory } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import { defaults } from 'lodash';
-import { mocker } from './mocker';
-import { router } from './router';
-import { validator } from './validator';
+import mock from './mocker';
+import route from './router';
+import { validateInput, validateOutput } from './validator';
 export * from './types';
 export * from './getHttpOperations';
 
@@ -15,11 +15,7 @@ const createInstance = (
 ) =>
   factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
     defaultConfig,
-    defaults(components, {
-      router,
-      validator,
-      mocker,
-    }),
+    defaults(components, { route, validateInput, validateOutput, mock }),
   );
 
 export { createInstance };
