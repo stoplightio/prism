@@ -67,16 +67,20 @@ const prism = Prism.createInstance({
 });
 
 // Make a "GET /todos" request
-return prism.process({
-  method: 'get',
-  url: {
-    path: '/todos',
-  },
-  headers: {
-    Accept: 'text/plain',
-  },
-}, operations)
-.then(prismResponse => console.log(prismResponse.output))
+return prism
+  .process(
+    {
+      method: 'get',
+      url: {
+        path: '/todos',
+      },
+      headers: {
+        Accept: 'text/plain',
+      },
+    },
+    operations
+  )
+  .then(prismResponse => console.log(prismResponse.output));
 ```
 
 Output
@@ -99,25 +103,27 @@ Later we alter than behaviour by passing a config object to the `process` functi
 const Prism = require('@stoplight/prism-http');
 
 // Note that by default we don't want to mock responses
-const prism = Prism.createInstance({ mock: {dynamic: false} });
+const prism = Prism.createInstance({ mock: { dynamic: false } });
 
 // Make a "GET /todos" request
-return prism.process(
-  {
-    method: 'get',
-    url: {
-      path: '/facts',
-      baseUrl: 'https://cat-fact.herokuapp.com',
+return prism
+  .process(
+    {
+      method: 'get',
+      url: {
+        path: '/facts',
+        baseUrl: 'https://cat-fact.herokuapp.com',
+      },
     },
-  },
-  {
-    // We can override the default behaviour per request.
-    mock: {
-      dynamic: true,
+    {
+      // We can override the default behaviour per request.
+      mock: {
+        dynamic: true,
+      },
     },
-  }
-, operations)
-.then(prismResponse => console.log(prismResponse.output));
+    operations
+  )
+  .then(prismResponse => console.log(prismResponse.output));
 ```
 
 ## Make Request To An Upstream Server
@@ -128,7 +134,7 @@ We don't want to mock a reqeust, we simply want to make the request, hit the act
 const Prism = require('@stoplight/prism-http');
 
 // Create Prism instance and configure it to make HTTP requests (mock: {dynamic: false})
-const config = { mock: {dynamic: false} };
+const config = { mock: { dynamic: false } };
 const prism = Prism.createInstance(config);
 
 return prism
@@ -156,7 +162,7 @@ In order to create and instance of HTTP Client (later referred to as `prism` for
 
 ```javascript
 const Prism = require('@stoplight/prism-http');
-const config = { mock: {dynamic: false} };
+const config = { mock: { dynamic: false } };
 const prism = Prism.createInstance(config /*, components */);
 ```
 
@@ -178,7 +184,7 @@ The actual interface looks like this (but rather than explain each property we'r
 
 ```ts
 export interface IHttpConfig extends IPrismConfig {
-  mock: {dynamic: false} | IHttpOperationConfig;
+  mock: { dynamic: false } | IHttpOperationConfig;
   validateRequest: boolean;
   validateResponse: boolean;
 }
@@ -264,13 +270,16 @@ All of this is pretty standard except the `url.baseUrl` which we will describe i
 Consider a request
 
 ```javascript
-prism.process({
-  method: 'get',
-  url: {
-    path: '/facts', // must be prefixed with slash
-    baseUrl: 'https://cat-fact.herokuapp.com',
+prism.process(
+  {
+    method: 'get',
+    url: {
+      path: '/facts', // must be prefixed with slash
+      baseUrl: 'https://cat-fact.herokuapp.com',
+    },
   },
-}, operations);
+  operations
+);
 ```
 
 Notice that `baseUrl` is defined.
@@ -301,16 +310,19 @@ One example however is that for a given example
 const Prism = require('@stoplight/prism-http');
 
 // Create Prism instance and configure it to make http requests
-const config = { mock: {dynamic: false} };
+const config = { mock: { dynamic: false } };
 const prism = Prism.createInstance(config);
 prism
-  .process({
-    method: 'get',
-    url: {
-      path: '/facts',
-      baseUrl: 'https://cat-fact.herokuapp.com',
+  .process(
+    {
+      method: 'get',
+      url: {
+        path: '/facts',
+        baseUrl: 'https://cat-fact.herokuapp.com',
+      },
     },
-  }, operations)
+    operations
+  )
   .then(prismResponse => console.log(prismResponse.validations.input));
 ```
 

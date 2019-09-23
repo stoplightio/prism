@@ -16,7 +16,7 @@ document in order to build the mock server, then it can do all sorts of clever s
 
 ## Request Validation
 
-Having a mock server which only gave responses would not be very useful, what about HTTP requests? Well, seeing as your OpenAPI description document is full of all sorts of validation rules like type, format, max length, etc., Prism can easily provide [request validation](../guides/request-validation.md) too. 
+Having a mock server which only gave responses would not be very useful, what about HTTP requests? Well, seeing as your OpenAPI description document is full of all sorts of validation rules like type, format, max length, etc., Prism can easily provide [request validation](../guides/request-validation.md) too.
 
 ## Response Generation
 
