@@ -11,7 +11,7 @@ paths:
         200:
           description: Get Todo Items
           content:
-            '*/*':
+            'text/plain':
               example: hello
 ====server====
 mock -p 4010

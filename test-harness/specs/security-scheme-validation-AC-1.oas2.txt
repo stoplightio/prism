@@ -5,6 +5,8 @@ swagger: "2.0"
 paths:
   /todos:
     get:
+      produces:
+        - text/plain
       responses:
         200:
           description: OK

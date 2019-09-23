@@ -1,0 +1,18 @@
+====test====
+Prism responds with an empty body when the content-type from Accept header was matched.
+====spec====
+swagger: "2.0"
+paths:
+  /path:
+    get:
+      produces:
+        - text/plain
+      responses:
+        '204':
+          description: No Content
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/path -H "Accept: text/plain"
+====expect====
+HTTP/1.1 204 No Content

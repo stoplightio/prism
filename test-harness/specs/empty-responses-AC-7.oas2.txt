@@ -1,0 +1,28 @@
+====test====
+Prism is able to respond with an empty 422 response when authorization succeeds.
+AC-7 adds Accept header (AC-5 does not).
+====spec====
+swagger: "2.0"
+paths:
+  /users:
+    get:
+      parameters:
+        - name: abc
+          type: string
+          required: true
+          in: query
+      description: "abc"
+      responses:
+        422:
+          description: "xyz"
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
+====server====
+mock -p 4010
+====command====
+curl -sIXGET http://localhost:4010/users -H "Authorization: Basic dGVzdDp0ZXN0" -H "Accept: application/xml"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
