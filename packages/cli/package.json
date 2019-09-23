@@ -12,7 +12,7 @@
     "@stoplight/prism-core": "^3.1.1",
     "@stoplight/prism-http-server": "^3.1.1",
     "@stoplight/yaml": "^3.0.2",
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "signale": "^1.4.0",
     "split2": "^3.1.1",
     "tslib": "^1.10.0",
