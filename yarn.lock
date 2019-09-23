@@ -1196,15 +1196,19 @@
   dependencies:
     "@types/json-schema" "^7.0.3"
 
+"@stoplight/yaml-ast-parser@0.0.43":
+  version "0.0.43"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.43.tgz#c39cf86e98e48d73c483be96622b2b622cc56b0c"
+  integrity sha512-3buZXhav0Uc4pD7QWCTfysDTW0syyf1Nj/F73fgAfhO9+Fd6Q6IVB0k1ApcHFQgIPTHQAq9Lu8+ngvlGIjG6ZQ==
+
 "@stoplight/yaml@^3.0.2":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-3.1.0.tgz#1026dd99512b987f6686e9daa52f67bd36ab4285"
-  integrity sha512-Db+f9AJO95S+bWL4ODdItLNXaBE/ey5nYAB9K/i9IgBZgJ+lyQ1+L0HSduX627uzwZCqgMo0tySWrgVTi2scBQ==
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-3.2.0.tgz#a36257809e0e68289961623dbfc907b47f12664b"
+  integrity sha512-HAw0hGSQbYCXKRxRd6qnQ2bKiOmW5CKme6RRSnoMahQ5qG3VNN0RO3ouNQ4EEUzjSDveUkLfZHBfe0ywOxXprw==
   dependencies:
-    "@stoplight/types" "^11.0.0"
-    "@types/js-yaml" "3.12.1"
+    "@stoplight/types" "^11.1.0"
+    "@stoplight/yaml-ast-parser" "0.0.43"
     lodash "^4.17.15"
-    yaml-ast-parser "~0.0.43"
 
 "@types/babel__core@^7.1.0":
   version "7.1.2"
@@ -1304,11 +1308,6 @@
   integrity sha512-jcDDXdjTcrQzdN06+TSVsPPqxvsZA/5QkYfIZlq1JMw7FdP5AZylbOc+6B/cuDurctRe+MziUMtQ3xQdrbjqyQ==
   dependencies:
     "@types/jest-diff" "*"
-
-"@types/js-yaml@3.12.1":
-  version "3.12.1"
-  resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-3.12.1.tgz#5c6f4a1eabca84792fbd916f0cb40847f123c656"
-  integrity sha512-SGGAhXLHDx+PK4YLNcNGa6goPf9XRWQNAUUbffkwVGGXIxmDKWyGGL4inzq2sPmExu431Ekb9aEMn9BkPqEYFA==
 
 "@types/json-schema@^7.0.3":
   version "7.0.3"
@@ -8507,11 +8506,6 @@ yallist@^3.0.0, yallist@^3.0.2, yallist@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.3.tgz#b4b049e314be545e3ce802236d6cd22cd91c3de9"
   integrity sha512-S+Zk8DEWE6oKpV+vI3qWkaK+jSbIK86pCwe2IF/xwIpQ8jEuxpw9NyaGjmp9+BoJv5FV2piqCDcoCtStppiq2A==
-
-yaml-ast-parser@~0.0.43:
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/yaml-ast-parser/-/yaml-ast-parser-0.0.43.tgz#e8a23e6fb4c38076ab92995c5dca33f3d3d7c9bb"
-  integrity sha512-2PTINUwsRqSd+s8XxKaJWQlUuEMHJQyEuh2edBbW8KNJz0SJPwUSD2zRWqezFEdN7IzAgeuYHFUCF7o8zRdZ0A==
 
 yargs-parser@10.x:
   version "10.1.0"
