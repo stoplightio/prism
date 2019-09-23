@@ -325,9 +325,6 @@ describe('Http Client .process', () => {
           output: [],
         });
       });
-
-      // TODO: will be fixed by https://stoplightio.atlassian.net/browse/SO-259
-      test.todo('with invalid body returns validation errors');
     });
   });
 
