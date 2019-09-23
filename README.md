@@ -39,6 +39,11 @@ After [installation](https://stoplight.io/p/docs/gh/stoplightio/prism/docs/getti
 
 ## FAQs
 
+**Cannot access mock server when using docker?**
+
+Prism uses localhost by default, which usually means 127.0.0.1. When using docker the mock server will
+be unreachable outside of the container unless you run the mock command with `-h 0.0.0.0`. 
+
 **Why am I getting 404 errors when I include my basePath?**
 
 OpenAPI v2.0 had a concept called "basePath", which was essentially part of the HTTP path the stuff
