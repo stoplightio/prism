@@ -95,7 +95,7 @@ describe('NegotiatorHelpers', () => {
       });
 
       describe('and has no static contents', () => {
-        it('returns an empty payload response', () => {
+        it('returns an empty payload response for an invalid request', () => {
           httpOperation = anHttpOperation(httpOperation)
             .withResponses([
               {

@@ -26,23 +26,15 @@ import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } f
 
 const outputNoContentFoundMessage = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
-const optionallyGetPayloadlessResponse = (
+const findEmptyResponse = (
   response: IHttpOperationResponse,
   headers: IHttpHeaderParam[],
   mediaTypes: string[],
 ): Option.Option<IHttpNegotiationResult> => {
   return pipe(
     Option.fromNullable(response.contents),
-    Option.map(contents =>
-      contents.filter(c => {
-        return !(c.mediaType === '*/*');
-      }),
-    ),
-    Option.map(contents =>
-      contents.filter(c => {
-        return !c.schema && !(c.examples || []).length;
-      }),
-    ),
+    Option.map(contents => contents.filter(c => !(c.mediaType === '*/*'))),
+    Option.map(contents => contents.filter(c => !c.schema && !(c.examples || []).length)),
     Option.chain(responses => {
       return Option.fromPredicate((noContentResponses: { length: number }) => {
         const noAcceptAndNoContentResponses =
@@ -191,7 +183,7 @@ const helpers = {
           Option.fold(
             () => {
               return pipe(
-                optionallyGetPayloadlessResponse(response, headers || [], mediaTypes),
+                findEmptyResponse(response, headers || [], mediaTypes),
                 Option.map(payloadlessResponse => {
                   logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
 
@@ -387,7 +379,7 @@ const helpers = {
                   });
                 } else {
                   return pipe(
-                    optionallyGetPayloadlessResponse(
+                    findEmptyResponse(
                       response,
                       response.headers || [],
                       get(contentWithExamples, 'mediaType', get(responseWithSchema, 'schema')) || ['*/*'],
