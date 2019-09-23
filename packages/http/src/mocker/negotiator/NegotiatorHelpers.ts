@@ -32,11 +32,12 @@ const findEmptyResponse = (
   mediaTypes: string[],
 ): Option.Option<IHttpNegotiationResult> => {
   return pipe(
+    mediaTypes,
     Option.fromPredicate((contentTypes: string[]) => {
       const acceptHeaderSpecificValues = contentTypes.filter((ct: string) => !ct.includes('*/*'));
 
       return !acceptHeaderSpecificValues.length;
-    })(mediaTypes),
+    }),
     Option.map(() => {
       return {
         code: response.code,
