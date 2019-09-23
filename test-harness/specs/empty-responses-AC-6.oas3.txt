@@ -1,5 +1,6 @@
 ====test====
-Prism is able to respond with an empty response when authorization fails (even though Accept header was provided).
+Prism is able to respond with an empty response when authorization fails.
+AC-6 adds Accept header (AC-3 does not).
 ====spec====
 openapi: 3.0.2
 paths:
