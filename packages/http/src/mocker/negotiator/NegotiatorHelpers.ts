@@ -183,13 +183,10 @@ const helpers = {
 
                   return payloadlessResponse;
                 }),
-                Either.fromOption(() => {
+                Either.fromOption<Error>(() => {
                   logger.warn(outputNoContentFoundMessage(mediaTypes));
 
-                  return ProblemJsonError.fromTemplate(
-                    NOT_ACCEPTABLE,
-                    `Unable to find content for ${mediaTypes}`,
-                  ) as Error;
+                  return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
                 }),
               );
             },
