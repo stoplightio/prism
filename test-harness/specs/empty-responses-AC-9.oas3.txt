@@ -1,0 +1,26 @@
+====test====
+Prism responds with a payload when content-type can be matched.
+====spec====
+openapi: 3.0.2
+paths:
+  /path:
+    get:
+      responses:
+        204:
+          description: No Content
+        200:
+          description: "a response"
+          content:
+            text/plain:
+              schema:
+                type: string
+                example:
+                  abc
+====server====
+mock -p 4010
+====command====
+curl -i http://localhost:4010/path -H "Accept: text/plain"
+====expect====
+HTTP/1.1 200 OK
+
+abc
