@@ -35,14 +35,12 @@ const findEmptyResponse = (
     Option.fromNullable(response.contents),
     Option.map(contents => contents.filter(c => !(c.mediaType === '*/*'))),
     Option.map(contents => contents.filter(c => !c.schema && !(c.examples || []).length)),
-    Option.chain(responses => {
-      return Option.fromPredicate((noContentResponses: { length: number }) => {
-        const noAcceptAndNoContentResponses =
-          !noContentResponses.length && !mediaTypes.filter((mt: string) => !mt.includes('*/*')).length;
-
-        return noAcceptAndNoContentResponses || ['400', '422'].includes(response.code);
-      })(responses);
-    }),
+    Option.chain(responses =>
+      Option.fromPredicate(
+        (noContentResponses: { length: number }) =>
+          !noContentResponses.length && !mediaTypes.filter((mt: string) => !mt.includes('*/*')).length,
+      )(responses),
+    ),
     Option.map(() => {
       return {
         code: response.code,
