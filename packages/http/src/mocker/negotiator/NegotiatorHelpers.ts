@@ -32,8 +32,8 @@ const findEmptyResponse = (
   mediaTypes: string[],
 ): Option.Option<IHttpNegotiationResult> => {
   return pipe(
-    Option.fromPredicate((mediaTypesE: string[]) => {
-      const acceptHeaderSpecificValues = mediaTypesE.filter((mt: string) => !mt.includes('*/*'));
+    Option.fromPredicate((contentTypes: string[]) => {
+      const acceptHeaderSpecificValues = contentTypes.filter((ct: string) => !ct.includes('*/*'));
 
       return !acceptHeaderSpecificValues.length;
     })(mediaTypes),
