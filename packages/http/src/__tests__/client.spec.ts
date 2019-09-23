@@ -15,6 +15,8 @@ describe('User Http Client', () => {
       };
 
       beforeAll(async () => {
+        jest.spyOn(mock, 'default');
+
         client = await createClientFromOperations(
           [
             {
@@ -36,11 +38,10 @@ describe('User Http Client', () => {
           config,
         );
 
-        jest.spyOn(mock, 'default');
         jest.spyOn(client, 'request');
       });
 
-      afterEach(() => jest.clearAllMocks());
+      afterAll(() => jest.clearAllMocks());
 
       describe('when calling with no options', () => {
         beforeAll(() => client.get('/pet'));
