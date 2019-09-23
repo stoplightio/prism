@@ -24,7 +24,7 @@ import {
 } from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 
-const warnMsg = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
+const outputNoContentFoundMessage = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
 const optionallyGetPayloadlessResponse = (
   response: IHttpOperationResponse,
@@ -193,12 +193,12 @@ const helpers = {
               return pipe(
                 optionallyGetPayloadlessResponse(response, headers || [], mediaTypes),
                 Option.map(payloadlessResponse => {
-                  logger.info(`${warnMsg(mediaTypes)}. Sending an empty response.`);
+                  logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
 
                   return payloadlessResponse;
                 }),
                 Either.fromOption(() => {
-                  logger.warn(warnMsg(mediaTypes));
+                  logger.warn(outputNoContentFoundMessage(mediaTypes));
 
                   return ProblemJsonError.fromTemplate(
                     NOT_ACCEPTABLE,
