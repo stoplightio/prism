@@ -17,5 +17,3 @@ export const createInstance = (
     defaultConfig,
     defaults(components, { route, validateInput, validateOutput, mock }),
   );
-
-export { createInstance };

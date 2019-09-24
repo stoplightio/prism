@@ -18,10 +18,10 @@ interface IClientConfig extends IHttpConfig {
 
 function createClientFrom(
   getResource: (v: string) => Promise<IHttpOperation[]>,
-  spec: string,
+  document: string,
   defaultConfig: IHttpConfig,
 ): Promise<PrismHttp> {
-  return getResource(spec).then(resources => createClientFromOperations(resources, defaultConfig));
+  return getResource(document).then(resources => createClientFromOperations(resources, defaultConfig));
 }
 
 const createClientFromResource = partial(createClientFrom, getHttpOperationsFromResource);
