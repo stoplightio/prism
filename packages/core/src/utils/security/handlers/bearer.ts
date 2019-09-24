@@ -1,6 +1,6 @@
 import { fromNullable, getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { get } from 'lodash';
+import { get, partial } from 'lodash';
 import { SecurityScheme } from './types';
 import { when } from './utils';
 
@@ -18,15 +18,15 @@ function isBearerToken(inputHeaders: Headers) {
 
 export const bearer = {
   test: ({ type, scheme }: SecurityScheme) => scheme === 'bearer' && type === 'http',
-  handle: bearerHandler.bind(undefined, 'Bearer'),
+  handle: partial(bearerHandler, 'Bearer'),
 };
 
 export const oauth2 = {
   test: ({ type }: SecurityScheme) => type === 'oauth2',
-  handle: bearerHandler.bind(undefined, 'OAuth2'),
+  handle: partial(bearerHandler, 'OAuth2'),
 };
 
 export const openIdConnect = {
   test: ({ type }: SecurityScheme) => type === 'openIdConnect',
-  handle: bearerHandler.bind(undefined, 'OpenID'),
+  handle: partial(bearerHandler, 'OpenID'),
 };

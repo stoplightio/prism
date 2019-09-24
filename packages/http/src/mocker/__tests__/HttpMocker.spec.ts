@@ -196,7 +196,12 @@ describe('mocker', () => {
             const response = await mock({
               input: mockInput,
               resource: mockResource,
-              config: { mock: { dynamic: true }, validateRequest: true, validateResponse: true },
+              config: {
+                mock: { dynamic: true },
+                validateRequest: true,
+                validateResponse: true,
+                checkSecurity: true,
+              },
             })(logger);
 
             expect(JSONSchemaGenerator.generate).toHaveBeenCalled();
@@ -228,6 +233,7 @@ describe('mocker', () => {
                 mock: { dynamic: false, exampleKey: 'test key' },
                 validateRequest: true,
                 validateResponse: true,
+                checkSecurity: true,
               },
             })(logger);
 
@@ -246,7 +252,12 @@ describe('mocker', () => {
             const response = mock({
               input: mockInput,
               resource: mockResource,
-              config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+              config: {
+                mock: { dynamic: false },
+                validateRequest: true,
+                validateResponse: true,
+                checkSecurity: true,
+              },
             })(logger);
 
             it('returns the first example', () => {
@@ -287,7 +298,12 @@ describe('mocker', () => {
             return mock({
               input: mockInput,
               resource: createOperationWithSchema(schema),
-              config: { mock: { dynamic: false }, validateRequest: true, validateResponse: true },
+              config: {
+                mock: { dynamic: false },
+                validateRequest: true,
+                validateResponse: true,
+                checkSecurity: true,
+              },
             })(logger);
           }
 

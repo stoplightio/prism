@@ -15,7 +15,7 @@ describe('validation', () => {
   };
 
   const prismInstance = factory<string, string, string, IPrismConfig>(
-    { mock: { dynamic: true }, validateRequest: false, validateResponse: false },
+    { mock: { dynamic: false }, validateRequest: false, validateResponse: false, checkSecurity: true },
     components,
   );
 
@@ -27,7 +27,7 @@ describe('validation', () => {
       beforeAll(async () => {
         const obj: any = {};
         obj[fieldType] = true;
-        await prismInstance.process('', [], obj);
+        await prismInstance.request('', [], obj);
       });
 
       afterEach(() => jest.clearAllMocks());
@@ -39,7 +39,7 @@ describe('validation', () => {
     });
 
     describe('when disabled', () => {
-      beforeAll(() => prismInstance.process('', []));
+      beforeAll(() => prismInstance.request('', []));
       afterEach(() => jest.clearAllMocks());
       afterAll(() => jest.restoreAllMocks());
 

@@ -18,9 +18,6 @@ export interface IHttpOperationConfig {
 
 export interface IHttpConfig extends IPrismConfig {
   mock: IHttpOperationConfig;
-
-  validateRequest: boolean;
-  validateResponse: boolean;
 }
 
 export type IHttpNameValues = Dictionary<string | string[]>;
@@ -37,13 +34,13 @@ export interface IHttpRequest {
   method: IHttpMethod;
   url: IHttpUrl;
   headers?: IHttpNameValue;
-  body?: any;
+  body?: unknown;
 }
 
 export interface IHttpResponse {
   statusCode: number;
   headers?: IHttpNameValue;
-  body?: any;
+  body?: unknown;
   responseType?: XMLHttpRequestResponseType;
 }
 

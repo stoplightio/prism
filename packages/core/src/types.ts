@@ -5,12 +5,12 @@ import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
-  process: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
+  request: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
 }
 
 export interface IPrismConfig {
-  mock?: object;
-  security?: boolean | object;
+  mock: unknown;
+  checkSecurity: boolean;
   validateRequest: boolean;
   validateResponse: boolean;
 }

@@ -15,6 +15,7 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            checkSecurity: true,
             validateRequest: true,
             validateResponse: true,
             mock: {
@@ -32,6 +33,7 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            checkSecurity: true,
             validateRequest: true,
             validateResponse: true,
             mock: {
@@ -51,6 +53,7 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            checkSecurity: true,
             validateRequest: true,
             validateResponse: true,
             mock: {
@@ -72,6 +75,7 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            checkSecurity: true,
             validateRequest: true,
             validateResponse: true,
             mock: {
@@ -92,6 +96,7 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            checkSecurity: true,
             validateRequest: true,
             validateResponse: true,
             mock: {
@@ -109,6 +114,7 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            checkSecurity: true,
             validateRequest: true,
             validateResponse: true,
             mock: {
@@ -129,6 +135,7 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            checkSecurity: true,
             validateRequest: true,
             validateResponse: true,
             mock: {
@@ -146,6 +153,7 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            checkSecurity: true,
             validateRequest: true,
             validateResponse: true,
             mock: {
@@ -163,6 +171,7 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
+            checkSecurity: true,
             validateRequest: true,
             validateResponse: true,
             mock: {
@@ -238,6 +247,7 @@ describe('http mocker', () => {
             resource: httpOperations[1],
             input: httpRequests[0],
             config: {
+              checkSecurity: true,
               validateRequest: true,
               validateResponse: true,
               mock: {
