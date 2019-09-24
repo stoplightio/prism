@@ -22,23 +22,32 @@ export async function createMultiProcessPrism(options: CreatePrismOptions) {
     }
   } else {
     const logInstance = createLogger('CLI');
-    return createPrismServerWithLogger(options, logInstance);
+    try {
+      return await createPrismServerWithLogger(options, logInstance);
+    } catch (e) {
+      logInstance.fatal(e.message);
+      cluster.worker.kill();
+    }
   }
 }
 
-export function createSingleProcessPrism(options: CreatePrismOptions) {
+export async function createSingleProcessPrism(options: CreatePrismOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
   const logInstance = createLogger('CLI', undefined, logStream);
   pipeOutputToSignale(logStream);
-  return createPrismServerWithLogger(options, logInstance);
+
+  try {
+    return await createPrismServerWithLogger(options, logInstance);
+  } catch (e) {
+    logInstance.fatal(e.message);
+  }
 }
 
 async function createPrismServerWithLogger(options: CreatePrismOptions, logInstance: Logger) {
   if (options.operations.length === 0) {
-    logInstance.fatal('No operations found in the current file.');
-    cluster.worker.kill();
+    throw new Error('No operations found in the current file.');
   }
 
   const server = createHttpServer(options.operations, {
@@ -47,16 +56,11 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
   });
 
-  try {
-    const address = await server.listen(options.port, options.host);
-    options.operations.forEach(resource => {
-      logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
-    });
-    logInstance.start(`Prism is listening on ${address}`);
-  } catch (e) {
-    logInstance.fatal(e.message);
-    cluster.worker.kill();
-  }
+  const address = await server.listen(options.port, options.host);
+  options.operations.forEach(resource => {
+    logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
+  });
+  logInstance.start(`Prism is listening on ${address}`);
 }
 
 function pipeOutputToSignale(stream: Readable) {
