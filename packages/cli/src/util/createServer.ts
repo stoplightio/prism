@@ -39,7 +39,7 @@ export async function createSingleProcessPrism(options: CreatePrismOptions) {
   pipeOutputToSignale(logStream);
 
   try {
-    return createPrismServerWithLogger(options, logInstance);
+    return await createPrismServerWithLogger(options, logInstance);
   } catch (e) {
     logInstance.fatal(e.message);
   }
