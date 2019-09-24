@@ -29,6 +29,7 @@ FROM node:12-alpine
 
 WORKDIR /usr/src/prism
 ENV NODE_ENV production
+ENV DEFAULT_PRISM_IP_ADDRESS 0.0.0.0
 
 COPY package.json /usr/src/prism/
 COPY packages/core/package.json /usr/src/prism/packages/core/

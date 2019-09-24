@@ -31,7 +31,7 @@ const mockCommand: CommandModule = {
         host: {
           alias: 'h',
           description: 'Host that Prism will listen to.',
-          default: '127.0.0.1',
+          default: process.env.DEFAULT_PRISM_IP_ADDRESS || '127.0.0.1',
           demandOption: true,
           string: true,
         },
