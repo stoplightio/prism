@@ -35,6 +35,7 @@
     "@types/nock": "^11.1.0",
     "@types/node": "^12.7.2",
     "@types/pino": "^5.8.9",
+    "@types/qs": "^6.5.3",
     "@types/signale": "^1.2.1",
     "@types/split2": "^2.1.6",
     "@types/type-is": "^1.6.3",

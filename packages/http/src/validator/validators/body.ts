@@ -5,7 +5,7 @@ import { parse as deepParseUrlEncoded } from 'qs';
 import * as typeIs from 'type-is';
 import { body } from '../deserializers';
 
-import { DiagnosticSeverity, Dictionary } from '@stoplight/types/dist';
+import { DiagnosticSeverity, Dictionary } from '@stoplight/types';
 import { JSONSchema } from '../../types';
 import { validateAgainstSchema } from '../validators/utils';
 import { IHttpValidator } from './types';
