@@ -18,7 +18,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       const inputValidations: IPrismDiagnostic[] = [];
 
       return pipe(
-        components.router.route({ resources, input, config }),
+        components.route({ resources, input, config }),
         Either.fold(
           error => {
             // rethrow error we if we're attempting to mock
@@ -42,11 +42,11 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         ),
         TaskEither.chain(resource => {
           // validate input
-          if (config.validateRequest && resource && components.validator.validateInput) {
+          if (config.validateRequest && resource && components.validateInput) {
             inputValidations.push(
-              ...components.validator.validateInput({
+              ...components.validateInput({
                 resource,
-                input,
+                element: input,
               }),
             );
           }
@@ -63,7 +63,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             // generate the response
             return pipe(
               TaskEither.fromEither(
-                components.mocker.mock({
+                components.mock({
                   resource,
                   input: {
                     validations: {
@@ -82,10 +82,10 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         }),
         TaskEither.map(({ output, resource }) => {
           let outputValidations: IPrismDiagnostic[] = [];
-          if (config.validateResponse && resource && components.validator.validateOutput) {
-            outputValidations = components.validator.validateOutput({
+          if (config.validateResponse && resource && components.validateOutput) {
+            outputValidations = components.validateOutput({
               resource,
-              output,
+              element: output,
             });
           }
 

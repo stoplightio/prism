@@ -138,8 +138,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
       url: '/pets/findByTags',
     });
 
-    expect(response.statusCode).toBe(422);
-    checkErrorPayloadShape(response.payload);
+    expect(response.statusCode).toBe(400);
   });
 
   test.todo(

@@ -1,0 +1,28 @@
+====test====
+Prism is able to respond with an empty 422 response when authorization succeeds.
+====spec====
+openapi: 3.0.2
+paths:
+  /users:
+    get:
+      parameters:
+        - name: abc
+          required: true
+          in: query
+      description: "abc"
+      responses:
+        422:
+          description: "xyz"
+components:
+  securitySchemes:
+    Basic:
+      type: http
+      scheme: basic
+security:
+  - Basic: []
+====server====
+mock -p 4010
+====command====
+curl -sIXGET http://localhost:4010/users -H "Authorization: Basic dGVzdDp0ZXN0"
+====expect====
+HTTP/1.1 422 Unprocessable Entity

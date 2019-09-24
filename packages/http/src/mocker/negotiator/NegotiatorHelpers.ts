@@ -1,12 +1,13 @@
 import { ProblemJsonError } from '@stoplight/prism-core';
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
+import { IHttpHeaderParam } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Reader from 'fp-ts/lib/Reader';
 import * as ReaderEither from 'fp-ts/lib/ReaderEither';
-import { tail } from 'lodash';
+import { get, tail } from 'lodash';
 import { Logger } from 'pino';
 import withLogger from '../../withLogger';
 import { NOT_ACCEPTABLE, NOT_FOUND } from '../errors';
@@ -22,6 +23,29 @@ import {
   hasContents,
 } from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
+
+const outputNoContentFoundMessage = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
+
+const findEmptyResponse = (
+  response: IHttpOperationResponse,
+  headers: IHttpHeaderParam[],
+  mediaTypes: string[],
+): Option.Option<IHttpNegotiationResult> => {
+  return pipe(
+    mediaTypes,
+    Option.fromPredicate((contentTypes: string[]) => {
+      const acceptHeaderSpecificValues = contentTypes.filter((ct: string) => !ct.includes('*/*'));
+
+      return !acceptHeaderSpecificValues.length;
+    }),
+    Option.map(() => {
+      return {
+        code: response.code,
+        headers,
+      };
+    }),
+  );
+};
 
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
@@ -153,9 +177,18 @@ const helpers = {
           httpContent,
           Option.fold(
             () => {
-              logger.warn(`Unable to find a content for ${mediaTypes}`);
-              return Either.left<Error, IHttpNegotiationResult>(
-                ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`),
+              return pipe(
+                findEmptyResponse(response, headers || [], mediaTypes),
+                Option.map(payloadlessResponse => {
+                  logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
+
+                  return payloadlessResponse;
+                }),
+                Either.fromOption<Error>(() => {
+                  logger.warn(outputNoContentFoundMessage(mediaTypes));
+
+                  return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
+                }),
               );
             },
             content => {
@@ -337,8 +370,18 @@ const helpers = {
                     headers: response.headers || [],
                   });
                 } else {
-                  logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
-                  return Either.left(new Error(`Neither schema nor example defined for ${response.code} response.`));
+                  return pipe(
+                    findEmptyResponse(
+                      response,
+                      response.headers || [],
+                      get(contentWithExamples, 'mediaType', get(responseWithSchema, 'schema')) || ['*/*'],
+                    ),
+                    Either.fromOption(() => {
+                      logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
+
+                      return new Error(`Neither schema nor example defined for ${response.code} response.`);
+                    }),
+                  );
                 }
               }
             }),

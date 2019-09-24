@@ -5,7 +5,7 @@ Then I should get back a response with Content-Type of application/problem+json
 And this response should have 406 status code
 And this response status text should be Not Acceptable
 ====spec====
-openapi: 3.0.2
+swagger: "2.0"
 paths:
   /todos:
     get:

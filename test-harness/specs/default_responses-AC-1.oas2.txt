@@ -12,6 +12,8 @@ info:
 paths:
   /todos:
     get:
+      produces:
+        - text/plain
       responses:
         default:
           description: default response

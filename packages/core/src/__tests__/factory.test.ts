@@ -6,23 +6,17 @@ import { Logger } from 'pino';
 import { factory, IPrismConfig } from '..';
 
 describe('validation', () => {
-  const validator = {
+  const components = {
     validateInput: jest.fn().mockReturnValue(['something']),
     validateOutput: jest.fn().mockReturnValue(['something']),
+    route: jest.fn().mockReturnValue(right('hey')),
+    logger: { ...logger, child: jest.fn().mockReturnValue(logger) },
+    mock: jest.fn().mockReturnValue(asks<Logger, Error, string>(r => 'hey')),
   };
 
   const prismInstance = factory<string, string, string, IPrismConfig>(
     { mock: { dynamic: true }, validateRequest: false, validateResponse: false },
-    {
-      validator,
-      router: {
-        route: jest.fn().mockReturnValue(right('hey')),
-      },
-      logger: { ...logger, child: jest.fn().mockReturnValue(logger) },
-      mocker: {
-        mock: jest.fn().mockReturnValue(asks<Logger, Error, string>(r => 'hey')),
-      },
-    },
+    components,
   );
 
   describe.each([
@@ -39,9 +33,9 @@ describe('validation', () => {
       afterEach(() => jest.clearAllMocks());
       afterAll(() => jest.restoreAllMocks());
 
-      test('should call the relative validate function', () => expect(validator[fnName]).toHaveBeenCalled());
+      test('should call the relative validate function', () => expect(components[fnName]).toHaveBeenCalled());
       test('should not call the relative other function', () =>
-        expect(validator[reverseFnName]).not.toHaveBeenCalled());
+        expect(components[reverseFnName]).not.toHaveBeenCalled());
     });
 
     describe('when disabled', () => {
@@ -49,9 +43,9 @@ describe('validation', () => {
       afterEach(() => jest.clearAllMocks());
       afterAll(() => jest.restoreAllMocks());
 
-      test('should not call the relative validate function', () => expect(validator[fnName]).not.toHaveBeenCalled());
+      test('should not call the relative validate function', () => expect(components[fnName]).not.toHaveBeenCalled());
       test('should not call the relative other function', () =>
-        expect(validator[reverseFnName]).not.toHaveBeenCalled());
+        expect(components[reverseFnName]).not.toHaveBeenCalled());
     });
   });
 });
