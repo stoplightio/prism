@@ -1,7 +1,7 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IMediaTypeContent } from '@stoplight/types';
 import { get } from 'lodash';
-import { parse } from 'qs';
+import { parse as deepParseUrlEncoded } from 'qs';
 import * as typeIs from 'type-is';
 import { body } from '../deserializers';
 
@@ -24,13 +24,8 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
     }
 
     if (mediaType && typeIs.is(mediaType, 'application/x-www-form-urlencoded')) {
-      const shallowParsedTarget = target.split('&').reduce((result: Dictionary<string, string>, pair: string) => {
-        const [key, ...rest] = pair.split('=');
-        result[key] = rest.join('=');
-        return result;
-      }, {});
-
-      target = parse(target);
+      const shallowParsedTarget = shallowParseUrlEncoded(target);
+      target = deepParseUrlEncoded(target);
 
       const encodings = get(content, 'encodings', []);
       for (const encoding of encodings) {
@@ -51,12 +46,8 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
         if (encoding.style) {
           const deserializer = body.get(encoding.style);
           if (deserializer && schema.properties) {
-            const propertySchema = schema.properties[encoding.property];
-            target[encoding.property] = deserializer.deserialize(
-              encoding.property,
-              target,
-              propertySchema as JSONSchema,
-            );
+            const propertySchema = schema.properties[property];
+            target[property] = deserializer.deserialize(property, target, propertySchema as JSONSchema);
           }
         }
       }
@@ -80,4 +71,12 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
 
     return content;
   }
+}
+
+function shallowParseUrlEncoded(target: string) {
+  return target.split('&').reduce((result: Dictionary<string, string>, pair: string) => {
+    const [key, ...rest] = pair.split('=');
+    result[key] = rest.join('=');
+    return result;
+  }, {});
 }
