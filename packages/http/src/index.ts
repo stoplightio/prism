@@ -9,7 +9,7 @@ export * from './getHttpOperations';
 
 import { IHttpConfig, IHttpRequest, IHttpResponse, PickRequired, PrismHttpComponents } from './types';
 
-const createInstance = (
+export const createInstance = (
   defaultConfig: IHttpConfig,
   components?: PickRequired<Partial<PrismHttpComponents>, 'logger'>,
 ) =>

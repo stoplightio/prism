@@ -9,7 +9,7 @@ import { resolve } from 'path';
 import { httpAndFileResolver } from './resolvers/http-and-file';
 
 export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
-  const fileContent = file.match(/^https?:\/\//)
+  const fileContent = file.match(/^https?:\/\//i)
     ? (await axios.get(file, { transformResponse: res => res })).data
     : fs.readFileSync(file, { encoding: 'utf8' });
 
