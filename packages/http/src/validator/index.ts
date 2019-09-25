@@ -2,7 +2,8 @@ import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import * as caseless from 'caseless';
 
-import { toUndefined } from 'fp-ts/lib/Option';
+import { fold } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { IHttpRequest, IHttpResponse } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
@@ -36,20 +37,27 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
 };
 
 const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
-  const results: IPrismDiagnostic[] = [];
   const mediaType = caseless(element.headers || {}).get('content-type');
-  const responseSpec = resource.responses && toUndefined(findOperationResponse(resource.responses, element.statusCode));
 
-  if (!responseSpec) {
-    results.push({
-      message: 'Unable to match returned status code with those defined in spec',
-      severity: DiagnosticSeverity.Error,
-    });
-  }
-
-  return results
-    .concat(bodyValidator.validate(element.body, (responseSpec && responseSpec.contents) || [], mediaType))
-    .concat(headersValidator.validate(element.headers || {}, (responseSpec && responseSpec.headers) || []));
+  return pipe(
+    findOperationResponse(resource.responses, element.statusCode),
+    fold(
+      () => {
+        return [
+          {
+            message: 'Unable to match returned status code with those defined in spec',
+            severity: DiagnosticSeverity.Error,
+          },
+        ];
+      },
+      responseSpec => {
+        return [].concat(
+          bodyValidator.validate(element.body, (responseSpec && responseSpec.contents) || [], mediaType),
+          headersValidator.validate(element.headers || {}, (responseSpec && responseSpec.headers) || []),
+        );
+      },
+    ),
+  );
 };
 
 export { validateInput, validateOutput };

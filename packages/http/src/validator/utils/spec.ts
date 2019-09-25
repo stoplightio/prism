@@ -1,5 +1,7 @@
 import { IHttpOperationResponse } from '@stoplight/types';
-import { fromNullable, Option } from 'fp-ts/lib/Option';
+import { head } from 'fp-ts/lib/Array';
+import { Option } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 export function findOperationResponse(
   responseSpecs: IHttpOperationResponse[],
@@ -23,5 +25,8 @@ export function findOperationResponse(
       return s1.code.split('X').length - s2.code.split('X').length;
     });
 
-  return fromNullable(sortedSpecs[0]);
+  return pipe(
+    sortedSpecs,
+    head,
+  );
 }
