@@ -1,5 +1,5 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse } from '@stoplight/types';
 import * as caseless from 'caseless';
 
 import { fold } from 'fp-ts/lib/Option';
@@ -41,7 +41,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
 
   return pipe(
     findOperationResponse(resource.responses, element.statusCode),
-    fold(
+    fold<IHttpOperationResponse, IPrismDiagnostic[]>(
       () => {
         return [
           {
@@ -50,12 +50,10 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
           },
         ];
       },
-      responseSpec => {
-        return [].concat(
-          bodyValidator.validate(element.body, (responseSpec && responseSpec.contents) || [], mediaType),
-          headersValidator.validate(element.headers || {}, (responseSpec && responseSpec.headers) || []),
-        );
-      },
+      responseSpec =>
+        bodyValidator
+          .validate(element.body, responseSpec.contents || [], mediaType)
+          .concat(headersValidator.validate(element.headers || {}, responseSpec.headers || [])),
     ),
   );
 };
