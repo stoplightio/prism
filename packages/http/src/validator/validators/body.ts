@@ -1,7 +1,6 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IMediaTypeContent } from '@stoplight/types';
 import { get } from 'lodash';
-import { parse as deepParseUrlEncoded } from 'qs';
 import * as typeIs from 'type-is';
 import { body } from '../deserializers';
 
@@ -25,7 +24,11 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
 
     if (mediaType && typeIs.is(mediaType, 'application/x-www-form-urlencoded')) {
       const shallowParsedTarget = shallowParseUrlEncoded(target);
-      target = deepParseUrlEncoded(target);
+      target = Object.entries(shallowParsedTarget).reduce((result, [k, v]) => {
+        result[decodeURIComponent(k)] = decodeURIComponent(v);
+        return result;
+      }, {});
+      const newTarget = {};
 
       const encodings = get(content, 'encodings', []);
       for (const encoding of encodings) {
@@ -42,14 +45,23 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
             },
           ];
         }
+      }
 
-        if (encoding.style) {
-          const deserializer = body.get(encoding.style);
-          if (deserializer && schema.properties) {
-            const propertySchema = schema.properties[property];
-            target[property] = deserializer.deserialize(property, target, propertySchema as JSONSchema);
+      if (schema.properties) {
+        for (const property of Object.keys(schema.properties)) {
+          newTarget[property] = target[property];
+          const encoding = encodings.find(enc => enc.property === property);
+
+          if (encoding && encoding.style) {
+            const deserializer = body.get(encoding.style);
+            if (deserializer && schema.properties) {
+              const propertySchema = schema.properties[property];
+              newTarget[property] = deserializer.deserialize(property, target, propertySchema as JSONSchema);
+            }
           }
         }
+
+        target = newTarget;
       }
     }
 
