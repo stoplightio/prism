@@ -1,5 +1,6 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
+import { none, some } from 'fp-ts/lib/Option';
 import { IHttpRequest } from '../../types';
 import { bodyValidator, headersValidator, queryValidator, validateInput, validateOutput } from '../index';
 import * as findResponseSpecModule from '../utils/spec';
@@ -14,7 +15,7 @@ const mockError: IPrismDiagnostic = {
 describe('HttpValidator', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue(undefined);
+    jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue(none);
     jest.spyOn(bodyValidator, 'validate').mockReturnValue([mockError]);
     jest.spyOn(headersValidator, 'validate').mockReturnValue([mockError]);
     jest.spyOn(queryValidator, 'validate').mockReturnValue([mockError]);
@@ -145,7 +146,7 @@ describe('HttpValidator', () => {
   describe('validateOutput()', () => {
     describe('output is set', () => {
       it('validates the body and headers', () => {
-        (findResponseSpecModule.findOperationResponse as jest.Mock).mockReturnValue({ statusCode: 200 });
+        (findResponseSpecModule.findOperationResponse as jest.Mock).mockReturnValue(some({ statusCode: 200 }));
 
         expect(
           validateOutput({
@@ -168,7 +169,7 @@ describe('HttpValidator', () => {
 
     describe('cannot match status code with responses', () => {
       it('returns error', () => {
-        (findResponseSpecModule.findOperationResponse as jest.Mock).mockReturnValue(undefined);
+        (findResponseSpecModule.findOperationResponse as jest.Mock).mockReturnValue(none);
         jest.spyOn(bodyValidator, 'validate').mockReturnValue([]);
         jest.spyOn(headersValidator, 'validate').mockReturnValue([]);
 

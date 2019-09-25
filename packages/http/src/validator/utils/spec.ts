@@ -1,9 +1,10 @@
 import { IHttpOperationResponse } from '@stoplight/types';
+import { fromNullable, Option } from 'fp-ts/lib/Option';
 
 export function findOperationResponse(
   responseSpecs: IHttpOperationResponse[],
   statusCode: number,
-): IHttpOperationResponse | undefined {
+): Option<IHttpOperationResponse> {
   const sortedSpecs = responseSpecs
     .filter(
       spec =>
@@ -22,5 +23,5 @@ export function findOperationResponse(
       return s1.code.split('X').length - s2.code.split('X').length;
     });
 
-  return sortedSpecs[0];
+  return fromNullable(sortedSpecs[0]);
 }

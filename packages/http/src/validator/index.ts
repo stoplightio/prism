@@ -2,6 +2,7 @@ import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import * as caseless from 'caseless';
 
+import { toUndefined } from 'fp-ts/lib/Option';
 import { IHttpRequest, IHttpResponse } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
@@ -37,7 +38,7 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
 const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
   const results: IPrismDiagnostic[] = [];
   const mediaType = caseless(element.headers || {}).get('content-type');
-  const responseSpec = resource.responses && findOperationResponse(resource.responses, element.statusCode);
+  const responseSpec = resource.responses && toUndefined(findOperationResponse(resource.responses, element.statusCode));
 
   if (!responseSpec) {
     results.push({
