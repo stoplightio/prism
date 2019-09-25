@@ -39,6 +39,13 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
   const mediaType = caseless(element.headers || {}).get('content-type');
   const responseSpec = resource.responses && findOperationResponse(resource.responses, element.statusCode);
 
+  if (!responseSpec) {
+    results.push({
+      message: 'Unable to match returned status code with those defined in spec',
+      severity: DiagnosticSeverity.Error,
+    });
+  }
+
   return results
     .concat(bodyValidator.validate(element.body, (responseSpec && responseSpec.contents) || [], mediaType))
     .concat(headersValidator.validate(element.headers || {}, (responseSpec && responseSpec.headers) || []));

@@ -145,6 +145,8 @@ describe('HttpValidator', () => {
   describe('validateOutput()', () => {
     describe('output is set', () => {
       it('validates the body and headers', () => {
+        (findResponseSpecModule.findOperationResponse as jest.Mock).mockReturnValue({ statusCode: 200 });
+
         expect(
           validateOutput({
             resource: {
@@ -161,6 +163,32 @@ describe('HttpValidator', () => {
         expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
         expect(bodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
         expect(headersValidator.validate).toHaveBeenCalled();
+      });
+    });
+
+    describe('cannot match status code with responses', () => {
+      it('returns error', () => {
+        (findResponseSpecModule.findOperationResponse as jest.Mock).mockReturnValue(undefined);
+        jest.spyOn(bodyValidator, 'validate').mockReturnValue([]);
+        jest.spyOn(headersValidator, 'validate').mockReturnValue([]);
+
+        expect(
+          validateOutput({
+            resource: {
+              method: 'get',
+              path: '/',
+              id: '1',
+              request: {},
+              responses: [{ code: '200' }],
+            },
+            element: { statusCode: 200 },
+          }),
+        ).toEqual([
+          {
+            message: 'Unable to match returned status code with those defined in spec',
+            severity: DiagnosticSeverity.Error,
+          },
+        ]);
       });
     });
   });
