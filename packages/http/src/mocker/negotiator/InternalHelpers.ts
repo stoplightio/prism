@@ -19,10 +19,7 @@ export function findExampleByKey(httpContent: IHttpContent, exampleKey: string) 
 }
 
 export function hasContents(v: IHttpOperationResponse): v is PickRequired<IHttpOperationResponse, 'contents'> {
-  // TODO: adjust after https://github.com/stoplightio/http-spec/pull/25 is merged
-  const x = v.contents || [];
-
-  return !!x.filter(y => y.mediaType !== '*/*').length;
+  return !!v.contents;
 }
 
 export function findBestHttpContentByMediaType(
