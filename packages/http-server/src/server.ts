@@ -44,6 +44,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     mock: { dynamic: false },
     validateRequest: true,
     validateResponse: true,
+    checkSecurity: true,
   });
 
   const prism = createInstance(mergedConfig, components);
@@ -93,7 +94,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         const operationSpecificConfig = getHttpConfigFromRequest(input);
         const mockConfig = Object.assign({}, opts.config.mock, operationSpecificConfig);
 
-        const response = await prismInstance.process(input, operations, {
+        const response = await prismInstance.request(input, operations, {
           ...opts.config,
           mock: mockConfig,
         });

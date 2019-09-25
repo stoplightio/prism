@@ -1,4 +1,3 @@
-import getHttpOperations from '@stoplight/prism-cli/src/util/getHttpOperations';
 import { createLogger, IPrism } from '@stoplight/prism-core';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpOperation } from '@stoplight/types';
@@ -6,6 +5,7 @@ import { Scope as NockScope } from 'nock';
 import * as nock from 'nock';
 import { basename, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
+import { getHttpOperationsFromResource } from '../getHttpOperations';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_BASE_URL_ERROR, NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
 
@@ -30,7 +30,7 @@ async function checkUserAgent(config: IHttpConfig, prism: Prism, resources: IHtt
     .get('/pet')
     .reply(200);
 
-  await prism.process(
+  await prism.request(
     {
       method: 'get',
       url: {
@@ -45,7 +45,7 @@ async function checkUserAgent(config: IHttpConfig, prism: Prism, resources: IHtt
   return (nockResult as NockResWithInterceptors).interceptors['0'].req.headers['user-agent'];
 }
 
-describe('Http Client .process', () => {
+describe('Http Client .request', () => {
   let prism: Prism;
   let resources: IHttpOperation[];
   describe.each`
@@ -54,13 +54,16 @@ describe('Http Client .process', () => {
     ${basename(serverValidationOas3Path)} | ${serverValidationOas3Path}
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
-      prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
-      resources = await getHttpOperations(specPath);
+      prism = createInstance(
+        { validateRequest: true, checkSecurity: true, validateResponse: true, mock: { dynamic: false } },
+        { logger },
+      );
+      resources = await getHttpOperationsFromResource(specPath);
     });
 
     describe('baseUrl not set', () => {
       it('ignores server validation and returns 200', async () => {
-        const result = await prism.process(
+        const result = await prism.request(
           {
             method: 'get',
             url: {
@@ -77,7 +80,7 @@ describe('Http Client .process', () => {
 
     describe('valid baseUrl set', () => {
       it('validates server and returns 200', async () => {
-        const result = await prism.process(
+        const result = await prism.request(
           {
             method: 'get',
             url: {
@@ -96,7 +99,7 @@ describe('Http Client .process', () => {
     describe('invalid host of baseUrl set', () => {
       it('throws an error', () => {
         return expect(
-          prism.process(
+          prism.request(
             {
               method: 'get',
               url: {
@@ -113,7 +116,7 @@ describe('Http Client .process', () => {
     describe('invalid host and basePath of baseUrl set', () => {
       it('throws an error', () => {
         return expect(
-          prism.process(
+          prism.request(
             {
               method: 'get',
               url: {
@@ -128,7 +131,12 @@ describe('Http Client .process', () => {
     });
 
     describe.skip('mocking is off', () => {
-      const config: IHttpConfig = { mock: { dynamic: false }, validateRequest: true, validateResponse: true };
+      const config: IHttpConfig = {
+        mock: { dynamic: false },
+        checkSecurity: true,
+        validateRequest: true,
+        validateResponse: true,
+      };
       const baseUrl = 'http://stoplight.io';
       const serverReply = 'hello world';
 
@@ -152,7 +160,7 @@ describe('Http Client .process', () => {
         };
 
         it('returns input warning', async () => {
-          const result = await prism.process(request, resources, config);
+          const result = await prism.request(request, resources, config);
 
           expect(result.validations.input).toEqual([
             {
@@ -166,7 +174,7 @@ describe('Http Client .process', () => {
 
         it('makes a http request anyway', async () => {
           // note that we are 'nocking' the request in beforeEach
-          const result = await prism.process(request, resources, config);
+          const result = await prism.request(request, resources, config);
 
           expect(result.output).toBeDefined();
           expect(result.output!.statusCode).toEqual(200);
@@ -176,7 +184,7 @@ describe('Http Client .process', () => {
         describe('baseUrl is not set', () => {
           it('throws an error', () => {
             return expect(
-              prism.process(
+              prism.request(
                 {
                   method: 'get',
                   url: {
@@ -199,7 +207,7 @@ describe('Http Client .process', () => {
             .get('/pet')
             .reply(200, reply);
 
-          const result = await prism.process(
+          const result = await prism.request(
             {
               method: 'get',
               url: {
@@ -240,14 +248,17 @@ describe('Http Client .process', () => {
 
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
-      prism = createInstance({ validateRequest: true, validateResponse: true, mock: { dynamic: false } }, { logger });
-      resources = await getHttpOperations(noRefsPetstoreMinimalOas2Path);
+      prism = createInstance(
+        { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+        { logger },
+      );
+      resources = await getHttpOperationsFromResource(noRefsPetstoreMinimalOas2Path);
     });
 
     describe('path is invalid', () => {
       it('throws an error', () => {
         return expect(
-          prism.process(
+          prism.request(
             {
               method: 'get',
               url: {
@@ -263,9 +274,9 @@ describe('Http Client .process', () => {
     // TODO will be fixed by https://stoplightio.atlassian.net/browse/SO-260
     test.todo('GET /pet without an optional body parameter');
 
-    describe('when processing GET /pet/findByStatus', () => {
+    describe('when requesting GET /pet/findByStatus', () => {
       it('with valid query params returns generated body', async () => {
-        const response = await prism.process(
+        const response = await prism.request(
           {
             method: 'get',
             url: {
@@ -290,7 +301,7 @@ describe('Http Client .process', () => {
 
       it('w/o required params throws a validation error', () => {
         return expect(
-          prism.process(
+          prism.request(
             {
               method: 'get',
               url: {
@@ -303,7 +314,7 @@ describe('Http Client .process', () => {
       });
 
       it('with valid body param then returns no validation issues', async () => {
-        const response = await prism.process(
+        const response = await prism.request(
           {
             method: 'get',
             url: {
@@ -333,7 +344,7 @@ describe('Http Client .process', () => {
 
   describe('headers validation', () => {
     it('validates the headers even if casing does not match', async () => {
-      const response = await prism.process(
+      const response = await prism.request(
         {
           method: 'get',
           url: {
@@ -351,7 +362,7 @@ describe('Http Client .process', () => {
 
     it('returns an error if the the header is missing', () => {
       return expect(
-        prism.process(
+        prism.request(
           {
             method: 'get',
             url: {
@@ -365,14 +376,17 @@ describe('Http Client .process', () => {
   });
 
   it('loads spec provided in yaml', () => {
-    return expect(getHttpOperations(petStoreOas2Path)).resolves.toHaveLength(3);
+    return expect(getHttpOperationsFromResource(petStoreOas2Path)).resolves.toHaveLength(3);
   });
 
   it('returns stringified static example when one defined in spec', async () => {
-    prism = createInstance({ mock: { dynamic: false }, validateRequest: true, validateResponse: true }, { logger });
-    resources = await getHttpOperations(staticExamplesOas2Path);
+    prism = createInstance(
+      { mock: { dynamic: false }, checkSecurity: true, validateRequest: true, validateResponse: true },
+      { logger },
+    );
+    resources = await getHttpOperationsFromResource(staticExamplesOas2Path);
 
-    const response = await prism.process(
+    const response = await prism.request(
       {
         method: 'get',
         url: {

@@ -6,15 +6,20 @@ import * as fs from 'fs';
 import { flatten, get, keys, map, uniq } from 'lodash';
 import { EOL } from 'os';
 import { resolve } from 'path';
-import { httpAndFileResolver } from '../resolvers/http-and-file';
+import { httpAndFileResolver } from './resolvers/http-and-file';
 
-export default async function getHttpOperations(spec: string): Promise<IHttpOperation[]> {
-  const fileContent = spec.match(/^https?:\/\//)
-    ? (await axios.get(spec, { transformResponse: res => res })).data
-    : fs.readFileSync(spec, { encoding: 'utf8' });
-  const parsedContent = parse(fileContent);
+export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
+  const fileContent = file.match(/^https?:\/\//i)
+    ? (await axios.get(file, { transformResponse: res => res })).data
+    : fs.readFileSync(file, { encoding: 'utf8' });
+
+  return getHttpOperations(fileContent);
+}
+
+export default async function getHttpOperations(specContent: string): Promise<IHttpOperation[]> {
+  const parsedContent = parse(specContent);
   const { result: resolvedContent, errors } = await httpAndFileResolver.resolve(parsedContent, {
-    baseUri: resolve(spec),
+    baseUri: resolve(specContent),
   });
 
   if (errors.length) {

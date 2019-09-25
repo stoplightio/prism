@@ -12,7 +12,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   components: IPrismComponents<Resource, Input, Output, Config>,
 ): IPrism<Resource, Input, Output, Config> {
   return {
-    process: async (input: Input, resources: Resource[], c?: Config) => {
+    request: async (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
       const config = defaults(c, defaultConfig) as Config; // Cast required because lodash types are wrong — https://github.com/DefinitelyTyped/DefinitelyTyped/pull/38156
       const inputValidations: IPrismDiagnostic[] = [];
@@ -51,13 +51,15 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             );
           }
 
-          const inputValidationResult = inputValidations.concat(
-            pipe(
-              validateSecurity(input, resource),
-              map(sec => [sec]),
-              getOrElse<IPrismDiagnostic[]>(() => []),
-            ),
-          );
+          const inputValidationResult = config.checkSecurity
+            ? inputValidations.concat(
+                pipe(
+                  validateSecurity(input, resource),
+                  map(sec => [sec]),
+                  getOrElse<IPrismDiagnostic[]>(() => []),
+                ),
+              )
+            : inputValidations;
 
           if (resource && config.mock) {
             // generate the response
