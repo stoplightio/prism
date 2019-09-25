@@ -1,69 +1,64 @@
-import { toUndefined } from 'fp-ts/lib/Option';
+import { assertNone, assertSome } from '@stoplight/prism-core/src/utils/__tests__/utils';
 import { findOperationResponse } from '../spec';
 
 describe('findOperationResponse()', () => {
   describe('when response for given code exists', () => {
     it('returns found response', () => {
-      expect(
-        toUndefined(
-          findOperationResponse(
-            [
-              { code: '2XX', contents: [], headers: [] },
-              { code: '20X', contents: [], headers: [] },
-              { code: 'default', contents: [], headers: [] },
-              { code: '1XX', contents: [], headers: [] },
-            ],
-            200,
-          ),
+      assertSome(
+        findOperationResponse(
+          [
+            { code: '2XX', contents: [], headers: [] },
+            { code: '20X', contents: [], headers: [] },
+            { code: 'default', contents: [], headers: [] },
+            { code: '1XX', contents: [], headers: [] },
+          ],
+          200,
         ),
-      ).toEqual({ code: '20X', contents: [], headers: [] });
+        value => expect(value).toEqual({ code: '20X', contents: [], headers: [] }),
+      );
     });
   });
 
   describe('when response for given code does not exists but there is a default response', () => {
     it('returns default response', () => {
-      expect(
-        toUndefined(
-          findOperationResponse(
-            [
-              { code: '2XX', contents: [], headers: [] },
-              { code: 'default', contents: [], headers: [] },
-              { code: '1XX', contents: [], headers: [] },
-            ],
-            422,
-          ),
+      assertSome(
+        findOperationResponse(
+          [
+            { code: '2XX', contents: [], headers: [] },
+            { code: 'default', contents: [], headers: [] },
+            { code: '1XX', contents: [], headers: [] },
+          ],
+          422,
         ),
-      ).toEqual({ code: 'default', contents: [], headers: [] });
+        value => expect(value).toEqual({ code: 'default', contents: [], headers: [] }),
+      );
     });
   });
 
   describe('when default response is specified with mixed case', () => {
     it('returns default response', () => {
-      expect(
-        toUndefined(
-          findOperationResponse(
-            [
-              { code: '2XX', contents: [], headers: [] },
-              { code: 'deFAULT', contents: [], headers: [] },
-              { code: '1XX', contents: [], headers: [] },
-            ],
-            422,
-          ),
+      assertSome(
+        findOperationResponse(
+          [
+            { code: '2XX', contents: [], headers: [] },
+            { code: 'deFAULT', contents: [], headers: [] },
+            { code: '1XX', contents: [], headers: [] },
+          ],
+          422,
         ),
-      ).toEqual({ code: 'deFAULT', contents: [], headers: [] });
+        value => expect(value).toEqual({ code: 'deFAULT', contents: [], headers: [] }),
+      );
     });
   });
 
   describe('when response for given code does not exists and there is no default response', () => {
     it('returns nothing', () => {
-      expect(
-        toUndefined(
-          findOperationResponse(
-            [{ code: '2XX', contents: [], headers: [] }, { code: '1XX', contents: [], headers: [] }],
-            500,
-          ),
+      assertNone(
+        findOperationResponse(
+          [{ code: '2XX', contents: [], headers: [] }, { code: '1XX', contents: [], headers: [] }],
+          500,
         ),
-      ).toBeUndefined();
+      );
     });
   });
 });
