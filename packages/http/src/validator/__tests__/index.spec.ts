@@ -181,7 +181,7 @@ describe('HttpValidator', () => {
               request: {},
               responses: [{ code: '200' }],
             },
-            element: { statusCode: 200 },
+            element: { statusCode: 400 },
           }),
         ).toEqual([
           {
