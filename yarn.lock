@@ -1151,10 +1151,10 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@stoplight/http-spec@^2.2.2":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.2.2.tgz#38edc96105bfa8679eeff7ec3b32112d21aaae45"
-  integrity sha512-Bo/BIjeBe9pRr67X9tBjlhyfaBYeXmI8W9vopXmAoqgV9xT3IYkYmLyQ+4QurPst9gSflDP7BEd9CWb5UyiMlQ==
+"@stoplight/http-spec@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.2.3.tgz#78bab9b7f3b612e5b6aa3f0cf3e1e879e21a8d5a"
+  integrity sha512-gkgzcpNzRPlwx2QOzIo/mKhjQ6GyJyuIXk9PqEFq52yKvpQU8VTOBgRc9urrO16Jh9ihOmHBPdN5AvSULIhcFw==
   dependencies:
     "@stoplight/json" "^3.1.1"
     "@stoplight/types" "^11.1.0"
