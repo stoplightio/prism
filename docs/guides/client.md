@@ -1,6 +1,6 @@
 # Prism Client
 
-Prism inclues an Axios style HTTP Client that you can use to seamlessy perform requests to both a real server and a mocked document.
+Prism includes an full featured HTTP Client that you can use to seamlessly perform requests to both a real server and a mocked document. The client is modeled after Axios so it may feel familiar.
 
 ### Create from filename or http resource
 
@@ -12,10 +12,10 @@ const client = await createClientFromResource('examples/petstore.oas2.yaml', {
 });
 ```
 
-### Create from OAS document in string format
+### Create from OpenAPI string
 
 ```ts
-const oasFile = `
+const descriptionDoc = `
 openapi: 3.0.2
 paths:
   /hello:
@@ -25,14 +25,14 @@ paths:
           description: hello
 `;
 
-const client = await createClientFromString(oasFile, {
+const client = await createClientFromString(descriptionDoc, {
   mock: true,
   validateRequest: true,
   validateResponse: true,
 });
 ```
 
-### Create from manual Http Operations (you might want _NOT_ use this)
+### Create From Manual Http Operations
 
 ```ts
 const client = createClientFromOperations(
