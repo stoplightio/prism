@@ -1,6 +1,6 @@
 import { createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpConfig, IHttpMethod, PrismHttpInstance, ProblemJsonError } from '@stoplight/prism-http';
-import { IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
 import { IncomingMessage, ServerResponse } from 'http';
@@ -107,6 +107,13 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           if (output.headers) {
             reply.headers(output.headers);
           }
+
+          response.validations.output.forEach(
+            validation =>
+              validation.severity === DiagnosticSeverity.Error
+                ? request.log.error(validation.message)
+                : request.log.warn(validation.message),
+          );
 
           reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
         } else {
