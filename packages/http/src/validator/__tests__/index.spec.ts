@@ -1,5 +1,6 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
+import { none, some } from 'fp-ts/lib/Option';
 import { IHttpRequest } from '../../types';
 import { bodyValidator, headersValidator, queryValidator, validateInput, validateOutput } from '../index';
 import * as findResponseSpecModule from '../utils/spec';
@@ -14,7 +15,7 @@ const mockError: IPrismDiagnostic = {
 describe('HttpValidator', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue(undefined);
+    jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue(none);
     jest.spyOn(bodyValidator, 'validate').mockReturnValue([mockError]);
     jest.spyOn(headersValidator, 'validate').mockReturnValue([mockError]);
     jest.spyOn(queryValidator, 'validate').mockReturnValue([mockError]);
@@ -145,6 +146,8 @@ describe('HttpValidator', () => {
   describe('validateOutput()', () => {
     describe('output is set', () => {
       it('validates the body and headers', () => {
+        (findResponseSpecModule.findOperationResponse as jest.Mock).mockReturnValue(some({ statusCode: 200 }));
+
         expect(
           validateOutput({
             resource: {
@@ -161,6 +164,32 @@ describe('HttpValidator', () => {
         expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
         expect(bodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
         expect(headersValidator.validate).toHaveBeenCalled();
+      });
+    });
+
+    describe('cannot match status code with responses', () => {
+      it('returns error', () => {
+        (findResponseSpecModule.findOperationResponse as jest.Mock).mockReturnValue(none);
+        jest.spyOn(bodyValidator, 'validate').mockReturnValue([]);
+        jest.spyOn(headersValidator, 'validate').mockReturnValue([]);
+
+        expect(
+          validateOutput({
+            resource: {
+              method: 'get',
+              path: '/',
+              id: '1',
+              request: {},
+              responses: [{ code: '200' }],
+            },
+            element: { statusCode: 400 },
+          }),
+        ).toEqual([
+          {
+            message: 'Unable to match returned status code with those defined in spec',
+            severity: DiagnosticSeverity.Error,
+          },
+        ]);
       });
     });
   });

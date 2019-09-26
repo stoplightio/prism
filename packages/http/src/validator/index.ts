@@ -1,7 +1,9 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse } from '@stoplight/types';
 import * as caseless from 'caseless';
 
+import { fold } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { IHttpRequest, IHttpResponse } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
@@ -35,13 +37,25 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
 };
 
 const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
-  const results: IPrismDiagnostic[] = [];
   const mediaType = caseless(element.headers || {}).get('content-type');
-  const responseSpec = resource.responses && findOperationResponse(resource.responses, element.statusCode);
 
-  return results
-    .concat(bodyValidator.validate(element.body, (responseSpec && responseSpec.contents) || [], mediaType))
-    .concat(headersValidator.validate(element.headers || {}, (responseSpec && responseSpec.headers) || []));
+  return pipe(
+    findOperationResponse(resource.responses, element.statusCode),
+    fold<IHttpOperationResponse, IPrismDiagnostic[]>(
+      () => {
+        return [
+          {
+            message: 'Unable to match returned status code with those defined in spec',
+            severity: DiagnosticSeverity.Error,
+          },
+        ];
+      },
+      responseDescDoc =>
+        bodyValidator
+          .validate(element.body, responseDescDoc.contents || [], mediaType)
+          .concat(headersValidator.validate(element.headers || {}, responseDescDoc.headers || [])),
+    ),
+  );
 };
 
 export { validateInput, validateOutput };
