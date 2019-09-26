@@ -68,7 +68,7 @@
       "tslint -p packages/tsconfig.test.json --fix",
       "git add"
     ],
-    "*.json, *.md": [
+    "*.{json,md}": [
       "prettier --write",
       "git add"
     ]

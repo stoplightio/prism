@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Support for encoding > allowReserved flag when validating application/x-www-form-urlencoded body [#630](https://github.com/stoplightio/prism/pull/630)
 - Validating output status code against available response specs [#648](https://github.com/stoplightio/prism/pull/648)
+- Support for Contract Testing [#650](https://github.com/stoplightio/prism/pull/650)
 
 ## Fixed
 
