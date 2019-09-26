@@ -55,8 +55,8 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
       operationResponse => {
         const mismatchingMediaTypeError = pipe(
           Option.fromNullable(operationResponse.contents),
-          Option.map(contents => {
-            return pipe(
+          Option.map(contents =>
+            pipe(
               contents,
               findFirst(c => c.mediaType === mediaType),
               Option.map<IMediaTypeContent, IPrismDiagnostic[]>(() => []),
@@ -66,8 +66,8 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
                   severity: DiagnosticSeverity.Error,
                 },
               ]),
-            );
-          }),
+            ),
+          ),
           Option.getOrElse<IPrismDiagnostic[]>(() => []),
         );
 
