@@ -42,18 +42,19 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
   return pipe(
     findOperationResponse(resource.responses, element.statusCode),
     fold<IHttpOperationResponse, IPrismDiagnostic[]>(
-      () => {
-        return [
-          {
-            message: 'Unable to match returned status code with those defined in spec',
-            severity: DiagnosticSeverity.Error,
-          },
-        ];
-      },
-      responseDescDoc =>
+      () => [
+        {
+          message: 'Unable to match returned status code with those defined in spec',
+          severity:
+            element.statusCode >= 200 && element.statusCode <= 299
+              ? DiagnosticSeverity.Error
+              : DiagnosticSeverity.Warning,
+        },
+      ],
+      operationResponse =>
         bodyValidator
-          .validate(element.body, responseDescDoc.contents || [], mediaType)
-          .concat(headersValidator.validate(element.headers || {}, responseDescDoc.headers || [])),
+          .validate(element.body, operationResponse.contents || [], mediaType)
+          .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || [])),
     ),
   );
 };

@@ -168,28 +168,42 @@ describe('HttpValidator', () => {
     });
 
     describe('cannot match status code with responses', () => {
-      it('returns error', () => {
-        (findResponseSpecModule.findOperationResponse as jest.Mock).mockReturnValue(none);
+      beforeEach(() => {
+        jest.spyOn(findResponseSpecModule, 'findOperationResponse').mockReturnValue(none);
         jest.spyOn(bodyValidator, 'validate').mockReturnValue([]);
         jest.spyOn(headersValidator, 'validate').mockReturnValue([]);
+      });
 
-        expect(
-          validateOutput({
-            resource: {
-              method: 'get',
-              path: '/',
-              id: '1',
-              request: {},
-              responses: [{ code: '200' }],
+      afterEach(() => jest.clearAllMocks());
+
+      const resource: IHttpOperation = {
+        method: 'get',
+        path: '/',
+        id: '1',
+        request: {},
+        responses: [{ code: '200' }],
+      };
+
+      describe('when the desidered response is between 200 and 300', () => {
+        it('returns an error', () => {
+          expect(validateOutput({ resource, element: { statusCode: 201 } })).toEqual([
+            {
+              message: 'Unable to match returned status code with those defined in spec',
+              severity: DiagnosticSeverity.Error,
             },
-            element: { statusCode: 400 },
-          }),
-        ).toEqual([
-          {
-            message: 'Unable to match returned status code with those defined in spec',
-            severity: DiagnosticSeverity.Error,
-          },
-        ]);
+          ]);
+        });
+      });
+
+      describe('when the desidered response is over 300', () => {
+        it('returns an error', () => {
+          expect(validateOutput({ resource, element: { statusCode: 400 } })).toEqual([
+            {
+              message: 'Unable to match returned status code with those defined in spec',
+              severity: DiagnosticSeverity.Warning,
+            },
+          ]);
+        });
       });
     });
   });
