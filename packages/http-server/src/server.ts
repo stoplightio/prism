@@ -5,6 +5,7 @@ import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
 import * as formbodyParser from 'fastify-formbody';
 import { IncomingMessage, ServerResponse } from 'http';
+import * as httpProxy from 'http-proxy';
 import { defaults } from 'lodash';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
@@ -13,6 +14,11 @@ import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
+
+  // TODO: only create proxy when needed
+  const proxy = httpProxy.createProxyServer({
+    target: config.proxy,
+  });
 
   const server = fastify({
     logger: (components && components.logger) || createLogger('HTTP SERVER'),
@@ -90,23 +96,62 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         const operationSpecificConfig = getHttpConfigFromRequest(input);
         const mockConfig = Object.assign({}, opts.config.mock, operationSpecificConfig);
 
-        const response = await prismInstance.request(input, operations, {
-          ...opts.config,
-          mock: mockConfig,
-        });
+        const response = await prismInstance.request(
+          input,
+          operations,
+          {
+            ...opts.config,
+            mock: mockConfig,
+          },
+          () => {
+            const promise = new Promise(resolve => {
+              proxy.on('proxyRes', (proxyRes: any, req: any, res: any) => {
+                let proxiedBody: any = [];
 
-        const { output } = response;
+                proxyRes.on('data', (chunk: any) => {
+                  proxiedBody.push(chunk);
+                });
 
-        if (output) {
-          reply.code(output.statusCode);
+                proxyRes.on('end', () => {
+                  proxiedBody = Buffer.concat(proxiedBody).toString();
 
-          if (output.headers) {
-            reply.headers(output.headers);
+                  resolve({
+                    body,
+                    headers: proxyRes.headers,
+                    statusCode: proxyRes.statusCode,
+                  });
+
+                  res.end(proxiedBody);
+                });
+              });
+            });
+
+            proxy.web(request.req, reply.res, {
+              selfHandleResponse: true,
+            });
+
+            reply.sent = true;
+
+            return promise;
+          },
+        );
+
+        if (!config.proxy) {
+          const { output } = response;
+
+          if (output) {
+            reply.code(output.statusCode);
+
+            if (output.headers) {
+              reply.headers(output.headers);
+            }
+
+            reply
+              .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
+              .send(output.body);
+          } else {
+            throw new Error('Unable to find any decent response for the current request.');
           }
-
-          reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
-        } else {
-          throw new Error('Unable to find any decent response for the current request.');
         }
       } catch (e) {
         if (!reply.sent) {

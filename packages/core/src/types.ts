@@ -5,7 +5,7 @@ import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
-  request: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
+  request: (input: Input, resources: Resource[], config?: Config, x?: any) => Promise<IPrismOutput<Input, Output>>;
 }
 
 export interface IPrismConfig {
@@ -13,6 +13,8 @@ export interface IPrismConfig {
   checkSecurity: boolean;
   validateRequest: boolean;
   validateResponse: boolean;
+  proxy?: string;
+  log?: string;
 }
 
 export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => IPrismDiagnostic[];
