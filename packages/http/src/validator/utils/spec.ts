@@ -9,16 +9,14 @@ export function findOperationResponse(
 ): Option<IHttpOperationResponse> {
   const sortedSpecs = responseSpecs
     .filter(
-      spec =>
-        new RegExp(`^${spec.code.replace(/X/g, '\\d')}$`).test(String(statusCode)) ||
-        spec.code.toLowerCase() === 'default',
+      spec => new RegExp(`^${spec.code.replace(/X/g, '\\d')}$`).test(String(statusCode)) || spec.code === 'default',
     )
     .sort((s1, s2) => {
-      if (s1.code.toLowerCase() === 'default') {
+      if (s1.code === 'default') {
         return 1;
       }
 
-      if (s2.code.toLowerCase() === 'default') {
+      if (s2.code === 'default') {
         return -1;
       }
 
