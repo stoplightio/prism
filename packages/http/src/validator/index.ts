@@ -50,10 +50,10 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
           },
         ];
       },
-      responseSpec =>
+      responseDescDoc =>
         bodyValidator
-          .validate(element.body, responseSpec.contents || [], mediaType)
-          .concat(headersValidator.validate(element.headers || {}, responseSpec.headers || [])),
+          .validate(element.body, responseDescDoc.contents || [], mediaType)
+          .concat(headersValidator.validate(element.headers || {}, responseDescDoc.headers || [])),
     ),
   );
 };
