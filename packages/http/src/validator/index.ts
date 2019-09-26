@@ -53,24 +53,25 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
         },
       ],
       operationResponse => {
-        const mismatchingMediatype = pipe(
+        const mismatchingMediaTypeError = pipe(
           Option.fromNullable(operationResponse.contents),
-          Option.chain(contents =>
-            pipe(
+          Option.map(contents => {
+            return pipe(
               contents,
               findFirst(c => c.mediaType === mediaType),
-            ),
-          ),
-          Option.map<IMediaTypeContent, IPrismDiagnostic[]>(() => []),
-          Option.getOrElse<IPrismDiagnostic[]>(() => [
-            {
-              message: `The received media type ${mediaType} does not match the one specified in the document`,
-              severity: DiagnosticSeverity.Error,
-            },
-          ]),
+              Option.map<IMediaTypeContent, IPrismDiagnostic[]>(() => []),
+              Option.getOrElse<IPrismDiagnostic[]>(() => [
+                {
+                  message: `The received media type ${mediaType} does not match the one specified in the document`,
+                  severity: DiagnosticSeverity.Error,
+                },
+              ]),
+            );
+          }),
+          Option.getOrElse<IPrismDiagnostic[]>(() => []),
         );
 
-        return mismatchingMediatype
+        return mismatchingMediaTypeError
           .concat(bodyValidator.validate(element.body, operationResponse.contents || [], mediaType))
           .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || []));
       },

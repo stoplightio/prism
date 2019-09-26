@@ -159,7 +159,7 @@ describe('HttpValidator', () => {
             },
             element: { statusCode: 200 },
           }),
-        ).toHaveLength(3);
+        ).toHaveLength(2);
 
         expect(findResponseSpecModule.findOperationResponse).toHaveBeenCalled();
         expect(bodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
