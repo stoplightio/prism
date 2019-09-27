@@ -56,3 +56,15 @@ export const displayValidationWhenProxying = (inputValidations: any, outputValid
     }
   }
 };
+
+export const constructBaseUrl = (reqInput: any, config: any) => {
+  if (config.proxy) {
+    const { url, ...rest } = reqInput;
+    const upstreamURL = new URL(config.proxy);
+    const newUrl = Object.assign({}, url, { baseUrl: upstreamURL.protocol + '//' + upstreamURL.hostname });
+
+    return { ...rest, url: newUrl };
+  } else {
+    return reqInput;
+  }
+};

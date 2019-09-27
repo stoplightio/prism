@@ -4,7 +4,7 @@ import { getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults } from 'lodash';
-import { displayValidationWhenProxying, proxy } from './proxy';
+import { constructBaseUrl, displayValidationWhenProxying, proxy } from './proxy';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, ProblemJsonError } from './types';
 import { validateSecurity } from './utils/security';
 
@@ -13,10 +13,11 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   components: IPrismComponents<Resource, Input, Output, Config>,
 ): IPrism<Resource, Input, Output, Config> {
   return {
-    request: async (input: Input, resources: Resource[], c?: Config) => {
+    request: async (reqInput: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
       const config = defaults(c, defaultConfig) as Config; // Cast required because lodash types are wrong — https://github.com/DefinitelyTyped/DefinitelyTyped/pull/38156
       const inputValidations: IPrismDiagnostic[] = [];
+      const input = constructBaseUrl(reqInput, config);
 
       return pipe(
         components.route({ resources, input, config }),
