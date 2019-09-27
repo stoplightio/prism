@@ -1,16 +1,14 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { IMediaTypeContent } from '@stoplight/types';
-import { get, partial } from 'lodash';
-import * as typeIs from 'type-is';
-import { body } from '../deserializers';
-
-import { DiagnosticSeverity, Dictionary } from '@stoplight/types';
-import { IHttpEncoding } from '@stoplight/types/dist';
+import { DiagnosticSeverity, Dictionary, IHttpEncoding, IMediaTypeContent } from '@stoplight/types';
 import * as Array from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { get, partial } from 'lodash';
+import * as typeIs from 'type-is';
+
 import { JSONSchema } from '../../types';
+import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 
