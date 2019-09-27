@@ -1,8 +1,8 @@
 # Prism Client
 
-Prism includes an full featured HTTP Client that you can use to seamlessly perform requests to both a real server and a mocked document. The client is modeled after Axios so it may feel familiar.
+Prism includes a fully-featured HTTP Client that you can use to seamlessly perform requests to both a real server and a mocked document. The client is modeled after Axios so it may feel familiar.
 
-### Create from filename or http resource
+### Create from a filename or http resource
 
 ```ts
 const client = await createClientFromResource('examples/petstore.oas2.yaml', {

@@ -45,7 +45,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
     Option.fold<IHttpOperationResponse, IPrismDiagnostic[]>(
       () => [
         {
-          message: 'Unable to match returned status code with those defined in spec',
+          message: 'Unable to match the returned status code with those defined in spec',
           severity:
             element.statusCode >= 200 && element.statusCode <= 299
               ? DiagnosticSeverity.Error
