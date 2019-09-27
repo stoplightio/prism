@@ -1,0 +1,20 @@
+====test====
+Prism returns an error when the upstream is not listed as one of the servers.
+====spec====
+openapi: 3.0.2
+servers:
+  - url: http://localhost
+paths:
+  /path:
+    get:
+      responses:
+        '204':
+          description: No Content
+====server====
+proxy http://localhost:9999 -p 4010
+====command====
+curl -i http://localhost:4010/non-existent-path
+====expect====
+HTTP/1.1 404 Not Found
+
+{"type":"https://stoplight.io/prism/errors#NO_PATH_MATCHED_ERROR","title":"Route not resolved, no path matched","status":404,"detail":"The route /non-existent-path hasn't been found in the specification file"}

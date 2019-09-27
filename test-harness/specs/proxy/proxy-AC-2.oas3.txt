@@ -1,0 +1,18 @@
+====test====
+Prism returns an error when there is no servers. No servers means the upstream cannot be matched against.
+====spec====
+openapi: 3.0.2
+paths:
+  /path:
+    get:
+      responses:
+        '204':
+          description: No Content
+====server====
+proxy http://localhost:9999 -p 4010
+====command====
+curl -i http://localhost:4010/path
+====expect====
+HTTP/1.1 404 Not Found
+
+{"type":"https://stoplight.io/prism/errors#NO_SERVER_CONFIGURATION_PROVIDED_ERROR","title":"Route not resolved, no server configuration provided","status":404,"detail":"No server configuration has been provided, although http://localhost is set as server url"}

@@ -1,0 +1,21 @@
+====test====
+Prism returns an error when the upstream does not respond.
+====spec====
+swagger: "2.0"
+host: localhost
+schemes:
+  - http
+paths:
+  /path:
+    get:
+      responses:
+        '204':
+          description: No Content
+====server====
+proxy http://localhost:9999 -p 4010
+====command====
+curl -i http://localhost:4010/path
+====expect====
+HTTP/1.1 500 Internal Server Error
+
+{"type":"https://stoplight.io/prism/errors#UNKNOWN","title":"connect ECONNREFUSED 127.0.0.1:9999","status":500,"detail":""}

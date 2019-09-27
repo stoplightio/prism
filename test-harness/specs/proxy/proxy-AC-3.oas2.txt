@@ -1,0 +1,21 @@
+====test====
+Prism returns an error when the upstream is not listed as one of the servers.
+====spec====
+swagger: "2.0"
+host: www.abc.com
+schemes:
+  - http
+paths:
+  /path:
+    get:
+      responses:
+        '204':
+          description: No Content
+====server====
+proxy http://localhost:9999 -p 4010
+====command====
+curl -i http://localhost:4010/path
+====expect====
+HTTP/1.1 404 Not Found
+
+{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url http://localhost hasn't been matched with any of the provided servers"}
