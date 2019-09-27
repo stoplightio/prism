@@ -60,7 +60,7 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
         checkSecurity: true,
       },
       options.upstream ? { upstream: options.upstream } : {},
-      options.log ? { log: options.log } : {},
+      options.mode ? { mode: options.mode } : {},
     ),
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
   });
@@ -97,5 +97,5 @@ export type CreatePrismOptions = {
   port: number;
   operations: IHttpOperation[];
   upstream?: boolean;
-  log?: string;
+  mode?: string;
 };

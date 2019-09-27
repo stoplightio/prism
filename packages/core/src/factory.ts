@@ -1,3 +1,5 @@
+// @ts-ignore
+import { negotiateResponse } from '@stoplight/prism-http';
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { getOrElse, map } from 'fp-ts/lib/Option';
@@ -100,7 +102,26 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             });
           }
 
+          if (config.mode === 'error') {
+            pipe(
+              negotiateResponse(
+                { dynamic: false },
+                {
+                  validations: {
+                    input: inputValidations,
+                  },
+                  data: input,
+                },
+                resource as any,
+              )(components.logger.child({ name: 'NEGOTIATOR' })),
+              Either.mapLeft(x => {
+                throw x;
+              }),
+            );
+          }
+
           return {
+            resource,
             input,
             output,
             validations: {

@@ -14,7 +14,7 @@ export interface IPrismConfig {
   validateRequest: boolean;
   validateResponse: boolean;
   upstream?: string;
-  log?: string;
+  mode?: string;
 }
 
 export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => IPrismDiagnostic[];

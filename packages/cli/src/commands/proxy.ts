@@ -25,7 +25,7 @@ const proxyCommand: CommandModule = {
           string: true,
         },
       }),
-  handler: args => handler({ upstream: args.upstream, log: args.log }, args),
+  handler: args => handler({ upstream: args.upstream, mode: args.mode }, args),
 };
 
 export default proxyCommand;

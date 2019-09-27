@@ -92,7 +92,7 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
   );
 }
 
-function negotiateResponse(
+export function negotiateResponse(
   mockConfig: IHttpOperationConfig,
   input: IPrismInput<IHttpRequest>,
   resource: IHttpOperation,

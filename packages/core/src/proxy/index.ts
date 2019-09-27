@@ -47,7 +47,7 @@ export const displayValidationWhenProxying = (inputValidations: any, outputValid
     const validations = inputValidations.concat(outputValidations);
 
     if (config.mode === 'error') {
-      // TODO: maybe respond with better Prism errors, how?
+      // TODO: verify, it should never get here becaus I throw in factory.ts (?)
       throw {
         additional: validations,
       };
