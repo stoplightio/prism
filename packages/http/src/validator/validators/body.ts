@@ -1,8 +1,12 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IMediaTypeContent } from '@stoplight/types';
 import { get } from 'lodash';
+import { parse as deepParseUrlEncoded } from 'qs';
+import * as typeIs from 'type-is';
 import { body } from '../deserializers';
 
+import { DiagnosticSeverity, Dictionary } from '@stoplight/types';
+import { JSONSchema } from '../../types';
 import { validateAgainstSchema } from '../validators/utils';
 import { IHttpValidator } from './types';
 
@@ -19,19 +23,33 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
       return [];
     }
 
-    const encodingStyle = get(content, 'encodings[0].style');
+    if (mediaType && typeIs.is(mediaType, 'application/x-www-form-urlencoded')) {
+      const shallowParsedTarget = shallowParseUrlEncoded(target);
+      target = deepParseUrlEncoded(target);
 
-    if (encodingStyle) {
-      const deserializer = body.get(encodingStyle);
-      if (deserializer && deserializer.supports(encodingStyle) && schema.properties) {
-        const propertySchema = Object.keys(schema.properties)[0];
-        const deserializedObject = deserializer.deserialize(propertySchema, target, Object.values(
-          schema.properties,
-        )[0] as any);
+      const encodings = get(content, 'encodings', []);
+      for (const encoding of encodings) {
+        const allowReserved = get(encoding, 'allowReserved', false);
+        const property = encoding.property;
+        const value = shallowParsedTarget[property];
 
-        return validateAgainstSchema(deserializedObject, Object.values(schema.properties)[0] as any).map(error =>
-          Object.assign({}, error, { path: [prefix, ...(error.path || [])] }),
-        );
+        if (!allowReserved && typeof value === 'string' && value.match(/[\/?#\[\]@!$&'()*+,;=]/)) {
+          return [
+            {
+              path: [prefix, property],
+              message: 'Reserved characters used in request body',
+              severity: DiagnosticSeverity.Error,
+            },
+          ];
+        }
+
+        if (encoding.style) {
+          const deserializer = body.get(encoding.style);
+          if (deserializer && schema.properties) {
+            const propertySchema = schema.properties[property];
+            target[property] = deserializer.deserialize(property, target, propertySchema as JSONSchema);
+          }
+        }
       }
     }
 
@@ -53,4 +71,12 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
 
     return content;
   }
+}
+
+function shallowParseUrlEncoded(target: string) {
+  return target.split('&').reduce((result: Dictionary<string, string>, pair: string) => {
+    const [key, ...rest] = pair.split('=');
+    result[key] = rest.join('=');
+    return result;
+  }, {});
 }
