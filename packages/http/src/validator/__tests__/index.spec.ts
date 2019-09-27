@@ -237,7 +237,7 @@ describe('HttpValidator', () => {
             validateOutput({ resource, element: { statusCode: 200, headers: { 'content-type': 'application/xml' } } }),
           ).toEqual([
             {
-              message: 'The received media type application/xml does not match the one specified in the document',
+              message: 'The received media type does not match the one specified in the document',
               severity: DiagnosticSeverity.Error,
             },
           ]);

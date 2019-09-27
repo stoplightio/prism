@@ -108,12 +108,15 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             reply.headers(output.headers);
           }
 
-          response.validations.output.forEach(
-            validation =>
-              validation.severity === DiagnosticSeverity.Error
-                ? request.log.error(validation.message)
-                : request.log.warn(validation.message),
-          );
+          response.validations.output.forEach(validation => {
+            if (validation.severity === DiagnosticSeverity.Error) {
+              request.log.error(validation.message);
+            } else if (validation.severity === DiagnosticSeverity.Warning) {
+              request.log.warn(validation.message);
+            } else {
+              request.log.info(validation.message);
+            }
+          });
 
           reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
         } else {
