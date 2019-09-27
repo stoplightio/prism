@@ -58,7 +58,7 @@ Once you've got a client instance:
 client.request('https://google.it', { method: 'get' }).then(response => console.log(response));
 ```
 
-The response object has all the informations you need, including the used configuration object.
+The response object has all the information you need, including the used configuration object.
 
 2. You can override the configuration object on the request level if you prefer
 
@@ -68,7 +68,7 @@ client
   .then(response => console.log(response));
 ```
 
-This disables the validation response _only for the current request_
+This disables response validation _only for the current request_
 
 3. You can do the same thing using the shortcut methods
 
