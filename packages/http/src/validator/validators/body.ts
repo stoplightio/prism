@@ -21,17 +21,12 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
     const content = getContent(specs, mediaType);
     const schema = get(content, 'schema');
 
-    try {
-      return pipe(
-        schema ? Either.right(target) : Either.left([]),
-        Either.chain(partial(maybeValidateFormBody, schema!, content, mediaType)),
-        Either.chain(partial(validateBody, schema!)),
-        Either.fold(partial(applyPrefix, this.prefix), () => []),
-      );
-    } catch (e) {
-      require('fs').appendFileSync('myk.txt', JSON.stringify(e.stack));
-      return [];
-    }
+    return pipe(
+      schema ? Either.right(target) : Either.left([]),
+      Either.chain(partial(maybeValidateFormBody, schema!, content, mediaType)),
+      Either.chain(partial(validateBody, schema!)),
+      Either.fold(partial(applyPrefix, this.prefix), () => []),
+    );
   }
 }
 
