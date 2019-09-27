@@ -15,11 +15,6 @@ import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
-  // TODO: only create proxy when needed
-  const proxy = httpProxy.createProxyServer({
-    target: config.proxy,
-  });
-
   const server = fastify({
     logger: (components && components.logger) || createLogger('HTTP SERVER'),
     disableRequestLogging: true,

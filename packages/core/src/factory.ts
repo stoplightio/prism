@@ -63,9 +63,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               )
             : inputValidations;
 
-          if (resource && config.proxy) {
+          if (resource && config.upstream) {
             return pipe(
-              proxy(input, config.proxy),
+              proxy(input, config.upstream),
               TaskEither.map(output => {
                 return { output, resource };
               }),

@@ -43,24 +43,24 @@ export const proxy = (inputData: any, upstream: string) => {
 };
 
 export const displayValidationWhenProxying = (inputValidations: any, outputValidations: any, config: any) => {
-  if ((inputValidations.length || outputValidations.length) && config.proxy) {
+  if ((inputValidations.length || outputValidations.length) && config.upstream) {
     const validations = inputValidations.concat(outputValidations);
 
-    if (config.log === 'error') {
+    if (config.mode === 'error') {
       // TODO: maybe respond with better Prism errors, how?
       throw {
         additional: validations,
       };
-    } else if (config.log === 'log') {
+    } else if (config.mode === 'log') {
       console.log(validations);
     }
   }
 };
 
 export const constructBaseUrl = (reqInput: any, config: any) => {
-  if (config.proxy) {
+  if (config.upstream) {
     const { url, ...rest } = reqInput;
-    const upstreamURL = new URL(config.proxy);
+    const upstreamURL = new URL(config.upstream);
     const newUrl = Object.assign({}, url, { baseUrl: upstreamURL.protocol + '//' + upstreamURL.hostname });
 
     return { ...rest, url: newUrl };

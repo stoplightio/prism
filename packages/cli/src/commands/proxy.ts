@@ -17,7 +17,7 @@ const proxyCommand: CommandModule = {
       .fail(partial(onFail, yargs))
       .options({
         ...options,
-        log: {
+        mode: {
           choices: ['log', 'error'],
           description: 'The way mismatches are reported. Choose error for Prism error format.',
           demandOption: false,
