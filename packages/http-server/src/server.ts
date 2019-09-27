@@ -96,62 +96,23 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         const operationSpecificConfig = getHttpConfigFromRequest(input);
         const mockConfig = Object.assign({}, opts.config.mock, operationSpecificConfig);
 
-        const response = await prismInstance.request(
-          input,
-          operations,
-          {
-            ...opts.config,
-            mock: mockConfig,
-          },
-          () => {
-            const promise = new Promise(resolve => {
-              proxy.on('proxyRes', (proxyRes: any, req: any, res: any) => {
-                let proxiedBody: any = [];
+        const response = await prismInstance.request(input, operations, {
+          ...opts.config,
+          mock: mockConfig,
+        });
 
-                proxyRes.on('data', (chunk: any) => {
-                  proxiedBody.push(chunk);
-                });
+        const { output } = response;
 
-                proxyRes.on('end', () => {
-                  proxiedBody = Buffer.concat(proxiedBody).toString();
+        if (output) {
+          reply.code(output.statusCode);
 
-                  resolve({
-                    body,
-                    headers: proxyRes.headers,
-                    statusCode: proxyRes.statusCode,
-                  });
-
-                  res.end(proxiedBody);
-                });
-              });
-            });
-
-            proxy.web(request.req, reply.res, {
-              selfHandleResponse: true,
-            });
-
-            reply.sent = true;
-
-            return promise;
-          },
-        );
-
-        if (!config.proxy) {
-          const { output } = response;
-
-          if (output) {
-            reply.code(output.statusCode);
-
-            if (output.headers) {
-              reply.headers(output.headers);
-            }
-
-            reply
-              .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
-              .send(output.body);
-          } else {
-            throw new Error('Unable to find any decent response for the current request.');
+          if (output.headers) {
+            reply.headers(output.headers);
           }
+
+          reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
+        } else {
+          throw new Error('Unable to find any decent response for the current request.');
         }
       } catch (e) {
         if (!reply.sent) {
