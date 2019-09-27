@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Support for encoding > allowReserved flag when validating application/x-www-form-urlencoded body [#630](https://github.com/stoplightio/prism/pull/630)
 - Validating output status code against available response specs [#648](https://github.com/stoplightio/prism/pull/648)
+- Support for Contract Testing [#650](https://github.com/stoplightio/prism/pull/650)
 
 ## Fixed
 
@@ -19,10 +20,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Fixed
 
-- Prism is now giving precedence to `application/json` instead of using it as a "fallback" serializer, fixing some conditions where it wouldn't get triggered correctly. [#604](https://github.com/stoplightio/prism/pulls/604)
-- Prism is now taking in consideration the `required` properties for combined schemas (`oneOf, allOf`). This is coming through an update to the Json Schema Faker Library [#623](https://github.com/stoplightio/prism/pulls/623)
-- Prism will never have enough information to return a `403` status code; all these occurences have been now replaced with a `401` status code which is more appropriate [#625](https://github.com/stoplightio/prism/pulls/625)
-- Prism is now negotiating the error response dynamically based on the validation result (security or schema validation) instead of always returning a static order of responses [#628](https://github.com/stoplightio/prism/pulls/628)
+- Prism is now giving precedence to `application/json` instead of using it as a "fallback" serializer, fixing some conditions where it wouldn't get triggered correctly. [#604](https://github.com/stoplightio/prism/pull/604)
+- Prism is now taking in consideration the `required` properties for combined schemas (`oneOf, allOf`). This is coming through an update to the Json Schema Faker Library [#623](https://github.com/stoplightio/prism/pull/623)
+- Prism will never have enough information to return a `403` status code; all these occurences have been now replaced with a `401` status code which is more appropriate [#625](https://github.com/stoplightio/prism/pull/625)
+- Prism is now negotiating the error response dynamically based on the validation result (security or schema validation) instead of always returning a static order of responses [#628](https://github.com/stoplightio/prism/pull/628)
 - Prism is now selecting proper serializer when Accept header contains content type which is missing in spec. This is a result of simplifying serializer selection approach. [#620](https://github.com/stoplightio/prism/pull/620)
 - HEAD requests no longer fail with 406 Not Acceptable [#603](https://github.com/stoplightio/prism/pull/603)
 
@@ -30,31 +31,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Added
 
-- Prism is now able to validate the security specification of the loaded document [#484](https://github.com/stoplightio/prism/pulls/484)
+- Prism is now able to validate the security specification of the loaded document [#484](https://github.com/stoplightio/prism/pull/484)
 
 ## Fixed
 
-- Prism is not crashing anymore when referencing the same model multiple times in the specification document [#552](https://github.com/stoplightio/prism/pulls/552)
-- Prism will now correctly use the `example` keyword for a Schema Object in OpenAPI 3.0 documents [#560](https://github.com/stoplightio/prism/pulls/560)
-- Prism won't return 406 when users request a `text/plain` response whose content is a primitive (string, number) [#560](https://github.com/stoplightio/prism/pulls/560)
-- Prism's router is now able to correctly handle a path ending with a parameter, such as `/test.{format}`, while it would previously not match with anything. [#561](https://github.com/stoplightio/prism/pulls/561)
-- Prism is correctly handling the `allowEmptyValue` property in OAS2 documents [#569](https://github.com/stoplightio/prism/pulls/569)
-- Prism is correctly handling the `csv` collection format argument property in OAS2 documents [#577](https://github.com/stoplightio/prism/pulls/577)
-- Prism is correctly returning the response when the request has `*/*` as Accept header [#578](https://github.com/stoplightio/prism/pulls/578)
-- Prism is correctly returning a single root node with the payload for XML data [#578](https://github.com/stoplightio/prism/pulls/578)
+- Prism is not crashing anymore when referencing the same model multiple times in the specification document [#552](https://github.com/stoplightio/prism/pull/552)
+- Prism will now correctly use the `example` keyword for a Schema Object in OpenAPI 3.0 documents [#560](https://github.com/stoplightio/prism/pull/560)
+- Prism won't return 406 when users request a `text/plain` response whose content is a primitive (string, number) [#560](https://github.com/stoplightio/prism/pull/560)
+- Prism's router is now able to correctly handle a path ending with a parameter, such as `/test.{format}`, while it would previously not match with anything. [#561](https://github.com/stoplightio/prism/pull/561)
+- Prism is correctly handling the `allowEmptyValue` property in OAS2 documents [#569](https://github.com/stoplightio/prism/pull/569)
+- Prism is correctly handling the `csv` collection format argument property in OAS2 documents [#577](https://github.com/stoplightio/prism/pull/577)
+- Prism is correctly returning the response when the request has `*/*` as Accept header [#578](https://github.com/stoplightio/prism/pull/578)
+- Prism is correctly returning a single root node with the payload for XML data [#578](https://github.com/stoplightio/prism/pull/578)
 - Prism is correctly returning payload-less responses #606
 
 # 3.0.4 (2019-08-20)
 
 ## Added
 
-- Prism is now returning CORS headers by default and responding to all the preflights requests. You can disable this behaviour by running Prism with the `--cors` flag set to false [#525](https://github.com/stoplightio/prism/pulls/525)
+- Prism is now returning CORS headers by default and responding to all the preflights requests. You can disable this behaviour by running Prism with the `--cors` flag set to false [#525](https://github.com/stoplightio/prism/pull/525)
 
 ## Fixed
 
-- Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples [#506](https://github.com/stoplightio/prism/pulls/506)
-- Prism now loads correctly OpenAPI 3.x documents with `encodings` with non specified `style` property [#507](https://github.com/stoplightio/prism/pulls/507)
-- Prism got rid of some big internal dependencies that now aren't required anymore, making it faster and lighter. [#490](https://github.com/stoplightio/prism/pulls/490)
+- Prism now respects the `nullable` value for OpenAPI 3.x documents when generating examples [#506](https://github.com/stoplightio/prism/pull/506)
+- Prism now loads correctly OpenAPI 3.x documents with `encodings` with non specified `style` property [#507](https://github.com/stoplightio/prism/pull/507)
+- Prism got rid of some big internal dependencies that now aren't required anymore, making it faster and lighter. [#490](https://github.com/stoplightio/prism/pull/490)
 - Prism now correctly validates OAS2 `application/x-www-urlencoded` (form data) params (#483)
 
 # 3.0.3 (2019-07-25)

@@ -34,6 +34,10 @@ Array [
 exports[`HttpValidator validateOutput() all validations are turned on returns validation errors for whole request structure 1`] = `
 Array [
   Object {
+    "message": "The received media type does not match the one specified in the document",
+    "severity": 0,
+  },
+  Object {
     "code": "type",
     "message": "should be boolean",
     "path": Array [

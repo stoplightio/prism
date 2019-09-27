@@ -10,6 +10,10 @@ In essence it's an HTTP client (similar to axios - in fact, we use axios to make
 
 The goal of this document is to provide you with some basic code examples to get you started and to cover some of the advanced scenarios.
 
+## Important
+
+If you're a regular user and not a PRO, you might to want to use the [User facing client](../../docs/guides/client.md) which provides a better an higher lever API
+
 # Table of Contents
 
 - [Installation](#installation)

@@ -1,9 +1,11 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import * as caseless from 'caseless';
 
-import { fold } from 'fp-ts/lib/Option';
+import { findFirst } from 'fp-ts/lib/Array';
+import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
+import { inRange } from 'lodash';
 import { IHttpRequest, IHttpResponse } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
@@ -41,19 +43,36 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
 
   return pipe(
     findOperationResponse(resource.responses, element.statusCode),
-    fold<IHttpOperationResponse, IPrismDiagnostic[]>(
-      () => {
-        return [
-          {
-            message: 'Unable to match returned status code with those defined in spec',
-            severity: DiagnosticSeverity.Error,
-          },
-        ];
+    Option.fold<IHttpOperationResponse, IPrismDiagnostic[]>(
+      () => [
+        {
+          message: 'Unable to match the returned status code with those defined in spec',
+          severity: inRange(element.statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+        },
+      ],
+      operationResponse => {
+        const mismatchingMediaTypeError = pipe(
+          Option.fromNullable(operationResponse.contents),
+          Option.map(contents =>
+            pipe(
+              contents,
+              findFirst(c => c.mediaType === mediaType),
+              Option.map<IMediaTypeContent, IPrismDiagnostic[]>(() => []),
+              Option.getOrElse<IPrismDiagnostic[]>(() => [
+                {
+                  message: `The received media type does not match the one specified in the document`,
+                  severity: DiagnosticSeverity.Error,
+                },
+              ]),
+            ),
+          ),
+          Option.getOrElse<IPrismDiagnostic[]>(() => []),
+        );
+
+        return mismatchingMediaTypeError
+          .concat(bodyValidator.validate(element.body, operationResponse.contents || [], mediaType))
+          .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || []));
       },
-      responseDescDoc =>
-        bodyValidator
-          .validate(element.body, responseDescDoc.contents || [], mediaType)
-          .concat(headersValidator.validate(element.headers || {}, responseDescDoc.headers || [])),
     ),
   );
 };
