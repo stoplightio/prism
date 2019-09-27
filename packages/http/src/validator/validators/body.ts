@@ -1,47 +1,67 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IMediaTypeContent } from '@stoplight/types';
-import { get } from 'lodash';
+import { get, partial } from 'lodash';
 import * as typeIs from 'type-is';
 import { body } from '../deserializers';
 
 import { DiagnosticSeverity, Dictionary } from '@stoplight/types';
 import { IHttpEncoding } from '@stoplight/types/dist';
 import * as Array from 'fp-ts/lib/Array';
-import { getOrElse } from 'fp-ts/lib/Option';
+import * as Either from 'fp-ts/lib/Either';
+import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { JSONSchema } from '../../types';
-import { validateAgainstSchema } from '../validators/utils';
 import { IHttpValidator } from './types';
+import { validateAgainstSchema } from './utils';
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
-  constructor(private _prefix: string) {}
+  constructor(private prefix: string) {}
 
   public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
-    const { _prefix: prefix } = this;
     const content = getContent(specs, mediaType);
     const schema = get(content, 'schema');
 
-    if (!schema) {
+    try {
+      return pipe(
+        schema ? Either.right(target) : Either.left([]),
+        Either.chain(partial(maybeValidateFormBody, schema!, content, mediaType)),
+        Either.chain(partial(validateBody, schema!)),
+        Either.fold(partial(applyPrefix, this.prefix), () => []),
+      );
+    } catch (e) {
+      require('fs').appendFileSync('myk.txt', JSON.stringify(e.stack));
       return [];
     }
+  }
+}
 
-    if (mediaType && typeIs.is(mediaType, 'application/x-www-form-urlencoded')) {
-      const encodedUriParams = splitUriParams(target);
-      target = decodeUriEntities(encodedUriParams);
-      const encodings = get(content, 'encodings', []);
-      const diagnostics = validateAgainstReservedCharacters(encodedUriParams, encodings);
+function validateBody(schema: JSONSchema, target: any) {
+  const diagnostics = validateAgainstSchema(target, schema);
+  return diagnostics.length ? Either.left(diagnostics) : Either.right(target);
+}
 
-      if (diagnostics.length) {
-        return diagnostics;
-      }
+function maybeValidateFormBody(
+  schema: JSONSchema,
+  content: IMediaTypeContent,
+  mediaType: string | undefined,
+  target: any,
+) {
+  if (mediaType && typeIs.is(mediaType, 'application/x-www-form-urlencoded')) {
+    const encodings = get(content, 'encodings', []);
+    const encodedUriParams = splitUriParams(target);
 
-      target = deserializeFormBody(target, schema, encodings);
-    }
-
-    return validateAgainstSchema(target, schema).map(error =>
-      Object.assign({}, error, { path: [prefix, ...(error.path || [])] }),
+    return pipe(
+      validateAgainstReservedCharacters(encodedUriParams, encodings),
+      Either.map(decodeUriEntities),
+      Either.map(deserializeFormBody.bind(undefined, schema, encodings)),
     );
   }
+
+  return Either.right(target);
+}
+
+function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDiagnostic[] {
+  return diagnostics.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }));
 }
 
 function validateAgainstReservedCharacters(encodedUriParams: Dictionary<string, string>, encodings: IHttpEncoding[]) {
@@ -62,13 +82,14 @@ function validateAgainstReservedCharacters(encodedUriParams: Dictionary<string, 
 
       return diagnostics;
     }),
+    diagnostics => (diagnostics.length ? Either.left(diagnostics) : Either.right(encodedUriParams)),
   );
 }
 
 function deserializeFormBody(
-  decodedUriParams: Dictionary<string, string>,
   schema: JSONSchema,
   encodings: IHttpEncoding[],
+  decodedUriParams: Dictionary<string, string>,
 ) {
   if (!schema.properties) {
     return decodedUriParams;
@@ -97,7 +118,7 @@ function getContent(specs: IMediaTypeContent[], mediaType?: string) {
   return pipe(
     specs,
     Array.findFirst(spec => spec.mediaType === mediaType),
-    getOrElse(() => specs[0]),
+    Option.getOrElse(() => specs[0]),
   );
 }
 
