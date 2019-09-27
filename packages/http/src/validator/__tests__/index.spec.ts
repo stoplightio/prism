@@ -191,7 +191,7 @@ describe('HttpValidator', () => {
         it('returns an error', () => {
           expect(validateOutput({ resource, element: { statusCode: 201 } })).toEqual([
             {
-              message: 'Unable to match returned status code with those defined in spec',
+              message: 'Unable to match the returned status code with those defined in spec',
               severity: DiagnosticSeverity.Error,
             },
           ]);
@@ -202,7 +202,7 @@ describe('HttpValidator', () => {
         it('returns an error', () => {
           expect(validateOutput({ resource, element: { statusCode: 400 } })).toEqual([
             {
-              message: 'Unable to match returned status code with those defined in spec',
+              message: 'Unable to match the returned status code with those defined in spec',
               severity: DiagnosticSeverity.Warning,
             },
           ]);
