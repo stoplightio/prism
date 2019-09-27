@@ -51,7 +51,9 @@ describe('HttpBodyValidator', () => {
       it('returns no validation errors', () => {
         expect(
           httpBodyValidator.validate(
-            'key%5Ba%5D=str&key%5Bb%5D%5Bba%5D=str&key%5Bb%5D%5Bbc%5D%5B0%5D=bc0&key%5Bb%5D%5Bbc%5D%5B1%5D=bc1&key%5Bc%5D%5B0%5D%5Ba%5D=c0a&key%5Bc%5D%5B0%5D%5Bb%5D=c0b&key%5Bc%5D%5B1%5D%5Ba%5D=c0a&key%5Bc%5D%5B1%5D%5Bb%5D=c0b&other=other',
+            encodeURI(
+              'key[a]=str&key[b][ba]=str&key[b][bc][0]=bc0&key[b][bc][1]=bc1&key[c][0][a]=c0a&key[c][0][b]=c0b&key[c][1][a]=c0a&key[c][1][b]=c0b&other=other',
+            ),
             [
               {
                 mediaType: 'application/x-www-form-urlencoded',
