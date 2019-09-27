@@ -47,7 +47,7 @@ describe('HttpBodyValidator', () => {
       });
     });
 
-    describe.only('request media type was not found in spec', () => {
+    describe('body is form-urlencoded with deep object style', () => {
       it('returns no validation errors', () => {
         expect(
           httpBodyValidator.validate(
