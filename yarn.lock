@@ -2254,10 +2254,10 @@ commander@2.14.1:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.14.1.tgz#2235123e37af8ca3c65df45b026dbd357b01b9aa"
   integrity sha512-+YR16o3rK53SmWHU3rEM3tPAh2rwb1yPcQX5irVn7mb0gXbwuCCrnkbV5+PBfETdfg1vui07nM6PCG1zndcjQw==
 
-commander@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-3.0.1.tgz#4595aec3530525e671fb6f85fb173df8ff8bf57a"
-  integrity sha512-UNgvDd+csKdc9GD4zjtkHKQbT8Aspt2jCBqNSPp53vAS0L1tS9sXB2TCEOPHJ7kt9bN/niWkYj8T3RQSoMXdSQ==
+commander@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-3.0.2.tgz#6837c3fb677ad9933d1cfba42dd14d5117d6b39e"
+  integrity sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow==
 
 commander@^2.12.1, commander@^2.20.0, commander@~2.20.0:
   version "2.20.0"
@@ -3471,14 +3471,14 @@ gauge@~2.7.3:
     wide-align "^1.1.0"
 
 gavel@^8.0.3:
-  version "8.0.5"
-  resolved "https://registry.yarnpkg.com/gavel/-/gavel-8.0.5.tgz#b4502bf18b3436ed6a4b6716db41d2ce089db254"
-  integrity sha512-Yqha3C83yY3QNpsaFoh+Qda82rhEnHd3zkMc7gA1yKf6KIw6SW2XGnS2tPbDYI1A1W4eoLsGF40rI1Wipdq/2g==
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/gavel/-/gavel-8.1.1.tgz#c3f82e5ef468661bda9ff7800c58c51e979b3477"
+  integrity sha512-TgMghBKUOL7/zaNvn71X+e7jg16fL1lycDtltrfiSgGhHKNQHN9+77kkEpBVkwCl5kERId3kFlhjqU9W7l4ODw==
   dependencies:
     amanda "1.0.1"
     caseless "0.12.0"
     clone "2.1.2"
-    commander "3.0.1"
+    commander "3.0.2"
     content-type "1.0.4"
     curl-trace-parser "0.0.10"
     deep-equal "1.1.0"
