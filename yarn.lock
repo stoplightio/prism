@@ -1189,25 +1189,25 @@
     lodash "^4.17.15"
     safe-stable-stringify "^1.1"
 
-"@stoplight/types@^11.0.0", "@stoplight/types@^11.1.0":
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.1.0.tgz#b29ecd8c8ad27bb564c7820c99f93c27f1d11bf1"
-  integrity sha512-z4VqnYIDTcj9R0f8AIDitBWkiAKKJ4W/Z5GJz/3fnBZBa/TD9Oak0xHbicXFXUvqTVCv/7D32PjPYiUX6W/EfQ==
+"@stoplight/types@^11.0.0", "@stoplight/types@^11.1.0", "@stoplight/types@^11.1.1":
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.1.1.tgz#a92d1833adb580a72439f42ba73de8f560fd68b4"
+  integrity sha512-IU8U9y/uO548z15DX/Jl053u9VQG8gCwNtypuD4RtskUA7pvHZl4+zzGK3klgIcO6Ql3Jk4/fcrFaN9vjmdEWg==
   dependencies:
     "@types/json-schema" "^7.0.3"
 
-"@stoplight/yaml-ast-parser@0.0.43":
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.43.tgz#c39cf86e98e48d73c483be96622b2b622cc56b0c"
-  integrity sha512-3buZXhav0Uc4pD7QWCTfysDTW0syyf1Nj/F73fgAfhO9+Fd6Q6IVB0k1ApcHFQgIPTHQAq9Lu8+ngvlGIjG6ZQ==
+"@stoplight/yaml-ast-parser@0.0.44":
+  version "0.0.44"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.44.tgz#ed3c962564283e9983f7895a6effc3994286df5e"
+  integrity sha512-PdY8p2Ufgtorf4d2DbKMfknILMa8KwuyyMMR/2lgK1mLaU8F5PKWYc+h9hIzC+ar0bh7m9h2rINo32m7ADfVyA==
 
 "@stoplight/yaml@^3.0.2":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-3.2.0.tgz#a36257809e0e68289961623dbfc907b47f12664b"
-  integrity sha512-HAw0hGSQbYCXKRxRd6qnQ2bKiOmW5CKme6RRSnoMahQ5qG3VNN0RO3ouNQ4EEUzjSDveUkLfZHBfe0ywOxXprw==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-3.3.0.tgz#975f24ad01700a0d83676e2b35e5f2f53ffa1abe"
+  integrity sha512-Nd9/Fp5Q+HIsHBLa/jmE866mRR0FPjwaGRvG+0vqTSKGvqzq2HHgAQ2bKacD2mLm4BNZ4kYMDOlrodrhoRSgzA==
   dependencies:
-    "@stoplight/types" "^11.1.0"
-    "@stoplight/yaml-ast-parser" "0.0.43"
+    "@stoplight/types" "^11.1.1"
+    "@stoplight/yaml-ast-parser" "0.0.44"
     lodash "^4.17.15"
 
 "@types/babel__core@^7.1.0":
