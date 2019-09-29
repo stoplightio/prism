@@ -1190,9 +1190,9 @@
     safe-stable-stringify "^1.1"
 
 "@stoplight/types@^11.0.0", "@stoplight/types@^11.1.0":
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.1.0.tgz#b29ecd8c8ad27bb564c7820c99f93c27f1d11bf1"
-  integrity sha512-z4VqnYIDTcj9R0f8AIDitBWkiAKKJ4W/Z5GJz/3fnBZBa/TD9Oak0xHbicXFXUvqTVCv/7D32PjPYiUX6W/EfQ==
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.1.1.tgz#a92d1833adb580a72439f42ba73de8f560fd68b4"
+  integrity sha512-IU8U9y/uO548z15DX/Jl053u9VQG8gCwNtypuD4RtskUA7pvHZl4+zzGK3klgIcO6Ql3Jk4/fcrFaN9vjmdEWg==
   dependencies:
     "@types/json-schema" "^7.0.3"
 
