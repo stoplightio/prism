@@ -1,15 +1,15 @@
+import { HttpMethod } from '@stoplight/types';
 import { Chance } from 'chance';
 import { defaults } from 'lodash';
-import { IHttpMethod } from '../../types';
 
 const chance = new Chance();
-const httpMethods: IHttpMethod[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
+const httpMethods: HttpMethod[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
-export function pickOneHttpMethod(): IHttpMethod {
+export function pickOneHttpMethod(): HttpMethod {
   return chance.pickone(httpMethods);
 }
 
-export function pickSetOfHttpMethods(count: number = 2): IHttpMethod[] {
+export function pickSetOfHttpMethods(count: number = 2): HttpMethod[] {
   return chance.unique(pickOneHttpMethod, count);
 }
 

@@ -1,6 +1,6 @@
 import { createLogger } from '@stoplight/prism-core';
-import { createInstance, IHttpConfig, IHttpMethod, PrismHttpInstance, ProblemJsonError } from '@stoplight/prism-http';
-import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
+import { createInstance, IHttpConfig, PrismHttpInstance, ProblemJsonError } from '@stoplight/prism-http';
+import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
 import { IncomingMessage, ServerResponse } from 'http';
@@ -79,7 +79,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       } = request;
 
       const input = {
-        method: (method ? method.toLowerCase() : 'get') as IHttpMethod,
+        method: (method ? method.toLowerCase() : 'get') as HttpMethod,
         url: {
           path: (url || '/').split('?')[0],
           query,
