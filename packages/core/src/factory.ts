@@ -14,7 +14,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   return {
     request: async (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
-      const config = defaults(c, defaultConfig) as Config; // Cast required because lodash types are wrong — https://github.com/DefinitelyTyped/DefinitelyTyped/pull/38156
+      const config = defaults<unknown, Config>(c, defaultConfig);
       const inputValidations: IPrismDiagnostic[] = [];
 
       return pipe(
