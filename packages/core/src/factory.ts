@@ -1,5 +1,5 @@
 // @ts-ignore
-import { negotiateResponse } from '@stoplight/prism-http';
+import { handleInputValidation } from '@stoplight/prism-http/src';
 import { IHttpNegotiationResult } from '@stoplight/prism-http/src/mocker/negotiator/types';
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
@@ -103,23 +103,18 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             });
           }
 
-          if (config.mode === 'error') {
-            return TaskEither.fromEither<Error, IHttpNegotiationResult>(
-              pipe(
-                negotiateResponse(
-                  { dynamic: false },
-                  {
-                    validations: {
-                      input: inputValidations,
-                    },
-                    data: input,
-                  },
-                  resource as any,
-                )(components.logger.child({ name: 'NEGOTIATOR' })),
-              ),
-            );
-          } else if (config.mode === 'log') {
-            displayValidationWhenProxying(inputValidations, outputValidations);
+          if (inputValidations.length > 0) {
+            if (config.mode === 'error') {
+              return TaskEither.fromEither<Error, IHttpNegotiationResult>(
+                pipe(
+                  handleInputValidation({ validations: { input: inputValidations } } as any, resource as any)(
+                    components.logger.child({ name: 'NEGOTIATOR' }),
+                  ),
+                ),
+              );
+            } else if (config.mode === 'log') {
+              displayValidationWhenProxying(inputValidations, outputValidations);
+            }
           }
 
           return TaskEither.right<Error, any>({

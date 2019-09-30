@@ -54,7 +54,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpC
   );
 };
 
-function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
+export function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
   const securityValidation = input.validations.input.find(valiation => valiation.code === 401);
 
   return pipe(
