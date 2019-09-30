@@ -118,7 +118,6 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           }
 
           return TaskEither.right<Error, any>({
-            resource,
             input,
             output,
             validations: {
