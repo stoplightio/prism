@@ -11,6 +11,7 @@ import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
+import { eqString } from 'fp-ts/lib/Eq';
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
   constructor(private prefix: string) {}
@@ -20,7 +21,8 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
     const schema = get(content, 'schema');
 
     return pipe(
-      schema ? Either.right(target) : Either.left([]),
+      Either.fromNullable([])(schema),
+      Either.map(() => target),
       Either.chain(partial(maybeValidateFormBody, schema!, content, mediaType)),
       Either.chain(partial(validateBody, schema!)),
       Either.fold(partial(applyPrefix, this.prefix), () => []),
@@ -36,10 +38,10 @@ function validateBody(schema: JSONSchema, target: any) {
 function maybeValidateFormBody(
   schema: JSONSchema,
   content: IMediaTypeContent,
-  mediaType: string | undefined,
+  mediaType: Option.Option<string>,
   target: any,
 ) {
-  if (mediaType && typeIs.is(mediaType, 'application/x-www-form-urlencoded')) {
+  if (Option.getEq(eqString).equals(mediaType, Option.some('application/x-www-form-urlencoded'))) {
     const encodings = get(content, 'encodings', []);
     const encodedUriParams = splitUriParams(target);
 
