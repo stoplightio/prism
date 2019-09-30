@@ -68,9 +68,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                 components.mock({
                   resource,
                   input: {
-                    validations: {
-                      input: inputValidationResult,
-                    },
+                    validations: inputValidationResult,
                     data: input,
                   },
                   config,

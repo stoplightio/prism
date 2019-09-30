@@ -33,9 +33,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
 
 export interface IPrismInput<I> {
   data: I;
-  validations: {
-    input: IPrismDiagnostic[];
-  };
+  validations: IPrismDiagnostic[];
 }
 
 export interface IPrismOutput<I, O> {
