@@ -260,7 +260,7 @@ The request object has the following interface
 
 ```ts
 export interface IHttpRequest {
-  method: IHttpMethod;
+  method: HttpMethod;
   url: IHttpUrl;
   headers?: IHttpNameValue;
   body?: any;

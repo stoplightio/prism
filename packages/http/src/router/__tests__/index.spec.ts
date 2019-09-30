@@ -1,8 +1,8 @@
 import { assertLeft, assertRight } from '@stoplight/prism-http/src/__tests__/utils';
-import { IHttpOperation, IServer } from '@stoplight/types';
+import { HttpMethod, IHttpOperation, IServer } from '@stoplight/types';
 import { Chance } from 'chance';
 import { isRight } from 'fp-ts/lib/Either';
-import { IHttpMethod, ProblemJsonError } from '../../';
+import { ProblemJsonError } from '../../';
 import {
   NO_METHOD_MATCHED_ERROR,
   NO_PATH_MATCHED_ERROR,
@@ -463,7 +463,7 @@ describe('http router', () => {
       });
 
       test('should not match when the method does not exist', () => {
-        const method: IHttpMethod = 'get';
+        const method: HttpMethod = 'get';
         const path = randomPath({ includeTemplates: false });
         const url = 'concrete.com';
 
