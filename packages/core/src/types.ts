@@ -1,6 +1,7 @@
 import { IDiagnostic } from '@stoplight/types';
 import { Either } from 'fp-ts/lib/Either';
 import { Reader } from 'fp-ts/lib/Reader';
+import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
@@ -23,6 +24,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   route: (opts: { resources: Resource[]; input: Input; config?: Config }) => Either<Error, Resource>;
   validateInput?: ValidatorFn<Resource, Input>;
   validateOutput?: ValidatorFn<Resource, Output>;
+  proxy: (x: any, y: any) => TaskEither<Error, Output>;
   mock: (
     opts: {
       resource: Resource;

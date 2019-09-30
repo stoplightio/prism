@@ -7,7 +7,7 @@ import { getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults } from 'lodash';
-import { constructBaseUrl, displayValidationWhenProxying, proxy } from './proxy';
+import { constructBaseUrl, displayValidationWhenProxying } from './proxy';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, ProblemJsonError } from './types';
 import { validateSecurity } from './utils/security';
 
@@ -68,7 +68,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
           if (resource && config.upstream) {
             return pipe(
-              proxy(input, config.upstream),
+              components.proxy(input, config.upstream),
               TaskEither.map(output => {
                 return { output, resource };
               }),
