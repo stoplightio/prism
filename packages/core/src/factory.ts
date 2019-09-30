@@ -1,5 +1,6 @@
 // @ts-ignore
 import { negotiateResponse } from '@stoplight/prism-http';
+import { IHttpNegotiationResult } from '@stoplight/prism-http/src/mocker/negotiator/types';
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { getOrElse, map } from 'fp-ts/lib/Option';
@@ -93,7 +94,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
           return TaskEither.left(new Error('Resource not defined. This should never happen.'));
         }),
-        TaskEither.map(({ output, resource }) => {
+        TaskEither.chain(({ output, resource }) => {
           let outputValidations: IPrismDiagnostic[] = [];
           if (config.validateResponse && resource && components.validateOutput) {
             outputValidations = components.validateOutput({
@@ -103,24 +104,25 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           }
 
           if (config.mode === 'error') {
-            pipe(
-              negotiateResponse(
-                { dynamic: false },
-                {
-                  validations: {
-                    input: inputValidations,
+            return TaskEither.fromEither<Error, IHttpNegotiationResult>(
+              pipe(
+                negotiateResponse(
+                  { dynamic: false },
+                  {
+                    validations: {
+                      input: inputValidations,
+                    },
+                    data: input,
                   },
-                  data: input,
-                },
-                resource as any,
-              )(components.logger.child({ name: 'NEGOTIATOR' })),
-              Either.mapLeft(x => {
-                throw x;
-              }),
+                  resource as any,
+                )(components.logger.child({ name: 'NEGOTIATOR' })),
+              ),
             );
+          } else if (config.mode === 'log') {
+            displayValidationWhenProxying(inputValidations, outputValidations);
           }
 
-          return {
+          return TaskEither.right<Error, any>({
             resource,
             input,
             output,
@@ -128,7 +130,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               input: inputValidations,
               output: outputValidations,
             },
-          };
+          });
         }),
       )().then(v =>
         pipe(
@@ -138,8 +140,6 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               throw e;
             },
             o => {
-              displayValidationWhenProxying(o.validations.input, o.validations.output, config);
-
               return o;
             },
           ),

@@ -42,18 +42,12 @@ export const proxy = (inputData: any, upstream: string) => {
   );
 };
 
-export const displayValidationWhenProxying = (inputValidations: any, outputValidations: any, config: any) => {
-  if ((inputValidations.length || outputValidations.length) && config.upstream) {
+export const displayValidationWhenProxying = (inputValidations: any, outputValidations: any) => {
+  if (inputValidations.length || outputValidations.length) {
+    // TODO: differentiate between input and output when logging
     const validations = inputValidations.concat(outputValidations);
 
-    if (config.mode === 'error') {
-      // TODO: verify, it should never get here becaus I throw in factory.ts (?)
-      throw {
-        additional: validations,
-      };
-    } else if (config.mode === 'log') {
-      console.log(validations);
-    }
+    console.log(validations);
   }
 };
 
