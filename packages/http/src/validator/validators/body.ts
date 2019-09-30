@@ -30,7 +30,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
   }
 }
 
-function validateBody(schema: JSONSchema, target: any) {
+function validateBody(schema: JSONSchema, target: any): Either.Either<IPrismDiagnostic[], any> {
   const diagnostics = validateAgainstSchema(target, schema);
   return diagnostics.length ? Either.left(diagnostics) : Either.right(target);
 }
@@ -40,7 +40,7 @@ function maybeValidateFormBody(
   content: IMediaTypeContent,
   mediaType: Option.Option<string>,
   target: any,
-) {
+): Either.Either<IPrismDiagnostic[], any> {
   if (
     Option.getEq(fromEquals((a: string, b: string) => typeIs.is(a, b) as boolean)).equals(
       mediaType,
@@ -64,7 +64,10 @@ function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDia
   return diagnostics.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }));
 }
 
-function validateAgainstReservedCharacters(encodedUriParams: Dictionary<string, string>, encodings: IHttpEncoding[]) {
+function validateAgainstReservedCharacters(
+  encodedUriParams: Dictionary<string, string>,
+  encodings: IHttpEncoding[],
+): Either.Either<IPrismDiagnostic[], Dictionary<string, string>> {
   return pipe(
     encodings,
     Array.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
