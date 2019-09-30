@@ -19,8 +19,8 @@ export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }
 
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
-  validateInput?: ValidatorFn<Resource, Input>;
-  validateOutput?: ValidatorFn<Resource, Output>;
+  validateInput: ValidatorFn<Resource, Input>;
+  validateOutput: ValidatorFn<Resource, Output>;
   mock: (
     opts: {
       resource: Resource;
