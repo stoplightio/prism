@@ -23,7 +23,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
     return pipe(
       Either.fromNullable([])(schema),
       Either.map(() => target),
-      Either.chain(partial(maybeValidateFormBody, schema!, content, mediaType)),
+      Either.chain(partial(maybeValidateFormBody, schema!, content, Option.fromNullable(mediaType))),
       Either.chain(partial(validateBody, schema!)),
       Either.fold(partial(applyPrefix, this.prefix), () => []),
     );
