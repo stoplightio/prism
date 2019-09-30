@@ -43,11 +43,11 @@ export const proxy = (inputData: any, upstream: string) => {
 };
 
 export const displayValidationWhenProxying = (inputValidations: any, outputValidations: any) => {
-  if (inputValidations.length || outputValidations.length) {
-    // TODO: differentiate between input and output when logging
-    const validations = inputValidations.concat(outputValidations);
-
-    console.log(validations);
+  if (inputValidations.length) {
+    console.log('Input validations\n', inputValidations);
+  }
+  if (outputValidations.length) {
+    console.log('Output validations\n', outputValidations);
   }
 };
 
