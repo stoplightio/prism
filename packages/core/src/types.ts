@@ -25,7 +25,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
     opts: {
       resource: Resource;
       input: IPrismInput<Input>;
-      config?: Config;
+      config: Config['mock'];
     },
   ) => Reader<Logger, Either<Error, Output>>;
   logger: Logger;
