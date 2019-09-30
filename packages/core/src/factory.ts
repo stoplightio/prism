@@ -18,7 +18,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       const inputValidations: IPrismDiagnostic[] = [];
 
       return pipe(
-        components.route({ resources, input, config }),
+        components.route({ resources, input }),
         Either.fold(
           error => {
             // rethrow error we if we're attempting to mock
