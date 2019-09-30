@@ -7,11 +7,11 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { get, partial } from 'lodash';
 import * as typeIs from 'type-is';
 
+import { eqString, fromEquals } from 'fp-ts/lib/Eq';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
-import { eqString } from 'fp-ts/lib/Eq';
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
   constructor(private prefix: string) {}
@@ -41,7 +41,7 @@ function maybeValidateFormBody(
   mediaType: Option.Option<string>,
   target: any,
 ) {
-  if (Option.getEq(eqString).equals(mediaType, Option.some('application/x-www-form-urlencoded'))) {
+  if (Option.getEq(fromEquals((a: string, b: string) => typeIs.is(a, b) as boolean)).equals(mediaType, Option.some('application/x-www-form-urlencoded'))) {
     const encodings = get(content, 'encodings', []);
     const encodedUriParams = splitUriParams(target);
 
