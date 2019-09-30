@@ -6,9 +6,6 @@ export type PrismHttpInstance = IPrism<IHttpOperation, IHttpRequest, IHttpRespon
 
 export type PrismHttpComponents = IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
 
-// TODO: should be complete | and in the @stoplight/types repo
-export type IHttpMethod = HttpMethod | 'trace';
-
 export interface IHttpOperationConfig {
   mediaTypes?: string[];
   code?: string;
@@ -31,7 +28,7 @@ export interface IHttpUrl {
 }
 
 export interface IHttpRequest {
-  method: IHttpMethod;
+  method: HttpMethod;
   url: IHttpUrl;
   headers?: IHttpNameValue;
   body?: unknown;

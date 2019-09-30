@@ -24,9 +24,9 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "a/b/c"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "a/b/c"
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 content-type: application/problem+json
 
-{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body"],"severity":"Error","code":"type","message":"should be array"}]}
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","arr"],"severity":"Error","code":"type","message":"should be array"}]}

@@ -30,7 +30,7 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "status=ooopsie!"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "status=ooopsie!"
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 content-type: application/problem+json

@@ -27,7 +27,9 @@
     "json-schema-faker": "0.5.0-rc20",
     "openapi-sampler": "^1.0.0-beta.15",
     "pino": "^5.13.2",
-    "tslib": "^1.10.0"
+    "qs": "^6.9.0",
+    "tslib": "^1.10.0",
+    "type-is": "^1.6.18"
   },
   "publishConfig": {
     "access": "public"
