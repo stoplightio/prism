@@ -72,7 +72,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                     validations: inputValidationResult,
                     data: input,
                   },
-                  config,
+                  config: config.mock,
                 })(components.logger.child({ name: 'NEGOTIATOR' })),
               ),
               TaskEither.map(output => ({ output, resource })),
