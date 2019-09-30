@@ -17,7 +17,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
   constructor(private prefix: string) {}
 
   public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
-    const content = getContent(specs, mediaType);
+    const content = getContentByMediaTypeOrFirst(specs, mediaType);
     const schema = get(content, 'schema');
 
     return pipe(
@@ -117,7 +117,7 @@ function deserializeFormBody(
   );
 }
 
-function getContent(specs: IMediaTypeContent[], mediaType?: string) {
+function getContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType?: string) {
   return pipe(
     specs,
     Array.findFirst(spec => spec.mediaType === mediaType),
