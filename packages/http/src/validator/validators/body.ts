@@ -7,7 +7,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { get, partial } from 'lodash';
 import * as typeIs from 'type-is';
 
-import { eqString, fromEquals } from 'fp-ts/lib/Eq';
+import { fromEquals } from 'fp-ts/lib/Eq';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
@@ -41,14 +41,19 @@ function maybeValidateFormBody(
   mediaType: Option.Option<string>,
   target: any,
 ) {
-  if (Option.getEq(fromEquals((a: string, b: string) => typeIs.is(a, b) as boolean)).equals(mediaType, Option.some('application/x-www-form-urlencoded'))) {
+  if (
+    Option.getEq(fromEquals((a: string, b: string) => typeIs.is(a, b) as boolean)).equals(
+      mediaType,
+      Option.some('application/x-www-form-urlencoded'),
+    )
+  ) {
     const encodings = get(content, 'encodings', []);
     const encodedUriParams = splitUriParams(target);
 
     return pipe(
       validateAgainstReservedCharacters(encodedUriParams, encodings),
       Either.map(decodeUriEntities),
-      Either.map(deserializeFormBody.bind(undefined, schema, encodings)),
+      Either.map(partial(deserializeFormBody, schema, encodings)),
     );
   }
 
