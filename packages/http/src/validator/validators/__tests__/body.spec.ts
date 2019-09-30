@@ -1,4 +1,4 @@
-import { HttpParamStyles } from '@stoplight/types/dist';
+import { HttpParamStyles } from '@stoplight/types';
 import { JSONSchema } from '../../..';
 import { HttpBodyValidator } from '../body';
 
