@@ -66,8 +66,8 @@ function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: st
 function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, target: unknown) {
   return pipe(
     mediaType,
-    Option.fromPredicate(mt => !!!typeIs.is(mt, ['application/x-www-form-urlencoded'])),
-    Option.chain(() => Option.some(validateBody(schema, target))),
+    Option.fromPredicate(mt => !typeIs.is(mt, ['application/x-www-form-urlencoded'])),
+    Option.map(() => validateBody(schema, target)),
   );
 }
 
