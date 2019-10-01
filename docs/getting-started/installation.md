@@ -23,11 +23,11 @@ Note, the binaries do _not_ auto-update, so you will need to run it again to ins
 Prism is available as a Docker Image as well under the `3` tag.
 
 ```bash
-docker run -P stoplight/prism:3 mock -h 0.0.0.0 api.oas2.yml
+docker run --rm -it -p 4010:4010 stoplight/prism:3 mock -h 0.0.0.0 api.oas3.yml
 ```
 
-If the file you want to lint is on your computer, you'll need to mount the directory where the file resides as a volume
+If the specification you want to mock is on your computer, you'll need to mount the directory where the file resides as a volume
 
 ```bash
-docker run --rm -it -v $(pwd):/tmp stoplight/spectral lint "/tmp/file.yaml"
+docker run --rm -it -p 4010:4010 -v $(pwd):/tmp stoplight/prism:3 mock -h 0.0.0.0 "/tmp/api.oas3.yml"
 ```
