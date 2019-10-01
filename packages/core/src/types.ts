@@ -18,14 +18,14 @@ export interface IPrismConfig {
 export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => IPrismDiagnostic[];
 
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
-  route: (opts: { resources: Resource[]; input: Input; config?: Config }) => Either<Error, Resource>;
-  validateInput?: ValidatorFn<Resource, Input>;
-  validateOutput?: ValidatorFn<Resource, Output>;
+  route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
+  validateInput: ValidatorFn<Resource, Input>;
+  validateOutput: ValidatorFn<Resource, Output>;
   mock: (
     opts: {
       resource: Resource;
       input: IPrismInput<Input>;
-      config?: Config;
+      config: Config['mock'];
     },
   ) => Reader<Logger, Either<Error, Output>>;
   logger: Logger;
@@ -33,9 +33,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
 
 export interface IPrismInput<I> {
   data: I;
-  validations: {
-    input: IPrismDiagnostic[];
-  };
+  validations: IPrismDiagnostic[];
 }
 
 export interface IPrismOutput<I, O> {

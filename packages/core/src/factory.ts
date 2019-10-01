@@ -18,31 +18,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       const inputValidations: IPrismDiagnostic[] = [];
 
       return pipe(
-        components.route({ resources, input, config }),
-        Either.fold(
-          error => {
-            // rethrow error we if we're attempting to mock
-            if (config.mock) {
-              return TaskEither.left(error);
-            }
-
-            const { message, name, status } = error as ProblemJsonError;
-            // otherwise let's just stack it on the inputValidations
-            // when someone simply wants to hit an URL, don't block them
-            inputValidations.push({
-              message,
-              source: name,
-              code: status,
-              severity: DiagnosticSeverity.Warning,
-            });
-
-            return TaskEither.right<Error, Resource | undefined>(undefined);
-          },
-          value => TaskEither.right(value),
-        ),
+        TaskEither.fromEither(components.route({ resources, input })),
         TaskEither.chain(resource => {
-          // validate input
-          if (config.validateRequest && resource && components.validateInput) {
+          if (config.validateRequest && resource) {
             inputValidations.push(
               ...components.validateInput({
                 resource,
@@ -68,12 +46,10 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                 components.mock({
                   resource,
                   input: {
-                    validations: {
-                      input: inputValidationResult,
-                    },
+                    validations: inputValidationResult,
                     data: input,
                   },
-                  config,
+                  config: config.mock,
                 })(components.logger.child({ name: 'NEGOTIATOR' })),
               ),
               TaskEither.map(output => ({ output, resource })),
@@ -84,7 +60,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         }),
         TaskEither.map(({ output, resource }) => {
           let outputValidations: IPrismDiagnostic[] = [];
-          if (config.validateResponse && resource && components.validateOutput) {
+          if (config.validateResponse && resource) {
             outputValidations = components.validateOutput({
               resource,
               element: output,
@@ -99,6 +75,21 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               output: outputValidations,
             },
           };
+        }),
+        TaskEither.mapLeft(error => {
+          if (components.validateInput) {
+            const { message, name, status } = error as ProblemJsonError;
+            // let's just stack it on the inputValidations
+            // when someone simply wants to hit an URL, don't block them
+            inputValidations.push({
+              message,
+              source: name,
+              code: status,
+              severity: DiagnosticSeverity.Warning,
+            });
+
+            return error;
+          }
         }),
       )().then(v =>
         pipe(

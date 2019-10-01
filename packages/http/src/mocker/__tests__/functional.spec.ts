@@ -15,13 +15,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
-            checkSecurity: true,
-            validateRequest: true,
-            validateResponse: true,
-            mock: {
-              dynamic: false,
-              mediaTypes: ['text/plain'],
-            },
+            dynamic: false,
+            mediaTypes: ['text/plain'],
           },
         })(logger);
 
@@ -33,13 +28,8 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
-            checkSecurity: true,
-            validateRequest: true,
-            validateResponse: true,
-            mock: {
-              dynamic: false,
-              mediaTypes: ['text/funky'],
-            },
+            dynamic: false,
+            mediaTypes: ['text/funky'],
           },
         })(logger);
 
@@ -48,20 +38,15 @@ describe('http mocker', () => {
     });
 
     describe('given enforced status code and contentType and exampleKey', () => {
-      test('should return the matching example', async () => {
+      test('should return the matching example', () => {
         const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
-            checkSecurity: true,
-            validateRequest: true,
-            validateResponse: true,
-            mock: {
-              dynamic: false,
-              code: '201',
-              exampleKey: 'second',
-              mediaTypes: ['application/xml'],
-            },
+            dynamic: false,
+            code: '201',
+            exampleKey: 'second',
+            mediaTypes: ['application/xml'],
           },
         })(logger);
 
@@ -70,19 +55,14 @@ describe('http mocker', () => {
     });
 
     describe('given enforced status code and contentType', () => {
-      test('should return the first matching example', async () => {
+      test('should return the first matching example', () => {
         const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
-            checkSecurity: true,
-            validateRequest: true,
-            validateResponse: true,
-            mock: {
-              dynamic: false,
-              code: '201',
-              mediaTypes: ['application/xml'],
-            },
+            dynamic: false,
+            code: '201',
+            mediaTypes: ['application/xml'],
           },
         })(logger);
 
@@ -91,37 +71,27 @@ describe('http mocker', () => {
     });
 
     describe('given enforced example key', () => {
-      test('should return application/json, 200 response', async () => {
+      test('should return application/json, 200 response', () => {
         const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
-            checkSecurity: true,
-            validateRequest: true,
-            validateResponse: true,
-            mock: {
-              dynamic: false,
-              exampleKey: 'bear',
-            },
+            dynamic: false,
+            exampleKey: 'bear',
           },
         })(logger);
 
         assertRight(response, result => expect(result).toMatchSnapshot());
       });
 
-      test('and mediaType should return 200 response', async () => {
+      test('and mediaType should return 200 response', () => {
         const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
-            checkSecurity: true,
-            validateRequest: true,
-            validateResponse: true,
-            mock: {
-              dynamic: false,
-              exampleKey: 'second',
-              mediaTypes: ['application/xml'],
-            },
+            dynamic: false,
+            exampleKey: 'second',
+            mediaTypes: ['application/xml'],
           },
         })(logger);
 
@@ -130,18 +100,13 @@ describe('http mocker', () => {
     });
 
     describe('given enforced status code', () => {
-      test('should return the first matching example of application/json', async () => {
+      test('should return the first matching example of application/json', () => {
         const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
-            checkSecurity: true,
-            validateRequest: true,
-            validateResponse: true,
-            mock: {
-              dynamic: false,
-              code: '201',
-            },
+            dynamic: false,
+            code: '201',
           },
         })(logger);
 
@@ -153,32 +118,22 @@ describe('http mocker', () => {
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
-            checkSecurity: true,
-            validateRequest: true,
-            validateResponse: true,
-            mock: {
-              dynamic: false,
-              code: '205',
-            },
+            dynamic: false,
+            code: '205',
           },
         })(logger);
 
         assertLeft(rejection, e => expect(e).toHaveProperty('message', 'The server cannot find the requested content'));
       });
 
-      test('and example key should return application/json example', async () => {
+      test('and example key should return application/json example', () => {
         const response = mock({
           resource: httpOperations[0],
           input: httpRequests[0],
           config: {
-            checkSecurity: true,
-            validateRequest: true,
-            validateResponse: true,
-            mock: {
-              dynamic: false,
-              code: '201',
-              exampleKey: 'second',
-            },
+            dynamic: false,
+            code: '201',
+            exampleKey: 'second',
           },
         })(logger);
 
@@ -186,10 +141,11 @@ describe('http mocker', () => {
       });
 
       describe('HttpOperation contains example', () => {
-        test('return lowest 2xx code and match response example to media type accepted by request', async () => {
+        test('return lowest 2xx code and match response example to media type accepted by request', () => {
           const response = mock({
             resource: httpOperations[0],
             input: httpRequests[0],
+            config: { dynamic: false },
           })(logger);
 
           assertRight(response, result => {
@@ -204,6 +160,7 @@ describe('http mocker', () => {
 
         test('return lowest 2xx response and the first example matching the media type', () => {
           const response = mock({
+            config: { dynamic: false },
             resource: httpOperations[1],
             input: Object.assign({}, httpRequests[0], {
               data: Object.assign({}, httpRequests[0].data, {
@@ -221,6 +178,7 @@ describe('http mocker', () => {
         describe('the media type requested does not match the example', () => {
           test('returns an error', () => {
             const mockResult = mock({
+              config: { dynamic: false },
               resource: httpOperations[0],
               input: Object.assign({}, httpRequests[0], {
                 data: Object.assign({}, httpRequests[0].data, {
@@ -235,7 +193,7 @@ describe('http mocker', () => {
       });
 
       describe('HTTPOperation contain no examples', () => {
-        test('return dynamic response', async () => {
+        test('return dynamic response', () => {
           if (!httpOperations[1].responses[0].contents![0].schema) {
             throw new Error('Missing test');
           }
@@ -246,14 +204,7 @@ describe('http mocker', () => {
           const response = mock({
             resource: httpOperations[1],
             input: httpRequests[0],
-            config: {
-              checkSecurity: true,
-              validateRequest: true,
-              validateResponse: true,
-              mock: {
-                dynamic: true,
-              },
-            },
+            config: { dynamic: true },
           })(logger);
 
           assertRight(response, result => {
@@ -270,8 +221,9 @@ describe('http mocker', () => {
     });
 
     describe('request is invalid', () => {
-      test('returns 422 and static error response', async () => {
+      test('returns 422 and static error response', () => {
         const response = mock({
+          config: { dynamic: false },
           resource: httpOperations[0],
           input: httpRequests[1],
         })(logger);
@@ -289,6 +241,7 @@ describe('http mocker', () => {
       }
 
       const response = mock({
+        config: { dynamic: false },
         resource: httpOperations[1],
         input: httpRequests[1],
       })(logger);
