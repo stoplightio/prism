@@ -5,6 +5,7 @@ import { generate } from '../JSONSchema';
 describe('JSONSchema generator', () => {
   const ipRegExp = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
   const emailRegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const uuidRegExp = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/;
 
   describe('generate()', () => {
     describe('when used with a schema with a simple string property', () => {
@@ -42,6 +43,30 @@ describe('JSONSchema generator', () => {
 
         expect(ipRegExp.test(email)).toBeFalsy();
         expect(emailRegExp.test(email)).toBeTruthy();
+      });
+    });
+
+    describe('when used with a schema with a string and uuid as format', () => {
+      const schema: JSONSchema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+        },
+        required: ['id'],
+      };
+
+      it('will have a string property matching uuid regex', () => {
+        const instance = generate(schema);
+        const id = get(instance, 'id');
+
+        expect(uuidRegExp.test(id)).toBeTruthy();
+      });
+
+      it('will not be presented in the form of UUID as a URN', () => {
+        const instance = generate(schema);
+        const id = get(instance, 'id');
+
+        expect(uuidRegExp.test(id)).not.toContainEqual('urn:uuid');
       });
     });
 

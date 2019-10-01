@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## Fixed
 
 - Killing sub-process only if Prism is running in multi-process mode [#645](https://github.com/stoplightio/prism/pull/645)
+- UUIDs are never generated as URNs [#661](https://github.com/stoplightio/prism/pull/661)
 
 # 3.1.1 (2019-09-23)
 
