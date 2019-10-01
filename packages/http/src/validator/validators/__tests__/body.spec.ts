@@ -74,5 +74,39 @@ describe('HttpBodyValidator', () => {
         ).toEqual([]);
       });
     });
+
+    describe('body is form-urlencoded with deep object style and is not compatible with schema', () => {
+      it('returns validation errors', () => {
+        expect(
+          httpBodyValidator.validate(
+            encodeURI('key[a][ab]=str'),
+            [
+              {
+                mediaType: 'application/x-www-form-urlencoded',
+                encodings: [{ property: 'key', style: HttpParamStyles.DeepObject }],
+                schema: {
+                  type: 'object',
+                  properties: {
+                    key: {
+                      type: 'object',
+                      properties: {
+                        a: {
+                          type: 'object',
+                          properties: { aa: { type: 'string' } },
+                          required: ['aa'],
+                        },
+                      },
+                      required: ['a'],
+                    },
+                  },
+                  required: ['key'],
+                },
+              },
+            ],
+            'application/x-www-form-urlencoded',
+          ),
+        ).toMatchSnapshot();
+      });
+    });
   });
 });

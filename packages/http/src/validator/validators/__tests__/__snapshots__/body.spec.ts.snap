@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`HttpBodyValidator validate() body is form-urlencoded with deep object style and is not compatible with schema returns validation errors 1`] = `
+Array [
+  Object {
+    "code": "required",
+    "message": "should have required property 'aa'",
+    "path": Array [
+      "body",
+      "key",
+      "a",
+    ],
+    "severity": 0,
+  },
+]
+`;
+
 exports[`HttpBodyValidator validate() body schema is provided return validation errors 1`] = `
 Array [
   Object {
