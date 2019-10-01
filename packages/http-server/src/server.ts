@@ -1,5 +1,5 @@
 import { createLogger } from '@stoplight/prism-core';
-import { createInstance, IHttpConfig, PrismHttpInstance, ProblemJsonError } from '@stoplight/prism-http';
+import { createInstance, IHttpConfig, ProblemJsonError } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
@@ -49,13 +49,86 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
   const prism = createInstance(mergedConfig, components);
 
+  const replyHandler: fastify.RequestHandler<IncomingMessage, ServerResponse> = async (request, reply) => {
+    const {
+      req: { method, url },
+      body,
+      headers,
+      query,
+    } = request;
+
+    const input = {
+      method: (method ? method.toLowerCase() : 'get') as HttpMethod,
+      url: {
+        path: (url || '/').split('?')[0],
+        query,
+        baseUrl: query.__server,
+      },
+      headers,
+      body,
+    };
+
+    request.log.info({ input }, 'Request received');
+    try {
+      const operationSpecificConfig = getHttpConfigFromRequest(input);
+      const mockConfig = { ...opts.config.mock, ...operationSpecificConfig };
+
+      const response = await prism.request(input, operations, {
+        ...opts.config,
+        mock: mockConfig,
+      });
+
+      const { output } = response;
+
+      if (output) {
+        reply.code(output.statusCode);
+
+        if (output.headers) {
+          reply.headers(output.headers);
+        }
+
+        response.validations.output.forEach(validation => {
+          if (validation.severity === DiagnosticSeverity.Error) {
+            request.log.error(validation.message);
+          } else if (validation.severity === DiagnosticSeverity.Warning) {
+            request.log.warn(validation.message);
+          } else {
+            request.log.info(validation.message);
+          }
+        });
+
+        reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
+      } else {
+        throw new Error('Unable to find any decent response for the current request.');
+      }
+    } catch (e) {
+      if (!reply.sent) {
+        const status = 'status' in e ? e.status : 500;
+        reply
+          .type('application/problem+json')
+          .serializer(JSON.stringify)
+          .code(status);
+
+        if (e.additional && e.additional.headers) {
+          reply.headers(e.additional.headers);
+        }
+
+        reply.send(ProblemJsonError.fromPlainError(e));
+      } else {
+        reply.res.end();
+      }
+
+      request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
+    }
+  };
+
   opts.cors
     ? server.route({
         url: '*',
         method: ['GET', 'DELETE', 'HEAD', 'PATCH', 'POST', 'PUT'],
-        handler: replyHandler(prism),
+        handler: replyHandler,
       })
-    : server.all('*', replyHandler(prism));
+    : server.all('*', replyHandler);
 
   const prismServer: IPrismHttpServer = {
     get prism() {
@@ -68,81 +141,5 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
     listen: (port: number, ...args: any[]) => server.listen(port, ...args),
   };
-
-  function replyHandler(prismInstance: PrismHttpInstance): fastify.RequestHandler<IncomingMessage, ServerResponse> {
-    return async (request, reply) => {
-      const {
-        req: { method, url },
-        body,
-        headers,
-        query,
-      } = request;
-
-      const input = {
-        method: (method ? method.toLowerCase() : 'get') as HttpMethod,
-        url: {
-          path: (url || '/').split('?')[0],
-          query,
-          baseUrl: query.__server,
-        },
-        headers,
-        body,
-      };
-
-      request.log.info({ input }, 'Request received');
-      try {
-        const operationSpecificConfig = getHttpConfigFromRequest(input);
-        const mockConfig = Object.assign({}, opts.config.mock, operationSpecificConfig);
-
-        const response = await prismInstance.request(input, operations, {
-          ...opts.config,
-          mock: mockConfig,
-        });
-
-        const { output } = response;
-
-        if (output) {
-          reply.code(output.statusCode);
-
-          if (output.headers) {
-            reply.headers(output.headers);
-          }
-
-          response.validations.output.forEach(validation => {
-            if (validation.severity === DiagnosticSeverity.Error) {
-              request.log.error(validation.message);
-            } else if (validation.severity === DiagnosticSeverity.Warning) {
-              request.log.warn(validation.message);
-            } else {
-              request.log.info(validation.message);
-            }
-          });
-
-          reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
-        } else {
-          throw new Error('Unable to find any decent response for the current request.');
-        }
-      } catch (e) {
-        if (!reply.sent) {
-          const status = 'status' in e ? e.status : 500;
-          reply
-            .type('application/problem+json')
-            .serializer(JSON.stringify)
-            .code(status);
-
-          if (e.additional && e.additional.headers) {
-            reply.headers(e.additional.headers);
-          }
-
-          reply.send(ProblemJsonError.fromPlainError(e));
-        } else {
-          reply.res.end();
-        }
-
-        request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
-      }
-    };
-  }
-
   return prismServer;
 };

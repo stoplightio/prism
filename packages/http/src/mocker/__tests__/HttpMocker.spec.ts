@@ -1,12 +1,11 @@
-import { createLogger } from '@stoplight/prism-core';
+import { createLogger, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample } from '@stoplight/types';
-import { right } from 'fp-ts/lib/Either';
-import { reader } from 'fp-ts/lib/Reader';
+import { right } from 'fp-ts/lib/ReaderEither';
 import { flatMap } from 'lodash';
 import { assertRight } from '../../__tests__/utils';
 import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
-import { JSONSchema } from '../../types';
+import { IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
 
 const logger = createLogger('TEST', { enabled: false });
@@ -58,10 +57,8 @@ describe('mocker', () => {
       ],
     };
 
-    const mockInput = {
-      validations: {
-        input: [],
-      },
+    const mockInput: IPrismInput<IHttpRequest> = {
+      validations: [],
       data: {
         method: 'get' as const,
         url: {
@@ -75,9 +72,10 @@ describe('mocker', () => {
       it('returns an empty body when negotiator did not resolve to either example nor schema', () => {
         jest
           .spyOn(helpers, 'negotiateOptionsForValidRequest')
-          .mockReturnValue(reader.of(right({ code: '202', mediaType: 'test', headers: [] })));
+          .mockReturnValue(right({ code: '202', mediaType: 'test', headers: [] }));
 
         const mockResult = mock({
+          config: { dynamic: false },
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -87,17 +85,16 @@ describe('mocker', () => {
 
       it('returns static example', () => {
         jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
-          reader.of(
-            right({
-              code: '202',
-              mediaType: 'test',
-              bodyExample: mockResource.responses![0].contents![0].examples![0],
-              headers: [],
-            }),
-          ),
+          right({
+            code: '202',
+            mediaType: 'test',
+            bodyExample: mockResource.responses![0].contents![0].examples![0],
+            headers: [],
+          }),
         );
 
         const mockResult = mock({
+          config: { dynamic: false },
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -107,17 +104,16 @@ describe('mocker', () => {
 
       it('returns dynamic example', () => {
         jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
-          reader.of(
-            right({
-              code: '202',
-              mediaType: 'test',
-              schema: mockResource.responses![0].contents![0].schema,
-              headers: [],
-            }),
-          ),
+          right({
+            code: '202',
+            mediaType: 'test',
+            schema: mockResource.responses![0].contents![0].schema,
+            headers: [],
+          }),
         );
 
         const response = mock({
+          config: { dynamic: true },
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -134,19 +130,18 @@ describe('mocker', () => {
     describe('with invalid negotiator response', () => {
       it('returns static example', () => {
         jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockReturnValue(
-          reader.of(
-            right({
-              code: '202',
-              mediaType: 'test',
-              bodyExample: mockResource.responses![0].contents![0].examples![0],
-              headers: [],
-            }),
-          ),
+          right({
+            code: '202',
+            mediaType: 'test',
+            bodyExample: mockResource.responses![0].contents![0].examples![0],
+            headers: [],
+          }),
         );
 
         const mockResult = mock({
+          config: { dynamic: false },
           resource: mockResource,
-          input: Object.assign({}, mockInput, { validations: { input: [{}] } }),
+          input: Object.assign({}, mockInput, { validations: [{}] }),
         })(logger);
 
         assertRight(mockResult, result => expect(result).toMatchSnapshot());
@@ -156,20 +151,19 @@ describe('mocker', () => {
     describe('when example is of type INodeExternalExample', () => {
       it('generates a dynamic example', () => {
         jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
-          reader.of(
-            right({
-              code: '202',
-              mediaType: 'test',
-              bodyExample: mockResource.responses![0].contents![0].examples![1],
-              headers: [],
-              schema: { type: 'string' },
-            }),
-          ),
+          right({
+            code: '202',
+            mediaType: 'test',
+            bodyExample: mockResource.responses![0].contents![0].examples![1],
+            headers: [],
+            schema: { type: 'string' },
+          }),
         );
 
         jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue('example value chelsea');
 
         const mockResult = mock({
+          config: { dynamic: true },
           resource: mockResource,
           input: mockInput,
         })(logger);
@@ -192,16 +186,11 @@ describe('mocker', () => {
             jest.restoreAllMocks();
           });
 
-          it('the dynamic response should not be an example one', async () => {
-            const response = await mock({
+          it('the dynamic response should not be an example one', () => {
+            const response = mock({
               input: mockInput,
               resource: mockResource,
-              config: {
-                mock: { dynamic: true },
-                validateRequest: true,
-                validateResponse: true,
-                checkSecurity: true,
-              },
+              config: { dynamic: true },
             })(logger);
 
             expect(JSONSchemaGenerator.generate).toHaveBeenCalled();
@@ -229,12 +218,7 @@ describe('mocker', () => {
             const response = mock({
               input: mockInput,
               resource: mockResource,
-              config: {
-                mock: { dynamic: false, exampleKey: 'test key' },
-                validateRequest: true,
-                validateResponse: true,
-                checkSecurity: true,
-              },
+              config: { dynamic: true, exampleKey: 'test key' },
             })(logger);
 
             it('should return the selected example', () => {
@@ -252,12 +236,7 @@ describe('mocker', () => {
             const response = mock({
               input: mockInput,
               resource: mockResource,
-              config: {
-                mock: { dynamic: false },
-                validateRequest: true,
-                validateResponse: true,
-                checkSecurity: true,
-              },
+              config: { dynamic: false },
             })(logger);
 
             it('returns the first example', () => {
@@ -298,12 +277,7 @@ describe('mocker', () => {
             return mock({
               input: mockInput,
               resource: createOperationWithSchema(schema),
-              config: {
-                mock: { dynamic: false },
-                validateRequest: true,
-                validateResponse: true,
-                checkSecurity: true,
-              },
+              config: { dynamic: false },
             })(logger);
           }
 
