@@ -20,15 +20,8 @@ jsf.option({
   maxLength: 100,
 });
 
-// TODO: adjust if https://github.com/json-schema-faker/json-schema-faker/pull/526 is resolved
-const uuidNotAsURN = (fake: string) => {
-  return fake.replace('urn:uuid:', '');
-};
-
 export function generate(source: JSONSchema): unknown {
-  const fake = jsf.generate(cloneDeep(source));
-
-  return source.type === 'string' && source.format === 'uuid' ? uuidNotAsURN(fake) : fake;
+  return jsf.generate(cloneDeep(source));
 }
 
 export function generateStatic(source: JSONSchema): unknown {

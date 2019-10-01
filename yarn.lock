@@ -4986,10 +4986,10 @@ json-pointer@0.6.0, json-pointer@^0.6.0:
   dependencies:
     foreach "^2.0.4"
 
-json-schema-faker@0.5.0-rc20:
-  version "0.5.0-rc20"
-  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rc20.tgz#7e1c588185a16da8b7797409456467190818c03e"
-  integrity sha512-pmGqRvkU6xtJqJN0Py9yYtWaWfsb2DXvCXHwouxLiD18XNe3Ah96atf39kia1eaHGX9fPlinSRgsxZd+k2LVpw==
+json-schema-faker@0.5.0-rc21:
+  version "0.5.0-rc21"
+  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rc21.tgz#c6d932dd05106a4110138550880ed2169f51dd48"
+  integrity sha512-D4531ssZlE9ynsUIftqad2P8oIrM+m0DXff7Gas4tU8l9jC+fJ1ceUL21xTfF+gjpOqNoNXpvxpnXcxfq9r+kw==
   dependencies:
     json-schema-ref-parser "^6.1.0"
     jsonpath-plus "^1.0.0"
