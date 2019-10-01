@@ -20,6 +20,32 @@ function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: st
   );
 }
 
+function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, target: unknown) {
+  return pipe(
+    mediaType,
+    Option.fromPredicate(mt => !!!typeIs.is(mt, ['application/x-www-form-urlencoded'])),
+    Option.chain(() => Option.some(validateBody(schema, target))),
+  );
+}
+
+function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string) {
+  const encodings = get(content, 'encodings', []);
+  const encodedUriParams = splitUriParams(target);
+
+  return pipe(
+    Option.fromEither(
+      Either.swap(
+        pipe(
+          validateAgainstReservedCharacters(encodedUriParams, encodings),
+          Either.map(decodeUriEntities),
+          Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
+        ),
+      ),
+    ),
+    Option.chain(() => Option.some(validateBody(schema, target))),
+  );
+}
+
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
   constructor(private prefix: string) {}
 
@@ -38,28 +64,10 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
 
     return pipe(
       mediaTypeWithContentAndSchema,
-      Option.chain(data =>
+      Option.chain(({ content, mediaType: mt, schema }) =>
         pipe(
-          data.mediaType,
-          Option.fromPredicate(mt => !!!typeIs.is(mt, ['application/x-www-form-urlencoded'])),
-          Option.chain(() => Option.some(validateBody(data.schema, target))),
-          Option.alt(() => {
-            const encodings = get(data.content, 'encodings', []);
-            const encodedUriParams = splitUriParams(target);
-
-            return pipe(
-              Option.fromEither(
-                Either.swap(
-                  pipe(
-                    validateAgainstReservedCharacters(encodedUriParams, encodings),
-                    Either.map(decodeUriEntities),
-                    Either.map(decodedUriEntities => deserializeFormBody(data.schema, encodings, decodedUriEntities)),
-                  ),
-                ),
-              ),
-              Option.chain(() => Option.some(validateBody(data.schema, target))),
-            );
-          }),
+          validateBodyIfNotFormEncoded(mt, content, target),
+          Option.alt(() => deserializeAndValidate(content, schema, target)),
           Option.map(diagnostics => applyPrefix(this.prefix, diagnostics)),
         ),
       ),
