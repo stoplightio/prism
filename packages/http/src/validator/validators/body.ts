@@ -4,60 +4,72 @@ import * as Array from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { get, partial } from 'lodash';
+import { get } from 'lodash';
 import * as typeIs from 'type-is';
-
-import { fromEquals } from 'fp-ts/lib/Eq';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 
+function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: string) {
+  return pipe(
+    specs,
+    Array.findFirst(spec => spec.mediaType === mediaType),
+    Option.alt(() => Array.head(specs)),
+    Option.map(content => ({ mediaType, content })),
+  );
+}
+
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
   constructor(private prefix: string) {}
 
   public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
-    const content = getContentByMediaTypeOrFirst(specs, mediaType);
-    const schema = get(content, 'schema');
+    const mediaTypeWithContentAndSchema = pipe(
+      Option.fromNullable(mediaType),
+      Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
+      Option.alt(() => Option.some({ content: specs[0] || {}, mediaType: 'piedini' })),
+      Option.chain(({ mediaType: mt, content }) =>
+        pipe(
+          Option.fromNullable(content.schema),
+          Option.map(schema => ({ schema, mediaType: mt, content })),
+        ),
+      ),
+    );
 
     return pipe(
-      Either.fromNullable([])(schema),
-      Either.map(() => target),
-      Either.chain(partial(maybeValidateFormBody, schema!, content, Option.fromNullable(mediaType))),
-      Either.chain(partial(validateBody, schema!)),
-      Either.fold(partial(applyPrefix, this.prefix), () => []),
+      mediaTypeWithContentAndSchema,
+      Option.chain(data =>
+        pipe(
+          data.mediaType,
+          Option.fromPredicate(mt => !!!typeIs.is(mt, ['application/x-www-form-urlencoded'])),
+          Option.chain(() => Option.some(validateBody(data.schema, target))),
+          Option.alt(() => {
+            const encodings = get(data.content, 'encodings', []);
+            const encodedUriParams = splitUriParams(target);
+
+            return pipe(
+              Option.fromEither(
+                Either.swap(
+                  pipe(
+                    validateAgainstReservedCharacters(encodedUriParams, encodings),
+                    Either.map(decodeUriEntities),
+                    Either.map(decodedUriEntities => deserializeFormBody(data.schema, encodings, decodedUriEntities)),
+                  ),
+                ),
+              ),
+              Option.chain(() => Option.some(validateBody(data.schema, target))),
+            );
+          }),
+          Option.map(diagnostics => applyPrefix(this.prefix, diagnostics)),
+        ),
+      ),
+      Option.getOrElse<IPrismDiagnostic[]>(() => []),
     );
   }
 }
 
-function validateBody(schema: JSONSchema, target: any): Either.Either<IPrismDiagnostic[], any> {
-  const diagnostics = validateAgainstSchema(target, schema);
-  return diagnostics.length ? Either.left(diagnostics) : Either.right(target);
-}
-
-function maybeValidateFormBody(
-  schema: JSONSchema,
-  content: IMediaTypeContent,
-  mediaType: Option.Option<string>,
-  target: any,
-): Either.Either<IPrismDiagnostic[], any> {
-  if (
-    Option.getEq(fromEquals((a: string, b: string) => typeIs.is(a, b) as boolean)).equals(
-      mediaType,
-      Option.some('application/x-www-form-urlencoded'),
-    )
-  ) {
-    const encodings = get(content, 'encodings', []);
-    const encodedUriParams = splitUriParams(target);
-
-    return pipe(
-      validateAgainstReservedCharacters(encodedUriParams, encodings),
-      Either.map(decodeUriEntities),
-      Either.map(partial(deserializeFormBody, schema, encodings)),
-    );
-  }
-
-  return Either.right(target);
+function validateBody(schema: JSONSchema, target: any): IPrismDiagnostic[] {
+  return validateAgainstSchema(target, schema);
 }
 
 function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDiagnostic[] {
@@ -114,14 +126,6 @@ function deserializeFormBody(
 
       return deserialized;
     }),
-  );
-}
-
-function getContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType?: string) {
-  return pipe(
-    specs,
-    Array.findFirst(spec => spec.mediaType === mediaType),
-    Option.getOrElse(() => specs[0]),
   );
 }
 
