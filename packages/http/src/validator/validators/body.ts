@@ -11,104 +11,6 @@ import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 
-function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: string) {
-  return pipe(
-    specs,
-    Array.findFirst(spec => spec.mediaType === mediaType),
-    Option.alt(() => Array.head(specs)),
-    Option.map(content => ({ mediaType, content })),
-  );
-}
-
-function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, target: unknown) {
-  return pipe(
-    mediaType,
-    Option.fromPredicate(mt => !!!typeIs.is(mt, ['application/x-www-form-urlencoded'])),
-    Option.chain(() => Option.some(validateBody(schema, target))),
-  );
-}
-
-function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string) {
-  const encodings = get(content, 'encodings', []);
-  const encodedUriParams = splitUriParams(target);
-
-  return pipe(
-    Option.fromEither(
-      Either.swap(
-        pipe(
-          validateAgainstReservedCharacters(encodedUriParams, encodings),
-          Either.map(decodeUriEntities),
-          Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-        ),
-      ),
-    ),
-    Option.chain(() => Option.some(validateBody(schema, target))),
-  );
-}
-
-export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
-  constructor(private prefix: string) {}
-
-  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
-    const mediaTypeWithContentAndSchema = pipe(
-      Option.fromNullable(mediaType),
-      Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
-      Option.alt(() => Option.some({ content: specs[0] || {}, mediaType: 'piedini' })),
-      Option.chain(({ mediaType: mt, content }) =>
-        pipe(
-          Option.fromNullable(content.schema),
-          Option.map(schema => ({ schema, mediaType: mt, content })),
-        ),
-      ),
-    );
-
-    return pipe(
-      mediaTypeWithContentAndSchema,
-      Option.chain(({ content, mediaType: mt, schema }) =>
-        pipe(
-          validateBodyIfNotFormEncoded(mt, content, target),
-          Option.alt(() => deserializeAndValidate(content, schema, target)),
-          Option.map(diagnostics => applyPrefix(this.prefix, diagnostics)),
-        ),
-      ),
-      Option.getOrElse<IPrismDiagnostic[]>(() => []),
-    );
-  }
-}
-
-function validateBody(schema: JSONSchema, target: any): IPrismDiagnostic[] {
-  return validateAgainstSchema(target, schema);
-}
-
-function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDiagnostic[] {
-  return diagnostics.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }));
-}
-
-function validateAgainstReservedCharacters(
-  encodedUriParams: Dictionary<string, string>,
-  encodings: IHttpEncoding[],
-): Either.Either<IPrismDiagnostic[], Dictionary<string, string>> {
-  return pipe(
-    encodings,
-    Array.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
-      const allowReserved = get(encoding, 'allowReserved', false);
-      const property = encoding.property;
-      const value = encodedUriParams[property];
-
-      if (!allowReserved && typeof value === 'string' && value.match(/[\/?#\[\]@!$&'()*+,;=]/)) {
-        diagnostics.push({
-          path: [property],
-          message: 'Reserved characters used in request body',
-          severity: DiagnosticSeverity.Error,
-        });
-      }
-
-      return diagnostics;
-    }),
-    diagnostics => (diagnostics.length ? Either.left(diagnostics) : Either.right(encodedUriParams)),
-  );
-}
-
 function deserializeFormBody(
   schema: JSONSchema,
   encodings: IHttpEncoding[],
@@ -150,4 +52,96 @@ function decodeUriEntities(target: Dictionary<string, string>) {
     result[decodeURIComponent(k)] = decodeURIComponent(v);
     return result;
   }, {});
+}
+
+function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: string) {
+  return pipe(
+    specs,
+    Array.findFirst(spec => spec.mediaType === mediaType),
+    Option.alt(() => Array.head(specs)),
+    Option.map(content => ({ mediaType, content })),
+  );
+}
+
+function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, target: unknown) {
+  return pipe(
+    mediaType,
+    Option.fromPredicate(mt => !!!typeIs.is(mt, ['application/x-www-form-urlencoded'])),
+    Option.chain(() => Option.some(validateBody(schema, target))),
+  );
+}
+
+function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string) {
+  const encodings = get(content, 'encodings', []);
+  const encodedUriParams = splitUriParams(target);
+
+  return pipe(
+    validateAgainstReservedCharacters(encodedUriParams, encodings),
+    Either.map(decodeUriEntities),
+    Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
+    Either.fold(e => Option.some(e), deserialised => Option.some(validateBody(schema, deserialised))),
+  );
+}
+
+export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
+  constructor(private prefix: string) {}
+
+  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
+    const mediaTypeWithContentAndSchema = pipe(
+      Option.fromNullable(mediaType),
+      Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
+      Option.alt(() => Option.some({ content: specs[0] || {}, mediaType: 'random' })),
+      Option.chain(({ mediaType: mt, content }) =>
+        pipe(
+          Option.fromNullable(content.schema),
+          Option.map(schema => ({ schema, mediaType: mt, content })),
+        ),
+      ),
+    );
+
+    return pipe(
+      mediaTypeWithContentAndSchema,
+      Option.chain(({ content, mediaType: mt, schema }) =>
+        pipe(
+          validateBodyIfNotFormEncoded(mt, schema, target),
+          Option.alt(() => deserializeAndValidate(content, schema, target)),
+          Option.map(diagnostics => applyPrefix(this.prefix, diagnostics)),
+        ),
+      ),
+      Option.getOrElse<IPrismDiagnostic[]>(() => []),
+    );
+  }
+}
+
+function validateBody(schema: JSONSchema, target: any): IPrismDiagnostic[] {
+  return validateAgainstSchema(target, schema);
+}
+
+function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDiagnostic[] {
+  return diagnostics.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }));
+}
+
+function validateAgainstReservedCharacters(
+  encodedUriParams: Dictionary<string, string>,
+  encodings: IHttpEncoding[],
+): Either.Either<IPrismDiagnostic[], Dictionary<string, string>> {
+  return pipe(
+    encodings,
+    Array.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
+      const allowReserved = get(encoding, 'allowReserved', false);
+      const property = encoding.property;
+      const value = encodedUriParams[property];
+
+      if (!allowReserved && typeof value === 'string' && value.match(/[\/?#\[\]@!$&'()*+,;=]/)) {
+        diagnostics.push({
+          path: [property],
+          message: 'Reserved characters used in request body',
+          severity: DiagnosticSeverity.Error,
+        });
+      }
+
+      return diagnostics;
+    }),
+    diagnostics => (diagnostics.length ? Either.left(diagnostics) : Either.right(encodedUriParams)),
+  );
 }
