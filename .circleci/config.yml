@@ -24,15 +24,6 @@ jobs:
     executor: docker-node
     steps:
       - checkout
-      - run:
-          name: cc-install
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - run:
-          name: cc-before
-          command: |
-            ./cc-test-reporter before-build
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
@@ -52,10 +43,6 @@ jobs:
           name: Run build
           command: yarn build
       - early_return_for_forked_pull_requests
-      - run:
-          name: cc-after
-          command: |
-            ./cc-test-reporter after-build --coverage-input-type lcov --exit-code $?
   harness:
     parameters:
       executor:
