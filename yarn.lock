@@ -3187,9 +3187,9 @@ fastify-plugin@^1.5.0:
     semver "^6.0.0"
 
 fastify@^2.7.1:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-2.8.0.tgz#3c5945d4ee62c058ebeca40952199cae34c738fd"
-  integrity sha512-+HXe9xZzbj79680hlehEs0B1Z3e5RQT6CtPthseqgRJy2i7Wlro8EEdM7u7ewwL9XREjLWssCPlJiZ3G+t4qsw==
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-2.9.0.tgz#34dc51b7df174164fc69d386fc4d5da0f17603f0"
+  integrity sha512-BFItHh22BaKAwbjj5w/RE+TBXdJgslJeTMJq00nK+gRhNO4IPcDIcYxTQY5DvpByA2jrfEFNc8SyxUDZkseS/Q==
   dependencies:
     abstract-logging "^1.0.0"
     ajv "^6.10.2"
@@ -3204,7 +3204,7 @@ fastify@^2.7.1:
     readable-stream "^3.1.1"
     rfdc "^1.1.2"
     secure-json-parse "^1.0.0"
-    tiny-lru "^6.0.1"
+    tiny-lru "^7.0.0"
 
 fastq@^1.6.0:
   version "1.6.0"
@@ -7852,10 +7852,10 @@ through@2, "through@>=2.2.7 <3", through@^2.3.4, through@^2.3.6:
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
 
-tiny-lru@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/tiny-lru/-/tiny-lru-6.0.1.tgz#558bd6b7232b8b9dfa482147539676fdd75a3a07"
-  integrity sha512-k/vdHz+bFALjmik0URLWBYNuO0hCABTL5dullbZBXvFDdlL8RrKaeLR6YuHfX+6ZXOLkHw+HpNLCUA7DtLMQmg==
+tiny-lru@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/tiny-lru/-/tiny-lru-7.0.0.tgz#3a8bafdbd051d3c6ca2f38fd7f0df9ee5a17c5f6"
+  integrity sha512-9/K3P8iGWe7LAbjGit0beF+AXmUvbdxsFt3/wQtuGgIwPf6L1wE3+xgeUFtJgTz/3n13YO6dcpcQbRA5kLvfyw==
 
 tmp@^0.0.33:
   version "0.0.33"

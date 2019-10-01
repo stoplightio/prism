@@ -28,26 +28,18 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpC
   input,
   config,
 }) => {
-  const payloadGenerator: PayloadGenerator =
-    config && typeof config.mock !== 'boolean' && config.mock.dynamic ? generate : generateStatic;
+  const payloadGenerator: PayloadGenerator = config.dynamic ? generate : generateStatic;
 
   return pipe(
     withLogger(logger => {
       // setting default values
       const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
-      config = config || {
-        mock: { dynamic: false },
-        validateRequest: true,
-        validateResponse: true,
-        checkSecurity: true,
-      };
-
-      if (!config.mock.mediaTypes && acceptMediaType) {
+      if (!config.mediaTypes && acceptMediaType) {
         logger.info(`Request contains an accept header: ${acceptMediaType}`);
-        config.mock.mediaTypes = acceptMediaType.split(',');
+        config.mediaTypes = acceptMediaType.split(',');
       }
 
-      return config.mock;
+      return config;
     }),
     chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
     chain(result => assembleResponse(result, payloadGenerator)),
@@ -55,7 +47,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpC
 };
 
 function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
-  const securityValidation = input.validations.input.find(valiation => valiation.code === 401);
+  const securityValidation = input.validations.find(validation => validation.code === 401);
 
   return pipe(
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
@@ -78,7 +70,7 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
                   UNPROCESSABLE_ENTITY,
                   'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
                   {
-                    validation: input.validations.input.map(detail => ({
+                    validation: input.validations.map(detail => ({
                       location: detail.path,
                       severity: DiagnosticSeverity[detail.severity],
                       code: detail.code,
@@ -97,7 +89,7 @@ function negotiateResponse(
   input: IPrismInput<IHttpRequest>,
   resource: IHttpOperation,
 ) {
-  if (input.validations.input.length > 0) {
+  if (input.validations.length > 0) {
     return handleInputValidation(input, resource);
   } else {
     return pipe(

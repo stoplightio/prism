@@ -288,22 +288,18 @@ export const httpInputs: IHttpRequest[] = [
 
 export const httpRequests: Array<IPrismInput<IHttpRequest>> = [
   {
-    validations: {
-      input: [],
-    },
+    validations: [],
     data: httpInputs[0],
   },
   {
-    validations: {
-      input: [
-        {
-          path: ['/'],
-          code: 'x',
-          severity: DiagnosticSeverity.Error,
-          message: 'message',
-        },
-      ],
-    },
+    validations: [
+      {
+        path: ['/'],
+        code: 'x',
+        severity: DiagnosticSeverity.Error,
+        message: 'message',
+      },
+    ],
     data: httpInputs[1],
   },
 ];

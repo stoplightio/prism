@@ -47,21 +47,14 @@ describe('User Http Client', () => {
         beforeAll(() => client.get('/pet'));
 
         test('shall call the mocker with the default options', () =>
-          expect(mock.default).toHaveBeenCalledWith({ input: expect.anything(), resource: expect.anything(), config }));
-
-        test('shall ultimately call the main request method with the current HTTP Method', () =>
-          expect(client.request).toHaveBeenCalledWith('/pet', { method: 'get' }, undefined));
-      });
-
-      describe('when overriding a config parameter on the request level', () => {
-        beforeAll(() => client.get('/pet', { checkSecurity: false }));
-
-        test('shall call the mocker with the modified options', () =>
           expect(mock.default).toHaveBeenCalledWith({
             input: expect.anything(),
             resource: expect.anything(),
-            config: { ...config, checkSecurity: false },
+            config: config.mock,
           }));
+
+        test('shall ultimately call the main request method with the current HTTP Method', () =>
+          expect(client.request).toHaveBeenCalledWith('/pet', { method: 'get' }, undefined));
       });
 
       describe('when calling a method with overridden url', () => {
