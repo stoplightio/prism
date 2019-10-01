@@ -67,7 +67,7 @@ function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, tar
   return pipe(
     mediaType,
     Option.fromPredicate(mt => !typeIs.is(mt, ['application/x-www-form-urlencoded'])),
-    Option.map(() => validateBody(schema, target)),
+    Option.map(() => validateAgainstSchema(target, schema)),
   );
 }
 
@@ -79,7 +79,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     validateAgainstReservedCharacters(encodedUriParams, encodings),
     Either.map(decodeUriEntities),
     Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-    Either.fold(e => Option.some(e), deserialised => Option.some(validateBody(schema, deserialised))),
+    Either.fold(e => Option.some(e), deserialised => Option.some(validateAgainstSchema(deserialised, schema))),
   );
 }
 
@@ -111,10 +111,6 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
       Option.getOrElse<IPrismDiagnostic[]>(() => []),
     );
   }
-}
-
-function validateBody(schema: JSONSchema, target: any): IPrismDiagnostic[] {
-  return validateAgainstSchema(target, schema);
 }
 
 function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDiagnostic[] {
