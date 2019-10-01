@@ -51,9 +51,7 @@ describe('HttpBodyValidator', () => {
       it('returns no validation errors', () => {
         expect(
           httpBodyValidator.validate(
-            encodeURI(
-              'key[a]=str&key[b][ba]=str&key[b][bc][0]=bc0&key[b][bc][1]=bc1&key[c][0][a]=c0a&key[c][0][b]=c0b&key[c][1][a]=c0a&key[c][1][b]=c0b&other=other',
-            ),
+            encodeURI('key[a]=str'),
             [
               {
                 mediaType: 'application/x-www-form-urlencoded',
@@ -63,30 +61,8 @@ describe('HttpBodyValidator', () => {
                   properties: {
                     key: {
                       type: 'object',
-                      properties: {
-                        a: { type: 'string' },
-                        b: {
-                          type: 'object',
-                          properties: {
-                            ba: { type: 'string' },
-                            bb: { type: 'object' },
-                            bc: { type: 'array' },
-                          },
-                          required: ['ba', 'bb', 'bc'],
-                        },
-                        c: {
-                          type: 'array',
-                          items: {
-                            type: 'object',
-                            properties: {
-                              a: { type: 'string' },
-                              b: { type: 'string' },
-                            },
-                            required: ['a', 'b'],
-                          },
-                        },
-                      },
-                      required: ['a', 'b', 'c'],
+                      properties: { a: { type: 'string' } },
+                      required: ['a'],
                     },
                   },
                   required: ['key'],
