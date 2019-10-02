@@ -10,10 +10,10 @@ import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import { Logger } from 'pino';
 import {
   ContentExample,
-  IHttpConfig,
   IHttpOperationConfig,
   IHttpRequest,
   IHttpResponse,
+  IMockHttpConfig,
   PayloadGenerator,
   ProblemJsonError,
 } from '../types';
@@ -23,7 +23,7 @@ import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 
-const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>['mock'] = ({
+const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockHttpConfig>['mock'] = ({
   resource,
   input,
   config,

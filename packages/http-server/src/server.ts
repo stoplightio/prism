@@ -1,5 +1,5 @@
 import { createLogger } from '@stoplight/prism-core';
-import { createInstance, IHttpConfig, ProblemJsonError } from '@stoplight/prism-http';
+import { createInstance, IHttpConfig, IHttpOperationConfig, ProblemJsonError } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
@@ -40,7 +40,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(error);
   });
 
-  const mergedConfig = defaults<Partial<IHttpConfig>, IHttpConfig>(config, {
+  const mergedConfig = defaults<unknown, IHttpConfig>(config, {
     mock: { dynamic: false },
     validateRequest: true,
     validateResponse: true,
@@ -71,7 +71,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     request.log.info({ input }, 'Request received');
     try {
       const operationSpecificConfig = getHttpConfigFromRequest(input);
-      const mockConfig = { ...opts.config.mock, ...operationSpecificConfig };
+      const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
 
       const response = await prism.request(input, operations, {
         ...opts.config,

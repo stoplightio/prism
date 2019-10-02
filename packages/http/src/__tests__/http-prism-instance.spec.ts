@@ -130,9 +130,9 @@ describe('Http Client .request', () => {
       });
     });
 
-    describe.skip('mocking is off', () => {
+    describe('mocking is off', () => {
       const config: IHttpConfig = {
-        mock: { dynamic: false },
+        mock: false,
         checkSecurity: true,
         validateRequest: true,
         validateResponse: true,
