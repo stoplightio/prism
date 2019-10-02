@@ -3,7 +3,8 @@ import { IHttpOperation, IServer } from '@stoplight/types';
 import axios from 'axios';
 import { toError } from 'fp-ts/lib/Either';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
-import { defaults } from 'lodash';
+import { defaults, mapValues } from 'lodash';
+import * as URITemplate from 'urijs/src/URITemplate';
 import { NO_BASE_URL_ERROR } from '../router/errors';
 import { IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
 const { version: prismVersion } = require('../../package.json');
@@ -41,18 +42,12 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
 };
 
 function resolveServerUrl(server: IServer) {
-  if (!server.variables) {
-    return server.url;
-  }
+  const variables = server.variables;
+  if (!variables) return server.url;
 
-  return server.url.replace(/{(.*?)}/g, (_match, variableName) => {
-    const variable = server.variables![variableName];
-    if (!variable) {
-      throw new Error(`Variable '${variableName}' is not defined, cannot parse input.`);
-    }
-
-    return variable.default || variable.enum![0];
-  });
+  return new URITemplate(server.url)
+    .expand(mapValues(variables, v => v.default || v.enum![0]), { strict: true })
+    .toString();
 }
 
 export default forward;
