@@ -2,6 +2,7 @@ import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import * as signale from 'signale';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreatePrismOptions, createSingleProcessPrism } from '../util/createServer';
+import sharedOptions from './sharedOptions';
 
 const mockCommand: CommandModule = {
   describe: 'Start a mock server with the given spec file',
@@ -20,40 +21,12 @@ const mockCommand: CommandModule = {
         process.exit(1);
       })
       .options({
-        port: {
-          alias: 'p',
-          description: 'Port that Prism will run on.',
-          default: 4010,
-          demandOption: true,
-          number: true,
-        },
-
-        host: {
-          alias: 'h',
-          description: 'Host that Prism will listen to.',
-          default: '127.0.0.1',
-          demandOption: true,
-          string: true,
-        },
-
+        ...sharedOptions,
         dynamic: {
           alias: 'd',
           description: 'Dynamically generate examples.',
           boolean: true,
           default: false,
-        },
-
-        cors: {
-          description: 'Enables CORS headers.',
-          boolean: true,
-          default: true,
-        },
-
-        multiprocess: {
-          alias: 'm',
-          description: 'Forks the http server from the CLI for faster log processing.',
-          boolean: true,
-          default: process.env.NODE_ENV === 'production',
         },
       }),
   handler: parsedArgs => {
