@@ -75,21 +75,6 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             },
           };
         }),
-        TaskEither.mapLeft(error => {
-          if (components.validateInput) {
-            const { message, name, status } = error as ProblemJsonError;
-            // let's just stack it on the inputValidations
-            // when someone simply wants to hit an URL, don't block them
-            inputValidations.push({
-              message,
-              source: name,
-              code: status,
-              severity: DiagnosticSeverity.Warning,
-            });
-
-            return error;
-          }
-        }),
       )().then(v =>
         pipe(
           v,
