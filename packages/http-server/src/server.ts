@@ -89,11 +89,11 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
         response.validations.output.forEach(validation => {
           if (validation.severity === DiagnosticSeverity.Error) {
-            request.log.error(validation.message);
+            request.log.error(`${validation.path} — ${validation.message}`);
           } else if (validation.severity === DiagnosticSeverity.Warning) {
-            request.log.warn(validation.message);
+            request.log.warn(`${validation.path} — ${validation.message}`);
           } else {
-            request.log.info(validation.message);
+            request.log.info(`${validation.path} — ${validation.message}`);
           }
         });
 
