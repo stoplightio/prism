@@ -146,9 +146,7 @@ describe('Http Client .request', () => {
           .reply(200, serverReply);
       });
 
-      afterEach(() => {
-        nock.cleanAll();
-      });
+      afterEach(() => nock.cleanAll());
 
       describe('path is not valid', () => {
         const request: IHttpRequest = {

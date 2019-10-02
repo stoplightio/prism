@@ -40,7 +40,6 @@ export interface IHttpResponse {
   statusCode: number;
   headers?: IHttpNameValue;
   body?: unknown;
-  responseType?: XMLHttpRequestResponseType;
 }
 
 export type ProblemJson = {
