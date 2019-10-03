@@ -1,6 +1,6 @@
 import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { CommandModule } from 'yargs';
-import { CreateBaseServerOptions, createMultiProcessPrism, createSingleProcessPrism } from '../util/createServer';
+import { CreateMockServerOptions, createMultiProcessPrism, createSingleProcessPrism } from '../util/createServer';
 import sharedOptions from './sharedOptions';
 
 const mockCommand: CommandModule = {
@@ -23,7 +23,7 @@ const mockCommand: CommandModule = {
         },
       }),
   handler: parsedArgs => {
-    const p = (parsedArgs as unknown) as CreateBaseServerOptions & { multiprocess: boolean };
+    const p = (parsedArgs as unknown) as CreateMockServerOptions;
     return p.multiprocess ? createMultiProcessPrism(p) : createSingleProcessPrism(p);
   },
 };

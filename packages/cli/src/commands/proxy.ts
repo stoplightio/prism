@@ -1,11 +1,6 @@
 import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { CommandModule } from 'yargs';
-import {
-  CreateBaseServerOptions,
-  createMultiProcessPrism,
-  CreateProxyServerOptions,
-  createSingleProcessPrism,
-} from '../util/createServer';
+import { createMultiProcessPrism, CreateProxyServerOptions, createSingleProcessPrism } from '../util/createServer';
 import sharedOptions from './sharedOptions';
 
 const proxyCommand: CommandModule = {
@@ -39,7 +34,7 @@ const proxyCommand: CommandModule = {
         },
       }),
   handler: parsedArgs => {
-    const p = (parsedArgs as unknown) as CreateBaseServerOptions & { multiprocess: boolean };
+    const p = (parsedArgs as unknown) as CreateProxyServerOptions;
     return p.multiprocess ? createMultiProcessPrism(p) : createSingleProcessPrism(p);
   },
 };
