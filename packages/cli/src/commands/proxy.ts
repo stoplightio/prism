@@ -1,5 +1,4 @@
 import { getHttpOperationsFromResource } from '@stoplight/prism-http';
-import * as signale from 'signale';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreateProxyServerOptions, createSingleProcessPrism } from '../util/createServer';
 import sharedOptions from './sharedOptions';
@@ -25,13 +24,15 @@ const proxyCommand: CommandModule = {
         }
       })
       .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.spec!)))
-      .fail((_msg, err) => {
-        if (err) signale.fatal(err.message);
-        else yargs.showHelp();
-
-        process.exit(1);
-      })
-      .options(sharedOptions),
+      .options({
+        ...sharedOptions,
+        log: {
+          description: 'Select where the errors will be reported',
+          required: true,
+          choices: ['stdout', 'httpResponse', 'httpHeaders'] as const,
+          default: 'stdout' as const,
+        },
+      }),
   handler: parsedArgs => {
     const {
       multiprocess,
@@ -41,8 +42,10 @@ const proxyCommand: CommandModule = {
       host,
       cors,
       operations,
+      log,
     } = (parsedArgs as unknown) as CreateProxyServerOptions & {
       multiprocess: boolean;
+      log: 'stdout' | 'httpResponse' | 'httpHeaders';
     };
 
     if (multiprocess) {

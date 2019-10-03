@@ -65,9 +65,8 @@ async function createPrismServerWithLogger(
   });
 
   const address = await server.listen(options.port, options.host);
-  options.operations.forEach(resource => {
-    logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
-  });
+
+  options.operations.forEach(op => logInstance.note(`${op.method.toUpperCase().padEnd(10)} ${address}${op.path}`));
   logInstance.start(`Prism is listening on ${address}`);
 }
 
@@ -100,7 +99,7 @@ export type CreateProxyServerOptions = CreateBaseServerOptions & {
 
 type CreateBaseServerOptions = {
   cors: boolean;
-  host?: string;
+  host: string;
   port: number;
   operations: IHttpOperation[];
 };

@@ -1,5 +1,4 @@
 import { getHttpOperationsFromResource } from '@stoplight/prism-http';
-import * as signale from 'signale';
 import { CommandModule } from 'yargs';
 import { CreateMockServerOptions, createMultiProcessPrism, createSingleProcessPrism } from '../util/createServer';
 import sharedOptions from './sharedOptions';
@@ -14,12 +13,6 @@ const mockCommand: CommandModule = {
         type: 'string',
       })
       .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.spec!)))
-      .fail((msg, err) => {
-        if (msg) yargs.showHelp();
-        else signale.fatal(err.message);
-
-        process.exit(1);
-      })
       .options({
         ...sharedOptions,
         dynamic: {
