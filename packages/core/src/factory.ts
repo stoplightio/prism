@@ -20,7 +20,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       return pipe(
         TaskEither.fromEither(components.route({ resources, input })),
         TaskEither.chain(resource => {
-          if (config.validateRequest && resource) {
+          if (config.validateRequest) {
             inputValidations.push(
               ...components.validateInput({
                 resource,
@@ -59,7 +59,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         }),
         TaskEither.map(({ output, resource }) => {
           let outputValidations: IPrismDiagnostic[] = [];
-          if (config.validateResponse && resource) {
+          if (config.validateResponse) {
             outputValidations = components.validateOutput({
               resource,
               element: output,
