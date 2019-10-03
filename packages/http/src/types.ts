@@ -17,6 +17,12 @@ export interface IHttpConfig extends IPrismConfig {
   mock: false | IHttpOperationConfig;
 }
 
+export interface IHttpProxyConfig extends IHttpConfig {
+  mock: false;
+  upstream: URL;
+  log: 'stdout' | 'httpResponse' | 'httpHeaders';
+}
+
 export type IMockHttpConfig = IHttpConfig & { mock: IHttpOperationConfig };
 
 export type IHttpNameValues = Dictionary<string | string[]>;

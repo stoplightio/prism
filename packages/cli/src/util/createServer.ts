@@ -1,4 +1,5 @@
 import { createLogger, logLevels } from '@stoplight/prism-core';
+import { IHttpConfig, IHttpProxyConfig } from '@stoplight/prism-http';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
 import { IHttpOperation } from '@stoplight/types';
 import chalk from 'chalk';
@@ -9,7 +10,7 @@ import * as split from 'split2';
 import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 
-export async function createMultiProcessPrism(options: CreateMockServerOptions | CreateProxyServerOptions) {
+async function createMultiProcessPrism(options: CreateBaseServerOptions) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -31,7 +32,7 @@ export async function createMultiProcessPrism(options: CreateMockServerOptions |
   }
 }
 
-export async function createSingleProcessPrism(options: CreateMockServerOptions | CreateProxyServerOptions) {
+async function createSingleProcessPrism(options: CreateBaseServerOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
@@ -45,22 +46,30 @@ export async function createSingleProcessPrism(options: CreateMockServerOptions 
   }
 }
 
-async function createPrismServerWithLogger(
-  options: CreateMockServerOptions | CreateProxyServerOptions,
-  logInstance: Logger,
-) {
+async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
   if (options.operations.length === 0) {
     throw new Error('No operations found in the current file.');
   }
 
+  const config: IHttpProxyConfig | IHttpConfig = isProxyServerOptions(options)
+    ? {
+        mock: false,
+        validateRequest: true,
+        validateResponse: true,
+        checkSecurity: true,
+        upstream: options.upstream,
+        log: options.log,
+      }
+    : {
+        mock: { dynamic: options.dynamic },
+        validateRequest: true,
+        validateResponse: true,
+        checkSecurity: true,
+      };
+
   const server = createHttpServer(options.operations, {
     cors: options.cors,
-    config: {
-      mock: { dynamic: options.dynamic },
-      validateRequest: true,
-      validateResponse: true,
-      checkSecurity: true,
-    },
+    config,
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
   });
 
@@ -88,18 +97,25 @@ function pipeOutputToSignale(stream: Readable) {
   });
 }
 
-export type CreateMockServerOptions = CreateBaseServerOptions & {
-  dynamic: true;
-};
-
-export type CreateProxyServerOptions = CreateBaseServerOptions & {
-  dynamic: false;
-  upstream: string;
-};
+function isProxyServerOptions(options: CreateBaseServerOptions): options is CreateProxyServerOptions {
+  return !options.dynamic && 'log' in options;
+}
 
 type CreateBaseServerOptions = {
+  dynamic: boolean;
   cors: boolean;
   host: string;
   port: number;
   operations: IHttpOperation[];
+  multiprocess: boolean;
 };
+
+export interface CreateProxyServerOptions extends CreateBaseServerOptions {
+  dynamic: false;
+  upstream: URL;
+  log: 'stdout' | 'httpResponse' | 'httpHeaders';
+}
+
+export type CreateMockServerOptions = CreateBaseServerOptions;
+
+export { createMultiProcessPrism, createSingleProcessPrism };
