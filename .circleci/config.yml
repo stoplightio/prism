@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  stoplight: stoplight/cli@0.0.x
 executors:
   docker-node:
     docker:
