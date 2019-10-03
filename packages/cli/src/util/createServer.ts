@@ -9,7 +9,7 @@ import * as split from 'split2';
 import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 
-export async function createMultiProcessPrism(options: CreatePrismOptions) {
+export async function createMultiProcessPrism(options: CreateMockServerOptions | CreateProxyServerOptions) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -31,7 +31,7 @@ export async function createMultiProcessPrism(options: CreatePrismOptions) {
   }
 }
 
-export async function createSingleProcessPrism(options: CreatePrismOptions) {
+export async function createSingleProcessPrism(options: CreateMockServerOptions | CreateProxyServerOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
@@ -45,7 +45,10 @@ export async function createSingleProcessPrism(options: CreatePrismOptions) {
   }
 }
 
-async function createPrismServerWithLogger(options: CreatePrismOptions, logInstance: Logger) {
+async function createPrismServerWithLogger(
+  options: CreateMockServerOptions | CreateProxyServerOptions,
+  logInstance: Logger,
+) {
   if (options.operations.length === 0) {
     throw new Error('No operations found in the current file.');
   }
@@ -86,8 +89,16 @@ function pipeOutputToSignale(stream: Readable) {
   });
 }
 
-export type CreatePrismOptions = {
-  dynamic: boolean;
+export type CreateMockServerOptions = CreateBaseServerOptions & {
+  dynamic: true;
+};
+
+export type CreateProxyServerOptions = CreateBaseServerOptions & {
+  dynamic: false;
+  upstream: string;
+};
+
+type CreateBaseServerOptions = {
   cors: boolean;
   host?: string;
   port: number;
