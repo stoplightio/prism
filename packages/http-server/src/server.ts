@@ -1,10 +1,9 @@
 import { createLogger } from '@stoplight/prism-core';
-import { createInstance, IHttpConfig, ProblemJsonError } from '@stoplight/prism-http';
+import { createInstance, ProblemJsonError } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
 import { IncomingMessage, ServerResponse } from 'http';
-import { defaults } from 'lodash';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
@@ -40,14 +39,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(error);
   });
 
-  const mergedConfig = defaults<unknown, IHttpConfig>(config, {
-    mock: { dynamic: false },
-    validateRequest: true,
-    validateResponse: true,
-    checkSecurity: true,
-  });
-
-  const prism = createInstance(mergedConfig, components);
+  const prism = createInstance(config, components);
 
   const replyHandler: fastify.RequestHandler<IncomingMessage, ServerResponse> = async (request, reply) => {
     const {
