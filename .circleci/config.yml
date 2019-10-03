@@ -140,3 +140,15 @@ workflows:
             - harness
             - harness-macos
             - publish
+      - stoplight/analyze:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+          requires:
+            - build
+            - harness
+            - harness-macos
+            - publish
+            - upload_artifacts
