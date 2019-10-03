@@ -3,7 +3,7 @@ import { IHttpOperation, IServer } from '@stoplight/types';
 import axios from 'axios';
 import { toError } from 'fp-ts/lib/Either';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
-import { defaults, mapValues } from 'lodash';
+import { defaults, mapValues, omit } from 'lodash';
 import * as URITemplate from 'urijs/src/URITemplate';
 import { NO_BASE_URL_ERROR } from '../router/errors';
 import { IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
@@ -28,7 +28,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
       url: input.url.path,
       params: input.url.query,
       data: input.body,
-      headers: defaults(input.headers, { 'user-agent': `Prism/${prismVersion}` }),
+      headers: defaults(omit(input.headers, 'host'), { 'user-agent': `Prism/${prismVersion}` }),
       validateStatus: () => true,
       timeout: Math.max(timeout, 0),
     });
