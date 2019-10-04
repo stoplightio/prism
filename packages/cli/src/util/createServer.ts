@@ -10,7 +10,7 @@ import * as split from 'split2';
 import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 
-async function createMultiProcessPrism(options: CreateBaseServerOptions) {
+function createMultiProcessPrism(options: CreateBaseServerOptions) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -24,26 +24,21 @@ async function createMultiProcessPrism(options: CreateBaseServerOptions) {
   } else {
     const logInstance = createLogger('CLI');
     try {
-      return await createPrismServerWithLogger(options, logInstance);
+      return createPrismServerWithLogger(options, logInstance).catch(() => cluster.worker.kill());
     } catch (e) {
       logInstance.fatal(e.message);
-      cluster.worker.kill();
     }
   }
 }
 
-async function createSingleProcessPrism(options: CreateBaseServerOptions) {
+function createSingleProcessPrism(options: CreateBaseServerOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
   const logInstance = createLogger('CLI', undefined, logStream);
   pipeOutputToSignale(logStream);
 
-  try {
-    return await createPrismServerWithLogger(options, logInstance);
-  } catch (e) {
-    logInstance.fatal(e.message);
-  }
+  return createPrismServerWithLogger(options, logInstance);
 }
 
 async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
