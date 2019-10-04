@@ -7,6 +7,8 @@ import route from './router';
 import { validateInput, validateOutput } from './validator';
 export * from './types';
 export * from './getHttpOperations';
+export * from './mocker/errors';
+export * from './router/errors';
 
 import { IHttpConfig, IHttpRequest, IHttpResponse, PickRequired, PrismHttpComponents } from './types';
 
