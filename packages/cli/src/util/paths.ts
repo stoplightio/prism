@@ -75,28 +75,33 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
 
 function createPathUriTemplate(path: string, specs: IHttpPathParam[]) {
   // defaults for query: style=Simple exploded=false
-  return specs.reduce(
-    (p, spec) =>
-      path.replace(
-        `{${spec.name}}`,
-        createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
-      ),
-    path,
-  );
+  return specs
+    .filter(spec => spec.required !== false)
+    .reduce(
+      (p, spec) =>
+        path.replace(
+          `{${spec.name}}`,
+          createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
+        ),
+      path,
+    );
 }
 
 function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
   // defaults for query: style=Form exploded=false
   const formSpecs = specs.filter(spec => (spec.style || HttpParamStyles.Form) === HttpParamStyles.Form);
   const formExplodedParams = formSpecs
+    .filter(spec => spec.required !== false)
     .filter(spec => spec.explode)
     .map(spec => spec.name)
     .join(',');
   const formImplodedParams = formSpecs
+    .filter(spec => spec.required !== false)
     .filter(spec => !spec.explode)
     .map(spec => spec.name)
     .join(',');
   const restParams = specs
+    .filter(spec => spec.required !== false)
     .filter(spec =>
       [HttpParamStyles.DeepObject, HttpParamStyles.SpaceDelimited, HttpParamStyles.PipeDelimited].includes(spec.style),
     )
