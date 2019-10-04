@@ -55,7 +55,7 @@ describe('Http Client .request', () => {
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
       prism = createInstance(
-        { validateRequest: true, checkSecurity: true, validateResponse: true, mock: { dynamic: false } },
+        { validateRequest: true, checkSecurity: true, validateResponse: true, mock: { dynamic: false }, log: 'stdout' },
         { logger },
       );
       resources = await getHttpOperationsFromResource(specPath);
@@ -133,6 +133,7 @@ describe('Http Client .request', () => {
     describe('mocking is off', () => {
       const config: IHttpConfig = {
         mock: false,
+        log: 'stdout',
         checkSecurity: true,
         validateRequest: true,
         validateResponse: true,
@@ -213,7 +214,7 @@ describe('Http Client .request', () => {
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
       prism = createInstance(
-        { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+        { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false }, log: 'stdout' },
         { logger },
       );
       resources = await getHttpOperationsFromResource(noRefsPetstoreMinimalOas2Path);
@@ -339,7 +340,7 @@ describe('Http Client .request', () => {
 
   it('returns stringified static example when one defined in spec', async () => {
     prism = createInstance(
-      { mock: { dynamic: false }, checkSecurity: true, validateRequest: true, validateResponse: true },
+      { mock: { dynamic: false }, checkSecurity: true, validateRequest: true, validateResponse: true, log: 'stdout' },
       { logger },
     );
     resources = await getHttpOperationsFromResource(staticExamplesOas2Path);

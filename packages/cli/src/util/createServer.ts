@@ -65,6 +65,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
         validateRequest: true,
         validateResponse: true,
         checkSecurity: true,
+        log: 'stdout',
       };
 
   const server = createHttpServer(options.operations, {

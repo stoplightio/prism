@@ -10,7 +10,13 @@ function instantiatePrism2(operations: IHttpOperation[]) {
   return createServer(operations, {
     components: { logger },
     cors: true,
-    config: { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+    config: {
+      checkSecurity: true,
+      validateRequest: true,
+      validateResponse: true,
+      mock: { dynamic: false },
+      log: 'stdout',
+    },
   });
 }
 
