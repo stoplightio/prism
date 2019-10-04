@@ -5,7 +5,6 @@ import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { generate as generateDynamicExample } from './JSONSchema';
 
-
 function isExternalExample(example: INodeExample | INodeExternalExample): example is INodeExternalExample {
   return !!(example as INodeExternalExample).externalValue;
 }
