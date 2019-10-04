@@ -29,14 +29,6 @@ function generateParamValues(specs: IHttpParam[]) {
         values[spec.name] = serializeWithDeepObjectStyle(spec.name, value);
         break;
 
-      case HttpParamStyles.CommaDelimited:
-        values[spec.name] = serializeWithCommaDelimitedStyle(
-          spec.name,
-          value as Array<string | number | boolean>,
-          spec.explode,
-        );
-        break;
-
       case HttpParamStyles.PipeDelimited:
         values[spec.name] = serializeWithPipeDelimitedStyle(
           spec.name,
@@ -66,17 +58,18 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
       const specs = get(operation, 'request.path', []);
       return { template: createPathUriTemplate(operation.path, specs), values: generateParamValues(specs) };
     }, Either.toError),
-    Either.map(({ template, values }) => {
+    Either.chain(({ template, values }) => {
       const specs = get(operation, 'request.query', []);
-      return {
-        template: createQueryUriTemplate(template, specs),
-        values: { ...values, ...generateParamValues(specs) },
-      };
+      try {
+        return Either.right({
+          template: createQueryUriTemplate(template, specs),
+          values: { ...values, ...generateParamValues(specs) },
+        });
+      } catch (e) {
+        return Either.left(e);
+      }
     }),
-    Either.map(({ template, values }) => {
-      console.log({ template, values });
-      return parse(template).expand(values);
-    }),
+    Either.map(({ template, values }) => parse(template).expand(values)),
   );
 }
 
@@ -105,12 +98,7 @@ function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
     .join(',');
   const restParams = specs
     .filter(spec =>
-      [
-        HttpParamStyles.DeepObject,
-        HttpParamStyles.SpaceDelimited,
-        HttpParamStyles.PipeDelimited,
-        HttpParamStyles.CommaDelimited,
-      ].includes(spec.style),
+      [HttpParamStyles.DeepObject, HttpParamStyles.SpaceDelimited, HttpParamStyles.PipeDelimited].includes(spec.style),
     )
     .map(spec => spec.name)
     .map(name => `{+${name}}`)
