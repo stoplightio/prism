@@ -1,6 +1,11 @@
 import { generate } from '@stoplight/prism-http/src/mocker/generator/HttpParamGenerator';
 import { serializeWithDeepObjectStyle } from '@stoplight/prism-http/src/mocker/serializer/style/deepObject';
 import {
+  serializeWithCommaDelimitedStyle,
+  serializeWithPipeDelimitedStyle,
+  serializeWithSpaceDelimitedStyle,
+} from '@stoplight/prism-http/src/mocker/serializer/style/delimited';
+import {
   HttpParamStyles,
   IHttpOperation,
   IHttpParam,
@@ -18,13 +23,38 @@ const { parse } = require('uri-template');
 
 function generateParamValues(specs: IHttpParam[]) {
   return specs.reduce((values, spec) => {
+    const value = Option.toUndefined(generate(spec));
     switch (spec.style) {
       case HttpParamStyles.DeepObject:
-        values[spec.name] = serializeWithDeepObjectStyle(spec.name, Option.toUndefined(generate(spec)));
+        values[spec.name] = serializeWithDeepObjectStyle(spec.name, value);
+        break;
+
+      case HttpParamStyles.CommaDelimited:
+        values[spec.name] = serializeWithCommaDelimitedStyle(
+          spec.name,
+          value as Array<string | number | boolean>,
+          spec.explode,
+        );
+        break;
+
+      case HttpParamStyles.PipeDelimited:
+        values[spec.name] = serializeWithPipeDelimitedStyle(
+          spec.name,
+          value as Array<string | number | boolean>,
+          spec.explode,
+        );
+        break;
+
+      case HttpParamStyles.SpaceDelimited:
+        values[spec.name] = serializeWithSpaceDelimitedStyle(
+          spec.name,
+          value as Array<string | number | boolean>,
+          spec.explode,
+        );
         break;
 
       default:
-        values[spec.name] = Option.toUndefined(generate(spec));
+        values[spec.name] = value;
     }
     return values;
   }, {});
@@ -73,8 +103,15 @@ function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
     .filter(spec => !spec.explode)
     .map(spec => spec.name)
     .join(',');
-  const deepObjectParams = specs
-    .filter(spec => spec.style === HttpParamStyles.DeepObject)
+  const restParams = specs
+    .filter(spec =>
+      [
+        HttpParamStyles.DeepObject,
+        HttpParamStyles.SpaceDelimited,
+        HttpParamStyles.PipeDelimited,
+        HttpParamStyles.CommaDelimited,
+      ].includes(spec.style),
+    )
     .map(spec => spec.name)
     .map(name => `{+${name}}`)
     .join('&');
@@ -87,8 +124,8 @@ function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
     path += `{${formExplodedParams ? '&' : '?'}${formImplodedParams}}`;
   }
 
-  if (deepObjectParams) {
-    path += `${formExplodedParams || formImplodedParams ? '&' : '?'}${deepObjectParams}`;
+  if (restParams) {
+    path += `${formExplodedParams || formImplodedParams ? '&' : '?'}${restParams}`;
   }
 
   return path;
