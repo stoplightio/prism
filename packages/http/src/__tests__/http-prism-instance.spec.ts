@@ -74,7 +74,7 @@ describe('Http Client .request', () => {
         );
 
         expect(result.output).toBeDefined();
-        expect(result.output!.statusCode).toBe(200);
+        expect(result.output.statusCode).toBe(200);
       });
     });
 
@@ -92,7 +92,7 @@ describe('Http Client .request', () => {
         );
 
         expect(result.output).toBeDefined();
-        expect(result.output!.statusCode).toBe(200);
+        expect(result.output.statusCode).toBe(200);
       });
     });
 
@@ -130,9 +130,9 @@ describe('Http Client .request', () => {
       });
     });
 
-    describe.skip('mocking is off', () => {
+    describe('mocking is off', () => {
       const config: IHttpConfig = {
-        mock: { dynamic: false },
+        mock: false,
         checkSecurity: true,
         validateRequest: true,
         validateResponse: true,
@@ -146,9 +146,7 @@ describe('Http Client .request', () => {
           .reply(200, serverReply);
       });
 
-      afterEach(() => {
-        nock.cleanAll();
-      });
+      afterEach(() => nock.cleanAll());
 
       describe('path is not valid', () => {
         const request: IHttpRequest = {
@@ -159,44 +157,10 @@ describe('Http Client .request', () => {
           },
         };
 
-        it('returns input warning', async () => {
-          const result = await prism.request(request, resources, config);
-
-          expect(result.validations.input).toEqual([
-            {
-              code: 404,
-              source: 'https://stoplight.io/prism/errors#NO_PATH_MATCHED_ERROR',
-              message: 'Route not resolved, no path matched',
-              severity: DiagnosticSeverity.Warning,
-            },
-          ]);
-        });
-
-        it('makes a http request anyway', async () => {
-          // note that we are 'nocking' the request in beforeEach
-          const result = await prism.request(request, resources, config);
-
-          expect(result.output).toBeDefined();
-          expect(result.output!.statusCode).toEqual(200);
-          expect(result.output!.body).toEqual(serverReply);
-        });
-
-        describe('baseUrl is not set', () => {
-          it('throws an error', () => {
-            return expect(
-              prism.request(
-                {
-                  method: 'get',
-                  url: {
-                    path: '/x-pet',
-                  },
-                },
-                resources,
-                config,
-              ),
-            ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_BASE_URL_ERROR));
-          });
-        });
+        it('fails the operation', () =>
+          expect(prism.request(request, resources, config)).rejects.toThrowError(
+            ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR),
+          ));
       });
 
       describe('path is valid and baseUrl is not set', () => {
@@ -219,8 +183,8 @@ describe('Http Client .request', () => {
           );
 
           expect(result.output).toBeDefined();
-          expect(result.output!.statusCode).toEqual(200);
-          expect(result.output!.body).toEqual(reply);
+          expect(result.output.statusCode).toEqual(200);
+          expect(result.output.body).toEqual(reply);
         });
       });
 
@@ -271,9 +235,6 @@ describe('Http Client .request', () => {
       });
     });
 
-    // TODO will be fixed by https://stoplightio.atlassian.net/browse/SO-260
-    test.todo('GET /pet without an optional body parameter');
-
     describe('when requesting GET /pet/findByStatus', () => {
       it('with valid query params returns generated body', async () => {
         const response = await prism.request(
@@ -289,7 +250,7 @@ describe('Http Client .request', () => {
           resources,
         );
 
-        const parsedBody = response!.output!.body;
+        const parsedBody = response.output.body;
 
         expect(typeof parsedBody).toBe('string');
         expect(response).toMatchSnapshot({
@@ -394,6 +355,6 @@ describe('Http Client .request', () => {
     );
 
     expect(response.output).toBeDefined();
-    expect(response.output!.body).toBeInstanceOf(Array);
+    expect(response.output.body).toBeInstanceOf(Array);
   });
 });

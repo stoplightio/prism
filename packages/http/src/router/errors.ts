@@ -21,7 +21,7 @@ export const NO_SERVER_MATCHED_ERROR: Omit<ProblemJson, 'detail'> = {
   status: 404,
 };
 export const NO_METHOD_MATCHED_ERROR: Omit<ProblemJson, 'detail'> = {
-  title: 'Route resolved, but no path matched',
+  title: 'Route resolved, but no method matched',
   type: 'NO_METHOD_MATCHED_ERROR',
   status: 405,
 };

@@ -39,10 +39,8 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               )
             : inputValidations;
 
-          if (resource && config.mock) {
-            // generate the response
-            return pipe(
-              TaskEither.fromEither(
+          const outputLocator = config.mock
+            ? TaskEither.fromEither(
                 components.mock({
                   resource,
                   input: {
@@ -51,12 +49,13 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                   },
                   config: config.mock,
                 })(components.logger.child({ name: 'NEGOTIATOR' })),
-              ),
-              TaskEither.map(output => ({ output, resource })),
-            );
-          }
+              )
+            : components.forward(resource, input);
 
-          return TaskEither.left(new Error('Resource not defined. This should never happen.'));
+          return pipe(
+            outputLocator,
+            TaskEither.map(output => ({ output, resource })),
+          );
         }),
         TaskEither.map(({ output, resource }) => {
           let outputValidations: IPrismDiagnostic[] = [];
@@ -75,21 +74,6 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               output: outputValidations,
             },
           };
-        }),
-        TaskEither.mapLeft(error => {
-          if (components.validateInput) {
-            const { message, name, status } = error as ProblemJsonError;
-            // let's just stack it on the inputValidations
-            // when someone simply wants to hit an URL, don't block them
-            inputValidations.push({
-              message,
-              source: name,
-              code: status,
-              severity: DiagnosticSeverity.Warning,
-            });
-
-            return error;
-          }
         }),
       )().then(v =>
         pipe(

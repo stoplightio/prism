@@ -40,7 +40,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(error);
   });
 
-  const mergedConfig = defaults<Partial<IHttpConfig>, IHttpConfig>(config, {
+  const mergedConfig = defaults<unknown, IHttpConfig>(config, {
     mock: { dynamic: false },
     validateRequest: true,
     validateResponse: true,
@@ -71,7 +71,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     request.log.info({ input }, 'Request received');
     try {
       const operationSpecificConfig = getHttpConfigFromRequest(input);
-      const mockConfig = { ...opts.config.mock, ...operationSpecificConfig };
+      const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
 
       const response = await prism.request(input, operations, {
         ...opts.config,
@@ -80,27 +80,23 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
       const { output } = response;
 
-      if (output) {
-        reply.code(output.statusCode);
+      reply.code(output.statusCode);
 
-        if (output.headers) {
-          reply.headers(output.headers);
-        }
-
-        response.validations.output.forEach(validation => {
-          if (validation.severity === DiagnosticSeverity.Error) {
-            request.log.error(validation.message);
-          } else if (validation.severity === DiagnosticSeverity.Warning) {
-            request.log.warn(validation.message);
-          } else {
-            request.log.info(validation.message);
-          }
-        });
-
-        reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
-      } else {
-        throw new Error('Unable to find any decent response for the current request.');
+      if (output.headers) {
+        reply.headers(output.headers);
       }
+
+      response.validations.output.forEach(validation => {
+        if (validation.severity === DiagnosticSeverity.Error) {
+          request.log.error(`${validation.path} — ${validation.message}`);
+        } else if (validation.severity === DiagnosticSeverity.Warning) {
+          request.log.warn(`${validation.path} — ${validation.message}`);
+        } else {
+          request.log.info(`${validation.path} — ${validation.message}`);
+        }
+      });
+
+      reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
     } catch (e) {
       if (!reply.sent) {
         const status = 'status' in e ? e.status : 500;

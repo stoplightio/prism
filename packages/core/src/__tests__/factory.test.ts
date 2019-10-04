@@ -1,7 +1,8 @@
 // @ts-ignore
 import logger from 'abstract-logging';
-import { right } from 'fp-ts/lib/Either';
+import * as Either from 'fp-ts/lib/Either';
 import { asks } from 'fp-ts/lib/ReaderEither';
+import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 import { factory, IPrismConfig } from '..';
 
@@ -9,7 +10,14 @@ describe('validation', () => {
   const components = {
     validateInput: jest.fn().mockReturnValue(['something']),
     validateOutput: jest.fn().mockReturnValue(['something']),
-    route: jest.fn().mockReturnValue(right('hey')),
+    route: jest.fn().mockReturnValue(Either.right('hey')),
+    forward: jest.fn().mockReturnValue(
+      TaskEither.right({
+        statusCode: 200,
+        headers: {},
+        body: {},
+      }),
+    ),
     logger: { ...logger, child: jest.fn().mockReturnValue(logger) },
     mock: jest.fn().mockReturnValue(asks<Logger, Error, string>(r => 'hey')),
   };
