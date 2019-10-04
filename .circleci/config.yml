@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  stoplight: stoplight/cli@0.0.2
 executors:
   docker-node:
     docker:
@@ -122,3 +124,15 @@ workflows:
             - harness
             - harness-macos
             - publish
+      - stoplight/analyze:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+          requires:
+            - build
+            - harness
+            - harness-macos
+            - publish
+            - upload_artifacts

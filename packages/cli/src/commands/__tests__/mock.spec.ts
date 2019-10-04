@@ -27,6 +27,7 @@ describe('mock command', () => {
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
       operations: [],
       dynamic: false,
+      multiprocess: false,
       cors: true,
       host: '127.0.0.1',
       port: 4010,
@@ -44,6 +45,7 @@ describe('mock command', () => {
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
       operations: [],
       dynamic: false,
+      multiprocess: false,
       cors: true,
       host: '127.0.0.1',
       port: 666,
@@ -61,6 +63,7 @@ describe('mock command', () => {
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
       operations: [],
       dynamic: false,
+      multiprocess: false,
       cors: true,
       host: '0.0.0.0',
       port: 4010,
@@ -79,6 +82,7 @@ describe('mock command', () => {
       operations: [],
       cors: true,
       dynamic: false,
+      multiprocess: false,
       host: '0.0.0.0',
       port: 666,
     });
@@ -96,6 +100,7 @@ describe('mock command', () => {
       operations: [],
       dynamic: false,
       cors: true,
+      multiprocess: true,
       host: '0.0.0.0',
       port: 4010,
     });
