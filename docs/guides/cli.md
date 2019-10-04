@@ -1,6 +1,6 @@
 # Prism CLI
 
-Prism CLI for now only has one command: `mock`.
+Prism CLI has two commands: `mock` and `proxy`.
 
 ## Mock server
 
@@ -35,10 +35,11 @@ Connection: keep-alive
 
 Responses will be mocked using realistic data that conforms to the type in the description.
 
-## Determine Response Status
+### Dynamic configuration through CLI
 
-Prism can be forced to return different HTTP responses by specifying the status code in the query
-string:
+#### Force Response Status
+
+Prism can be forced to return different HTTP responses by specifying the status code in the query string:
 
 ```bash
 curl -v http://127.0.0.1:4010/pets/123?__code=404
@@ -51,6 +52,24 @@ Connection: keep-alive
 ```
 
 The body, headers, etc. for this response will be taken from the API description document.
+
+```bash
+curl -v http://127.0.0.1:4010/pets/123?__example=exampleKey
+```
+
+#### Request a specific example from a resource
+
+You can request a specific example from the named of your document by using the `__example` query string paramenter.
+
+#### Change the dynamic/static flag for a particular request
+
+You can override the `dynamic` keyword (which decides whether the generated example is static or dynamic) through the `__dynamic` query string parameter.
+
+```bash
+curl -v http://127.0.0.1:4010/pets/123?__dynamic=false
+```
+
+## Proxy
 
 ## Running in Production
 
