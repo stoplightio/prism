@@ -25,15 +25,7 @@ const proxyCommand: CommandModule = {
         }
       })
       .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.spec!)))
-      .options({
-        ...sharedOptions,
-        log: {
-          description: 'Select where the errors will be reported',
-          required: true,
-          choices: ['stdout', 'httpResponse', 'httpHeaders'] as const,
-          default: 'stdout' as const,
-        },
-      }),
+      .options(sharedOptions),
   handler: parsedArgs => {
     const p: CreateProxyServerOptions = pick(
       (parsedArgs as unknown) as CreateProxyServerOptions,

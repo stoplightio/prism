@@ -30,6 +30,12 @@ const sharedOptions: Dictionary<Options> = {
     boolean: true,
     default: process.env.NODE_ENV === 'production',
   },
+  log: {
+    description: 'Select where output violations will be reported.',
+    required: true,
+    choices: ['stdout', 'httpResponse', 'httpHeaders'] as const,
+    default: 'stdout' as const,
+  },
 };
 
 export default sharedOptions;
