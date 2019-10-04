@@ -1,4 +1,5 @@
 import { generate } from '@stoplight/prism-http/src/mocker/generator/HttpParamGenerator';
+import { serializeWithDeepObjectStyle } from '@stoplight/prism-http/src/mocker/serializer/style/deepObject';
 import {
   HttpParamStyles,
   IHttpOperation,
@@ -17,7 +18,14 @@ const { parse } = require('uri-template');
 
 function generateParamValues(specs: IHttpParam[]) {
   return specs.reduce((values, spec) => {
-    values[spec.name] = Option.toUndefined(generate(spec));
+    switch (spec.style) {
+      case HttpParamStyles.DeepObject:
+        values[spec.name] = serializeWithDeepObjectStyle(spec.name, Option.toUndefined(generate(spec)));
+        break;
+
+      default:
+        values[spec.name] = Option.toUndefined(generate(spec));
+    }
     return values;
   }, {});
 }
@@ -35,7 +43,10 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
         values: { ...values, ...generateParamValues(specs) },
       };
     }),
-    Either.map(({ template, values }) => parse(template).expand(values)),
+    Either.map(({ template, values }) => {
+      console.log({ template, values });
+      return parse(template).expand(values);
+    }),
   );
 }
 
@@ -62,6 +73,11 @@ function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
     .filter(spec => !spec.explode)
     .map(spec => spec.name)
     .join(',');
+  const deepObjectParams = specs
+    .filter(spec => spec.style === HttpParamStyles.DeepObject)
+    .map(spec => spec.name)
+    .map(name => `{+${name}}`)
+    .join('&');
 
   if (formExplodedParams) {
     path += `{?${formExplodedParams}*}`;
@@ -69,6 +85,10 @@ function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
 
   if (formImplodedParams) {
     path += `{${formExplodedParams ? '&' : '?'}${formImplodedParams}}`;
+  }
+
+  if (deepObjectParams) {
+    path += `${formExplodedParams || formImplodedParams ? '&' : '?'}${deepObjectParams}`;
   }
 
   return path;
