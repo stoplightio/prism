@@ -72,12 +72,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
       const { output } = response;
 
-      reply.code(output.statusCode);
-
-      if (output.headers) {
-        reply.headers(output.headers);
-      }
-
       if (response.validations.output.length > 0) {
         const violations = response.validations.output.map(detail => ({
           location: detail.path,
@@ -95,7 +89,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             },
           );
         } else if (config.log === 'httpHeaders') {
-          reply.header('SL_VALIDATION', violations);
+          reply.header('SL_VALIDATION', JSON.stringify(violations));
         }
       }
 
@@ -109,7 +103,12 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         }
       });
 
-      reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
+      if (output.headers) reply.headers(output.headers);
+
+      reply
+        .code(output.statusCode)
+        .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
+        .send(output.body);
     } catch (e) {
       if (!reply.sent) {
         const status = 'status' in e ? e.status : 500;
