@@ -21,11 +21,6 @@ describe('body params validation', () => {
     return server.fastify.close();
   });
 
-  describe('http operation with encodings', () => {
-    // Ref: https://github.com/stoplightio/prism/issues/496
-    test.todo('allowReserved set to true');
-  });
-
   describe('http operation with body param', () => {
     beforeEach(async () => {
       server = instantiatePrism2([

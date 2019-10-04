@@ -14,8 +14,10 @@ export interface IHttpOperationConfig {
 }
 
 export interface IHttpConfig extends IPrismConfig {
-  mock: IHttpOperationConfig;
+  mock: false | IHttpOperationConfig;
 }
+
+export type IMockHttpConfig = IHttpConfig & { mock: IHttpOperationConfig };
 
 export type IHttpNameValues = Dictionary<string | string[]>;
 
@@ -38,7 +40,6 @@ export interface IHttpResponse {
   statusCode: number;
   headers?: IHttpNameValue;
   body?: unknown;
-  responseType?: XMLHttpRequestResponseType;
 }
 
 export type ProblemJson = {

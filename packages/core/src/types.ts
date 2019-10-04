@@ -1,6 +1,7 @@
 import { IDiagnostic } from '@stoplight/types';
 import { Either } from 'fp-ts/lib/Either';
-import { Reader } from 'fp-ts/lib/Reader';
+import { ReaderEither } from 'fp-ts/lib/ReaderEither';
+import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
@@ -9,7 +10,7 @@ export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
 }
 
 export interface IPrismConfig {
-  mock: unknown;
+  mock: false | unknown;
   checkSecurity: boolean;
   validateRequest: boolean;
   validateResponse: boolean;
@@ -21,13 +22,14 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
   validateInput: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
+  forward: (resource: Resource, input: Input) => TaskEither<Error, Output>;
   mock: (
     opts: {
       resource: Resource;
       input: IPrismInput<Input>;
       config: Config['mock'];
     },
-  ) => Reader<Logger, Either<Error, Output>>;
+  ) => ReaderEither<Logger, Error, Output>;
   logger: Logger;
 };
 

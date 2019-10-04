@@ -38,6 +38,7 @@
     "@types/signale": "^1.2.1",
     "@types/split2": "^2.1.6",
     "@types/type-is": "^1.6.3",
+    "@types/urijs": "^1.19.4",
     "abstract-logging": "^1.0.0",
     "chance": "^1.0.18",
     "diff-js-xml": "^1.0.5",
