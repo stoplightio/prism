@@ -23,7 +23,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
   validateInput: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
-  forward: (resource: Resource, input: Input) => TaskEither<Error, Output>;
+  forward: (input: Input, baseUrl: string) => TaskEither<Error, Output>;
   mock: (
     opts: {
       resource: Resource;

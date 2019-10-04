@@ -1,13 +1,12 @@
 import { createLogger, IPrism } from '@stoplight/prism-core';
-import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpOperation } from '@stoplight/types';
 import { Scope as NockScope } from 'nock';
 import * as nock from 'nock';
 import { basename, resolve } from 'path';
-import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
+import { createInstance, IHttpProxyConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { getHttpOperationsFromResource } from '../getHttpOperations';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
-import { NO_BASE_URL_ERROR, NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
+import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -20,12 +19,16 @@ const serverValidationOas3Path = fixturePath('server-validation.oas3.json');
 
 const { version: prismVersion } = require('../../package.json');
 
-type Prism = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
+type Prism = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpProxyConfig>;
 type NockResWithInterceptors = NockScope & { interceptors: Array<{ req: { headers: string[] } }> };
 
-async function checkUserAgent(config: IHttpConfig, prism: Prism, resources: IHttpOperation[], headers = {}) {
-  const oasBaseUrl = 'http://example.com/api';
-
+async function checkUserAgent(
+  config: IHttpProxyConfig,
+  prism: Prism,
+  resources: IHttpOperation[],
+  headers = {},
+  oasBaseUrl: string,
+) {
   const nockResult = nock(oasBaseUrl)
     .get('/pet')
     .reply(200);
@@ -131,14 +134,16 @@ describe('Http Client .request', () => {
     });
 
     describe('mocking is off', () => {
-      const config: IHttpConfig = {
+      const baseUrl = 'https://stoplight.io';
+      const config: IHttpProxyConfig = {
         mock: false,
         log: 'stdout',
         checkSecurity: true,
         validateRequest: true,
         validateResponse: true,
+        upstream: new URL(baseUrl),
       };
-      const baseUrl = 'http://stoplight.io';
+
       const serverReply = 'hello world';
 
       beforeEach(() => {
@@ -164,35 +169,10 @@ describe('Http Client .request', () => {
           ));
       });
 
-      describe('path is valid and baseUrl is not set', () => {
-        it('fallbacks to a server from the spec', async () => {
-          const oasBaseUrl = 'http://example.com/api';
-          const reply = 'some demo reply';
-          nock(oasBaseUrl)
-            .get('/pet')
-            .reply(200, reply);
-
-          const result = await prism.request(
-            {
-              method: 'get',
-              url: {
-                path: '/pet',
-              },
-            },
-            resources,
-            config,
-          );
-
-          expect(result.output).toBeDefined();
-          expect(result.output.statusCode).toEqual(200);
-          expect(result.output.body).toEqual(reply);
-        });
-      });
-
       describe('Prism user-agent header', () => {
         describe('when the defaults are used', () => {
           it('should use Prism/<<version>> for the header', async () => {
-            const userAgent = await checkUserAgent(config, prism, resources);
+            const userAgent = await checkUserAgent(config, prism, resources, {}, 'https://stoplight.io');
 
             expect(userAgent).toBe(`Prism/${prismVersion}`);
           });
@@ -200,9 +180,15 @@ describe('Http Client .request', () => {
 
         describe('when user-agent is being overwritten', () => {
           it('should have user specified string as the header', async () => {
-            const userAgent = await checkUserAgent(config, prism, resources, {
-              'user-agent': 'Other_Agent/1.0.0',
-            });
+            const userAgent = await checkUserAgent(
+              config,
+              prism,
+              resources,
+              {
+                'user-agent': 'Other_Agent/1.0.0',
+              },
+              'https://stoplight.io',
+            );
 
             expect(userAgent).toBe('Other_Agent/1.0.0');
           });

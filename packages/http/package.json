@@ -28,8 +28,7 @@
     "openapi-sampler": "^1.0.0-beta.15",
     "pino": "^5.13.2",
     "tslib": "^1.10.0",
-    "type-is": "^1.6.18",
-    "urijs": "^1.19.1"
+    "type-is": "^1.6.18"
   },
   "publishConfig": {
     "access": "public"

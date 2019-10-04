@@ -49,7 +49,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                   config: config.mock,
                 })(components.logger.child({ name: 'NEGOTIATOR' })),
               )
-            : components.forward(resource, input);
+            : components
+                // @ts-ignore
+                .forward(input, config.upstream.href);
 
           return pipe(
             outputLocator,
