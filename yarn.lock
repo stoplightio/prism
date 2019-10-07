@@ -1166,9 +1166,9 @@
     urijs "~1.19.1"
 
 "@stoplight/json-ref-resolver@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/json-ref-resolver/-/json-ref-resolver-2.2.0.tgz#f12fed6ca618d9cd6031f5d0405a3ae5ffd54fad"
-  integrity sha512-42z5MNkLKF7Ynq2rM8YSd6SoJvEX5k0ugQujpB8Co7K5m3vhq1LK+/faFhuMfuFy6As9BxVUnDbGchYERXK17Q==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/json-ref-resolver/-/json-ref-resolver-2.3.0.tgz#a43e44e4afe4e3b4cf6d3dd201fcce628460f444"
+  integrity sha512-V5Lgf4jWAAsKC6Ru7ji80mfwZ9DnRbVeUDFKT12MGucXm7hGuv3s81NuxPS/RhgU5eShoEoLCzaMl+FSDd+wUg==
   dependencies:
     "@stoplight/json" "^3.1.0"
     "@stoplight/types" "^11.0.0"
