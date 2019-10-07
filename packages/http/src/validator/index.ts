@@ -3,41 +3,100 @@ import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IMediaTypeC
 import * as caseless from 'caseless';
 
 import { findFirst } from 'fp-ts/lib/Array';
+import * as Either from 'fp-ts/lib/Either';
+import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
-import { IHttpRequest, IHttpResponse } from '../types';
+import * as typeIs from 'type-is';
+import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
+import { IHttpResponse, ProblemJsonError } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
 
+import { sequenceT } from 'fp-ts/lib/Apply';
+import { getValidation, left, map, right } from 'fp-ts/lib/Either';
+import { deserialize, getMediaTypeWithContentAndSchema } from './validators/body';
+
+// .validate in these should return Either with a semigroup
 export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 
-const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
-  const results: IPrismDiagnostic[] = [];
+// should be put somewhere else, not under `validator/`
+// for now `deserializeInput` only cares for `body`, it should also deserialize other parts of a request, which is mostly about SimpleStyleDeserializer
+export const deserializeInput = (element: any, request: any) => {
+  const { body } = element;
   const mediaType = caseless(element.headers || {}).get('content-type');
 
-  // Replace resource.request in this function with request
-  const { request } = resource;
+  return pipe(
+    // in order to deserialize, we need to know how to do this (ie what mediaType it is):
+    getMediaTypeWithContentAndSchema((request && request.body && request.body.contents) || [], mediaType),
+    Either.fromOption(() => {
+      throw { message: 'should this ever happen?' };
+    }),
+    Either.chain(({ content, mediaType: mt, schema }) => {
+      const needsDeserialization = !!typeIs.is(mt, ['application/x-www-form-urlencoded']);
 
-  const { body } = element;
-  if (request && request.body) {
-    if (!body && request.body.required) {
-      results.push({ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error });
-    } else if (body) {
-      bodyValidator
-        .validate(body, (request && request.body && request.body.contents) || [], mediaType)
-        .forEach(validationResult => results.push(validationResult));
-    }
-  }
-
-  return results
-    .concat(headersValidator.validate(element.headers || {}, (request && request.headers) || []))
-    .concat(queryValidator.validate(element.url.query || {}, (request && request.query) || []));
+      return pipe(
+        needsDeserialization ? deserialize(content, schema, body) : Either.right(body),
+        Either.map(b => {
+          // the obj below should also have `query:` and `parameters:` as attributes (already deserialized)
+          return {
+            schema,
+            body: b,
+          };
+        }),
+      );
+    }),
+    Either.mapLeft(vs => {
+      return ProblemJsonError.fromTemplate(
+        UNPROCESSABLE_ENTITY,
+        // the message should/could be be something about failed deserialization
+        'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+        {
+          validation: vs.map((detail: any) => ({
+            location: ['body'].concat(detail.path as any),
+            severity: DiagnosticSeverity[detail.severity],
+            code: detail.code,
+            message: detail.message,
+          })),
+        },
+      );
+    }),
+  );
 };
 
+// should also be given already deserialized `query` and `parameters`
+const validateInput = ({ resource, element, schema, body }: any) => {
+  const mediaType = caseless(element.headers || {}).get('content-type');
+  const { request } = resource;
+
+  if (request && request.body) {
+    return pipe(
+      sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
+        (() =>
+          !body && request.body.required
+            ? left([
+                { code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error },
+              ] as NonEmptyArray<IPrismDiagnostic>)
+            : right([]))(),
+        (() =>
+          body
+            ? bodyValidator.validate(body, (request && request.body && request.body.contents) || [], mediaType, schema)
+            : right([]))(),
+        // example validation result: left([{ message: 'some other validation', severity: 0 }] as NonEmptyArray<IPrismDiagnostic>),
+        // headersValidator.validate and queryValidator.validate should be part of the sequence, they were not included so that the poc could be minimal
+      ),
+      map(() => body),
+    );
+  } else {
+    return right([]);
+  }
+};
+
+// should take `schema` and `body` from factory.ts like `validateInput` is doing
 const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
 
@@ -69,9 +128,13 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
           Option.getOrElse<IPrismDiagnostic[]>(() => []),
         );
 
-        return mismatchingMediaTypeError
-          .concat(bodyValidator.validate(element.body, operationResponse.contents || [], mediaType))
-          .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || []));
+        return (
+          mismatchingMediaTypeError
+            // .concat(bodyValidator.validate(element.body, operationResponse.contents || [], mediaType))
+            // ^ was commented out for the simplicity sake, `bodyValidator.validate` is now returning Either with a semigroup as its left value
+            // ^ `element.body` will be passes as `body`, which is, if that was needed, deserialised
+            .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || []))
+        );
       },
     ),
   );

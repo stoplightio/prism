@@ -1,11 +1,17 @@
-import { DiagnosticSeverity } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults } from 'lodash';
-import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, ProblemJsonError } from './types';
+import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from './types';
 import { validateSecurity } from './utils/security';
+
+function toVal(x: any) {
+  return pipe(
+    x,
+    Either.fold(e => e, r => r),
+  );
+}
 
 export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
@@ -15,29 +21,49 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     request: async (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
       const config = defaults<unknown, Config>(c, defaultConfig);
-      const inputValidations: IPrismDiagnostic[] = [];
 
+      // @ts-ignore
       return pipe(
         TaskEither.fromEither(components.route({ resources, input })),
-        TaskEither.chain(resource => {
-          if (config.validateRequest && resource) {
-            inputValidations.push(
-              ...components.validateInput({
-                resource,
-                element: input,
-              }),
-            );
-          }
+        // @ts-ignore
+        TaskEither.chain(r => {
+          const { request } = r as any;
+
+          return pipe(
+            components.deserializeInput(input, request),
+            Either.map((e: any) => {
+              return {
+                resource: r as any,
+                rest: e as any,
+              };
+            }),
+            TaskEither.fromEither,
+          );
+        }),
+        TaskEither.chain(({ resource, rest }: any) => {
+          // input validations are now created here and passed down the chain
+          const inputValidations_: IPrismDiagnostic[] =
+            config.validateRequest && resource
+              ? (toVal(
+                  components.validateInput({
+                    resource,
+                    element: input,
+                    // @ts-ignore
+                    schema: rest.schema,
+                    body: rest.body,
+                  }),
+                ) as IPrismDiagnostic[])
+              : [];
 
           const inputValidationResult = config.checkSecurity
-            ? inputValidations.concat(
+            ? inputValidations_.concat(
                 pipe(
                   validateSecurity(input, resource),
                   map(sec => [sec]),
                   getOrElse<IPrismDiagnostic[]>(() => []),
                 ),
               )
-            : inputValidations;
+            : inputValidations_;
 
           const outputLocator = config.mock
             ? TaskEither.fromEither(
@@ -54,17 +80,17 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
           return pipe(
             outputLocator,
-            TaskEither.map(output => ({ output, resource })),
+            TaskEither.map(output => ({ output, resource, inputValidations: inputValidations_ })),
           );
         }),
-        TaskEither.map(({ output, resource }) => {
-          let outputValidations: IPrismDiagnostic[] = [];
-          if (config.validateResponse && resource) {
-            outputValidations = components.validateOutput({
-              resource,
-              element: output,
-            });
-          }
+        TaskEither.map(({ output, resource, inputValidations }) => {
+          const outputValidations: IPrismDiagnostic[] =
+            config.validateResponse && resource
+              ? components.validateOutput({
+                  resource,
+                  element: output,
+                })
+              : [];
 
           return {
             input,
@@ -75,7 +101,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             },
           };
         }),
-      )().then(v =>
+      )().then((v: any) =>
         pipe(
           v,
           Either.fold(

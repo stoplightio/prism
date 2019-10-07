@@ -2,13 +2,12 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Dictionary, IHttpEncoding, IMediaTypeContent } from '@stoplight/types';
 import * as Array from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
-import * as typeIs from 'type-is';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
-import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 
 function deserializeFormBody(
@@ -63,15 +62,8 @@ function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: st
   );
 }
 
-function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, target: unknown) {
-  return pipe(
-    mediaType,
-    Option.fromPredicate(mt => !typeIs.is(mt, ['application/x-www-form-urlencoded'])),
-    Option.map(() => validateAgainstSchema(target, schema)),
-  );
-}
-
-function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string) {
+// should be put somewhere else, not under /validators
+export function deserialize(content: IMediaTypeContent, schema: JSONSchema, target: string) {
   const encodings = get(content, 'encodings', []);
   const encodedUriParams = splitUriParams(target);
 
@@ -79,36 +71,39 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     validateAgainstReservedCharacters(encodedUriParams, encodings),
     Either.map(decodeUriEntities),
     Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-    Either.fold(e => Option.some(e), deserialised => Option.some(validateAgainstSchema(deserialised, schema))),
   );
 }
 
-export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
+export const getMediaTypeWithContentAndSchema = (specs: any, mediaType: any) => {
+  return pipe(
+    Option.fromNullable(mediaType),
+    Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
+    Option.alt(() => Option.some({ content: specs[0] || {}, mediaType: 'random' })),
+    Option.chain(({ mediaType: mt, content }) =>
+      pipe(
+        Option.fromNullable(content.schema),
+        Option.map(schema => ({ schema, mediaType: mt, content })),
+      ),
+    ),
+  );
+};
+
+export class HttpBodyValidator {
+  // `this.prefix` isn't very fp, should just remove the constructor and pass `prefix` it to `validate`
   constructor(private prefix: string) {}
 
-  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
-    const mediaTypeWithContentAndSchema = pipe(
-      Option.fromNullable(mediaType),
-      Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
-      Option.alt(() => Option.some({ content: specs[0] || {}, mediaType: 'random' })),
-      Option.chain(({ mediaType: mt, content }) =>
-        pipe(
-          Option.fromNullable(content.schema),
-          Option.map(schema => ({ schema, mediaType: mt, content })),
-        ),
-      ),
-    );
-
+  public validate(
+    target: any,
+    specs: IMediaTypeContent[],
+    mediaType?: string,
+    schema?: any,
+  ): Either.Either<NonEmptyArray<IPrismDiagnostic>, any> {
     return pipe(
-      mediaTypeWithContentAndSchema,
-      Option.chain(({ content, mediaType: mt, schema }) =>
-        pipe(
-          validateBodyIfNotFormEncoded(mt, schema, target),
-          Option.alt(() => deserializeAndValidate(content, schema, target)),
-          Option.map(diagnostics => applyPrefix(this.prefix, diagnostics)),
-        ),
-      ),
-      Option.getOrElse<IPrismDiagnostic[]>(() => []),
+      validateAgainstSchema(target, schema),
+      diagnostics => applyPrefix(this.prefix, diagnostics),
+      // TODO: should adjust/change/take a closer look at the last following 2 lines:
+      Option.fromNullable,
+      Option.fold(() => Either.right([]), x => Either.left(x as NonEmptyArray<IPrismDiagnostic>)),
     );
   }
 }
