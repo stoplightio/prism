@@ -16,6 +16,7 @@ import {
 } from '@stoplight/types';
 import * as Array from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
+import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 // @ts-ignore
@@ -82,7 +83,6 @@ function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
     generateParamValues(specs),
     Either.chain(values => {
       return pipe(
-        // @todo: fixme
         createPathUriTemplate(operation.path, specs),
         Either.map(template => ({ template, values })),
       );
