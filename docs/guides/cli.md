@@ -71,6 +71,53 @@ curl -v http://127.0.0.1:4010/pets/123?__dynamic=false
 
 ## Proxy
 
+This commands creates an HTTP server that will proxy all the requests to the specified upstream server. Prism will analyze the request coming in and the response coming back from the upstream server and report the discrepancies with what's declared in the provided OpenAPI document.
+
+```
+prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2
+
+[CLI] …  awaiting  Starting Prism…
+[HTTP SERVER] ℹ  info      Server listening at http://127.0.0.1:4010
+[CLI] ●  note      GET        http://127.0.0.1:4010/pets
+[CLI] ●  note      POST       http://127.0.0.1:4010/pets
+[CLI] ●  note      GET        http://127.0.0.1:4010/pets/{petId}
+```
+
+By default, the output violations will be reported on the standard output, but you can also specify to embed these in the HTTP Response:
+
+```bash
+prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2 --log httpHeaders
+… …
+
+curl -v -s http://localhost:4010/pets/10 > /dev/null
+
+< HTTP/1.1 404 Not Found
+< access-control-allow-origin: *
+< sl_validation: [{"severity":"Error","message":"The received media type does not match the one specified in the document"},{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
+< date: Mon, 07 Oct 2019 11:01:51 GMT
+< access-control-allow-methods: GET, POST, DELETE, PUT
+< access-control-allow-headers: Content-Type, api_key, Authorization
+< content-type: application/xml
+< connection: close
+< server: Jetty(9.2.9.v20150224)
+< content-length: 172
+```
+
+You can see there's a `sl_validation` header which is a JSON Payload with all the violations found in the response.
+
+```bash
+prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2 --log httpResponse
+… …
+
+curl -v http://localhost:4010/pets/10
+
+< HTTP/1.1 422 Unprocessable Entity
+```
+
+The response body contains the found output violations.
+
+**Note:** Server definitions (OAS3) and Host + BasePath (OAS2) are ignored. You need to manually specify the upstream URL when invoking Prism.
+
 ## Running in Production
 
 When running in development mode (which happens when the `NODE_ENV` environment variable is not set to `production`) or the `-m` flag is set to false, both the HTTP Server and the CLI (which is responsible of parsing and showing the received logs on the screen) will run within the same process.

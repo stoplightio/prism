@@ -94,7 +94,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       }
 
       response.validations.output.forEach(validation => {
-        const message = `Output violation: ${validation.path || ''} — ${validation.message}`;
+        const message = `Output violation: ${validation.path || ''} ${validation.message}`;
         if (validation.severity === DiagnosticSeverity.Error) {
           request.log.error(message);
         } else if (validation.severity === DiagnosticSeverity.Warning) {
