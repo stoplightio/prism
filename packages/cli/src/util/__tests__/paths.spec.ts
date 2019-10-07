@@ -56,7 +56,7 @@ describe('createExamplePath()', () => {
           },
           responses: [{ code: '200' }],
         }),
-        e => expect(e).toMatchSnapshot(),
+        e => expect(e.message).toEqual('Unsupported parameter style: pipeDelimited'),
       );
     });
   });
