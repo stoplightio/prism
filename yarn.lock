@@ -1166,9 +1166,9 @@
     urijs "~1.19.1"
 
 "@stoplight/json-ref-resolver@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/json-ref-resolver/-/json-ref-resolver-2.2.0.tgz#f12fed6ca618d9cd6031f5d0405a3ae5ffd54fad"
-  integrity sha512-42z5MNkLKF7Ynq2rM8YSd6SoJvEX5k0ugQujpB8Co7K5m3vhq1LK+/faFhuMfuFy6As9BxVUnDbGchYERXK17Q==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/json-ref-resolver/-/json-ref-resolver-2.3.0.tgz#a43e44e4afe4e3b4cf6d3dd201fcce628460f444"
+  integrity sha512-V5Lgf4jWAAsKC6Ru7ji80mfwZ9DnRbVeUDFKT12MGucXm7hGuv3s81NuxPS/RhgU5eShoEoLCzaMl+FSDd+wUg==
   dependencies:
     "@stoplight/json" "^3.1.0"
     "@stoplight/types" "^11.0.0"
@@ -1254,9 +1254,9 @@
   integrity sha512-VRw2xEGbll3ZiTQ4J02/hUjNqZoue1bMhoo2dgM2LXjDdyaq4q80HgBDHwpI0/VKlo4Eg+BavyQMv/NYgTetzA==
 
 "@types/chance@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@types/chance/-/chance-1.0.6.tgz#873a4b646ce30616cd2fdf4c7753a8bf4210ac03"
-  integrity sha512-CQ+PccoeLogLC1n9PezDXHMJ6wZVTE3liQPqKTtWQcTGUQK463gdPRWfyRhwBf0fi91IsOo2QlBacVa5+ppsTw==
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@types/chance/-/chance-1.0.7.tgz#c680a3891a505d8c626ec3a46bb1c0496419dfb6"
+  integrity sha512-LBOkJ7899SSLm08KicLYX3DqWUhfDspMLWNGuV1UPpL3iUENSvI0THGlf05n9yNHTR7zDlV/mCGZ7ZJ0ws8v3Q==
 
 "@types/events@*":
   version "3.0.0"
@@ -1264,9 +1264,9 @@
   integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
 
 "@types/faker@^4.1.5":
-  version "4.1.5"
-  resolved "https://registry.yarnpkg.com/@types/faker/-/faker-4.1.5.tgz#8f620f9c9a67150aa0a32b4e8a407da43fca61d4"
-  integrity sha512-YSDqoBEWYGdNk53xSkkb6REaUaVSlIjxIAGjj/nbLzlZOit7kUU+nA2zC2qQkIVO4MQ+3zl4Sz7aw+kbpHHHUQ==
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/@types/faker/-/faker-4.1.6.tgz#e931064b1d50333044c28668c13033334cf67c71"
+  integrity sha512-Tp4xHecf4UX8VOvSfsL1QlMbOfukGbbAhQbHvPIcX56NmNql4MAamV7E/K5zdYfxlk8FTcxwsaCZTxM79zJzPQ==
 
 "@types/glob@^7.1.1":
   version "7.1.1"
@@ -5183,9 +5183,9 @@ lines-and-columns@^1.1.6:
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
 lint-staged@^9.2.3:
-  version "9.4.0"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-9.4.0.tgz#dd4abcc9a82539fd290aed1584e3241b8f8af687"
-  integrity sha512-jTu1KoGiGTSffM539wK+3igVqDGVsby3KwDBaXL471YndahkjnavLX+R5Nsk49JwklyMo0ZAXay1BaoyA6d2Jw==
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-9.4.1.tgz#60c0f85745bd398e6460aa7f5adb3cad3a2b862c"
+  integrity sha512-zFRbo1bAJEVf1m33paTTjDVfy2v3lICCqHfmQSgNoI+lWpi7HPG5y/R2Y7Whdce+FKxlZYs/U1sDSx8+nmQdDA==
   dependencies:
     chalk "^2.4.2"
     commander "^2.20.0"
