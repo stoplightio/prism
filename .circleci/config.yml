@@ -120,9 +120,6 @@ workflows:
             tags:
               only: /^v.*/
           requires:
-            - build
-            - harness
-            - harness-macos
             - publish
       - stoplight/analyze:
           filters:
@@ -131,8 +128,4 @@ workflows:
             tags:
               only: /^v.*/
           requires:
-            - build
-            - harness
-            - harness-macos
-            - publish
             - upload_artifacts
