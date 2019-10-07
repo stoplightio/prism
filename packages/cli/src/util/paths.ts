@@ -16,7 +16,6 @@ import {
 } from '@stoplight/types';
 import * as Array from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
-import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 // @ts-ignore
@@ -45,7 +44,7 @@ function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
 }
 
 function generateParamValues(specs: IHttpParam[]) {
-  return specs.reduce((valuesOrError: Either.Either<Error, Option.Option<Dictionary<unknown, string>>>, spec) => {
+  return specs.reduce((valuesOrError: Either.Either<Error, Dictionary<unknown, string>>, spec) => {
     return pipe(
       valuesOrError,
       Either.chain(values =>
@@ -58,41 +57,43 @@ function generateParamValues(specs: IHttpParam[]) {
         ),
       ),
     );
-  }, Either.right(Option.some({})));
+  }, Either.right({}));
+}
+
+function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
+  const specs = get(operation, 'request.path', []);
+
+  return pipe(
+    generateParamValues(specs),
+    Either.chain(values => {
+      return pipe(
+        // @todo: fixme
+        Either.tryCatch(() => createPathUriTemplate(operation.path, specs), Either.toError),
+        Either.map(template => ({ template, values })),
+      );
+    }),
+  );
+}
+
+function generateTemplateAndValuesForQueryParams(template: string, operation: IHttpOperation) {
+  const specs = get(operation, 'request.query', []);
+
+  return pipe(
+    generateParamValues(specs),
+    Either.map(values => ({ template: createQueryUriTemplate(template, specs), values })),
+  );
 }
 
 export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
   return pipe(
-    Either.tryCatch(() => {
-      const specs = get(operation, 'request.path', []);
-      return {
-        template: createPathUriTemplate(operation.path, specs),
-        values: Either.fold(
-          e => {
-            throw e;
-          },
-          v => v,
-        )(generateParamValues(specs)),
-      };
-    }, Either.toError),
-    Either.chain(({ template, values }) => {
-      const specs = get(operation, 'request.query', []);
-      try {
-        return Either.right({
-          template: createQueryUriTemplate(template, specs),
-          values: {
-            ...values,
-            ...Either.fold(
-              e => {
-                throw e;
-              },
-              v => v,
-            )(generateParamValues(specs)),
-          },
-        });
-      } catch (e) {
-        return Either.left(e);
-      }
+    generateTemplateAndValuesForPathParams(operation),
+    Either.chain(({ template: pTemplate, values: pValues }) => {
+      return pipe(
+        generateTemplateAndValuesForQueryParams(pTemplate, operation),
+        Either.map(({ template: qTemplate, values: qValues }) => {
+          return { template: qTemplate, values: { ...pValues, ...qValues } };
+        }),
+      );
     }),
     Either.map(({ template, values }) => parse(template).expand(values)),
   );

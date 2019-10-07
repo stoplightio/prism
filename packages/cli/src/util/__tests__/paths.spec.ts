@@ -56,7 +56,7 @@ describe('createExamplePath()', () => {
           },
           responses: [{ code: '200' }],
         }),
-        e => expect(e.message).toEqual('Unsupported parameter style: pipeDelimited'),
+        e => expect(e.message).toEqual('Space/pipe/comma delimited style is only applicable to array parameter'),
       );
     });
   });
