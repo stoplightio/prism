@@ -181,7 +181,7 @@ describe('createExamplePath()', () => {
         }),
         r =>
           expect(r).toEqual(
-            '/path/test1/test1,test2/;p3=test1,test2?q1=test1&q2=test1%20test2&q3=test1%7Ctest2&q4=test1&q4=test2&q5[a][]=test1&q5[a][]=test2&q5[b][ba]=1&q5[b][bb]=2',
+            '/path/test1/.test1,test2/;p3=test1,test2?q1=test1&q2=test1%20test2&q3=test1%7Ctest2&q4=test1&q4=test2&q5[a][]=test1&q5[a][]=test2&q5[b][ba]=1&q5[b][bb]=2',
           ),
       );
     });

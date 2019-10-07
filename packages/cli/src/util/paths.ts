@@ -21,6 +21,21 @@ import { get } from 'lodash';
 // @ts-ignore
 import { parse } from 'uri-template';
 
+export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
+  return pipe(
+    generateTemplateAndValuesForPathParams(operation),
+    Either.chain(({ template: pTemplate, values: pValues }) => {
+      return pipe(
+        generateTemplateAndValuesForQueryParams(pTemplate, operation),
+        Either.map(({ template: qTemplate, values: qValues }) => {
+          return { template: qTemplate, values: { ...pValues, ...qValues } };
+        }),
+      );
+    }),
+    Either.map(({ template, values }) => parse(template).expand(values)),
+  );
+}
+
 function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
   return pipe(
     generate(spec),
@@ -68,7 +83,7 @@ function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
     Either.chain(values => {
       return pipe(
         // @todo: fixme
-        Either.tryCatch(() => createPathUriTemplate(operation.path, specs), Either.toError),
+        createPathUriTemplate(operation.path, specs),
         Either.map(template => ({ template, values })),
       );
     }),
@@ -84,33 +99,36 @@ function generateTemplateAndValuesForQueryParams(template: string, operation: IH
   );
 }
 
-export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
-  return pipe(
-    generateTemplateAndValuesForPathParams(operation),
-    Either.chain(({ template: pTemplate, values: pValues }) => {
-      return pipe(
-        generateTemplateAndValuesForQueryParams(pTemplate, operation),
-        Either.map(({ template: qTemplate, values: qValues }) => {
-          return { template: qTemplate, values: { ...pValues, ...qValues } };
-        }),
-      );
-    }),
-    Either.map(({ template, values }) => parse(template).expand(values)),
-  );
+function createPathUriTemplate(inputPath: string, specs: IHttpPathParam[]): Either.Either<Error, string> {
+  // defaults for query: style=Simple exploded=false
+  return specs.filter(spec => spec.required !== false).reduce((pathOrError: Either.Either<Error, string>, spec) => {
+    return pipe(
+      pathOrError,
+      Either.chain(path => {
+        return pipe(
+          createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
+          Either.map(template => path.replace(`{${spec.name}}`, template)),
+        );
+      }),
+    );
+  }, Either.right(inputPath));
 }
 
-function createPathUriTemplate(path: string, specs: IHttpPathParam[]) {
-  // defaults for query: style=Simple exploded=false
-  return specs
-    .filter(spec => spec.required !== false)
-    .reduce(
-      (p, spec) =>
-        path.replace(
-          `{${spec.name}}`,
-          createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
-        ),
-      path,
-    );
+function createParamUriTemplate(name: string, style: HttpParamStyles, explode: boolean) {
+  const starOrVoid = explode ? '*' : '';
+  switch (style) {
+    case HttpParamStyles.Simple:
+      return Either.right(`{${name}${starOrVoid}}`);
+
+    case HttpParamStyles.Label:
+      return Either.right(`{.${name}${starOrVoid}}`);
+
+    case HttpParamStyles.Matrix:
+      return Either.right(`{;${name}${starOrVoid}}`);
+
+    default:
+      return Either.left(new Error(`Unsupported parameter style: ${style}`));
+  }
 }
 
 function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
@@ -148,18 +166,4 @@ function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
   }
 
   return path;
-}
-
-function createParamUriTemplate(name: string, style: HttpParamStyles, explode: boolean) {
-  const starOrVoid = explode ? '*' : '';
-  switch (style) {
-    case HttpParamStyles.Simple:
-      return `{${name}${starOrVoid}}`;
-    case HttpParamStyles.Label:
-      return `{.${name}${starOrVoid}}`;
-    case HttpParamStyles.Matrix:
-      return `{;${name}${starOrVoid}}`;
-    default:
-      throw new Error(`Unsupported parameter style: ${style}`);
-  }
 }
