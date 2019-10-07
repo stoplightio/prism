@@ -1,7 +1,7 @@
 import { HttpParamStyles } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { JSONSchema } from '../../../types';
+import { partial } from 'lodash';
 
 function serializeAndImplode(separator: string, name: string, value: Array<string | number | boolean>) {
   return (
@@ -45,6 +45,6 @@ export function serializeWithDelimitedStyle(
   );
 }
 
-export const serializeWithCommaDelimitedStyle = serializeWithDelimitedStyle.bind(undefined, ',');
-export const serializeWithSpaceDelimitedStyle = serializeWithDelimitedStyle.bind(undefined, '%20');
-export const serializeWithPipeDelimitedStyle = serializeWithDelimitedStyle.bind(undefined, '|');
+export const serializeWithCommaDelimitedStyle = partial(serializeWithDelimitedStyle, ',');
+export const serializeWithSpaceDelimitedStyle = partial(serializeWithDelimitedStyle, '%20');
+export const serializeWithPipeDelimitedStyle = partial(serializeWithDelimitedStyle, '|');

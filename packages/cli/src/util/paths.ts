@@ -1,7 +1,6 @@
 import { generate } from '@stoplight/prism-http/src/mocker/generator/HttpParamGenerator';
 import { serializeWithDeepObjectStyle } from '@stoplight/prism-http/src/mocker/serializer/style/deepObject';
 import {
-  serializeWithCommaDelimitedStyle,
   serializeWithPipeDelimitedStyle,
   serializeWithSpaceDelimitedStyle,
 } from '@stoplight/prism-http/src/mocker/serializer/style/delimited';
@@ -19,7 +18,7 @@ import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 // @ts-ignore
-const { parse } = require('uri-template');
+import { parse } from 'uri-template';
 
 function generateParamValues(specs: IHttpParam[]) {
   return specs.reduce((values, spec) => {
