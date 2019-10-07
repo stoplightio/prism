@@ -26,22 +26,16 @@ export function serializeWithDelimitedStyle(
   name: string,
   value: Array<string | number | boolean>,
   explode?: boolean,
-) {
+): Either.Either<Error, string> {
   return pipe(
     Either.right(value),
     Either.chain(
       v =>
         Array.isArray(v)
           ? Either.right(v)
-          : Either.left(new Error('Space/pipe/comma.. delimited style is only applicable to array parameter')),
+          : Either.left(new Error('Space/pipe/comma delimited style is only applicable to array parameter')),
     ),
     Either.map(() => (explode ? serializeAndExplode(name, value) : serializeAndImplode(separator, name, value))),
-    Either.fold(
-      e => {
-        throw e;
-      },
-      serialized => serialized,
-    ),
   );
 }
 

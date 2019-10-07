@@ -5,6 +5,7 @@ import {
   serializeWithSpaceDelimitedStyle,
 } from '@stoplight/prism-http/src/mocker/serializer/style/delimited';
 import {
+  Dictionary,
   HttpParamStyles,
   IHttpOperation,
   IHttpParam,
@@ -13,6 +14,7 @@ import {
   INodeExample,
   INodeExternalExample,
 } from '@stoplight/types';
+import * as Array from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -20,49 +22,73 @@ import { get } from 'lodash';
 // @ts-ignore
 import { parse } from 'uri-template';
 
+function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
+  return pipe(
+    generate(spec),
+    Either.fromOption(() => new Error(`Cannot generate value for: ${spec.name}`)),
+    Either.chain(value => {
+      switch (spec.style) {
+        case HttpParamStyles.DeepObject:
+          return Either.right(serializeWithDeepObjectStyle(spec.name, value));
+
+        case HttpParamStyles.PipeDelimited:
+          return serializeWithPipeDelimitedStyle(spec.name, value as Array<string | number | boolean>, spec.explode);
+
+        case HttpParamStyles.SpaceDelimited:
+          return serializeWithSpaceDelimitedStyle(spec.name, value as Array<string | number | boolean>, spec.explode);
+
+        default:
+          return Either.right(value);
+      }
+    }),
+  );
+}
+
 function generateParamValues(specs: IHttpParam[]) {
-  return specs.reduce((values, spec) => {
-    const value = Option.toUndefined(generate(spec));
-    switch (spec.style) {
-      case HttpParamStyles.DeepObject:
-        values[spec.name] = serializeWithDeepObjectStyle(spec.name, value);
-        break;
-
-      case HttpParamStyles.PipeDelimited:
-        values[spec.name] = serializeWithPipeDelimitedStyle(
-          spec.name,
-          value as Array<string | number | boolean>,
-          spec.explode,
-        );
-        break;
-
-      case HttpParamStyles.SpaceDelimited:
-        values[spec.name] = serializeWithSpaceDelimitedStyle(
-          spec.name,
-          value as Array<string | number | boolean>,
-          spec.explode,
-        );
-        break;
-
-      default:
-        values[spec.name] = value;
-    }
-    return values;
-  }, {});
+  return specs.reduce((valuesOrError: Either.Either<Error, Option.Option<Dictionary<unknown, string>>>, spec) => {
+    return pipe(
+      valuesOrError,
+      Either.chain(values =>
+        pipe(
+          generateParamValue(spec),
+          Either.map(value => ({
+            ...values,
+            [spec.name]: value,
+          })),
+        ),
+      ),
+    );
+  }, Either.right(Option.some({})));
 }
 
 export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
   return pipe(
     Either.tryCatch(() => {
       const specs = get(operation, 'request.path', []);
-      return { template: createPathUriTemplate(operation.path, specs), values: generateParamValues(specs) };
+      return {
+        template: createPathUriTemplate(operation.path, specs),
+        values: Either.fold(
+          e => {
+            throw e;
+          },
+          v => v,
+        )(generateParamValues(specs)),
+      };
     }, Either.toError),
     Either.chain(({ template, values }) => {
       const specs = get(operation, 'request.query', []);
       try {
         return Either.right({
           template: createQueryUriTemplate(template, specs),
-          values: { ...values, ...generateParamValues(specs) },
+          values: {
+            ...values,
+            ...Either.fold(
+              e => {
+                throw e;
+              },
+              v => v,
+            )(generateParamValues(specs)),
+          },
         });
       } catch (e) {
         return Either.left(e);

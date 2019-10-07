@@ -17,7 +17,7 @@ function generateStaticExample(examples: Array<INodeExample | INodeExternalExamp
   );
 }
 
-export function generate(param: IHttpParam) {
+export function generate(param: IHttpParam): Option.Option<unknown> {
   return pipe(
     Option.fromNullable(param.examples),
     Option.chain(generateStaticExample),
