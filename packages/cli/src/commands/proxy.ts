@@ -5,12 +5,12 @@ import { createMultiProcessPrism, CreateProxyServerOptions, createSingleProcessP
 import sharedOptions from './sharedOptions';
 
 const proxyCommand: CommandModule = {
-  describe: 'Start a proxy server with the given spec file',
-  command: 'proxy <spec> <upstream>',
+  describe: 'Start a proxy server with the given document file',
+  command: 'proxy <document> <upstream>',
   builder: yargs =>
     yargs
-      .positional('spec', {
-        description: 'Path to a spec file. Can be both a file or a fetchable resource on the web.',
+      .positional('document', {
+        description: 'Path to a document file. Can be both a file or a fetchable resource on the web.',
         type: 'string',
       })
       .positional('upstream', {
@@ -24,7 +24,7 @@ const proxyCommand: CommandModule = {
           throw new Error(`Invalid upstream URL provided: ${value}`);
         }
       })
-      .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.spec!)))
+      .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.document!)))
       .options(sharedOptions),
   handler: parsedArgs => {
     const p: CreateProxyServerOptions = pick(

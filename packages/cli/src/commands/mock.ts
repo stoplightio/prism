@@ -5,15 +5,15 @@ import { CreateMockServerOptions, createMultiProcessPrism, createSingleProcessPr
 import sharedOptions from './sharedOptions';
 
 const mockCommand: CommandModule = {
-  describe: 'Start a mock server with the given spec file',
-  command: 'mock <spec>',
+  describe: 'Start a mock server with the given document file',
+  command: 'mock <document>',
   builder: yargs =>
     yargs
-      .positional('spec', {
-        description: 'Path to a spec file. Can be both a file or a fetchable resource on the web.',
+      .positional('document', {
+        description: 'Path to a document file. Can be both a file or a fetchable resource on the web.',
         type: 'string',
       })
-      .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.spec!)))
+      .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.document!)))
       .options({
         ...sharedOptions,
         dynamic: {
