@@ -5,15 +5,11 @@ import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { generate as generateDynamicExample } from './JSONSchema';
 
-function isExternalExample(example: INodeExample | INodeExternalExample): example is INodeExternalExample {
-  return !!(example as INodeExternalExample).externalValue;
-}
-
 function generateStaticExample(examples: Array<INodeExample | INodeExternalExample>) {
   return pipe(
     Option.fromNullable(examples),
-    Option.chain(exs => Option.fromNullable(exs[Math.floor(Math.random() * exs.length)])),
-    Option.map(example => (isExternalExample(example) ? example.externalValue : example.value)),
+    Option.mapNullable(exs => exs[Math.floor(Math.random() * exs.length)]),
+    Option.mapNullable(example => (example as INodeExample).value),
   );
 }
 
