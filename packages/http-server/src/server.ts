@@ -94,12 +94,13 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       }
 
       response.validations.output.forEach(validation => {
+        const message = `Output violation: ${validation.path || ''} — ${validation.message}`;
         if (validation.severity === DiagnosticSeverity.Error) {
-          request.log.error(`${validation.path} — ${validation.message}`);
+          request.log.error(message);
         } else if (validation.severity === DiagnosticSeverity.Warning) {
-          request.log.warn(`${validation.path} — ${validation.message}`);
+          request.log.warn(message);
         } else {
-          request.log.info(`${validation.path} — ${validation.message}`);
+          request.log.info(message);
         }
       });
 
