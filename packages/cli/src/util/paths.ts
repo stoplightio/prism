@@ -29,7 +29,7 @@ function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
     Either.chain(value => {
       switch (spec.style) {
         case HttpParamStyles.DeepObject:
-          return Either.right(serializeWithDeepObjectStyle(spec.name, value));
+          return serializeWithDeepObjectStyle(spec.name, value);
 
         case HttpParamStyles.PipeDelimited:
           return serializeWithPipeDelimitedStyle(spec.name, value as Array<string | number | boolean>, spec.explode);

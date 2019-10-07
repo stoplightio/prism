@@ -1,7 +1,8 @@
 import { HttpParamStyles } from '@stoplight/types';
+import * as Either from 'fp-ts/lib/Either';
 
 export function serializeWithDeepObjectStyle(name: string, value: any) {
-  return serialize(name, [], value);
+  return Either.right(serialize(name, [], value));
 }
 
 function serialize(name: string, path: string[], value: any): string {

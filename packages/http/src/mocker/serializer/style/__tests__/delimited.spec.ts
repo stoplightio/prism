@@ -1,3 +1,4 @@
+import { assertLeft, assertRight } from '../../../../__tests__/utils';
 import {
   serializeWithCommaDelimitedStyle,
   serializeWithDelimitedStyle,
@@ -8,13 +9,13 @@ import {
 describe('serializeWithPipeDelimitedStyle()', () => {
   describe('explode is not set', () => {
     it('serializes correctly', () => {
-      expect(serializeWithPipeDelimitedStyle('a', [1, 2, 3])).toEqual('a=1|2|3');
+      assertRight(serializeWithPipeDelimitedStyle('a', [1, 2, 3]), v => expect(v).toEqual('a=1|2|3'));
     });
   });
 
   describe('explode is set', () => {
     it('serializes correctly', () => {
-      expect(serializeWithPipeDelimitedStyle('a', [1, 2, 3], true)).toEqual('a=1&a=2&a=3');
+      assertRight(serializeWithPipeDelimitedStyle('a', [1, 2, 3], true), v => expect(v).toEqual('a=1&a=2&a=3'));
     });
   });
 });
@@ -22,13 +23,13 @@ describe('serializeWithPipeDelimitedStyle()', () => {
 describe('serializeWithSpaceDelimitedStyle()', () => {
   describe('explode is not set', () => {
     it('serializes correctly', () => {
-      expect(serializeWithSpaceDelimitedStyle('a', [1, 2, 3])).toEqual('a=1%202%203');
+      assertRight(serializeWithSpaceDelimitedStyle('a', [1, 2, 3]), v => expect(v).toEqual('a=1%202%203'));
     });
   });
 
   describe('explode is set', () => {
     it('serializes correctly', () => {
-      expect(serializeWithSpaceDelimitedStyle('a', [1, 2, 3], true)).toEqual('a=1&a=2&a=3');
+      assertRight(serializeWithSpaceDelimitedStyle('a', [1, 2, 3], true), v => expect(v).toEqual('a=1&a=2&a=3'));
     });
   });
 });
@@ -36,13 +37,13 @@ describe('serializeWithSpaceDelimitedStyle()', () => {
 describe('serializeWithCommaDelimitedStyle()', () => {
   describe('explode is not set', () => {
     it('serializes correctly', () => {
-      expect(serializeWithCommaDelimitedStyle('a', [1, 2, 3])).toEqual('a=1,2,3');
+      assertRight(serializeWithCommaDelimitedStyle('a', [1, 2, 3]), v => expect(v).toEqual('a=1,2,3'));
     });
   });
 
   describe('explode is set', () => {
     it('serializes correctly', () => {
-      expect(serializeWithCommaDelimitedStyle('a', [1, 2, 3], true)).toEqual('a=1&a=2&a=3');
+      assertRight(serializeWithCommaDelimitedStyle('a', [1, 2, 3], true), v => expect(v).toEqual('a=1&a=2&a=3'));
     });
   });
 });
@@ -50,7 +51,9 @@ describe('serializeWithCommaDelimitedStyle()', () => {
 describe('serializeWithDelimitedStyle()', () => {
   describe('payload is not an array', () => {
     it('throws error', () => {
-      expect(() => serializeWithDelimitedStyle('|', 'a', 'test' as any, true)).toThrowError();
+      assertLeft(serializeWithDelimitedStyle('|', 'a', 'test' as any, true), e =>
+        expect(e.message).toEqual('Space/pipe/comma delimited style is only applicable to array parameter'),
+      );
     });
   });
 });
