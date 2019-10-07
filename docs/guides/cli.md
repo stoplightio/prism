@@ -35,7 +35,7 @@ Connection: keep-alive
 
 Responses will be mocked using realistic data that conforms to the type in the description.
 
-### Dynamic configuration through CLI
+### Runtime Configuration in HTTP
 
 #### Force Response Status
 
