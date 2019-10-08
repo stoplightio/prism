@@ -12,15 +12,17 @@ jest.mock('../../util/createServer', () => ({
 
 jest.spyOn(utils, 'getHttpOperationsFromResource').mockResolvedValue([]);
 
-describe('mock command', () => {
+describe.each([['mock'], ['proxy', 'http://github.com']])('%s command', (command, upstream) => {
   beforeEach(() => {
     (createSingleProcessPrism as jest.Mock).mockClear();
     (createMultiProcessPrism as jest.Mock).mockClear();
   });
 
-  test('starts mock server', async () => {
+  test(`starts ${command} server`, async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to', (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve));
+      parser.parse(`${command} /path/to ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
+        commandPromise.then(resolve),
+      );
     });
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
@@ -35,9 +37,9 @@ describe('mock command', () => {
     });
   });
 
-  test('starts mock server on custom port', async () => {
+  test(`starts ${command} server on custom port`, async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to -p 666', (_err: Error, commandPromise: Promise<unknown>) =>
+      parser.parse(`${command} /path/to -p 666 ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
         commandPromise.then(resolve),
       );
     });
@@ -54,9 +56,9 @@ describe('mock command', () => {
     });
   });
 
-  test('starts mock server on custom host', async () => {
+  test(`starts ${command} server on custom host`, async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to -h 0.0.0.0', (_err: Error, commandPromise: Promise<unknown>) =>
+      parser.parse(`${command} /path/to -h 0.0.0.0 ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
         commandPromise.then(resolve),
       );
     });
@@ -73,10 +75,11 @@ describe('mock command', () => {
     });
   });
 
-  test('starts mock server on custom host and port', async () => {
+  test(`starts ${command} server on custom host and port`, async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to -p 666 -h 0.0.0.0', (_err: Error, commandPromise: Promise<unknown>) =>
-        commandPromise.then(resolve),
+      parser.parse(
+        `${command} /path/to -p 666 -h 0.0.0.0 ${upstream}`,
+        (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve),
       );
     });
 
@@ -92,9 +95,9 @@ describe('mock command', () => {
     });
   });
 
-  test('starts mock server with multiprocess option ', async () => {
+  test(`starts ${command} server with multiprocess option `, async () => {
     await new Promise(resolve => {
-      parser.parse('mock /path/to -m -h 0.0.0.0', (_err: Error, commandPromise: Promise<unknown>) =>
+      parser.parse(`${command} /path/to -m -h 0.0.0.0 ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
         commandPromise.then(resolve),
       );
     });
@@ -105,6 +108,26 @@ describe('mock command', () => {
       dynamic: false,
       cors: true,
       log: 'stdout',
+      multiprocess: true,
+      host: '0.0.0.0',
+      port: 4010,
+    });
+  });
+
+  test(`starts ${command} server with httpResponse log option `, async () => {
+    await new Promise(resolve => {
+      parser.parse(
+        `${command} /path/to -m -h 0.0.0.0 --log httpResponse ${upstream}`,
+        (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve),
+      );
+    });
+
+    expect(createSingleProcessPrism).not.toHaveBeenCalled();
+    expect(createMultiProcessPrism).toHaveBeenLastCalledWith({
+      operations: [],
+      dynamic: false,
+      cors: true,
+      log: 'httpResponse',
       multiprocess: true,
       host: '0.0.0.0',
       port: 4010,
