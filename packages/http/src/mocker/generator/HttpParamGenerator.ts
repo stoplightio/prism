@@ -19,7 +19,7 @@ function improveSchema(schema: JSONSchema) {
 
   if (newSchema.type === 'string') {
     if (!newSchema.format && !newSchema.enum) {
-      newSchema['x-faker'] = 'random.word';
+      newSchema['x-faker'] = 'lorem.word';
     }
   }
 
