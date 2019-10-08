@@ -9,6 +9,8 @@ export * from './types';
 export * from './getHttpOperations';
 export * from './mocker/errors';
 export * from './router/errors';
+export * from './mocker/serializer/style';
+export { generate as generateHttpParam } from './mocker/generator/HttpParamGenerator';
 
 import { IHttpConfig, IHttpRequest, IHttpResponse, PickRequired, PrismHttpComponents } from './types';
 
