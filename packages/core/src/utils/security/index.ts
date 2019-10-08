@@ -41,12 +41,12 @@ function gatherWWWAuthHeader(
   if (flattenedAuthResults.length === 1) {
     return firstAuthErr;
   } else {
-    const wwwAuthenticateHeaders = flattenedAuthResults.map(authResult => {
-      return pipe(
+    const wwwAuthenticateHeaders = flattenedAuthResults.map(authResult =>
+      pipe(
         authResult,
         fold(result => result.tags || [], noop),
-      );
-    });
+      ),
+    );
 
     const firstAuthErrWithAuthHeader = set(pathToHeader, flatten(wwwAuthenticateHeaders), firstAuthErr);
 

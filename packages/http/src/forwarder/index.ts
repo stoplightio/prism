@@ -10,8 +10,8 @@ const { version: prismVersion } = require('../../package.json');
 const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>['forward'] = (
   input: IHttpRequest,
   baseUrl: string,
-): TaskEither.TaskEither<Error, IHttpResponse> => {
-  return TaskEither.tryCatch<Error, IHttpResponse>(async () => {
+): TaskEither.TaskEither<Error, IHttpResponse> =>
+  TaskEither.tryCatch<Error, IHttpResponse>(async () => {
     const response = await axios.request<unknown>({
       method: input.method as any,
       baseURL: baseUrl,
@@ -28,6 +28,5 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
       body: response.data,
     };
   }, toError);
-};
 
 export default forward;

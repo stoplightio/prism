@@ -30,22 +30,19 @@ const findEmptyResponse = (
   response: IHttpOperationResponse,
   headers: IHttpHeaderParam[],
   mediaTypes: string[],
-): Option.Option<IHttpNegotiationResult> => {
-  return pipe(
+): Option.Option<IHttpNegotiationResult> =>
+  pipe(
     mediaTypes,
     Option.fromPredicate((contentTypes: string[]) => {
       const acceptHeaderSpecificValues = contentTypes.filter((ct: string) => !ct.includes('*/*'));
 
       return !acceptHeaderSpecificValues.length;
     }),
-    Option.map(() => {
-      return {
-        code: response.code,
-        headers,
-      };
-    }),
+    Option.map(() => ({
+      code: response.code,
+      headers,
+    })),
   );
-};
 
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
@@ -176,8 +173,8 @@ const helpers = {
         return pipe(
           httpContent,
           Option.fold(
-            () => {
-              return pipe(
+            () =>
+              pipe(
                 findEmptyResponse(response, headers || [], mediaTypes),
                 Option.map(payloadlessResponse => {
                   logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
@@ -189,8 +186,7 @@ const helpers = {
 
                   return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
                 }),
-              );
-            },
+              ),
             content => {
               logger.success(`Found a compatible content for ${mediaTypes}`);
               // a httpContent for a provided mediaType exists
@@ -249,15 +245,15 @@ const helpers = {
   ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     // find response by provided status code
     return pipe(
-      withLogger(logger => {
-        return pipe(
+      withLogger(logger =>
+        pipe(
           findResponseByStatusCode(httpOperation.responses, code),
           Option.alt(() => {
             logger.info(`Unable to find a ${code} response definition`);
             return createResponseFromDefault(httpOperation.responses, code);
           }),
-        );
-      }),
+        ),
+      ),
       Reader.chain(responseByForcedStatusCode =>
         pipe(
           responseByForcedStatusCode,
