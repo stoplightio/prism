@@ -9,18 +9,17 @@ import { resolve } from 'path';
 import { httpAndFileResolver } from './resolvers/http-and-file';
 
 export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
-  const fileContent = file.match(/^https?:\/\//i)
+  const isRemote = /^https?:\/\//i.test(file);
+  const fileContent = isRemote
     ? (await axios.get(file, { transformResponse: res => res })).data
     : fs.readFileSync(file, { encoding: 'utf8' });
 
-  return getHttpOperations(fileContent);
+  return getHttpOperations(fileContent, isRemote ? file : resolve(file));
 }
 
-export default async function getHttpOperations(specContent: string): Promise<IHttpOperation[]> {
+export default async function getHttpOperations(specContent: string, baseUri: string): Promise<IHttpOperation[]> {
   const parsedContent = parse(specContent);
-  const { result: resolvedContent, errors } = await httpAndFileResolver.resolve(parsedContent, {
-    baseUri: resolve(specContent),
-  });
+  const { result: resolvedContent, errors } = await httpAndFileResolver.resolve(parsedContent, { baseUri });
 
   if (errors.length) {
     const uniqueErrors = uniq(errors.map(error => error.message)).join(EOL);
