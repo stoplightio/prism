@@ -1,6 +1,6 @@
-name: Auto Approve
+name: Auto Approve DependaBot PRs
 
-on: 
+on:
   pull_request:
     branches:
     - master
