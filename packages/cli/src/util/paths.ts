@@ -1,9 +1,6 @@
-import { generate } from '@stoplight/prism-http/src/mocker/generator/HttpParamGenerator';
-import { serializeWithDeepObjectStyle } from '@stoplight/prism-http/src/mocker/serializer/style/deepObject';
-import {
-  serializeWithPipeDelimitedStyle,
-  serializeWithSpaceDelimitedStyle,
-} from '@stoplight/prism-http/src/mocker/serializer/style/delimited';
+import { generateHttpParam } from '@stoplight/prism-http';
+import { serializeWithDeepObjectStyle } from '@stoplight/prism-http';
+import { serializeWithPipeDelimitedStyle, serializeWithSpaceDelimitedStyle } from '@stoplight/prism-http';
 import {
   Dictionary,
   HttpParamStyles,
@@ -37,7 +34,7 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
 
 function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
   return pipe(
-    generate(spec),
+    generateHttpParam(spec),
     Either.fromOption(() => new Error(`Cannot generate value for: ${spec.name}`)),
     Either.chain(value => {
       switch (spec.style) {
