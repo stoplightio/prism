@@ -96,11 +96,11 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       response.validations.output.forEach(validation => {
         const message = `Output violation: ${validation.path || ''} ${validation.message}`;
         if (validation.severity === DiagnosticSeverity.Error) {
-          request.log.error(message);
+          request.log.error({ name: 'VALIDATOR' }, message);
         } else if (validation.severity === DiagnosticSeverity.Warning) {
-          request.log.warn(message);
+          request.log.warn({ name: 'VALIDATOR' }, message);
         } else {
-          request.log.info(message);
+          request.log.info({ name: 'VALIDATOR' }, message);
         }
       });
 

@@ -3,7 +3,7 @@ Prism shall return output violations in an HTTP Header when ran with the httpHea
 ====spec====
 openapi: 3.0.0
 paths:
-  /path
+  /path:
     get:
       summary: Your GET endpoint
       responses:
@@ -22,5 +22,6 @@ mock -p 4010 --log httpHeader
 curl -i http://localhost:4010/path
 ====expect====
 HTTP/1.1 200 OK
+sl_violations: [{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
 
 123

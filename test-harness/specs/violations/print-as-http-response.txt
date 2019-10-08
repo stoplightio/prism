@@ -10,7 +10,7 @@ Then I should get a response with dynamically generated JSON as payload
 ====spec====
 openapi: 3.0.0
 paths:
-  /path
+  /path:
     get:
       summary: Your GET endpoint
       responses:
@@ -28,6 +28,6 @@ mock -p 4010 --log httpResponse
 ====command====
 curl -i http://localhost:4010/path
 ====expect-loose====
-HTTP/1.1 200 OK
+HTTP/1.1 422 Unprocessable Entity
 
-{"title": "officia voluptate amet ut","description": "sit","priority": 94921765}
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]}
