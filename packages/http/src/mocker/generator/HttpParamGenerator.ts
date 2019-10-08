@@ -15,27 +15,15 @@ function improveSchema(schema: JSONSchema) {
     if (!newSchema.maximum) {
       newSchema.maximum = 1000;
     }
-  }
-
-  if (newSchema.type === 'string') {
-    if (!newSchema.format && !newSchema.enum) {
-      newSchema['x-faker'] = 'lorem.word';
-    }
-  }
-
-  if (newSchema.type === 'object') {
-    if (newSchema.properties) {
-      newSchema.properties = Object.entries(newSchema.properties).reduce((r, [k, v]) => {
-        r[k] = improveSchema(v);
-        return r;
-      }, {});
-    }
-  }
-
-  if (newSchema.type === 'array') {
-    if (typeof newSchema.items === 'object') {
-      newSchema.items = improveSchema(newSchema.items);
-    }
+  } else if (newSchema.type === 'string' && !newSchema.format && !newSchema.enum) {
+    newSchema['x-faker'] = 'lorem.word';
+  } else if (newSchema.type === 'object' && newSchema.properties) {
+    newSchema.properties = Object.entries(newSchema.properties).reduce((r, [k, v]) => {
+      r[k] = improveSchema(v);
+      return r;
+    }, {});
+  } else if (newSchema.type === 'array' && typeof newSchema.items === 'object') {
+    newSchema.items = improveSchema(newSchema.items);
   }
 
   return newSchema;
