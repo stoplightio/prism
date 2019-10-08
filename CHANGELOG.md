@@ -88,106 +88,106 @@ This is nothing more than the beta 6 rebranded.
 
 ### Fixed
 
-- Prism now loads correctly files from the internet with urls using query parameters [#452](https://github.com/stoplightio/issues/452)
-- Prism now correctly respects the `required` property in OpenAPI 2 body parameters [#450](https://github.com/stoplightio/issues/450)
-- Prism now validates any payload, as long it has a schema and it's parsable [#446](https://github.com/stoplightio/issues/446)
-- Prism now will tell you explicitly when a response has been constructed from a `default` response definition [#445](https://github.com/stoplightio/issues/445)
+- Prism now loads correctly files from the internet with urls using query parameters [#452](https://github.com/stoplightio/prism/issues/452)
+- Prism now correctly respects the `required` property in OpenAPI 2 body parameters [#450](https://github.com/stoplightio/prism/issues/450)
+- Prism now validates any payload, as long it has a schema and it's parsable [#446](https://github.com/stoplightio/prism/issues/446)
+- Prism now will tell you explicitly when a response has been constructed from a `default` response definition [#445](https://github.com/stoplightio/prism/issues/445)
 
 # 3.0.0-beta.5 (2019-07-09)
 
 ### Features
 
-- Internal refactoring: Prism validation process is now completely sync [#400](https://github.com/stoplightio/issues/400)
+- Internal refactoring: Prism validation process is now completely sync [#400](https://github.com/stoplightio/prism/issues/400)
 
 # 3.0.0-beta.3 (2019-07-05)
 
 ### Features
 
-- Prism examples generator supports `x-faker` extensions [#384 — thanks @vanhoofmaarten!](https://github.com/stoplightio/issues/vanhoofmaarten!)
-- Documentation reorganisation [#393](https://github.com/stoplightio/issues/393)
+- Prism examples generator supports `x-faker` extensions [#384 — thanks @vanhoofmaarten!](https://github.com/stoplightio/prism/issues/vanhoofmaarten!)
+- Documentation reorganisation [#393](https://github.com/stoplightio/prism/issues/393)
 
 # 3.0.0-beta.3 (2019-07-01)
 
 ### Features
 
-- Introduced Azure Pipelines to make sure Prism works on Windows [#388](https://github.com/stoplightio/issues/388)
-- Prism has now a diagram in the readme that shows you the mocker flow [#386](https://github.com/stoplightio/issues/386)
-- Several improvements to the logging of the Http Mocker [#382](https://github.com/stoplightio/issues/382)
-- Our `application/vnd+problem.json` messages have been improved [#370](https://github.com/stoplightio/issues/370)
+- Introduced Azure Pipelines to make sure Prism works on Windows [#388](https://github.com/stoplightio/prism/issues/388)
+- Prism has now a diagram in the readme that shows you the mocker flow [#386](https://github.com/stoplightio/prism/issues/386)
+- Several improvements to the logging of the Http Mocker [#382](https://github.com/stoplightio/prism/issues/382)
+- Our `application/vnd+problem.json` messages have been improved [#370](https://github.com/stoplightio/prism/issues/370)
 
 ### Fixed
 
-- Prism is now able to parse HTTP FormData payloads [#381](https://github.com/stoplightio/issues/381)
+- Prism is now able to parse HTTP FormData payloads [#381](https://github.com/stoplightio/prism/issues/381)
 
 # 3.0.0-beta.1 (2019-06-22)
 
 ### Features
 
-- Prism now works correctly on Windows thanks to some internal libraries updates [#374](https://github.com/stoplightio/issues/374)
+- Prism now works correctly on Windows thanks to some internal libraries updates [#374](https://github.com/stoplightio/prism/issues/374)
 - Prism 3 has now a Docker Image; you can try it at `stoplight/prism:3`
 
 ### Fixed
 
-- Static JSON Schema examples generator gives precendece to `default` over `examples` [#373](https://github.com/stoplightio/issues/373)
+- Static JSON Schema examples generator gives precendece to `default` over `examples` [#373](https://github.com/stoplightio/prism/issues/373)
 
 # 3.0.0-beta.1 (2019-06-18)
 
 ### Features
 
-- Prism is now logging all the negotiator phases for a better observability [#323](https://github.com/stoplightio/issues/323)
+- Prism is now logging all the negotiator phases for a better observability [#323](https://github.com/stoplightio/prism/issues/323)
 
-- The HTTP Client API has been documented [#355](https://github.com/stoplightio/issues/355)
+- The HTTP Client API has been documented [#355](https://github.com/stoplightio/prism/issues/355)
 
 ### Fixed
 
-- Prism's build process in TypeScript has been revisited [#356](https://github.com/stoplightio/issues/356)
+- Prism's build process in TypeScript has been revisited [#356](https://github.com/stoplightio/prism/issues/356)
 
 # 3.0.0-alpha.16 (2019-06-17)
 
 ### Features
 
-- Prism can now validate servers [#351](https://github.com/stoplightio/issues/351)
+- Prism can now validate servers [#351](https://github.com/stoplightio/prism/issues/351)
 
 # 3.0.0-alpha.15 (2019-06-14)
 
 ### Fixed
 
-- Prism's build process received some tweaks, but there's more work to do [#352](https://github.com/stoplightio/issues/352)
+- Prism's build process received some tweaks, but there's more work to do [#352](https://github.com/stoplightio/prism/issues/352)
 
 ### Features
 
-- Prism now has got a static example fallback in case the `dynamic` flag is not enabled [#347](https://github.com/stoplightio/issues/347)
+- Prism now has got a static example fallback in case the `dynamic` flag is not enabled [#347](https://github.com/stoplightio/prism/issues/347)
 
 # 3.0.0-alpha.14 (2019-06-11)
 
 ### Fixed
 
-- Prism is now handling the fact that HTTP headers are case insensitive [#338](https://github.com/stoplightio/issues/338)
-- Prism is now normalising OAS2/3 schemas improving and simplyfing the validation capabilites [#338](https://github.com/stoplightio/issues/338)
+- Prism is now handling the fact that HTTP headers are case insensitive [#338](https://github.com/stoplightio/prism/issues/338)
+- Prism is now normalising OAS2/3 schemas improving and simplyfing the validation capabilites [#338](https://github.com/stoplightio/prism/issues/338)
 
 # 3.0.0-alpha.13 (2019-06-09)
 
 ### Fixed
 
-- Prism is not able to correctly handle the Content Type header [#344](https://github.com/stoplightio/issues/344)
+- Prism is not able to correctly handle the Content Type header [#344](https://github.com/stoplightio/prism/issues/344)
 
 ### Features
 
-- Prism CLI has now a new CLI option to specify the IP Address where it will listen connections for [#340](https://github.com/stoplightio/issues/340)
+- Prism CLI has now a new CLI option to specify the IP Address where it will listen connections for [#340](https://github.com/stoplightio/prism/issues/340)
 
 # 3.0.0-alpha.12 (2019-06-04)
 
 ### Fixed
 
-- Fixed the security issue intrisic in Axios by updating its dependency in the project [#334](https://github.com/stoplightio/issues/334)
-- Fix a bug where paremeters where undetected, returning a REQUIERD error [#325](https://github.com/stoplightio/issues/325)
+- Fixed the security issue intrisic in Axios by updating its dependency in the project [#334](https://github.com/stoplightio/prism/issues/334)
+- Fix a bug where paremeters where undetected, returning a REQUIERD error [#325](https://github.com/stoplightio/prism/issues/325)
 
 ### Features
 
-- Respect the `Accept` header when requesting content to Prism [#333](https://github.com/stoplightio/issues/333)
-- Create a LICENSE file for the project [#330](https://github.com/stoplightio/issues/330)
-- Add new GitHub ISSUES template files for the project [#326](https://github.com/stoplightio/issues/326)
-- Decouple payload generation from its serialisation [#322](https://github.com/stoplightio/issues/322)
+- Respect the `Accept` header when requesting content to Prism [#333](https://github.com/stoplightio/prism/issues/333)
+- Create a LICENSE file for the project [#330](https://github.com/stoplightio/prism/issues/330)
+- Add new GitHub ISSUES template files for the project [#326](https://github.com/stoplightio/prism/issues/326)
+- Decouple payload generation from its serialisation [#322](https://github.com/stoplightio/prism/issues/322)
 
 # 3.0.0-alpha.11 (2019-05-24)
 
@@ -208,7 +208,7 @@ This is nothing more than the beta 6 rebranded.
 - make jest faster in startup and runtime ([d9b6c2a](https://github.com/stoplightio/prism/commit/d9b6c2a))
 - make sure http download works ([#276](https://github.com/stoplightio/prism/issues/276)) ([01828f3](https://github.com/stoplightio/prism/commit/01828f3))
 - OAS3 integration tests and fixes SO-103 ([#253](https://github.com/stoplightio/prism/issues/253)) ([930d29e](https://github.com/stoplightio/prism/commit/930d29e))
-- prism forwarder can work without an API in place [SL-1619](<[7c61c62](https://github.com/stoplightio/prism/commit/7c61c62)>)
+- prism forwarder can work without an API in place [SL-1619][7c61c62](https://github.com/stoplightio/prism/commit/7c61c62)
 - Prism should read yml files too SO-200 ([#299](https://github.com/stoplightio/prism/issues/299)) ([cbc96b2](https://github.com/stoplightio/prism/commit/cbc96b2))
 - prism-server should always return a response ([e72c6bf](https://github.com/stoplightio/prism/commit/e72c6bf))
 - put oclif only where it is needed ([68bf27d](https://github.com/stoplightio/prism/commit/68bf27d))
