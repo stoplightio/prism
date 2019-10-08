@@ -20,7 +20,9 @@ function improveSchema(schema: JSONSchema) {
   }
 
   if (newSchema.type === 'string') {
-    // @todo: use faker to generate single-worded string
+    if (!newSchema.format) {
+      newSchema['x-faker'] = 'random.word';
+    }
   }
 
   if (newSchema.type === 'object') {
