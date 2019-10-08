@@ -12,7 +12,6 @@ describe('User Http Client', () => {
         validateRequest: true,
         validateResponse: true,
         checkSecurity: true,
-        log: 'stdout',
       };
 
       beforeAll(async () => {

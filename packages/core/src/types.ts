@@ -14,7 +14,6 @@ export interface IPrismConfig {
   checkSecurity: boolean;
   validateRequest: boolean;
   validateResponse: boolean;
-  log: string;
 }
 
 export type IPrismProxyConfig = IPrismConfig & {
