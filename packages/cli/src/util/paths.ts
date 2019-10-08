@@ -24,11 +24,11 @@ import { parse } from 'uri-template';
 export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
   return pipe(
     generateTemplateAndValuesForPathParams(operation),
-    Either.chain(({ template: pTemplate, values: pValues }) => {
+    Either.chain(({ template: pathTemplate, values: pathValues }) => {
       return pipe(
-        generateTemplateAndValuesForQueryParams(pTemplate, operation),
-        Either.map(({ template: qTemplate, values: qValues }) => {
-          return { template: qTemplate, values: { ...pValues, ...qValues } };
+        generateTemplateAndValuesForQueryParams(pathTemplate, operation),
+        Either.map(({ template: queryTemplate, values: queryValues }) => {
+          return { template: queryTemplate, values: { ...pathValues, ...queryValues } };
         }),
       );
     }),

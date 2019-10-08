@@ -9,7 +9,7 @@ import { generate as generateDynamicExample } from './JSONSchema';
 function improveSchema(schema: JSONSchema) {
   const newSchema = { ...schema };
 
-  if (newSchema.type === 'integer') {
+  if (newSchema.type === 'integer' || newSchema.type === 'number') {
     if (!newSchema.minimum) {
       newSchema.minimum = 1;
     }
