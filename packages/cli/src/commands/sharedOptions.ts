@@ -34,7 +34,7 @@ const sharedOptions: Dictionary<Options> = {
   log: {
     description: 'Select where output violations will be reported.',
     required: true,
-    choices: ['stdout', 'httpResponse', 'httpHeaders'] as const,
+    choices: ['stdout', 'httpResponse', 'httpHeader'] as const,
     default: 'stdout' as const,
   },
 };

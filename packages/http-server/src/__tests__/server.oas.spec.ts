@@ -24,8 +24,8 @@ async function instantiatePrism(specPath: string) {
       validateRequest: true,
       validateResponse: true,
       mock: { dynamic: false },
-      log: 'stdout',
     },
+    log: 'stdout',
     cors: true,
   });
   return server;

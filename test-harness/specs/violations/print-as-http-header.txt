@@ -1,0 +1,26 @@
+====test====
+Prism shall return output violations in an HTTP Header when ran with the httpHeader log flag
+====spec====
+openapi: 3.0.0
+paths:
+  /path
+    get:
+      summary: Your GET endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value: 123
+              schema:
+                  type: object
+====server====
+mock -p 4010 --log httpHeader
+====command====
+curl -i http://localhost:4010/path
+====expect====
+HTTP/1.1 200 OK
+
+123

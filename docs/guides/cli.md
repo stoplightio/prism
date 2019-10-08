@@ -86,7 +86,7 @@ prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2
 By default, the output violations will be reported on the standard output, but you can also specify to embed these in the HTTP Response:
 
 ```bash
-prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2 --log httpHeaders
+prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2 --log httpHeader
 … …
 
 curl -v -s http://localhost:4010/pets/10 > /dev/null

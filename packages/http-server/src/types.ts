@@ -5,6 +5,7 @@ export interface IPrismHttpServerOpts {
   components?: PickRequired<Partial<PrismHttpComponents>, 'logger'>;
   config: IHttpConfig;
   cors: boolean;
+  log: 'stdout' | 'httpHeader' | 'httpResponse';
 }
 
 export interface IPrismHttpServer {

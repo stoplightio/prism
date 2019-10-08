@@ -15,8 +15,8 @@ function instantiatePrism2(operations: IHttpOperation[]) {
       validateRequest: true,
       validateResponse: true,
       mock: { dynamic: false },
-      log: 'stdout',
     },
+    log: 'stdout',
   });
 }
 

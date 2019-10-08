@@ -80,7 +80,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           message: detail.message,
         }));
 
-        if (config.log === 'httpResponse') {
+        if (opts.log === 'httpResponse') {
           throw ProblemJsonError.fromTemplate(
             UNPROCESSABLE_ENTITY,
             'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
@@ -88,7 +88,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
               validation: violations,
             },
           );
-        } else if (config.log === 'httpHeaders') {
+        } else if (opts.log === 'httpHeader') {
           reply.header('SL_VALIDATION', JSON.stringify(violations));
         }
       }
