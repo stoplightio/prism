@@ -3,8 +3,12 @@ import { getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults } from 'lodash';
-import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from './types';
+import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig } from './types';
 import { validateSecurity } from './utils/security';
+
+function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
+  return !p.mock;
+}
 
 export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
@@ -38,8 +42,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               )
             : inputValidations;
 
-          const outputLocator = config.mock
-            ? TaskEither.fromEither(
+          const outputLocator = isProxyConfig(config)
+            ? components.forward(input, config.upstream.href)
+            : TaskEither.fromEither(
                 components.mock({
                   resource,
                   input: {
@@ -48,10 +53,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                   },
                   config: config.mock,
                 })(components.logger.child({ name: 'NEGOTIATOR' })),
-              )
-            : components
-                // @ts-ignore
-                .forward(input, config.upstream.href);
+              );
 
           return pipe(
             outputLocator,

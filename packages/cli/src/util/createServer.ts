@@ -115,12 +115,12 @@ type CreateBaseServerOptions = {
   port: number;
   operations: IHttpOperation[];
   multiprocess: boolean;
+  log: 'stdout' | 'httpResponse' | 'httpHeaders';
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {
   dynamic: false;
   upstream: URL;
-  log: 'stdout' | 'httpResponse' | 'httpHeaders';
 }
 
 export type CreateMockServerOptions = CreateBaseServerOptions;

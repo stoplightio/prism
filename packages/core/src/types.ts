@@ -17,6 +17,11 @@ export interface IPrismConfig {
   log: string;
 }
 
+export type IPrismProxyConfig = IPrismConfig & {
+  mock: false;
+  upstream: URL;
+};
+
 export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => IPrismDiagnostic[];
 
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
