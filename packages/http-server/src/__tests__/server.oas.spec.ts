@@ -147,10 +147,6 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     expect(response.statusCode).toBe(400);
   });
 
-  test.todo(
-    'should automagically provide the parameters when not provided in the query string and a default is defined',
-  );
-
   it('should support multiple param values', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
