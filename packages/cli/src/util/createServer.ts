@@ -13,7 +13,7 @@ import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 
-function createMultiProcessPrism(options: CreateBaseServerOptions) {
+function createMultiProcessPrism(options: CreateBaseServerOptions): Promise<void> {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -24,12 +24,15 @@ function createMultiProcessPrism(options: CreateBaseServerOptions) {
     if (worker.process.stdout) {
       pipeOutputToSignale(worker.process.stdout);
     }
+
+    return Promise.resolve();
   } else {
     const logInstance = createLogger('CLI');
     try {
       return createPrismServerWithLogger(options, logInstance).catch(() => cluster.worker.kill());
     } catch (e) {
       logInstance.fatal(e.message);
+      return Promise.reject();
     }
   }
 }
