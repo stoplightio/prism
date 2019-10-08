@@ -4,7 +4,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { JSONSchema } from '../../types';
 import { generate as generateDynamicExample } from './JSONSchema';
 
-function improveSchema(schema: JSONSchema) {
+function improveSchema(schema: JSONSchema): JSONSchema {
   const newSchema = { ...schema };
 
   if (newSchema.type === 'integer' || newSchema.type === 'number') {
