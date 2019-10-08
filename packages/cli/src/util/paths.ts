@@ -14,7 +14,6 @@ import {
   INodeExample,
   INodeExternalExample,
 } from '@stoplight/types';
-import * as Array from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
@@ -43,13 +42,25 @@ function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
     Either.chain(value => {
       switch (spec.style) {
         case HttpParamStyles.DeepObject:
-          return serializeWithDeepObjectStyle(spec.name, value);
+          return Either.right(serializeWithDeepObjectStyle(spec.name, value));
 
         case HttpParamStyles.PipeDelimited:
-          return serializeWithPipeDelimitedStyle(spec.name, value as Array<string | number | boolean>, spec.explode);
+          if (Array.isArray(value)) {
+            return Either.right(
+              serializeWithPipeDelimitedStyle(spec.name, value as Array<string | number | boolean>, spec.explode),
+            );
+          } else {
+            return Either.left(new Error('Pipe delimited style is only applicable to array parameter'));
+          }
 
         case HttpParamStyles.SpaceDelimited:
-          return serializeWithSpaceDelimitedStyle(spec.name, value as Array<string | number | boolean>, spec.explode);
+          if (Array.isArray(value)) {
+            return Either.right(
+              serializeWithSpaceDelimitedStyle(spec.name, value as Array<string | number | boolean>, spec.explode),
+            );
+          } else {
+            return Either.left(new Error('Space delimited style is only applicable to array parameter'));
+          }
 
         default:
           return Either.right(value);
@@ -133,16 +144,19 @@ function createParamUriTemplate(name: string, style: HttpParamStyles, explode: b
 function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
   // defaults for query: style=Form exploded=false
   const formSpecs = specs.filter(spec => (spec.style || HttpParamStyles.Form) === HttpParamStyles.Form);
+
   const formExplodedParams = formSpecs
     .filter(spec => spec.required !== false)
     .filter(spec => spec.explode)
     .map(spec => spec.name)
     .join(',');
+
   const formImplodedParams = formSpecs
     .filter(spec => spec.required !== false)
     .filter(spec => !spec.explode)
     .map(spec => spec.name)
     .join(',');
+
   const restParams = specs
     .filter(spec => spec.required !== false)
     .filter(spec =>

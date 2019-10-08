@@ -1,6 +1,3 @@
-import { HttpParamStyles } from '@stoplight/types';
-import * as Either from 'fp-ts/lib/Either';
-import { pipe } from 'fp-ts/lib/pipeable';
 import { partial } from 'lodash';
 
 function serializeAndImplode(separator: string, name: string, value: Array<string | number | boolean>) {
@@ -26,13 +23,8 @@ export function serializeWithDelimitedStyle(
   name: string,
   value: Array<string | number | boolean>,
   explode?: boolean,
-): Either.Either<Error, string> {
-  return pipe(
-    Array.isArray(value)
-      ? Either.right(value)
-      : Either.left(new Error('Space/pipe/comma delimited style is only applicable to array parameter')),
-    Either.map(v => (explode ? serializeAndExplode(name, v) : serializeAndImplode(separator, name, v))),
-  );
+): string {
+  return explode ? serializeAndExplode(name, value) : serializeAndImplode(separator, name, value);
 }
 
 export const serializeWithCommaDelimitedStyle = partial(serializeWithDelimitedStyle, ',');

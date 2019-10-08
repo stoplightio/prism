@@ -42,23 +42,6 @@ describe('createExamplePath()', () => {
         r => expect(r).toEqual('/path/;p=test'),
       );
     });
-
-    it('fails when not supported style supplied', () => {
-      assertLeft(
-        createExamplePath({
-          id: '123',
-          path: '/path/{p}',
-          method: 'get',
-          request: {
-            path: [
-              { name: 'p', style: HttpParamStyles.PipeDelimited as any, examples: [{ key: 'foo', value: 'test' }] },
-            ],
-          },
-          responses: [{ code: '200' }],
-        }),
-        e => expect(e.message).toEqual('Space/pipe/comma delimited style is only applicable to array parameter'),
-      );
-    });
   });
 
   describe('query parameters', () => {
@@ -135,6 +118,36 @@ describe('createExamplePath()', () => {
           responses: [{ code: '200' }],
         }),
         r => expect(r).toEqual('/path?p=1%202%203'),
+      );
+    });
+
+    it('fails when invalid example provided for pipeDelimited style', () => {
+      assertLeft(
+        createExamplePath({
+          id: '123',
+          path: '/path',
+          method: 'get',
+          request: {
+            query: [{ name: 'q', style: HttpParamStyles.PipeDelimited, examples: [{ key: 'foo', value: 'test' }] }],
+          },
+          responses: [{ code: '200' }],
+        }),
+        e => expect(e.message).toEqual('Pipe delimited style is only applicable to array parameter'),
+      );
+    });
+
+    it('fails when invalid example provided for spaceDelimited style', () => {
+      assertLeft(
+        createExamplePath({
+          id: '123',
+          path: '/path',
+          method: 'get',
+          request: {
+            query: [{ name: 'q', style: HttpParamStyles.SpaceDelimited, examples: [{ key: 'foo', value: 'test' }] }],
+          },
+          responses: [{ code: '200' }],
+        }),
+        e => expect(e.message).toEqual('Space delimited style is only applicable to array parameter'),
       );
     });
   });
