@@ -1,6 +1,9 @@
-import { generateHttpParam } from '@stoplight/prism-http';
-import { serializeWithDeepObjectStyle } from '@stoplight/prism-http';
-import { serializeWithPipeDelimitedStyle, serializeWithSpaceDelimitedStyle } from '@stoplight/prism-http';
+import {
+  generateHttpParam,
+  serializeWithDeepObjectStyle,
+  serializeWithPipeDelimitedStyle,
+  serializeWithSpaceDelimitedStyle,
+} from '@stoplight/prism-http';
 import {
   Dictionary,
   HttpParamStyles,
@@ -42,22 +45,24 @@ function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
           return Either.right(serializeWithDeepObjectStyle(spec.name, value));
 
         case HttpParamStyles.PipeDelimited:
-          if (Array.isArray(value)) {
-            return Either.right(
-              serializeWithPipeDelimitedStyle(spec.name, value as Array<string | number | boolean>, spec.explode),
-            );
-          } else {
-            return Either.left(new Error('Pipe delimited style is only applicable to array parameter'));
-          }
+          return pipe(
+            value,
+            Either.fromPredicate(
+              Array.isArray,
+              () => new Error('Pipe delimited style is only applicable to array parameter'),
+            ),
+            Either.map(v => serializeWithPipeDelimitedStyle(spec.name, v, spec.explode)),
+          );
 
         case HttpParamStyles.SpaceDelimited:
-          if (Array.isArray(value)) {
-            return Either.right(
-              serializeWithSpaceDelimitedStyle(spec.name, value as Array<string | number | boolean>, spec.explode),
-            );
-          } else {
-            return Either.left(new Error('Space delimited style is only applicable to array parameter'));
-          }
+          return pipe(
+            value,
+            Either.fromPredicate(
+              Array.isArray,
+              () => new Error('Space delimited style is only applicable to array parameter'),
+            ),
+            Either.map(v => serializeWithSpaceDelimitedStyle(spec.name, v, spec.explode)),
+          );
 
         default:
           return Either.right(value);

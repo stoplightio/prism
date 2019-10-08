@@ -1,5 +1,5 @@
 import { assertNone, assertSome } from '@stoplight/prism-core/src/utils/__tests__/utils';
-import { HttpParamStyles } from '@stoplight/types/dist';
+import { HttpParamStyles } from '@stoplight/types';
 import { generate } from '../HttpParamGenerator';
 
 describe('HttpParamGenerator', () => {
@@ -32,9 +32,9 @@ describe('HttpParamGenerator', () => {
           generate({
             name: 'a',
             style: HttpParamStyles.Form,
-            schema: { type: 'string' },
+            schema: { type: 'string', format: 'email' },
           }),
-          v => expect(v).toEqual(expect.any(String)),
+          v => expect(v).toEqual(expect.stringMatching(/@/)),
         );
       });
     });
