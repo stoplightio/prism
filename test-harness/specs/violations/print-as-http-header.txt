@@ -22,6 +22,6 @@ mock -p 4010 --log httpHeader
 curl -i http://localhost:4010/path
 ====expect====
 HTTP/1.1 200 OK
-sl_violations: [{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
+sl_validation: [{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
 
 123

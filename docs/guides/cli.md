@@ -53,13 +53,13 @@ Connection: keep-alive
 
 The body, headers, etc. for this response will be taken from the API description document.
 
-```bash
-curl -v http://127.0.0.1:4010/pets/123?__example=exampleKey
-```
-
 #### Request a specific example from a resource
 
 You can request a specific example from the named of your document by using the `__example` query string paramenter.
+
+```bash
+curl -v http://127.0.0.1:4010/pets/123?__example=exampleKey
+```
 
 #### Change the dynamic/static flag for a particular request
 
@@ -92,15 +92,7 @@ prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2
 curl -v -s http://localhost:4010/pets/10 > /dev/null
 
 < HTTP/1.1 404 Not Found
-< access-control-allow-origin: *
 < sl_validation: [{"severity":"Error","message":"The received media type does not match the one specified in the document"},{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
-< date: Mon, 07 Oct 2019 11:01:51 GMT
-< access-control-allow-methods: GET, POST, DELETE, PUT
-< access-control-allow-headers: Content-Type, api_key, Authorization
-< content-type: application/xml
-< connection: close
-< server: Jetty(9.2.9.v20150224)
-< content-length: 172
 ```
 
 You can see there's a `sl_validation` header which is a JSON Payload with all the violations found in the response.

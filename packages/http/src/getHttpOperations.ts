@@ -17,7 +17,7 @@ export async function getHttpOperationsFromResource(file: string): Promise<IHttp
   return getHttpOperations(fileContent, isRemote ? file : resolve(file));
 }
 
-export default async function getHttpOperations(specContent: string, baseUri: string): Promise<IHttpOperation[]> {
+export default async function getHttpOperations(specContent: string, baseUri?: string): Promise<IHttpOperation[]> {
   const parsedContent = parse(specContent);
   const { result: resolvedContent, errors } = await httpAndFileResolver.resolve(parsedContent, { baseUri });
 

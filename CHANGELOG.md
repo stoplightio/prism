@@ -12,11 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Validating output status code against available response specs [#648](https://github.com/stoplightio/prism/pull/648)
 - Support for Contract Testing [#650](https://github.com/stoplightio/prism/pull/650)
 - The CLI will now propose operation paths with meaningful examples [#671](https://github.com/stoplightio/prism/pull/671)
+- Prism now includes a new `proxy` command to act as a validation server [#669](https://github.com/stoplightio/prism/pull/669)
 
 ## Fixed
 
 - Killing sub-process only if Prism is running in multi-process mode [#645](https://github.com/stoplightio/prism/pull/645)
 - UUIDs are never generated as URNs [#661](https://github.com/stoplightio/prism/pull/661)
+- Relative references for remote documents are now resolved correctly [#669](https://github.com/stoplightio/prism/pull/669)
 
 # 3.1.1 (2019-09-23)
 
