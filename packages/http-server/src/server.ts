@@ -3,7 +3,6 @@ import { createInstance, ProblemJsonError, UNPROCESSABLE_ENTITY } from '@stoplig
 import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
-import { IncomingMessage, ServerResponse } from 'http';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
@@ -41,7 +40,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
   const prism = createInstance(config, components);
 
-  const replyHandler: fastify.RequestHandler<IncomingMessage, ServerResponse> = async (request, reply) => {
+  const replyHandler: fastify.RequestHandler = async (request, reply) => {
     const {
       req: { method, url },
       body,
