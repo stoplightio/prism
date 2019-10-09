@@ -28,7 +28,7 @@ export async function createMultiProcessPrism(options: CreatePrismOptions & { sp
   } else {
     const logInstance = createLogger('CLI');
     try {
-      return await createPrismServerWithLogger(options, logInstance, options.spec);
+      return await createPrismServerWithLogger(options, logInstance);
     } catch (e) {
       logInstance.fatal(e.message);
       cluster.worker.kill();
@@ -44,14 +44,16 @@ export async function createSingleProcessPrism(options: CreatePrismOptions & { s
   pipeOutputToSignale(logStream);
 
   try {
-    return await createPrismServerWithLogger(options, logInstance, options.spec);
+    return await createPrismServerWithLogger(options, logInstance);
   } catch (e) {
     logInstance.fatal(e.message);
   }
 }
 
-async function createPrismServerWithLogger(options: CreatePrismOptions, logInstance: Logger, spec: string) {
+async function createPrismServerWithLogger(options: CreatePrismOptions & { spec: string }, logInstance: Logger) {
+  const spec = options.spec;
   const watcher = chokidar.watch(spec);
+
   let server = await createFastifyServerWithLogger(options, logInstance);
 
   watcher.on('change', async () => {
