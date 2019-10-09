@@ -30,6 +30,7 @@ describe('mock command', () => {
       cors: true,
       host: '127.0.0.1',
       port: 4010,
+      spec: '/path/to',
     });
   });
 
@@ -47,6 +48,7 @@ describe('mock command', () => {
       cors: true,
       host: '127.0.0.1',
       port: 666,
+      spec: '/path/to',
     });
   });
 
@@ -64,6 +66,7 @@ describe('mock command', () => {
       cors: true,
       host: '0.0.0.0',
       port: 4010,
+      spec: '/path/to',
     });
   });
 
@@ -81,6 +84,7 @@ describe('mock command', () => {
       dynamic: false,
       host: '0.0.0.0',
       port: 666,
+      spec: '/path/to',
     });
   });
 
@@ -98,6 +102,7 @@ describe('mock command', () => {
       cors: true,
       host: '0.0.0.0',
       port: 4010,
+      spec: '/path/to',
     });
   });
 });

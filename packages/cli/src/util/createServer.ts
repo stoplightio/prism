@@ -1,7 +1,9 @@
 import { createLogger, logLevels } from '@stoplight/prism-core';
+import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
 import { IHttpOperation } from '@stoplight/types';
 import chalk from 'chalk';
+import * as chokidar from 'chokidar';
 import * as cluster from 'cluster';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -12,7 +14,7 @@ import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 
-export async function createMultiProcessPrism(options: CreatePrismOptions) {
+export async function createMultiProcessPrism(options: CreatePrismOptions & { spec: string }) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -26,7 +28,7 @@ export async function createMultiProcessPrism(options: CreatePrismOptions) {
   } else {
     const logInstance = createLogger('CLI');
     try {
-      return await createPrismServerWithLogger(options, logInstance);
+      return await createPrismServerWithLogger(options, logInstance, options.spec);
     } catch (e) {
       logInstance.fatal(e.message);
       cluster.worker.kill();
@@ -34,7 +36,7 @@ export async function createMultiProcessPrism(options: CreatePrismOptions) {
   }
 }
 
-export async function createSingleProcessPrism(options: CreatePrismOptions) {
+export async function createSingleProcessPrism(options: CreatePrismOptions & { spec: string }) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
@@ -42,13 +44,38 @@ export async function createSingleProcessPrism(options: CreatePrismOptions) {
   pipeOutputToSignale(logStream);
 
   try {
-    return await createPrismServerWithLogger(options, logInstance);
+    return await createPrismServerWithLogger(options, logInstance, options.spec);
   } catch (e) {
     logInstance.fatal(e.message);
   }
 }
 
-async function createPrismServerWithLogger(options: CreatePrismOptions, logInstance: Logger) {
+async function createPrismServerWithLogger(options: CreatePrismOptions, logInstance: Logger, spec: string) {
+  const watcher = chokidar.watch(spec);
+  let server = await createFastifyServerWithLogger(options, logInstance);
+
+  watcher.on('change', async () => {
+    logInstance.start('Restarting Prism…');
+
+    await server.fastify
+      .close()
+      .then(() => getHttpOperationsFromResource(spec))
+      .then(operations => {
+        if (operations.length === 0) {
+          logInstance.note('No operations found in the current file. Loading the document from the initial load.');
+
+          return createFastifyServerWithLogger(options, logInstance);
+        } else {
+          return createFastifyServerWithLogger({ ...options, operations }, logInstance);
+        }
+      })
+      .then(newServer => {
+        server = newServer;
+      });
+  });
+}
+
+async function createFastifyServerWithLogger(options: CreatePrismOptions, logInstance: Logger) {
   if (options.operations.length === 0) {
     throw new Error('No operations found in the current file.');
   }
@@ -75,6 +102,8 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
     logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${path}`);
   });
   logInstance.start(`Prism is listening on ${address}`);
+
+  return server;
 }
 
 function pipeOutputToSignale(stream: Readable) {

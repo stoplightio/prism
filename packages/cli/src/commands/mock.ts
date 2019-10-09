@@ -57,15 +57,24 @@ const mockCommand: CommandModule = {
         },
       }),
   handler: parsedArgs => {
-    const { multiprocess, dynamic, port, host, cors, operations } = (parsedArgs as unknown) as CreatePrismOptions & {
+    const {
+      multiprocess,
+      dynamic,
+      port,
+      host,
+      cors,
+      operations,
+      spec,
+    } = (parsedArgs as unknown) as CreatePrismOptions & {
       multiprocess: boolean;
+      spec: string;
     };
 
     if (multiprocess) {
-      return createMultiProcessPrism({ cors, dynamic, port, host, operations });
+      return createMultiProcessPrism({ cors, dynamic, port, host, operations, spec });
     }
 
-    return createSingleProcessPrism({ cors, dynamic, port, host, operations });
+    return createSingleProcessPrism({ cors, dynamic, port, host, operations, spec });
   },
 };
 
