@@ -3,12 +3,11 @@ import * as fs from 'fs';
 import { validate } from 'gavel';
 import * as globFs from 'glob-fs';
 import { parseResponse } from 'http-string-parser';
-import { get } from 'lodash';
 import * as os from 'os';
+import { get } from 'lodash';
 import * as path from 'path';
 import * as split2 from 'split2';
 import * as tmp from 'tmp';
-import * as kill from 'tree-kill';
 import { parseSpecFile, xmlValidator } from './helpers';
 
 const glob = globFs({ gitignore: true });
@@ -99,7 +98,6 @@ describe('harness', () => {
 });
 
 function shutdownPrism(processHandle: ChildProcess, done: jest.DoneCallback) {
-  processHandle.on('exit', done);
-
-  kill(processHandle.pid);
+  processHandle.kill();
+  return processHandle.on('exit', done);
 }
