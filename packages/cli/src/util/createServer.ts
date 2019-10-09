@@ -3,11 +3,14 @@ import { createServer as createHttpServer } from '@stoplight/prism-http-server';
 import { IHttpOperation } from '@stoplight/types';
 import chalk from 'chalk';
 import * as cluster from 'cluster';
+import * as Either from 'fp-ts/lib/Either';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { LogDescriptor, Logger } from 'pino';
 import * as signale from 'signale';
 import * as split from 'split2';
 import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
+import { createExamplePath } from './paths';
 
 export async function createMultiProcessPrism(options: CreatePrismOptions) {
   if (cluster.isMaster) {
@@ -62,8 +65,14 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
   });
 
   const address = await server.listen(options.port, options.host);
+
   options.operations.forEach(resource => {
-    logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${resource.path}`);
+    const path = pipe(
+      createExamplePath(resource),
+      Either.getOrElse(() => resource.path),
+    );
+
+    logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${path}`);
   });
   logInstance.start(`Prism is listening on ${address}`);
 }

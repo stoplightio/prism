@@ -100,5 +100,5 @@ Will give you the following error:
 }
 ```
 
-[petstore-oas2]: ../examples/petstore.oas2.yaml
+[petstore-oas2]: ../../examples/petstore.oas2.yaml
 [rfc7807]: https://www.tools.ietf.org/html/rfc7807
