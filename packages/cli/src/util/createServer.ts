@@ -73,6 +73,11 @@ async function createPrismServerWithLogger(options: CreatePrismOptions & { spec:
       })
       .then(newServer => {
         server = newServer;
+      })
+      .catch(() => {
+        logInstance.fatal('Could not restart the server.');
+
+        process.exit(1);
       });
   });
 }
