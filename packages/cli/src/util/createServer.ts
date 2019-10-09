@@ -56,10 +56,10 @@ async function createPrismServerWithLogger(options: CreatePrismOptions & { spec:
 
   let server = await createFastifyServerWithLogger(options, logInstance);
 
-  watcher.on('change', async () => {
+  watcher.on('change', () => {
     logInstance.start('Restarting Prism…');
 
-    await server.fastify
+    server.fastify
       .close()
       .then(() => getHttpOperationsFromResource(spec))
       .then(operations => {
