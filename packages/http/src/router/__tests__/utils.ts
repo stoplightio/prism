@@ -9,11 +9,11 @@ export function pickOneHttpMethod(): HttpMethod {
   return chance.pickone(httpMethods);
 }
 
-export function pickSetOfHttpMethods(count: number = 2): HttpMethod[] {
+export function pickSetOfHttpMethods(count = 2): HttpMethod[] {
   return chance.unique(pickOneHttpMethod, count);
 }
 
-export function randomArray<T>(itemGenerator: () => T, length: number = 1): T[] {
+export function randomArray<T>(itemGenerator: () => T, length = 1): T[] {
   return new Array(length).fill(null).map(itemGenerator);
 }
 

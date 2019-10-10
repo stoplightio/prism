@@ -55,7 +55,7 @@ describe('GET /pet?__server', () => {
   );
 
   const expectedPayload = (serverUrl: string) =>
-    `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url ${serverUrl} hasn\'t been matched with any of the provided servers"}`;
+    `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url ${serverUrl} hasn't been matched with any of the provided servers"}`;
 
   function requestPetGivenServer(serverUrl: string) {
     return server.fastify.inject({

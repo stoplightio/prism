@@ -22,8 +22,8 @@ export const httpAndFileResolver = new Resolver({
     },
   },
 
-  parseResolveResult: async opts => {
+  parseResolveResult: opts => {
     opts.result = parse(opts.result);
-    return opts;
+    return Promise.resolve(opts);
   },
 });

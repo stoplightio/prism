@@ -11,7 +11,7 @@
     "url": "https://github.com/stoplightio/prism.git"
   },
   "scripts": {
-    "lint": "tslint -p packages/tsconfig.test.json",
+    "lint": "eslint ./packages/**/src/**/*.ts",
     "lint.fix": "yarn lint --fix",
     "build": "tsc --build ./packages/tsconfig.build.json",
     "posttest": "yarn lint",
@@ -39,9 +39,12 @@
     "@types/split2": "^2.1.6",
     "@types/type-is": "^1.6.3",
     "@types/urijs": "^1.19.4",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
     "abstract-logging": "^1.0.0",
     "chance": "^1.0.18",
     "diff-js-xml": "^1.0.5",
+    "eslint": "^6.5.1",
     "gavel": "^8.0.3",
     "glob-fs": "^0.1.7",
     "http-string-parser": "^0.0.6",
@@ -54,9 +57,8 @@
     "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
     "tsconfig-paths": "^3.8.0",
-    "tslint": "^5.19.0",
-    "tslint-config-stoplight": "^1.3.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "prettier": "^1.18.2"
   },
   "prettier": {
     "printWidth": 100,
@@ -65,7 +67,7 @@
   },
   "lint-staged": {
     "**/packages/**/*.ts": [
-      "tslint -p packages/tsconfig.test.json --fix",
+      "eslint --fix",
       "git add"
     ],
     "*.{json,md}": [
