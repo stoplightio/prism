@@ -40,6 +40,8 @@ Responses will be mocked using realistic data that conforms to the type in the d
 Prism watches for changes made to a document it was loaded with.
 When they happen, Prism restarts its HTTP server to reflect changes to operations.
 There is no need to manually stop and start a Prism server after a change to a specification file.
+In case of removing all of the operations in a document, Prism will not be reloaded.
+In such a case, Prism will keep serving operations loaded with the previous restart. 
 
 ## Determine Response Status
 
