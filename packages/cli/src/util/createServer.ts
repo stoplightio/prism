@@ -12,7 +12,7 @@ import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 
-export async function createMultiProcessPrism(options: CreatePrismOptions & { spec: string }) {
+export async function createMultiProcessPrism(options: CreatePrismOptions) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -34,7 +34,7 @@ export async function createMultiProcessPrism(options: CreatePrismOptions & { sp
   }
 }
 
-export async function createSingleProcessPrism(options: CreatePrismOptions & { spec: string }) {
+export async function createSingleProcessPrism(options: CreatePrismOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
