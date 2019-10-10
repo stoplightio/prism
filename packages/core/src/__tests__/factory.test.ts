@@ -19,7 +19,7 @@ describe('validation', () => {
       }),
     ),
     logger: { ...logger, child: jest.fn().mockReturnValue(logger) },
-    mock: jest.fn().mockReturnValue(asks<Logger, Error, string>(r => 'hey')),
+    mock: jest.fn().mockReturnValue(asks<Logger, Error, string>(() => 'hey')),
   };
 
   const prismInstance = factory<string, string, string, IPrismConfig>(

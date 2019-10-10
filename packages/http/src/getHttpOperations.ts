@@ -15,7 +15,7 @@ const httpAndFileResolver = new Resolver({
     http: { resolve: resolveHttp },
     file: { resolve: resolveFile },
   },
-  parseResolveResult: async opts => ({ ...opts, result: parse(opts.result) }),
+  parseResolveResult: opts => Promise.resolve({ ...opts, result: parse(opts.result) }),
 });
 
 export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
@@ -34,7 +34,7 @@ export default async function getHttpOperations(specContent: string, baseUri?: s
   if (errors.length) {
     const uniqueErrors = uniq(errors.map(error => error.message)).join(EOL);
     throw new Error(
-      `There\'s been an error while trying to resolve external references in your document: ${uniqueErrors}`,
+      `There's been an error while trying to resolve external references in your document: ${uniqueErrors}`,
     );
   }
 

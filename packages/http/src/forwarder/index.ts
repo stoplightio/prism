@@ -4,7 +4,7 @@ import axios from 'axios';
 import { toError } from 'fp-ts/lib/Either';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults, omit } from 'lodash';
-import { IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
+import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
 const { version: prismVersion } = require('../../package.json');
 
 const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>['forward'] = (
