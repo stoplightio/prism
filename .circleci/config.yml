@@ -27,7 +27,7 @@ jobs:
             - node_modules/
       - run:
           name: Run tests
-          command: yarn test.coverage --verbose
+          command: yarn test
       - run:
           name: Run build
           command: yarn build

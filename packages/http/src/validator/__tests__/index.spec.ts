@@ -2,7 +2,6 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import { IHttpRequest } from '../../types';
 import { bodyValidator, headersValidator, queryValidator, validateInput, validateOutput } from '../index';
-import * as findResponseSpecModule from '../utils/spec';
 
 const mockError: IPrismDiagnostic = {
   message: 'mocked C is required',
@@ -72,7 +71,7 @@ describe('HttpValidator', () => {
     });
 
     describe('headers validation in enabled', () => {
-      const validate = (resourceExtension?: Partial<IHttpOperation>, length: number = 1) => () => {
+      const validate = (resourceExtension?: Partial<IHttpOperation>, length = 1) => () => {
         expect(
           validateInput({
             resource: Object.assign(
@@ -99,7 +98,7 @@ describe('HttpValidator', () => {
       const validate = (
         resourceExtension?: Partial<IHttpOperation>,
         inputExtension?: Partial<IHttpRequest>,
-        length: number = 2,
+        length = 2,
       ) => () => {
         expect(
           validateInput({

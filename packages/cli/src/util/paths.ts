@@ -11,8 +11,6 @@ import {
   IHttpParam,
   IHttpPathParam,
   IHttpQueryParam,
-  INodeExample,
-  INodeExternalExample,
 } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
