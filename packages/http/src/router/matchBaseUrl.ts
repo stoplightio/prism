@@ -17,21 +17,21 @@ export function convertTemplateToRegExp(urlTemplate: string, variables?: { [name
   const regexp = !variables
     ? urlTemplate
     : urlTemplate.replace(variableRegexp, (_match, variableName) => {
-        const variable = variables[variableName];
-        if (!variable) {
-          throw new Error(`Variable '${variableName}' is not defined, cannot parse input.`);
-        }
-        let { enum: enums } = variable;
-        if (enums) {
-          enums = enums.sort((a, b) => b.length - a.length);
-        }
-        return `(${enums && enums.length ? enums.join('|') : '.*?'})`;
-      });
+      const variable = variables[variableName];
+      if (!variable) {
+        throw new Error(`Variable '${variableName}' is not defined, cannot parse input.`);
+      }
+      let { enum: enums } = variable;
+      if (enums) {
+        enums = enums.sort((a, b) => b.length - a.length);
+      }
+      return `(${enums && enums.length ? enums.join('|') : '.*?'})`;
+    });
 
   return new RegExp(`^${regexp}$`);
 }
 
 function matchRequestUrlToTemplateUrl(requestUrl: string, templateUrl: string, variables?: any) {
   const regexp = convertTemplateToRegExp(templateUrl, variables);
-  return requestUrl.match(regexp);
+  return regexp.exec(requestUrl);
 }

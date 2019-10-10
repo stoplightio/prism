@@ -22,7 +22,7 @@ describe('body params validation', () => {
   });
 
   describe('http operation with body param', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       server = instantiatePrism2([
         {
           id: '?http-operation-id?',

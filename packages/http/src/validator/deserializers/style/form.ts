@@ -9,7 +9,7 @@ export class FormStyleDeserializer implements IHttpQueryParamStyleDeserializer {
     return style === HttpParamStyles.Form;
   }
 
-  public deserialize(name: string, parameters: IHttpNameValues, schema?: JSONSchema, explode: boolean = true) {
+  public deserialize(name: string, parameters: IHttpNameValues, schema?: JSONSchema, explode = true) {
     const type = schema ? schema.type : undefined;
     const values = parameters[name];
 
@@ -43,7 +43,7 @@ export class FormStyleDeserializer implements IHttpQueryParamStyleDeserializer {
     return Object.keys(parameters).reduce((result: object, key) => {
       const value = parameters[key];
 
-      if (!properties.hasOwnProperty(key)) {
+      if (!Object.prototype.hasOwnProperty.call(properties, key)) {
         return result;
       }
 

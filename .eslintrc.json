@@ -1,0 +1,34 @@
+{
+  "env": {
+    "browser": false,
+    "es6": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./packages/tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "rules": {
+    "@typescript-eslint/no-triple-slash-reference": "off",
+    "@typescript-eslint/prefer-interface": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/unbound-method": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "require-atomic-updates": "off"
+  }
+}
