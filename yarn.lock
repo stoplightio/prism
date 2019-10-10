@@ -1179,17 +1179,7 @@
     urijs "~1.19.1"
     vscode-uri "^2.0.3"
 
-"@stoplight/json@^3.1.0":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.1.2.tgz#ae89d1974f0b6f8bc5778f792aeed4664c95ec62"
-  integrity sha512-7zt0zCN94m90X1sL7FrD7jXhPtkIup07MyG/00sELVrCvzb2wgNaiE+x2N7WSbk3Z0wS08e8B6kow81GQY+Isw==
-  dependencies:
-    "@stoplight/types" "^11.0.0"
-    jsonc-parser "~2.1.1"
-    lodash "^4.17.15"
-    safe-stable-stringify "^1.1"
-
-"@stoplight/json@^3.1.1":
+"@stoplight/json@^3.1.0", "@stoplight/json@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.1.1.tgz#531d966a62247bf2ab1e8a06a685fa62e36cf890"
   integrity sha512-DK2ufmnPvfW9Mv0q4DYtldjicTTcBY+j4kiEUOEmc9hL+mzMDV08+5ix4tmPtheUDZH6OtEqEmGcf8ZKCHFbpg==
