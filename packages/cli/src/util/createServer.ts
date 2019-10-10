@@ -71,7 +71,7 @@ async function createPrismServerWithLogger(options: CreatePrismOptions & { spec:
           return createFastifyServerWithLogger({ ...options, operations }, logInstance);
         }
       })
-      .then(newServer => {
+      .then(newServer => server = newServer)
         server = newServer;
       })
       .catch(() => {
