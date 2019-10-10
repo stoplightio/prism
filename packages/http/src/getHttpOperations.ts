@@ -15,10 +15,7 @@ const httpAndFileResolver = new Resolver({
     http: { resolve: resolveHttp },
     file: { resolve: resolveFile },
   },
-  parseResolveResult: async opts => {
-    opts.result = parse(opts.result);
-    return opts;
-  },
+  parseResolveResult: async opts => ({ ...opts, result: parse(opts.result) }),
 });
 
 export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
