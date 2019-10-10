@@ -74,7 +74,7 @@ const mockCommand: CommandModule = {
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
     const options = { cors, dynamic, port, host, operations };
 
-    return runPrism(createPrism, options, spec);
+    return runPrismAndSetupWatcher(createPrism, options, spec);
   },
 };
 
