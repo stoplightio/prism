@@ -1,4 +1,6 @@
 import { transformOas2Operation, transformOas3Operation } from '@stoplight/http-spec';
+import { Resolver } from '@stoplight/json-ref-resolver';
+import { resolveFile, resolveHttp } from '@stoplight/ref-resolvers';
 import { IHttpOperation } from '@stoplight/types';
 import { parse } from '@stoplight/yaml';
 import axios from 'axios';
@@ -6,7 +8,15 @@ import * as fs from 'fs';
 import { flatten, get, keys, map, uniq } from 'lodash';
 import { EOL } from 'os';
 import { resolve } from 'path';
-import { httpAndFileResolver } from './resolvers/http-and-file';
+
+const httpAndFileResolver = new Resolver({
+  resolvers: {
+    https: { resolve: resolveHttp },
+    http: { resolve: resolveHttp },
+    file: { resolve: resolveFile },
+  },
+  parseResolveResult: async opts => ({ ...opts, result: parse(opts.result) }),
+});
 
 export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
   const fileContent = file.match(/^https?:\/\//i)
