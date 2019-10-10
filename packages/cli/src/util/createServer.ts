@@ -71,9 +71,7 @@ async function createPrismServerWithLogger(options: CreatePrismOptions & { spec:
           return createFastifyServerWithLogger({ ...options, operations }, logInstance);
         }
       })
-      .then(newServer => server = newServer)
-        server = newServer;
-      })
+      .then(newServer => (server = newServer))
       .catch(() => {
         logInstance.fatal('Could not restart the server.');
 
