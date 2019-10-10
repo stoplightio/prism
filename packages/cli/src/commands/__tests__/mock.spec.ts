@@ -6,8 +6,8 @@ import mockCommand from '../mock';
 const parser = yargs.command(mockCommand);
 
 jest.mock('../../util/createServer', () => ({
-  createMultiProcessPrism: jest.fn(),
-  createSingleProcessPrism: jest.fn(),
+  createMultiProcessPrism: jest.fn().mockResolvedValue([]),
+  createSingleProcessPrism: jest.fn().mockResolvedValue([]),
 }));
 
 jest.spyOn(utils, 'getHttpOperationsFromResource').mockResolvedValue([]);
@@ -30,7 +30,6 @@ describe('mock command', () => {
       cors: true,
       host: '127.0.0.1',
       port: 4010,
-      spec: '/path/to',
     });
   });
 
@@ -48,7 +47,6 @@ describe('mock command', () => {
       cors: true,
       host: '127.0.0.1',
       port: 666,
-      spec: '/path/to',
     });
   });
 
@@ -66,7 +64,6 @@ describe('mock command', () => {
       cors: true,
       host: '0.0.0.0',
       port: 4010,
-      spec: '/path/to',
     });
   });
 
@@ -84,7 +81,6 @@ describe('mock command', () => {
       dynamic: false,
       host: '0.0.0.0',
       port: 666,
-      spec: '/path/to',
     });
   });
 
@@ -102,7 +98,6 @@ describe('mock command', () => {
       cors: true,
       host: '0.0.0.0',
       port: 4010,
-      spec: '/path/to',
     });
   });
 });

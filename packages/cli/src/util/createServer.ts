@@ -1,9 +1,7 @@
 import { createLogger, logLevels } from '@stoplight/prism-core';
-import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
 import { IHttpOperation } from '@stoplight/types';
 import chalk from 'chalk';
-import * as chokidar from 'chokidar';
 import * as cluster from 'cluster';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -50,37 +48,7 @@ export async function createSingleProcessPrism(options: CreatePrismOptions & { s
   }
 }
 
-async function createPrismServerWithLogger(options: CreatePrismOptions & { spec: string }, logInstance: Logger) {
-  const spec = options.spec;
-  const watcher = chokidar.watch(spec);
-
-  let server = await createFastifyServerWithLogger(options, logInstance);
-
-  watcher.on('change', () => {
-    logInstance.start('Restarting Prism…');
-
-    server.fastify
-      .close()
-      .then(() => getHttpOperationsFromResource(spec))
-      .then(operations => {
-        if (operations.length === 0) {
-          logInstance.note('No operations found in the current file. Loading the document from the initial load.');
-
-          return createFastifyServerWithLogger(options, logInstance);
-        } else {
-          return createFastifyServerWithLogger({ ...options, operations }, logInstance);
-        }
-      })
-      .then(newServer => (server = newServer))
-      .catch(() => {
-        logInstance.fatal('Could not restart the server.');
-
-        process.exit(1);
-      });
-  });
-}
-
-async function createFastifyServerWithLogger(options: CreatePrismOptions, logInstance: Logger) {
+async function createPrismServerWithLogger(options: CreatePrismOptions, logInstance: Logger) {
   if (options.operations.length === 0) {
     throw new Error('No operations found in the current file.');
   }

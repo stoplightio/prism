@@ -2,6 +2,7 @@ import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import * as signale from 'signale';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreatePrismOptions, createSingleProcessPrism } from '../util/createServer';
+import { runPrism } from '../util/runner';
 
 const mockCommand: CommandModule = {
   describe: 'Start a mock server with the given spec file',
@@ -70,11 +71,10 @@ const mockCommand: CommandModule = {
       spec: string;
     };
 
-    if (multiprocess) {
-      return createMultiProcessPrism({ cors, dynamic, port, host, operations, spec });
-    }
+    const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
+    const options = { cors, dynamic, port, host, operations };
 
-    return createSingleProcessPrism({ cors, dynamic, port, host, operations, spec });
+    return runPrism(createPrism, options, spec);
   },
 };
 
