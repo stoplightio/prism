@@ -2,7 +2,7 @@ import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import * as signale from 'signale';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreatePrismOptions, createSingleProcessPrism } from '../util/createServer';
-import { runPrism } from '../util/runner';
+import { runPrismAndSetupWatcher } from '../util/runner';
 
 const mockCommand: CommandModule = {
   describe: 'Start a mock server with the given spec file',
