@@ -16,7 +16,6 @@
     "build": "tsc --build ./packages/tsconfig.build.json",
     "posttest": "yarn lint",
     "test": "jest --maxWorkers=2",
-    "test.coverage": "yarn test --coverage",
     "test.watch": "yarn test --watchAll",
     "release": "lerna version",
     "prebuild.binary": "yarn build",
