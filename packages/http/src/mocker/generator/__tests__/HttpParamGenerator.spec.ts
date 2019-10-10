@@ -56,7 +56,7 @@ describe('HttpParamGenerator', () => {
       // @ts-ignore
       const improvedSchema = improveSchema({ type });
 
-      it('shuold have a minimum and a maximum', () => {
+      it('should have a minimum and a maximum', () => {
         expect(improvedSchema).toHaveProperty('minimum', 1);
         expect(improvedSchema).toHaveProperty('maximum', 1000);
       });
