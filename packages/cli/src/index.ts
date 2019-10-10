@@ -3,8 +3,7 @@
 import * as yargs from 'yargs';
 import mockCommand from './commands/mock';
 
-// tslint:disable-next-line:no-unused-expression
-yargs
+const _v = yargs
   .scriptName('prism')
   .version()
   .help(true)
