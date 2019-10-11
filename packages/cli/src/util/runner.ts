@@ -12,6 +12,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
 
       const watcher = chokidar.watch(spec.replace('\'', '/'), {
         persistent: false,
+        disableGlobbing: true,
         awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 100 }
       });
 
