@@ -59,7 +59,7 @@
     "typescript": "^3.6.4"
   },
   "prettier": {
-    "printWidth": 100,
+    "printWidth": 120,
     "singleQuote": true,
     "trailingComma": "es5"
   },
@@ -77,5 +77,10 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "dependencies": {
+    "@types/node-fetch": "^2.5.2",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1"
   }
 }
