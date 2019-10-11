@@ -3,8 +3,10 @@ import { IPrismHttpServer } from '@stoplight/prism-http-server/src/types';
 import * as chokidar from 'chokidar';
 import { CreatePrismOptions } from './createServer';
 
-export function runPrismAndSetupWatcher(createPrism: Function, options: CreatePrismOptions, spec: string) {
-  return createPrism(options).then((server: IPrismHttpServer) => {
+type CreatePrism = (options: CreatePrismOptions) => Promise<IPrismHttpServer>;
+
+export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: CreatePrismOptions, spec: string) {
+  return createPrism(options).then(server => {
     if (server) {
       const watcher = chokidar.watch(spec, { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 100 } });
 
