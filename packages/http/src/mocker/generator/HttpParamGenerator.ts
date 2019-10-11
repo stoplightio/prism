@@ -15,7 +15,7 @@ export function improveSchema(schema: JSONSchema): JSONSchema {
     if (!newSchema.maximum) {
       newSchema.maximum = 1000;
     }
-  } else if (newSchema.type === 'string' && !newSchema.format && !newSchema.enum) {
+  } else if (newSchema.type === 'string' && !newSchema.format && !newSchema.enum && !newSchema.pattern) {
     newSchema['x-faker'] = 'lorem.word';
   } else if (newSchema.type === 'object' && newSchema.properties) {
     newSchema.properties = Object.entries(newSchema.properties).reduce((r, [k, v]) => {

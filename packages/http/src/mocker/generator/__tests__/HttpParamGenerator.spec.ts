@@ -71,12 +71,12 @@ describe('HttpParamGenerator', () => {
         });
       });
 
-      describe.each<{ 0: string; 1: object }>([['format', { format: 'email' }], ['enum', { enum: [1, 2, 3] }]])(
+      describe.each<{ 0: string; 1: object }>([['format', { format: 'email' }], ['enum', { enum: [1, 2, 3] }], ['pattern',  { pattern: '^[A-Z]+$' }]])(
         'when with %s',
         (_a, additional) => {
           const improvedSchema = improveSchema({ type: 'string', ...additional });
 
-          it('should have the x-faker extension', () => expect(improvedSchema).not.toHaveProperty('x-faker'));
+          it('should not have the x-faker extension', () => expect(improvedSchema).not.toHaveProperty('x-faker'));
         },
       );
     });
