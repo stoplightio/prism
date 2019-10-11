@@ -58,11 +58,6 @@
     "tsconfig-paths": "^3.8.0",
     "typescript": "^3.6.4"
   },
-  "prettier": {
-    "printWidth": 120,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
   "lint-staged": {
     "**/packages/**/*.ts": [
       "eslint --fix",
