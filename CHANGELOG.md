@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Validating output status code against available response specs [#648](https://github.com/stoplightio/prism/pull/648)
 - Support for Contract Testing [#650](https://github.com/stoplightio/prism/pull/650)
 - The CLI will now propose operation paths with meaningful examples [#671](https://github.com/stoplightio/prism/pull/671)
-- Prism now includes a new `proxy` command to act as a validation server [#669](https://github.com/stoplightio/prism/pull/669)
+- Prism now includes a new `proxy` command that will validate the request coming in, send the request to an upstream server and then validate the response coming back [#669](https://github.com/stoplightio/prism/pull/669)
 
 ## Fixed
 
