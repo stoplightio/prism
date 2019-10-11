@@ -344,3 +344,30 @@ describe('Http Client .request', () => {
     expect(response.output.body).toBeInstanceOf(Array);
   });
 });
+
+describe('proxy server', () => {
+  const baseUrl = 'https://petstore.swagger.io:7777/v2';
+
+  beforeAll(() =>
+    nock(baseUrl)
+      .get('/pets')
+      .reply(200, '<html><h1>Hello</h1>', { 'content-type': 'application/html' })
+  );
+
+  afterAll(() => nock.cleanAll());
+
+  describe('when the base URL has a different port', () => {
+    it('will take in account when proxying', async () => {
+      const prism = createInstance(
+        { mock: false, checkSecurity: true, validateRequest: true, validateResponse: true, upstream: new URL(baseUrl) },
+        { logger }
+      );
+
+      const resources = await getHttpOperationsFromResource(petStoreOas2Path);
+      const response = await prism.request({ method: 'get', url: { path: '/pets' } }, resources);
+
+      expect(response.output.statusCode).toBe(200);
+      expect(response.output.body).toBe('<html><h1>Hello</h1>');
+    });
+  });
+});

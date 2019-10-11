@@ -6,7 +6,10 @@ import proxyCommand from '../proxy';
 
 const parser = yargs.command(mockCommand).command(proxyCommand);
 
-jest.mock('../../util/createServer');
+jest.mock('../../util/createServer', () => ({
+  createMultiProcessPrism: jest.fn().mockResolvedValue([]),
+  createSingleProcessPrism: jest.fn().mockResolvedValue([]),
+}));
 
 jest.spyOn(utils, 'getHttpOperationsFromResource').mockResolvedValue([]);
 

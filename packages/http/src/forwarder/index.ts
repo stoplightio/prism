@@ -39,7 +39,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
             : response.text(),
         ])
       )
-      .then<IHttpResponse>(([response, body]) => ({
+      .then(([response, body]) => ({
         statusCode: response.status,
         headers: mapValues(response.headers.raw(), hValue => hValue.join(' ')),
         body,
