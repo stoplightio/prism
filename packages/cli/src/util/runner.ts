@@ -10,7 +10,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
     if (possiblyServer) {
       let server: IPrismHttpServer = possiblyServer;
 
-      const watcher = chokidar.watch(spec.replace('\'', '/'), {
+      const watcher = chokidar.watch(spec, {
         persistent: false,
         disableGlobbing: true,
         awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 100 }
