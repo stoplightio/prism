@@ -10,7 +10,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
     if (possiblyServer) {
       let server: IPrismHttpServer = possiblyServer;
 
-      const watcher = chokidar.watch(spec, { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 100 } });
+      const watcher = chokidar.watch(spec.replace('\'', '/'), { awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 100 } });
 
       watcher.on('change', () => {
         server.fastify.log.info('Restarting Prism...');
