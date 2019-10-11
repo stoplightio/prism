@@ -1,8 +1,8 @@
 import { getHttpOperationsFromResource } from '@stoplight/prism-http';
-import { pick } from 'lodash';
 import { CommandModule } from 'yargs';
 import { CreateMockServerOptions, createMultiProcessPrism, createSingleProcessPrism } from '../util/createServer';
 import sharedOptions from './sharedOptions';
+import { runPrismAndSetupWatcher } from '../util/runner';
 
 const mockCommand: CommandModule = {
   describe: 'Start a mock server with the given document file',
@@ -24,18 +24,24 @@ const mockCommand: CommandModule = {
         },
       }),
   handler: parsedArgs => {
-    const p: CreateMockServerOptions = pick(
-      (parsedArgs as unknown) as CreateMockServerOptions,
-      'dynamic',
-      'cors',
-      'host',
-      'port',
-      'operations',
-      'multiprocess',
-      'log'
-    );
+    const {
+      multiprocess,
+      dynamic,
+      port,
+      host,
+      cors,
+      operations,
+      spec,
+      log,
+    } = (parsedArgs as unknown) as CreateMockServerOptions & {
+      multiprocess: boolean;
+      spec: string;
+    };
 
-    return p.multiprocess ? createMultiProcessPrism(p) : createSingleProcessPrism(p);
+    const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
+    const options = { cors, dynamic, port, host, operations, multiprocess, log };
+
+    return runPrismAndSetupWatcher(createPrism, options, spec);
   },
 };
 

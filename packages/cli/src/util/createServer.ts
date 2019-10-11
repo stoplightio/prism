@@ -13,7 +13,7 @@ import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 
-function createMultiProcessPrism(options: CreateBaseServerOptions): Promise<void> {
+function createMultiProcessPrism(options: CreateBaseServerOptions) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -81,6 +81,8 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
   });
 
   logInstance.start(`Prism is listening on ${address}`);
+
+  return server;
 }
 
 function pipeOutputToSignale(stream: Readable) {
