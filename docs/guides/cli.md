@@ -73,6 +73,8 @@ curl -v http://127.0.0.1:4010/pets/123?__dynamic=false
 
 This command creates an HTTP server that will proxy all the requests to the specified upstream server. Prism will analyze the request coming in and the response coming back from the upstream server and report the discrepancies with what's declared in the provided OpenAPI document.
 
+**Note:** Currently the proxy command _expects_ a JSON Paylod for both the request and the response.
+
 ```
 prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2
 

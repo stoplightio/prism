@@ -56,7 +56,10 @@
     "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
     "tsconfig-paths": "^3.8.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.6.4",
+    "@types/node-fetch": "^2.5.2",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-prettier": "^3.1.1"
   },
   "lint-staged": {
     "**/packages/**/*.ts": [
@@ -72,10 +75,5 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "dependencies": {
-    "@types/node-fetch": "^2.5.2",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-plugin-prettier": "^3.1.1"
   }
 }
