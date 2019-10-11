@@ -20,8 +20,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
     const partialUrl = parse(baseUrl);
     return fetch(
       format({
-        protocol: partialUrl.protocol,
-        hostname: partialUrl.hostname,
+        ...partialUrl,
         pathname: posix.join(partialUrl.pathname || '', input.url.path),
         query: input.url.query,
       }),
