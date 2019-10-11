@@ -74,7 +74,7 @@ export function deserialize(content: IMediaTypeContent, schema: JSONSchema, targ
   );
 }
 
-export const getMediaTypeWithContentAndSchema = (specs: any, mediaType: any) => {
+export const getMediaTypeWithContentAndSchema = (specs: IMediaTypeContent[], mediaType: any) => {
   return pipe(
     Option.fromNullable(mediaType),
     Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),

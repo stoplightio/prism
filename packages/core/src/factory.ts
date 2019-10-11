@@ -97,7 +97,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             output,
             validations: {
               input: inputValidations,
-              output: outputValidations,
+              output: toVal(outputValidations),
             },
           };
         }),

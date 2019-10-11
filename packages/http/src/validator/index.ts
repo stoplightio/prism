@@ -30,11 +30,20 @@ export const deserializeInput = (element: any, request: any) => {
   const { body } = element;
   const mediaType = caseless(element.headers || {}).get('content-type');
 
+  if (!body) {
+    return Either.right({
+      schema: [],
+      body: ''
+    })
+  }
+
   return pipe(
     // in order to deserialize, we need to know how to do this (ie what mediaType it is):
     getMediaTypeWithContentAndSchema((request && request.body && request.body.contents) || [], mediaType),
     Either.fromOption(() => {
-      throw { message: 'should this ever happen?' };
+      // so it means that there was nothing to deserialize
+      // this is still wrong as this is a left
+      return [];
     }),
     Either.chain(({ content, mediaType: mt, schema }) => {
       const needsDeserialization = !!typeIs.is(mt, ['application/x-www-form-urlencoded']);
@@ -88,6 +97,8 @@ const validateInput = ({ resource, element, schema, body }: any) => {
             : right([]))(),
         // example validation result: left([{ message: 'some other validation', severity: 0 }] as NonEmptyArray<IPrismDiagnostic>),
         // headersValidator.validate and queryValidator.validate should be part of the sequence, they were not included so that the poc could be minimal
+        Either.left(headersValidator.validate(element.headers || {}, (request && request.headers) || []) as NonEmptyArray<IPrismDiagnostic>), // just for now
+        Either.left(queryValidator.validate(element.url.query || {}, (request && request.query) || []) as NonEmptyArray<IPrismDiagnostic>), // just for now
       ),
       map(() => body),
     );
@@ -97,10 +108,10 @@ const validateInput = ({ resource, element, schema, body }: any) => {
 };
 
 // should take `schema` and `body` from factory.ts like `validateInput` is doing
-const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
+const validateOutput = ({ resource, element }: any) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
 
-  return pipe(
+  const u = pipe(
     findOperationResponse(resource.responses, element.statusCode),
     Option.fold<IHttpOperationResponse, IPrismDiagnostic[]>(
       () => [
@@ -128,6 +139,8 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
           Option.getOrElse<IPrismDiagnostic[]>(() => []),
         );
 
+
+
         return (
           mismatchingMediaTypeError
             // .concat(bodyValidator.validate(element.body, operationResponse.contents || [], mediaType))
@@ -136,8 +149,23 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
             .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || []))
         );
       },
-    ),
+    )
   );
+
+  if (u.length) {
+
+    return Either.left(u);
+
+    // take a look down below
+    // return pipe(
+    //     bodyValidator.validate(element.body, /*operationResponse.contents ||*/ [], mediaType),
+    //     Either.mapLeft((x) => {
+    //       return x.concat(u)
+    //     })
+    //   )
+  } else {
+    return Either.right([]);
+  }
 };
 
 export { validateInput, validateOutput };
