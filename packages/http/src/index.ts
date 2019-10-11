@@ -12,13 +12,13 @@ export * from './router/errors';
 export * from './mocker/serializer/style';
 export { generate as generateHttpParam } from './mocker/generator/HttpParamGenerator';
 
-import { IHttpConfig, IHttpRequest, IHttpResponse, PickRequired, PrismHttpComponents } from './types';
+import { IHttpConfig, IHttpRequest, IHttpResponse, PickRequired, PrismHttpComponents, IHttpProxyConfig } from './types';
 
 export const createInstance = (
-  defaultConfig: IHttpConfig,
-  components?: PickRequired<Partial<PrismHttpComponents>, 'logger'>,
+  defaultConfig: IHttpConfig | IHttpProxyConfig,
+  components?: PickRequired<Partial<PrismHttpComponents>, 'logger'>
 ) =>
   factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
     defaultConfig,
-    defaults(components, { route, validateInput, validateOutput, mock, forward }),
+    defaults(components, { route, validateInput, validateOutput, mock, forward })
   );
