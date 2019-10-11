@@ -32,12 +32,12 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
         }),
       }
     )
-      .then(r =>
+      .then(response =>
         Promise.all([
-          r,
-          typeIs.is(r.headers.get('content-type') || '', ['application/json', 'application/*+json'])
-            ? r.json()
-            : r.text(),
+          response,
+          typeIs.is(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
+            ? response.json()
+            : response.text(),
         ])
       )
       .then<IHttpResponse>(([response, body]) => ({

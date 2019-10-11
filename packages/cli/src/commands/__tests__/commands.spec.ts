@@ -6,10 +6,7 @@ import proxyCommand from '../proxy';
 
 const parser = yargs.command(mockCommand).command(proxyCommand);
 
-jest.mock('../../util/createServer', () => ({
-  createMultiProcessPrism: jest.fn(),
-  createSingleProcessPrism: jest.fn(),
-}));
+jest.mock('../../util/createServer');
 
 jest.spyOn(utils, 'getHttpOperationsFromResource').mockResolvedValue([]);
 
@@ -25,7 +22,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
   test(`starts ${command} server`, async () => {
     await new Promise(resolve => {
       parser.parse(`${command} /path/to ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
-        commandPromise.then(resolve),
+        commandPromise.then(resolve)
       );
     });
 
@@ -44,7 +41,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
   test(`starts ${command} server on custom port`, async () => {
     await new Promise(resolve => {
       parser.parse(`${command} /path/to -p 666 ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
-        commandPromise.then(resolve),
+        commandPromise.then(resolve)
       );
     });
 
@@ -63,7 +60,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
   test(`starts ${command} server on custom host`, async () => {
     await new Promise(resolve => {
       parser.parse(`${command} /path/to -h 0.0.0.0 ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
-        commandPromise.then(resolve),
+        commandPromise.then(resolve)
       );
     });
 
@@ -83,7 +80,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     await new Promise(resolve => {
       parser.parse(
         `${command} /path/to -p 666 -h 0.0.0.0 ${upstream}`,
-        (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve),
+        (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve)
       );
     });
 
@@ -102,7 +99,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
   test(`starts ${command} server with multiprocess option `, async () => {
     await new Promise(resolve => {
       parser.parse(`${command} /path/to -m -h 0.0.0.0 ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
-        commandPromise.then(resolve),
+        commandPromise.then(resolve)
       );
     });
 
@@ -122,7 +119,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     await new Promise(resolve => {
       parser.parse(
         `${command} /path/to -m -h 0.0.0.0 --log httpResponse ${upstream}`,
-        (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve),
+        (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve)
       );
     });
 
