@@ -51,7 +51,7 @@ describe('HttpParamGenerator', () => {
     });
   });
 
-  describe('improveSchema', () => {
+  describe('improveSchema()', () => {
     describe.each(['number', 'integer'])('when feed with a %s', type => {
       // @ts-ignore
       const improvedSchema = improveSchema({ type });
