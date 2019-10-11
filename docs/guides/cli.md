@@ -11,8 +11,8 @@ prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.
 ✔  success   Prism is listening on http://127.0.0.1:4010
 ●  note      GET        http://127.0.0.1:4010/pets
 ●  note      POST       http://127.0.0.1:4010/pets
-●  note      GET        http://127.0.0.1:4010/pets/{id}
-●  note      DELETE     http://127.0.0.1:4010/pets/{id}
+●  note      GET        http://127.0.0.1:4010/pets/10
+●  note      DELETE     http://127.0.0.1:4010/pets/10
 ```
 
 Then in another tab, you can hit the HTTP server with your favorite HTTP client.
@@ -80,7 +80,7 @@ prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2
 [HTTP SERVER] ℹ  info      Server listening at http://127.0.0.1:4010
 [CLI] ●  note      GET        http://127.0.0.1:4010/pets
 [CLI] ●  note      POST       http://127.0.0.1:4010/pets
-[CLI] ●  note      GET        http://127.0.0.1:4010/pets/{petId}
+[CLI] ●  note      GET        http://127.0.0.1:4010/pets/10
 ```
 
 By default, the output violations will be reported on the standard output, but you can also specify to embed these in the HTTP Response:
