@@ -55,7 +55,7 @@ The body, headers, etc. for this response will be taken from the API description
 
 #### Request a specific example from a resource
 
-You can request a specific example from the named of your document by using the `__example` query string paramenter.
+You can request a specific example from your document by using the `__example` query string paramenter.
 
 ```bash
 curl -v http://127.0.0.1:4010/pets/123?__example=exampleKey
