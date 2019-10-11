@@ -60,7 +60,7 @@ paths:
             'application/json':
               example: hello
 ====server====
-mock -p 4010
+mock -p 4010 ${file}
 ====command====
 curl -i -X GET http://localhost:4010/todos -H "accept: application/json"
 ====expect====
