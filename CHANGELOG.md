@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Validating output status code against available response specs [#648](https://github.com/stoplightio/prism/pull/648)
 - Support for Contract Testing [#650](https://github.com/stoplightio/prism/pull/650)
 - The CLI will now propose operation paths with meaningful examples [#671](https://github.com/stoplightio/prism/pull/671)
+- Prism reloads itself every time there are changes being made to the specified document [#689](https://github.com/stoplightio/prism/pull/689)
 
 ## Fixed
 

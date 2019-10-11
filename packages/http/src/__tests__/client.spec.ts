@@ -14,10 +14,10 @@ describe('User Http Client', () => {
         checkSecurity: true,
       };
 
-      beforeAll(async () => {
+      beforeAll(() => {
         jest.spyOn(mock, 'default');
 
-        client = await createClientFromOperations(
+        client = createClientFromOperations(
           [
             {
               id: 'operation',

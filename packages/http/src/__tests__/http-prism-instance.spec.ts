@@ -1,5 +1,4 @@
 import { createLogger, IPrism } from '@stoplight/prism-core';
-import { DiagnosticSeverity } from '@stoplight/types';
 import { IHttpOperation } from '@stoplight/types';
 import { Scope as NockScope } from 'nock';
 import * as nock from 'nock';
@@ -7,7 +6,7 @@ import { basename, resolve } from 'path';
 import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { getHttpOperationsFromResource } from '../getHttpOperations';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
-import { NO_BASE_URL_ERROR, NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
+import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
 
 const logger = createLogger('TEST', { enabled: false });
 

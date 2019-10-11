@@ -75,6 +75,8 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
     logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${path}`);
   });
   logInstance.start(`Prism is listening on ${address}`);
+
+  return server;
 }
 
 function pipeOutputToSignale(stream: Readable) {

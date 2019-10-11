@@ -6,8 +6,8 @@ import mockCommand from '../mock';
 const parser = yargs.command(mockCommand);
 
 jest.mock('../../util/createServer', () => ({
-  createMultiProcessPrism: jest.fn(),
-  createSingleProcessPrism: jest.fn(),
+  createMultiProcessPrism: jest.fn().mockResolvedValue([]),
+  createSingleProcessPrism: jest.fn().mockResolvedValue([]),
 }));
 
 jest.spyOn(utils, 'getHttpOperationsFromResource').mockResolvedValue([]);

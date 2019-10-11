@@ -1,7 +1,0 @@
-{
-  "extends": "tslint-config-stoplight",
-  "rules": {
-    "no-reference": false,
-    "interface-over-type-literal": false
-  }
-}

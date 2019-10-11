@@ -46,7 +46,7 @@ export type ProblemJson = {
   type: string;
   title: string;
   status: number;
-  detail: any;
+  detail: unknown;
 };
 
 export class ProblemJsonError extends Error {

@@ -2,6 +2,7 @@ import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import * as signale from 'signale';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreatePrismOptions, createSingleProcessPrism } from '../util/createServer';
+import { runPrismAndSetupWatcher } from '../util/runner';
 
 const mockCommand: CommandModule = {
   describe: 'Start a mock server with the given spec file',
@@ -12,7 +13,7 @@ const mockCommand: CommandModule = {
         description: 'Path to a spec file. Can be both a file or a fetchable resource on the web.',
         type: 'string',
       })
-      .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.spec!)))
+      .middleware(async argv => argv.operations = await getHttpOperationsFromResource(argv.spec!))
       .fail((msg, err) => {
         if (msg) yargs.showHelp();
         else signale.fatal(err.message);
@@ -57,15 +58,23 @@ const mockCommand: CommandModule = {
         },
       }),
   handler: parsedArgs => {
-    const { multiprocess, dynamic, port, host, cors, operations } = (parsedArgs as unknown) as CreatePrismOptions & {
+    const {
+      multiprocess,
+      dynamic,
+      port,
+      host,
+      cors,
+      operations,
+      spec,
+    } = (parsedArgs as unknown) as CreatePrismOptions & {
       multiprocess: boolean;
+      spec: string;
     };
 
-    if (multiprocess) {
-      return createMultiProcessPrism({ cors, dynamic, port, host, operations });
-    }
+    const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
+    const options = { cors, dynamic, port, host, operations };
 
-    return createSingleProcessPrism({ cors, dynamic, port, host, operations });
+    return runPrismAndSetupWatcher(createPrism, options, spec);
   },
 };
 

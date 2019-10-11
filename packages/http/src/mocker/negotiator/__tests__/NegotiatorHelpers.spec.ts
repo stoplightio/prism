@@ -181,7 +181,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     describe('and no 422 response exists', () => {
-      test('but a 400 response exists', async () => {
+      test('but a 400 response exists', () => {
         httpOperation = anHttpOperation(httpOperation)
           .withResponses([
             {
@@ -205,7 +205,7 @@ describe('NegotiatorHelpers', () => {
         assertRight(actualConfig, c => expect(c).toHaveProperty('code', '400'));
       });
 
-      test('but a default response exists', async () => {
+      test('but a default response exists', () => {
         httpOperation = anHttpOperation(httpOperation)
           .withResponses([
             {
@@ -500,12 +500,12 @@ describe('NegotiatorHelpers', () => {
 
       describe('the resource has multiple contents', () => {
         it('should negotiatiate the content according to the preference', () => {
-          const desiredOptions: NegotiationOptions = {
+          const desiredOptions: NegotiationOptions & { mediaTypes: string[] } = {
             mediaTypes: ['application/json', 'application/xml'],
             dynamic: false,
           };
 
-          const contents: IMediaTypeContent[] = desiredOptions.mediaTypes!.reverse().map(mediaType => ({
+          const contents: IMediaTypeContent[] = desiredOptions.mediaTypes.reverse().map(mediaType => ({
             mediaType,
             encodings: [],
             examples: [],
