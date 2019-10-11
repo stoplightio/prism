@@ -1,12 +1,12 @@
 import { IPrismComponents } from '@stoplight/prism-core';
-import { IHttpOperation, Dictionary } from '@stoplight/types';
+import { IHttpOperation } from '@stoplight/types';
 import { mapValues } from 'lodash';
 import fetch from 'node-fetch';
 import * as typeIs from 'type-is';
 import { toError } from 'fp-ts/lib/Either';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults, omit } from 'lodash';
-import { format, parse, resolve } from 'url';
+import { format, parse } from 'url';
 import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
 import { posix } from 'path';
 

@@ -63,17 +63,17 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
                   message: `The received media type does not match the one specified in the document`,
                   severity: DiagnosticSeverity.Error,
                 },
-              ]),
-            ),
+              ])
+            )
           ),
-          Option.getOrElse<IPrismDiagnostic[]>(() => []),
+          Option.getOrElse<IPrismDiagnostic[]>(() => [])
         );
 
         return mismatchingMediaTypeError
           .concat(bodyValidator.validate(element.body, operationResponse.contents || [], mediaType))
           .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || []));
-      },
-    ),
+      }
+    )
   );
 };
 

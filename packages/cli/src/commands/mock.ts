@@ -32,7 +32,7 @@ const mockCommand: CommandModule = {
       'port',
       'operations',
       'multiprocess',
-      'log',
+      'log'
     );
 
     return p.multiprocess ? createMultiProcessPrism(p) : createSingleProcessPrism(p);
