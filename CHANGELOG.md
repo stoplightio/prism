@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Killing sub-process only if Prism is running in multi-process mode [#645](https://github.com/stoplightio/prism/pull/645)
 - UUIDs are never generated as URNs [#661](https://github.com/stoplightio/prism/pull/661)
 - Relative references for remote documents are now resolved correctly [#669](https://github.com/stoplightio/prism/pull/669)
+- Core types are now correctly referenced in the HTTP package, restoring the type checks when using the package separately [#701](https://github.com/stoplightio/prism/pull/701)
 
 # 3.1.1 (2019-09-23)
 
