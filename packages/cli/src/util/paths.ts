@@ -18,7 +18,7 @@ import { get } from 'lodash';
 // @ts-ignore
 import { parse } from 'uri-template';
 
-export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
+export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string[]> {
   return pipe(
     generateTemplateAndValuesForPathParams(operation),
     Either.chain(({ template: pathTemplate, values: pathValues }) => {
@@ -29,7 +29,11 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
         }),
       );
     }),
-    Either.map(({ template, values }) => parse(template).expand(values)),
+    Either.map(({ template, values }) => {
+      const parsedTemplate = parse(template);
+
+      return [parsedTemplate.prefix, ...parsedTemplate.expressions.map((e: { expand: (v: unknown) => string[] }) => e.expand(values))]
+    }),
   );
 }
 
