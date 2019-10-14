@@ -1,4 +1,3 @@
-import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { pick } from 'lodash';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreateProxyServerOptions, createSingleProcessPrism } from '../util/createServer';

@@ -16,9 +16,10 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
   input: IHttpRequest,
   baseUrl: string
 ): TaskEither.TaskEither<Error, IHttpResponse> =>
-  TaskEither.tryCatch<Error, IHttpResponse>(() => {
+  TaskEither.tryCatch<Error, IHttpResponse>(async () => {
     const partialUrl = parse(baseUrl);
-    return fetch(
+
+    const response = await fetch(
       format({
         ...partialUrl,
         pathname: posix.join(partialUrl.pathname || '', input.url.path),
@@ -30,20 +31,17 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           'user-agent': `Prism/${prismVersion}`,
         }),
       }
-    )
-      .then(response =>
-        Promise.all([
-          response,
-          typeIs.is(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
-            ? response.json()
-            : response.text(),
-        ])
-      )
-      .then(([response, body]) => ({
-        statusCode: response.status,
-        headers: mapValues(response.headers.raw(), hValue => hValue.join(' ')),
-        body,
-      }));
+    );
+
+    const parsedBody = typeIs.is(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
+      ? await response.json()
+      : await response.text();
+
+    return {
+      statusCode: response.status,
+      headers: mapValues(response.headers.raw(), hValue => hValue.join(' ')),
+      body: parsedBody,
+    };
   }, toError);
 
 export default forward;
