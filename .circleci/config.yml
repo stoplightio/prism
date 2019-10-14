@@ -56,7 +56,7 @@ jobs:
           command: yarn
       - run:
           name: Build all code to JavaScript
-          command: yarn build
+          command: npx ttsc --build ./packages/tsconfig.build.json
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publish
