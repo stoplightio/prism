@@ -85,10 +85,10 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
             {
               validation: violations,
-            },
+            }
           );
         } else if (opts.log === 'httpHeader') {
-          reply.header('SL_VALIDATION', JSON.stringify(violations));
+          reply.header('sl-validation', JSON.stringify(violations));
         }
       }
 

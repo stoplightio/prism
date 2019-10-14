@@ -103,10 +103,10 @@ prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2
 curl -v -s http://localhost:4010/pets/10 > /dev/null
 
 < HTTP/1.1 404 Not Found
-< sl_validation: [{"severity":"Error","message":"The received media type does not match the one specified in the document"},{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
+< sl-validation: [{"severity":"Error","message":"The received media type does not match the one specified in the document"},{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
 ```
 
-You can see there's a `sl_validation` header which is a JSON Payload with all the violations found in the response.
+You can see there's a `sl-validation` header which is a JSON Payload with all the violations found in the response.
 
 ```bash
 prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2 --log httpResponse
