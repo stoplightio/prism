@@ -4,7 +4,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { JSONSchema } from '../../types';
 import { generate as generateDynamicExample } from './JSONSchema';
 
-function improveSchema(schema: JSONSchema) {
+export function improveSchema(schema: JSONSchema) {
   const newSchema = { ...schema };
 
   if (newSchema.type === 'integer' || newSchema.type === 'number') {
@@ -18,7 +18,7 @@ function improveSchema(schema: JSONSchema) {
   }
 
   if (newSchema.type === 'string') {
-    if (!newSchema.format && !newSchema.enum) {
+    if (!newSchema.format && !newSchema.enum && !newSchema.pattern) {
       newSchema['x-faker'] = 'lorem.word';
     }
   }

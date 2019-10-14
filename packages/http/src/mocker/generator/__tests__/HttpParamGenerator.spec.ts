@@ -1,6 +1,6 @@
 import { assertNone, assertSome } from '@stoplight/prism-core/src/utils/__tests__/utils';
 import { HttpParamStyles } from '@stoplight/types';
-import { generate } from '../HttpParamGenerator';
+import { generate, improveSchema } from '../HttpParamGenerator';
 
 describe('HttpParamGenerator', () => {
   describe('generate()', () => {
@@ -47,6 +47,52 @@ describe('HttpParamGenerator', () => {
             style: HttpParamStyles.Form,
           }),
         );
+      });
+    });
+  });
+
+  describe('improveSchema()', () => {
+    describe.each(['number', 'integer'])('when feed with a %s', type => {
+      // @ts-ignore
+      const improvedSchema = improveSchema({ type });
+
+      it('should have a minimum and a maximum', () => {
+        expect(improvedSchema).toHaveProperty('minimum', 1);
+        expect(improvedSchema).toHaveProperty('maximum', 1000);
+      });
+    });
+
+    describe('when feed with string', () => {
+      describe('no format and no enum', () => {
+        const improvedSchema = improveSchema({ type: 'string' });
+
+        it('should have the x-faker extension', () => {
+          expect(improvedSchema).toHaveProperty('x-faker', 'lorem.word');
+        });
+      });
+
+      describe.each<{ 0: string; 1: object }>([['format', { format: 'email' }], ['enum', { enum: [1, 2, 3] }], ['pattern',  { pattern: '^[A-Z]+$' }]])(
+        'when with %s',
+        (_a, additional) => {
+          const improvedSchema = improveSchema({ type: 'string', ...additional });
+
+          it('should not have the x-faker extension', () => expect(improvedSchema).not.toHaveProperty('x-faker'));
+        },
+      );
+    });
+
+    describe('when feed with object', () => {
+      describe('no format and no enum', () => {
+        const improvedSchema = improveSchema({
+          type: 'object',
+          properties: { a: { type: 'string' }, b: { type: 'number' } },
+        });
+
+        it('will recursively improve the schema', () => {
+          expect(improvedSchema).toHaveProperty('properties.a.x-faker', 'lorem.word');
+          expect(improvedSchema).toHaveProperty('properties.b.minimum', 1);
+          expect(improvedSchema).toHaveProperty('properties.b.maximum', 1000);
+        });
       });
     });
   });
