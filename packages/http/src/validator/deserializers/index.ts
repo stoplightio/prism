@@ -18,4 +18,10 @@ export const query = new HttpParamDeserializerRegistry([
   new DeepObjectStyleDeserializer(),
 ]);
 
+export const path = new HttpParamDeserializerRegistry([
+  new SimpleStyleDeserializer(),
+  // label,
+  // matrix,
+]);
+
 export const body = query;

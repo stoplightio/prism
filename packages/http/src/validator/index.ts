@@ -7,13 +7,17 @@ import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
 import { IHttpRequest, IHttpResponse } from '../types';
-import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
+import { header as headerDeserializerRegistry, query as queryDeserializerRegistry, path as pathDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
+import { HttpPathValidator } from './validators/path';
 
 export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
+// @ts-ignore
+//@todo wtf?
+export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
 
 const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
   const results: IPrismDiagnostic[] = [];
@@ -35,7 +39,8 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
 
   return results
     .concat(headersValidator.validate(element.headers || {}, (request && request.headers) || []))
-    .concat(queryValidator.validate(element.url.query || {}, (request && request.query) || []));
+    .concat(queryValidator.validate(element.url.query || {}, (request && request.query) || []))
+    .concat(pathValidator.validate(getPathParams(element.url.path, resource.path), (request && request.path) || []));
 };
 
 const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
@@ -76,5 +81,14 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
     ),
   );
 };
+
+function getPathParams(path: string, template: string) {
+  const matches = new RegExp('^' + template.replace(/{(.+?)}/g, (_, name) => `(?<${name}>.+?)`)).exec(path);
+  if (!matches) {
+    throw new Error('No match'); // @todo better error
+  }
+
+  return matches.groups;
+}
 
 export { validateInput, validateOutput };
