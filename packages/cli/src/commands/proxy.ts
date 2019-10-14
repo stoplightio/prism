@@ -3,6 +3,7 @@ import { pick } from 'lodash';
 import { CommandModule } from 'yargs';
 import { createMultiProcessPrism, CreateProxyServerOptions, createSingleProcessPrism } from '../util/createServer';
 import sharedOptions from './sharedOptions';
+import { runPrismAndSetupWatcher } from '../util/runner';
 
 const proxyCommand: CommandModule = {
   describe: 'Start a proxy server with the given document file',
@@ -24,7 +25,6 @@ const proxyCommand: CommandModule = {
           throw new Error(`Invalid upstream URL provided: ${value}`);
         }
       })
-      .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.document!)))
       .options(sharedOptions),
   handler: parsedArgs => {
     const p: CreateProxyServerOptions = pick(
@@ -33,13 +33,14 @@ const proxyCommand: CommandModule = {
       'cors',
       'host',
       'port',
-      'operations',
+      'document',
       'multiprocess',
       'upstream',
       'log'
     );
 
-    return p.multiprocess ? createMultiProcessPrism(p) : createSingleProcessPrism(p);
+    const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
+    return runPrismAndSetupWatcher(createPrism, p);
   },
 };
 

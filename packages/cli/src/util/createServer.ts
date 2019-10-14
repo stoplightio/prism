@@ -1,7 +1,6 @@
 import { createLogger, logLevels } from '@stoplight/prism-core';
-import { IHttpConfig, IHttpProxyConfig } from '@stoplight/prism-http';
+import { IHttpConfig, IHttpProxyConfig, getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
-import { IHttpOperation } from '@stoplight/types';
 import chalk from 'chalk';
 import * as cluster from 'cluster';
 import * as Either from 'fp-ts/lib/Either';
@@ -48,7 +47,9 @@ function createSingleProcessPrism(options: CreateBaseServerOptions) {
 }
 
 async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
-  if (options.operations.length === 0) {
+  const operations = await getHttpOperationsFromResource(options.document);
+
+  if (operations.length === 0) {
     throw new Error('No operations found in the current file.');
   }
 
@@ -62,7 +63,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
     ? { ...shared, mock: false, upstream: options.upstream }
     : { ...shared, mock: { dynamic: options.dynamic } };
 
-  const server = createHttpServer(options.operations, {
+  const server = createHttpServer(operations, {
     cors: options.cors,
     config,
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
@@ -71,7 +72,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
 
   const address = await server.listen(options.port, options.host);
 
-  options.operations.forEach(resource => {
+  operations.forEach(resource => {
     const path = pipe(
       createExamplePath(resource),
       Either.getOrElse(() => resource.path)
@@ -112,7 +113,7 @@ type CreateBaseServerOptions = {
   cors: boolean;
   host: string;
   port: number;
-  operations: IHttpOperation[];
+  document: string;
   multiprocess: boolean;
   log: 'stdout' | 'httpResponse' | 'httpHeader';
 };

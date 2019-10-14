@@ -1,4 +1,3 @@
-import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { CommandModule } from 'yargs';
 import { CreateMockServerOptions, createMultiProcessPrism, createSingleProcessPrism } from '../util/createServer';
 import sharedOptions from './sharedOptions';
@@ -13,7 +12,6 @@ const mockCommand: CommandModule = {
         description: 'Path to a document file. Can be both a file or a fetchable resource on the web.',
         type: 'string',
       })
-      .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.document!)))
       .options({
         ...sharedOptions,
         dynamic: {
@@ -30,18 +28,14 @@ const mockCommand: CommandModule = {
       port,
       host,
       cors,
-      operations,
-      spec,
+      document,
       log,
-    } = (parsedArgs as unknown) as CreateMockServerOptions & {
-      multiprocess: boolean;
-      spec: string;
-    };
+    } = (parsedArgs as unknown) as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
-    const options = { cors, dynamic, port, host, operations, multiprocess, log };
+    const options = { cors, dynamic, port, host, document, multiprocess, log };
 
-    return runPrismAndSetupWatcher(createPrism, options, spec);
+    return runPrismAndSetupWatcher(createPrism, options);
   },
 };
 

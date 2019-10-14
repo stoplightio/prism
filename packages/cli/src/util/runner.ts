@@ -5,21 +5,25 @@ import { CreateMockServerOptions } from './createServer';
 
 type CreatePrism = (options: CreateMockServerOptions) => Promise<IPrismHttpServer | void>;
 
-export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: CreateMockServerOptions, spec: string) {
+export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: CreateMockServerOptions) {
   return createPrism(options).then(possiblyServer => {
     if (possiblyServer) {
       let server: IPrismHttpServer = possiblyServer;
 
-      const watcher = chokidar.watch(spec, {
+      const watcher = chokidar.watch(options.document, {
         persistent: false,
         disableGlobbing: true,
         awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 100 },
       });
 
+      watcher.on('ready', () => {
+        console.log('Watcher in place.');
+        console.log(watcher.getWatched());
+      });
       watcher.on('change', () => {
         server.fastify.log.info('Restarting Prism...');
 
-        getHttpOperationsFromResource(spec)
+        getHttpOperationsFromResource(options.document)
           .then(operations => {
             if (operations.length === 0) {
               server.fastify.log.info(
@@ -31,7 +35,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
                 .then(() => {
                   server.fastify.log.info('Loading the updated operations...');
 
-                  return createPrism({ ...options, operations });
+                  return createPrism(options);
                 })
                 .then(newServer => {
                   if (newServer) {
