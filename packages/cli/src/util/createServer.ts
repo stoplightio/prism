@@ -69,7 +69,7 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
   options.operations.forEach(resource => {
     const path = pipe(
       createExamplePath(resource),
-      Either.map(values => values.map(v => chalk.bold.yellow(v)).join('')),
+      Either.map(values => values.map((v, i) => i === 0 ? v : chalk.bold[i % 2 === 0 ? 'red' : 'yellow'](v)).join('')),
       Either.getOrElse(() => resource.path),
     );
 
