@@ -15,27 +15,39 @@ export function improveSchema(schema: JSONSchema): JSONSchema {
     if (!newSchema.maximum) {
       newSchema.maximum = 1000;
     }
-  } else if (newSchema.type === 'string' && !newSchema.format && !newSchema.enum) {
-    newSchema['x-faker'] = 'lorem.word';
-  } else if (newSchema.type === 'object' && newSchema.properties) {
-    newSchema.properties = Object.entries(newSchema.properties).reduce((r, [k, v]) => {
-      r[k] = improveSchema(v);
-      return r;
-    }, {});
-  } else if (newSchema.type === 'array' && typeof newSchema.items === 'object') {
-    newSchema.items = improveSchema(newSchema.items);
+  }
+
+  if (newSchema.type === 'string') {
+    if (!newSchema.format && !newSchema.enum && !newSchema.pattern) {
+      newSchema['x-faker'] = 'lorem.word';
+    }
+  }
+
+  if (newSchema.type === 'object') {
+    if (newSchema.properties) {
+      newSchema.properties = Object.entries(newSchema.properties).reduce((r, [k, v]) => {
+        r[k] = improveSchema(v);
+        return r;
+      }, {});
+    }
+  }
+
+  if (newSchema.type === 'array') {
+    if (typeof newSchema.items === 'object') {
+      newSchema.items = improveSchema(newSchema.items);
+    }
   }
 
   return newSchema;
 }
 
 function pickStaticExample(
-  examples: Option.Option<Array<INodeExample | INodeExternalExample>>,
+  examples: Option.Option<Array<INodeExample | INodeExternalExample>>
 ): Option.Option<unknown> {
   return pipe(
     examples,
     Option.mapNullable(exs => exs[Math.floor(Math.random() * exs.length)]),
-    Option.mapNullable(example => (example as INodeExample).value),
+    Option.mapNullable(example => (example as INodeExample).value)
   );
 }
 
@@ -47,8 +59,8 @@ export function generate(param: IHttpParam): Option.Option<unknown> {
       pipe(
         Option.fromNullable(param.schema),
         Option.map(improveSchema),
-        Option.map(generateDynamicExample),
-      ),
-    ),
+        Option.map(generateDynamicExample)
+      )
+    )
   );
 }
