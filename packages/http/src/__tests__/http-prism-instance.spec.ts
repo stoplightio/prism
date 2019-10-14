@@ -173,7 +173,7 @@ describe('Http Client .request', () => {
           it('should use Prism/<<version>> for the header', async () => {
             const userAgent = await checkUserAgent(config, prism, resources, {}, 'https://stoplight.io');
 
-            expect(userAgent).toContain(`Prism/${prismVersion}`);
+            expect(userAgent).toBe(`Prism/${prismVersion}`);
           });
         });
 
@@ -189,7 +189,7 @@ describe('Http Client .request', () => {
               'https://stoplight.io'
             );
 
-            expect(userAgent).toContain('Other_Agent/1.0.0');
+            expect(userAgent).toBe('Other_Agent/1.0.0');
           });
         });
       });

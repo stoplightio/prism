@@ -1,4 +1,4 @@
-import * as utils from '@stoplight/prism-http';
+import * as prismHttp from '@stoplight/prism-http';
 import * as yargs from 'yargs';
 import { createMultiProcessPrism, createSingleProcessPrism } from '../../util/createServer';
 import mockCommand from '../mock';
@@ -11,7 +11,7 @@ jest.mock('../../util/createServer', () => ({
   createSingleProcessPrism: jest.fn().mockResolvedValue([]),
 }));
 
-jest.spyOn(utils, 'getHttpOperationsFromResource').mockResolvedValue([]);
+jest.spyOn(prismHttp, 'getHttpOperationsFromResource').mockResolvedValue([]);
 
 describe.each<{ 0: string; 1: string; 2: unknown }>([
   ['mock', '', { dynamic: false }],
