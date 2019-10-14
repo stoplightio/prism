@@ -22,16 +22,12 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     (createMultiProcessPrism as jest.Mock).mockClear();
   });
 
-  test(`starts ${command} server`, async () => {
-    await new Promise(resolve => {
-      parser.parse(`${command} /path/to ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
-        commandPromise.then(resolve)
-      );
-    });
+  test(`starts ${command} server`, () => {
+    parser.parse(`${command} /path/to ${upstream}`);
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
-      operations: [],
+      document: '/path/to',
       multiprocess: false,
       log: 'stdout',
       cors: true,
@@ -41,16 +37,12 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     });
   });
 
-  test(`starts ${command} server on custom port`, async () => {
-    await new Promise(resolve => {
-      parser.parse(`${command} /path/to -p 666 ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
-        commandPromise.then(resolve)
-      );
-    });
+  test(`starts ${command} server on custom port`, () => {
+    parser.parse(`${command} /path/to -p 666 ${upstream}`);
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
-      operations: [],
+      document: '/path/to',
       multiprocess: false,
       log: 'stdout',
       cors: true,
@@ -60,16 +52,12 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     });
   });
 
-  test(`starts ${command} server on custom host`, async () => {
-    await new Promise(resolve => {
-      parser.parse(`${command} /path/to -h 0.0.0.0 ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
-        commandPromise.then(resolve)
-      );
-    });
+  test(`starts ${command} server on custom host`, () => {
+    parser.parse(`${command} /path/to -h 0.0.0.0 ${upstream}`);
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
-      operations: [],
+      document: '/path/to',
       multiprocess: false,
       log: 'stdout',
       cors: true,
@@ -79,17 +67,12 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     });
   });
 
-  test(`starts ${command} server on custom host and port`, async () => {
-    await new Promise(resolve => {
-      parser.parse(
-        `${command} /path/to -p 666 -h 0.0.0.0 ${upstream}`,
-        (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve)
-      );
-    });
+  test(`starts ${command} server on custom host and port`, () => {
+    parser.parse(`${command} /path/to -p 666 -h 0.0.0.0 ${upstream}`);
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
-      operations: [],
+      document: '/path/to',
       cors: true,
       log: 'stdout',
       multiprocess: false,
@@ -99,16 +82,12 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     });
   });
 
-  test(`starts ${command} server with multiprocess option `, async () => {
-    await new Promise(resolve => {
-      parser.parse(`${command} /path/to -m -h 0.0.0.0 ${upstream}`, (_err: Error, commandPromise: Promise<unknown>) =>
-        commandPromise.then(resolve)
-      );
-    });
+  test(`starts ${command} server with multiprocess option `, () => {
+    parser.parse(`${command} /path/to -m -h 0.0.0.0 ${upstream}`);
 
     expect(createSingleProcessPrism).not.toHaveBeenCalled();
     expect(createMultiProcessPrism).toHaveBeenLastCalledWith({
-      operations: [],
+      document: '/path/to',
       cors: true,
       log: 'stdout',
       multiprocess: true,
@@ -118,17 +97,12 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     });
   });
 
-  test(`starts ${command} server with httpResponse log option `, async () => {
-    await new Promise(resolve => {
-      parser.parse(
-        `${command} /path/to -m -h 0.0.0.0 --log httpResponse ${upstream}`,
-        (_err: Error, commandPromise: Promise<unknown>) => commandPromise.then(resolve)
-      );
-    });
+  test(`starts ${command} server with httpResponse log option `, () => {
+    parser.parse(`${command} /path/to -m -h 0.0.0.0 --log httpResponse ${upstream}`);
 
     expect(createSingleProcessPrism).not.toHaveBeenCalled();
     expect(createMultiProcessPrism).toHaveBeenLastCalledWith({
-      operations: [],
+      document: '/path/to',
       cors: true,
       log: 'httpResponse',
       multiprocess: true,

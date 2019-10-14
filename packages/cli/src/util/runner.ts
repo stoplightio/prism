@@ -1,6 +1,7 @@
 import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { IPrismHttpServer } from '@stoplight/prism-http-server/src/types';
 import * as chokidar from 'chokidar';
+import * as os from 'os';
 import { CreateMockServerOptions } from './createServer';
 
 type CreatePrism = (options: CreateMockServerOptions) => Promise<IPrismHttpServer | void>;
@@ -11,15 +12,11 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
       let server: IPrismHttpServer = possiblyServer;
 
       const watcher = chokidar.watch(options.document, {
-        persistent: false,
+        persistent: os.platform() === 'darwin',
         disableGlobbing: true,
         awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 100 },
       });
 
-      watcher.on('ready', () => {
-        console.log('Watcher in place.');
-        console.log(watcher.getWatched());
-      });
       watcher.on('change', () => {
         server.fastify.log.info('Restarting Prism...');
 
@@ -53,6 +50,8 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
               .catch(() => process.exit(1));
           });
       });
+
+      return new Promise(resolve => watcher.once('ready', resolve));
     }
   });
 }
