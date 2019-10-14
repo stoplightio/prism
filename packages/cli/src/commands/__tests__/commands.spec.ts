@@ -100,7 +100,6 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
   test(`starts ${command} server with httpResponse log option `, () => {
     parser.parse(`${command} /path/to -m -h 0.0.0.0 --log httpResponse ${upstream}`);
 
-    expect(createSingleProcessPrism).not.toHaveBeenCalled();
     expect(createMultiProcessPrism).toHaveBeenLastCalledWith({
       document: '/path/to',
       cors: true,
