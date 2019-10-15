@@ -2,7 +2,7 @@ import { IHttpConfig, PickRequired, PrismHttpComponents, PrismHttpInstance } fro
 import { FastifyInstance } from 'fastify';
 
 export interface IPrismHttpServerOpts {
-  components?: PickRequired<Partial<PrismHttpComponents>, 'logger'>;
+  components: PickRequired<Partial<PrismHttpComponents>, 'logger'>;
   config: IHttpConfig;
   cors: boolean;
 }
