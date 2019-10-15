@@ -6349,7 +6349,7 @@ openapi-sampler@^1.0.0-beta.15:
   dependencies:
     json-pointer "^0.6.0"
 
-"openapi-schema-to-json-schema@github:philsturgeon/openapi-schema-to-json-schema#9692af184c6a3e3d952a88968da07491e47135fb", openapi-schema-to-json-schema@philsturgeon/openapi-schema-to-json-schema#9692af184c6a3e3d952a88968da07491e47135fb:
+openapi-schema-to-json-schema@philsturgeon/openapi-schema-to-json-schema#9692af184c6a3e3d952a88968da07491e47135fb:
   version "2.2.0"
   resolved "https://codeload.github.com/philsturgeon/openapi-schema-to-json-schema/tar.gz/9692af184c6a3e3d952a88968da07491e47135fb"
   dependencies:

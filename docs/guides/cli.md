@@ -44,7 +44,7 @@ There is no need to manually stop and start a Prism server after a change to a s
 In case of removing all of the operations in a document, Prism will not be reloaded.
 In such a case, Prism will keep serving operations loaded with the previous restart.
 
-## Determine Response Status
+## Modifying Responses
 
 #### Force Response Status
 
@@ -62,15 +62,15 @@ Connection: keep-alive
 
 The body, headers, etc. for this response will be taken from the API description document.
 
-#### Request a specific example from a resource
+#### Request Specific Examples
 
-You can request a specific example from your document by using the `__example` query string paramenter.
+You can request a specific example from your document by using the `__example` query string parameter.
 
 ```bash
 curl -v http://127.0.0.1:4010/pets/123?__example=exampleKey
 ```
 
-#### Change the dynamic/static flag for a particular request
+#### Dynamic Response
 
 You can override the `dynamic` keyword (which decides whether the generated example is static or dynamic) through the `__dynamic` query string parameter.
 
@@ -85,7 +85,7 @@ This command creates an HTTP server that will proxy all the requests to the spec
 **Note:** Currently the proxy command _expects_ a JSON Payload for both the request and the response. If the response's `content-type` header does not indicate a JSON-ish payload (`application/json`, `application/*+json`), then the payload will be just returned as text and send back to the original client.
 
 ```
-prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
 
 [CLI] …  awaiting  Starting Prism…
 [HTTP SERVER] ℹ  info      Server listening at http://127.0.0.1:4010
@@ -94,10 +94,10 @@ prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2
 [CLI] ●  note      GET        http://127.0.0.1:4010/pets/10
 ```
 
-By default, the output violations will be reported on the standard output, but you can also specify to embed these in the HTTP Response:
+By default, the output violations will be reported on the standard output, but you can also specify to embed these in the HTTP response:
 
 ```bash
-prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2 --log httpHeader
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --log httpHeader
 … …
 
 curl -v -s http://localhost:4010/pets/10 > /dev/null
@@ -109,7 +109,7 @@ curl -v -s http://localhost:4010/pets/10 > /dev/null
 You can see there's a `sl-validation` header which is a JSON Payload with all the violations found in the response.
 
 ```bash
-prism proxy https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml https://petstore.swagger.io/v2 --log httpResponse
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --log httpResponse
 … …
 
 curl -v http://localhost:4010/pets/10

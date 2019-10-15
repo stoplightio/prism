@@ -653,6 +653,7 @@ definitions:
     required:
       - name
       - photoUrls
+      - nondefined2
     properties:
       id:
         type: integer
@@ -680,7 +681,7 @@ definitions:
         type: string
         description: pet status in the store
         enum:
-          - available
+          - availablefoo
           - pending
           - sold
     xml:
