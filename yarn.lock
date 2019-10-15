@@ -1153,9 +1153,9 @@
     safe-stable-stringify "^1.1"
 
 "@stoplight/ref-resolvers@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/ref-resolvers/-/ref-resolvers-1.0.2.tgz#59ff3103b4a0c83e0b320012b9d1eafeadcd52f8"
-  integrity sha512-lzSFfn4f6VaOdL5DCJxTfUsrnrqXiajY5o/ZyOv6gtGo21dE+Vq+TEeJR8SIu48GhnpPV8tejzalrc7h/01sog==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/ref-resolvers/-/ref-resolvers-1.1.0.tgz#c2835625bee4e9e2fbb458735dcf32f8925423df"
+  integrity sha512-FVInHW7/3yMV0EjhUeVVxuLXadk0dJRmzhWWDY+YOGYNVunFsUOt8Eh/4skeayON5+bXzJHK5gkbPKIrur29Og==
   dependencies:
     node-fetch "^2.6.0"
 
