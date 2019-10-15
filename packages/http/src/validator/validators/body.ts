@@ -103,7 +103,13 @@ export class HttpBodyValidator {
       diagnostics => applyPrefix(this.prefix, diagnostics),
       // TODO: should adjust/change/take a closer look at the last following 2 lines:
       Option.fromNullable,
-      Option.fold(() => Either.right([]), x => Either.left(x as NonEmptyArray<IPrismDiagnostic>)),
+      Option.fold(() => Either.right([]), x => {
+        if (x.length) {
+          return Either.left(x as NonEmptyArray<IPrismDiagnostic>)
+        } else {
+          return Either.right([])
+        }
+      }),
     );
   }
 }

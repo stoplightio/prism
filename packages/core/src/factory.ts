@@ -83,12 +83,29 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             TaskEither.map(output => ({ output, resource, inputValidations: inputValidations_ })),
           );
         }),
-        TaskEither.map(({ output, resource, inputValidations }) => {
+        TaskEither.chain(({ output, resource, inputValidations }) => {
+          return pipe(
+            components.deserializeInput(output, resource.responses[0]),
+            Either.map((e: any) => {
+              return {
+                output,
+                inputValidations,
+                resource: resource as any,
+                rest: e as any,
+              };
+            }),
+            TaskEither.fromEither,
+          );
+        }),
+        TaskEither.map(({ output, resource, inputValidations, rest }) => {
           const outputValidations: IPrismDiagnostic[] =
             config.validateResponse && resource
               ? components.validateOutput({
                   resource,
                   element: output,
+                  // @ts-ignore
+                  schema: rest.schema,
+                  body: rest.body,
                 })
               : [];
 
