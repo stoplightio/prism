@@ -33,6 +33,7 @@
     "@types/lodash": "^4.14.144",
     "@types/nock": "^11.1.0",
     "@types/node": "^12.7.12",
+    "@types/node-fetch": "2.5.2",
     "@types/pino": "^5.8.11",
     "@types/signale": "^1.2.1",
     "@types/split2": "^2.1.6",
