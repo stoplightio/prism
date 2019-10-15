@@ -14,7 +14,7 @@ const proxyCommand: CommandModule = {
         type: 'string',
       })
       .positional('upstream', {
-        description: 'Url to a target server.',
+        description: 'URL to a target server.',
         type: 'string',
       })
       .coerce('upstream', value => {
