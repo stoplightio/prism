@@ -85,7 +85,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
 function getPathParams(path: string, template: string) {
   const matches = new RegExp('^' + template.replace(/{(.+?)}/g, (_, name) => `(?<${name}>.+?)`)).exec(path);
   if (!matches) {
-    throw new Error('No match'); // @todo better error
+    throw new Error('Received path is not a match for path from api description');
   }
 
   return matches.groups;

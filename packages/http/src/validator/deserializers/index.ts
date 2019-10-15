@@ -7,6 +7,8 @@ import {
   FormStyleDeserializer,
   SimpleStyleDeserializer,
 } from './style';
+import { LabelStyleDeserializer } from './style/label';
+import { MatrixStyleDeserializer } from './style/matrix';
 
 export const header = new HttpParamDeserializerRegistry([new SimpleStyleDeserializer()]);
 
@@ -20,8 +22,8 @@ export const query = new HttpParamDeserializerRegistry([
 
 export const path = new HttpParamDeserializerRegistry([
   new SimpleStyleDeserializer(),
-  // label,
-  // matrix,
+  new LabelStyleDeserializer(),
+  new MatrixStyleDeserializer(),
 ]);
 
 export const body = query;
