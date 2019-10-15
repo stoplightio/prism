@@ -17,7 +17,7 @@ function checkErrorPayloadShape(payload: string) {
 
 async function instantiatePrism(specPath: string) {
   const operations = await getHttpOperationsFromResource(specPath);
-  const server = createServer(operations, {
+  return createServer(operations, {
     components: { logger },
     config: {
       checkSecurity: true,
@@ -28,7 +28,6 @@ async function instantiatePrism(specPath: string) {
     log: 'stdout',
     cors: true,
   });
-  return server;
 }
 
 describe('GET /pet?__server', () => {
