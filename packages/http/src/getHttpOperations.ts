@@ -3,7 +3,7 @@ import { Resolver } from '@stoplight/json-ref-resolver';
 import { resolveFile, resolveHttp } from '@stoplight/ref-resolvers';
 import { IHttpOperation } from '@stoplight/types';
 import { parse } from '@stoplight/yaml';
-import axios from 'axios';
+import fetch from 'node-fetch';
 import * as fs from 'fs';
 import { flatten, get, keys, map, uniq } from 'lodash';
 import { EOL } from 'os';
@@ -20,9 +20,7 @@ const httpAndFileResolver = new Resolver({
 
 export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
   const isRemote = /^https?:\/\//i.test(file);
-  const fileContent = isRemote
-    ? (await axios.get(file, { transformResponse: res => res })).data
-    : fs.readFileSync(file, { encoding: 'utf8' });
+  const fileContent = isRemote ? await fetch(file).then(d => d.text()) : fs.readFileSync(file, { encoding: 'utf8' });
 
   return getHttpOperations(fileContent, isRemote ? file : resolve(file));
 }
@@ -34,7 +32,7 @@ export default async function getHttpOperations(specContent: string, baseUri?: s
   if (errors.length) {
     const uniqueErrors = uniq(errors.map(error => error.message)).join(EOL);
     throw new Error(
-      `There's been an error while trying to resolve external references in your document: ${uniqueErrors}`,
+      `There's been an error while trying to resolve external references in your document: ${uniqueErrors}`
     );
   }
 
@@ -53,8 +51,8 @@ export default async function getHttpOperations(specContent: string, baseUri?: s
             document: resolvedContent,
             path,
             method,
-          }),
-        ),
-    ),
+          })
+        )
+    )
   );
 }

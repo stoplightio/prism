@@ -15,7 +15,7 @@ export { generate as generateHttpParam } from './mocker/generator/HttpParamGener
 import { IHttpConfig, IHttpRequest, IHttpResponse, PickRequired, PrismHttpComponents, IHttpProxyConfig } from './types';
 
 export const createInstance = (
-  defaultConfig: IHttpConfig,
+  defaultConfig: IHttpConfig | IHttpProxyConfig,
   components: PickRequired<Partial<PrismHttpComponents>, 'logger'>
 ) =>
   factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
