@@ -14,7 +14,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   const { components, config } = opts;
 
   const server = fastify({
-    logger: (components && components.logger) || createLogger('HTTP SERVER'),
+    logger: components.logger,
     disableRequestLogging: true,
     modifyCoreObjects: false,
   });
