@@ -7,6 +7,7 @@ Usage:
 ```js
 import { createServer } from '@stoplight/prism-http-server';
 
+const operations = await getHttpOperationsFromResource('./api.oas2.json');
 const server = createServer({
   operations,
   { logger: createLoggerInstance() }
