@@ -8,8 +8,8 @@ Usage:
 import { createServer } from '@stoplight/prism-http-server';
 
 const server = createServer({
-  path: './api.oas2.json',
-  {logger: createLoggerInstance() }
+  operations,
+  { logger: createLoggerInstance() }
 });
 
 server.listen(3000).then(() => {
