@@ -28,7 +28,7 @@ paths:
 ====server====
 mock -p 4010
 ====command====
-curl -sIXGET http://127.0.0.1:4010/path/fp
+curl -i http://127.0.0.1:4010/path/fp
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 content-type: application/problem+json
