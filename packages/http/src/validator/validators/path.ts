@@ -1,19 +1,18 @@
-import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
-
+import { HttpParamStyles, IHttpPathParam } from '@stoplight/types';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { IHttpNameValues } from '../../types';
+import { IHttpNameValue } from '../../types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { HttpParamsValidator } from './params';
 
-export class HttpPathValidator extends HttpParamsValidator<IHttpNameValues> {
+export class HttpPathValidator extends HttpParamsValidator<IHttpNameValue> {
   constructor(
-    registry: IHttpParamDeserializerRegistry<IHttpNameValues>,
+    registry: IHttpParamDeserializerRegistry<IHttpNameValue>,
     prefix: string,
     style: HttpParamStyles = HttpParamStyles.Simple,
   ) {
     super(registry, prefix, style);
   }
-  public validate(target: IHttpNameValues, specs: IHttpQueryParam[]): IPrismDiagnostic[] {
+  public validate(target: IHttpNameValue, specs: IHttpPathParam[]): IPrismDiagnostic[] {
     return super.validate(target, specs);
   }
 }

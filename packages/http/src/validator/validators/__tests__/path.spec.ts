@@ -5,8 +5,6 @@ import * as validateAgainstSchemaModule from '../utils';
 import { IHttpPathParam } from '@stoplight/types/dist';
 
 describe('HttpPathValidator', () => {
-  // @ts-ignore
-  // @todo wth?
   const httpPathValidator = new HttpPathValidator(registry, 'path');
 
   beforeEach(() => {
@@ -21,7 +19,7 @@ describe('HttpPathValidator', () => {
         describe('spec defines it as required', () => {
           it('returns validation error', () => {
             expect(
-              httpPathValidator.validate({}, [{ name: 'aParam', required: true }]),
+              httpPathValidator.validate({}, [{ name: 'aParam', style: HttpParamStyles.Simple, required: true }]),
             ).toEqual([{
             code: 'required',
               message: 'should have required property \'aparam\'',

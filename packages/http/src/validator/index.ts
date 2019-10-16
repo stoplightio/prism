@@ -15,8 +15,6 @@ import { HttpPathValidator } from './validators/path';
 export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
-// @ts-ignore
-//@todo wtf?
 export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
 
 const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
@@ -89,7 +87,7 @@ function getPathParams(path: string, template: string) {
     throw new Error('Received path is not a match for path from api description');
   }
 
-  return matches.groups;
+  return matches.groups || {};
 }
 
 export { validateInput, validateOutput };
