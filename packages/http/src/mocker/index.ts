@@ -68,6 +68,7 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
                 )
               : ProblemJsonError.fromTemplate(
                   UNPROCESSABLE_ENTITY,
+                  // its not request body, its just a request now since request = headers <> body <> params
                   'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
                   {
                     validation: input.validations.map(detail => ({

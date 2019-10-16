@@ -14,7 +14,7 @@ export class HttpHeadersValidator extends HttpParamsValidator<IHttpNameValue> {
     super(registry, prefix, style);
   }
 
-  public validate(target: IHttpNameValue, specs: IHttpHeaderParam[]): IPrismDiagnostic[] {
+  public validate(target: IHttpNameValue, specs: IHttpHeaderParam[]) {
     return super.validate(target, specs);
   }
 }

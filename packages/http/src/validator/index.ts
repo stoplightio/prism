@@ -80,7 +80,7 @@ const validateInput = ({ resource, element, schema, body }: any) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
   const { request } = resource;
 
-  const queryValidation = (element.url && element.url.query) ? Either.left(queryValidator.validate(element.url.query || {}, (request && request.query) || []) as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
+  const queryValidation = queryValidator.validate(element.url.query || {}, (request && request.query) || [])
 
   const reqBodyValidation = !body && request.body && request.body.required ? left([
       {code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error},
@@ -90,7 +90,7 @@ const validateInput = ({ resource, element, schema, body }: any) => {
   const bodyValidation = body ? bodyValidator.validate(body, (request && request.body && request.body.contents) || [], mediaType, schema)
     : right([]);
 
-  const headersValidation = element.headers ? Either.left(headersValidator.validate(element.headers || {}, (request && request.headers) || []) as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
+  const headersValidation = headersValidator.validate(element.headers || {}, (request && request.headers) || [])
 
   const violations = pipe(
     sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
@@ -101,6 +101,8 @@ const validateInput = ({ resource, element, schema, body }: any) => {
     ),
     map(() => []),
   );
+
+  console.log('violations', violations);
 
   return violations;
 };
@@ -148,8 +150,7 @@ const validateOutput = ({resource, element, schema, body}: any) => {
 
         const mismatchingMediaTypeErrorValidation = mismatchingMediaTypeError.length ? Either.left(mismatchingMediaTypeError as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
 
-        const h = headersValidator.validate(element.headers || {}, operationResponse.headers || []);
-        const headersValidation = h.length ? Either.left(h as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
+        const headersValidation = headersValidator.validate(element.headers || {}, operationResponse.headers || []);
         const bodyValidation = bodyValidator.validate(body, operationResponse.contents || [], mediaType, schema);
 
         const violations = pipe(
