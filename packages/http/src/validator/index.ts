@@ -83,8 +83,9 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
 };
 
 function getPathParams(path: string, template: string) {
-  const matches = new RegExp('^' + template.replace(/{(.+?)}/g, (_, name) => `(?<${name}>.+?)`)).exec(path);
+  const matches = new RegExp('^' + template.replace(/{(.+?)}/g, (_, name) => `(?<${name}>.*)`)).exec(path);
   if (!matches) {
+    // router should not let it happen
     throw new Error('Received path is not a match for path from api description');
   }
 
