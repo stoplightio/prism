@@ -82,26 +82,30 @@ const validateInput = ({ resource, element, schema, body }: any) => {
 
   const queryValidation = (element.url && element.url.query) ? Either.left(queryValidator.validate(element.url.query || {}, (request && request.query) || []) as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
 
-  return pipe(
-      sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
-        (() =>
-          !body && request.body && request.body.required
-            ? left([
-              { code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error },
-            ] as NonEmptyArray<IPrismDiagnostic>)
-            : right([]))(),
-        (() =>
-          body
-            ? bodyValidator.validate(body, (request && request.body && request.body.contents) || [], mediaType, schema)
-            : right([]))(),
-        element.headers ? Either.left(headersValidator.validate(element.headers || {}, (request && request.headers) || []) as NonEmptyArray<IPrismDiagnostic>) : Either.right([]),
-        queryValidation,
-      ),
-      map(() => body),
-    )
+  const reqBodyValidation = !body && request.body && request.body.required ? left([
+      {code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error},
+    ] as NonEmptyArray<IPrismDiagnostic>)
+    : right([]);
+
+  const bodyValidation = body ? bodyValidator.validate(body, (request && request.body && request.body.contents) || [], mediaType, schema)
+    : right([]);
+
+  const headersValidation = element.headers ? Either.left(headersValidator.validate(element.headers || {}, (request && request.headers) || []) as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
+
+  const violations = pipe(
+    sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
+      reqBodyValidation,
+      bodyValidation,
+      headersValidation,
+      queryValidation,
+    ),
+    map(() => []),
+  );
+
+  return violations;
 };
 
-const validateOutput = ({ resource, element, schema, body }: any) => {
+const validateOutput = ({resource, element, schema, body}: any) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
 
   return pipe(
@@ -126,7 +130,10 @@ const validateOutput = ({ resource, element, schema, body }: any) => {
             pipe(
               contents,
               // @ts-ignore
-              findFirst(c => c.mediaType === mediaType),
+              findFirst(c => c.mediaType === 'some media type'), // just to have that error, I suppose this is only needed for proxy? In mock mode we would never get here
+              (abc: any) => {
+                return abc;
+              },
               Option.map<IMediaTypeContent, IPrismDiagnostic[]>(() => []),
               Option.getOrElse<IPrismDiagnostic[]>(() => [
                 {
@@ -139,18 +146,25 @@ const validateOutput = ({ resource, element, schema, body }: any) => {
           Option.getOrElse<IPrismDiagnostic[]>(() => []),
         );
 
-        return (
-          pipe(
-            bodyValidator.validate(body, operationResponse.contents || [], mediaType, schema),
-            Either.map((r) => {
-              return r.concat(mismatchingMediaTypeError)
-                      .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || []));
-            })
-          )
-        )
+        const mismatchingMediaTypeErrorValidation = mismatchingMediaTypeError.length ? Either.left(mismatchingMediaTypeError as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
+
+        const h = headersValidator.validate(element.headers || {}, operationResponse.headers || []);
+        const headersValidation = h.length ? Either.left(h as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
+        const bodyValidation = bodyValidator.validate(body, operationResponse.contents || [], mediaType, schema);
+
+        const violations = pipe(
+          sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
+            bodyValidation,
+            mismatchingMediaTypeErrorValidation,
+            headersValidation
+          ),
+          map(() => []),
+        );
+
+        return violations;
       },
     )
   );
 };
 
-export { validateInput, validateOutput };
+export {validateInput, validateOutput};
