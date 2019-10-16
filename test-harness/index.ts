@@ -45,7 +45,7 @@ describe('harness', () => {
 
     test(testText, done => {
       const [command, ...args] = parsed.command.split(' ').map(t => t.trim());
-      const serverArgs = [...parsed.server.split(' ').map(t => t.trim())].map(t => t === '${file}' ? tmpFileHandle.name : t);
+      const serverArgs = parsed.server.split(' ').map(t => t.trim().replace('${file}', tmpFileHandle.name));
       prismMockProcessHandle = spawn(path.join(__dirname, '../cli-binaries/prism-cli'), serverArgs);
 
       prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
