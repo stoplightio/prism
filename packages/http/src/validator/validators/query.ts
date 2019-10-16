@@ -13,7 +13,7 @@ export class HttpQueryValidator extends HttpParamsValidator<IHttpNameValues> {
   ) {
     super(registry, prefix, style);
   }
-  public validate(target: IHttpNameValues, specs: IHttpQueryParam[]) {
-    return super.validate(target, specs);
+  public validate(target: IHttpNameValues, specs: IHttpQueryParam[], a: any, b: any) {
+    return super.validate(target, specs, a, b);
   }
 }

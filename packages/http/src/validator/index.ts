@@ -1,7 +1,8 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
+import {HttpParamStyles} from "@stoplight/types/dist";
 import * as caseless from 'caseless';
-
+import * as _ from 'lodash';
 import { findFirst } from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
 import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
@@ -18,23 +19,45 @@ import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './v
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { getValidation, left, map, right } from 'fp-ts/lib/Either';
 import { deserialize, getMediaTypeWithContentAndSchema } from './validators/body';
+import {createJsonSchemaFromParams, getPV} from "./validators/params";
 
 // .validate in these should return Either with a semigroup
 export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 
-// should be put somewhere else, not under `validator/`
-// for now `deserializeInput` only cares for `body`, it should also deserialize other parts of a request, which is mostly about SimpleStyleDeserializer
-export const deserializeInput = (element: any, request: any) => {
+// deserializeHeaders is almost identical, do not worry for now
+function deserializeQuery(request: any, element: any) {
+  const qSpec = _.get(request, 'query', []);
+  const qSchema = createJsonSchemaFromParams(qSpec);
+  const qTarget = _.get(element, ['url', 'query'], {});
+
+  const deserializedQuery = getPV(qSpec, HttpParamStyles, queryDeserializerRegistry, qSchema, qTarget);
+
+  return { deserializedQuery, qSchema };
+}
+
+function deserializeHeaders(request: any, element: any) {
+  const hSpec = _.get(request, 'headers', []);
+  const hSchema = createJsonSchemaFromParams(hSpec);
+  const qTarget = element.headers || [];
+
+  const deserializedHeaders = getPV(hSpec, HttpParamStyles, headerDeserializerRegistry, hSchema, qTarget);
+
+  return { hSchema, deserializedHeaders };
+}
+
+// this function should be divided into 2 maybe, response does not need query deserialization
+export const deserializeMessage = (element: any, request: any) => {
   const { body } = element;
   const mediaType = caseless(element.headers || {}).get('content-type');
 
   // @ts-ignore
-  return pipe(
+  const deserializedBody = pipe(
     // in order to deserialize, we need to know how to do this (ie what mediaType it is):
     getMediaTypeWithContentAndSchema((request && request.contents || request.body && request.body.contents) || [], mediaType),
     Option.fold(
+      // rethink this
       () => {
         return Either.right({
           schema: '',
@@ -44,14 +67,12 @@ export const deserializeInput = (element: any, request: any) => {
       // @ts-ignore
       ({ content, mediaType: mt, schema }) => {
           const needsDeserialization = !!typeIs.is(mt, ['application/x-www-form-urlencoded']);
-
-          return pipe(
+            return pipe(
             needsDeserialization ? deserialize(content, schema, body) : Either.right(body),
             Either.map(b => {
-              // the obj below should also have `query:` and `parameters:` as attributes (already deserialized)
               return {
                 schema,
-                body: b,
+                body: b
               };
             }),
             Either.mapLeft(vs => {
@@ -73,14 +94,26 @@ export const deserializeInput = (element: any, request: any) => {
       }
     )
   );
+
+  return pipe(
+    deserializedBody,
+    // @ts-ignore
+    Either.map((b) => {
+      return {
+        ...b,
+        ...deserializeHeaders(request, element),
+        ...deserializeQuery(request, element)
+      }
+    })
+  )
 };
 
-// should also be given already deserialized `query` and `parameters`
-const validateInput = ({ resource, element, schema, body }: any) => {
+// schema - bodySchema
+const validateInput = ({ resource, element, schema, body, hSchema, qSchema, deserializedHeaders, deserializedQuery }: any) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
   const { request } = resource;
 
-  const queryValidation = queryValidator.validate(element.url.query || {}, (request && request.query) || [])
+  const queryValidation = queryValidator.validate(element.url.query || {}, (request && request.query) || [], deserializedQuery, qSchema)
 
   const reqBodyValidation = !body && request.body && request.body.required ? left([
       {code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error},
@@ -90,7 +123,7 @@ const validateInput = ({ resource, element, schema, body }: any) => {
   const bodyValidation = body ? bodyValidator.validate(body, (request && request.body && request.body.contents) || [], mediaType, schema)
     : right([]);
 
-  const headersValidation = headersValidator.validate(element.headers || {}, (request && request.headers) || [])
+  const headersValidation = headersValidator.validate(element.headers || {}, (request && request.headers) || [], deserializedHeaders, hSchema)
 
   const violations = pipe(
     sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
@@ -107,7 +140,7 @@ const validateInput = ({ resource, element, schema, body }: any) => {
   return violations;
 };
 
-const validateOutput = ({resource, element, schema, body}: any) => {
+const validateOutput = ({resource, element, schema, body, hSchema, deserializedHeaders }: any) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
 
   return pipe(
@@ -132,7 +165,7 @@ const validateOutput = ({resource, element, schema, body}: any) => {
             pipe(
               contents,
               // @ts-ignore
-              findFirst(c => c.mediaType === 'some media type'), // just to have that error, I suppose this is only needed for proxy? In mock mode we would never get here
+              findFirst(c => c.mediaType === mediaType),
               (abc: any) => {
                 return abc;
               },
@@ -149,8 +182,7 @@ const validateOutput = ({resource, element, schema, body}: any) => {
         );
 
         const mismatchingMediaTypeErrorValidation = mismatchingMediaTypeError.length ? Either.left(mismatchingMediaTypeError as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
-
-        const headersValidation = headersValidator.validate(element.headers || {}, operationResponse.headers || []);
+        const headersValidation = headersValidator.validate(element.headers || {}, operationResponse.headers || [], deserializedHeaders, hSchema);
         const bodyValidation = bodyValidator.validate(body, operationResponse.contents || [], mediaType, schema);
 
         const violations = pipe(

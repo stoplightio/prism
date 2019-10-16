@@ -19,7 +19,7 @@ export class HttpParamsValidator<Target> {
     private _style: HttpParamStyles,
   ) {}
 
-  public validate(target: Target, specs: IHttpParam[]) {
+  public validate(target: Target, specs: IHttpParam[], parameterValues: any, schema: any) {
     const { _registry: registry, _prefix: prefix, _style: style } = this;
 
     const deprecatedWarnings = specs.filter(spec => spec.deprecated).map(spec => ({
@@ -28,28 +28,6 @@ export class HttpParamsValidator<Target> {
       message: `${upperFirst(prefix)} param ${spec.name} is deprecated`,
       severity: DiagnosticSeverity.Warning,
     }));
-
-    const schema = createJsonSchemaFromParams(specs);
-
-    const parameterValues = pickBy(
-      mapValues(keyBy(specs, s => s.name.toLowerCase()), el => {
-        const resolvedStyle = el.style || style;
-        const deserializer = registry.get(resolvedStyle);
-        if (deserializer)
-          return deserializer.deserialize(
-            el.name.toLowerCase(),
-            // This is bad, but unfortunately for the way the parameter validators are done there's
-            // no better way at them moment. I hope to fix this in a following PR where we will revisit
-            // the validators a bit
-            // @ts-ignore
-            mapKeys(target, (_value, key) => key.toLowerCase()),
-            schema.properties && (schema.properties[el.name] as JSONSchema4),
-            el.explode || false,
-          );
-
-        return undefined;
-      }),
-    );
 
     return pipe(
       validateAgainstSchema(parameterValues, schema, prefix).concat(deprecatedWarnings),
@@ -65,7 +43,7 @@ export class HttpParamsValidator<Target> {
   }
 }
 
-function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema {
+export function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema {
   const schema: JSONSchema = {
     type: 'object',
     properties: pickBy(mapValues(keyBy(params, p => p.name.toLowerCase()), 'schema')) as JSONSchema4,
@@ -73,4 +51,26 @@ function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema {
   };
 
   return schema;
+}
+
+export function getPV(specs: any, style: any, registry: any, schema: any, target: any) {
+  return pickBy(
+    mapValues(keyBy(specs, s => s.name.toLowerCase()), el => {
+      const resolvedStyle = el.style || style;
+      const deserializer = registry.get(resolvedStyle);
+      if (deserializer)
+        return deserializer.deserialize(
+          el.name.toLowerCase(),
+          // This is bad, but unfortunately for the way the parameter validators are done there's
+          // no better way at them moment. I hope to fix this in a following PR where we will revisit
+          // the validators a bit
+          // @ts-ignore
+          mapKeys(target, (_value, key) => key.toLowerCase()),
+          schema.properties && (schema.properties[el.name] as JSONSchema4),
+          el.explode || false,
+        );
+
+      return undefined;
+    }),
+  );
 }
