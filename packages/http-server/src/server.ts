@@ -88,7 +88,10 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             }
           );
         } else if (opts.log === 'httpHeader') {
-          reply.header('warning', JSON.stringify(violations));
+          reply.header(
+            'warning',
+            violations.map(validation => `${validation.location || ''} ${validation.message}`).join(';')
+          );
         }
       }
 
