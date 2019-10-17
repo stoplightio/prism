@@ -152,6 +152,37 @@ const validateInput = ({ resource, element, schema, body, hSchema, qSchema, dese
   return violations;
 };
 
+function getMismatchingMediaTypeErr(c: any, mediaType: any) {
+  return pipe(
+    Option.fromNullable(c),
+    Option.map(contents =>
+      pipe(
+        contents,
+        // @ts-ignore
+        findFirst(c => c.mediaType === mediaType),
+        (abc: any) => {
+          return abc;
+        },
+        Option.map<IMediaTypeContent, IPrismDiagnostic[]>(() => []),
+        Option.getOrElse<IPrismDiagnostic[]>(() => [
+          {
+            message: `The received media type does not match the one specified in the document`,
+            severity: DiagnosticSeverity.Error,
+          },
+        ]),
+      ),
+    ),
+    Option.fold(
+      () => {
+        return Either.right([]);
+      },
+      (mismatchingMediaTypeError) => {
+         return mismatchingMediaTypeError.length ? Either.left(mismatchingMediaTypeError as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
+      }
+    )
+  );
+}
+
 const validateOutput = ({resource, element, schema, body, hSchema, deserializedHeaders }: any) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
 
@@ -170,44 +201,18 @@ const validateOutput = ({resource, element, schema, body, hSchema, deserializedH
         return Either.left(v as NonEmptyArray<IPrismDiagnostic>)
       },
       (operationResponse: any) => {
-        // @ts-ignore
-        // move this out
-        const mismatchingMediaTypeError = pipe(
-          Option.fromNullable(operationResponse.contents),
-          Option.map(contents =>
-            pipe(
-              contents,
-              // @ts-ignore
-              findFirst(c => c.mediaType === mediaType),
-              (abc: any) => {
-                return abc;
-              },
-              Option.map<IMediaTypeContent, IPrismDiagnostic[]>(() => []),
-              Option.getOrElse<IPrismDiagnostic[]>(() => [
-                {
-                  message: `The received media type does not match the one specified in the document`,
-                  severity: DiagnosticSeverity.Error,
-                },
-              ]),
-            ),
-          ),
-          Option.getOrElse<IPrismDiagnostic[]>(() => []),
-        );
-
-        const mismatchingMediaTypeErrorValidation = mismatchingMediaTypeError.length ? Either.left(mismatchingMediaTypeError as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
+        const mismatchingMediaTypeError = getMismatchingMediaTypeErr(operationResponse.contents, mediaType);
         const headersValidation = headersValidator.validate(element.headers || {}, operationResponse.headers || [], deserializedHeaders, hSchema);
         const bodyValidation = bodyValidator.validate(body, operationResponse.contents || [], mediaType, schema);
 
-        const violations = pipe(
+        return pipe(
           sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
             bodyValidation,
-            mismatchingMediaTypeErrorValidation,
+            mismatchingMediaTypeError,
             headersValidation
           ),
           map(() => []),
         );
-
-        return violations;
       },
     )
   );
