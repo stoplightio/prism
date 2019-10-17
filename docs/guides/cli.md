@@ -103,10 +103,10 @@ prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --log htt
 curl -v -s http://localhost:4010/pets/10 > /dev/null
 
 < HTTP/1.1 404 Not Found
-< sl-validation: [{"severity":"Error","message":"The received media type does not match the one specified in the document"},{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
+< warning: [{"severity":"Error","message":"The received media type does not match the one specified in the document"},{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
 ```
 
-You can see there's a `sl-validation` header which is a JSON object with all the violations found in the response.
+You can see there's a `warning` header which is a JSON object with all the violations found in the response.
 
 ```bash
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --log httpResponse
