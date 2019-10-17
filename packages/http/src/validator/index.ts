@@ -56,6 +56,19 @@ function deserializeBody(request: any, element: any, x : any) {
   const { body } = element;
   const mediaType = caseless(element.headers || {}).get('content-type');
 
+  // const mismatchingMediaTypeError = getMismatchingMediaTypeErr(resp.contents, mediaType);
+  // const headersValidation = headersValidator.validate(element.headers || {}, resp.headers || [], deserializedHeaders, hSchema);
+  // const bodyValidation = bodyValidator.validate(deserializedBody, resp.contents || [], mediaType, bSchema);
+  //
+  // return pipe(
+  //   sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
+  //     bodyValidation,
+  //     mismatchingMediaTypeError,
+  //     headersValidation
+  //   ),
+  //   map(() => []),
+  // );
+
   return pipe(
     // in order to deserialize, we need to know how to do this (ie what mediaType it is):
     getMediaTypeWithContentAndSchema(x || [], mediaType),
@@ -170,7 +183,7 @@ function getMismatchingMediaTypeErr(c: any, mediaType: any) {
   );
 }
 
-const validateOutput = ({ resource, element, bSchema, deserializedBody, hSchema, deserializedHeaders, resp }: any) => {
+const validateOutput = ({ resource, element, bSchema, deserializedBody, hSchema, deserializedHeaders/*, resp*/ }: any) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
 
   // const mismatchingMediaTypeError = getMismatchingMediaTypeErr(resp.contents, mediaType);
@@ -189,9 +202,9 @@ const validateOutput = ({ resource, element, bSchema, deserializedBody, hSchema,
   return pipe(
     // resp,
     findOperationResponse(resource.responses, element.statusCode),
-    (lol: any) => {
-      return lol;
-    },
+    // (lol: any) => {
+    //   return lol;
+    // },
     Option.fold<IHttpOperationResponse, IPrismDiagnostic[]>(
       // @ts-ignore
       () => {

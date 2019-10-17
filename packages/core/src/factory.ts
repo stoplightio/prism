@@ -83,34 +83,49 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           );
         }),
         TaskEither.chain(({ output, resource, inputValidations }) => {
-          const resp = pipe(
-            findOperationResponse(resource.responses, (output as any).statusCode),
-            fold(() => {
-              const v =
-                {
-                  message: 'Unable to match the returned status code with those defined in spec',
-                  severity: inRange((output as any).statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-                };
-
-              return Either.left([v]);
-            },
-          (a) => Either.right(a))
-          );
+          // const resp = pipe(
+          //   findOperationResponse(resource.responses, (output as any).statusCode),
+          //   fold(() => {
+          //     const v =
+          //       {
+          //         message: 'Unable to match the returned status code with those defined in spec',
+          //         severity: inRange((output as any).statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+          //       };
+          //
+          //     return Either.left([v]);
+          //   },
+          // (a) => Either.right(a))
+          // );
 
           return pipe(
-            resp,
-            Either.chain((resp) => components.deserializeOutput(output, resp)),
-            Either.map((rest: any) => {
+            // responses[0] ???
+            components.deserializeOutput(output, resource.responses[0]),
+            Either.map((e: any) => {
               return {
                 output,
                 inputValidations,
                 resource: resource as any,
-                rest,
-                resp
+                rest: e as any,
+                resp: {}
               };
             }),
             TaskEither.fromEither,
           );
+
+          // return pipe(
+          //   resp,
+          //   Either.chain((resp) => components.deserializeOutput(output, resp)),
+          //   Either.map((rest: any) => {
+          //     return {
+          //       output,
+          //       inputValidations,
+          //       resource: resource as any,
+          //       rest,
+          //       resp
+          //     };
+          //   }),
+          //   TaskEither.fromEither,
+          // );
         }),
         TaskEither.map(({ output, resource, inputValidations, rest, resp }) => {
           const outputValidations: IPrismDiagnostic[] =
