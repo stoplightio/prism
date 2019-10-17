@@ -52,14 +52,14 @@ function deserializeHeaders(request: any, element: any) {
   return { hSchema, deserializedHeaders };
 }
 
-
-function deserializeBody(request: any, element: any) {
+function deserializeBody(request: any, element: any, x : any) {
   const { body } = element;
   const mediaType = caseless(element.headers || {}).get('content-type');
 
   return pipe(
     // in order to deserialize, we need to know how to do this (ie what mediaType it is):
-    getMediaTypeWithContentAndSchema((request && request.contents || request.body && request.body.contents) || [], mediaType),
+    // maybe return this somehow? input funcs might need it
+    getMediaTypeWithContentAndSchema(x || [], mediaType),
     Option.fold(
       // rethink this
       () => {
@@ -85,12 +85,18 @@ function deserializeBody(request: any, element: any) {
   );
 }
 
-// this function should be divided into 2 maybe, response does not need query deserialization
-export const deserializeMessage = (element: any, request: any) => {
+export const deserializeInput = (element: any, request: any) => {
   return Either.right({
-      ...deserializeBody(request, element),
+      ...deserializeBody(request, element, request && request.body && request.body.contents),
       ...deserializeHeaders(request, element),
       ...deserializeQuery(request, element)
+    })
+};
+
+export const deserializeOutput = (element: any, request: any) => {
+  return Either.right({
+      ...deserializeBody(request, element, request && request.contents),
+      ...deserializeHeaders(request, element),
     })
 };
 
@@ -165,6 +171,7 @@ const validateOutput = ({resource, element, schema, body, hSchema, deserializedH
       },
       (operationResponse: any) => {
         // @ts-ignore
+        // move this out
         const mismatchingMediaTypeError = pipe(
           Option.fromNullable(operationResponse.contents),
           Option.map(contents =>
@@ -205,7 +212,5 @@ const validateOutput = ({resource, element, schema, body, hSchema, deserializedH
     )
   );
 };
-
-export const deserializeOutput = deserializeMessage; // nice trick ;)
 
 export {validateInput, validateOutput};

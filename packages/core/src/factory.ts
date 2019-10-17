@@ -30,7 +30,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           const { request } = r as any;
 
           return pipe(
-            components.deserializeMessage(input, request),
+            components.deserializeInput(input, request),
             Either.map((e: any) => {
               return {
                 resource: r as any,
@@ -84,7 +84,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         }),
         TaskEither.chain(({ output, resource, inputValidations }) => {
           return pipe(
-            // response does not need query deserialization, so `deserializeMessage` should be divided/adjusted
+            // responses[0] ???
             components.deserializeOutput(output, resource.responses[0]),
             Either.map((e: any) => {
               return {
