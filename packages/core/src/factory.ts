@@ -85,7 +85,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         TaskEither.chain(({ output, resource, inputValidations }) => {
           return pipe(
             // response does not need query deserialization, so `deserializeMessage` should be divided/adjusted
-            components.deserializeMessage(output, resource.responses[0]),
+            components.deserializeOutput(output, resource.responses[0]),
             Either.map((e: any) => {
               return {
                 output,

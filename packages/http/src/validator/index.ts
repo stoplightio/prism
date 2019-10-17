@@ -18,7 +18,12 @@ import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './v
 
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { getValidation, left, map, right } from 'fp-ts/lib/Either';
-import { deserialize, getMediaTypeWithContentAndSchema } from './validators/body';
+import {
+  deserialize,
+  getMediaTypeWithContentAndSchema,
+  splitUriParams,
+  validateAgainstReservedCharacters
+} from './validators/body';
 import {createJsonSchemaFromParams, getPV} from "./validators/params";
 
 // .validate in these should return Either with a semigroup
@@ -47,64 +52,63 @@ function deserializeHeaders(request: any, element: any) {
   return { hSchema, deserializedHeaders };
 }
 
-// this function should be divided into 2 maybe, response does not need query deserialization
-export const deserializeMessage = (element: any, request: any) => {
+
+function deserializeBody(request: any, element: any) {
   const { body } = element;
   const mediaType = caseless(element.headers || {}).get('content-type');
 
-  // @ts-ignore
-  const deserializedBody = pipe(
+  return pipe(
     // in order to deserialize, we need to know how to do this (ie what mediaType it is):
     getMediaTypeWithContentAndSchema((request && request.contents || request.body && request.body.contents) || [], mediaType),
     Option.fold(
       // rethink this
       () => {
-        return Either.right({
+        return {
           schema: '',
-          body: body,
-        });
+          body: ''
+        }
       },
       // @ts-ignore
       ({ content, mediaType: mt, schema }) => {
-          const needsDeserialization = !!typeIs.is(mt, ['application/x-www-form-urlencoded']);
-            return pipe(
-            needsDeserialization ? deserialize(content, schema, body) : Either.right(body),
-            Either.map(b => {
-              return {
-                schema,
-                body: b
-              };
-            }),
-            Either.mapLeft(vs => {
-            return ProblemJsonError.fromTemplate(
-              UNPROCESSABLE_ENTITY,
-              // the message should/could be be something about failed deserialization
-              'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-              {
-                validation: vs.map((detail: any) => ({
-                  location: ['body'].concat(detail.path as any),
-                  severity: DiagnosticSeverity[detail.severity],
-                  code: detail.code,
-                  message: detail.message,
-                })),
-              },
-            );
-          })
-          )
+        const needsDeserialization = !!typeIs.is(mt, ['application/x-www-form-urlencoded']);
+        return pipe(
+          needsDeserialization ? deserialize(content, schema, body) : body,
+          b => {
+            return {
+              schema,
+              body: b
+            };
+          }
+        )
       }
     )
   );
+}
 
-  return pipe(
-    deserializedBody,
-    // @ts-ignore
-    Either.map((b) => {
-      return {
-        ...b,
-        ...deserializeHeaders(request, element),
-        ...deserializeQuery(request, element)
-      }
+// this function should be divided into 2 maybe, response does not need query deserialization
+export const deserializeMessage = (element: any, request: any) => {
+  return Either.right({
+      ...deserializeBody(request, element),
+      ...deserializeHeaders(request, element),
+      ...deserializeQuery(request, element)
     })
+};
+
+const validateFormUrlencoded = (request: any, element: any, mediaType: any) => {
+  return pipe(
+    getMediaTypeWithContentAndSchema((request && request.contents || request.body && request.body.contents) || [], mediaType),
+    Option.fold(
+      () => {
+        return [];
+      },
+      // @ts-ignore
+      ({ content }) => {
+        const encodedUriParams = splitUriParams(element.body);
+        const encodings = _.get(content, 'encodings', []);
+
+        return validateAgainstReservedCharacters(encodedUriParams, encodings)
+      }
+    )
   )
 };
 
@@ -127,10 +131,12 @@ const validateInput = ({ resource, element, schema, body, hSchema, qSchema, dese
 
   const violations = pipe(
     sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
+      // @ts-ignore
       reqBodyValidation,
       bodyValidation,
       headersValidation,
       queryValidation,
+      body && typeof element.body === "string" ?  validateFormUrlencoded(request, element, mediaType) : Either.right([])
     ),
     map(() => []),
   );
@@ -199,5 +205,7 @@ const validateOutput = ({resource, element, schema, body, hSchema, deserializedH
     )
   );
 };
+
+export const deserializeOutput = deserializeMessage; // nice trick ;)
 
 export {validateInput, validateOutput};

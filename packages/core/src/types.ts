@@ -23,6 +23,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   validateInput: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
   deserializeMessage: any;
+  deserializeOutput: any;
   forward: (resource: Resource, input: Input) => TaskEither<Error, Output>;
   mock: (
     opts: {

@@ -38,7 +38,7 @@ function deserializeFormBody(
   );
 }
 
-function splitUriParams(target: string) {
+export function splitUriParams(target: string) {
   return target.split('&').reduce((result: Dictionary<string, string>, pair: string) => {
     const [key, ...rest] = pair.split('=');
     result[key] = rest.join('=');
@@ -68,9 +68,9 @@ export function deserialize(content: IMediaTypeContent, schema: JSONSchema, targ
   const encodedUriParams = splitUriParams(target);
 
   return pipe(
-    validateAgainstReservedCharacters(encodedUriParams, encodings),
-    Either.map(decodeUriEntities),
-    Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
+    encodedUriParams,
+    decodeUriEntities,
+    (decodedUriEntities) => deserializeFormBody(schema, encodings, decodedUriEntities)
   );
 }
 
@@ -118,10 +118,10 @@ function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDia
   return diagnostics.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }));
 }
 
-function validateAgainstReservedCharacters(
+export function validateAgainstReservedCharacters(
   encodedUriParams: Dictionary<string, string>,
   encodings: IHttpEncoding[],
-): Either.Either<IPrismDiagnostic[], Dictionary<string, string>> {
+): Either.Either<NonEmptyArray<IPrismDiagnostic>, Dictionary<string, string>> {
   return pipe(
     encodings,
     Array.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
@@ -139,6 +139,6 @@ function validateAgainstReservedCharacters(
 
       return diagnostics;
     }),
-    diagnostics => (diagnostics.length ? Either.left(diagnostics) : Either.right(encodedUriParams)),
+    diagnostics => (diagnostics.length ? Either.left(diagnostics as NonEmptyArray<IPrismDiagnostic>) : Either.right(encodedUriParams)),
   );
 }
