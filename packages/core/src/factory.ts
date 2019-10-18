@@ -31,14 +31,14 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
           return pipe(
             components.deserializeInput(input, request),
-            (rest) => Either.right({
+            (deserializedDataAndSchemas) => Either.right({
               resource: r,
-              rest,
+              deserializedDataAndSchemas,
             }),
             TaskEither.fromEither,
           );
         }),
-        TaskEither.chain(({ resource, rest }: any) => {
+        TaskEither.chain(({ resource, deserializedDataAndSchemas }: any) => {
           // input validations are now created here and passed down the chain
           const inputValidations_: IPrismDiagnostic[] =
             config.validateRequest && resource
@@ -46,7 +46,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                   components.validateInput({
                     resource,
                     element: input,
-                    ...rest
+                    ...deserializedDataAndSchemas
                   }),
                 ) as IPrismDiagnostic[])
               : [];
@@ -94,25 +94,25 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           return pipe(
             possibleResponse,
             Either.map((response) => {
-              return { rest: components.deserializeOutput(output, response), resp: response};
+              return { deserializedDataAndSchemas: components.deserializeOutput(output, response), resp: response};
             }),
-            Either.map(({ rest, resp }: any) => {
+            Either.map(({ deserializedDataAndSchemas, resp }: any) => {
               return {
                 output,
                 inputValidations,
                 resource: resource as any,
-                rest,
+                deserializedDataAndSchemas,
                 resp
               };
             }),
             TaskEither.fromEither,
           );
         }),
-        TaskEither.map(({ output, resource, inputValidations, rest, resp }) => {
+        TaskEither.map(({ output, resource, inputValidations, deserializedDataAndSchemas, resp }) => {
           const outputValidations: IPrismDiagnostic[] =
             config.validateResponse ? components.validateOutput({
                   element: output,
-                  ...rest,
+                  ...deserializedDataAndSchemas,
                   resp
                 })
               : [];

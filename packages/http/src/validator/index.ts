@@ -8,10 +8,7 @@ import * as Either from 'fp-ts/lib/Either';
 import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { inRange } from 'lodash';
 import * as typeIs from 'type-is';
-import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
-import { IHttpResponse, ProblemJsonError } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
@@ -112,6 +109,7 @@ const validateFormUrlencoded = (request: any, element: any, mediaType: any, c: a
   }
 };
 
+// yeah, the DTO could have a bit different structure that's for sure
 const validateInput = ({ resource, element, bSchema, deserializedBody, hSchema, qSchema, deserializedHeaders, deserializedQuery, content, mediaType }: any) => {
   const { request } = resource;
 
