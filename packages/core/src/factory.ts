@@ -1,5 +1,4 @@
 import { DiagnosticSeverity } from "@stoplight/types";
-import { IHttpRequest } from "@stoplight/types";
 import * as Either from 'fp-ts/lib/Either';
 import { getOrElse, fold, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
