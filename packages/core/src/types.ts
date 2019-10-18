@@ -1,8 +1,10 @@
-import { IDiagnostic } from '@stoplight/types';
-import { Either } from 'fp-ts/lib/Either';
-import { ReaderEither } from 'fp-ts/lib/ReaderEither';
-import { TaskEither } from 'fp-ts/lib/TaskEither';
-import { Logger } from 'pino';
+import {IDiagnostic} from '@stoplight/types';
+import {IHttpRequest, IHttpResponse} from "@stoplight/types";
+import {Either} from 'fp-ts/lib/Either';
+import {ReaderEither} from 'fp-ts/lib/ReaderEither';
+import {TaskEither} from 'fp-ts/lib/TaskEither';
+import {Logger} from 'pino';
+
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
@@ -16,15 +18,31 @@ export interface IPrismConfig {
   validateResponse: boolean;
 }
 
-export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => IPrismDiagnostic[];
+export type ValidatorFn<Resource, T> = (opts: { resource?: Resource; element: T }) => IPrismDiagnostic[];
 
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
   validateInput: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
-  deserializeInput: any;
+  deserializeInput: (input: Input, request: IHttpRequest) => {
+    bSchema: any,
+    hSchema: any,
+    qSchema: any,
+    deserializedBody: any,
+    deserializedHeaders: any,
+    deserializedQuery: any,
+    mediaType: string,
+    content: any
+  };
   findOperationResponse: any; // might move findOperationResponse to the core
-  deserializeOutput: any;
+  deserializeOutput: (output: Output, response: IHttpResponse<any>) => {
+    bSchema: any,
+    hSchema: any,
+    deserializedBody: any,
+    deserializedHeaders: any,
+    mediaType: string,
+    content: any
+  };
   forward: (resource: Resource, input: Input) => TaskEither<Error, Output>;
   mock: (
     opts: {

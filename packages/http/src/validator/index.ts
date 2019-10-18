@@ -1,6 +1,6 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IMediaTypeContent } from '@stoplight/types';
-import {HttpParamStyles} from "@stoplight/types/dist";
+import {HttpParamStyles, IHttpOperation} from "@stoplight/types/dist";
 import * as caseless from 'caseless';
 import * as _ from 'lodash';
 import { findFirst } from 'fp-ts/lib/Array';
@@ -9,6 +9,7 @@ import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as typeIs from 'type-is';
+import {IHttpRequest, IHttpResponse} from "../types";
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
@@ -48,7 +49,7 @@ function deserializeHeaders(reqOrResp: any, element: any) {
   return { hSchema, deserializedHeaders };
 }
 
-function deserializeBody(request: any, element: any, x : any) {
+function deserializeBody(element: any, x : any) {
   const { body } = element;
   const mediaType = caseless(element.headers || {}).get('content-type');
 
@@ -83,22 +84,22 @@ function deserializeBody(request: any, element: any, x : any) {
   );
 }
 
-export const deserializeInput = (element: any, request: any) => {
+export const deserializeInput = (element: IHttpOperation, request: IHttpRequest) => {
   return {
-    ...deserializeBody(request, element, request && request.body && request.body.contents),
+    ...deserializeBody(element, request && request.body && (request.body as any).contents),
     ...deserializeHeaders(request, element),
     ...deserializeQuery(request, element)
   }
 };
 
-export const deserializeOutput = (element: any, response: any) => {
+export const deserializeOutput = (element: IHttpOperation, response: any) => {
   return {
-    ...deserializeBody(response, element, response && response.contents),
+    ...deserializeBody(element, response && response.contents),
     ...deserializeHeaders(response, element),
   }
 };
 
-const validateFormUrlencoded = (request: any, element: any, mediaType: any, c: any) => {
+const validateFormUrlencoded = (element: any, mediaType: any, c: any) => {
   if (typeof element.body === "string") {
     const encodedUriParams = splitUriParams(element.body);
     const encodings = _.get(c, 'encodings', []);
@@ -131,7 +132,7 @@ const validateInput = ({ resource, element, bSchema, deserializedBody, hSchema, 
       bodyValidation,
       headersValidation,
       queryValidation,
-      validateFormUrlencoded(request, element, mediaType, content)
+      validateFormUrlencoded(element, mediaType, content)
     ),
     map(() => []),
   );
