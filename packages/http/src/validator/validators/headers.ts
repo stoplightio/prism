@@ -1,7 +1,7 @@
 import { HttpParamStyles, IHttpHeaderParam } from '@stoplight/types';
+import { Dictionary } from "@stoplight/types";
 
-import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { IHttpNameValue } from '../../types';
+import { IHttpNameValue, JSONSchema } from '../../types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { HttpParamsValidator } from './params';
 
@@ -14,7 +14,8 @@ export class HttpHeadersValidator extends HttpParamsValidator<IHttpNameValue> {
     super(registry, prefix, style);
   }
 
-  public validate(target: IHttpNameValue, specs: IHttpHeaderParam[], a: any, b: any) {
-    return super.validate(target, specs, a, b);
+  public validate(target: IHttpNameValue, specs: IHttpHeaderParam[], parameterValues: Dictionary<string>, schema: JSONSchema) {
+
+    return super.validate(target, specs, parameterValues, schema);
   }
 }
