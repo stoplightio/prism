@@ -1,12 +1,12 @@
-import {DiagnosticSeverity} from "@stoplight/types";
-import {IHttpRequest} from "@stoplight/types";
+import { DiagnosticSeverity } from "@stoplight/types";
+import { IHttpRequest } from "@stoplight/types";
 import * as Either from 'fp-ts/lib/Either';
-import {getOrElse, fold, map} from 'fp-ts/lib/Option';
-import {pipe} from 'fp-ts/lib/pipeable';
+import { getOrElse, fold, map } from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
-import {defaults, inRange} from 'lodash';
-import {IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic} from './types';
-import {validateSecurity} from './utils/security';
+import { defaults, inRange } from 'lodash';
+import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from './types';
+import { validateSecurity } from './utils/security';
 
 function toVal(x: any): any {
   return pipe(
@@ -25,9 +25,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       const config = defaults<unknown, Config>(c, defaultConfig);
 
       return pipe(
-        TaskEither.fromEither(components.route({resources, input})),
+        TaskEither.fromEither(components.route({ resources, input })),
         TaskEither.map(r => {
-          const {request} = r as any;
+          const { request } = r as any;
 
           return pipe(
             components.deserializeInput(input, request),
@@ -40,7 +40,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           );
         }),
         // @ts-ignore
-        TaskEither.chain(({resource, deserializedDataAndSchemas}) => {
+        TaskEither.chain(({ resource, deserializedDataAndSchemas }) => {
           // input validations are now created here and passed down the chain
           const inputValidations_: IPrismDiagnostic[] =
             config.validateRequest && resource
@@ -72,16 +72,16 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                   data: input,
                 },
                 config: config.mock,
-              })(components.logger.child({name: 'NEGOTIATOR'})),
+              })(components.logger.child({ name: 'NEGOTIATOR' })),
             )
             : components.forward(resource, input);
 
           return pipe(
             outputLocator,
-            TaskEither.map(output => ({output, resource, inputValidations: inputValidations_})),
+            TaskEither.map(output => ({ output, resource, inputValidations: inputValidations_ })),
           );
         }),
-        TaskEither.chain(({output, resource, inputValidations}) => {
+        TaskEither.chain(({ output, resource, inputValidations }) => {
           return pipe(
             components.findOperationResponse((resource as any).responses || [], (output as any).statusCode),
             fold(() => {
@@ -97,7 +97,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                 resp: response
               };
             }),
-            Either.map(({deserializedDataAndSchemas, resp}) => {
+            Either.map(({ deserializedDataAndSchemas, resp }) => {
               return {
                 output,
                 inputValidations,
@@ -109,7 +109,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             TaskEither.fromEither,
           );
         }),
-        TaskEither.map(({output, resource, inputValidations, deserializedDataAndSchemas, resp}) => {
+        TaskEither.map(({ output, resource, inputValidations, deserializedDataAndSchemas, resp }) => {
           const outputValidations: IPrismDiagnostic[] =
             config.validateResponse ? components.validateOutput({
                 element: output,
