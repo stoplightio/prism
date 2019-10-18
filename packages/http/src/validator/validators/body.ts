@@ -136,6 +136,6 @@ export function validateAgainstReservedCharacters(
 
       return diagnostics;
     }),
-    diagnostics => (diagnostics.length ? Either.left(diagnostics as NonEmptyArray<IPrismDiagnostic>) : Either.right(encodedUriParams)),
+    diagnostics => (diagnostics.length ? Either.left(applyPrefix('body', diagnostics) as NonEmptyArray<IPrismDiagnostic>) : Either.right(encodedUriParams)),
   );
 }
