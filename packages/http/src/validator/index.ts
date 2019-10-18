@@ -1,5 +1,5 @@
-import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
+import { DiagnosticSeverity, IMediaTypeContent } from '@stoplight/types';
 import {HttpParamStyles} from "@stoplight/types/dist";
 import * as caseless from 'caseless';
 import * as _ from 'lodash';
@@ -55,16 +55,16 @@ function deserializeBody(request: any, element: any, x : any) {
   return pipe(
     getMediaTypeWithContentAndSchema(x || [], mediaType),
     Option.fold(
-      // rethink this
       () => {
         return {
-          bSchema: '',
+          bSchema: {},
           deserializedBody: '',
-          content: '',
+          content: {
+            mediaType: ''
+          },
           mediaType,
         }
       },
-      // @ts-ignore
       ({ content, mediaType: mt, schema }) => {
         const needsDeserialization = !!typeIs.is(mt, ['application/x-www-form-urlencoded']);
         return pipe(
@@ -137,13 +137,12 @@ const validateInput = ({ resource, element, bSchema, deserializedBody, hSchema, 
   );
 };
 
-function getMismatchingMediaTypeErr(c: any, mediaType: any) {
+function getMismatchingMediaTypeErr(c: IMediaTypeContent[], mediaType: string) {
   return pipe(
     Option.fromNullable(c),
     Option.map(contents =>
       pipe(
         contents,
-        // @ts-ignore
         findFirst(c => c.mediaType === mediaType),
         Option.map<IMediaTypeContent, IPrismDiagnostic[]>(() => []),
         Option.getOrElse<IPrismDiagnostic[]>(() => [

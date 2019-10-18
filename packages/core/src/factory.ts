@@ -24,20 +24,21 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       const config = defaults<unknown, Config>(c, defaultConfig);
 
       return pipe(
-        // @ts-ignore
         TaskEither.fromEither(components.route({ resources, input })),
-        TaskEither.chain(r => {
+        TaskEither.map(r => {
           const { request } = r as any;
 
           return pipe(
             components.deserializeInput(input, request),
-            (deserializedDataAndSchemas) => Either.right({
-              resource: r,
-              deserializedDataAndSchemas,
-            }),
-            TaskEither.fromEither,
+            (deserializedDataAndSchemas) => {
+              return {
+                resource: r,
+                deserializedDataAndSchemas,
+              }
+            }
           );
         }),
+        // @ts-ignore
         TaskEither.chain(({ resource, deserializedDataAndSchemas }: any) => {
           // input validations are now created here and passed down the chain
           const inputValidations_: IPrismDiagnostic[] =
@@ -80,19 +81,15 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           );
         }),
         TaskEither.chain(({ output, resource, inputValidations }) => {
-          const possibleResponse = pipe(
+          return pipe(
             components.findOperationResponse(resource.responses || [], (output as any).statusCode),
             fold(() => {
-              return Either.left([{
-                message: 'Unable to match the returned status code with those defined in spec',
-                severity: inRange((output as any).statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-              }]);
-            },
-            (a) => Either.right(a))
-          );
-
-          return pipe(
-            possibleResponse,
+                return Either.left([{
+                  message: 'Unable to match the returned status code with those defined in spec',
+                  severity: inRange((output as any).statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+                }]);
+              },
+              (a) => Either.right(a)),
             Either.map((response) => {
               return { deserializedDataAndSchemas: components.deserializeOutput(output, response), resp: response};
             }),
