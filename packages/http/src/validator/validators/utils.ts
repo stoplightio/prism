@@ -21,10 +21,6 @@ export const convertAjvErrors = (errors: Ajv.ErrorObject[] | undefined | null, s
 };
 
 export const validateAgainstSchema = (value: any, schema: JSONSchema, prefix?: string): IPrismDiagnostic[] => {
-   if (!schema) {
-    return [];
-  }
-
   try {
     const validate = ajv.compile(schema);
     const valid = validate(value);

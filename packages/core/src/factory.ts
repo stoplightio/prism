@@ -93,7 +93,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               (a) => Either.right(a)),
             Either.map((response) => {
               return {
-                deserializedDataAndSchemas: components.deserializeOutput(output, response as any),
+                deserializedDataAndSchemas: components.deserializeOutput(output, response),
                 resp: response
               };
             }),

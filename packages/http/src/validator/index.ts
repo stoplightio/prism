@@ -6,7 +6,6 @@ import {
   IHttpOperationResponse
 } from "@stoplight/types/dist";
 import * as caseless from 'caseless';
-import * as _ from 'lodash';
 import { findFirst } from 'fp-ts/lib/Array';
 import * as Either from 'fp-ts/lib/Either';
 import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
@@ -34,9 +33,9 @@ export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 
 
 function deserializeQuery(reqOrResp: IHttpOperationRequest, element: IHttpRequest) {
   const qSpec = reqOrResp.query || [];
-  const qSchema = createJsonSchemaFromParams(qSpec);
   const qTarget = element.url.query || {};
 
+  const qSchema = createJsonSchemaFromParams(qSpec);
   const deserializedQuery = getPV(qSpec, HttpParamStyles, queryDeserializerRegistry, qSchema, qTarget);
 
   return { qSchema, deserializedQuery };
@@ -44,9 +43,9 @@ function deserializeQuery(reqOrResp: IHttpOperationRequest, element: IHttpReques
 
 function deserializeHeaders(reqOrResp: IHttpOperationResponse | IHttpOperationRequest, element: IHttpRequest | IHttpResponse) {
   const hSpec = reqOrResp.headers || [];
-  const hSchema = createJsonSchemaFromParams(hSpec);
-  const qTarget = element.headers || [];
+  const qTarget = element.headers || {};
 
+  const hSchema = createJsonSchemaFromParams(hSpec);
   const deserializedHeaders = getPV(hSpec, HttpParamStyles, headerDeserializerRegistry, hSchema, qTarget);
 
   return { hSchema, deserializedHeaders };
@@ -105,7 +104,7 @@ export const deserializeOutput = (element: IHttpResponse, response: IHttpOperati
 const validateFormUrlencoded = (element: IHttpRequest, mediaType: string, c: IMediaTypeContent) => {
   if (typeof element.body === "string") {
     const encodedUriParams = splitUriParams(element.body);
-    const encodings = _.get(c, 'encodings', []);
+    const encodings = c.encodings || [];
 
     return validateAgainstReservedCharacters(encodedUriParams, encodings)
   } else {

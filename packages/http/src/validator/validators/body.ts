@@ -93,8 +93,8 @@ export class HttpBodyValidator {
   public validate(
     target: any,
     specs: IMediaTypeContent[],
-    mediaType?: string,
-    schema?: any,
+    mediaType: string,
+    schema: JSONSchema,
   ): Either.Either<NonEmptyArray<IPrismDiagnostic>, any> {
     return pipe(
       validateAgainstSchema(target, schema),

@@ -1,15 +1,15 @@
 import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/types';
+import { Dictionary } from "@stoplight/types/dist";
 import * as Either from "fp-ts/lib/Either";
-import {NonEmptyArray} from "fp-ts/lib/NonEmptyArray";
+import { NonEmptyArray } from "fp-ts/lib/NonEmptyArray";
 import * as Option from "fp-ts/lib/Option";
-import {pipe} from "fp-ts/lib/pipeable";
+import { pipe } from "fp-ts/lib/pipeable";
 import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { JSONSchema4 } from 'json-schema';
 import { JSONSchema } from '../../';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
-import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 
 export class HttpParamsValidator<Target> {
@@ -19,8 +19,8 @@ export class HttpParamsValidator<Target> {
     private _style: HttpParamStyles,
   ) {}
 
-  public validate(target: Target, specs: IHttpParam[], parameterValues: any, schema: any) {
-    const { _registry: registry, _prefix: prefix, _style: style } = this;
+  public validate(target: Target, specs: IHttpParam[], parameterValues: Dictionary<string>, schema: JSONSchema) {
+    const { _prefix: prefix } = this;
 
     const deprecatedWarnings = specs.filter(spec => spec.deprecated).map(spec => ({
       path: [prefix, spec.name],
@@ -53,7 +53,7 @@ export function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema {
   return schema;
 }
 
-export function getPV(specs: any, style: any, registry: any, schema: any, target: any) {
+export function getPV<Target>(specs: IHttpParam[], style: typeof HttpParamStyles, registry: IHttpParamDeserializerRegistry<Target>, schema: JSONSchema, target: Target) {
   return pickBy(
     mapValues(keyBy(specs, s => s.name.toLowerCase()), el => {
       const resolvedStyle = el.style || style;
