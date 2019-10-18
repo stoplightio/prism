@@ -31,21 +31,20 @@ export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 
-// deserializeHeaders is almost identical, do not worry for now
-function deserializeQuery(request: any, element: any) {
-  const qSpec = _.get(request, 'query', []);
+function deserializeQuery(reqOrResp: any, element: any) {
+  const qSpec = _.get(reqOrResp, 'query', []);
   const qSchema = createJsonSchemaFromParams(qSpec);
   const qTarget = _.get(element, ['url', 'query'], {});
 
   const deserializedQuery = getPV(qSpec, HttpParamStyles, queryDeserializerRegistry, qSchema, qTarget);
 
-  return { deserializedQuery, qSchema };
+  return { qSchema, deserializedQuery };
 }
 
-function deserializeHeaders(request: any, element: any) {
-  const hSpec = _.get(request, 'headers', []);
+function deserializeHeaders(reqOrResp: any, element: any) {
+  const hSpec = _.get(reqOrResp, 'headers', []);
   const hSchema = createJsonSchemaFromParams(hSpec);
-  const qTarget = element.headers || [];
+  const qTarget = _.get(element, ['headers'], []);
 
   const deserializedHeaders = getPV(hSpec, HttpParamStyles, headerDeserializerRegistry, hSchema, qTarget);
 
@@ -56,21 +55,7 @@ function deserializeBody(request: any, element: any, x : any) {
   const { body } = element;
   const mediaType = caseless(element.headers || {}).get('content-type');
 
-  // const mismatchingMediaTypeError = getMismatchingMediaTypeErr(resp.contents, mediaType);
-  // const headersValidation = headersValidator.validate(element.headers || {}, resp.headers || [], deserializedHeaders, hSchema);
-  // const bodyValidation = bodyValidator.validate(deserializedBody, resp.contents || [], mediaType, bSchema);
-  //
-  // return pipe(
-  //   sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
-  //     bodyValidation,
-  //     mismatchingMediaTypeError,
-  //     headersValidation
-  //   ),
-  //   map(() => []),
-  // );
-
   return pipe(
-    // in order to deserialize, we need to know how to do this (ie what mediaType it is):
     getMediaTypeWithContentAndSchema(x || [], mediaType),
     Option.fold(
       // rethink this
@@ -102,18 +87,18 @@ function deserializeBody(request: any, element: any, x : any) {
 }
 
 export const deserializeInput = (element: any, request: any) => {
-  return Either.right({
+  return {
     ...deserializeBody(request, element, request && request.body && request.body.contents),
     ...deserializeHeaders(request, element),
     ...deserializeQuery(request, element)
-  })
+  }
 };
 
-export const deserializeOutput = (element: any, request: any) => {
-  return Either.right({
-    ...deserializeBody(request, element, request && request.contents),
-    ...deserializeHeaders(request, element),
-  })
+export const deserializeOutput = (element: any, response: any) => {
+  return {
+    ...deserializeBody(response, element, response && response.contents),
+    ...deserializeHeaders(response, element),
+  }
 };
 
 const validateFormUrlencoded = (request: any, element: any, mediaType: any, c: any) => {
@@ -127,7 +112,6 @@ const validateFormUrlencoded = (request: any, element: any, mediaType: any, c: a
   }
 };
 
-// schema - bodySchema
 const validateInput = ({ resource, element, bSchema, deserializedBody, hSchema, qSchema, deserializedHeaders, deserializedQuery, content, mediaType }: any) => {
   const { request } = resource;
 
@@ -183,56 +167,21 @@ function getMismatchingMediaTypeErr(c: any, mediaType: any) {
   );
 }
 
-const validateOutput = ({ resource, element, bSchema, deserializedBody, hSchema, deserializedHeaders/*, resp*/ }: any) => {
+const validateOutput = ({ element, bSchema, deserializedBody, hSchema, deserializedHeaders, resp }: any) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
 
-  // const mismatchingMediaTypeError = getMismatchingMediaTypeErr(resp.contents, mediaType);
-  // const headersValidation = headersValidator.validate(element.headers || {}, resp.headers || [], deserializedHeaders, hSchema);
-  // const bodyValidation = bodyValidator.validate(deserializedBody, resp.contents || [], mediaType, bSchema);
-  //
-  // return pipe(
-  //   sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
-  //     bodyValidation,
-  //     mismatchingMediaTypeError,
-  //     headersValidation
-  //   ),
-  //   map(() => []),
-  // );
+  const mismatchingMediaTypeError = getMismatchingMediaTypeErr(resp.contents, mediaType);
+  const headersValidation = headersValidator.validate(element.headers || {}, resp.headers || [], deserializedHeaders, hSchema);
+  const bodyValidation = bodyValidator.validate(deserializedBody, resp.contents || [], mediaType, bSchema);
 
   return pipe(
-    // resp,
-    findOperationResponse(resource.responses, element.statusCode),
-    // (lol: any) => {
-    //   return lol;
-    // },
-    Option.fold<IHttpOperationResponse, IPrismDiagnostic[]>(
-      // @ts-ignore
-      () => {
-        const v = [
-          {
-            message: 'Unable to match the returned status code with those defined in spec',
-            severity: inRange(element.statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-          },
-        ];
-
-        return Either.left(v as NonEmptyArray<IPrismDiagnostic>)
-      },
-      (operationResponse: any) => {
-        const mismatchingMediaTypeError = getMismatchingMediaTypeErr(operationResponse.contents, mediaType);
-        const headersValidation = headersValidator.validate(element.headers || {}, operationResponse.headers || [], deserializedHeaders, hSchema);
-        const bodyValidation = bodyValidator.validate(deserializedBody, operationResponse.contents || [], mediaType, bSchema);
-
-        return pipe(
-          sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
-            bodyValidation,
-            mismatchingMediaTypeError,
-            headersValidation
-          ),
-          map(() => []),
-        );
-      },
-    )
+    sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()))(
+      bodyValidation,
+      mismatchingMediaTypeError,
+      headersValidation
+    ),
+    map(() => []),
   );
 };
 
-export {validateInput, validateOutput};
+export {validateInput, validateOutput, findOperationResponse };

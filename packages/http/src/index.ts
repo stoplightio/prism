@@ -4,7 +4,7 @@ import { defaults } from 'lodash';
 import forward from './forwarder';
 import mock from './mocker';
 import route from './router';
-import { deserializeInput, deserializeOutput, validateInput, validateOutput} from './validator';
+import { deserializeInput, deserializeOutput, validateInput, validateOutput, findOperationResponse } from './validator';
 export * from './types';
 export * from './getHttpOperations';
 export * from './mocker/serializer/style';
@@ -18,5 +18,6 @@ export const createInstance = (
 ) =>
   factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
     defaultConfig,
-    defaults(components, { route, deserializeOutput, deserializeInput, validateInput, validateOutput, mock, forward }),
+    // findOperationResponse should not rather be here, left for now
+    defaults(components, { route, deserializeOutput, deserializeInput, validateInput, validateOutput, mock, forward, findOperationResponse }),
   );

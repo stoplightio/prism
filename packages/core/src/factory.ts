@@ -1,5 +1,4 @@
-import {findOperationResponse} from "@stoplight/prism-http/src/validator/utils/spec";
-import {DiagnosticSeverity} from "@stoplight/types/dist";
+import { DiagnosticSeverity } from "@stoplight/types";
 import * as Either from 'fp-ts/lib/Either';
 import { getOrElse, fold, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -25,18 +24,16 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       const config = defaults<unknown, Config>(c, defaultConfig);
 
       return pipe(
-        TaskEither.fromEither(components.route({ resources, input })),
         // @ts-ignore
+        TaskEither.fromEither(components.route({ resources, input })),
         TaskEither.chain(r => {
           const { request } = r as any;
 
           return pipe(
             components.deserializeInput(input, request),
-            Either.map((rest) => {
-              return {
-                resource: r,
-                rest,
-              };
+            (rest) => Either.right({
+              resource: r,
+              rest,
             }),
             TaskEither.fromEither,
           );
@@ -83,55 +80,37 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           );
         }),
         TaskEither.chain(({ output, resource, inputValidations }) => {
-          // const resp = pipe(
-          //   findOperationResponse(resource.responses, (output as any).statusCode),
-          //   fold(() => {
-          //     const v =
-          //       {
-          //         message: 'Unable to match the returned status code with those defined in spec',
-          //         severity: inRange((output as any).statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-          //       };
-          //
-          //     return Either.left([v]);
-          //   },
-          // (a) => Either.right(a))
-          // );
+          const possibleResponse = pipe(
+            components.findOperationResponse(resource.responses || [], (output as any).statusCode),
+            fold(() => {
+              return Either.left([{
+                message: 'Unable to match the returned status code with those defined in spec',
+                severity: inRange((output as any).statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+              }]);
+            },
+            (a) => Either.right(a))
+          );
 
           return pipe(
-            // responses[0] ???
-            components.deserializeOutput(output, resource.responses[0]),
-            Either.map((e: any) => {
+            possibleResponse,
+            Either.map((response) => {
+              return { rest: components.deserializeOutput(output, response), resp: response};
+            }),
+            Either.map(({ rest, resp }: any) => {
               return {
                 output,
                 inputValidations,
                 resource: resource as any,
-                rest: e as any,
-                resp: {}
+                rest,
+                resp
               };
             }),
             TaskEither.fromEither,
           );
-
-          // return pipe(
-          //   resp,
-          //   Either.chain((resp) => components.deserializeOutput(output, resp)),
-          //   Either.map((rest: any) => {
-          //     return {
-          //       output,
-          //       inputValidations,
-          //       resource: resource as any,
-          //       rest,
-          //       resp
-          //     };
-          //   }),
-          //   TaskEither.fromEither,
-          // );
         }),
         TaskEither.map(({ output, resource, inputValidations, rest, resp }) => {
           const outputValidations: IPrismDiagnostic[] =
-            config.validateResponse && resource
-              ? components.validateOutput({
-                  resource,
+            config.validateResponse ? components.validateOutput({
                   element: output,
                   ...rest,
                   resp
