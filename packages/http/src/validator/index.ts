@@ -1,6 +1,10 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IMediaTypeContent } from '@stoplight/types';
-import {HttpParamStyles, IHttpOperation} from "@stoplight/types/dist";
+import {
+  HttpParamStyles,
+  IHttpOperationRequest,
+  IHttpOperationResponse
+} from "@stoplight/types/dist";
 import * as caseless from 'caseless';
 import * as _ from 'lodash';
 import { findFirst } from 'fp-ts/lib/Array';
@@ -9,7 +13,7 @@ import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as typeIs from 'type-is';
-import {IHttpRequest, IHttpResponse} from "../types";
+import { IHttpRequest, IHttpResponse } from "../types";
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
@@ -22,39 +26,38 @@ import {
   splitUriParams,
   validateAgainstReservedCharacters
 } from './validators/body';
-import {createJsonSchemaFromParams, getPV} from "./validators/params";
+import { createJsonSchemaFromParams, getPV } from "./validators/params";
 
-// .validate in these should return Either with a semigroup
 export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 
-function deserializeQuery(reqOrResp: any, element: any) {
-  const qSpec = _.get(reqOrResp, 'query', []);
+function deserializeQuery(reqOrResp: IHttpOperationRequest, element: IHttpRequest) {
+  const qSpec = reqOrResp.query || [];
   const qSchema = createJsonSchemaFromParams(qSpec);
-  const qTarget = _.get(element, ['url', 'query'], {});
+  const qTarget = element.url.query || {};
 
   const deserializedQuery = getPV(qSpec, HttpParamStyles, queryDeserializerRegistry, qSchema, qTarget);
 
   return { qSchema, deserializedQuery };
 }
 
-function deserializeHeaders(reqOrResp: any, element: any) {
-  const hSpec = _.get(reqOrResp, 'headers', []);
+function deserializeHeaders(reqOrResp: IHttpOperationResponse | IHttpOperationRequest, element: IHttpRequest | IHttpResponse) {
+  const hSpec = reqOrResp.headers || [];
   const hSchema = createJsonSchemaFromParams(hSpec);
-  const qTarget = _.get(element, ['headers'], []);
+  const qTarget = element.headers || [];
 
   const deserializedHeaders = getPV(hSpec, HttpParamStyles, headerDeserializerRegistry, hSchema, qTarget);
 
   return { hSchema, deserializedHeaders };
 }
 
-function deserializeBody(element: any, x : any) {
+function deserializeBody(element: IHttpRequest | IHttpResponse, content: IMediaTypeContent[]) {
   const { body } = element;
   const mediaType = caseless(element.headers || {}).get('content-type');
 
   return pipe(
-    getMediaTypeWithContentAndSchema(x || [], mediaType),
+    getMediaTypeWithContentAndSchema(content || [], mediaType),
     Option.fold(
       () => {
         return {
@@ -75,7 +78,7 @@ function deserializeBody(element: any, x : any) {
               content,
               mediaType,
               bSchema: schema,
-              deserializedBody: b
+              deserializedBody: b as string
             };
           }
         )
@@ -84,22 +87,22 @@ function deserializeBody(element: any, x : any) {
   );
 }
 
-export const deserializeInput = (element: IHttpOperation, request: IHttpRequest) => {
+export const deserializeInput = (element: IHttpRequest, request: IHttpOperationRequest) => {
   return {
-    ...deserializeBody(element, request && request.body && (request.body as any).contents),
+    ...deserializeBody(element, request && request.body && request.body.contents || []),
     ...deserializeHeaders(request, element),
     ...deserializeQuery(request, element)
   }
 };
 
-export const deserializeOutput = (element: IHttpOperation, response: any) => {
+export const deserializeOutput = (element: IHttpResponse, response: IHttpOperationResponse) => {
   return {
-    ...deserializeBody(element, response && response.contents),
+    ...deserializeBody(element, response && response.contents || []),
     ...deserializeHeaders(response, element),
   }
 };
 
-const validateFormUrlencoded = (element: any, mediaType: any, c: any) => {
+const validateFormUrlencoded = (element: IHttpRequest, mediaType: string, c: IMediaTypeContent) => {
   if (typeof element.body === "string") {
     const encodedUriParams = splitUriParams(element.body);
     const encodings = _.get(c, 'encodings', []);
@@ -114,10 +117,10 @@ const validateFormUrlencoded = (element: any, mediaType: any, c: any) => {
 const validateInput = ({ resource, element, bSchema, deserializedBody, hSchema, qSchema, deserializedHeaders, deserializedQuery, content, mediaType }: any) => {
   const { request } = resource;
 
-  const queryValidation = queryValidator.validate(element.url.query || {}, (request && request.query) || [], deserializedQuery, qSchema)
+  const queryValidation = queryValidator.validate(element.url.query || {}, (request && request.query) || [], deserializedQuery, qSchema);
 
   const reqBodyValidation = !deserializedBody && request.body && request.body.required ? left([
-      {code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error},
+      { code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error },
     ] as NonEmptyArray<IPrismDiagnostic>)
     : right([]);
 
@@ -159,7 +162,7 @@ function getMismatchingMediaTypeErr(c: IMediaTypeContent[], mediaType: string) {
         return Either.right([]);
       },
       (mismatchingMediaTypeError) => {
-         return mismatchingMediaTypeError.length ? Either.left(mismatchingMediaTypeError as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
+        return mismatchingMediaTypeError.length ? Either.left(mismatchingMediaTypeError as NonEmptyArray<IPrismDiagnostic>) : Either.right([]);
       }
     )
   );
@@ -182,4 +185,4 @@ const validateOutput = ({ element, bSchema, deserializedBody, hSchema, deseriali
   );
 };
 
-export {validateInput, validateOutput, findOperationResponse };
+export { validateInput, validateOutput, findOperationResponse };

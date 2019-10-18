@@ -30,7 +30,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           const {request} = r as any;
 
           return pipe(
-            components.deserializeInput(input, request as IHttpRequest),
+            components.deserializeInput(input, request),
             (deserializedDataAndSchemas) => {
               return {
                 resource: r,

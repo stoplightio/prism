@@ -62,9 +62,9 @@ function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: st
   );
 }
 
-export function deserialize(content: IMediaTypeContent, schema: JSONSchema, target: string) {
+export function deserialize(content: IMediaTypeContent, schema: JSONSchema, target: string | unknown) {
   const encodings = get(content, 'encodings', []);
-  const encodedUriParams = splitUriParams(target);
+  const encodedUriParams = splitUriParams(target as string);
 
   return pipe(
     encodedUriParams,
@@ -73,7 +73,7 @@ export function deserialize(content: IMediaTypeContent, schema: JSONSchema, targ
   );
 }
 
-export const getMediaTypeWithContentAndSchema = (specs: IMediaTypeContent[], mediaType: any) => {
+export const getMediaTypeWithContentAndSchema = (specs: IMediaTypeContent[], mediaType: string) => {
   return pipe(
     Option.fromNullable(mediaType),
     Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),

@@ -1,9 +1,11 @@
-import {IDiagnostic} from '@stoplight/types';
-import {IHttpRequest, IHttpResponse} from "@stoplight/types";
-import {Either} from 'fp-ts/lib/Either';
-import {ReaderEither} from 'fp-ts/lib/ReaderEither';
-import {TaskEither} from 'fp-ts/lib/TaskEither';
-import {Logger} from 'pino';
+import { IDiagnostic } from '@stoplight/types';
+import { IHttpResponse } from "@stoplight/types";
+import { IHttpOperationRequest, IHttpOperationResponse } from "@stoplight/types/dist";
+import { Either } from 'fp-ts/lib/Either';
+import { ReaderEither } from 'fp-ts/lib/ReaderEither';
+import { TaskEither } from 'fp-ts/lib/TaskEither';
+import { Logger } from 'pino';
+import { Option } from 'fp-ts/lib/Option'
 
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
@@ -24,7 +26,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
   validateInput: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
-  deserializeInput: (input: Input, request: IHttpRequest) => {
+  deserializeInput: (input: Input, request: IHttpOperationRequest) => {
     bSchema: any,
     hSchema: any,
     qSchema: any,
@@ -34,7 +36,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
     mediaType: string,
     content: any
   };
-  findOperationResponse: any; // might move findOperationResponse to the core
+  findOperationResponse: (responseSpecs: IHttpOperationResponse[], statusCode: number) => Option<IHttpOperationResponse>; // might move findOperationResponse to the core
   deserializeOutput: (output: Output, response: IHttpResponse<any>) => {
     bSchema: any,
     hSchema: any,
