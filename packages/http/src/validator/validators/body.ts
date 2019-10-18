@@ -62,7 +62,6 @@ function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: st
   );
 }
 
-// should be put somewhere else, not under /validators
 export function deserialize(content: IMediaTypeContent, schema: JSONSchema, target: string) {
   const encodings = get(content, 'encodings', []);
   const encodedUriParams = splitUriParams(target);
@@ -89,7 +88,6 @@ export const getMediaTypeWithContentAndSchema = (specs: IMediaTypeContent[], med
 };
 
 export class HttpBodyValidator {
-  // `this.prefix` isn't very fp, should just remove the constructor and pass `prefix` it to `validate`
   constructor(private prefix: string) {}
 
   public validate(
@@ -101,7 +99,6 @@ export class HttpBodyValidator {
     return pipe(
       validateAgainstSchema(target, schema),
       diagnostics => applyPrefix(this.prefix, diagnostics),
-      // TODO: should adjust/change/take a closer look at the last following 2 lines:
       Option.fromNullable,
       Option.fold(() => Either.right([]), x => {
         if (x.length) {
