@@ -14,7 +14,7 @@ import { IHttpConfig, IHttpRequest, IHttpResponse, PickRequired, PrismHttpCompon
 
 export const createInstance = (
   defaultConfig: IHttpConfig,
-  components?: PickRequired<Partial<PrismHttpComponents>, 'logger'>,
+  components: PickRequired<Partial<PrismHttpComponents>, 'logger'>
 ) =>
   factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
     defaultConfig,
