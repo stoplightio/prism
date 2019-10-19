@@ -16,8 +16,8 @@
     "node": ">=8"
   },
   "dependencies": {
-    "@stoplight/prism-core": "^3.1.1",
     "@stoplight/json-ref-resolver": "^3.0.1",
+    "@stoplight/prism-core": "^3.1.1",
     "@stoplight/ref-resolvers": "^1.0.2",
     "@stoplight/yaml": "^3.0.2",
     "abstract-logging": "^1.0.0",
@@ -27,7 +27,7 @@
     "caseless": "^0.12.0",
     "faker": "^4.1.0",
     "fp-ts": "^2.0.5",
-    "json-schema-faker": "0.5.0-rc21",
+    "json-schema-faker": "0.5.0-rc22",
     "openapi-sampler": "^1.0.0-beta.15",
     "pino": "^5.13.2",
     "tslib": "^1.10.0",
