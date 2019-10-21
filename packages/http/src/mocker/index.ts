@@ -89,15 +89,18 @@ function negotiateResponse(
   input: IPrismInput<IHttpRequest>,
   resource: IHttpOperation,
 ) {
-  const groupedViolations = groupBy(input.validations, (validation) => validation.severity);
+  const {
+    [DiagnosticSeverity.Error]: errors,
+    [DiagnosticSeverity.Warning]: warnings,
+  } = groupBy(input.validations, (validation) => validation.severity);
 
-  if (groupedViolations[DiagnosticSeverity.Error]) {
+  if (errors) {
     return handleInputValidation(input, resource);
   } else {
     return pipe(
       withLogger(logger => {
-          if (groupedViolations[DiagnosticSeverity.Warning]) {
-            groupedViolations[DiagnosticSeverity.Warning].forEach((warn) => {
+          if (warnings) {
+            warnings.forEach((warn) => {
               logger.warn({ name: 'VALIDATOR' }, warn.message);
             });
           }

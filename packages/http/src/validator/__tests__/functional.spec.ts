@@ -31,6 +31,87 @@ describe('HttpValidator', () => {
       });
     });
 
+    describe('deprecated keyword validation', () => {
+      const resource = {
+        id: "abc",
+        method: "get",
+        path: "/test",
+        responses: [
+          {
+            code: "200",
+            contents: [
+              {
+                mediaType: "application/json",
+                schema: {
+                  type: "object",
+                  properties: {
+                    prop: {
+                      type: "string",
+                      example: "abc"
+                    }
+                  },
+                  $schema: "http://json-schema.org/draft-04/schema#"
+                },
+              }
+            ]
+          }
+        ],
+        request: {
+          query: [
+            {
+              style: HttpParamStyles.Form,
+              deprecated: true,
+              name: "productId"
+            }
+          ],
+        },
+      };
+
+      it('returns warnings', () => {
+        expect(
+          validateInput({
+            // @ts-ignore
+            resource,
+            element: {
+              method: "get",
+              url: {
+                path: "/test",
+                query: {
+                  productId: "abc"
+                }
+              },
+            },
+          }),
+        ).toEqual([
+          {
+            code: "deprecated",
+            message: "Query param productId is deprecated",
+            path: [
+              "query",
+              "productId"
+            ],
+            severity: DiagnosticSeverity.Warning
+          }
+        ]);
+      });
+
+      it('does not return warnings', () => {
+        expect(
+          validateInput({
+            // @ts-ignore
+            resource,
+            element: {
+              method: "get",
+              url: {
+                path: "/test",
+                query: {}
+              },
+            },
+          }),
+        ).toEqual([]);
+      });
+    });
+
     describe('headers validation', () => {
       it('is case insensitive', () => {
         expect(

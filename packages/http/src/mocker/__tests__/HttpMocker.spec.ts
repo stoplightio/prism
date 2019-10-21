@@ -129,43 +129,33 @@ describe('mocker', () => {
 
     describe('with a negotiator response containing validation results of Warning severity', () => {
       it('returns static example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
-          right({
-            code: '202',
-            mediaType: 'test',
-            bodyExample: mockResource.responses![0].contents![0].examples![0],
-            headers: [],
-          }),
-        );
+        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest');
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest');
 
-        const mockResult = mock({
+        mock({
           config: { dynamic: false },
           resource: mockResource,
           input: Object.assign({}, mockInput, { validations: [{ severity: DiagnosticSeverity.Warning }] }),
         })(logger);
 
-        assertRight(mockResult, result => expect(result).toMatchSnapshot());
+        expect(helpers.negotiateOptionsForValidRequest).toHaveBeenCalled();
+        expect(helpers.negotiateOptionsForInvalidRequest).not.toHaveBeenCalled();
       });
     });
 
     describe('with a negotiator response containing validation results of Error severity', () => {
       it('returns static example', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockReturnValue(
-          right({
-            code: '202',
-            mediaType: 'test',
-            bodyExample: mockResource.responses![0].contents![0].examples![0],
-            headers: [],
-          }),
-        );
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest');
+        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest');
 
-        const mockResult = mock({
+        mock({
           config: { dynamic: false },
           resource: mockResource,
           input: Object.assign({}, mockInput, { validations: [{ severity: DiagnosticSeverity.Error }] }),
         })(logger);
 
-        assertRight(mockResult, result => expect(result).toMatchSnapshot());
+        expect(helpers.negotiateOptionsForValidRequest).not.toHaveBeenCalled();
+        expect(helpers.negotiateOptionsForInvalidRequest).toHaveBeenCalled();
       });
     });
 
