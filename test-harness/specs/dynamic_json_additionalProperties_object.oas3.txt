@@ -1,5 +1,5 @@
 ====test====
-Prism can generate dynamic responses when the `additionalProperties` schema is set to false
+Prism can generate dynamic responses when the `additionalProperties` schema is set to true
 ====spec====
 openapi: 3.0.0
 paths:
@@ -20,7 +20,8 @@ components:
           type: string
         tags:
           type: string
-      additionalProperties: false
+      additionalProperties:
+        type: string
 ====server====
 mock -d -p 4010 ${document}
 ====command====
