@@ -176,27 +176,6 @@ describe('HttpValidator', () => {
           });
         });
       });
-
-      describe('request.url.path does not match the path from resource', () => {
-        it('throws error', () => {
-          expect(
-            () => validateInput({
-              resource: {
-                method: 'get',
-                path: '/a/{a}',
-                id: '1',
-                request: {
-                  path: [
-                    { name: 'a', style: HttpParamStyles.Simple },
-                  ]
-                },
-                responses: [{ code: '200' }],
-              },
-              element: { method: 'get', url: { path: '/b/1' } },
-            })
-          ).toThrowError('Received path is not a match for path from api description');
-        });
-      });
     });
   });
 

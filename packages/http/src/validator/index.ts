@@ -1,6 +1,7 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import * as caseless from 'caseless';
+import * as URITemplate from 'uri-templates';
 
 import { findFirst } from 'fp-ts/lib/Array';
 import * as Option from 'fp-ts/lib/Option';
@@ -81,13 +82,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
 };
 
 function getPathParams(path: string, template: string) {
-  const matches = new RegExp('^' + template.replace(/{(.+?)}/g, (_, name) => `(?<${name}>.*)`)).exec(path);
-  if (!matches) {
-    // router should not let it happen
-    throw new Error('Received path is not a match for path from api description');
-  }
-
-  return matches.groups || {};
+   return URITemplate(template).fromUri(path);
 }
 
 export { validateInput, validateOutput };
