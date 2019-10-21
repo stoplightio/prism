@@ -1,5 +1,5 @@
 import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/types';
-import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst, identity } from 'lodash';
+import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { JSONSchema4 } from 'json-schema';
