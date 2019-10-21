@@ -1,4 +1,4 @@
-import {IPrismComponents, IPrismInput} from '@stoplight/prism-core';
+import { IPrismComponents, IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
 
 import * as caseless from 'caseless';
