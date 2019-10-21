@@ -6,10 +6,6 @@ import * as createObjectFromKeyValListModule from '../utils';
 describe('MatrixStyleDeserializer', () => {
   const matrixStyleDeserializer = new MatrixStyleDeserializer();
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('supports()', () => {
     describe('style is supported', () => {
       it('returns true', () => {

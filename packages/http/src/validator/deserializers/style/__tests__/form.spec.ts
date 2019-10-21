@@ -6,10 +6,6 @@ import * as createObjectFromKeyValListModule from '../utils';
 describe('FormStyleDeserializer', () => {
   const formStyleDeserializer = new FormStyleDeserializer();
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('supports()', () => {
     describe('style is supported', () => {
       it('returns true', () => {

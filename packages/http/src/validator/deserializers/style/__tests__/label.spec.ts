@@ -6,10 +6,6 @@ import * as createObjectFromKeyValListModule from '../utils';
 describe('LabelStyleDeserializer', () => {
   const labelStyleDeserializer = new LabelStyleDeserializer();
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('supports()', () => {
     describe('style is supported', () => {
       it('returns true', () => {
