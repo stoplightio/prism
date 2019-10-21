@@ -36,7 +36,7 @@ Test text, can be multi line.
 ====spec====
 openapi 2/3 document
 ====server====
-command line arguments to run Prism with. You can use the ${file} template variable
+command line arguments to run Prism with. You have to use the ${file} template variable.
 ====command====
 curl command to get the response
 ====expect====
