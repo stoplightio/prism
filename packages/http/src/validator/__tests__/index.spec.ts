@@ -151,7 +151,7 @@ describe('HttpValidator', () => {
     describe('path validation in enabled', () => {
       describe('request is set', () => {
         describe('request.path is set', () => {
-          it('validates path', () => {
+          it('calls the path validator', () => {
             validateInput({
               resource: {
                 method: 'get',
