@@ -20,7 +20,7 @@ paths:
           schema:
             type: string
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -sIXGET http://127.0.0.1:4010/pet
 ====expect====

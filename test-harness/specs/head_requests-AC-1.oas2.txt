@@ -14,7 +14,7 @@ paths:
               type: string
               default: abc
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl --head http://localhost:4010/todos -H "Accept: application/json"
 ====expect====

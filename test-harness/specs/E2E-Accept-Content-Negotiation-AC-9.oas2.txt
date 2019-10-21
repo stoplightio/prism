@@ -18,7 +18,7 @@ paths:
             'application/json': hello
             'application/xml': <project><foo>1</foo><bar>2</bar></project>
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos -H "accept: application/json;q=0.8, application/xml;q=0.9"
 ====expect====

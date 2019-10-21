@@ -23,7 +23,7 @@ paths:
             application/json:
               example: "ok"
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -sIXGET -H "x-age: old" http://127.0.0.1:4010/pet
 ====expect====

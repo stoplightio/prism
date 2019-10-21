@@ -36,7 +36,7 @@ Test text, can be multi line.
 ====spec====
 openapi 2/3 document
 ====server====
-command line arguments to run Prism with
+command line arguments to run Prism with. You have to use the ${document} template variable.
 ====command====
 curl command to get the response
 ====expect====
@@ -60,7 +60,7 @@ paths:
             'application/json':
               example: hello
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i -X GET http://localhost:4010/todos -H "accept: application/json"
 ====expect====

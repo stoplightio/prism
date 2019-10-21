@@ -16,7 +16,7 @@ securityDefinitions:
 security:
   - Basic: []
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -sIXGET http://localhost:4010/users -H "Accept: application/xml"
 ====expect====

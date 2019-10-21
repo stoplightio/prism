@@ -21,7 +21,7 @@ components:
 security:
   - DigestAuth: []
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos -H 'Authorization: Digest username="", realm="", nonce="", uri="", response=""'
 ====expect====

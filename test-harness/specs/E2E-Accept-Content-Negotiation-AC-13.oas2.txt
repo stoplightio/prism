@@ -18,7 +18,7 @@ paths:
             'application/json': hello
             'application/vnd.api+json': vendor
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos
 ====expect====

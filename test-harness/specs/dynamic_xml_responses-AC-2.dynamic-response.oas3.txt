@@ -21,11 +21,10 @@ paths:
                   priority:
                     type: integer
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos?__dynamic=true -H "accept: application/xml"
 ====expect-loose====
 HTTP/1.1 200 OK
 
 <xml><title>enim</title><description>id dolore</description><priority>90439782</priority></xml>
-
