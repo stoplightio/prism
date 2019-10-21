@@ -20,7 +20,7 @@ components:
 security:
   - ApiKeyAuth: []
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos -H "X-API-Key: abc123"
 ====expect====

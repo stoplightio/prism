@@ -1,6 +1,6 @@
 ====test====
-Given form data expected in request body 
-and valid data sent then return OK 
+Given form data expected in request body
+and valid data sent then return OK
 ====spec====
 openapi: '3.0.1'
 paths:
@@ -28,7 +28,7 @@ paths:
                 - id
                 - status
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "id=123&status=open"
 ====expect====

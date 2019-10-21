@@ -30,7 +30,7 @@ paths:
               priority:
                 type: integer
 ====server====
-mock -d -p 4010
+mock -d -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos -H "accept: application/json"
 ====expect-loose====

@@ -13,7 +13,7 @@ paths:
               schema:
                 type: string
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/check-email -H "Accept: application/json, text/plain, */*"
 ====expect====

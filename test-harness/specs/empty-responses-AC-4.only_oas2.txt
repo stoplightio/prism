@@ -11,7 +11,7 @@ paths:
         '204':
           description: No Content
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/path -H "Accept: text/plain"
 ====expect====
