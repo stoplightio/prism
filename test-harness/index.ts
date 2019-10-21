@@ -41,11 +41,11 @@ describe('harness', () => {
 
     afterAll(() => tmpFileHandle.removeCallback(undefined, undefined, undefined, undefined));
 
-    const testText = `${file}${os.EOL}${parsed.test}`;
+    const testText = `${document}${os.EOL}${parsed.test}`;
 
     test(testText, done => {
       const [command, ...args] = parsed.command.split(' ').map(t => t.trim());
-      const serverArgs = parsed.server.split(' ').map(t => t.replace('${file}', tmpFileHandle.name));
+      const serverArgs = parsed.server.split(' ').map(t => t.replace('${document}', tmpFileHandle.name));
       prismMockProcessHandle = spawn(path.join(__dirname, '../cli-binaries/prism-cli'), serverArgs);
 
       prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
