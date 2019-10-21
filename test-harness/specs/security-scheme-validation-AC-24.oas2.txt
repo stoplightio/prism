@@ -21,9 +21,8 @@ security:
   - ApiKeyOne: []
     ApiKeyTwo: []
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -sIXGET http://localhost:4010/todos?apiKey=abc123 -H "X-API-Key: xyz987"
 ====expect====
 HTTP/1.1 200 OK
-

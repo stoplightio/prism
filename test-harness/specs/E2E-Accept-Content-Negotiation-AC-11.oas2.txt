@@ -16,7 +16,7 @@ paths:
           examples:
             'text/plain': hello
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos -H "accept: application/json;q=0.8, application/xml, text/plain;q=0.5"
 ====expect====

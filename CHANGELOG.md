@@ -13,12 +13,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Support for Contract Testing [#650](https://github.com/stoplightio/prism/pull/650)
 - The CLI will now propose operation paths with meaningful examples [#671](https://github.com/stoplightio/prism/pull/671)
 - Prism reloads itself every time there are changes being made to the specified document [#689](https://github.com/stoplightio/prism/pull/689)
+- The Test Harness framework now requires the `${document}` parameter explicitly [#720](https://github.com/stoplightio/prism/pull/720)
 
 ## Fixed
 
 - Killing sub-process only if Prism is running in multi-process mode [#645](https://github.com/stoplightio/prism/pull/645)
 - UUIDs are never generated as URNs [#661](https://github.com/stoplightio/prism/pull/661)
 - Core types are now correctly referenced in the HTTP package, restoring the type checks when using the package separately [#701](https://github.com/stoplightio/prism/pull/701)
+- By upgrading Json Schema Faker to the latest version, now the schemas with `additionalProperties:false` / `additionalProperties:true` / `additionalProperties:object` will be correctly handled when dynamic mocking is enabled [#719](https://github.com/stoplightio/prism/pull/719)
 
 # 3.1.1 (2019-09-23)
 

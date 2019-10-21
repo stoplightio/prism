@@ -21,7 +21,7 @@ paths:
           format: byte
           name: id
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "id=cmFuZG9tc3R1ZmY="
 ====expect====

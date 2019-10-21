@@ -13,7 +13,7 @@ paths:
         405:
           description: method not allowed
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos
 ====expect====

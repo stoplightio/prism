@@ -19,7 +19,7 @@ paths:
           name: id
           allowEmptyValue: false
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "id"
 ====expect====

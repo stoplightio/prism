@@ -25,7 +25,7 @@ securityDefinitions:
 security:
   - OAuth2: [read, write]
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos -H "Authorization: Bearer abc123"
 ====expect====
