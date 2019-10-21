@@ -31,10 +31,10 @@ const sharedOptions: Dictionary<Options> = {
     default: process.env.NODE_ENV === 'production',
   },
 
-  log: {
+  'report-violations': {
     description: 'Select where output violations will be reported.',
     required: true,
-    choices: ['stdout', 'httpResponse', 'httpHeader'] as const,
+    choices: ['stdout', 'httpBody', 'httpHeader'] as const,
     default: 'stdout' as const,
   },
 };

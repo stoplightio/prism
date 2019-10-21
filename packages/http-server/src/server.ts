@@ -1,4 +1,3 @@
-import { createLogger } from '@stoplight/prism-core';
 import { createInstance, ProblemJsonError, UNPROCESSABLE_ENTITY } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
@@ -79,7 +78,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           message: detail.message,
         }));
 
-        if (opts.log === 'httpResponse') {
+        if (opts.reportViolations === 'httpBody') {
           throw ProblemJsonError.fromTemplate(
             UNPROCESSABLE_ENTITY,
             'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
@@ -87,7 +86,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
               validation: violations,
             }
           );
-        } else if (opts.log === 'httpHeader') {
+        } else if (opts.reportViolations === 'httpHeader') {
           reply.header(
             'warning',
             violations.map(validation => `${validation.location || ''} ${validation.message}`).join(';')

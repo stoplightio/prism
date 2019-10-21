@@ -97,7 +97,7 @@ prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
 By default, the output violations will be reported on the standard output, but you can also specify to embed these in the HTTP response:
 
 ```bash
-prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --log httpHeader
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --report-violations httpHeader
 … …
 
 curl -v -s http://localhost:4010/pets/10 > /dev/null
@@ -109,7 +109,7 @@ curl -v -s http://localhost:4010/pets/10 > /dev/null
 You can see there's a `warning` header which is a JSON object with all the violations found in the response.
 
 ```bash
-prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --log httpResponse
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --report-violations httpResponse
 … …
 
 curl -v http://localhost:4010/pets/10

@@ -29,7 +29,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
       document: '/path/to',
       multiprocess: false,
-      log: 'stdout',
+      reportViolations: 'stdout',
       cors: true,
       host: '127.0.0.1',
       port: 4010,
@@ -44,7 +44,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
       document: '/path/to',
       multiprocess: false,
-      log: 'stdout',
+      reportViolations: 'stdout',
       cors: true,
       host: '127.0.0.1',
       port: 666,
@@ -59,7 +59,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
       document: '/path/to',
       multiprocess: false,
-      log: 'stdout',
+      reportViolations: 'stdout',
       cors: true,
       host: '0.0.0.0',
       port: 4010,
@@ -74,7 +74,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
       document: '/path/to',
       cors: true,
-      log: 'stdout',
+      reportViolations: 'stdout',
       multiprocess: false,
       host: '0.0.0.0',
       port: 666,
@@ -89,7 +89,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     expect(createMultiProcessPrism).toHaveBeenLastCalledWith({
       document: '/path/to',
       cors: true,
-      log: 'stdout',
+      reportViolations: 'stdout',
       multiprocess: true,
       host: '0.0.0.0',
       port: 4010,
@@ -97,13 +97,13 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     });
   });
 
-  test(`starts ${command} server with httpResponse log option `, () => {
-    parser.parse(`${command} /path/to -m -h 0.0.0.0 --log httpResponse ${upstream}`);
+  test(`starts ${command} server with httpBody reportViolations option `, () => {
+    parser.parse(`${command} /path/to -m -h 0.0.0.0 --report-violations httpBody ${upstream}`);
 
     expect(createMultiProcessPrism).toHaveBeenLastCalledWith({
       document: '/path/to',
       cors: true,
-      log: 'httpResponse',
+      reportViolations: 'httpBody',
       multiprocess: true,
       host: '0.0.0.0',
       port: 4010,
