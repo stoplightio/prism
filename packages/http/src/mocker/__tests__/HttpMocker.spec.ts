@@ -1,5 +1,5 @@
 import { createLogger, IPrismInput } from '@stoplight/prism-core';
-import { IHttpOperation, INodeExample } from '@stoplight/types';
+import { IHttpOperation, INodeExample, DiagnosticSeverity } from '@stoplight/types';
 import { right } from 'fp-ts/lib/ReaderEither';
 import { flatMap } from 'lodash';
 import { assertRight } from '../../__tests__/utils';
@@ -127,7 +127,7 @@ describe('mocker', () => {
       });
     });
 
-    describe('with invalid negotiator response', () => {
+    describe('with a negotiator response containing validation results of Error severity', () => {
       it('returns static example', () => {
         jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockReturnValue(
           right({
@@ -141,7 +141,7 @@ describe('mocker', () => {
         const mockResult = mock({
           config: { dynamic: false },
           resource: mockResource,
-          input: Object.assign({}, mockInput, { validations: [{}] }),
+          input: Object.assign({}, mockInput, { validations: [{ severity: DiagnosticSeverity.Error }] }),
         })(logger);
 
         assertRight(mockResult, result => expect(result).toMatchSnapshot());

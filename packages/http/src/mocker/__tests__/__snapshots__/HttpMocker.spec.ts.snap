@@ -10,7 +10,7 @@ Object {
 }
 `;
 
-exports[`mocker mock() with invalid negotiator response returns static example 1`] = `
+exports[`mocker mock() with a negotiator response containing validation results of Error severity returns static example 1`] = `
 Object {
   "body": "hello",
   "headers": Object {
