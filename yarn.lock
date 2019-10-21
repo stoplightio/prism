@@ -1387,6 +1387,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/uri-templates@^0.1.30":
+  version "0.1.30"
+  resolved "https://registry.yarnpkg.com/@types/uri-templates/-/uri-templates-0.1.30.tgz#06ce7ff472b9bc3cf5036e08ed916c68cc085765"
+  integrity sha512-tD55i9vfenTtWY2sYejAHU/srlqFp0ofRmxvrvvq9vjteTEsdKkDxMOeTfsvWIFt8267szAzw5yQgYIzq2DsTg==
+
 "@types/urijs@^1.19", "@types/urijs@^1.19.4", "@types/urijs@~1.19.1":
   version "1.19.4"
   resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.4.tgz#29c4a694d4842d7f95e359a26223fc1865f1ab13"
@@ -8393,6 +8398,11 @@ uri-template@^1.0.1:
   integrity sha1-FKklo35Nk/diVDKqEWsF5Qyuga0=
   dependencies:
     pct-encode "~1.0.0"
+
+uri-templates@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/uri-templates/-/uri-templates-0.2.0.tgz#2b5784511cc909868731e9233c268097d10b499f"
+  integrity sha1-K1eEURzJCYaHMekjPCaAl9ELSZ8=
 
 urijs@^1.19.1, urijs@~1.19.1:
   version "1.19.1"

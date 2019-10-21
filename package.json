@@ -38,6 +38,7 @@
     "@types/signale": "^1.2.1",
     "@types/split2": "^2.1.6",
     "@types/type-is": "^1.6.3",
+    "@types/uri-templates": "^0.1.30",
     "@types/urijs": "^1.19.4",
     "@typescript-eslint/eslint-plugin": "^2.3.3",
     "@typescript-eslint/parser": "^2.3.3",
