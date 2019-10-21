@@ -127,6 +127,27 @@ describe('mocker', () => {
       });
     });
 
+    describe('with a negotiator response containing validation results of Warning severity', () => {
+      it('returns static example', () => {
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          right({
+            code: '202',
+            mediaType: 'test',
+            bodyExample: mockResource.responses![0].contents![0].examples![0],
+            headers: [],
+          }),
+        );
+
+        const mockResult = mock({
+          config: { dynamic: false },
+          resource: mockResource,
+          input: Object.assign({}, mockInput, { validations: [{ severity: DiagnosticSeverity.Warning }] }),
+        })(logger);
+
+        assertRight(mockResult, result => expect(result).toMatchSnapshot());
+      });
+    });
+
     describe('with a negotiator response containing validation results of Error severity', () => {
       it('returns static example', () => {
         jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockReturnValue(

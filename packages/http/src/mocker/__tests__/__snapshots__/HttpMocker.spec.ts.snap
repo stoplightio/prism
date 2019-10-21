@@ -20,6 +20,16 @@ Object {
 }
 `;
 
+exports[`mocker mock() with a negotiator response containing validation results of Warning severity returns static example 1`] = `
+Object {
+  "body": "hello",
+  "headers": Object {
+    "Content-type": "test",
+  },
+  "statusCode": 202,
+}
+`;
+
 exports[`mocker mock() with valid negotiator response returns static example 1`] = `
 Object {
   "body": "hello",
