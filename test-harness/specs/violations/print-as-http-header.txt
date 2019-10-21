@@ -17,7 +17,7 @@ paths:
               schema:
                   type: object
 ====server====
-mock -p 4010 ${file} --log httpHeader
+mock -p 4010 ${document} --log httpHeader
 ====command====
 curl -i http://localhost:4010/path
 ====expect====

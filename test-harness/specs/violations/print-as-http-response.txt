@@ -17,7 +17,7 @@ paths:
               schema:
                   type: object
 ====server====
-mock -p 4010 ${file} --log httpResponse
+mock -p 4010 ${document} --log httpResponse
 ====command====
 curl -i http://localhost:4010/path
 ====expect-loose====

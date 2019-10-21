@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Support for Contract Testing [#650](https://github.com/stoplightio/prism/pull/650)
 - The CLI will now propose operation paths with meaningful examples [#671](https://github.com/stoplightio/prism/pull/671)
 - Prism reloads itself every time there are changes being made to the specified document [#689](https://github.com/stoplightio/prism/pull/689)
+- The Test Harness framework now requires the `${document}` parameter explicitly [#720](https://github.com/stoplightio/prism/pull/720)
 - Prism now includes a new `proxy` command that will validate the request coming in, send the request to an upstream server and then validate the response coming back [#669](https://github.com/stoplightio/prism/pull/669)
 
 ## Fixed

@@ -21,7 +21,7 @@ paths:
               priority:
                 type: integer
 ====server====
-mock -p 4010 ${file}
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos?__dynamic=true -H "accept: application/xml"
 ====expect-loose====
