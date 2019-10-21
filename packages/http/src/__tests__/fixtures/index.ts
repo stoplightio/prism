@@ -274,7 +274,7 @@ export const httpInputs: IHttpRequest[] = [
   {
     method: 'post',
     url: {
-      path: '/todos',
+      path: '/',
       query: {
         overwrite: 'yes',
       },
