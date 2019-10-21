@@ -1,5 +1,5 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
 import { IHttpRequest } from '../../types';
 import {
   bodyValidator,
@@ -9,7 +9,6 @@ import {
   validateInput,
   validateOutput
 } from '../index';
-import { HttpParamStyles } from '@stoplight/types/dist';
 
 const mockError: IPrismDiagnostic = {
   message: 'mocked C is required',
