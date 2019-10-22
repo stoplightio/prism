@@ -1,4 +1,4 @@
-import { DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
 import { validateInput, validateOutput } from '../index';
 
@@ -32,7 +32,7 @@ describe('HttpValidator', () => {
     });
 
     describe('deprecated keyword validation', () => {
-      const resource = {
+      const resource: IHttpOperation = {
         id: "abc",
         method: "get",
         path: "/test",
@@ -55,7 +55,6 @@ describe('HttpValidator', () => {
       it('returns warnings', () => {
         expect(
           validateInput({
-            // @ts-ignore
             resource,
             element: {
               method: "get",
@@ -83,7 +82,6 @@ describe('HttpValidator', () => {
       it('does not return warnings', () => {
         expect(
           validateInput({
-            // @ts-ignore
             resource,
             element: {
               method: "get",
