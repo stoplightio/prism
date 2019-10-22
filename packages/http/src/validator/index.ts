@@ -52,35 +52,32 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
   )
 };
 
+const findResponseByStatus = (responses: NonEmptyArray<IHttpOperationResponse>, statusCode: number) => pipe(
+  findOperationResponse(responses, statusCode),
+  Either.fromOption<IPrismDiagnostic>(() => ({
+    message: 'Unable to match the returned status code with those defined in spec',
+    severity: inRange(statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+  })),
+  Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(error => [error])
+);
 
+const mismatchMediaType = (response: IHttpOperationResponse, mediaType: string) => pipe(
+  Option.fromNullable(response.contents),
+  Option.chain(findFirst(c => c.mediaType === mediaType)),
+  Either.fromOption<IPrismDiagnostic>(() => ({
+    message: `The received media type does not match the one specified in the document`,
+    severity: DiagnosticSeverity.Error,
+  })),
+  Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
+);
 
 const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
-
-  const findResponseByStatus = (responses: NonEmptyArray<IHttpOperationResponse>, statusCode: number) => pipe(
-    findOperationResponse(responses, statusCode),
-    Either.fromOption<IPrismDiagnostic>(() => ({
-      message: 'Unable to match the returned status code with those defined in spec',
-      severity: inRange(element.statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-    })),
-    Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(error => [error])
-  );
-
-  const mismatchMediaType = (response: IHttpOperationResponse) => pipe(
-    Option.fromNullable(response.contents),
-    Option.chain(findFirst(c => c.mediaType === mediaType)),
-    Either.fromOption<IPrismDiagnostic>(() => ({
-      message: `The received media type does not match the one specified in the document`,
-      severity: DiagnosticSeverity.Error,
-    })),
-    Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
-  );
-
   return pipe(
     findResponseByStatus(resource.responses, element.statusCode),
     Either.chain(response =>
       validateInParallel(
-        mismatchMediaType(response),
+        mismatchMediaType(response, mediaType),
         bodyValidator.validate(element.body, response.contents || [], mediaType),
         headersValidator.validate(element.headers || {}, response.headers || []),
       )
