@@ -91,15 +91,17 @@ You can now try these out by issuing:
 
 At this point, the responses should be given back without issues.
 
-## Scaling
+## Adding more documents
 
 You can easily extend the cluster by adding more nodes to `docker-compose.yaml`.
 Under `services`, you can add:
 
-```
+```yaml
 prism_3:
   image: stoplight/prism:3
-  command: mock -p 4010 --host 0.0.0.0 https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
+  command: >
+    mock -p 4010 --host 0.0.0.0
+    https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
 ```
 
 To make the new node accessible from the proxy, please also adjust `nginx.conf`:
