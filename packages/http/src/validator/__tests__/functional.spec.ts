@@ -38,22 +38,7 @@ describe('HttpValidator', () => {
         path: "/test",
         responses: [
           {
-            code: "200",
-            contents: [
-              {
-                mediaType: "application/json",
-                schema: {
-                  type: "object",
-                  properties: {
-                    prop: {
-                      type: "string",
-                      example: "abc"
-                    }
-                  },
-                  $schema: "http://json-schema.org/draft-04/schema#"
-                },
-              }
-            ]
+            code: "200"
           }
         ],
         request: {
@@ -108,7 +93,7 @@ describe('HttpValidator', () => {
               },
             },
           }),
-        ).toEqual([]);
+        ).toHaveLength(0);
       });
     });
 

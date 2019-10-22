@@ -92,7 +92,7 @@ function negotiateResponse(
   const {
     [DiagnosticSeverity.Error]: errors,
     [DiagnosticSeverity.Warning]: warnings,
-  } = groupBy(input.validations, (validation) => validation.severity);
+  } = groupBy(input.validations, validation => validation.severity);
 
   if (errors) {
     return handleInputValidation(input, resource);
