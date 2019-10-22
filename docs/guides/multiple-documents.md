@@ -1,7 +1,7 @@
 # Serving multiple OAS documents
 
 A single Prism instance serves one OAS document.
-In order to serve multiple documents, you can use `docker-compose` utility.
+In order to serve multiple documents, the best way is to usually have multiple instances of Prism running on different documents and then serve their content using a reverse Proxy. We're going to show an example using multiple docker containers.
 
 ## Preparing configuration files
 
