@@ -1,5 +1,8 @@
 import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/types';
 import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
+import * as Either from 'fp-ts/lib/Either'
+import { fromArray } from 'fp-ts/lib/NonEmptyArray';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { JSONSchema4 } from 'json-schema';
@@ -13,12 +16,12 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
     private _registry: IHttpParamDeserializerRegistry<Target>,
     private _prefix: string,
     private _style: HttpParamStyles,
-  ) {}
+  ) { }
 
-  public validate(target: Target, specs: IHttpParam[]): IPrismDiagnostic[] {
+  public validate(target: Target, specs: IHttpParam[]) {
     const { _registry: registry, _prefix: prefix, _style: style } = this;
 
-    const deprecatedWarnings = specs.filter(spec => spec.deprecated).map(spec => ({
+    const deprecatedWarnings = specs.filter(spec => spec.deprecated).map<IPrismDiagnostic>(spec => ({
       path: [prefix, spec.name],
       code: 'deprecated',
       message: `${upperFirst(prefix)} param ${spec.name} is deprecated`,
@@ -47,7 +50,14 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
       }),
     );
 
-    return validateAgainstSchema(parameterValues, schema, prefix).concat(deprecatedWarnings);
+    const errors = validateAgainstSchema(parameterValues, schema, prefix).concat(deprecatedWarnings);
+
+    return pipe(
+      errors,
+      fromArray,
+      Either.fromOption(() => target),
+      Either.swap
+    );
   }
 }
 
