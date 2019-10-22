@@ -3,6 +3,7 @@ import { Either } from 'fp-ts/lib/Either';
 import { ReaderEither } from 'fp-ts/lib/ReaderEither';
 import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
 
 export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
@@ -16,7 +17,7 @@ export interface IPrismConfig {
   validateResponse: boolean;
 }
 
-export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => IPrismDiagnostic[];
+export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => Either<NonEmptyArray<IPrismDiagnostic>, T>;
 
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
