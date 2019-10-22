@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - The CLI will now propose operation paths with meaningful examples [#671](https://github.com/stoplightio/prism/pull/671)
 - Prism reloads itself every time there are changes being made to the specified document [#689](https://github.com/stoplightio/prism/pull/689)
 - The Test Harness framework now requires the `${document}` parameter explicitly [#720](https://github.com/stoplightio/prism/pull/720)
+- Prism can serve two OAS document at the same time [#730](https://github.com/stoplightio/prism/pull/730)
 
 ## Fixed
 
