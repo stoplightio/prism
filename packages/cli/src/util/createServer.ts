@@ -24,7 +24,7 @@ async function createMultiProcessPrism(options: CreateBaseServerOptions) {
       pipeOutputToSignale(worker.process.stdout);
     }
 
-    return Promise.resolve();
+    return;
   } else {
     const logInstance = createLogger('CLI');
     try {

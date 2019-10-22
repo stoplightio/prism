@@ -6309,9 +6309,9 @@ openapi-sampler@^1.0.0-beta.15:
   dependencies:
     json-pointer "^0.6.0"
 
-"openapi-schema-to-json-schema@github:stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f":
+openapi-schema-to-json-schema@philsturgeon/openapi-schema-to-json-schema#9692af184c6a3e3d952a88968da07491e47135fb:
   version "2.2.0"
-  resolved "https://codeload.github.com/stoplightio/openapi-schema-to-json-schema/tar.gz/c8b5f0c74270d505fc39635edef28e09df89601f"
+  resolved "https://codeload.github.com/philsturgeon/openapi-schema-to-json-schema/tar.gz/9692af184c6a3e3d952a88968da07491e47135fb"
   dependencies:
     deep-equal "^1.0.1"
 
