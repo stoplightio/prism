@@ -1,12 +1,13 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import * as caseless from 'caseless';
-import * as URITemplate from 'uri-templates';
-
 import { findFirst } from 'fp-ts/lib/Array';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
+// @ts-ignore
+import { URI } from 'uri-template-lite';
+
 import { IHttpRequest, IHttpResponse } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry, path as pathDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
@@ -82,7 +83,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
 };
 
 function getPathParams(path: string, template: string) {
-   return URITemplate(template).fromUri(path);
+   return new URI.Template(template).match(path);
 }
 
 export { validateInput, validateOutput };

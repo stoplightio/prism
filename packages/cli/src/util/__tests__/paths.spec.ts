@@ -75,7 +75,7 @@ describe('createExamplePath()', () => {
           },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path?p[a][aa]=1&p[a][ab]=2'),
+        r => expect(r).toEqual('/path?p%5Ba%5D%5Baa%5D=1&p%5Ba%5D%5Bab%5D=2'),
       );
     });
 
@@ -194,7 +194,7 @@ describe('createExamplePath()', () => {
         }),
         r =>
           expect(r).toEqual(
-            '/path/test1/.test1,test2/;p3=test1,test2?q1=test1&q2=test1%20test2&q3=test1%7Ctest2&q4=test1&q4=test2&q5[a][]=test1&q5[a][]=test2&q5[b][ba]=1&q5[b][bb]=2',
+            '/path/test1/.test1,test2/;p3=test1,test2?q1=test1&q2=test1%20test2&q3=test1%7Ctest2&q4=test1&q4=test2&q5%5Ba%5D%5B%5D=test1&q5%5Ba%5D%5B%5D=test2&q5%5Bb%5D%5Bba%5D=1&q5%5Bb%5D%5Bbb%5D=2',
           ),
       );
     });
