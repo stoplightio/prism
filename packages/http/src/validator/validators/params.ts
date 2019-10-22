@@ -18,7 +18,7 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
   public validate(target: Target, specs: IHttpParam[]): IPrismDiagnostic[] {
     const { _registry: registry, _prefix: prefix, _style: style } = this;
 
-    const deprecatedWarnings = specs.filter(spec => spec.deprecated).map(spec => ({
+    const deprecatedWarnings = specs.filter(spec => spec.deprecated && target[spec.name]).map(spec => ({
       path: [prefix, spec.name],
       code: 'deprecated',
       message: `${upperFirst(prefix)} param ${spec.name} is deprecated`,
