@@ -6,7 +6,7 @@ import { Either, map } from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { chain, Reader } from 'fp-ts/lib/Reader';
 import { mapLeft } from 'fp-ts/lib/ReaderEither';
-import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
+import { isEmpty, isObject, keyBy, mapValues, groupBy } from 'lodash';
 import { Logger } from 'pino';
 import {
   ContentExample,
@@ -89,12 +89,20 @@ function negotiateResponse(
   input: IPrismInput<IHttpRequest>,
   resource: IHttpOperation,
 ) {
-  if (input.validations.length > 0) {
+  const {
+    [DiagnosticSeverity.Error]: errors,
+    [DiagnosticSeverity.Warning]: warnings,
+  } = groupBy(input.validations, validation => validation.severity);
+
+  if (errors) {
     return handleInputValidation(input, resource);
   } else {
     return pipe(
-      withLogger(logger =>
-        logger.success({ name: 'VALIDATOR' }, 'The request passed the validation rules. Looking for the best response'),
+      withLogger(logger => {
+          warnings && warnings.forEach(warn => logger.warn({name: 'VALIDATOR'}, warn.message));
+
+          return logger.success({name: 'VALIDATOR'}, 'The request passed the validation rules. Looking for the best response');
+        },
       ),
       chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig)),
     );
