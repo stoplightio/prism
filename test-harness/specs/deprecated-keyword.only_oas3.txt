@@ -1,0 +1,31 @@
+====test====
+Prism does not report violations of deprecated parameters specification as errors.
+====spec====
+openapi: 3.0.2
+paths:
+  /test:
+    get:
+      parameters:
+        - deprecated: true
+          in: query
+          name: productId
+      responses:
+        200:
+          description: successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prop:
+                    type: string
+                    example: abc
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/test
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"prop":"abc"}

@@ -10,16 +10,6 @@ Object {
 }
 `;
 
-exports[`mocker mock() with invalid negotiator response returns static example 1`] = `
-Object {
-  "body": "hello",
-  "headers": Object {
-    "Content-type": "test",
-  },
-  "statusCode": 202,
-}
-`;
-
 exports[`mocker mock() with valid negotiator response returns static example 1`] = `
 Object {
   "body": "hello",
