@@ -1,0 +1,25 @@
+version: "3"
+services:
+  proxy:
+    image: nginx:1.17.4
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - ${PRISM_PROXY_PORT}:8080
+    depends_on:
+      - prism_1
+      - prism_2
+  prism_1:
+    image: stoplight/prism:3
+    command: mock --cors -p 4010 --host 0.0.0.0 /usr/data/doc1.yaml
+    volumes:
+      - ${PRISM_DOC_1}:/usr/data/doc1.yaml
+    expose:
+      - 4010
+  prism_2:
+    image: stoplight/prism:3
+    command: mock --cors -p 4010 --host 0.0.0.0 /usr/data/doc2.yaml
+    volumes:
+      - ${PRISM_DOC_2}:/usr/data/doc2.yaml
+    expose:
+      - 4010
