@@ -57,10 +57,10 @@ This configuration will allow access to the first Prism instance on `localhost:8
 
 ## Running the cluster
 
-Let's first place the aforementioned files under the same directory - here `prism`.
+Let's first place the aforementioned files under the same directory - here `prism-multi-example`.
 
 ```
-prism
+prism-multi-example
 ├── docker-compose.yaml
 └── nginx.conf
 ```
