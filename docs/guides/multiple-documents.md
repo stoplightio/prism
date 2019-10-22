@@ -54,6 +54,7 @@ http {
 ```
 
 This configuration will allow access to the first Prism instance on `localhost:8080/app_1` and the second instance on `localhost:8080/app_2` endpoint.
+Also, please mind that the provided `nginx.conf` only serves illustrative purposes and hence should not be considered complete nor production-ready.
 
 ## Running the cluster
 
