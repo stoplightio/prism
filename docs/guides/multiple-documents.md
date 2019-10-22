@@ -8,23 +8,27 @@ In order to serve multiple documents, the best way is to usually have multiple i
 Depending on your needs, you might have a `docker-compose.yaml` file like this:
 
 ```yaml
-version: "3"
+version: '3'
 services:
   proxy:
     image: nginx:alpine
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "8080:80"
+      - '8080:80'
     depends_on:
       - prism_1
       - prism_2
   prism_1:
     image: stoplight/prism:3
-    command: mock -p 4010 --host 0.0.0.0 https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml
+    command: >
+      mock -p 4010 --host 0.0.0.0
+      https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml
   prism_2:
     image: stoplight/prism:3
-    command: mock -p 4010 --host 0.0.0.0 https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
+    command: >
+      mock -p 4010 --host 0.0.0.0
+      https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
 ```
 
 And the corresponding `nginx.conf` file:
