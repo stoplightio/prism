@@ -4,7 +4,7 @@ orbs:
 executors:
   docker-node:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:12
   macos:
     macos:
       xcode: 10.2.1
