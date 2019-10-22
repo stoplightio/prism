@@ -17,7 +17,7 @@ export interface IPrismConfig {
   validateResponse: boolean;
 }
 
-export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => Either<NonEmptyArray<IPrismDiagnostic>, T>;
+export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => Either<NonEmptyArray<IPrismDiagnostic>, unknown>;
 
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
