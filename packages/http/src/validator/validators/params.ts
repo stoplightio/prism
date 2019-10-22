@@ -3,13 +3,12 @@ import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
 import * as Either from 'fp-ts/lib/Either'
 import { fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { pipe } from 'fp-ts/lib/pipeable';
-
-import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { JSONSchema4 } from 'json-schema';
 import { JSONSchema } from '../../';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 
 export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttpParam> {
   constructor(
