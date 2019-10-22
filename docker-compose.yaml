@@ -5,21 +5,17 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - ${PRISM_PROXY_PORT}:8080
+      - 8080:8080
     depends_on:
       - prism_1
       - prism_2
   prism_1:
     image: stoplight/prism:3
-    command: mock --cors -p 4010 --host 0.0.0.0 /usr/data/doc1.yaml
-    volumes:
-      - ${PRISM_DOC_1}:/usr/data/doc1.yaml
+    command: mock --cors -p 4010 --host 0.0.0.0 https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml
     expose:
       - 4010
   prism_2:
     image: stoplight/prism:3
-    command: mock --cors -p 4010 --host 0.0.0.0 /usr/data/doc2.yaml
-    volumes:
-      - ${PRISM_DOC_2}:/usr/data/doc2.yaml
+    command: mock --cors -p 4010 --host 0.0.0.0 https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
     expose:
       - 4010
