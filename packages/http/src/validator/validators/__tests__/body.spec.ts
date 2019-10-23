@@ -41,7 +41,7 @@ describe('HttpBodyValidator', () => {
             'test',
             [{ mediaType: 'application/json', schema: mockSchema, examples: [], encodings: [] }],
             'application/json',
-          ), error => expect(error).toEqual(expect.arrayContaining([expect.objectContaining({ code: "type", message: "should be number" })])));
+          ), error => expect(error).toContainEqual(expect.objectContaining({ code: "type", message: "should be number" })));
       });
     });
 
@@ -101,9 +101,9 @@ describe('HttpBodyValidator', () => {
               },
             ],
             'application/x-www-form-urlencoded',
-          ), error => expect(error).toEqual(expect.arrayContaining([expect.objectContaining({
+          ), error => expect(error).toContainEqual(expect.objectContaining({
             code: 'required', message: 'should have required property \'aa\''
-          })])))
+          })))
       });
     });
   });

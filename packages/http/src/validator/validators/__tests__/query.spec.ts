@@ -20,7 +20,7 @@ describe('HttpQueryValidator', () => {
           it('returns validation error', () => {
             assertLeft(
               httpQueryValidator.validate({}, [{ name: 'aParam', style: HttpParamStyles.Form, required: true }]),
-              error => expect(error).toEqual(expect.arrayContaining([expect.objectContaining({ severity: DiagnosticSeverity.Error })])));
+              error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Error })));
           });
         });
       });
@@ -85,7 +85,7 @@ describe('HttpQueryValidator', () => {
                   deprecated: true,
                   style: HttpParamStyles.Form,
                 },
-              ]), error => expect(error).toEqual(expect.arrayContaining([expect.objectContaining({ severity: DiagnosticSeverity.Warning })])));
+              ]), error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Warning })));
           });
         });
       });
