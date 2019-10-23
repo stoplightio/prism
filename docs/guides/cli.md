@@ -72,7 +72,7 @@ curl -v http://127.0.0.1:4010/pets/123?__example=exampleKey
 
 #### Dynamic Response
 
-You can override the `dynamic` keyword (which decides whether the generated example is static or dynamic) through the `__dynamic` query string parameter.
+You can override the `--dynamic|-d` CLI param (which decides whether the generated example is static or dynamic) through the `__dynamic` query string parameter.
 
 ```bash
 curl -v http://127.0.0.1:4010/pets/123?__dynamic=false
