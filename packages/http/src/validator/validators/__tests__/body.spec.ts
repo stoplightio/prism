@@ -1,7 +1,7 @@
 import { HttpParamStyles } from '@stoplight/types';
 import { JSONSchema } from '../../..';
 import { HttpBodyValidator } from '../body';
-import { assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('HttpBodyValidator', () => {
   const httpBodyValidator = new HttpBodyValidator('body');
@@ -36,13 +36,12 @@ describe('HttpBodyValidator', () => {
     describe('body schema is provided', () => {
       it('return validation errors', () => {
         const mockSchema: JSONSchema = { type: 'number' };
-        expect(
+        assertLeft(
           httpBodyValidator.validate(
             'test',
             [{ mediaType: 'application/json', schema: mockSchema, examples: [], encodings: [] }],
             'application/json',
-          ),
-        ).toMatchSnapshot();
+          ), error => expect(error).toEqual(expect.arrayContaining([expect.objectContaining({ code: "type", message: "should be number" })])));
       });
     });
 
@@ -75,7 +74,7 @@ describe('HttpBodyValidator', () => {
 
     describe('body is form-urlencoded with deep object style and is not compatible with schema', () => {
       it('returns validation errors', () => {
-        expect(
+        assertLeft(
           httpBodyValidator.validate(
             encodeURI('key[a][ab]=str'),
             [
@@ -102,8 +101,9 @@ describe('HttpBodyValidator', () => {
               },
             ],
             'application/x-www-form-urlencoded',
-          ),
-        ).toMatchSnapshot();
+          ), error => expect(error).toEqual(expect.arrayContaining([expect.objectContaining({
+            code: 'required', message: 'should have required property \'aa\''
+          })])))
       });
     });
   });
