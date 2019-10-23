@@ -1,28 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HttpQueryValidator validate() spec is present header is present deprecated flag is set returns deprecation warning 1`] = `
-Array [
-  Object {
-    "code": "deprecated",
-    "message": "Query param param is deprecated",
-    "path": Array [
-      "query",
-      "param",
-    ],
-    "severity": 1,
-  },
-]
+Object {
+  "_tag": "Left",
+  "left": Array [
+    Object {
+      "code": "deprecated",
+      "message": "Query param param is deprecated",
+      "path": Array [
+        "query",
+        "param",
+      ],
+      "severity": 1,
+    },
+  ],
+}
 `;
 
 exports[`HttpQueryValidator validate() spec is present query param is not present spec defines it as required returns validation error 1`] = `
-Array [
-  Object {
-    "code": "required",
-    "message": "should have required property 'aparam'",
-    "path": Array [
-      "query",
-    ],
-    "severity": 0,
-  },
-]
+Object {
+  "_tag": "Left",
+  "left": Array [
+    Object {
+      "code": "required",
+      "message": "should have required property 'aparam'",
+      "path": Array [
+        "query",
+      ],
+      "severity": 0,
+    },
+  ],
+}
 `;
