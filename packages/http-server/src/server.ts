@@ -70,20 +70,22 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
       const { output } = response;
 
-      if (response.validations.output.length > 0) {
-        const violations = response.validations.output.map(detail => ({
+      const inputOutputValidationErrors = response.validations.output.concat(response.validations.input);
+      if (inputOutputValidationErrors.length > 0) {
+        const violations = inputOutputValidationErrors.map(detail => ({
           location: detail.path,
           severity: DiagnosticSeverity[detail.severity],
           code: detail.code,
           message: detail.message,
         }));
 
-        if (opts.errors) {
+        const errorViolations = violations.filter(v => v.severity === DiagnosticSeverity[v.severity]);
+        if (opts.errors && errorViolations.length > 0) {
           throw ProblemJsonError.fromTemplate(
             UNPROCESSABLE_ENTITY,
             'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
             {
-              validation: violations,
+              validation: errorViolations,
             }
           );
         }
