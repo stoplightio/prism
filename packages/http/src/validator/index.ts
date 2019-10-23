@@ -1,5 +1,5 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IHttpOperationRequest } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse } from '@stoplight/types';
 import * as caseless from 'caseless';
 import { findFirst } from 'fp-ts/lib/Array';
 import * as Option from 'fp-ts/lib/Option';
