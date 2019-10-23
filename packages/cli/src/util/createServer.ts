@@ -109,7 +109,7 @@ function pipeOutputToSignale(stream: Readable) {
 }
 
 function isProxyServerOptions(options: CreateBaseServerOptions): options is CreateProxyServerOptions {
-  return !options.dynamic && 'upstream' in options;
+  return 'upstream' in options;
 }
 
 type CreateBaseServerOptions = {
