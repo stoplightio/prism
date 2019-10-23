@@ -11,7 +11,7 @@ import { header as headerDeserializerRegistry, query as queryDeserializerRegistr
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { sequenceValidation } from './validators/utils';
+import { sequenceValidation, sequenceOption } from './validators/utils';
 
 
 export const bodyValidator = new HttpBodyValidator('body');
@@ -35,10 +35,10 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
       ),
       Option.alt(() =>
         pipe(
-          Option.fromNullable(body),
-          Option.chain(body =>
+          sequenceOption(Option.fromNullable(body), Option.fromNullable(requestBody.contents)),
+          Option.chain(([body, contents]) =>
             pipe(
-              bodyValidator.validate(body, (request && request.body && request.body.contents) || [], mediaType),
+              bodyValidator.validate(body, contents, mediaType),
               Either.swap,
               Option.fromEither
             )
