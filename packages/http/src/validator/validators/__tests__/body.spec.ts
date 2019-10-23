@@ -1,6 +1,7 @@
 import { HttpParamStyles } from '@stoplight/types';
 import { JSONSchema } from '../../..';
 import { HttpBodyValidator } from '../body';
+import { assertRight, assertLeft } from '../../../__tests__/utils';
 
 describe('HttpBodyValidator', () => {
   const httpBodyValidator = new HttpBodyValidator('body');
@@ -8,29 +9,27 @@ describe('HttpBodyValidator', () => {
   describe('validate()', () => {
     describe('content specs are missing', () => {
       it('returns no validation errors', () => {
-        expect(httpBodyValidator.validate('test', [])).toEqual([]);
+        assertRight(httpBodyValidator.validate('test', []), () => { });
       });
     });
 
     describe('request media type is not provided', () => {
       it('returns no validation errors', () => {
-        expect(
+        assertRight(
           httpBodyValidator.validate('test', [
             { mediaType: 'application/not-exists-son', examples: [], encodings: [] },
-          ]),
-        ).toEqual([]);
+          ]), () => { });
       });
     });
 
     describe('request media type was not found in spec', () => {
       it('returns no validation errors', () => {
-        expect(
+        assertRight(
           httpBodyValidator.validate(
             'test',
             [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }],
             'application/json',
-          ),
-        ).toEqual([]);
+          ), () => { });
       });
     });
 
@@ -49,7 +48,7 @@ describe('HttpBodyValidator', () => {
 
     describe('body is form-urlencoded with deep object style', () => {
       it('returns no validation errors', () => {
-        expect(
+        assertRight(
           httpBodyValidator.validate(
             encodeURI('key[a]=str'),
             [
@@ -70,8 +69,7 @@ describe('HttpBodyValidator', () => {
               },
             ],
             'application/x-www-form-urlencoded',
-          ),
-        ).toEqual([]);
+          ), () => { });
       });
     });
 
