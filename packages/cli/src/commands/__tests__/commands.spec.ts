@@ -16,7 +16,7 @@ jest.spyOn(prismHttp, 'getHttpOperationsFromResource').mockResolvedValue([]);
 describe.each<{ 0: string; 1: string; 2: unknown }>([
   ['mock', '', { dynamic: false }],
   ['proxy', 'http://github.com', { upstream: new URL('http://github.com/') }],
-])('%s command', (command, upstream, additionalCallOptions) => {
+])('%s command', (command, upstream) => {
   beforeEach(() => {
     (createSingleProcessPrism as jest.Mock).mockClear();
     (createMultiProcessPrism as jest.Mock).mockClear();
@@ -26,88 +26,48 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     parser.parse(`${command} /path/to ${upstream}`);
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
-    expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
-      document: '/path/to',
-      multiprocess: false,
-      reportViolations: 'stdout',
-      cors: true,
-      host: '127.0.0.1',
-      port: 4010,
-      ...additionalCallOptions,
-    });
+    expect(createSingleProcessPrism).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        document: '/path/to',
+        multiprocess: false,
+        reportViolations: 'stdout',
+      })
+    );
   });
 
   test(`starts ${command} server on custom port`, () => {
     parser.parse(`${command} /path/to -p 666 ${upstream}`);
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
-    expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
-      document: '/path/to',
-      multiprocess: false,
-      reportViolations: 'stdout',
-      cors: true,
-      host: '127.0.0.1',
-      port: 666,
-      ...additionalCallOptions,
-    });
+    expect(createSingleProcessPrism).toHaveBeenLastCalledWith(expect.objectContaining({ port: 666 }));
   });
 
   test(`starts ${command} server on custom host`, () => {
     parser.parse(`${command} /path/to -h 0.0.0.0 ${upstream}`);
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
-    expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
-      document: '/path/to',
-      multiprocess: false,
-      reportViolations: 'stdout',
-      cors: true,
-      host: '0.0.0.0',
-      port: 4010,
-      ...additionalCallOptions,
-    });
+    expect(createSingleProcessPrism).toHaveBeenLastCalledWith(expect.objectContaining({ host: '0.0.0.0' }));
   });
 
   test(`starts ${command} server on custom host and port`, () => {
     parser.parse(`${command} /path/to -p 666 -h 0.0.0.0 ${upstream}`);
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
-    expect(createSingleProcessPrism).toHaveBeenLastCalledWith({
-      document: '/path/to',
-      cors: true,
-      reportViolations: 'stdout',
-      multiprocess: false,
-      host: '0.0.0.0',
-      port: 666,
-      ...additionalCallOptions,
-    });
+    expect(createSingleProcessPrism).toHaveBeenLastCalledWith(expect.objectContaining({ port: 666, host: '0.0.0.0' }));
   });
 
   test(`starts ${command} server with multiprocess option `, () => {
     parser.parse(`${command} /path/to -m -h 0.0.0.0 ${upstream}`);
 
     expect(createSingleProcessPrism).not.toHaveBeenCalled();
-    expect(createMultiProcessPrism).toHaveBeenLastCalledWith({
-      document: '/path/to',
-      cors: true,
-      reportViolations: 'stdout',
-      multiprocess: true,
-      host: '0.0.0.0',
-      port: 4010,
-      ...additionalCallOptions,
-    });
+    expect(createMultiProcessPrism).toHaveBeenLastCalledWith(
+      expect.objectContaining({ multiprocess: true, host: '0.0.0.0' })
+    );
   });
 
   test(`starts ${command} server with httpBody reportViolations option `, () => {
     parser.parse(`${command} /path/to -m -h 0.0.0.0 --report-violations httpBody ${upstream}`);
 
-    expect(createMultiProcessPrism).toHaveBeenLastCalledWith({
-      document: '/path/to',
-      cors: true,
-      reportViolations: 'httpBody',
-      multiprocess: true,
-      host: '0.0.0.0',
-      port: 4010,
-      ...additionalCallOptions,
-    });
+    expect(createMultiProcessPrism).toHaveBeenLastCalledWith(expect.objectContaining({ reportViolations: 'httpBody' }));
   });
 });

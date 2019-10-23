@@ -88,20 +88,22 @@ function negotiateResponse(
   input: IPrismInput<IHttpRequest>,
   resource: IHttpOperation
 ) {
-  const {
-    [DiagnosticSeverity.Error]: errors,
-    [DiagnosticSeverity.Warning]: warnings,
-  } = groupBy(input.validations, validation => validation.severity);
+  const { [DiagnosticSeverity.Error]: errors, [DiagnosticSeverity.Warning]: warnings } = groupBy(
+    input.validations,
+    validation => validation.severity
+  );
 
   if (errors) {
     return handleInputValidation(input, resource);
   } else {
     return pipe(
       withLogger(logger => {
-          warnings && warnings.forEach(warn => logger.warn({name: 'VALIDATOR'}, warn.message));
-          return logger.success({name: 'VALIDATOR'}, 'The request passed the validation rules. Looking for the best response');
-        },
-      ),
+        warnings && warnings.forEach(warn => logger.warn({ name: 'VALIDATOR' }, warn.message));
+        return logger.success(
+          { name: 'VALIDATOR' },
+          'The request passed the validation rules. Looking for the best response'
+        );
+      }),
       chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig))
     );
   }
