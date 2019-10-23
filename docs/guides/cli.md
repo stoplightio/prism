@@ -109,7 +109,7 @@ curl -v -s http://localhost:4010/pets/10 > /dev/null
 You can see there's a `warning` header which is a JSON object with all the violations found in the response.
 
 ```bash
-prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --report-violations httpResponse
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --errors
 … …
 
 curl -v http://localhost:4010/pets/10
