@@ -1,5 +1,5 @@
 ====test====
-Prism shall return output violations as an HTTP Response when ran with the httpHeader log flag
+Prism shall return output violations as an HTTP Response when ran with the httpBody log flag
 ====spec====
 openapi: 3.0.0
 paths:
