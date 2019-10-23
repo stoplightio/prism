@@ -29,7 +29,7 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
         }),
       );
     }),
-    Either.map(({ template, values }) => new URI.Template(template).expand(values)),
+    Either.map(({ template, values }) => URI.expand(template, values)),
   );
 }
 
