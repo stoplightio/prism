@@ -1,7 +1,7 @@
 import { HttpParamStyles } from '@stoplight/types';
 import { JSONSchema } from '../../..';
 import { HttpBodyValidator } from '../body';
-import { assertRight, assertLeft } from '../../../__tests__/utils';
+import { assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('HttpBodyValidator', () => {
   const httpBodyValidator = new HttpBodyValidator('body');

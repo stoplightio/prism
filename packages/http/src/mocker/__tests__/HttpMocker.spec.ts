@@ -2,11 +2,11 @@ import { createLogger, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample, DiagnosticSeverity } from '@stoplight/types';
 import { right } from 'fp-ts/lib/ReaderEither';
 import { flatMap } from 'lodash';
-import { assertRight } from '../../__tests__/utils';
 import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import { IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
+import { assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 const logger = createLogger('TEST', { enabled: false });
 

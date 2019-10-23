@@ -2,6 +2,7 @@ import { HttpParamStyles } from '@stoplight/types';
 import { query as registry } from '../../deserializers';
 import { HttpHeadersValidator } from '../headers';
 import * as validateAgainstSchemaModule from '../utils';
+import { assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('HttpHeadersValidator', () => {
   const httpHeadersValidator = new HttpHeadersValidator(registry, 'header');
@@ -30,7 +31,7 @@ describe('HttpHeadersValidator', () => {
             it('omits schema validation', () => {
               jest.spyOn(registry, 'get').mockReturnValueOnce(undefined);
 
-              expect(
+              assertRight(
                 httpHeadersValidator.validate({ 'x-test-header': 'abc' }, [
                   {
                     name: 'x-test-header',
@@ -38,7 +39,7 @@ describe('HttpHeadersValidator', () => {
                     schema: { type: 'number' },
                   },
                 ]),
-              ).toEqual([]);
+              );
 
               expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
             });
@@ -47,7 +48,7 @@ describe('HttpHeadersValidator', () => {
           describe('deserializer is available', () => {
             describe('header is valid', () => {
               it('validates positively against schema', () => {
-                expect(
+                assertRight(
                   httpHeadersValidator.validate({ 'x-test-header': 'abc' }, [
                     {
                       name: 'x-test-header',
@@ -55,7 +56,7 @@ describe('HttpHeadersValidator', () => {
                       schema: { type: 'string' },
                     },
                   ]),
-                ).toEqual([]);
+                );
 
                 expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
               });
@@ -65,14 +66,14 @@ describe('HttpHeadersValidator', () => {
 
         describe('schema was not provided', () => {
           it('omits schema validation', () => {
-            expect(
+            assertRight(
               httpHeadersValidator.validate({ 'x-test-header': 'abc' }, [
                 {
                   name: 'x-test-header',
                   style: HttpParamStyles.Simple,
                 },
               ]),
-            ).toEqual([]);
+            );
 
             expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
           });

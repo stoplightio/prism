@@ -1,6 +1,6 @@
-import { assertLeft, assertRight } from '@stoplight/prism-http/src/__tests__/utils';
 import { HttpParamStyles } from '@stoplight/types';
 import { createExamplePath } from '../paths';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('createExamplePath()', () => {
   describe('path parameters', () => {

@@ -3,7 +3,7 @@ import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either'
 import { IHttpRequest } from '../../types';
 import { bodyValidator, headersValidator, queryValidator, validateInput, validateOutput } from '../index';
-import { assertLeft, assertRight } from '../../__tests__/utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 const mockError: IPrismDiagnostic = {
   message: 'mocked C is required',

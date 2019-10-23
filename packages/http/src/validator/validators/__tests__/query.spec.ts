@@ -2,6 +2,7 @@ import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
 import { query as registry } from '../../deserializers';
 import { HttpQueryValidator } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
+import { assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('HttpQueryValidator', () => {
   const httpQueryValidator = new HttpQueryValidator(registry, 'query');
@@ -35,7 +36,7 @@ describe('HttpQueryValidator', () => {
                 schema: { type: 'number' },
               };
 
-              expect(httpQueryValidator.validate({ param: 'abc' }, [param])).toEqual([]);
+              assertRight(httpQueryValidator.validate({ param: 'abc' }, [param]));
 
               expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
             });
@@ -44,7 +45,7 @@ describe('HttpQueryValidator', () => {
           describe('deserializer is available', () => {
             describe('query param is valid', () => {
               it('validates positively against schema', () => {
-                expect(
+                assertRight(
                   httpQueryValidator.validate({ param: 'abc' }, [
                     {
                       name: 'param',
@@ -52,7 +53,7 @@ describe('HttpQueryValidator', () => {
                       schema: { type: 'string' },
                     },
                   ]),
-                ).toEqual([]);
+                );
 
                 expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
               });
@@ -62,14 +63,14 @@ describe('HttpQueryValidator', () => {
 
         describe('schema was not provided', () => {
           it('omits schema validation', () => {
-            expect(
+            assertRight(
               httpQueryValidator.validate({ param: 'abc' }, [
                 {
                   name: 'param',
                   style: HttpParamStyles.Form,
                 },
               ]),
-            ).toEqual([]);
+            );
 
             expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
           });
