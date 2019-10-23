@@ -94,7 +94,7 @@ prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
 [CLI] ●  note      GET        http://127.0.0.1:4010/pets/10
 ```
 
-By default, the output violations will be reported on the standard output, but you can also specify to embed these in the HTTP response:
+The output violations will be reported on the standard output and as a response header, following the [Warning spec](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Warning)
 
 ```bash
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --report-violations httpHeader
