@@ -27,7 +27,7 @@ describe('HttpValidator', () => {
 
       describe('when all required params are provided', () => {
         it('returns no validation errors', () => {
-          assertRight(validateInput({ resource: httpOperations[0], element: GOOD_INPUT }), () => { });
+          assertRight(validateInput({ resource: httpOperations[0], element: GOOD_INPUT }));
         });
       });
     });
@@ -90,7 +90,7 @@ describe('HttpValidator', () => {
                 query: {}
               },
             },
-          }), () => { });
+          }));
       });
     });
 
@@ -129,7 +129,7 @@ describe('HttpValidator', () => {
                 api_Key: 'ha',
               },
             },
-          }), () => { });
+          }));
       });
     });
 
