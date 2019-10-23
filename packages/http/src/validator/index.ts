@@ -10,14 +10,14 @@ import { IHttpRequest, IHttpResponse } from '../types';
 import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
-import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { sequenceT } from 'fp-ts/lib/Apply'
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { sequenceValidation } from './validators/utils';
+
 
 export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 
-const validateInParallel = sequenceT(Either.getValidation(getSemigroup<IPrismDiagnostic>()));
 
 const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
@@ -45,7 +45,7 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
     Either.swap
   )
 
-  return validateInParallel(
+  return sequenceValidation(
     validateBody,
     headersValidator.validate(element.headers || {}, (request && request.headers) || []),
     queryValidator.validate(element.url.query || {}, (request && request.query) || [])
@@ -76,7 +76,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
   return pipe(
     findResponseByStatus(resource.responses, element.statusCode),
     Either.chain(response =>
-      validateInParallel(
+      sequenceValidation(
         mismatchMediaType(response, mediaType),
         bodyValidator.validate(element.body, response.contents || [], mediaType),
         headersValidator.validate(element.headers || {}, response.headers || []),
