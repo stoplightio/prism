@@ -1,5 +1,5 @@
 ====test====
-Prism shall return output violations in an HTTP Header when ran with the httpHeader log flag
+Prism shall return output violations in an HTTP Header when the response is invalid
 ====spec====
 openapi: 3.0.0
 paths:
@@ -17,7 +17,7 @@ paths:
               schema:
                   type: object
 ====server====
-mock -p 4010 ${document} --report-violations httpHeader
+mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/path
 ====expect====
