@@ -1,5 +1,5 @@
 ====test====
-Receiving a response we cannot serialize but it's a string gets passed through
+Returns an error for an invalid response if httpBody reporting is on
 ====spec====
 swagger: "2.0"
 paths:
