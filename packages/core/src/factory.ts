@@ -23,8 +23,8 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         TaskEither.fromEither(components.route({ resources, input })),
         TaskEither.chain(resource => {
           const validateInputAndSecurity = sequenceValidation(
-            config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(undefined),
-            config.checkSecurity ? validateSecurity(input, resource) : Either.right(undefined)
+            config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right({}),
+            config.checkSecurity ? validateSecurity(input, resource) : Either.right({})
           );
 
           const mockWithValidation = (validations: IPrismDiagnostic[]) => components.mock({

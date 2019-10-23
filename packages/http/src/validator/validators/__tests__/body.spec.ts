@@ -9,7 +9,7 @@ describe('HttpBodyValidator', () => {
   describe('validate()', () => {
     describe('content specs are missing', () => {
       it('returns no validation errors', () => {
-        assertRight(httpBodyValidator.validate('test', []), () => { });
+        assertRight(httpBodyValidator.validate('test', []));
       });
     });
 
@@ -18,7 +18,7 @@ describe('HttpBodyValidator', () => {
         assertRight(
           httpBodyValidator.validate('test', [
             { mediaType: 'application/not-exists-son', examples: [], encodings: [] },
-          ]), () => { });
+          ]));
       });
     });
 
@@ -29,7 +29,7 @@ describe('HttpBodyValidator', () => {
             'test',
             [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }],
             'application/json',
-          ), () => { });
+          ));
       });
     });
 
@@ -69,7 +69,7 @@ describe('HttpBodyValidator', () => {
               },
             ],
             'application/x-www-form-urlencoded',
-          ), () => { });
+          ));
       });
     });
 
