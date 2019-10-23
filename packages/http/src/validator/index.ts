@@ -35,9 +35,14 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
       ),
       Option.alt(() =>
         pipe(
-          bodyValidator.validate(body, (request && request.body && request.body.contents) || [], mediaType),
-          Either.swap,
-          Option.fromEither
+          Option.fromNullable(body),
+          Option.chain(body =>
+            pipe(
+              bodyValidator.validate(body, (request && request.body && request.body.contents) || [], mediaType),
+              Either.swap,
+              Option.fromEither
+            )
+          )
         )
       )
     )),
