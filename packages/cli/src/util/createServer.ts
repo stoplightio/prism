@@ -71,7 +71,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
     cors: options.cors,
     config,
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
-    reportViolations: options.reportViolations,
+    errors: options.errors,
   });
 
   const address = await server.listen(options.port, options.host);
@@ -119,7 +119,7 @@ type CreateBaseServerOptions = {
   port: number;
   document: string;
   multiprocess: boolean;
-  reportViolations: 'stdout' | 'httpBody' | 'httpHeader';
+  errors: boolean;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {

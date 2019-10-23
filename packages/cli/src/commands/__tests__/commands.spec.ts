@@ -30,7 +30,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
       expect.objectContaining({
         document: '/path/to',
         multiprocess: false,
-        reportViolations: 'stdout',
+        errors: false,
       })
     );
   });
@@ -65,9 +65,9 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
     );
   });
 
-  test(`starts ${command} server with httpBody reportViolations option `, () => {
-    parser.parse(`${command} /path/to -m -h 0.0.0.0 --report-violations httpBody ${upstream}`);
+  test(`starts ${command} server with error violations option on `, () => {
+    parser.parse(`${command} /path/to -m -h 0.0.0.0 --errors ${upstream}`);
 
-    expect(createMultiProcessPrism).toHaveBeenLastCalledWith(expect.objectContaining({ reportViolations: 'httpBody' }));
+    expect(createMultiProcessPrism).toHaveBeenLastCalledWith(expect.objectContaining({ errors: true }));
   });
 });

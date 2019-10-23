@@ -35,7 +35,7 @@ const proxyCommand: CommandModule = {
       'document',
       'multiprocess',
       'upstream',
-      'reportViolations'
+      'errors'
     );
 
     const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;

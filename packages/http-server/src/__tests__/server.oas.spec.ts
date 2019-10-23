@@ -25,7 +25,7 @@ async function instantiatePrism(specPath: string) {
       validateResponse: true,
       mock: { dynamic: false },
     },
-    reportViolations: 'stdout',
+    error: false,
     cors: true,
   });
 }
