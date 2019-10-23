@@ -1,13 +1,14 @@
 import * as Either from 'fp-ts/lib/Either';
+import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from './types';
 import { validateSecurity } from './utils/security';
 import { sequenceT } from 'fp-ts/lib/Apply';
-import * as NonEmptyArray from 'fp-ts/lib/NonEmptyArray';
+import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray';
 
-const sequenceValidation = sequenceT(Either.getValidation(NonEmptyArray.getSemigroup<IPrismDiagnostic>()));
+const sequenceValidation = sequenceT(Either.getValidation(getSemigroup<IPrismDiagnostic>()));
 
 export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
@@ -50,19 +51,20 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           );
         }),
         TaskEither.map(({ output, resource }) => {
-          if (config.validateResponse) {
-            const outputValidations = pipe(components.validateOutput({
-              resource,
-              element: output,
-            }));
-          }
+          const outputValidations = pipe(
+            config.validateResponse,
+            Option.fromPredicate(t => t),
+            Option.chain(() => Option.fromEither(pipe(components.validateOutput({ resource, element: output }), Either.swap))),
+            Option.map<NonEmptyArray<IPrismDiagnostic>, IPrismDiagnostic[]>(t => t),
+            Option.getOrElse<IPrismDiagnostic[]>(() => [])
+          )
 
           return {
             input,
             output,
             validations: {
               input: [],
-              output: [],
+              output: outputValidations,
             },
           };
         }),
