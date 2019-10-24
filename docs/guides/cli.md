@@ -107,7 +107,7 @@ curl -v -s http://localhost:4010/pet/10 > /dev/null
 
 You can see there's a `sl-violations` header which is a JSON object with all the violations found in the response.
 
-In case you want to return an error HTTP response in case there's an `Error` in the request or the response, you can use the `--errors` flag.
+The header is a handy way to see contract mismatches or incorrect usage in a way that doesn't block the client, so you can monitor all/some production traffic this way record the problems. If you want Prism to make violations considerably more clear, run the proxy command with the `--errors` flag. This will turn any request or response violation into a [RFC 7807 HTTP Problem Details Error](https://tools.ietf.org/html/rfc7807) just like validation errors on the mock server.
 
 ```bash
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --errors
