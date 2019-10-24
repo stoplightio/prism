@@ -94,7 +94,7 @@ prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
 [CLI] ●  note      GET        http://127.0.0.1:4010/pets/10
 ```
 
-The output violations will be reported on the standard output and as a response header
+The output violations will be reported on the standard output and as a response header (`sl-violations`)
 
 ```bash
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
@@ -106,6 +106,8 @@ curl -v -s http://localhost:4010/pet/10 > /dev/null
 ```
 
 You can see there's a `sl-violations` header which is a JSON object with all the violations found in the response.
+
+In case you want to return an error HTTP response in case there's an `Error` in the request or the response, you can use the `--errors` flag.
 
 ```bash
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --errors
