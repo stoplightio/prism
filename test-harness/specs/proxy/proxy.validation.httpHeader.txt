@@ -30,6 +30,6 @@ proxy -p 4010 ${document} http://httpbin
 curl -i http://localhost:4010/json
 ====expect====
 HTTP/1.1 200 OK
-warning: body should be object
+sl-violations: body should be object
 
 {"slideshow":{"author":"Yours Truly","date":"date of publication","slides":[{"title":"Wake up to WonderWidgets!","type":"all"},{"items":["Why <em>WonderWidgets</em> are great","Who <em>buys</em> WonderWidgets"],"title":"Overview","type":"all"}],"title":"Sample Slide Show"},"priority":0}

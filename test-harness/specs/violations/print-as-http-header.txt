@@ -22,6 +22,6 @@ mock -p 4010 ${document}
 curl -i http://localhost:4010/path
 ====expect====
 HTTP/1.1 200 OK
-warning: body should be object
+sl-violations: body should be object
 
 123

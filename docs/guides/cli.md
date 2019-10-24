@@ -94,19 +94,19 @@ prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
 [CLI] ●  note      GET        http://127.0.0.1:4010/pets/10
 ```
 
-The output violations will be reported on the standard output and as a response header, following the [Warning spec](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Warning)
+The output violations will be reported on the standard output and as a response header
 
 ```bash
-prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --report-violations httpHeader
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
 … …
 
 curl -v -s http://localhost:4010/pets/10 > /dev/null
 
 < HTTP/1.1 404 Not Found
-< warning: body should be object
+< sl-violations: body should be object
 ```
 
-You can see there's a `warning` header which is a JSON object with all the violations found in the response.
+You can see there's a `sl-violations` header which is a JSON object with all the violations found in the response.
 
 ```bash
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --errors

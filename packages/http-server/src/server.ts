@@ -90,10 +90,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           );
         }
 
-        reply.header(
-          'warning',
-          violations.map(validation => `${validation.location || ''} ${validation.message}`).join(';')
-        );
+        reply.header('sl-violations', violations);
       }
 
       response.validations.output.forEach(validation => {
