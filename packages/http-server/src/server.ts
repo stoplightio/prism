@@ -92,7 +92,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         reply.header('sl-violations', JSON.stringify(violations));
       }
 
-      response.validations.output.forEach(validation => {
+      inputOutputValidationErrors.forEach(validation => {
         const message = `Output violation: ${validation.path || ''} ${validation.message}`;
         if (validation.severity === DiagnosticSeverity.Error) {
           request.log.error({ name: 'VALIDATOR' }, message);
