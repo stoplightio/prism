@@ -26,10 +26,10 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
         generateTemplateAndValuesForQueryParams(pathTemplate, operation),
         Either.map(({ template: queryTemplate, values: queryValues }) => {
           return { template: queryTemplate, values: { ...pathValues, ...queryValues } };
-        }),
+        })
       );
     }),
-    Either.map(({ template, values }) => parse(template).expand(values)),
+    Either.map(({ template, values }) => parse(template).expand(values))
   );
 }
 
@@ -47,9 +47,9 @@ function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
             value,
             Either.fromPredicate(
               Array.isArray,
-              () => new Error('Pipe delimited style is only applicable to array parameter'),
+              () => new Error('Pipe delimited style is only applicable to array parameter')
             ),
-            Either.map(v => serializeWithPipeDelimitedStyle(spec.name, v, spec.explode)),
+            Either.map(v => serializeWithPipeDelimitedStyle(spec.name, v, spec.explode))
           );
 
         case HttpParamStyles.SpaceDelimited:
@@ -57,15 +57,15 @@ function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
             value,
             Either.fromPredicate(
               Array.isArray,
-              () => new Error('Space delimited style is only applicable to array parameter'),
+              () => new Error('Space delimited style is only applicable to array parameter')
             ),
-            Either.map(v => serializeWithSpaceDelimitedStyle(spec.name, v, spec.explode)),
+            Either.map(v => serializeWithSpaceDelimitedStyle(spec.name, v, spec.explode))
           );
 
         default:
           return Either.right(value);
       }
-    }),
+    })
   );
 }
 
@@ -79,9 +79,9 @@ function generateParamValues(specs: IHttpParam[]) {
           Either.map(value => ({
             ...values,
             [spec.name]: value,
-          })),
-        ),
-      ),
+          }))
+        )
+      )
     );
   }, Either.right({}));
 }
@@ -94,9 +94,9 @@ function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
     Either.chain(values => {
       return pipe(
         createPathUriTemplate(operation.path, specs),
-        Either.map(template => ({ template, values })),
+        Either.map(template => ({ template, values }))
       );
-    }),
+    })
   );
 }
 
@@ -105,23 +105,25 @@ function generateTemplateAndValuesForQueryParams(template: string, operation: IH
 
   return pipe(
     generateParamValues(specs),
-    Either.map(values => ({ template: createQueryUriTemplate(template, specs), values })),
+    Either.map(values => ({ template: createQueryUriTemplate(template, specs), values }))
   );
 }
 
 function createPathUriTemplate(inputPath: string, specs: IHttpPathParam[]): Either.Either<Error, string> {
   // defaults for query: style=Simple exploded=false
-  return specs.filter(spec => spec.required !== false).reduce((pathOrError: Either.Either<Error, string>, spec) => {
-    return pipe(
-      pathOrError,
-      Either.chain(path => {
-        return pipe(
-          createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
-          Either.map(template => path.replace(`{${spec.name}}`, template)),
-        );
-      }),
-    );
-  }, Either.right(inputPath));
+  return specs
+    .filter(spec => spec.required !== false)
+    .reduce((pathOrError: Either.Either<Error, string>, spec) => {
+      return pipe(
+        pathOrError,
+        Either.chain(path => {
+          return pipe(
+            createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
+            Either.map(template => path.replace(`{${spec.name}}`, template))
+          );
+        })
+      );
+    }, Either.right(inputPath));
 }
 
 function createParamUriTemplate(name: string, style: HttpParamStyles, explode: boolean) {
@@ -160,7 +162,7 @@ function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
   const restParams = specs
     .filter(spec => spec.required !== false)
     .filter(spec =>
-      [HttpParamStyles.DeepObject, HttpParamStyles.SpaceDelimited, HttpParamStyles.PipeDelimited].includes(spec.style),
+      [HttpParamStyles.DeepObject, HttpParamStyles.SpaceDelimited, HttpParamStyles.PipeDelimited].includes(spec.style)
     )
     .map(spec => spec.name)
     .map(name => `{+${name}}`)

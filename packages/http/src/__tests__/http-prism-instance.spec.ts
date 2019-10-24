@@ -38,7 +38,7 @@ async function checkUserAgent(config: IHttpConfig, prism: Prism, resources: IHtt
       headers,
     },
     resources,
-    config,
+    config
   );
 
   return (nockResult as NockResWithInterceptors).interceptors['0'].req.headers['user-agent'];
@@ -55,7 +55,7 @@ describe('Http Client .request', () => {
     beforeAll(async () => {
       prism = createInstance(
         { validateRequest: true, checkSecurity: true, validateResponse: true, mock: { dynamic: false } },
-        { logger },
+        { logger }
       );
       resources = await getHttpOperationsFromResource(specPath);
     });
@@ -69,7 +69,7 @@ describe('Http Client .request', () => {
               path: '/pet',
             },
           },
-          resources,
+          resources
         );
 
         expect(result.output).toBeDefined();
@@ -87,7 +87,7 @@ describe('Http Client .request', () => {
               baseUrl: 'http://example.com/api',
             },
           },
-          resources,
+          resources
         );
 
         expect(result.output).toBeDefined();
@@ -106,8 +106,8 @@ describe('Http Client .request', () => {
                 baseUrl: 'http://acme.com/api',
               },
             },
-            resources,
-          ),
+            resources
+          )
         ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
       });
     });
@@ -123,8 +123,8 @@ describe('Http Client .request', () => {
                 baseUrl: 'http://example.com/v1',
               },
             },
-            resources,
-          ),
+            resources
+          )
         ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
       });
     });
@@ -158,7 +158,7 @@ describe('Http Client .request', () => {
 
         it('fails the operation', () =>
           expect(prism.request(request, resources, config)).rejects.toThrowError(
-            ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR),
+            ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR)
           ));
       });
 
@@ -178,7 +178,7 @@ describe('Http Client .request', () => {
               },
             },
             resources,
-            config,
+            config
           );
 
           expect(result.output).toBeDefined();
@@ -213,7 +213,7 @@ describe('Http Client .request', () => {
     beforeAll(async () => {
       prism = createInstance(
         { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
-        { logger },
+        { logger }
       );
       resources = await getHttpOperationsFromResource(noRefsPetstoreMinimalOas2Path);
     });
@@ -228,8 +228,8 @@ describe('Http Client .request', () => {
                 path: '/unknown-path',
               },
             },
-            resources,
-          ),
+            resources
+          )
         ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
       });
     });
@@ -246,7 +246,7 @@ describe('Http Client .request', () => {
               },
             },
           },
-          resources,
+          resources
         );
 
         const parsedBody = response.output.body;
@@ -268,8 +268,8 @@ describe('Http Client .request', () => {
                 path: '/pet/findByStatus',
               },
             },
-            resources,
-          ),
+            resources
+          )
         ).rejects.toThrowError(ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY));
       });
 
@@ -289,7 +289,7 @@ describe('Http Client .request', () => {
               complete: true,
             },
           },
-          resources,
+          resources
         );
         expect(response.validations).toEqual({
           input: [],
@@ -311,7 +311,7 @@ describe('Http Client .request', () => {
             aPi_keY: 'hello',
           },
         },
-        resources,
+        resources
       );
 
       expect(response.output).toHaveProperty('statusCode', 200);
@@ -326,8 +326,8 @@ describe('Http Client .request', () => {
               path: '/pet/login',
             },
           },
-          resources,
-        ),
+          resources
+        )
       ).rejects.toThrowError();
     });
   });
@@ -339,7 +339,7 @@ describe('Http Client .request', () => {
   it('returns stringified static example when one defined in spec', async () => {
     prism = createInstance(
       { mock: { dynamic: false }, checkSecurity: true, validateRequest: true, validateResponse: true },
-      { logger },
+      { logger }
     );
     resources = await getHttpOperationsFromResource(staticExamplesOas2Path);
 
@@ -350,7 +350,7 @@ describe('Http Client .request', () => {
           path: '/todos',
         },
       },
-      resources,
+      resources
     );
 
     expect(response.output).toBeDefined();

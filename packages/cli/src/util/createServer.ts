@@ -69,7 +69,7 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
   options.operations.forEach(resource => {
     const path = pipe(
       createExamplePath(resource),
-      Either.getOrElse(() => resource.path),
+      Either.getOrElse(() => resource.path)
     );
 
     logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${path}`);

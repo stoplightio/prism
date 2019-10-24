@@ -12,7 +12,7 @@ const { version: prismVersion } = require('../../package.json');
 const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>['forward'] = (
   resource: IHttpOperation,
   input: IHttpRequest,
-  timeout = 0,
+  timeout = 0
 ): TaskEither.TaskEither<Error, IHttpResponse> => {
   const baseUrl =
     resource.servers && resource.servers.length > 0 ? resolveServerUrl(resource.servers[0]) : input.url.baseUrl;
