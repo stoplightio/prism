@@ -75,6 +75,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         .map(createErrorObjectWithPrefix('response'))
         .concat(response.validations.input.map(createErrorObjectWithPrefix('request')));
 
+      reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
+
       if (inputOutputValidationErrors.length > 0) {
         const errorViolations = inputOutputValidationErrors.filter(
           v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
@@ -86,8 +88,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             { validation: errorViolations }
           );
         }
-
-        reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
       }
 
       inputOutputValidationErrors.forEach(validation => {

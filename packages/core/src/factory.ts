@@ -12,10 +12,10 @@ function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
 
 export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
-  components: IPrismComponents<Resource, Input, Output, Config>,
+  components: IPrismComponents<Resource, Input, Output, Config>
 ): IPrism<Resource, Input, Output, Config> {
   return {
-    request: async (input: Input, resources: Resource[], c?: Config) => {
+    request: (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
       const config = defaults<unknown, Config>(c, defaultConfig);
       const inputValidations: IPrismDiagnostic[] = [];
@@ -28,17 +28,17 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               ...components.validateInput({
                 resource,
                 element: input,
-              }),
+              })
             );
           }
 
-          const inputValidationResult = config.checkSecurity
-            ? inputValidations.concat(
-                pipe(
+          config.checkSecurity
+            ? inputValidations.push(
+                ...pipe(
                   validateSecurity(input, resource),
                   map(sec => [sec]),
-                  getOrElse<IPrismDiagnostic[]>(() => []),
-                ),
+                  getOrElse<IPrismDiagnostic[]>(() => [])
+                )
               )
             : inputValidations;
 
@@ -48,16 +48,16 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                 components.mock({
                   resource,
                   input: {
-                    validations: inputValidationResult,
+                    validations: inputValidations,
                     data: input,
                   },
                   config: config.mock,
-                })(components.logger.child({ name: 'NEGOTIATOR' })),
+                })(components.logger.child({ name: 'NEGOTIATOR' }))
               );
 
           return pipe(
             outputLocator,
-            TaskEither.map(output => ({ output, resource })),
+            TaskEither.map(output => ({ output, resource }))
           );
         }),
         TaskEither.map(({ output, resource }) => {
@@ -77,7 +77,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               output: outputValidations,
             },
           };
-        }),
+        })
       )().then(v =>
         pipe(
           v,
@@ -85,9 +85,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             e => {
               throw e;
             },
-            o => o,
-          ),
-        ),
+            o => o
+          )
+        )
       );
     },
   };
