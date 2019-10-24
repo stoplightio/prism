@@ -91,7 +91,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       }
 
       inputOutputValidationErrors.forEach(validation => {
-        const message = `Output violation: ${validation.location || ''} ${validation.message}`;
+        const message = `Violation: ${validation.location || ''} ${validation.message}`;
         if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Error]) {
           request.log.error({ name: 'VALIDATOR' }, message);
         } else if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Warning]) {

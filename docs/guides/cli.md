@@ -100,10 +100,9 @@ The output violations will be reported on the standard output and as a response 
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
 … …
 
-curl -v -s http://localhost:4010/pets/10 > /dev/null
+curl -v -s http://localhost:4010/pet/10 > /dev/null
 
-< HTTP/1.1 404 Not Found
-< sl-violations: body should be object
+< sl-violations: [{"location":["request"],"severity":"Error","code":401,"message":"Invalid security scheme used"}]
 ```
 
 You can see there's a `sl-violations` header which is a JSON object with all the violations found in the response.
