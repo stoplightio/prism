@@ -9,7 +9,11 @@ import { inRange } from 'lodash';
 import { URI } from 'uri-template-lite';
 
 import { IHttpRequest, IHttpResponse } from '../types';
-import { header as headerDeserializerRegistry, query as queryDeserializerRegistry, path as pathDeserializerRegistry } from './deserializers';
+import {
+  header as headerDeserializerRegistry,
+  query as queryDeserializerRegistry,
+  path as pathDeserializerRegistry,
+} from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
 import { HttpPathValidator } from './validators/path';
@@ -68,22 +72,22 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
                   message: `The received media type does not match the one specified in the document`,
                   severity: DiagnosticSeverity.Error,
                 },
-              ]),
-            ),
+              ])
+            )
           ),
-          Option.getOrElse<IPrismDiagnostic[]>(() => []),
+          Option.getOrElse<IPrismDiagnostic[]>(() => [])
         );
 
         return mismatchingMediaTypeError
           .concat(bodyValidator.validate(element.body, operationResponse.contents || [], mediaType))
           .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || []));
-      },
-    ),
+      }
+    )
   );
 };
 
 function getPathParams(path: string, template: string) {
-   return new URI.Template(template).match(path);
+  return new URI.Template(template).match(path);
 }
 
 export { validateInput, validateOutput };

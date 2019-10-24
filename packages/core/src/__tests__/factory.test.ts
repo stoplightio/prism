@@ -16,7 +16,7 @@ describe('validation', () => {
         statusCode: 200,
         headers: {},
         body: {},
-      }),
+      })
     ),
     logger: { ...logger, child: jest.fn().mockReturnValue(logger) },
     mock: jest.fn().mockReturnValue(asks<Logger, Error, string>(() => 'hey')),
@@ -24,7 +24,7 @@ describe('validation', () => {
 
   const prismInstance = factory<string, string, string, IPrismConfig>(
     { mock: { dynamic: false }, validateRequest: false, validateResponse: false, checkSecurity: true },
-    components,
+    components
   );
 
   describe.each([
