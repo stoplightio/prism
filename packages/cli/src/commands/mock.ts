@@ -56,6 +56,7 @@ const mockCommand: CommandModule = {
           boolean: true,
           default: process.env.NODE_ENV === 'production',
         },
+
       }),
   handler: parsedArgs => {
     const {

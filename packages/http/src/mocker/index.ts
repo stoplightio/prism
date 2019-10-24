@@ -1,11 +1,20 @@
 import { IPrismComponents, IPrismInput } from '@stoplight/prism-core';
-import { DiagnosticSeverity, Dictionary, IHttpHeaderParam, IHttpOperation, INodeExample } from '@stoplight/types';
+import {
+  DiagnosticSeverity,
+  Dictionary,
+  IHttpCallbackOperation,
+  IHttpHeaderParam,
+  IHttpOperation,
+  INodeExample
+} from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import { Either, map } from 'fp-ts/lib/Either';
+import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { chain, Reader } from 'fp-ts/lib/Reader';
-import { mapLeft } from 'fp-ts/lib/ReaderEither';
+import * as Reader from 'fp-ts/lib/Reader';
+import * as Option from 'fp-ts/lib/Option';
+import * as ReaderEither from 'fp-ts/lib/ReaderEither';
+import { map } from 'fp-ts/lib/Array';
 import { isEmpty, isObject, keyBy, mapValues } from 'lodash';
 import { Logger } from 'pino';
 import {
@@ -22,6 +31,7 @@ import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './errors';
 import { generate, generateStatic } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
+import { runCallback } from './callback/callbacks';
 
 const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockHttpConfig>['mock'] = ({
   resource,
@@ -41,8 +51,27 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockH
 
       return config;
     }),
-    chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
-    chain(result => assembleResponse(result, payloadGenerator)),
+    Reader.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
+    Reader.chain(result => assembleResponse(result, payloadGenerator)),
+    Reader.chain(response => withLogger(logger => {
+      // TODO: make it not look like crap
+      pipe(
+        response,
+        Either.map(r => {
+          pipe(
+            Option.fromNullable(resource.callbacks),
+            Option.alt(() => Option.some([] as IHttpCallbackOperation[])),
+            Option.map(callbacks => pipe(
+              callbacks,
+              map(callback => runCallback({ callback, request: input.data, response: r })().then(violations => console.log(violations))),
+            )),
+          );
+        }),
+      );
+
+
+      return response;
+    })),
   );
 };
 
@@ -51,10 +80,10 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
 
   return pipe(
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
-    chain(() =>
+    Reader.chain(() =>
       pipe(
         helpers.negotiateOptionsForInvalidRequest(resource.responses, securityValidation ? ['401'] : ['422', '400']),
-        mapLeft(
+        ReaderEither.mapLeft(
           () =>
             securityValidation
               ? ProblemJsonError.fromTemplate(
@@ -96,19 +125,19 @@ function negotiateResponse(
       withLogger(logger =>
         logger.success({ name: 'VALIDATOR' }, 'The request passed the validation rules. Looking for the best response'),
       ),
-      chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig)),
+      Reader.chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig)),
     );
   }
 }
 
 function assembleResponse(
-  result: Either<Error, IHttpNegotiationResult>,
+  result: Either.Either<Error, IHttpNegotiationResult>,
   payloadGenerator: PayloadGenerator,
-): Reader<Logger, Either<Error, IHttpResponse>> {
+): Reader.Reader<Logger, Either.Either<Error, IHttpResponse>> {
   return withLogger(logger =>
     pipe(
       result,
-      map(negotiationResult => {
+      Either.map(negotiationResult => {
         const mockedBody = computeBody(negotiationResult, payloadGenerator);
         const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
 

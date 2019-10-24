@@ -4,7 +4,14 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { get as _get } from 'lodash';
 import { pointerToPath } from '@stoplight/json';
 
-export function resolveRuntimeExpression(expr: string, request: IHttpRequest, response: IHttpResponse): Option.Option<unknown> {
+export function resolveRuntimeExpressions(input: string, request: IHttpRequest, response: IHttpResponse) {
+  return input.replace(/{(.+?)}/g, (_, expr) => pipe(
+    resolveRuntimeExpression(expr, request, response),
+    Option.getOrElse(() => ''),
+  ));
+}
+
+export function resolveRuntimeExpression(expr: string, request: IHttpRequest, response: IHttpResponse): Option.Option<string> {
   const parts = expr.split(/[.#]/);
   return pipe(
     pipe(
@@ -34,7 +41,13 @@ export function resolveRuntimeExpression(expr: string, request: IHttpRequest, re
         Option.alt(() => pipe(
           parts[1],
           Option.fromPredicate(part => part === 'body'),
-          Option.chain(() => Option.fromNullable(request.body && _get(request.body, pointerToPath('#' + parts[2])))),
+          Option.chain(() => pipe(
+            Option.fromNullable(request.body),
+            Option.chain(body => pipe(
+              Option.tryCatch(() => pointerToPath('#' + parts[2])),
+              Option.chain(path => Option.fromNullable(_get(body, path)))
+            )),
+          )),
         )),
       )),
     )),
@@ -51,7 +64,13 @@ export function resolveRuntimeExpression(expr: string, request: IHttpRequest, re
       Option.alt(() => pipe(
         parts[1],
         Option.fromPredicate(part => part === 'body'),
-        Option.chain(() => Option.fromNullable(response.body && _get(response.body, pointerToPath('#' + parts[2])))),
+        Option.chain(() => pipe(
+          Option.fromNullable(response.body),
+          Option.chain(body => pipe(
+            Option.tryCatch(() => pointerToPath('#' + parts[2])),
+            Option.chain(path => Option.fromNullable(_get(body, path)))
+          )),
+        )),
       )),
     )),
   );

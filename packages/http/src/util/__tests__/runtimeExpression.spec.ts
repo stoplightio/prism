@@ -1,4 +1,4 @@
-import { resolveRuntimeExpression } from '../runtimeExpression';
+import { resolveRuntimeExpression, resolveRuntimeExpressions } from '../runtimeExpression';
 import { assertNone, assertSome } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('resolveRuntimeExpression', () => {
@@ -57,6 +57,12 @@ describe('resolveRuntimeExpression', () => {
           resolveRuntimeExpression('$request.body#/inner/value', { method: 'get', body: 'text body', url: { path: '' } }, { statusCode: 200 }),
         );
       });
+
+      it('not resolves $request.body#* when json pointer is invalid', () => {
+        assertNone(
+          resolveRuntimeExpression('$request.body#inner/value', { method: 'get', body: { inner: { value: 'test' } }, url: { path: '' } }, { statusCode: 200 }),
+        );
+      });
     });
 
     it('returns none if request part is not recognized', () => {
@@ -79,8 +85,36 @@ describe('resolveRuntimeExpression', () => {
       );
     });
 
+    it('not resolves response.body#* when json pointer is invalid', () => {
+      assertNone(
+        resolveRuntimeExpression('$response.body#inner/value', { method: 'get', url: { path: '' } }, { statusCode: 200, body: { inner: { value: 'test' } } }),
+      );
+    });
+
     it('returns none if response part is not recognized', () => {
       assertNone(resolveRuntimeExpression('$response.unsupported', { method: 'get', url: { path: '' } }, { statusCode: 200 }));
     });
+  });
+});
+
+describe('resolveRuntimeExpressions', () => {
+  it('resolves when notation is correct', () => {
+    expect(resolveRuntimeExpressions('http://{$request.body#/host}/notify', { method: 'get', body: { host: 'example.com' }, url: { path: '' } }, { statusCode: 200 }))
+      .toEqual('http://example.com/notify');
+  });
+
+  it('leaves blank when notation is not correct', () => {
+    expect(resolveRuntimeExpressions('http://{$request.body#host}/notify', { method: 'get', body: { host: 'example.com' }, url: { path: '' } }, { statusCode: 200 }))
+      .toEqual('http:///notify');
+  });
+
+  it('leaves blank when target data does not exists', () => {
+    expect(resolveRuntimeExpressions('http://{$request.body#host}/notify', { method: 'get', body: 'example.com', url: { path: '' } }, { statusCode: 200 }))
+      .toEqual('http:///notify');
+  });
+
+  it('resolves multiple runtime expressions', () => {
+    expect(resolveRuntimeExpressions('http://{$request.body#/host}/{$method}/{$statusCode}', { method: 'get', body: { host: 'example.com' }, url: { path: '' } }, { statusCode: 200 }))
+      .toEqual('http://example.com/get/200');
   });
 });
