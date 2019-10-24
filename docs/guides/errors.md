@@ -168,6 +168,12 @@ paths:
 **Returned Status Code: `404`**
 **Explanation:** This error occurs when the current request is asking for a specific status code that the document is not listing or it's asking for a specific example that does not exist in the current document
 
+### VIOLATIONS
+
+**Message: Request/Response not valid**
+**Returned Status Code: `500`**
+**Explanation:** This error occurs when you're run Prism with the `--errors` flag and the request or the response has at least one violation marked as an error
+
 ---
 
 ## Security errors
