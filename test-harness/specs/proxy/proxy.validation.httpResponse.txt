@@ -1,5 +1,5 @@
 ====test====
-Returns an error for an invalid response if httpBody reporting is on
+Returns an error for an invalid response if --errors reporting is on
 ====spec====
 swagger: "2.0"
 paths:
@@ -31,4 +31,4 @@ curl -i http://localhost:4010/json
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 
-{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body"],"severity":"Error","code":"required","message":"should have required property 'title'"},{"location":["body"],"severity":"Error","code":"required","message":"should have required property 'description'"}]}
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.","validation":[{"location":["response","body"],"severity":"Error","code":"required","message":"should have required property 'title'"},{"location":["response","body"],"severity":"Error","code":"required","message":"should have required property 'description'"}]}

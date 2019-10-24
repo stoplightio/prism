@@ -6,6 +6,7 @@ import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
@@ -70,17 +71,14 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
       const { output } = response;
 
-      const inputOutputValidationErrors = response.validations.output.concat(response.validations.input);
+      const inputOutputValidationErrors = response.validations.output
+        .map(createErrorObjectWithPrefix('response'))
+        .concat(response.validations.input.map(createErrorObjectWithPrefix('request')));
 
       if (inputOutputValidationErrors.length > 0) {
-        const violations = inputOutputValidationErrors.map(detail => ({
-          location: detail.path,
-          severity: DiagnosticSeverity[detail.severity],
-          code: detail.code,
-          message: detail.message,
-        }));
-
-        const errorViolations = violations.filter(v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]);
+        const errorViolations = inputOutputValidationErrors.filter(
+          v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
+        );
         if (opts.errors && errorViolations.length > 0) {
           throw ProblemJsonError.fromTemplate(
             UNPROCESSABLE_ENTITY,
@@ -89,14 +87,14 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           );
         }
 
-        reply.header('sl-violations', JSON.stringify(violations));
+        reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
       }
 
       inputOutputValidationErrors.forEach(validation => {
-        const message = `Output violation: ${validation.path || ''} ${validation.message}`;
-        if (validation.severity === DiagnosticSeverity.Error) {
+        const message = `Output violation: ${validation.location || ''} ${validation.message}`;
+        if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Error]) {
           request.log.error({ name: 'VALIDATOR' }, message);
-        } else if (validation.severity === DiagnosticSeverity.Warning) {
+        } else if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Warning]) {
           request.log.warn({ name: 'VALIDATOR' }, message);
         } else {
           request.log.info({ name: 'VALIDATOR' }, message);
@@ -150,4 +148,16 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     listen: (port: number, ...args: any[]) => server.listen(port, ...args),
   };
   return prismServer;
+};
+
+const createErrorObjectWithPrefix = (locationPrefix: string) => (detail: IPrismDiagnostic) => {
+  const location = detail.path || [];
+  location.unshift(locationPrefix);
+
+  return {
+    location,
+    severity: DiagnosticSeverity[detail.severity],
+    code: detail.code,
+    message: detail.message,
+  };
 };

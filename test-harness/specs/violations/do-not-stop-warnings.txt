@@ -27,7 +27,7 @@ mock -p 4010 ${document} --errors
 curl -i "http://localhost:4010/test?productId=10"
 ====expect-loose====
 HTTP/1.1 200 OK
-sl-violations: [{"location":["query","productId"],"severity":"Warning","code":"deprecated","message":"Query param productId is deprecated"}]
+sl-violations: [{"location":["request","query","productId"],"severity":"Warning","code":"deprecated","message":"Query param productId is deprecated"}]
 content-type: application/json
 
 {"prop":"abc"}
