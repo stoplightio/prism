@@ -50,10 +50,13 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
     Either.swap
   );
 
-  return sequenceValidation(
-    validateBody,
-    headersValidator.validate(element.headers || {}, (request && request.headers) || []),
-    queryValidator.validate(element.url.query || {}, (request && request.query) || [])
+  return pipe(
+    sequenceValidation(
+      validateBody,
+      headersValidator.validate(element.headers || {}, (request && request.headers) || []),
+      queryValidator.validate(element.url.query || {}, (request && request.query) || [])
+    ),
+    Either.map(() => element)
   );
 };
 
@@ -88,7 +91,8 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
         bodyValidator.validate(element.body, response.contents || [], mediaType),
         headersValidator.validate(element.headers || {}, response.headers || [])
       )
-    )
+    ),
+    Either.map(() => element)
   );
 };
 

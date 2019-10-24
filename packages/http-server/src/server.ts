@@ -1,4 +1,3 @@
-import { createLogger } from '@stoplight/prism-core';
 import { createInstance, IHttpConfig, ProblemJsonError } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';

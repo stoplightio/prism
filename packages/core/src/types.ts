@@ -17,20 +17,21 @@ export interface IPrismConfig {
   validateResponse: boolean;
 }
 
-export type ValidatorFn<Resource, T> = (opts: { resource: Resource; element: T }) => Either<NonEmptyArray<IPrismDiagnostic>, unknown>;
+export type ValidatorFn<Resource, T> = (opts: {
+  resource: Resource;
+  element: T;
+}) => Either<NonEmptyArray<IPrismDiagnostic>, T>;
 
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
   validateInput: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
   forward: (resource: Resource, input: Input) => TaskEither<Error, Output>;
-  mock: (
-    opts: {
-      resource: Resource;
-      input: IPrismInput<Input>;
-      config: Config['mock'];
-    },
-  ) => ReaderEither<Logger, Error, Output>;
+  mock: (opts: {
+    resource: Resource;
+    input: IPrismInput<Input>;
+    config: Config['mock'];
+  }) => ReaderEither<Logger, Error, Output>;
   logger: Logger;
 };
 
@@ -61,7 +62,7 @@ export class ProblemJsonError extends Error {
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
-      detail || '',
+      detail || ''
     );
     Error.captureStackTrace(error, ProblemJsonError);
 

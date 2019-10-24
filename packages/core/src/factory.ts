@@ -12,7 +12,7 @@ const sequenceValidation = sequenceT(Either.getValidation(getSemigroup<IPrismDia
 
 export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
-  components: IPrismComponents<Resource, Input, Output, Config>,
+  components: IPrismComponents<Resource, Input, Output, Config>
 ): IPrism<Resource, Input, Output, Config> {
   return {
     request: (input: Input, resources: Resource[], c?: Config) => {
@@ -23,41 +23,49 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         TaskEither.fromEither(components.route({ resources, input })),
         TaskEither.chain(resource => {
           const validateInputAndSecurity = sequenceValidation(
-            config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right({}),
-            config.checkSecurity ? validateSecurity(input, resource) : Either.right({})
+            config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
+            config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
           );
 
-          const mockWithValidation = (validations: IPrismDiagnostic[]) => components.mock({
-            resource,
-            input: {
-              validations,
-              data: input,
-            },
-            config: config.mock,
-          });
+          const mockWithValidation = (validations: IPrismDiagnostic[]) =>
+            components.mock({
+              resource,
+              input: {
+                validations,
+                data: input,
+              },
+              config: config.mock,
+            });
 
           const produceOutput = config.mock
             ? TaskEither.fromEither(
-              pipe(
-                validateInputAndSecurity,
-                Either.fold(mockWithValidation, () => mockWithValidation([]))
-              )(components.logger.child({ name: 'NEGOTIATOR' })),
-            )
+                pipe(
+                  validateInputAndSecurity,
+                  Either.fold(mockWithValidation, () => mockWithValidation([]))
+                )(components.logger.child({ name: 'NEGOTIATOR' }))
+              )
             : components.forward(resource, input);
 
           return pipe(
             produceOutput,
-            TaskEither.map(output => ({ output, resource })),
+            TaskEither.map(output => ({ output, resource }))
           );
         }),
         TaskEither.map(({ output, resource }) => {
           const outputValidations = pipe(
             config.validateResponse,
             Option.fromPredicate(t => t),
-            Option.chain(() => Option.fromEither(pipe(components.validateOutput({ resource, element: output }), Either.swap))),
+            Option.chain(() =>
+              Option.fromEither(
+                pipe(
+                  components.validateOutput({ resource, element: output }),
+                  Either.swap
+                )
+              )
+            ),
             Option.map<NonEmptyArray<IPrismDiagnostic>, IPrismDiagnostic[]>(t => t),
             Option.getOrElse<IPrismDiagnostic[]>(() => [])
-          )
+          );
 
           return {
             input,
@@ -67,7 +75,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               output: outputValidations,
             },
           };
-        }),
+        })
       )().then(v =>
         pipe(
           v,
@@ -75,9 +83,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             e => {
               throw e;
             },
-            o => o,
-          ),
-        ),
+            o => o
+          )
+        )
       );
     },
   };
