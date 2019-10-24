@@ -84,7 +84,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         if (opts.errors && errorViolations.length > 0) {
           throw ProblemJsonError.fromTemplate(
             UNPROCESSABLE_ENTITY,
-            'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+            'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
             { validation: errorViolations }
           );
         }
