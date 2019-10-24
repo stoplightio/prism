@@ -32,7 +32,7 @@ const sharedOptions: Dictionary<Options> = {
   },
 
   errors: {
-    description: 'Specifies whether response violations will be sent as an error response',
+    description: 'Specifies whether request/response violations marked as errors will produce an error response',
     required: true,
     boolean: true,
     default: false,
