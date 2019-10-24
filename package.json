@@ -31,7 +31,6 @@
     "@types/jest": "^24.0.18",
     "@types/json-schema": "^7.0.3",
     "@types/lodash": "^4.14.144",
-    "@types/nock": "^11.1.0",
     "@types/node": "^12.7.12",
     "@types/node-fetch": "2.5.2",
     "@types/pino": "^5.8.11",
@@ -60,8 +59,6 @@
     "ts-node": "^8.3.0",
     "ts-transform-import-path-rewrite": "^0.2.1",
     "tsconfig-paths": "^3.8.0",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-plugin-prettier": "^3.1.1",
     "ttypescript": "^1.5.7",
     "typescript": "^3.6.4"
   },
