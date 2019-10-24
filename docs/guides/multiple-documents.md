@@ -70,7 +70,7 @@ prism-multi-example
 └── nginx.conf
 ```
 
-With the files in place, you can run (from under `prism/`): `docker-compose up`.
+With the files in place, you can run (from under `prism-multi-example/`): `docker-compose up`.
 After a second, you should be set up with two Prism instances serving different OAS documents.
 
 ## Testing the cluster
