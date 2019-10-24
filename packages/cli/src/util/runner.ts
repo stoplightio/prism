@@ -12,6 +12,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
       let server: IPrismHttpServer = possiblyServer;
 
       const watcher = chokidar.watch(options.document, {
+        // See https://github.com/paulmillr/chokidar#persistence
         persistent: os.platform() === 'darwin',
         disableGlobbing: true,
         awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 100 },
