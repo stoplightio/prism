@@ -1,5 +1,5 @@
 ====test====
-Prism shall return output violations in an HTTP Header when the response is invalid
+Prism shall return output violations in an HTTP Header when there are violations marked as errors
 ====spec====
 openapi: 3.0.0
 paths:
@@ -22,6 +22,6 @@ mock -p 4010 ${document}
 curl -i http://localhost:4010/path
 ====expect====
 HTTP/1.1 200 OK
-sl-violations: body should be object
+sl-violations: [{"location":["body"],"severity":"Error","code":"type","message":"should be object"}]
 
 123
