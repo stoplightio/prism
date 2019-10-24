@@ -1,4 +1,4 @@
-import { createInstance, ProblemJsonError, UNPROCESSABLE_ENTITY } from '@stoplight/prism-http';
+import { createInstance, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
@@ -83,7 +83,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         );
         if (opts.errors && errorViolations.length > 0) {
           throw ProblemJsonError.fromTemplate(
-            UNPROCESSABLE_ENTITY,
+            VIOLATIONS,
             'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
             { validation: errorViolations }
           );

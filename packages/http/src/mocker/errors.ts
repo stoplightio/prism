@@ -23,3 +23,9 @@ export const UNAUTHORIZED: Omit<ProblemJson, 'detail'> = {
   title: 'Invalid security scheme used',
   status: 401,
 };
+
+export const VIOLATIONS: Omit<ProblemJson, 'detail'> = {
+  type: 'VIOLATIONS',
+  title: 'Request/Response not valid',
+  status: 500,
+};
