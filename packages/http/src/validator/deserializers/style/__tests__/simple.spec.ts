@@ -6,10 +6,6 @@ import * as createObjectFromKeyValListModule from '../utils';
 describe('SimpleStyleDeserializer', () => {
   const simpleStyleDeserializer = new SimpleStyleDeserializer();
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('supports()', () => {
     describe('style is supported', () => {
       it('returns true', () => {

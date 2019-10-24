@@ -1,19 +1,27 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import * as caseless from 'caseless';
-
 import { findFirst } from 'fp-ts/lib/Array';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
+// @ts-ignore
+import { URI } from 'uri-template-lite';
+
 import { IHttpRequest, IHttpResponse } from '../types';
-import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
+import {
+  header as headerDeserializerRegistry,
+  query as queryDeserializerRegistry,
+  path as pathDeserializerRegistry,
+} from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
+import { HttpPathValidator } from './validators/path';
 
 export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
+export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
 
 const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
   const results: IPrismDiagnostic[] = [];
@@ -35,7 +43,8 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
 
   return results
     .concat(headersValidator.validate(element.headers || {}, (request && request.headers) || []))
-    .concat(queryValidator.validate(element.url.query || {}, (request && request.query) || []));
+    .concat(queryValidator.validate(element.url.query || {}, (request && request.query) || []))
+    .concat(pathValidator.validate(getPathParams(element.url.path, resource.path), (request && request.path) || []));
 };
 
 const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
@@ -76,5 +85,9 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
     )
   );
 };
+
+function getPathParams(path: string, template: string) {
+  return new URI.Template(template).match(path);
+}
 
 export { validateInput, validateOutput };

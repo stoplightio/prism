@@ -28,5 +28,5 @@ export function serializeWithDelimitedStyle(
 }
 
 export const serializeWithCommaDelimitedStyle = partial(serializeWithDelimitedStyle, ',');
-export const serializeWithSpaceDelimitedStyle = partial(serializeWithDelimitedStyle, '%20');
+export const serializeWithSpaceDelimitedStyle = partial(serializeWithDelimitedStyle, ' ');
 export const serializeWithPipeDelimitedStyle = partial(serializeWithDelimitedStyle, '|');

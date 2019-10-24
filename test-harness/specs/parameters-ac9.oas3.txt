@@ -1,0 +1,36 @@
+====test====
+When I send a request to an operation
+And the operation has a required path param
+And the path param has regex pattern
+And the request path does not match the pattern
+Then I should get a 422 response back
+And the payload of the response should be in application/problem+json content-type
+====spec====
+openapi: 3.0.0
+paths:
+  '/path/{param}':
+    parameters:
+      - name: param
+        in: path
+        required: true
+        style: simple
+        schema:
+          type: string
+          pattern: '^[A-Z]+$'
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://127.0.0.1:4010/path/fp
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
+
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["path","param"],"severity":"Error","code":"pattern","message":"should match pattern \"^[A-Z]+$\""}]}

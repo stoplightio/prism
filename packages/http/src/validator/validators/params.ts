@@ -52,11 +52,9 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
 }
 
 function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema {
-  const schema: JSONSchema = {
+  return {
     type: 'object',
     properties: pickBy(mapValues(keyBy(params, p => p.name.toLowerCase()), 'schema')) as JSONSchema4,
     required: compact(params.map(m => (m.required ? m.name.toLowerCase() : undefined))),
   };
-
-  return schema;
 }

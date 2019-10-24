@@ -16,7 +16,7 @@ import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 // @ts-ignore
-import { parse } from 'uri-template';
+import { URI } from 'uri-template-lite';
 
 export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
   return pipe(
@@ -24,13 +24,12 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
     Either.chain(({ template: pathTemplate, values: pathValues }) =>
       pipe(
         generateTemplateAndValuesForQueryParams(pathTemplate, operation),
-        Either.map(({ template: queryTemplate, values: queryValues }) => ({
-          template: queryTemplate,
-          values: { ...pathValues, ...queryValues },
-        }))
+        Either.map(({ template: queryTemplate, values: queryValues }) => {
+          return { template: queryTemplate, values: { ...pathValues, ...queryValues } };
+        })
       )
     ),
-    Either.map(({ template, values }) => parse(template).expand(values))
+    Either.map(({ template, values }) => URI.expand(template, values))
   );
 }
 
