@@ -3,7 +3,7 @@ import { Either } from 'fp-ts/lib/Either';
 import { ReaderEither } from 'fp-ts/lib/ReaderEither';
 import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
-export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
+export type IPrismDiagnostic = Omit<IDiagnostic, 'range' | 'path'> & { path?: string[] };
 
 export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
   request: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
@@ -28,13 +28,11 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   validateInput: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
   forward: (input: Input, baseUrl: string) => TaskEither<Error, Output>;
-  mock: (
-    opts: {
-      resource: Resource;
-      input: IPrismInput<Input>;
-      config: Config['mock'];
-    },
-  ) => ReaderEither<Logger, Error, Output>;
+  mock: (opts: {
+    resource: Resource;
+    input: IPrismInput<Input>;
+    config: Config['mock'];
+  }) => ReaderEither<Logger, Error, Output>;
   logger: Logger;
 };
 
@@ -65,7 +63,7 @@ export class ProblemJsonError extends Error {
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
-      detail || '',
+      detail || ''
     );
     Error.captureStackTrace(error, ProblemJsonError);
 

@@ -150,14 +150,9 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   return prismServer;
 };
 
-const createErrorObjectWithPrefix = (locationPrefix: string) => (detail: IPrismDiagnostic) => {
-  const location = detail.path || [];
-  location.unshift(locationPrefix);
-
-  return {
-    location,
-    severity: DiagnosticSeverity[detail.severity],
-    code: detail.code,
-    message: detail.message,
-  };
-};
+const createErrorObjectWithPrefix = (locationPrefix: string) => (detail: IPrismDiagnostic) => ({
+  location: [locationPrefix].concat(detail.path || []),
+  severity: DiagnosticSeverity[detail.severity],
+  code: detail.code,
+  message: detail.message,
+});
