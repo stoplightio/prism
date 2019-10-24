@@ -42,7 +42,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockH
       return config;
     }),
     chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
-    chain(result => assembleResponse(result, payloadGenerator)),
+    chain(result => assembleResponse(result, payloadGenerator))
   );
 };
 
@@ -54,64 +54,65 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
     chain(() =>
       pipe(
         helpers.negotiateOptionsForInvalidRequest(resource.responses, securityValidation ? ['401'] : ['422', '400']),
-        mapLeft(
-          () =>
-            securityValidation
-              ? ProblemJsonError.fromTemplate(
-                  UNAUTHORIZED,
-                  '',
-                  securityValidation.tags && securityValidation.tags.length
-                    ? {
-                        headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
-                      }
-                    : undefined,
-                )
-              : ProblemJsonError.fromTemplate(
-                  UNPROCESSABLE_ENTITY,
-                  'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-                  {
-                    validation: input.validations.map(detail => ({
-                      location: detail.path,
-                      severity: DiagnosticSeverity[detail.severity],
-                      code: detail.code,
-                      message: detail.message,
-                    })),
-                  },
-                ),
-        ),
-      ),
-    ),
+        mapLeft(() =>
+          securityValidation
+            ? ProblemJsonError.fromTemplate(
+                UNAUTHORIZED,
+                '',
+                securityValidation.tags && securityValidation.tags.length
+                  ? {
+                      headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
+                    }
+                  : undefined
+              )
+            : ProblemJsonError.fromTemplate(
+                UNPROCESSABLE_ENTITY,
+                'Your request body is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+                {
+                  validation: input.validations.map(detail => ({
+                    location: detail.path,
+                    severity: DiagnosticSeverity[detail.severity],
+                    code: detail.code,
+                    message: detail.message,
+                  })),
+                }
+              )
+        )
+      )
+    )
   );
 }
 
 function negotiateResponse(
   mockConfig: IHttpOperationConfig,
   input: IPrismInput<IHttpRequest>,
-  resource: IHttpOperation,
+  resource: IHttpOperation
 ) {
-  const {
-    [DiagnosticSeverity.Error]: errors,
-    [DiagnosticSeverity.Warning]: warnings,
-  } = groupBy(input.validations, validation => validation.severity);
+  const { [DiagnosticSeverity.Error]: errors, [DiagnosticSeverity.Warning]: warnings } = groupBy(
+    input.validations,
+    validation => validation.severity
+  );
 
   if (errors) {
     return handleInputValidation(input, resource);
   } else {
     return pipe(
       withLogger(logger => {
-          warnings && warnings.forEach(warn => logger.warn({name: 'VALIDATOR'}, warn.message));
+        warnings && warnings.forEach(warn => logger.warn({ name: 'VALIDATOR' }, warn.message));
 
-          return logger.success({name: 'VALIDATOR'}, 'The request passed the validation rules. Looking for the best response');
-        },
-      ),
-      chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig)),
+        return logger.success(
+          { name: 'VALIDATOR' },
+          'The request passed the validation rules. Looking for the best response'
+        );
+      }),
+      chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig))
     );
   }
 }
 
 function assembleResponse(
   result: Either<Error, IHttpNegotiationResult>,
-  payloadGenerator: PayloadGenerator,
+  payloadGenerator: PayloadGenerator
 ): Reader<Logger, Either<Error, IHttpResponse>> {
   return withLogger(logger =>
     pipe(
@@ -132,8 +133,8 @@ function assembleResponse(
         logger.success(`Responding with the requested status code ${response.statusCode}`);
 
         return response;
-      }),
-    ),
+      })
+    )
   );
 }
 
@@ -160,7 +161,7 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: Pay
 
 function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
-  payloadGenerator: PayloadGenerator,
+  payloadGenerator: PayloadGenerator
 ) {
   if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
     return negotiationResult.bodyExample.value;

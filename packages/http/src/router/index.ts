@@ -20,8 +20,8 @@ const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig
     return left(
       ProblemJsonError.fromTemplate(
         NO_RESOURCE_PROVIDED_ERROR,
-        `The current document does not have any resource to match with.`,
-      ),
+        `The current document does not have any resource to match with.`
+      )
     );
   }
 
@@ -71,8 +71,8 @@ const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig
     return left(
       ProblemJsonError.fromTemplate(
         NO_PATH_MATCHED_ERROR,
-        `The route ${requestPath} hasn't been found in the specification file`,
-      ),
+        `The route ${requestPath} hasn't been found in the specification file`
+      )
     );
   }
 
@@ -82,8 +82,8 @@ const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig
     return left(
       ProblemJsonError.fromTemplate(
         NO_METHOD_MATCHED_ERROR,
-        `The route ${requestPath} has been matched, but it does not have "${input.method}" method defined`,
-      ),
+        `The route ${requestPath} has been matched, but it does not have "${input.method}" method defined`
+      )
     );
   }
 
@@ -92,8 +92,8 @@ const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig
       return left(
         ProblemJsonError.fromTemplate(
           NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
-          `No server configuration has been provided, although ${requestBaseUrl} is set as server url`,
-        ),
+          `No server configuration has been provided, although ${requestBaseUrl} is set as server url`
+        )
       );
     }
 
@@ -103,8 +103,8 @@ const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig
       return left(
         ProblemJsonError.fromTemplate(
           NO_SERVER_MATCHED_ERROR,
-          `The server url ${requestBaseUrl} hasn't been matched with any of the provided servers`,
-        ),
+          `The server url ${requestBaseUrl} hasn't been matched with any of the provided servers`
+        )
       );
     }
   }
