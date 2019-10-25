@@ -1,6 +1,6 @@
 # Prism CLI
 
-Prism CLI for now only has one command: `mock`.
+Prism CLI has two commands: `mock` and `proxy`.
 
 ## Mock server
 
@@ -11,8 +11,8 @@ prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.
 ✔  success   Prism is listening on http://127.0.0.1:4010
 ●  note      GET        http://127.0.0.1:4010/pets
 ●  note      POST       http://127.0.0.1:4010/pets
-●  note      GET        http://127.0.0.1:4010/pets/{id}
-●  note      DELETE     http://127.0.0.1:4010/pets/{id}
+●  note      GET        http://127.0.0.1:4010/pets/10
+●  note      DELETE     http://127.0.0.1:4010/pets/10
 ```
 
 Then in another tab, you can hit the HTTP server with your favorite HTTP client.
@@ -42,12 +42,13 @@ When they happen, Prism restarts its HTTP server to reflect changes to operation
 There is no need to manually stop and start a Prism server after a change to a specification file.
 
 In case of removing all of the operations in a document, Prism will not be reloaded.
-In such a case, Prism will keep serving operations loaded with the previous restart. 
+In such a case, Prism will keep serving operations loaded with the previous restart.
 
-## Determine Response Status
+## Modifying Responses
 
-Prism can be forced to return different HTTP responses by specifying the status code in the query
-string:
+#### Force Response Status
+
+Prism can be forced to return different HTTP responses by specifying the status code in the query string:
 
 ```bash
 curl -v http://127.0.0.1:4010/pets/123?__code=404
@@ -60,6 +61,67 @@ Connection: keep-alive
 ```
 
 The body, headers, etc. for this response will be taken from the API description document.
+
+#### Request Specific Examples
+
+You can request a specific example from your document by using the `__example` query string parameter.
+
+```bash
+curl -v http://127.0.0.1:4010/pets/123?__example=exampleKey
+```
+
+#### Dynamic Response
+
+You can override the `--dynamic|-d` CLI param (which decides whether the generated example is static or dynamic) through the `__dynamic` query string parameter.
+
+```bash
+curl -v http://127.0.0.1:4010/pets/123?__dynamic=false
+```
+
+## Proxy
+
+This command creates an HTTP server that will proxy all the requests to the specified upstream server. Prism will analyze the request coming in and the response coming back from the upstream server and report the discrepancies with what's declared in the provided OpenAPI document.
+
+**Note:** Currently the proxy command _expects_ a JSON Payload for both the request and the response. If the response's `content-type` header does not indicate a JSON-ish payload (`application/json`, `application/*+json`), then the payload will be just returned as text and send back to the original client.
+
+```
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
+
+[CLI] …  awaiting  Starting Prism…
+[HTTP SERVER] ℹ  info      Server listening at http://127.0.0.1:4010
+[CLI] ●  note      GET        http://127.0.0.1:4010/pets
+[CLI] ●  note      POST       http://127.0.0.1:4010/pets
+[CLI] ●  note      GET        http://127.0.0.1:4010/pets/10
+```
+
+The output violations will be reported on the standard output and as a response header (`sl-violations`)
+
+```bash
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
+… …
+
+curl -v -s http://localhost:4010/pet/10 > /dev/null
+
+< sl-violations: [{"location":["request"],"severity":"Error","code":401,"message":"Invalid security scheme used"}]
+```
+
+You can see there's a `sl-violations` header which is a JSON object with all the violations found in the response.
+
+The header is a handy way to see contract mismatches or incorrect usage in a way that doesn't block the client, so you can monitor all/some production traffic this way record the problems. If you want Prism to make violations considerably more clear, run the proxy command with the `--errors` flag. This will turn any request or response violation into a [RFC 7807 HTTP Problem Details Error](https://tools.ietf.org/html/rfc7807) just like validation errors on the mock server.
+
+```bash
+prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --errors
+… …
+
+curl -v -X POST http://localhost:4010/pet/
+
+< HTTP/1.1 422 Unprocessable Entity
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.","validation":[{"location":["request"],"severity":"Error","code":401,"message":"Invalid security scheme used"}]}
+```
+
+The response body contains the found output violations.
+
+**Note:** Server definitions (OAS3) and Host + BasePath (OAS2) are ignored. You need to manually specify the upstream URL when invoking Prism.
 
 ## Running in Production
 

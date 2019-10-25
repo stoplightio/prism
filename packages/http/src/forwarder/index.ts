@@ -1,53 +1,47 @@
 import { IPrismComponents } from '@stoplight/prism-core';
-import { IHttpOperation, IServer } from '@stoplight/types';
-import axios from 'axios';
+import { IHttpOperation } from '@stoplight/types';
+import { mapValues } from 'lodash';
+import fetch from 'node-fetch';
+import * as typeIs from 'type-is';
 import { toError } from 'fp-ts/lib/Either';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
-import { defaults, mapValues } from 'lodash';
-import * as URITemplate from 'urijs/src/URITemplate';
-import { NO_BASE_URL_ERROR } from '../router/errors';
-import { IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../types';
+import { defaults, omit } from 'lodash';
+import { format, parse } from 'url';
+import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
+import { posix } from 'path';
+
 const { version: prismVersion } = require('../../package.json');
 
 const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>['forward'] = (
-  resource: IHttpOperation,
   input: IHttpRequest,
-  timeout = 0
-): TaskEither.TaskEither<Error, IHttpResponse> => {
-  const baseUrl =
-    resource.servers && resource.servers.length > 0 ? resolveServerUrl(resource.servers[0]) : input.url.baseUrl;
+  baseUrl: string
+): TaskEither.TaskEither<Error, IHttpResponse> =>
+  TaskEither.tryCatch<Error, IHttpResponse>(async () => {
+    const partialUrl = parse(baseUrl);
 
-  if (!baseUrl) {
-    return TaskEither.left(ProblemJsonError.fromTemplate(NO_BASE_URL_ERROR));
-  }
+    const response = await fetch(
+      format({
+        ...partialUrl,
+        pathname: posix.join(partialUrl.pathname || '', input.url.path),
+        query: input.url.query,
+      }),
+      {
+        headers: defaults(omit(input.headers, ['host', 'accept']), {
+          accept: 'application/json, text/plain, */*',
+          'user-agent': `Prism/${prismVersion}`,
+        }),
+      }
+    );
 
-  return TaskEither.tryCatch<Error, IHttpResponse>(async () => {
-    const response = await axios.request<unknown>({
-      method: input.method as any,
-      baseURL: baseUrl,
-      url: input.url.path,
-      params: input.url.query,
-      data: input.body,
-      headers: defaults(input.headers, { 'user-agent': `Prism/${prismVersion}` }),
-      validateStatus: () => true,
-      timeout: Math.max(timeout, 0),
-    });
+    const parsedBody = typeIs.is(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
+      ? await response.json()
+      : await response.text();
 
     return {
       statusCode: response.status,
-      headers: response.headers,
-      body: response.data,
+      headers: mapValues(response.headers.raw(), hValue => hValue.join(' ')),
+      body: parsedBody,
     };
   }, toError);
-};
-
-function resolveServerUrl(server: IServer) {
-  const variables = server.variables;
-  if (!variables) return server.url;
-
-  return new URITemplate(server.url)
-    .expand(mapValues(variables, v => v.default || v.enum![0]), { strict: true })
-    .toString();
-}
 
 export default forward;

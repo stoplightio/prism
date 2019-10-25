@@ -6,10 +6,6 @@ import * as createObjectFromKeyValListModule from '../utils';
 describe('SimpleStyleDeserializer', () => {
   const simpleStyleDeserializer = new SimpleStyleDeserializer();
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('supports()', () => {
     describe('style is supported', () => {
       it('returns true', () => {
@@ -30,7 +26,7 @@ describe('SimpleStyleDeserializer', () => {
     describe('type is a primitive', () => {
       it('returns unmodified value', () => {
         expect(simpleStyleDeserializer.deserialize('name', { name: 'value' }, { type: 'string' }, false)).toEqual(
-          'value',
+          'value'
         );
       });
     });
@@ -53,7 +49,7 @@ describe('SimpleStyleDeserializer', () => {
       });
       it('returns unmodified value', () => {
         expect(simpleStyleDeserializer.deserialize('name', { name: 'value' }, { type: 'string' }, false)).toEqual(
-          'value',
+          'value'
         );
       });
     });

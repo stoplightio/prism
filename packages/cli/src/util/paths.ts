@@ -16,20 +16,20 @@ import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 // @ts-ignore
-import { parse } from 'uri-template';
+import { URI } from 'uri-template-lite';
 
 export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
   return pipe(
     generateTemplateAndValuesForPathParams(operation),
-    Either.chain(({ template: pathTemplate, values: pathValues }) => {
-      return pipe(
+    Either.chain(({ template: pathTemplate, values: pathValues }) =>
+      pipe(
         generateTemplateAndValuesForQueryParams(pathTemplate, operation),
         Either.map(({ template: queryTemplate, values: queryValues }) => {
           return { template: queryTemplate, values: { ...pathValues, ...queryValues } };
         })
-      );
-    }),
-    Either.map(({ template, values }) => parse(template).expand(values))
+      )
+    ),
+    Either.map(({ template, values }) => URI.expand(template, values))
   );
 }
 
@@ -70,20 +70,22 @@ function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
 }
 
 function generateParamValues(specs: IHttpParam[]) {
-  return specs.reduce((valuesOrError: Either.Either<Error, Dictionary<unknown, string>>, spec) => {
-    return pipe(
-      valuesOrError,
-      Either.chain(values =>
-        pipe(
-          generateParamValue(spec),
-          Either.map(value => ({
-            ...values,
-            [spec.name]: value,
-          }))
+  return specs.reduce(
+    (valuesOrError: Either.Either<Error, Dictionary<unknown, string>>, spec) =>
+      pipe(
+        valuesOrError,
+        Either.chain(values =>
+          pipe(
+            generateParamValue(spec),
+            Either.map(value => ({
+              ...values,
+              [spec.name]: value,
+            }))
+          )
         )
-      )
-    );
-  }, Either.right({}));
+      ),
+    Either.right({})
+  );
 }
 
 function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
@@ -91,12 +93,12 @@ function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
 
   return pipe(
     generateParamValues(specs),
-    Either.chain(values => {
-      return pipe(
+    Either.chain(values =>
+      pipe(
         createPathUriTemplate(operation.path, specs),
         Either.map(template => ({ template, values }))
-      );
-    })
+      )
+    )
   );
 }
 
@@ -113,17 +115,19 @@ function createPathUriTemplate(inputPath: string, specs: IHttpPathParam[]): Eith
   // defaults for query: style=Simple exploded=false
   return specs
     .filter(spec => spec.required !== false)
-    .reduce((pathOrError: Either.Either<Error, string>, spec) => {
-      return pipe(
-        pathOrError,
-        Either.chain(path => {
-          return pipe(
-            createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
-            Either.map(template => path.replace(`{${spec.name}}`, template))
-          );
-        })
-      );
-    }, Either.right(inputPath));
+    .reduce(
+      (pathOrError: Either.Either<Error, string>, spec) =>
+        pipe(
+          pathOrError,
+          Either.chain(path =>
+            pipe(
+              createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
+              Either.map(template => path.replace(`{${spec.name}}`, template))
+            )
+          )
+        ),
+      Either.right(inputPath)
+    );
 }
 
 function createParamUriTemplate(name: string, style: HttpParamStyles, explode: boolean) {

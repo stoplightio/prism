@@ -3,12 +3,16 @@ import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults } from 'lodash';
-import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic } from './types';
+import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig } from './types';
 import { validateSecurity } from './utils/security';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray';
 
 const sequenceValidation = sequenceT(Either.getValidation(getSemigroup<IPrismDiagnostic>()));
+
+function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
+  return !p.mock;
+}
 
 export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
@@ -37,14 +41,14 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               config: config.mock,
             });
 
-          const produceOutput = config.mock
-            ? TaskEither.fromEither(
+          const produceOutput = isProxyConfig(config)
+            ? components.forward(input, config.upstream.href)
+            : TaskEither.fromEither(
                 pipe(
                   validateInputAndSecurity,
                   Either.fold(mockWithValidation, () => mockWithValidation([]))
                 )(components.logger.child({ name: 'NEGOTIATOR' }))
-              )
-            : components.forward(resource, input);
+              );
 
           return pipe(
             produceOutput,

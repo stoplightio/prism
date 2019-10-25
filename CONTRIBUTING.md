@@ -119,44 +119,6 @@ rm -rf packages/**/dist
 rm -rf packages/**/*.tsbuildinfo
 ```
 
-…then try again. If it does not work, you can generally blame [Vincenzo](https://github.com/XVincentX) and write him.
-
-## Creating an issue
-
-We want to keep issues in this repo focused on bug reports and feature requests.
-
-For support questions, please use the [Stoplight Community forum](https://community.stoplight.io/c/open-source). If you are unsure if you are experiencing a bug, the [forum](https://community.stoplight.io/c/open-source) is a great place to start.
-
-Before you open an issue, try to see if anyone else has already opened an issue that might be similar to your issue or feature request. Start by commenting there to see if you are having the same issue or feature request.
-
-We have an issue template setup:
-
-```
-### **I'm submitting a...**
-  - bug report
-  - feature request
-
-### What is the current behavior?
-
-If the current behavior is a bug, please provide the steps to reproduce and if possible a minimal demo of the problem.
-
-### What is the expected behavior?
-
-### What is the motivation / use case for changing the behavior?
-
-### Please tell us about your environment:
-
-  - Version: 2.0.0-beta.X
-  - Framework: [ ]
-  - Language: [all | TypeScript X.X | ES6/7 | ES5 | Dart]
-
-### Other information
-
-(e.g. detailed explanation, stacktraces, related issues, suggestions how to fix, links for us to have context, eg. stackoverflow, issues outside of the repo, forum, etc.)
-```
-
-We realize there is a lot of data requested here. We ask only that you do your best to provide as much information as possible so we can better help you.
-
 ## Support
 
 For support questions, please use the [Stoplight Community forum](https://community.stoplight.io/c/open-source). If you are unsure if you are experiencing a bug, the [forum](https://community.stoplight.io/c/open-source) is a great place to start.

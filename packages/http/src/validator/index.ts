@@ -6,16 +6,25 @@ import * as Option from 'fp-ts/lib/Option';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
+// @ts-ignore
+import { URI } from 'uri-template-lite';
+
 import { IHttpRequest, IHttpResponse } from '../types';
-import { header as headerDeserializerRegistry, query as queryDeserializerRegistry } from './deserializers';
+import {
+  header as headerDeserializerRegistry,
+  query as queryDeserializerRegistry,
+  path as pathDeserializerRegistry,
+} from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { sequenceValidation, sequenceOption } from './validators/utils';
+import { HttpPathValidator } from './validators/path';
 
 export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
+export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
 
 const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
@@ -95,5 +104,9 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
     Either.map(() => element)
   );
 };
+
+function getPathParams(path: string, template: string) {
+  return new URI.Template(template).match(path);
+}
 
 export { validateInput, validateOutput };

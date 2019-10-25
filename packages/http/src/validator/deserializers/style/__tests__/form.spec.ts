@@ -6,10 +6,6 @@ import * as createObjectFromKeyValListModule from '../utils';
 describe('FormStyleDeserializer', () => {
   const formStyleDeserializer = new FormStyleDeserializer();
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe('supports()', () => {
     describe('style is supported', () => {
       it('returns true', () => {
@@ -37,7 +33,7 @@ describe('FormStyleDeserializer', () => {
         describe('query param is an array', () => {
           it('returns unmodified value', () => {
             expect(
-              formStyleDeserializer.deserialize('key', { key: ['val1', 'val2'] }, { type: 'array' }, true),
+              formStyleDeserializer.deserialize('key', { key: ['val1', 'val2'] }, { type: 'array' }, true)
             ).toEqual(['val1', 'val2']);
           });
         });
@@ -53,7 +49,7 @@ describe('FormStyleDeserializer', () => {
         describe('query param is an array', () => {
           it('splits last query param value', () => {
             expect(
-              formStyleDeserializer.deserialize('key', { key: ['a,b,c', 'd,e,f'] }, { type: 'array' }, false),
+              formStyleDeserializer.deserialize('key', { key: ['a,b,c', 'd,e,f'] }, { type: 'array' }, false)
             ).toEqual(['d', 'e', 'f']);
           });
         });
@@ -78,8 +74,8 @@ describe('FormStyleDeserializer', () => {
               'a',
               { a: 'b', c: 'd' },
               { type: 'object', properties: { a: { type: 'string' } } },
-              true,
-            ),
+              true
+            )
           ).toEqual({ a: 'b' });
         });
 
@@ -99,7 +95,7 @@ describe('FormStyleDeserializer', () => {
             });
 
             expect(
-              formStyleDeserializer.deserialize('key', { key: ['e,f,g,h', 'a,b,c,d'] }, { type: 'object' }, false),
+              formStyleDeserializer.deserialize('key', { key: ['e,f,g,h', 'a,b,c,d'] }, { type: 'object' }, false)
             ).toEqual({ a: 'b', c: 'd' });
 
             expect(createObjectFromKeyValListModule.createObjectFromKeyValList).toHaveBeenCalled();

@@ -17,6 +17,11 @@ export interface IHttpConfig extends IPrismConfig {
   mock: false | IHttpOperationConfig;
 }
 
+export interface IHttpProxyConfig extends IHttpConfig {
+  mock: false;
+  upstream: URL;
+}
+
 export type IMockHttpConfig = IHttpConfig & { mock: IHttpOperationConfig };
 
 export type IHttpNameValues = Dictionary<string | string[]>;
@@ -53,14 +58,14 @@ export class ProblemJsonError extends Error {
   public static fromTemplate(
     template: Omit<ProblemJson, 'detail'>,
     detail?: string,
-    additional?: Dictionary<unknown>,
+    additional?: Dictionary<unknown>
   ): ProblemJsonError {
     const error = new ProblemJsonError(
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
       detail || '',
-      additional,
+      additional
     );
     Error.captureStackTrace(error, ProblemJsonError);
 
@@ -68,7 +73,7 @@ export class ProblemJsonError extends Error {
   }
 
   public static fromPlainError(
-    error: Error & { detail?: string; status?: number; additional?: Dictionary<unknown> },
+    error: Error & { detail?: string; status?: number; additional?: Dictionary<unknown> }
   ): ProblemJson {
     return {
       type: error.name && error.name !== 'Error' ? error.name : 'https://stoplight.io/prism/errors#UNKNOWN',
@@ -84,7 +89,7 @@ export class ProblemJsonError extends Error {
     readonly message: string,
     readonly status: number,
     readonly detail: string,
-    readonly additional?: Dictionary<unknown>,
+    readonly additional?: Dictionary<unknown>
   ) {
     super(message);
     Error.captureStackTrace(this, ProblemJsonError);

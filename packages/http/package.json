@@ -16,6 +16,7 @@
     "node": ">=8"
   },
   "dependencies": {
+    "@stoplight/http-spec": "^2.2.3",
     "@stoplight/json-ref-resolver": "^3.0.1",
     "@stoplight/prism-core": "^3.1.1",
     "@stoplight/ref-resolvers": "^1.0.2",
@@ -32,7 +33,7 @@
     "pino": "^5.13.2",
     "tslib": "^1.10.0",
     "type-is": "^1.6.18",
-    "urijs": "^1.19.1"
+    "uri-template-lite": "^19.4.0"
   },
   "publishConfig": {
     "access": "public"

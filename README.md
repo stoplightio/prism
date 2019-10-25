@@ -33,7 +33,7 @@ After [installation](https://stoplight.io/p/docs/gh/stoplightio/prism/docs/getti
 - [x] Content Negotiation
 - [x] Security Validation
 - [ ] Custom Mocking
-- [ ] Validation Proxy
+- [x] Validation Proxy
 - [ ] Recording / "Learning" mode to create spec files
 - [ ] Data Persistence (allow Prism act like a sandbox)
 

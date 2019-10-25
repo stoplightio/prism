@@ -20,12 +20,13 @@ describe('HttpQueryValidator', () => {
           it('returns validation error', () => {
             assertLeft(
               httpQueryValidator.validate({}, [{ name: 'aParam', style: HttpParamStyles.Form, required: true }]),
-              error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Error })));
+              error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Error }))
+            );
           });
         });
       });
 
-      describe('header is present', () => {
+      describe('query param is present', () => {
         describe('schema is present', () => {
           describe('deserializer not available', () => {
             it('omits schema validation', () => {
@@ -52,7 +53,7 @@ describe('HttpQueryValidator', () => {
                       style: HttpParamStyles.Form,
                       schema: { type: 'string' },
                     },
-                  ]),
+                  ])
                 );
 
                 expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
@@ -69,7 +70,7 @@ describe('HttpQueryValidator', () => {
                   name: 'param',
                   style: HttpParamStyles.Form,
                 },
-              ]),
+              ])
             );
 
             expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
@@ -85,7 +86,9 @@ describe('HttpQueryValidator', () => {
                   deprecated: true,
                   style: HttpParamStyles.Form,
                 },
-              ]), error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Warning })));
+              ]),
+              error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Warning }))
+            );
           });
         });
       });

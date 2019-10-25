@@ -1,6 +1,6 @@
 import { createLogger, logLevels } from '@stoplight/prism-core';
+import { IHttpConfig, IHttpProxyConfig, getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
-import { IHttpOperation } from '@stoplight/types';
 import chalk from 'chalk';
 import * as cluster from 'cluster';
 import * as Either from 'fp-ts/lib/Either';
@@ -12,7 +12,7 @@ import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 
-export async function createMultiProcessPrism(options: CreatePrismOptions) {
+async function createMultiProcessPrism(options: CreateBaseServerOptions) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -23,6 +23,8 @@ export async function createMultiProcessPrism(options: CreatePrismOptions) {
     if (worker.process.stdout) {
       pipeOutputToSignale(worker.process.stdout);
     }
+
+    return;
   } else {
     const logInstance = createLogger('CLI');
     try {
@@ -34,7 +36,7 @@ export async function createMultiProcessPrism(options: CreatePrismOptions) {
   }
 }
 
-export async function createSingleProcessPrism(options: CreatePrismOptions) {
+async function createSingleProcessPrism(options: CreateBaseServerOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
@@ -48,25 +50,33 @@ export async function createSingleProcessPrism(options: CreatePrismOptions) {
   }
 }
 
-async function createPrismServerWithLogger(options: CreatePrismOptions, logInstance: Logger) {
-  if (options.operations.length === 0) {
+async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
+  const operations = await getHttpOperationsFromResource(options.document);
+
+  if (operations.length === 0) {
     throw new Error('No operations found in the current file.');
   }
 
-  const server = createHttpServer(options.operations, {
+  const shared: Omit<IHttpConfig, 'mock'> = {
+    validateRequest: true,
+    validateResponse: true,
+    checkSecurity: true,
+  };
+
+  const config: IHttpProxyConfig | IHttpConfig = isProxyServerOptions(options)
+    ? { ...shared, mock: false, upstream: options.upstream }
+    : { ...shared, mock: { dynamic: options.dynamic } };
+
+  const server = createHttpServer(operations, {
     cors: options.cors,
-    config: {
-      mock: { dynamic: options.dynamic },
-      validateRequest: true,
-      validateResponse: true,
-      checkSecurity: true,
-    },
+    config,
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
+    errors: options.errors,
   });
 
   const address = await server.listen(options.port, options.host);
 
-  options.operations.forEach(resource => {
+  operations.forEach(resource => {
     const path = pipe(
       createExamplePath(resource),
       Either.getOrElse(() => resource.path)
@@ -74,6 +84,7 @@ async function createPrismServerWithLogger(options: CreatePrismOptions, logInsta
 
     logInstance.note(`${resource.method.toUpperCase().padEnd(10)} ${address}${path}`);
   });
+
   logInstance.start(`Prism is listening on ${address}`);
 
   return server;
@@ -97,10 +108,25 @@ function pipeOutputToSignale(stream: Readable) {
   });
 }
 
-export type CreatePrismOptions = {
+function isProxyServerOptions(options: CreateBaseServerOptions): options is CreateProxyServerOptions {
+  return 'upstream' in options;
+}
+
+type CreateBaseServerOptions = {
   dynamic: boolean;
   cors: boolean;
-  host?: string;
+  host: string;
   port: number;
-  operations: IHttpOperation[];
+  document: string;
+  multiprocess: boolean;
+  errors: boolean;
 };
+
+export interface CreateProxyServerOptions extends CreateBaseServerOptions {
+  dynamic: false;
+  upstream: URL;
+}
+
+export type CreateMockServerOptions = CreateBaseServerOptions;
+
+export { createMultiProcessPrism, createSingleProcessPrism };

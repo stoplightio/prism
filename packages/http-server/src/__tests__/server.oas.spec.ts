@@ -19,7 +19,13 @@ async function instantiatePrism(specPath: string) {
   const operations = await getHttpOperationsFromResource(specPath);
   return createServer(operations, {
     components: { logger },
-    config: { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+    config: {
+      checkSecurity: true,
+      validateRequest: true,
+      validateResponse: true,
+      mock: { dynamic: false },
+    },
+    errors: false,
     cors: true,
   });
 }
@@ -139,10 +145,6 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
 
     expect(response.statusCode).toBe(400);
   });
-
-  test.todo(
-    'should automagically provide the parameters when not provided in the query string and a default is defined'
-  );
 
   it('should support multiple param values', async () => {
     const response = await server.fastify.inject({

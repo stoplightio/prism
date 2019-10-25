@@ -1,60 +1,24 @@
-import { getHttpOperationsFromResource } from '@stoplight/prism-http';
-import * as signale from 'signale';
 import { CommandModule } from 'yargs';
-import { createMultiProcessPrism, CreatePrismOptions, createSingleProcessPrism } from '../util/createServer';
+import { CreateMockServerOptions, createMultiProcessPrism, createSingleProcessPrism } from '../util/createServer';
+import sharedOptions from './sharedOptions';
 import { runPrismAndSetupWatcher } from '../util/runner';
 
 const mockCommand: CommandModule = {
-  describe: 'Start a mock server with the given spec file',
-  command: 'mock <spec>',
+  describe: 'Start a mock server with the given document file',
+  command: 'mock <document>',
   builder: yargs =>
     yargs
-      .positional('spec', {
-        description: 'Path to a spec file. Can be both a file or a fetchable resource on the web.',
+      .positional('document', {
+        description: 'Path to a document file. Can be both a file or a fetchable resource on the web.',
         type: 'string',
       })
-      .middleware(async argv => (argv.operations = await getHttpOperationsFromResource(argv.spec!)))
-      .fail((msg, err) => {
-        if (msg) yargs.showHelp();
-        else signale.fatal(err.message);
-
-        process.exit(1);
-      })
       .options({
-        port: {
-          alias: 'p',
-          description: 'Port that Prism will run on.',
-          default: 4010,
-          demandOption: true,
-          number: true,
-        },
-
-        host: {
-          alias: 'h',
-          description: 'Host that Prism will listen to.',
-          default: '127.0.0.1',
-          demandOption: true,
-          string: true,
-        },
-
+        ...sharedOptions,
         dynamic: {
           alias: 'd',
           description: 'Dynamically generate examples.',
           boolean: true,
           default: false,
-        },
-
-        cors: {
-          description: 'Enables CORS headers.',
-          boolean: true,
-          default: true,
-        },
-
-        multiprocess: {
-          alias: 'm',
-          description: 'Forks the http server from the CLI for faster log processing.',
-          boolean: true,
-          default: process.env.NODE_ENV === 'production',
         },
       }),
   handler: parsedArgs => {
@@ -64,17 +28,14 @@ const mockCommand: CommandModule = {
       port,
       host,
       cors,
-      operations,
-      spec,
-    } = (parsedArgs as unknown) as CreatePrismOptions & {
-      multiprocess: boolean;
-      spec: string;
-    };
+      document,
+      errors,
+    } = (parsedArgs as unknown) as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
-    const options = { cors, dynamic, port, host, operations };
+    const options = { cors, dynamic, port, host, document, multiprocess, errors };
 
-    return runPrismAndSetupWatcher(createPrism, options, spec);
+    return runPrismAndSetupWatcher(createPrism, options);
   },
 };
 

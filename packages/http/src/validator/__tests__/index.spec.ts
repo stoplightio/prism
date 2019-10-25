@@ -1,8 +1,15 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
-import * as Either from 'fp-ts/lib/Either'
+import { DiagnosticSeverity, IHttpOperation, HttpParamStyles } from '@stoplight/types';
+import * as Either from 'fp-ts/lib/Either';
 import { IHttpRequest } from '../../types';
-import { bodyValidator, headersValidator, queryValidator, validateInput, validateOutput } from '../index';
+import {
+  bodyValidator,
+  headersValidator,
+  queryValidator,
+  pathValidator,
+  validateInput,
+  validateOutput,
+} from '../index';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 const mockError: IPrismDiagnostic = {
@@ -18,6 +25,7 @@ describe('HttpValidator', () => {
       jest.spyOn(bodyValidator, 'validate').mockReturnValue(Either.left([mockError]));
       jest.spyOn(headersValidator, 'validate').mockReturnValue(Either.left([mockError]));
       jest.spyOn(queryValidator, 'validate').mockReturnValue(Either.left([mockError]));
+      jest.spyOn(pathValidator, 'validate').mockReturnValue(Either.left([mockError]));
     });
 
     afterAll(() => jest.restoreAllMocks());
@@ -34,10 +42,12 @@ describe('HttpValidator', () => {
                 request: {},
                 responses: [{ code: '200' }],
               },
-              resourceExtension,
+              resourceExtension
             ),
             element: { method: 'get', url: { path: '/' } },
-          }), error => expect(error).toHaveLength(errorsNumber));
+          }),
+          error => expect(error).toHaveLength(errorsNumber)
+        );
       };
 
       describe('request.body is set', () => {
@@ -48,8 +58,8 @@ describe('HttpValidator', () => {
               {
                 request: { body: { contents: [] }, path: [], query: [], headers: [], cookie: [] },
               },
-              2,
-            ),
+              3
+            )
           );
         });
 
@@ -64,8 +74,8 @@ describe('HttpValidator', () => {
                 request: { body: { contents: [], required: true } },
                 responses: [{ code: '200' }],
               },
-              3,
-            ),
+              4
+            )
           );
         });
       });
@@ -83,14 +93,16 @@ describe('HttpValidator', () => {
                 request: {},
                 responses: [{ code: '200' }],
               },
-              resourceExtension,
+              resourceExtension
             ),
             element: { method: 'get', url: { path: '/' } },
-          }), error => expect(error).toHaveLength(length));
+          }),
+          error => expect(error).toHaveLength(length)
+        );
       };
 
       describe('request is not set', () => {
-        it('validates headers', validate(undefined, 2));
+        it('validates headers', validate(undefined, 3));
       });
     });
 
@@ -98,7 +110,7 @@ describe('HttpValidator', () => {
       const validate = (
         resourceExtension?: Partial<IHttpOperation>,
         inputExtension?: Partial<IHttpRequest>,
-        length = 2,
+        length = 3
       ) => () => {
         assertLeft(
           validateInput({
@@ -110,10 +122,12 @@ describe('HttpValidator', () => {
                 request: {},
                 responses: [{ code: '200' }],
               },
-              resourceExtension,
+              resourceExtension
             ),
             element: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
-          }), error => expect(error).toHaveLength(length));
+          }),
+          error => expect(error).toHaveLength(length)
+        );
 
         expect(bodyValidator.validate).not.toHaveBeenCalled();
         expect(headersValidator.validate).toHaveBeenCalled();
@@ -121,21 +135,47 @@ describe('HttpValidator', () => {
       };
 
       describe('request is not set', () => {
-        it('validates query', validate(undefined, undefined, 2));
+        it('validates query', validate(undefined, undefined, 3));
       });
 
       describe('request is set', () => {
         describe('request.query is not set', () => {
-          it('validates query', validate({ request: {} }, undefined, 2));
+          it('validates query', validate({ request: {} }, undefined, 3));
         });
 
         describe('request.query is set', () => {
-          it('validates query', validate({ request: {} }, undefined, 2));
+          it('validates query', validate({ request: {} }, undefined, 3));
         });
       });
 
       describe('input.url.query is not set', () => {
         it("validates query assuming it's empty", validate(undefined, { url: { path: '/' } }));
+      });
+    });
+
+    describe('path validation in enabled', () => {
+      describe('request is set', () => {
+        describe('request.path is set', () => {
+          it('calls the path validator', () => {
+            validateInput({
+              resource: {
+                method: 'get',
+                path: '/a/{a}/b/{b}',
+                id: '1',
+                request: {
+                  path: [{ name: 'a', style: HttpParamStyles.Simple }, { name: 'b', style: HttpParamStyles.Matrix }],
+                },
+                responses: [{ code: '200' }],
+              },
+              element: { method: 'get', url: { path: '/a/1/b/;b=2' } },
+            });
+
+            expect(pathValidator.validate).toHaveBeenCalledWith({ a: '1', b: ';b=2' }, [
+              { name: 'a', style: HttpParamStyles.Simple },
+              { name: 'b', style: HttpParamStyles.Matrix },
+            ]);
+          });
+        });
       });
     });
   });
@@ -161,7 +201,9 @@ describe('HttpValidator', () => {
               responses: [{ code: '200' }],
             },
             element: { statusCode: 200 },
-          }), error => expect(error).toHaveLength(3));
+          }),
+          error => expect(error).toHaveLength(3)
+        );
 
         expect(bodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
         expect(headersValidator.validate).toHaveBeenCalled();
@@ -186,23 +228,27 @@ describe('HttpValidator', () => {
 
       describe('when the desidered response is between 200 and 300', () => {
         it('returns an error', () => {
-          assertLeft(validateOutput({ resource, element: { statusCode: 201 } }), error => expect(error).toEqual([
-            {
-              message: 'Unable to match the returned status code with those defined in spec',
-              severity: DiagnosticSeverity.Error,
-            },
-          ]));
+          assertLeft(validateOutput({ resource, element: { statusCode: 201 } }), error =>
+            expect(error).toEqual([
+              {
+                message: 'Unable to match the returned status code with those defined in spec',
+                severity: DiagnosticSeverity.Error,
+              },
+            ])
+          );
         });
       });
 
       describe('when the desidered response is over 300', () => {
         it('returns an error', () => {
-          assertLeft(validateOutput({ resource, element: { statusCode: 400 } }), error => expect(error).toEqual([
-            {
-              message: 'Unable to match the returned status code with those defined in spec',
-              severity: DiagnosticSeverity.Warning,
-            },
-          ]));
+          assertLeft(validateOutput({ resource, element: { statusCode: 400 } }), error =>
+            expect(error).toEqual([
+              {
+                message: 'Unable to match the returned status code with those defined in spec',
+                severity: DiagnosticSeverity.Warning,
+              },
+            ])
+          );
         });
       });
     });
@@ -232,18 +278,23 @@ describe('HttpValidator', () => {
         it('returns an error', () => {
           assertLeft(
             validateOutput({ resource, element: { statusCode: 200, headers: { 'content-type': 'application/xml' } } }),
-            error => expect(error).toEqual([
-              {
-                message: 'The received media type does not match the one specified in the document',
-                severity: DiagnosticSeverity.Error,
-              },
-            ]));
+            error =>
+              expect(error).toEqual([
+                {
+                  message: 'The received media type does not match the one specified in the document',
+                  severity: DiagnosticSeverity.Error,
+                },
+              ])
+          );
         });
       });
 
       describe('when the response has a content type declared in the spec', () => {
         it('returns an error', () => {
-          assertRight(validateOutput({ resource, element: { statusCode: 200, headers: { 'content-type': 'application/json' } } }), () => { });
+          assertRight(
+            validateOutput({ resource, element: { statusCode: 200, headers: { 'content-type': 'application/json' } } }),
+            () => {}
+          );
         });
       });
     });

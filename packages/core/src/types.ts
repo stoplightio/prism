@@ -4,7 +4,7 @@ import { ReaderEither } from 'fp-ts/lib/ReaderEither';
 import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-export type IPrismDiagnostic = Omit<IDiagnostic, 'range'>;
+export type IPrismDiagnostic = Omit<IDiagnostic, 'range' | 'path'> & { path?: string[] };
 
 export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
   request: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
@@ -22,11 +22,16 @@ export type ValidatorFn<Resource, T> = (opts: {
   element: T;
 }) => Either<NonEmptyArray<IPrismDiagnostic>, T>;
 
+export type IPrismProxyConfig = IPrismConfig & {
+  mock: false;
+  upstream: URL;
+};
+
 export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
   validateInput: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
-  forward: (resource: Resource, input: Input) => TaskEither<Error, Output>;
+  forward: (input: Input, baseUrl: string) => TaskEither<Error, Output>;
   mock: (opts: {
     resource: Resource;
     input: IPrismInput<Input>;

@@ -1,0 +1,18 @@
+====test====
+Making a request through the proxy server returns a response
+====spec====
+swagger: "2.0"
+paths:
+  /status/201:
+    get:
+      produces:
+        - text/plain
+      responses:
+        201:
+          description: OK
+====server====
+proxy -p 4010 ${document} http://httpbin
+====command====
+curl -i http://localhost:4010/status/201
+====expect====
+HTTP/1.1 201 Created

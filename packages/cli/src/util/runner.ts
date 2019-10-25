@@ -1,17 +1,19 @@
 import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { IPrismHttpServer } from '@stoplight/prism-http-server/src/types';
 import * as chokidar from 'chokidar';
-import { CreatePrismOptions } from './createServer';
+import * as os from 'os';
+import { CreateMockServerOptions } from './createServer';
 
-type CreatePrism = (options: CreatePrismOptions) => Promise<IPrismHttpServer | undefined>;
+type CreatePrism = (options: CreateMockServerOptions) => Promise<IPrismHttpServer | void>;
 
-export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: CreatePrismOptions, spec: string) {
+export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: CreateMockServerOptions) {
   return createPrism(options).then(possiblyServer => {
     if (possiblyServer) {
       let server: IPrismHttpServer = possiblyServer;
 
-      const watcher = chokidar.watch(spec, {
-        persistent: false,
+      const watcher = chokidar.watch(options.document, {
+        // See https://github.com/paulmillr/chokidar#persistence
+        persistent: os.platform() === 'darwin',
         disableGlobbing: true,
         awaitWriteFinish: { stabilityThreshold: 500, pollInterval: 100 },
       });
@@ -19,7 +21,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
       watcher.on('change', () => {
         server.fastify.log.info('Restarting Prism...');
 
-        getHttpOperationsFromResource(spec)
+        getHttpOperationsFromResource(options.document)
           .then(operations => {
             if (operations.length === 0) {
               server.fastify.log.info(
@@ -31,7 +33,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
                 .then(() => {
                   server.fastify.log.info('Loading the updated operations...');
 
-                  return createPrism({ ...options, operations });
+                  return createPrism(options);
                 })
                 .then(newServer => {
                   if (newServer) {
@@ -49,6 +51,8 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
               .catch(() => process.exit(1));
           });
       });
+
+      return new Promise(resolve => watcher.once('ready', resolve));
     }
   });
 }

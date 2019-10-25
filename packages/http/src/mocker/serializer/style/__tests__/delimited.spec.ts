@@ -21,7 +21,7 @@ describe('serializeWithPipeDelimitedStyle()', () => {
 describe('serializeWithSpaceDelimitedStyle()', () => {
   describe('explode is not set', () => {
     it('serializes correctly', () => {
-      expect(serializeWithSpaceDelimitedStyle('a', [1, 2, 3])).toEqual('a=1%202%203');
+      expect(serializeWithSpaceDelimitedStyle('a', [1, 2, 3])).toEqual('a=1 2 3');
     });
   });
 

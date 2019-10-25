@@ -1,6 +1,6 @@
 import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/types';
 import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
-import * as Either from 'fp-ts/lib/Either'
+import * as Either from 'fp-ts/lib/Either';
 import { fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { JSONSchema4 } from 'json-schema';
@@ -14,18 +14,20 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
   constructor(
     private _registry: IHttpParamDeserializerRegistry<Target>,
     private _prefix: string,
-    private _style: HttpParamStyles,
-  ) { }
+    private _style: HttpParamStyles
+  ) {}
 
   public validate(target: Target, specs: IHttpParam[]) {
     const { _registry: registry, _prefix: prefix, _style: style } = this;
 
-    const deprecatedWarnings = specs.filter(spec => spec.deprecated && target[spec.name]).map<IPrismDiagnostic>(spec => ({
-      path: [prefix, spec.name],
-      code: 'deprecated',
-      message: `${upperFirst(prefix)} param ${spec.name} is deprecated`,
-      severity: DiagnosticSeverity.Warning,
-    }));
+    const deprecatedWarnings = specs
+      .filter(spec => spec.deprecated && target[spec.name])
+      .map<IPrismDiagnostic>(spec => ({
+        path: [prefix, spec.name],
+        code: 'deprecated',
+        message: `${upperFirst(prefix)} param ${spec.name} is deprecated`,
+        severity: DiagnosticSeverity.Warning,
+      }));
 
     const schema = createJsonSchemaFromParams(specs);
 
@@ -42,11 +44,11 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
             // @ts-ignore
             mapKeys(target, (_value, key) => key.toLowerCase()),
             schema.properties && (schema.properties[el.name] as JSONSchema4),
-            el.explode || false,
+            el.explode || false
           );
 
         return undefined;
-      }),
+      })
     );
 
     const errors = validateAgainstSchema(parameterValues, schema, prefix).concat(deprecatedWarnings);
@@ -61,11 +63,9 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
 }
 
 function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema {
-  const schema: JSONSchema = {
+  return {
     type: 'object',
     properties: pickBy(mapValues(keyBy(params, p => p.name.toLowerCase()), 'schema')) as JSONSchema4,
     required: compact(params.map(m => (m.required ? m.name.toLowerCase() : undefined))),
   };
-
-  return schema;
 }

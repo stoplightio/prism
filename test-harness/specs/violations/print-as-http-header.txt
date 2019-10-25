@@ -1,0 +1,27 @@
+====test====
+Prism shall return output violations in an HTTP Header when there are violations marked as errors
+====spec====
+openapi: 3.0.0
+paths:
+  /path:
+    get:
+      summary: Your GET endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value: 123
+              schema:
+                  type: object
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/path
+====expect====
+HTTP/1.1 200 OK
+sl-violations: [{"location":["response","body"],"severity":"Error","code":"type","message":"should be object"}]
+
+123

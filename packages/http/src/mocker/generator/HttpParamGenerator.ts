@@ -4,7 +4,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { JSONSchema } from '../../types';
 import { generate as generateDynamicExample } from './JSONSchema';
 
-export function improveSchema(schema: JSONSchema) {
+export function improveSchema(schema: JSONSchema): JSONSchema {
   const newSchema = { ...schema };
 
   if (newSchema.type === 'integer' || newSchema.type === 'number') {
@@ -42,12 +42,12 @@ export function improveSchema(schema: JSONSchema) {
 }
 
 function pickStaticExample(
-  examples: Option.Option<Array<INodeExample | INodeExternalExample>>,
+  examples: Option.Option<Array<INodeExample | INodeExternalExample>>
 ): Option.Option<unknown> {
   return pipe(
     examples,
     Option.mapNullable(exs => exs[Math.floor(Math.random() * exs.length)]),
-    Option.mapNullable(example => (example as INodeExample).value),
+    Option.mapNullable(example => (example as INodeExample).value)
   );
 }
 
@@ -59,8 +59,8 @@ export function generate(param: IHttpParam): Option.Option<unknown> {
       pipe(
         Option.fromNullable(param.schema),
         Option.map(improveSchema),
-        Option.map(generateDynamicExample),
-      ),
-    ),
+        Option.map(generateDynamicExample)
+      )
+    )
   );
 }

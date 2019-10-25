@@ -22,11 +22,11 @@ export function serializeWithDelimitedStyle(
   separator: string,
   name: string,
   value: Array<string | number | boolean>,
-  explode?: boolean,
+  explode?: boolean
 ): string {
   return explode ? serializeAndExplode(name, value) : serializeAndImplode(separator, name, value);
 }
 
 export const serializeWithCommaDelimitedStyle = partial(serializeWithDelimitedStyle, ',');
-export const serializeWithSpaceDelimitedStyle = partial(serializeWithDelimitedStyle, '%20');
+export const serializeWithSpaceDelimitedStyle = partial(serializeWithDelimitedStyle, ' ');
 export const serializeWithPipeDelimitedStyle = partial(serializeWithDelimitedStyle, '|');

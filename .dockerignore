@@ -1,8 +1,9 @@
-**/node_modules
-**/__tests__
-**/examples
-**/test-harness
-**/.tsbuildinfo
-**/dist
 **/.circleci
 **/.github
+**/dist
+**/docs
+**/examples
+**/node_modules
+**/__tests__
+**/test-harness
+**/.tsbuildinfo

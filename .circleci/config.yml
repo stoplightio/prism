@@ -5,6 +5,11 @@ executors:
   docker-node:
     docker:
       - image: circleci/node:12
+  docker-harness:
+    docker:
+      - image: circleci/node:12
+      - image: kennethreitz/httpbin
+        name: httpbin
   macos:
     macos:
       xcode: 10.2.1
@@ -99,7 +104,7 @@ workflows:
             tags:
               only: /.*/
       - harness:
-          executor: docker-node
+          executor: docker-harness
           filters:
             tags:
               only: /.*/
@@ -120,9 +125,6 @@ workflows:
             tags:
               only: /^v.*/
           requires:
-            - build
-            - harness
-            - harness-macos
             - publish
       - stoplight/analyze:
           filters:
@@ -131,8 +133,4 @@ workflows:
             tags:
               only: /^v.*/
           requires:
-            - build
-            - harness
-            - harness-macos
-            - publish
             - upload_artifacts

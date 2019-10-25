@@ -1,0 +1,36 @@
+====test====
+Returns response violations as sl-violations header
+but won't touch the response body
+====spec====
+swagger: "2.0"
+paths:
+  /json:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            required:
+              - title
+              - description
+            properties:
+              title:
+                type: string
+                example: Work
+              description:
+                type: string
+              priority:
+                type: number
+                default: 0
+====server====
+proxy -p 4010 ${document} http://httpbin
+====command====
+curl -i http://localhost:4010/json
+====expect====
+HTTP/1.1 200 OK
+sl-violations: [{"location":["response","body"],"severity":"Error","code":"required","message":"should have required property 'title'"},{"location":["response","body"],"severity":"Error","code":"required","message":"should have required property 'description'"}]
+
+{"slideshow":{"author":"Yours Truly","date":"date of publication","slides":[{"title":"Wake up to WonderWidgets!","type":"all"},{"items":["Why <em>WonderWidgets</em> are great","Who <em>buys</em> WonderWidgets"],"title":"Overview","type":"all"}],"title":"Sample Slide Show"},"priority":0}

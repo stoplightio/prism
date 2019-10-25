@@ -1,0 +1,34 @@
+====test====
+Returns an error for an invalid response if --errors reporting is on
+====spec====
+swagger: "2.0"
+paths:
+  /json:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            required:
+              - title
+              - description
+            properties:
+              title:
+                type: string
+                example: Work
+              description:
+                type: string
+              priority:
+                type: number
+                default: 0
+====server====
+proxy -p 4010 ${document} http://httpbin --errors
+====command====
+curl -i http://localhost:4010/json
+====expect====
+HTTP/1.1 500 Internal Server Error
+
+{"type":"https://stoplight.io/prism/errors#VIOLATIONS","title":"Request/Response not valid","status":500,"detail":"Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.","validation":[{"location":["response","body"],"severity":"Error","code":"required","message":"should have required property 'title'"},{"location":["response","body"],"severity":"Error","code":"required","message":"should have required property 'description'"}]}
