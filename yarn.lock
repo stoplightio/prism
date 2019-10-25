@@ -1119,16 +1119,16 @@
     any-observable "^0.3.0"
 
 "@stoplight/http-spec@^2.2.3":
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.2.6.tgz#41e5bd0f79ae46181bcb5d4a05ab7e01b3e414e5"
-  integrity sha512-F0PULh6mF5szyeFzeeDYcWD+BNz+iqdyV2e4caDyYOShWY7f0/OGIrWynmfkpjSGs+wBu4/Nn5+exL+kuSJyvA==
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.2.7.tgz#5be3e8105b8b9eaf936467504bc8f59b8b238028"
+  integrity sha512-3MQymbhQ4k1ryilaVTLhsB6P3dwJ94xkngYVBXwRdYWfm9BA6zNvU2UEZ+/MXJncAjOtM/F5i8nDaDTWIn4/kQ==
   dependencies:
     "@stoplight/json" "^3.1.1"
     "@stoplight/types" "^11.1.0"
     "@types/swagger-schema-official" "~2.0.18"
     "@types/urijs" "~1.19.1"
     lodash "^4.17.15"
-    openapi-schema-to-json-schema stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f
+    openapi-schema-to-json-schema "github:stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f"
     openapi3-ts "~1.3.0"
     urijs "~1.19.1"
 
@@ -6304,8 +6304,9 @@ openapi-sampler@^1.0.0-beta.15:
   dependencies:
     json-pointer "^0.6.0"
 
-openapi-schema-to-json-schema@stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f:
+"openapi-schema-to-json-schema@github:stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f":
   version "2.2.0"
+  uid c8b5f0c74270d505fc39635edef28e09df89601f
   resolved "https://codeload.github.com/stoplightio/openapi-schema-to-json-schema/tar.gz/c8b5f0c74270d505fc39635edef28e09df89601f"
   dependencies:
     deep-equal "^1.0.1"
