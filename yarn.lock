@@ -1119,16 +1119,16 @@
     any-observable "^0.3.0"
 
 "@stoplight/http-spec@^2.2.3":
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.2.6.tgz#41e5bd0f79ae46181bcb5d4a05ab7e01b3e414e5"
-  integrity sha512-F0PULh6mF5szyeFzeeDYcWD+BNz+iqdyV2e4caDyYOShWY7f0/OGIrWynmfkpjSGs+wBu4/Nn5+exL+kuSJyvA==
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.2.7.tgz#5be3e8105b8b9eaf936467504bc8f59b8b238028"
+  integrity sha512-3MQymbhQ4k1ryilaVTLhsB6P3dwJ94xkngYVBXwRdYWfm9BA6zNvU2UEZ+/MXJncAjOtM/F5i8nDaDTWIn4/kQ==
   dependencies:
     "@stoplight/json" "^3.1.1"
     "@stoplight/types" "^11.1.0"
     "@types/swagger-schema-official" "~2.0.18"
     "@types/urijs" "~1.19.1"
     lodash "^4.17.15"
-    openapi-schema-to-json-schema stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f
+    openapi-schema-to-json-schema "github:stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f"
     openapi3-ts "~1.3.0"
     urijs "~1.19.1"
 
@@ -1318,9 +1318,9 @@
     "@types/node" "*"
 
 "@types/node@*", "@types/node@^12.7.12":
-  version "12.11.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.11.2.tgz#75ba3beda30d690b89a5089ca1c6e8e386150b76"
-  integrity sha512-dsfE4BHJkLQW+reOS6b17xhZ/6FB1rB8eRRvO08nn5o+voxf3i74tuyFWNH6djdfgX7Sm5s6LD8t6mJug4dpDw==
+  version "12.11.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.11.7.tgz#57682a9771a3f7b09c2497f28129a0462966524a"
+  integrity sha512-JNbGaHFCLwgHn/iCckiGSOZ1XYHsKFwREtzPwSGCVld1SGhOlmZw2D4ZI94HQCrBHbADzW9m4LER/8olJTRGHA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -1397,24 +1397,15 @@
     "@types/yargs-parser" "*"
 
 "@typescript-eslint/eslint-plugin@^2.3.3":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-2.4.0.tgz#aaf6b542ff75b78f4191a8bf1c519184817caa24"
-  integrity sha512-se/YCk7PUoyMwSm/u3Ii9E+BgDUc736uw/lXCDpXEqRgPGsoBTtS8Mntue/vZX8EGyzGplYuePBuVyhZDM9EpQ==
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-2.5.0.tgz#101d96743ce3365b3223df73d641078c9b775903"
+  integrity sha512-ddrJZxp5ns1Lh5ofZQYk3P8RyvKfyz/VcRR4ZiJLHO/ljnQAO8YvTfj268+WJOOadn99mvDiqJA65+HAKoeSPA==
   dependencies:
-    "@typescript-eslint/experimental-utils" "2.4.0"
+    "@typescript-eslint/experimental-utils" "2.5.0"
     eslint-utils "^1.4.2"
     functional-red-black-tree "^1.0.1"
     regexpp "^2.0.1"
     tsutils "^3.17.1"
-
-"@typescript-eslint/experimental-utils@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-2.4.0.tgz#dd8f3f466be25c3610a06fed22cfb6e6aa17f6d9"
-  integrity sha512-2cvhNaJoWavgTtnC7e1jUSPZQ7e4U2X9Yoy5sQmkS7lTESuyuZrlRcaoNuFfYEd6hgrmMU7+QoSp8Ad+kT1nfA==
-  dependencies:
-    "@types/json-schema" "^7.0.3"
-    "@typescript-eslint/typescript-estree" "2.4.0"
-    eslint-scope "^5.0.0"
 
 "@typescript-eslint/experimental-utils@2.5.0":
   version "2.5.0"
@@ -1434,17 +1425,6 @@
     "@typescript-eslint/experimental-utils" "2.5.0"
     "@typescript-eslint/typescript-estree" "2.5.0"
     eslint-visitor-keys "^1.1.0"
-
-"@typescript-eslint/typescript-estree@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-2.4.0.tgz#722c95493e1b7682893edaaaec0e69f36917feef"
-  integrity sha512-/DzDAtMqF5d9IlXrrvu/Id/uoKjnSxf/3FbtKK679a/T7lbDM8qQuirtGvFy6Uh+x0hALuCMwnMfUf0P24/+Iw==
-  dependencies:
-    chokidar "^3.0.2"
-    glob "^7.1.4"
-    is-glob "^4.0.1"
-    lodash.unescape "4.0.1"
-    semver "^6.3.0"
 
 "@typescript-eslint/typescript-estree@2.5.0":
   version "2.5.0"
@@ -2185,7 +2165,7 @@ check-error@^1.0.2:
   resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.2.tgz#574d312edd88bb5dd8912e9286dd6c0aed4aac82"
   integrity sha1-V00xLt2Iu13YkS6Sht1sCu1KrII=
 
-chokidar@^3.0.2, chokidar@^3.2.1:
+chokidar@^3.2.1:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.2.2.tgz#a433973350021e09f2b853a2287781022c0dc935"
   integrity sha512-bw3pm7kZ2Wa6+jQWYP/c7bAZy3i4GwiIiMO2EeRjrE48l8vBqC/WvFhSF0xyM8fQiPEGvwMY/5bqDG7sSEOuhg==
@@ -6319,8 +6299,9 @@ openapi-sampler@^1.0.0-beta.15:
   dependencies:
     json-pointer "^0.6.0"
 
-openapi-schema-to-json-schema@stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f:
+"openapi-schema-to-json-schema@github:stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f":
   version "2.2.0"
+  uid c8b5f0c74270d505fc39635edef28e09df89601f
   resolved "https://codeload.github.com/stoplightio/openapi-schema-to-json-schema/tar.gz/c8b5f0c74270d505fc39635edef28e09df89601f"
   dependencies:
     deep-equal "^1.0.1"
