@@ -1,6 +1,7 @@
 import { assertLeft, assertRight } from '@stoplight/prism-http/src/__tests__/utils';
 import { HttpParamStyles } from '@stoplight/types';
 import { createExamplePath } from '../paths';
+import { identity } from 'lodash';
 
 describe('createExamplePath()', () => {
   describe('path parameters', () => {
@@ -12,7 +13,7 @@ describe('createExamplePath()', () => {
           method: 'get',
           request: { path: [{ name: 'p', style: HttpParamStyles.Simple, examples: [{ key: 'foo', value: 'test' }] }] },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         r => expect(r).toEqual('/path/test'),
       );
     });
@@ -25,7 +26,7 @@ describe('createExamplePath()', () => {
           method: 'get',
           request: { path: [{ name: 'p', style: HttpParamStyles.Label, examples: [{ key: 'foo', value: 'test' }] }] },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         r => expect(r).toEqual('/path/.test'),
       );
     });
@@ -38,7 +39,7 @@ describe('createExamplePath()', () => {
           method: 'get',
           request: { path: [{ name: 'p', style: HttpParamStyles.Matrix, examples: [{ key: 'foo', value: 'test' }] }] },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         r => expect(r).toEqual('/path/;p=test'),
       );
     });
@@ -53,7 +54,7 @@ describe('createExamplePath()', () => {
           method: 'get',
           request: { query: [{ name: 'p', style: HttpParamStyles.Form, examples: [{ key: 'foo', value: 'test' }] }] },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         r => expect(r).toEqual('/path?p=test'),
       );
     });
@@ -74,7 +75,7 @@ describe('createExamplePath()', () => {
             ],
           },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         r => expect(r).toEqual('/path?p%5Ba%5D%5Baa%5D=1&p%5Ba%5D%5Bab%5D=2'),
       );
     });
@@ -95,7 +96,7 @@ describe('createExamplePath()', () => {
             ],
           },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         r => expect(r).toEqual('/path?p=1%7C2%7C3'),
       );
     });
@@ -116,7 +117,7 @@ describe('createExamplePath()', () => {
             ],
           },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         r => expect(r).toEqual('/path?p=1%202%203'),
       );
     });
@@ -131,7 +132,7 @@ describe('createExamplePath()', () => {
             query: [{ name: 'q', style: HttpParamStyles.PipeDelimited, examples: [{ key: 'foo', value: 'test' }] }],
           },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         e => expect(e.message).toEqual('Pipe delimited style is only applicable to array parameter'),
       );
     });
@@ -146,7 +147,7 @@ describe('createExamplePath()', () => {
             query: [{ name: 'q', style: HttpParamStyles.SpaceDelimited, examples: [{ key: 'foo', value: 'test' }] }],
           },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         e => expect(e.message).toEqual('Space delimited style is only applicable to array parameter'),
       );
     });
@@ -191,7 +192,7 @@ describe('createExamplePath()', () => {
             ],
           },
           responses: [{ code: '200' }],
-        }),
+        }, identity),
         r =>
           expect(r).toEqual(
             '/path/test1/.test1,test2/;p3=test1,test2?q1=test1&q2=test1%20test2&q3=test1%7Ctest2&q4=test1&q4=test2&q5%5Ba%5D%5B%5D=test1&q5%5Ba%5D%5B%5D=test2&q5%5Bb%5D%5Bba%5D=1&q5%5Bb%5D%5Bbb%5D=2',

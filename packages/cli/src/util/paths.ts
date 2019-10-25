@@ -17,8 +17,12 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 // @ts-ignore
 import { URI } from 'uri-template-lite';
+import { ValuesTransformer } from './colorizer';
 
-export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
+export function createExamplePath(
+  operation: IHttpOperation,
+  transformValues: ValuesTransformer
+): Either.Either<Error, string> {
   return pipe(
     generateTemplateAndValuesForPathParams(operation),
     Either.chain(({ template: pathTemplate, values: pathValues }) =>
@@ -29,7 +33,7 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
         })
       )
     ),
-    Either.map(({ template, values }) => URI.expand(template, values))
+    Either.map(({ template, values }) => URI.expand(template, transformValues(values)))
   );
 }
 
