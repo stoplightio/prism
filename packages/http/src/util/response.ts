@@ -9,8 +9,10 @@ import { IHttpResponse } from '../types';
 
 export function parseResponseBody(response: Response): TaskEither.TaskEither<Error, any> {
   return TaskEither.tryCatch(
-    () => typeIs(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
-        ? response.json() : response.text(),
+    () =>
+      typeIs(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
+        ? response.json()
+        : response.text(),
     Either.toError
   );
 }
@@ -26,6 +28,6 @@ export function parseResponse(response: Response): TaskEither.TaskEither<Error, 
       statusCode: response.status,
       headers: parseResponseHeaders(response),
       body,
-    })),
+    }))
   );
 }

@@ -5,7 +5,7 @@ import {
   IHttpCallbackOperation,
   IHttpHeaderParam,
   IHttpOperation,
-  INodeExample
+  INodeExample,
 } from '@stoplight/types';
 
 import * as caseless from 'caseless';
@@ -53,23 +53,39 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockH
     }),
     Reader.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
     Reader.chain(result => assembleResponse(result, payloadGenerator)),
-    Reader.chain(response => withLogger(logger => pipe(
-      response,
-      Either.map(r => runCallbacks({ resource, request: input.data, response: r })(logger)),
-      Either.chain(() => response),
-    ))),
+    Reader.chain(response =>
+      withLogger(logger =>
+        pipe(
+          response,
+          Either.map(r => runCallbacks({ resource, request: input.data, response: r })(logger)),
+          Either.chain(() => response)
+        )
+      )
+    )
   );
 };
 
-function runCallbacks({ resource, request, response }: { resource: IHttpOperation, request: IHttpRequest, response: IHttpResponse }) {
-  return withLogger(logger => pipe(
-    Option.fromNullable(resource.callbacks),
-    Option.alt(() => Option.some([] as IHttpCallbackOperation[])),
-    Option.map(callbacks => pipe(
-      callbacks,
-      map(callback => runCallback({ callback, request, response })(logger))
-    )),
-  ));
+function runCallbacks({
+  resource,
+  request,
+  response,
+}: {
+  resource: IHttpOperation;
+  request: IHttpRequest;
+  response: IHttpResponse;
+}) {
+  return withLogger(logger =>
+    pipe(
+      Option.fromNullable(resource.callbacks),
+      Option.alt(() => Option.some([] as IHttpCallbackOperation[])),
+      Option.map(callbacks =>
+        pipe(
+          callbacks,
+          map(callback => runCallback({ callback, request, response })(logger))
+        )
+      )
+    )
+  );
 }
 
 function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {

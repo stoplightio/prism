@@ -12,6 +12,5 @@ export const violationLogger = withLogger(logger => {
     } else {
       logger.info({ name: 'VALIDATOR' }, message);
     }
-  }
+  };
 });
-

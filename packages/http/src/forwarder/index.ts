@@ -34,7 +34,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
         }
       );
     }, toError),
-    TaskEither.chain(parseResponse),
+    TaskEither.chain(parseResponse)
   );
 
 export default forward;
