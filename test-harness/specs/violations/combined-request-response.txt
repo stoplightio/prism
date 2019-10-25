@@ -1,0 +1,31 @@
+====test====
+Prism shall return request and response violations
+====spec====
+openapi: 3.0.2
+paths:
+  /test:
+    get:
+      parameters:
+        - deprecated: true
+          in: query
+          name: productId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value: 123
+              schema:
+                  type: object
+====server====
+mock -p 4010 ${document} --errors
+====command====
+curl -i "http://localhost:4010/test?productId=10"
+====expect====
+HTTP/1.1 500 Internal Server Error
+sl-violations: [{"location":["response","body"],"severity":"Error","code":"type","message":"should be object"},{"location":["request","query","productId"],"severity":"Warning","code":"deprecated","message":"Query param productId is deprecated"}]
+content-type: application/problem+json
+
+{"type":"https://stoplight.io/prism/errors#VIOLATIONS","title":"Request/Response not valid","status":500,"detail":"Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.","validation":[{"location":["response","body"],"severity":"Error","code":"type","message":"should be object"}]}

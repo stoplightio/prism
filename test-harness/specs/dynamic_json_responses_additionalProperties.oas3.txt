@@ -1,0 +1,31 @@
+====test====
+Prism can generate dynamic responses when the `additionalProperties` schema is set to false
+====spec====
+openapi: 3.0.0
+paths:
+  /resources/{resource_id}:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+components:
+  schemas:
+    Resource:
+      type: object
+      properties:
+        name:
+          type: string
+        tags:
+          type: string
+      additionalProperties: false
+====server====
+mock -d -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/resources/5 -H "accept: application/json"
+====expect-loose====
+HTTP/1.1 200 OK
+
+{"name": "something","tags": "something else"}

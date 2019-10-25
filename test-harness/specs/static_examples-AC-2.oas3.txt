@@ -25,7 +25,7 @@ paths:
                     type: number
                     default: 0
 ====server====
-mock --dynamic -p 4010
+mock --dynamic -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos?__dynamic=false
 ====expect====

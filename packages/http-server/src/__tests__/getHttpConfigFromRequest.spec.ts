@@ -7,7 +7,7 @@ describe('getHttpConfigFromRequest()', () => {
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/' },
-        }),
+        })
       ).toMatchSnapshot();
     });
     test('and no matching query should return my own default', () => {
@@ -15,7 +15,7 @@ describe('getHttpConfigFromRequest()', () => {
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: {} },
-        }),
+        })
       ).toMatchSnapshot();
     });
     test('extracts code', () => {
@@ -23,7 +23,7 @@ describe('getHttpConfigFromRequest()', () => {
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __code: '202' } },
-        }),
+        })
       ).toMatchSnapshot();
     });
     test('extracts example', () => {
@@ -31,7 +31,7 @@ describe('getHttpConfigFromRequest()', () => {
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __example: 'bear' } },
-        }),
+        })
       ).toMatchSnapshot();
     });
     test('extracts dynamic', () => {
@@ -39,7 +39,7 @@ describe('getHttpConfigFromRequest()', () => {
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __dynamic: 'true' } },
-        }),
+        })
       ).toMatchSnapshot();
     });
   });
@@ -50,7 +50,7 @@ describe('getHttpConfigFromRequest()', () => {
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __code: '400' } },
-        }),
+        })
       ).toMatchSnapshot();
     });
   });
@@ -61,7 +61,7 @@ describe('getHttpConfigFromRequest()', () => {
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: {} },
-        }),
+        })
       ).toMatchSnapshot();
     });
 
@@ -70,7 +70,7 @@ describe('getHttpConfigFromRequest()', () => {
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __code: '200', __example: 'bear' } },
-        }),
+        })
       ).toMatchSnapshot();
     });
 
@@ -79,7 +79,7 @@ describe('getHttpConfigFromRequest()', () => {
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __code: '200', __example: 'bear' } },
-        }),
+        })
       ).toMatchSnapshot();
     });
   });

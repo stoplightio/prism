@@ -10,7 +10,13 @@ function instantiatePrism2(operations: IHttpOperation[]) {
   return createServer(operations, {
     components: { logger },
     cors: true,
-    config: { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+    config: {
+      checkSecurity: true,
+      validateRequest: true,
+      validateResponse: true,
+      mock: { dynamic: false },
+    },
+    errors: false,
   });
 }
 
@@ -324,11 +330,6 @@ describe('body params validation', () => {
       });
 
       describe('when body provided', () => {
-        describe('and is valid', () => {
-          // Ref: https://github.com/stoplightio/prism/issues/500
-          test.todo('returns 200');
-        });
-
         describe('and property type invalid', () => {
           test('returns 422 & error message', async () => {
             const response = await server.fastify.inject({

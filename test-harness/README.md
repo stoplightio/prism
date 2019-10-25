@@ -36,7 +36,7 @@ Test text, can be multi line.
 ====spec====
 openapi 2/3 document
 ====server====
-command line arguments to run Prism with
+command line arguments to run Prism with. You have to use the ${document} template variable.
 ====command====
 curl command to get the response
 ====expect====
@@ -60,7 +60,7 @@ paths:
             'application/json':
               example: hello
 ====server====
-mock -p 4010
+mock -p 4010 ${document}
 ====command====
 curl -i -X GET http://localhost:4010/todos -H "accept: application/json"
 ====expect====
@@ -81,6 +81,7 @@ Connection: keep-alive
 - You can run all the tests on the same port `4010`, but you can also choose another one
 - The `curl` command does not support piping stuff into other tools; so if you're trying to be cool and do `curl | grep`, well maybe next time.
 - All the `curl` commands **must** have the `-i` flag, otherwise the trace parser won't understand the output
+- Some of the harness test are relying on an instance of httpbin working locally on your computer and responding on the `http://httpbin` address. You can easily do that using the `kennethreitz/httpbin` docker image
 
 ## Technical details
 

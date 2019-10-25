@@ -1,7 +1,14 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
 import { IHttpRequest } from '../../types';
-import { bodyValidator, headersValidator, queryValidator, validateInput, validateOutput } from '../index';
+import {
+  bodyValidator,
+  headersValidator,
+  pathValidator,
+  queryValidator,
+  validateInput,
+  validateOutput
+} from '../index';
 
 const mockError: IPrismDiagnostic = {
   message: 'mocked C is required',
@@ -16,6 +23,7 @@ describe('HttpValidator', () => {
       jest.spyOn(bodyValidator, 'validate').mockReturnValue([mockError]);
       jest.spyOn(headersValidator, 'validate').mockReturnValue([mockError]);
       jest.spyOn(queryValidator, 'validate').mockReturnValue([mockError]);
+      jest.spyOn(pathValidator, 'validate').mockReturnValue([mockError]);
     });
 
     afterAll(() => jest.restoreAllMocks());
@@ -47,7 +55,7 @@ describe('HttpValidator', () => {
               {
                 request: { body: { contents: [] }, path: [], query: [], headers: [], cookie: [] },
               },
-              2,
+              3,
             ),
           );
         });
@@ -63,7 +71,7 @@ describe('HttpValidator', () => {
                 request: { body: { contents: [], required: true } },
                 responses: [{ code: '200' }],
               },
-              3,
+              4,
             ),
           );
         });
@@ -90,7 +98,7 @@ describe('HttpValidator', () => {
       };
 
       describe('request is not set', () => {
-        it('validates headers', validate(undefined, 2));
+        it('validates headers', validate(undefined, 3));
       });
     });
 
@@ -98,7 +106,7 @@ describe('HttpValidator', () => {
       const validate = (
         resourceExtension?: Partial<IHttpOperation>,
         inputExtension?: Partial<IHttpRequest>,
-        length = 2,
+        length = 3,
       ) => () => {
         expect(
           validateInput({
@@ -122,21 +130,50 @@ describe('HttpValidator', () => {
       };
 
       describe('request is not set', () => {
-        it('validates query', validate(undefined, undefined, 2));
+        it('validates query', validate(undefined, undefined, 3));
       });
 
       describe('request is set', () => {
         describe('request.query is not set', () => {
-          it('validates query', validate({ request: {} }, undefined, 2));
+          it('validates query', validate({ request: {} }, undefined, 3));
         });
 
         describe('request.query is set', () => {
-          it('validates query', validate({ request: {} }, undefined, 2));
+          it('validates query', validate({ request: {} }, undefined, 3));
         });
       });
 
       describe('input.url.query is not set', () => {
         it("validates query assuming it's empty", validate(undefined, { url: { path: '/' } }));
+      });
+    });
+
+    describe('path validation in enabled', () => {
+      describe('request is set', () => {
+        describe('request.path is set', () => {
+          it('calls the path validator', () => {
+            validateInput({
+              resource: {
+                method: 'get',
+                path: '/a/{a}/b/{b}',
+                id: '1',
+                request: {
+                  path: [
+                    { name: 'a', style: HttpParamStyles.Simple },
+                    { name: 'b', style: HttpParamStyles.Matrix },
+                  ]
+                },
+                responses: [{ code: '200' }],
+              },
+              element: { method: 'get', url: { path: '/a/1/b/;b=2' } },
+            });
+
+            expect(pathValidator.validate).toHaveBeenCalledWith(
+              { a: '1', b: ';b=2' },
+              [{ name: 'a', style: HttpParamStyles.Simple }, { name: 'b', style: HttpParamStyles.Matrix }]
+            );
+          });
+        });
       });
     });
   });

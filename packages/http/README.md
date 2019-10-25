@@ -6,7 +6,7 @@ This package provides a HTTP client featuring the ability to:
 - make requests to a HTTP server
 - validate the request and/or the response according to the provided OpenAPI Specification file
 
-In essence it's an HTTP client (similar to axios - in fact, we use axios to make requests) with the ability to mock responses and validate requests.
+In essence it's an HTTP client with the ability to mock responses and validate requests.
 
 The goal of this document is to provide you with some basic code examples to get you started and to cover some of the advanced scenarios.
 

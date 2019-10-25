@@ -16,6 +16,7 @@
     "node": ">=8"
   },
   "dependencies": {
+    "@stoplight/http-spec": "^2.2.3",
     "@stoplight/json": "^3.1.2",
     "@stoplight/json-ref-resolver": "^3.0.1",
     "@stoplight/prism-core": "^3.1.1",
@@ -28,12 +29,12 @@
     "caseless": "^0.12.0",
     "faker": "^4.1.0",
     "fp-ts": "^2.0.5",
-    "json-schema-faker": "0.5.0-rc21",
+    "json-schema-faker": "0.5.0-rc22",
     "openapi-sampler": "^1.0.0-beta.15",
     "pino": "^5.13.2",
     "tslib": "^1.10.0",
     "type-is": "^1.6.18",
-    "urijs": "^1.19.1"
+    "uri-template-lite": "^19.4.0"
   },
   "publishConfig": {
     "access": "public"

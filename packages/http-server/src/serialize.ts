@@ -42,6 +42,8 @@ export const serialize = (payload: unknown, contentType?: string) => {
   const serializer = contentType ? serializers.find(s => s.regex.test(contentType)) : undefined;
 
   if (!serializer) {
+    if (typeof payload === 'string') return payload;
+
     throw new Error(`Cannot find serializer for ${contentType}`);
   }
 

@@ -35,7 +35,7 @@ describe('User Http Client', () => {
               ],
             },
           ],
-          config,
+          config
         );
 
         jest.spyOn(client, 'request');

@@ -24,7 +24,7 @@ describe('HttpQueryValidator', () => {
         });
       });
 
-      describe('header is present', () => {
+      describe('query param is present', () => {
         describe('schema is present', () => {
           describe('deserializer not available', () => {
             it('omits schema validation', () => {

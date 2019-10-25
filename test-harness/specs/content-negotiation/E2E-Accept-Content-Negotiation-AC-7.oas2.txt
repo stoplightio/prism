@@ -1,0 +1,27 @@
+====test====
+When I send a request to an operation with Accept header containing */*
+And this operation produces a response with content-type of */*
+Then I should get back a response with Content-Type of text/plain
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Get Todo Items
+          examples:
+            '*/*': hello
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "accept: */*"
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+content-length: 5
+Connection: keep-alive
+
+hello

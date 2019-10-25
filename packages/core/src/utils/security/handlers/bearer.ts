@@ -4,9 +4,8 @@ import { get, partial } from 'lodash';
 import { SecurityScheme } from './types';
 import { when } from './utils';
 
-const bearerHandler = (msg: string, someInput: unknown, name: string, resource?: unknown) => {
-  return when(isBearerToken(get(someInput, 'headers')), msg, resource);
-};
+const bearerHandler = (msg: string, someInput: unknown, name: string, resource?: unknown) =>
+  when(isBearerToken(get(someInput, 'headers')), msg, resource);
 
 function isBearerToken(inputHeaders: Headers) {
   return pipe(

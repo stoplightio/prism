@@ -3,7 +3,7 @@ import { IHttpOperation } from '@stoplight/types';
 import { Scope as NockScope } from 'nock';
 import * as nock from 'nock';
 import { basename, resolve } from 'path';
-import { createInstance, IHttpConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
+import { createInstance, IHttpProxyConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { getHttpOperationsFromResource } from '../getHttpOperations';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
@@ -19,12 +19,16 @@ const serverValidationOas3Path = fixturePath('server-validation.oas3.json');
 
 const { version: prismVersion } = require('../../package.json');
 
-type Prism = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
+type Prism = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpProxyConfig>;
 type NockResWithInterceptors = NockScope & { interceptors: Array<{ req: { headers: string[] } }> };
 
-async function checkUserAgent(config: IHttpConfig, prism: Prism, resources: IHttpOperation[], headers = {}) {
-  const oasBaseUrl = 'http://example.com/api';
-
+async function checkUserAgent(
+  config: IHttpProxyConfig,
+  prism: Prism,
+  resources: IHttpOperation[],
+  headers = {},
+  oasBaseUrl: string
+) {
   const nockResult = nock(oasBaseUrl)
     .get('/pet')
     .reply(200);
@@ -38,7 +42,7 @@ async function checkUserAgent(config: IHttpConfig, prism: Prism, resources: IHtt
       headers,
     },
     resources,
-    config,
+    config
   );
 
   return (nockResult as NockResWithInterceptors).interceptors['0'].req.headers['user-agent'];
@@ -55,7 +59,7 @@ describe('Http Client .request', () => {
     beforeAll(async () => {
       prism = createInstance(
         { validateRequest: true, checkSecurity: true, validateResponse: true, mock: { dynamic: false } },
-        { logger },
+        { logger }
       );
       resources = await getHttpOperationsFromResource(specPath);
     });
@@ -69,7 +73,7 @@ describe('Http Client .request', () => {
               path: '/pet',
             },
           },
-          resources,
+          resources
         );
 
         expect(result.output).toBeDefined();
@@ -87,7 +91,7 @@ describe('Http Client .request', () => {
               baseUrl: 'http://example.com/api',
             },
           },
-          resources,
+          resources
         );
 
         expect(result.output).toBeDefined();
@@ -106,8 +110,8 @@ describe('Http Client .request', () => {
                 baseUrl: 'http://acme.com/api',
               },
             },
-            resources,
-          ),
+            resources
+          )
         ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
       });
     });
@@ -123,20 +127,22 @@ describe('Http Client .request', () => {
                 baseUrl: 'http://example.com/v1',
               },
             },
-            resources,
-          ),
+            resources
+          )
         ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
       });
     });
 
     describe('mocking is off', () => {
-      const config: IHttpConfig = {
+      const baseUrl = 'https://stoplight.io';
+      const config: IHttpProxyConfig = {
         mock: false,
         checkSecurity: true,
         validateRequest: true,
         validateResponse: true,
+        upstream: new URL(baseUrl),
       };
-      const baseUrl = 'http://stoplight.io';
+
       const serverReply = 'hello world';
 
       beforeEach(() => {
@@ -158,51 +164,32 @@ describe('Http Client .request', () => {
 
         it('fails the operation', () =>
           expect(prism.request(request, resources, config)).rejects.toThrowError(
-            ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR),
+            ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR)
           ));
-      });
-
-      describe('path is valid and baseUrl is not set', () => {
-        it('fallbacks to a server from the spec', async () => {
-          const oasBaseUrl = 'http://example.com/api';
-          const reply = 'some demo reply';
-          nock(oasBaseUrl)
-            .get('/pet')
-            .reply(200, reply);
-
-          const result = await prism.request(
-            {
-              method: 'get',
-              url: {
-                path: '/pet',
-              },
-            },
-            resources,
-            config,
-          );
-
-          expect(result.output).toBeDefined();
-          expect(result.output.statusCode).toEqual(200);
-          expect(result.output.body).toEqual(reply);
-        });
       });
 
       describe('Prism user-agent header', () => {
         describe('when the defaults are used', () => {
           it('should use Prism/<<version>> for the header', async () => {
-            const userAgent = await checkUserAgent(config, prism, resources);
+            const userAgent = await checkUserAgent(config, prism, resources, {}, 'https://stoplight.io');
 
-            expect(userAgent).toBe(`Prism/${prismVersion}`);
+            expect(userAgent[0]).toBe(`Prism/${prismVersion}`);
           });
         });
 
         describe('when user-agent is being overwritten', () => {
           it('should have user specified string as the header', async () => {
-            const userAgent = await checkUserAgent(config, prism, resources, {
-              'user-agent': 'Other_Agent/1.0.0',
-            });
+            const userAgent = await checkUserAgent(
+              config,
+              prism,
+              resources,
+              {
+                'user-agent': 'Other_Agent/1.0.0',
+              },
+              'https://stoplight.io'
+            );
 
-            expect(userAgent).toBe('Other_Agent/1.0.0');
+            expect(userAgent[0]).toBe('Other_Agent/1.0.0');
           });
         });
       });
@@ -213,7 +200,7 @@ describe('Http Client .request', () => {
     beforeAll(async () => {
       prism = createInstance(
         { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
-        { logger },
+        { logger }
       );
       resources = await getHttpOperationsFromResource(noRefsPetstoreMinimalOas2Path);
     });
@@ -228,8 +215,8 @@ describe('Http Client .request', () => {
                 path: '/unknown-path',
               },
             },
-            resources,
-          ),
+            resources
+          )
         ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
       });
     });
@@ -246,7 +233,7 @@ describe('Http Client .request', () => {
               },
             },
           },
-          resources,
+          resources
         );
 
         const parsedBody = response.output.body;
@@ -268,8 +255,8 @@ describe('Http Client .request', () => {
                 path: '/pet/findByStatus',
               },
             },
-            resources,
-          ),
+            resources
+          )
         ).rejects.toThrowError(ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY));
       });
 
@@ -289,7 +276,7 @@ describe('Http Client .request', () => {
               complete: true,
             },
           },
-          resources,
+          resources
         );
         expect(response.validations).toEqual({
           input: [],
@@ -311,7 +298,7 @@ describe('Http Client .request', () => {
             aPi_keY: 'hello',
           },
         },
-        resources,
+        resources
       );
 
       expect(response.output).toHaveProperty('statusCode', 200);
@@ -326,8 +313,8 @@ describe('Http Client .request', () => {
               path: '/pet/login',
             },
           },
-          resources,
-        ),
+          resources
+        )
       ).rejects.toThrowError();
     });
   });
@@ -339,7 +326,7 @@ describe('Http Client .request', () => {
   it('returns stringified static example when one defined in spec', async () => {
     prism = createInstance(
       { mock: { dynamic: false }, checkSecurity: true, validateRequest: true, validateResponse: true },
-      { logger },
+      { logger }
     );
     resources = await getHttpOperationsFromResource(staticExamplesOas2Path);
 
@@ -350,10 +337,37 @@ describe('Http Client .request', () => {
           path: '/todos',
         },
       },
-      resources,
+      resources
     );
 
     expect(response.output).toBeDefined();
     expect(response.output.body).toBeInstanceOf(Array);
+  });
+});
+
+describe('proxy server', () => {
+  const baseUrl = 'https://petstore.swagger.io:7777/v2';
+
+  beforeAll(() =>
+    nock(baseUrl)
+      .get('/pets')
+      .reply(200, '<html><h1>Hello</h1>', { 'content-type': 'application/html' })
+  );
+
+  afterAll(() => nock.cleanAll());
+
+  describe('when the base URL has a different port', () => {
+    it('will take in account when proxying', async () => {
+      const prism = createInstance(
+        { mock: false, checkSecurity: true, validateRequest: true, validateResponse: true, upstream: new URL(baseUrl) },
+        { logger }
+      );
+
+      const resources = await getHttpOperationsFromResource(petStoreOas2Path);
+      const response = await prism.request({ method: 'get', url: { path: '/pets' } }, resources);
+
+      expect(response.output.statusCode).toBe(200);
+      expect(response.output.body).toBe('<html><h1>Hello</h1>');
+    });
   });
 });

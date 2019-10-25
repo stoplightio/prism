@@ -1,14 +1,12 @@
-import { createLogger } from '@stoplight/prism-core';
-import { createInstance, IHttpConfig, ProblemJsonError } from '@stoplight/prism-http';
+import { createInstance, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
-import { IncomingMessage, ServerResponse } from 'http';
-import { defaults } from 'lodash';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
@@ -40,16 +38,9 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     return done(error);
   });
 
-  const mergedConfig = defaults<unknown, IHttpConfig>(config, {
-    mock: { dynamic: false },
-    validateRequest: true,
-    validateResponse: true,
-    checkSecurity: true,
-  });
+  const prism = createInstance(config, components);
 
-  const prism = createInstance(mergedConfig, components);
-
-  const replyHandler: fastify.RequestHandler<IncomingMessage, ServerResponse> = async (request, reply) => {
+  const replyHandler: fastify.RequestHandler = async (request, reply) => {
     const {
       req: { method, url },
       body,
@@ -80,23 +71,42 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
       const { output } = response;
 
-      reply.code(output.statusCode);
+      const inputOutputValidationErrors = response.validations.output
+        .map(createErrorObjectWithPrefix('response'))
+        .concat(response.validations.input.map(createErrorObjectWithPrefix('request')));
 
-      if (output.headers) {
-        reply.headers(output.headers);
+      reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
+
+      if (inputOutputValidationErrors.length > 0) {
+        const errorViolations = inputOutputValidationErrors.filter(
+          v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
+        );
+        if (opts.errors && errorViolations.length > 0) {
+          throw ProblemJsonError.fromTemplate(
+            VIOLATIONS,
+            'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
+            { validation: errorViolations }
+          );
+        }
       }
 
-      response.validations.output.forEach(validation => {
-        if (validation.severity === DiagnosticSeverity.Error) {
-          request.log.error(`${validation.path} — ${validation.message}`);
-        } else if (validation.severity === DiagnosticSeverity.Warning) {
-          request.log.warn(`${validation.path} — ${validation.message}`);
+      inputOutputValidationErrors.forEach(validation => {
+        const message = `Violation: ${validation.location || ''} ${validation.message}`;
+        if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Error]) {
+          request.log.error({ name: 'VALIDATOR' }, message);
+        } else if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Warning]) {
+          request.log.warn({ name: 'VALIDATOR' }, message);
         } else {
-          request.log.info(`${validation.path} — ${validation.message}`);
+          request.log.info({ name: 'VALIDATOR' }, message);
         }
       });
 
-      reply.serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type'))).send(output.body);
+      if (output.headers) reply.headers(output.headers);
+
+      reply
+        .code(output.statusCode)
+        .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
+        .send(output.body);
     } catch (e) {
       if (!reply.sent) {
         const status = 'status' in e ? e.status : 500;
@@ -139,3 +149,10 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   };
   return prismServer;
 };
+
+const createErrorObjectWithPrefix = (locationPrefix: string) => (detail: IPrismDiagnostic) => ({
+  location: [locationPrefix].concat(detail.path || []),
+  severity: DiagnosticSeverity[detail.severity],
+  code: detail.code,
+  message: detail.message,
+});

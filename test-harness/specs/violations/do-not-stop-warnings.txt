@@ -1,0 +1,33 @@
+====test====
+Prism shall return output violations as an HTTP Header but not as a response when ran with the --errors
+and there are only warning flags
+====spec====
+openapi: 3.0.2
+paths:
+  /test:
+    get:
+      parameters:
+        - deprecated: true
+          in: query
+          name: productId
+      responses:
+        200:
+          description: successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prop:
+                    type: string
+                    example: abc
+====server====
+mock -p 4010 ${document} --errors
+====command====
+curl -i "http://localhost:4010/test?productId=10"
+====expect-loose====
+HTTP/1.1 200 OK
+sl-violations: [{"location":["request","query","productId"],"severity":"Warning","code":"deprecated","message":"Query param productId is deprecated"}]
+content-type: application/json
+
+{"prop":"abc"}

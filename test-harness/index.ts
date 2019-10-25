@@ -44,9 +44,8 @@ describe('harness', () => {
     const testText = `${file}${os.EOL}${parsed.test}`;
 
     test(testText, done => {
-      const [command, ...args] = parsed.command.split(' ').map(t => t.trim());
-      const serverArgs = [...parsed.server.split(' ').map(t => t.trim()), tmpFileHandle.name];
-
+      const [command, ...args] = parsed.command.split(/ +/).map(t => t.trim());
+      const serverArgs = parsed.server.split(/ +/).map(t => t.trim().replace('${document}', tmpFileHandle.name));
       prismMockProcessHandle = spawn(path.join(__dirname, '../cli-binaries/prism-cli'), serverArgs);
 
       prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {

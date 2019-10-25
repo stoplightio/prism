@@ -19,7 +19,13 @@ async function instantiatePrism(specPath: string) {
   const operations = await getHttpOperationsFromResource(specPath);
   return createServer(operations, {
     components: { logger },
-    config: { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+    config: {
+      checkSecurity: true,
+      validateRequest: true,
+      validateResponse: true,
+      mock: { dynamic: false },
+    },
+    errors: false,
     cors: true,
   });
 }
@@ -50,7 +56,7 @@ describe('GET /pet?__server', () => {
           payload: expectedPayload(serverUrl),
         });
       });
-    },
+    }
   );
 
   const expectedPayload = (serverUrl: string) =>
@@ -140,10 +146,6 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     expect(response.statusCode).toBe(400);
   });
 
-  test.todo(
-    'should automagically provide the parameters when not provided in the query string and a default is defined',
-  );
-
   it('should support multiple param values', async () => {
     const response = await server.fastify.inject({
       method: 'GET',
@@ -224,7 +226,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
       expect(parsed).toHaveProperty('type', 'https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR');
       expect(parsed).toHaveProperty(
         'detail',
-        "The server url https://google.com hasn't been matched with any of the provided servers",
+        "The server url https://google.com hasn't been matched with any of the provided servers"
       );
     });
 
@@ -284,7 +286,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
 
           expect(response.statusCode).toBe(404);
           expect(response.payload).toEqual(
-            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}',
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}'
           );
         });
 
@@ -296,7 +298,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
 
           expect(response.statusCode).toBe(404);
           expect(response.payload).toEqual(
-            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}',
+            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}'
           );
         });
       });

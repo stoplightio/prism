@@ -1,4 +1,4 @@
-import { DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
 import { validateInput, validateOutput } from '../index';
 
@@ -28,6 +28,70 @@ describe('HttpValidator', () => {
         it('returns no validation errors', () => {
           expect(validateInput({ resource: httpOperations[0], element: GOOD_INPUT })).toEqual([]);
         });
+      });
+    });
+
+    describe('deprecated keyword validation', () => {
+      const resource: IHttpOperation = {
+        id: "abc",
+        method: "get",
+        path: "/test",
+        responses: [
+          {
+            code: "200"
+          }
+        ],
+        request: {
+          query: [
+            {
+              style: HttpParamStyles.Form,
+              deprecated: true,
+              name: "productId"
+            }
+          ],
+        },
+      };
+
+      it('returns warnings', () => {
+        expect(
+          validateInput({
+            resource,
+            element: {
+              method: "get",
+              url: {
+                path: "/test",
+                query: {
+                  productId: "abc"
+                }
+              },
+            },
+          }),
+        ).toEqual([
+          {
+            code: "deprecated",
+            message: "Query param productId is deprecated",
+            path: [
+              "query",
+              "productId"
+            ],
+            severity: DiagnosticSeverity.Warning
+          }
+        ]);
+      });
+
+      it('does not return warnings', () => {
+        expect(
+          validateInput({
+            resource,
+            element: {
+              method: "get",
+              url: {
+                path: "/test",
+                query: {}
+              },
+            },
+          }),
+        ).toHaveLength(0);
       });
     });
 

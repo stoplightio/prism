@@ -7,7 +7,7 @@ describe('HttpParamGenerator', () => {
     describe('example is present', () => {
       it('uses static example', () => {
         assertSome(generate({ name: 'a', style: HttpParamStyles.Form, examples: [{ key: 'foo', value: 'test' }] }), v =>
-          expect(v).toEqual('test'),
+          expect(v).toEqual('test')
         );
       });
     });
@@ -21,7 +21,7 @@ describe('HttpParamGenerator', () => {
             schema: { type: 'string' },
             examples: [{ key: 'foo', value: 'test' }],
           }),
-          v => expect(v).toEqual('test'),
+          v => expect(v).toEqual('test')
         );
       });
     });
@@ -34,7 +34,7 @@ describe('HttpParamGenerator', () => {
             style: HttpParamStyles.Form,
             schema: { type: 'string', format: 'email' },
           }),
-          v => expect(v).toEqual(expect.stringMatching(/@/)),
+          v => expect(v).toEqual(expect.stringMatching(/@/))
         );
       });
     });
@@ -45,7 +45,7 @@ describe('HttpParamGenerator', () => {
           generate({
             name: 'a',
             style: HttpParamStyles.Form,
-          }),
+          })
         );
       });
     });
@@ -71,14 +71,15 @@ describe('HttpParamGenerator', () => {
         });
       });
 
-      describe.each<{ 0: string; 1: object }>([['format', { format: 'email' }], ['enum', { enum: [1, 2, 3] }], ['pattern',  { pattern: '^[A-Z]+$' }]])(
-        'when with %s',
-        (_a, additional) => {
-          const improvedSchema = improveSchema({ type: 'string', ...additional });
+      describe.each<{ 0: string; 1: object }>([
+        ['format', { format: 'email' }],
+        ['enum', { enum: [1, 2, 3] }],
+        ['pattern', { pattern: '^[A-Z]+$' }],
+      ])('when with %s', (_a, additional) => {
+        const improvedSchema = improveSchema({ type: 'string', ...additional });
 
-          it('should not have the x-faker extension', () => expect(improvedSchema).not.toHaveProperty('x-faker'));
-        },
-      );
+        it('should not have the x-faker extension', () => expect(improvedSchema).not.toHaveProperty('x-faker'));
+      });
     });
 
     describe('when feed with object', () => {

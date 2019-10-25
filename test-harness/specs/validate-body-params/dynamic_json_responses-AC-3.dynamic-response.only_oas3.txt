@@ -37,7 +37,7 @@ paths:
                     description:
                       type: string
 ====server====
-mock -p 4010 -d
+mock -p 4010 ${document} -d
 ====command====
 curl -i http://localhost:4010/service
 ====expect-loose====
