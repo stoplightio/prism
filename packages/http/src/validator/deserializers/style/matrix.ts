@@ -1,9 +1,8 @@
-import { HttpParamStyles } from '@stoplight/types';
+import { Dictionary, HttpParamStyles } from '@stoplight/types';
 
 import { IHttpNameValue, JSONSchema } from '../../../types';
 import { IHttpHeaderParamStyleDeserializer } from '../types';
 import { createObjectFromKeyValList } from './utils';
-import { Dictionary } from '@stoplight/types/dist';
 
 export class MatrixStyleDeserializer implements IHttpHeaderParamStyleDeserializer {
   public supports(style: HttpParamStyles) {
