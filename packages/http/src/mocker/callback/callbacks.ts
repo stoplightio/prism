@@ -34,7 +34,7 @@ export function runCallback({ callback, request, response }: { callback: IHttpCa
         );
       }),
       TaskEither.mapLeft(error => logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`)),
-    )();
+    );
   });
 }
 
