@@ -61,15 +61,12 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           );
         }),
         TaskEither.map(({ output, resource, inputValidations }) => {
-          const outputValidations = pipe(
-            config.validateResponse,
-            Option.fromPredicate(t => t),
-            Option.chain(() =>
-              Option.fromEither(Either.swap(components.validateOutput({ resource, element: output })))
-            ),
-            Option.map<NonEmptyArray<IPrismDiagnostic>, IPrismDiagnostic[]>(t => t),
-            Option.getOrElse<IPrismDiagnostic[]>(() => [])
-          );
+          const outputValidations = config.validateResponse
+            ? pipe(
+                Option.fromEither(Either.swap(components.validateOutput({ resource, element: output }))),
+                Option.getOrElse<IPrismDiagnostic[]>(() => [])
+              )
+            : [];
 
           return {
             input,
