@@ -103,8 +103,7 @@ export function validateSecurity(
   } else {
     return pipe(
       gatherValidationResults(securitySchemes, someInput, resource),
-      Either.fromOption(() => someInput),
-      Either.swap,
+      Either.swap(Either.fromOption(() => someInput)),
       Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
     );
   }

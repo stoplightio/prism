@@ -54,8 +54,7 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
     const errors = validateAgainstSchema(parameterValues, schema, prefix).concat(deprecatedWarnings);
 
     return pipe(
-      errors,
-      fromArray,
+      fromArray(errors),
       Either.fromOption(() => target),
       Either.swap
     );

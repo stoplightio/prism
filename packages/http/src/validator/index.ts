@@ -45,11 +45,7 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
           pipe(
             sequenceOption(Option.fromNullable(body), Option.fromNullable(requestBody.contents)),
             Option.chain(([body, contents]) =>
-              pipe(
-                bodyValidator.validate(body, contents, mediaType),
-                Either.swap,
-                Option.fromEither
-              )
+              Option.fromEither(Either.swap(bodyValidator.validate(body, contents, mediaType)))
             )
           )
         )

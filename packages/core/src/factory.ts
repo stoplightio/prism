@@ -71,12 +71,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             config.validateResponse,
             Option.fromPredicate(t => t),
             Option.chain(() =>
-              Option.fromEither(
-                pipe(
-                  components.validateOutput({ resource, element: output }),
-                  Either.swap
-                )
-              )
+              Option.fromEither(Either.swap(components.validateOutput({ resource, element: output })))
             ),
             Option.map<NonEmptyArray<IPrismDiagnostic>, IPrismDiagnostic[]>(t => t),
             Option.getOrElse<IPrismDiagnostic[]>(() => [])
