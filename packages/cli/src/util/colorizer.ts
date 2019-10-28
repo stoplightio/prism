@@ -1,4 +1,4 @@
-import { mapValues, uniq, isArray } from 'lodash';
+import { mapValues, isArray } from 'lodash';
 import { Dictionary } from '@stoplight/types';
 
 type ParamValue = number | string | string[] | unknown;
@@ -8,7 +8,7 @@ export const PRE_PARAM_VALUE_TAG = 'PRE_PARAM_VALUE_TAG';
 export const POST_PARAM_VALUE_TAG = 'POST_PARAM_VALUE_TAG';
 
 export function transformPathParamsValues(path: string, transform: (aString: string) => string): string {
-  const taggedParamsValues = new RegExp(`(${PRE_PARAM_VALUE_TAG},?)(.*?)(,?${POST_PARAM_VALUE_TAG})`, 'gm');
+  const taggedParamsValues = new RegExp(`(${PRE_PARAM_VALUE_TAG},)(.*?)(,${POST_PARAM_VALUE_TAG})`, 'gm');
 
   return path.replace(taggedParamsValues, transform('$2'));
 }
@@ -18,7 +18,9 @@ export const attachTagsToParamsValues: ValuesTransformer = values => {
 };
 
 const attachPrePostTags = (paramValue: ParamValue) => {
-  return isArray(paramValue)
-    ? [PRE_PARAM_VALUE_TAG].concat(uniq(paramValue)).concat(POST_PARAM_VALUE_TAG)
-    : `${PRE_PARAM_VALUE_TAG}${paramValue}${POST_PARAM_VALUE_TAG}`;
+  return (
+    [PRE_PARAM_VALUE_TAG]
+      .concat(isArray(paramValue) ? paramValue : `${paramValue}`)
+      .concat(POST_PARAM_VALUE_TAG)
+  );
 };

@@ -10,16 +10,25 @@ describe('colorizer', () => {
 
   describe('transformPathParamsValues()', () => {
     it('colorizes tagged values of query params', () => {
-      const path = `/no_auth/pets/findByStatus?status=${PRE_PARAM_VALUE_TAG},sold,pending,${POST_PARAM_VALUE_TAG}`;
+      const paramVal = 'sold,pending';
+      const path = `/no_auth/pets/findByStatus?status=${PRE_PARAM_VALUE_TAG},${paramVal},${POST_PARAM_VALUE_TAG}`;
 
-      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/findByStatus?status=${chalk.bold.blue('sold,pending')}`);
+      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/findByStatus?status=${chalk.bold.blue(paramVal)}`);
     });
 
     it('colorizes tagged values of path params', () => {
-      const path = `/no_auth/pets/${PRE_PARAM_VALUE_TAG}651${POST_PARAM_VALUE_TAG}`;
+      const paramVal = 651;
+      const path = `/no_auth/pets/${PRE_PARAM_VALUE_TAG},${paramVal},${POST_PARAM_VALUE_TAG}`;
 
-      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/${chalk.bold.blue('651')}`);
-    })
+      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/${chalk.bold.blue(`${paramVal}`)}`);
+    });
+
+    it('colorizes values that are equal to multiple or single , characters', () => {
+      const paramVal = ',,,,,,,,,,,,,';
+      const path = `/no_auth/pets/${PRE_PARAM_VALUE_TAG},${paramVal},${POST_PARAM_VALUE_TAG}`;
+
+      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/${chalk.bold.blue(paramVal)}`);
+    });
   });
 
   describe('attachTagsToParamsValues()', () => {
@@ -27,48 +36,77 @@ describe('colorizer', () => {
     describe('adding tags', () => {
       it('tags multiple values', () => {
         const values = {
-          "status": [
-            "available",
-            "pending",
-            "sold"
+          status: [
+            'available',
+            'pending',
+            'sold'
           ]
         };
 
         expect(attachTagsToParamsValues(values)).toStrictEqual({
-          "status": [
+          status: [
             PRE_PARAM_VALUE_TAG,
-            "available",
-            "pending",
-            "sold",
+            'available',
+            'pending',
+            'sold',
             POST_PARAM_VALUE_TAG
           ]
         });
       });
 
-      it('tags single values', () => {
-        const values1 = {
-          "name": "dignissimos"
-        };
+      describe('tagging single values', () => {
+        it('tags string values', () => {
+          const val = 'dignissimos';
+          const valuesOfParams = {
+            name: val
+          };
 
-        expect(attachTagsToParamsValues(values1)).toStrictEqual({
-          "name": `${PRE_PARAM_VALUE_TAG}dignissimos${POST_PARAM_VALUE_TAG}`
+          expect(attachTagsToParamsValues(valuesOfParams)).toStrictEqual({
+            name: [
+              'PRE_PARAM_VALUE_TAG',
+              val,
+              'POST_PARAM_VALUE_TAG'
+            ]
+          });
         });
 
-        const values2 = {
-          "petId": 170
-        };
+        it('tags numeric values', () => {
+          const val = 170;
+          const valuesOfParams = {
+            petId: val
+          };
 
-        expect(attachTagsToParamsValues(values2)).toStrictEqual({
-          "petId": `${PRE_PARAM_VALUE_TAG}170${POST_PARAM_VALUE_TAG}`
+          expect(attachTagsToParamsValues(valuesOfParams)).toStrictEqual({
+            petId: [
+              'PRE_PARAM_VALUE_TAG',
+              `${val}`,
+              'POST_PARAM_VALUE_TAG'
+            ]
+          });
         });
-      })
+
+        it('tags values that are equal to multiple or single , characters', () => {
+          const val = ',,,,,';
+          const valuesOfParams = {
+            name: val
+          };
+
+          expect(attachTagsToParamsValues(valuesOfParams)).toStrictEqual({
+            name: [
+              'PRE_PARAM_VALUE_TAG',
+              val,
+              'POST_PARAM_VALUE_TAG'
+            ]
+          });
+        });
+      });
     });
 
     it('does not tag anything in case of no params', () => {
       const values = {};
 
       expect(attachTagsToParamsValues(values)).toStrictEqual({});
-    })
+    });
 
   });
 });
