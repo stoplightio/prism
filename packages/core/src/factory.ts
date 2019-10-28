@@ -32,18 +32,12 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                 config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
                 config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
               ),
-              Either.fold(
-                inputValidations =>
-                  Either.right<Error, { resource: Resource; inputValidations: IPrismDiagnostic[] }>({
-                    resource,
-                    inputValidations,
-                  }),
-                () =>
-                  Either.right<Error, { resource: Resource; inputValidations: IPrismDiagnostic[] }>({
-                    resource,
-                    inputValidations: [],
-                  })
-              )
+              Either.map(() => ({ resource, inputValidations: [] })),
+              Either.orElse<
+                NonEmptyArray<IPrismDiagnostic>,
+                { resource: Resource; inputValidations: IPrismDiagnostic[] },
+                Error
+              >(inputValidations => Either.right({ resource, inputValidations }))
             )
           )
         ),
