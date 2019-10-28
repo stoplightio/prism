@@ -18,9 +18,5 @@ export const attachTagsToParamsValues: ValuesTransformer = values => {
 };
 
 const attachPrePostTags = (paramValue: ParamValue) => {
-  return (
-    [PRE_PARAM_VALUE_TAG]
-      .concat(isArray(paramValue) ? paramValue : `${paramValue}`)
-      .concat(POST_PARAM_VALUE_TAG)
-  );
+  return [PRE_PARAM_VALUE_TAG].concat(isArray(paramValue) ? paramValue : `${paramValue}`).concat(POST_PARAM_VALUE_TAG);
 };
