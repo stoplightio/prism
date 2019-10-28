@@ -33,28 +33,28 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                 config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
               ),
               Either.fold(
-                validations =>
-                  Either.right<Error, { resource: Resource; validations: IPrismDiagnostic[] }>({
+                inputValidations =>
+                  Either.right<Error, { resource: Resource; inputValidations: IPrismDiagnostic[] }>({
                     resource,
-                    validations,
+                    inputValidations,
                   }),
                 () =>
-                  Either.right<Error, { resource: Resource; validations: IPrismDiagnostic[] }>({
+                  Either.right<Error, { resource: Resource; inputValidations: IPrismDiagnostic[] }>({
                     resource,
-                    validations: [],
+                    inputValidations: [],
                   })
               )
             )
           )
         ),
-        TaskEither.chain(({ resource, validations }) => {
+        TaskEither.chain(({ resource, inputValidations }) => {
           const produceOutput = isProxyConfig(config)
             ? components.forward(input, config.upstream.href)
             : TaskEither.fromEither(
                 components.mock({
                   resource,
                   input: {
-                    validations,
+                    validations: inputValidations,
                     data: input,
                   },
                   config: config.mock,
@@ -63,10 +63,10 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
           return pipe(
             produceOutput,
-            TaskEither.map(output => ({ output, resource, validations }))
+            TaskEither.map(output => ({ output, resource, inputValidations }))
           );
         }),
-        TaskEither.map(({ output, resource, validations }) => {
+        TaskEither.map(({ output, resource, inputValidations }) => {
           const outputValidations = pipe(
             config.validateResponse,
             Option.fromPredicate(t => t),
@@ -86,7 +86,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             input,
             output,
             validations: {
-              input: validations,
+              input: inputValidations,
               output: outputValidations,
             },
           };
