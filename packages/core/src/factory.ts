@@ -6,7 +6,7 @@ import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig } from './types';
 import { validateSecurity } from './utils/security';
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray';
+import { getSemigroup } from 'fp-ts/lib/NonEmptyArray';
 
 const sequenceValidation = sequenceT(Either.getValidation(getSemigroup<IPrismDiagnostic>()));
 
@@ -24,23 +24,15 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       const config = defaults<unknown, Config>(c, defaultConfig);
 
       return pipe(
-        TaskEither.fromEither(
+        TaskEither.fromEither(components.route({ resources, input })),
+        TaskEither.chain(resource =>
           pipe(
-            components.route({ resources, input }),
-            Either.chain(resource =>
-              pipe(
-                sequenceValidation(
-                  config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
-                  config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
-                ),
-                Either.map(() => ({ resource, inputValidations: [] })),
-                Either.orElse<
-                  NonEmptyArray<IPrismDiagnostic>,
-                  { resource: Resource; inputValidations: IPrismDiagnostic[] },
-                  Error
-                >(inputValidations => Either.right({ resource, inputValidations }))
-              )
-            )
+            sequenceValidation(
+              config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
+              config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
+            ),
+            Either.fold(inputValidations => inputValidations as IPrismDiagnostic[], () => []),
+            inputValidations => TaskEither.right({ resource, inputValidations })
           )
         ),
         TaskEither.chain(({ resource, inputValidations }) => {
