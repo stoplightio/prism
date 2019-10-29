@@ -24,20 +24,22 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       const config = defaults<unknown, Config>(c, defaultConfig);
 
       return pipe(
-        TaskEither.fromEither(components.route({ resources, input })),
-        TaskEither.chain(resource =>
-          TaskEither.fromEither(
-            pipe(
-              sequenceValidation(
-                config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
-                config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
-              ),
-              Either.map(() => ({ resource, inputValidations: [] })),
-              Either.orElse<
-                NonEmptyArray<IPrismDiagnostic>,
-                { resource: Resource; inputValidations: IPrismDiagnostic[] },
-                Error
-              >(inputValidations => Either.right({ resource, inputValidations }))
+        TaskEither.fromEither(
+          pipe(
+            components.route({ resources, input }),
+            Either.chain(resource =>
+              pipe(
+                sequenceValidation(
+                  config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
+                  config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
+                ),
+                Either.map(() => ({ resource, inputValidations: [] })),
+                Either.orElse<
+                  NonEmptyArray<IPrismDiagnostic>,
+                  { resource: Resource; inputValidations: IPrismDiagnostic[] },
+                  Error
+                >(inputValidations => Either.right({ resource, inputValidations }))
+              )
             )
           )
         ),
