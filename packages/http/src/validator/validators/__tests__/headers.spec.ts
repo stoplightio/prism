@@ -1,8 +1,8 @@
-import { HttpParamStyles } from '@stoplight/types';
+import { HttpParamStyles, DiagnosticSeverity } from '@stoplight/types';
 import { query as registry } from '../../deserializers';
 import { HttpHeadersValidator } from '../headers';
 import * as validateAgainstSchemaModule from '../utils';
-import { assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('HttpHeadersValidator', () => {
   const httpHeadersValidator = new HttpHeadersValidator(registry, 'header');
@@ -18,9 +18,16 @@ describe('HttpHeadersValidator', () => {
       describe('header is not present', () => {
         describe('spec defines it as required', () => {
           it('returns validation error', () => {
-            expect(
+            assertLeft(
               httpHeadersValidator.validate({}, [{ name: 'aHeader', style: HttpParamStyles.Simple, required: true }]),
-            ).toMatchSnapshot();
+              error =>
+                expect(error).toContainEqual({
+                  code: 'required',
+                  message: "should have required property 'aheader'",
+                  path: ['header'],
+                  severity: 0,
+                })
+            );
           });
         });
       });
@@ -38,7 +45,7 @@ describe('HttpHeadersValidator', () => {
                     style: HttpParamStyles.Simple,
                     schema: { type: 'number' },
                   },
-                ]),
+                ])
               );
 
               expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
@@ -55,7 +62,7 @@ describe('HttpHeadersValidator', () => {
                       style: HttpParamStyles.Simple,
                       schema: { type: 'string' },
                     },
-                  ]),
+                  ])
                 );
 
                 expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
@@ -72,7 +79,7 @@ describe('HttpHeadersValidator', () => {
                   name: 'x-test-header',
                   style: HttpParamStyles.Simple,
                 },
-              ]),
+              ])
             );
 
             expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
@@ -81,7 +88,7 @@ describe('HttpHeadersValidator', () => {
 
         describe('deprecated flag is set', () => {
           it('returns deprecation warning', () => {
-            expect(
+            assertLeft(
               httpHeadersValidator.validate({ 'x-test-header': 'abc' }, [
                 {
                   name: 'x-test-header',
@@ -89,7 +96,8 @@ describe('HttpHeadersValidator', () => {
                   style: HttpParamStyles.Simple,
                 },
               ]),
-            ).toMatchSnapshot();
+              error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Warning }))
+            );
           });
         });
       });
