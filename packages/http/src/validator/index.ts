@@ -1,5 +1,5 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IHttpOperationRequest } from '@stoplight/types';
 import * as caseless from 'caseless';
 import { findFirst } from 'fp-ts/lib/Array';
 import * as Option from 'fp-ts/lib/Option';
@@ -26,12 +26,8 @@ export const headersValidator = new HttpHeadersValidator(headerDeserializerRegis
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
 
-const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
-  const mediaType = caseless(element.headers || {}).get('content-type');
-  const { request } = resource;
-  const { body } = element;
-
-  const validateBody = pipe(
+const validateBody = (request: IHttpOperationRequest, body: unknown, mediaType: string) =>
+  pipe(
     Option.fromNullable(request),
     Option.mapNullable(request => request.body),
     Option.chain(requestBody =>
@@ -51,16 +47,32 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
         )
       )
     ),
-    Either.fromOption(() => {}),
+    Either.fromOption(() => body),
     Either.swap
   );
 
+const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
+  const mediaType = caseless(element.headers || {}).get('content-type');
+  const { request } = resource;
+  const { body } = element;
+
   return pipe(
-    sequenceValidation(
-      validateBody,
-      headersValidator.validate(element.headers || {}, (request && request.headers) || []),
-      queryValidator.validate(element.url.query || {}, (request && request.query) || []),
-      pathValidator.validate(getPathParams(element.url.path, resource.path), (request && request.path) || [])
+    Either.fromNullable(undefined)(request),
+    Either.fold(
+      e => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
+      request =>
+        sequenceValidation(
+          validateBody(request, body, mediaType),
+          element.headers && request.headers
+            ? headersValidator.validate(element.headers, request.headers)
+            : Either.right(undefined),
+          element.url.query && request.query
+            ? queryValidator.validate(element.url.query, request.query)
+            : Either.right(undefined),
+          request.path
+            ? pathValidator.validate(getPathParams(element.url.path, resource.path), request.path)
+            : Either.right(undefined)
+        )
     ),
     Either.map(() => element)
   );
