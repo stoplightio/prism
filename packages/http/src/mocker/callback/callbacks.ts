@@ -5,6 +5,8 @@ import fetch  from 'node-fetch';
 import * as Option from 'fp-ts/lib/Option';
 import * as Either from 'fp-ts/lib/Either';
 import { map, reduce } from 'fp-ts/lib/Array';
+import * as Reader from 'fp-ts/lib/Reader';
+import * as Task from 'fp-ts/lib/Task';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { head } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -13,8 +15,9 @@ import { validateOutput } from '../../validator';
 import { parseResponse } from '../../util/response';
 import withLogger from '../../withLogger';
 import { violationLogger } from '../../util/logger';
+import { Logger } from 'pino';
 
-export function runCallback({ callback, request, response }: { callback: IHttpCallbackOperation, request: IHttpRequest, response: IHttpResponse }) {
+export function runCallback({ callback, request, response }: { callback: IHttpCallbackOperation, request: IHttpRequest, response: IHttpResponse }): Reader.Reader<Logger, Task.Task<void>> {
   return withLogger(logger => {
     const { url, ...requestInit } = assembleRequest({ resource: callback, request, response });
     const logViolation = violationLogger(logger);
@@ -28,12 +31,18 @@ export function runCallback({ callback, request, response }: { callback: IHttpCa
       TaskEither.map(violations => {
         logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Request finished`);
 
-        return pipe(
+        pipe(
           violations,
           map(logViolation)
         );
       }),
-      TaskEither.mapLeft(error => logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`)),
+      TaskEither.fold(
+        error => {
+          logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`);
+          return async () => undefined;
+        },
+        () => async () => undefined
+      ),
     );
   });
 }

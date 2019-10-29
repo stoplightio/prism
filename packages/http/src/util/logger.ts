@@ -4,7 +4,8 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 
 export const violationLogger = withLogger(logger => {
   return (violation: IPrismDiagnostic) => {
-    const message = `Violation: ${violation.path || ''} ${violation.message}`;
+    const path = violation.path ? violation.path.join('.') + ' ' : '';
+    const message = `Violation: ${path}${violation.message}`;
     if (violation.severity === DiagnosticSeverity.Error) {
       logger.error({ name: 'VALIDATOR' }, message);
     } else if (violation.severity === DiagnosticSeverity.Warning) {

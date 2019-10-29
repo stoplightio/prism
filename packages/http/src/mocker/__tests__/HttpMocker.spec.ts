@@ -7,6 +7,11 @@ import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import { IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
+import { runCallback } from '../callback/callbacks';
+
+jest.mock('../callback/callbacks', () => ({
+  runCallback: jest.fn(() => () => () => undefined),
+}));
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -125,6 +130,48 @@ describe('mocker', () => {
           });
         });
       });
+
+      it('runs defined callbacks', () => {
+        const callbacksMockResource: IHttpOperation = {
+          ...mockResource,
+          callbacks: [
+            {
+              callbackName: 'c1',
+              method: 'get',
+              path: 'http://example.com/notify',
+              id: '1',
+              responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
+            },
+            {
+              callbackName: 'c2',
+              method: 'get',
+              path: 'http://example.com/notify2',
+              id: '2',
+              responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
+            }
+          ],
+        };
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          right({
+            code: '202',
+            mediaType: 'test',
+            schema: callbacksMockResource.responses![0].contents![0].schema,
+            headers: [],
+          }),
+        );
+
+        const response = mock({
+          config: { dynamic: true },
+          resource: callbacksMockResource,
+          input: mockInput,
+        })(logger);
+
+        assertRight(response, result => {
+          expect(runCallback).toHaveBeenCalledTimes(2);
+          expect(runCallback).toHaveBeenNthCalledWith(1, expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c1' }) }));
+          expect(runCallback).toHaveBeenNthCalledWith(2, expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c2' }) }));
+        });
+      })
     });
 
     describe('with a negotiator response containing validation results of Warning severity', () => {
