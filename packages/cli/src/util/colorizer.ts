@@ -3,8 +3,8 @@ import { Dictionary } from '@stoplight/types';
 
 export type ValuesTransformer = (values: Dictionary<unknown>) => Dictionary<string | string[]>;
 
-export const PRE_PARAM_VALUE_TAG = 'PRE_PARAM_VALUE_TAG';
-export const POST_PARAM_VALUE_TAG = 'POST_PARAM_VALUE_TAG';
+export const PRE_PARAM_VALUE_TAG = '~pre~';
+export const POST_PARAM_VALUE_TAG = '~post~';
 
 export function transformPathParamsValues(path: string, transform: (aString: string) => string): string {
   const taggedParamsValues = new RegExp(`(${PRE_PARAM_VALUE_TAG},)(.*?)(,${POST_PARAM_VALUE_TAG})`, 'gm');

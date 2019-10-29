@@ -63,9 +63,9 @@ describe('colorizer', () => {
 
           expect(attachTagsToParamsValues(valuesOfParams)).toStrictEqual({
             name: [
-              'PRE_PARAM_VALUE_TAG',
+              PRE_PARAM_VALUE_TAG,
               val,
-              'POST_PARAM_VALUE_TAG'
+              POST_PARAM_VALUE_TAG
             ]
           });
         });
@@ -78,9 +78,9 @@ describe('colorizer', () => {
 
           expect(attachTagsToParamsValues(valuesOfParams)).toStrictEqual({
             petId: [
-              'PRE_PARAM_VALUE_TAG',
+              PRE_PARAM_VALUE_TAG,
               `${val}`,
-              'POST_PARAM_VALUE_TAG'
+              POST_PARAM_VALUE_TAG
             ]
           });
         });
@@ -93,9 +93,9 @@ describe('colorizer', () => {
 
           expect(attachTagsToParamsValues(valuesOfParams)).toStrictEqual({
             name: [
-              'PRE_PARAM_VALUE_TAG',
+              PRE_PARAM_VALUE_TAG,
               val,
-              'POST_PARAM_VALUE_TAG'
+              POST_PARAM_VALUE_TAG
             ]
           });
         });
