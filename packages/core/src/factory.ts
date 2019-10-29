@@ -18,21 +18,31 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
   components: IPrismComponents<Resource, Input, Output, Config>
 ): IPrism<Resource, Input, Output, Config> {
-  const inputValidation = (resource: Resource, input: Input, config: Config) =>
+  type ResourceAndValidation = {
+    resource: Resource;
+    inputValidations: IPrismDiagnostic[];
+  };
+
+  const inputValidation = (
+    resource: Resource,
+    input: Input,
+    config: Config
+  ): TaskEither.TaskEither<Error, ResourceAndValidation> =>
     pipe(
       sequenceValidation(
         config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
         config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
       ),
       Either.fold(inputValidations => inputValidations as IPrismDiagnostic[], () => []),
-      inputValidations =>
-        TaskEither.right<Error, { resource: Resource; inputValidations: IPrismDiagnostic[] }>({
-          resource,
-          inputValidations,
-        })
+      inputValidations => TaskEither.right({ resource, inputValidations })
     );
 
-  const mockOrForward = (resource: Resource, input: Input, config: Config, inputValidations: IPrismDiagnostic[]) => {
+  const mockOrForward = (
+    resource: Resource,
+    input: Input,
+    config: Config,
+    inputValidations: IPrismDiagnostic[]
+  ): TaskEither.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
     const produceOutput = isProxyConfig(config)
       ? components.forward(input, config.upstream.href)
       : TaskEither.fromEither(
