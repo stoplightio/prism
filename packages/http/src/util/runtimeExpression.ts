@@ -20,8 +20,9 @@ export function resolveRuntimeExpression(
   response: IHttpResponse
 ): Option.Option<string> {
   const parts = expr.split(/[.#]/);
-  return pipe(
-    pipe(
+
+  function tryMethod() {
+    return pipe(
       head(parts),
       Option.chain(part =>
         pipe(
@@ -30,124 +31,149 @@ export function resolveRuntimeExpression(
         )
       ),
       Option.map(() => String(request.method))
-    ),
-    Option.alt(() =>
-      pipe(
-        head(parts),
-        Option.chain(part =>
-          pipe(
-            part,
-            Option.fromPredicate(part => part === '$statusCode')
-          )
-        ),
-        Option.map(() => String(response.statusCode))
-      )
-    ),
-    Option.alt(() =>
-      pipe(
-        head(parts),
-        Option.chain(part =>
-          pipe(
-            part,
-            Option.fromPredicate(part => part === '$request')
-          )
-        ),
-        Option.chain(() =>
-          pipe(
+    );
+  }
+
+  function tryStatusCode() {
+    return pipe(
+      head(parts),
+      Option.chain(part =>
+        pipe(
+          part,
+          Option.fromPredicate(part => part === '$statusCode')
+        )
+      ),
+      Option.map(() => String(response.statusCode))
+    );
+  }
+
+  function tryRequestHeader() {
+    return pipe(
+      lookup(1, parts),
+      Option.chain(part =>
+        pipe(
+          part,
+          Option.fromPredicate(part => part === 'header')
+        )
+      ),
+      Option.chain(() => lookup(2, parts)),
+      Option.chain(part => Option.fromNullable(request.headers && request.headers[part]))
+    );
+  }
+
+  function tryRequestQuery() {
+    return pipe(
+      lookup(1, parts),
+      Option.chain(part =>
+        pipe(
+          part,
+          Option.fromPredicate(part => part === 'query')
+        )
+      ),
+      Option.chain(() => lookup(2, parts)),
+      Option.chain(part => Option.fromNullable(request.url.query && request.url.query[part]))
+    );
+  }
+
+  function tryRequestBody() {
+    return pipe(
+      lookup(1, parts),
+      Option.chain(part =>
+        pipe(
+          part,
+          Option.fromPredicate(part => part === 'body')
+        )
+      ),
+      Option.chain(() =>
+        pipe(
+          Option.fromNullable(request.body),
+          Option.chain(body =>
             pipe(
-              lookup(1, parts),
-              Option.chain(part =>
-                pipe(
-                  part,
-                  Option.fromPredicate(part => part === 'header')
-                )
-              ),
-              Option.chain(() => Option.fromNullable(request.headers && request.headers[parts[2]]))
-            ),
-            Option.alt(() =>
-              pipe(
-                lookup(1, parts),
-                Option.chain(part =>
-                  pipe(
-                    part,
-                    Option.fromPredicate(part => part === 'query')
-                  )
-                ),
-                Option.chain(() => Option.fromNullable(request.url.query && request.url.query[parts[2]]))
-              )
-            ),
-            Option.alt(() =>
-              pipe(
-                lookup(1, parts),
-                Option.chain(part =>
-                  pipe(
-                    part,
-                    Option.fromPredicate(part => part === 'body')
-                  )
-                ),
-                Option.chain(() =>
-                  pipe(
-                    Option.fromNullable(request.body),
-                    Option.chain(body =>
-                      pipe(
-                        Option.tryCatch(() => pointerToPath('#' + parts[2])),
-                        Option.chain(path => Option.fromNullable(_get(body, path)))
-                      )
-                    )
-                  )
-                )
-              )
+              lookup(2, parts),
+              Option.chain(part => Option.tryCatch(() => pointerToPath('#' + part))),
+              Option.chain(path => Option.fromNullable(_get(body, path)))
             )
           )
         )
       )
-    ),
-    Option.alt(() =>
-      pipe(
-        head(parts),
-        Option.chain(part =>
-          pipe(
-            part,
-            Option.fromPredicate(part => part === '$response')
-          )
-        ),
-        Option.chain(() =>
-          pipe(
+    );
+  }
+
+  function tryResponseHeader() {
+    return pipe(
+      lookup(1, parts),
+      Option.chain(part =>
+        pipe(
+          part,
+          Option.fromPredicate(part => part === 'header')
+        )
+      ),
+      Option.chain(() => lookup(2, parts)),
+      Option.chain(part => Option.fromNullable(response.headers && response.headers[part]))
+    );
+  }
+
+  function tryResponseBody() {
+    return pipe(
+      lookup(1, parts),
+      Option.chain(part =>
+        pipe(
+          part,
+          Option.fromPredicate(part => part === 'body')
+        )
+      ),
+      Option.chain(() =>
+        pipe(
+          Option.fromNullable(response.body),
+          Option.chain(body =>
             pipe(
-              lookup(1, parts),
-              Option.chain(part =>
-                pipe(
-                  part,
-                  Option.fromPredicate(part => part === 'header')
-                )
-              ),
-              Option.chain(() => Option.fromNullable(response.headers && response.headers[parts[2]]))
-            )
-          )
-        ),
-        Option.alt(() =>
-          pipe(
-            lookup(1, parts),
-            Option.chain(part =>
-              pipe(
-                part,
-                Option.fromPredicate(part => part === 'body')
-              )
-            ),
-            Option.chain(() =>
-              pipe(
-                Option.fromNullable(response.body),
-                Option.chain(body =>
-                  pipe(
-                    Option.tryCatch(() => pointerToPath('#' + parts[2])),
-                    Option.chain(path => Option.fromNullable(_get(body, path)))
-                  )
-                )
-              )
+              lookup(2, parts),
+              Option.chain(part => Option.tryCatch(() => pointerToPath('#' + part))),
+              Option.chain(path => Option.fromNullable(_get(body, path)))
             )
           )
         )
       )
-    )
+    );
+  }
+
+  function tryRequest() {
+    return pipe(
+      head(parts),
+      Option.chain(part =>
+        pipe(
+          part,
+          Option.fromPredicate(part => part === '$request')
+        )
+      ),
+      Option.chain(() =>
+        pipe(
+          tryRequestHeader(),
+          Option.alt(tryRequestQuery),
+          Option.alt(tryRequestBody)
+        )
+      )
+    );
+  }
+
+  function tryResponse() {
+    return pipe(
+      head(parts),
+      Option.chain(part =>
+        pipe(
+          part,
+          Option.fromPredicate(part => part === '$response')
+        )
+      ),
+      Option.chain(tryResponseHeader),
+      Option.alt(tryResponseBody)
+    );
+  }
+
+  return pipe(
+    tryMethod(),
+    Option.alt(tryStatusCode),
+    Option.alt(tryRequest),
+    Option.alt(tryResponse)
   );
 }
