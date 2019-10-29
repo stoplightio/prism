@@ -18,6 +18,40 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
   components: IPrismComponents<Resource, Input, Output, Config>
 ): IPrism<Resource, Input, Output, Config> {
+  const inputValidation = (resource: Resource, input: Input, config: Config) =>
+    pipe(
+      sequenceValidation(
+        config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
+        config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
+      ),
+      Either.fold(inputValidations => inputValidations as IPrismDiagnostic[], () => []),
+      inputValidations =>
+        TaskEither.right<Error, { resource: Resource; inputValidations: IPrismDiagnostic[] }>({
+          resource,
+          inputValidations,
+        })
+    );
+
+  const mockOrForward = (resource: Resource, input: Input, config: Config, inputValidations: IPrismDiagnostic[]) => {
+    const produceOutput = isProxyConfig(config)
+      ? components.forward(input, config.upstream.href)
+      : TaskEither.fromEither(
+          components.mock({
+            resource,
+            input: {
+              validations: inputValidations,
+              data: input,
+            },
+            config: config.mock,
+          })(components.logger.child({ name: 'NEGOTIATOR' }))
+        );
+
+    return pipe(
+      produceOutput,
+      TaskEither.map(output => ({ output, resource, inputValidations }))
+    );
+  };
+
   return {
     request: (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
@@ -25,35 +59,8 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
       return pipe(
         TaskEither.fromEither(components.route({ resources, input })),
-        TaskEither.chain(resource =>
-          pipe(
-            sequenceValidation(
-              config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
-              config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
-            ),
-            Either.fold(inputValidations => inputValidations as IPrismDiagnostic[], () => []),
-            inputValidations => TaskEither.right({ resource, inputValidations })
-          )
-        ),
-        TaskEither.chain(({ resource, inputValidations }) => {
-          const produceOutput = isProxyConfig(config)
-            ? components.forward(input, config.upstream.href)
-            : TaskEither.fromEither(
-                components.mock({
-                  resource,
-                  input: {
-                    validations: inputValidations,
-                    data: input,
-                  },
-                  config: config.mock,
-                })(components.logger.child({ name: 'NEGOTIATOR' }))
-              );
-
-          return pipe(
-            produceOutput,
-            TaskEither.map(output => ({ output, resource, inputValidations }))
-          );
-        }),
+        TaskEither.chain(resource => inputValidation(resource, input, config)),
+        TaskEither.chain(({ resource, inputValidations }) => mockOrForward(resource, input, config, inputValidations)),
         TaskEither.map(({ output, resource, inputValidations }) => {
           const outputValidations = config.validateResponse
             ? pipe(
