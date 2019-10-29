@@ -63,12 +63,8 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
       request =>
         sequenceValidation(
           validateBody(request, body, mediaType),
-          element.headers && request.headers
-            ? headersValidator.validate(element.headers, request.headers)
-            : Either.right(undefined),
-          element.url.query && request.query
-            ? queryValidator.validate(element.url.query, request.query)
-            : Either.right(undefined),
+          request.headers ? headersValidator.validate(element.headers || {}, request.headers) : Either.right(undefined),
+          request.query ? queryValidator.validate(element.url.query || {}, request.query) : Either.right(undefined),
           request.path
             ? pathValidator.validate(getPathParams(element.url.path, resource.path), request.path)
             : Either.right(undefined)

@@ -12,6 +12,29 @@ import {
 } from '../index';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
+const validate = (
+  resourceExtension?: Partial<IHttpOperation>,
+  inputExtension?: Partial<IHttpRequest>,
+  length = 3
+) => () => {
+  const validationResult = validateInput({
+    resource: Object.assign<IHttpOperation, unknown>(
+      {
+        method: 'get',
+        path: '/',
+        id: '1',
+        request: {},
+        responses: [{ code: '200' }],
+      },
+      resourceExtension
+    ),
+    element: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
+  });
+  length === 0
+    ? assertRight(validationResult)
+    : assertLeft(validationResult, error => expect(error).toHaveLength(length));
+};
+
 const mockError: IPrismDiagnostic = {
   message: 'mocked C is required',
   code: 'required',
@@ -31,35 +54,11 @@ describe('HttpValidator', () => {
     afterAll(() => jest.restoreAllMocks());
 
     describe('body validation in enabled', () => {
-      const validate = (resourceExtension: Partial<IHttpOperation> | undefined, errorsNumber: number) => () => {
-        assertLeft(
-          validateInput({
-            resource: Object.assign(
-              {
-                method: 'get',
-                path: '/',
-                id: '1',
-                request: {},
-                responses: [{ code: '200' }],
-              },
-              resourceExtension
-            ),
-            element: { method: 'get', url: { path: '/' } },
-          }),
-          error => expect(error).toHaveLength(errorsNumber)
-        );
-      };
-
       describe('request.body is set', () => {
         describe('request body is not required', () => {
           it(
             'does not try to validate the body',
-            validate(
-              {
-                request: { body: { contents: [] }, path: [], query: [], headers: [], cookie: [] },
-              },
-              3
-            )
+            validate({ request: { body: { required: false, contents: [] } } }, undefined, 0)
           );
         });
 
@@ -74,7 +73,8 @@ describe('HttpValidator', () => {
                 request: { body: { contents: [], required: true } },
                 responses: [{ code: '200' }],
               },
-              4
+              undefined,
+              1
             )
           );
         });
@@ -82,74 +82,35 @@ describe('HttpValidator', () => {
     });
 
     describe('headers validation in enabled', () => {
-      const validate = (resourceExtension?: Partial<IHttpOperation>, length = 1) => () => {
-        assertLeft(
-          validateInput({
-            resource: Object.assign(
-              {
-                method: 'get',
-                path: '/',
-                id: '1',
-                request: {},
-                responses: [{ code: '200' }],
-              },
-              resourceExtension
-            ),
-            element: { method: 'get', url: { path: '/' } },
-          }),
-          error => expect(error).toHaveLength(length)
-        );
-      };
-
       describe('request is not set', () => {
-        it('validates headers', validate(undefined, 3));
+        it('does not validate headers', validate(undefined, undefined, 0));
       });
     });
 
-    describe('query validation in enabled', () => {
-      const validate = (
-        resourceExtension?: Partial<IHttpOperation>,
-        inputExtension?: Partial<IHttpRequest>,
-        length = 3
-      ) => () => {
-        assertLeft(
-          validateInput({
-            resource: Object.assign(
-              {
-                method: 'get',
-                path: '/',
-                id: '1',
-                request: {},
-                responses: [{ code: '200' }],
-              },
-              resourceExtension
-            ),
-            element: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
-          }),
-          error => expect(error).toHaveLength(length)
-        );
-
-        expect(bodyValidator.validate).not.toHaveBeenCalled();
-        expect(headersValidator.validate).toHaveBeenCalled();
-        expect(queryValidator.validate).toHaveBeenCalledWith({}, []);
-      };
-
+    describe('query validation is enabled', () => {
       describe('request is not set', () => {
-        it('validates query', validate(undefined, undefined, 3));
+        it('does not validate query', validate(undefined, undefined, 0));
       });
 
       describe('request is set', () => {
         describe('request.query is not set', () => {
-          it('validates query', validate({ request: {} }, undefined, 3));
+          it('does not validate query', validate({ request: {} }, undefined, 0));
         });
 
         describe('request.query is set', () => {
-          it('validates query', validate({ request: {} }, undefined, 3));
+          it(
+            'validates query',
+            validate(
+              { request: { query: [{ style: HttpParamStyles.SpaceDelimited, name: 'hey', required: true }] } },
+              undefined,
+              1
+            )
+          );
         });
       });
 
       describe('input.url.query is not set', () => {
-        it("validates query assuming it's empty", validate(undefined, { url: { path: '/' } }));
+        it("validates query assuming it's empty", validate(undefined, { url: { path: '/' } }, 0));
       });
     });
 
