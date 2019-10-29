@@ -6,11 +6,13 @@ export type ValuesTransformer = (values: Dictionary<unknown>) => Dictionary<stri
 export const PRE_PARAM_VALUE_TAG = '~pre~';
 export const POST_PARAM_VALUE_TAG = '~post~';
 
-export function transformPathParamsValues(path: string, transform: (aString: string) => string): string {
-  const taggedParamsValues = new RegExp(`(${PRE_PARAM_VALUE_TAG},)(.*?)(,${POST_PARAM_VALUE_TAG})`, 'gm');
-
+export const transformPathParamsValues = ((
+  taggedParamsValues: RegExp,
+  path: string,
+  transform: (aString: string) => string
+): string => {
   return path.replace(taggedParamsValues, transform('$2'));
-}
+}).bind({}, new RegExp(`(${PRE_PARAM_VALUE_TAG},)(.*?)(,${POST_PARAM_VALUE_TAG})`, 'gm'));
 
 export const attachTagsToParamsValues: ValuesTransformer = values => {
   return mapValues(values, attachPrePostTags);
