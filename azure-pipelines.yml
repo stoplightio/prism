@@ -27,13 +27,11 @@ jobs:
 
       - script: npx pkg --output ./cli-binaries/prism-cli ./packages/cli/
         displayName: Create binary
-
-      - bash: yarn test.harness
-        displayName: Run harness
-        condition: not(always())
+        condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
 
       - publish: ./cli-binaries/
         artifact: prism-cli-win.exe
+        condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
 
   - job: publish
     dependsOn: test
