@@ -84,7 +84,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
     );
 
     logInstance.note(
-      `${resource.method.toUpperCase().padEnd(10)} ${address} ${transformPathParamsValues(path, chalk.bold.cyan)}`
+      `${resource.method.toUpperCase().padEnd(10)} ${address}${transformPathParamsValues(path, chalk.bold.cyan)}`
     );
   });
   logInstance.start(`Prism is listening on ${address}`);
