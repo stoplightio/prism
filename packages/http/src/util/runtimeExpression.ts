@@ -1,5 +1,6 @@
 import { IHttpRequest, IHttpResponse } from '../types';
 import * as Option from 'fp-ts/lib/Option';
+import { head, lookup } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get as _get } from 'lodash';
 import { pointerToPath } from '@stoplight/json';
@@ -21,39 +22,69 @@ export function resolveRuntimeExpression(
   const parts = expr.split(/[.#]/);
   return pipe(
     pipe(
-      parts[0],
-      Option.fromPredicate(part => part === '$method'),
+      head(parts),
+      Option.chain(part =>
+        pipe(
+          part,
+          Option.fromPredicate(part => part === '$method')
+        )
+      ),
       Option.map(() => String(request.method))
     ),
     Option.alt(() =>
       pipe(
-        parts[0],
-        Option.fromPredicate(part => part === '$statusCode'),
+        head(parts),
+        Option.chain(part =>
+          pipe(
+            part,
+            Option.fromPredicate(part => part === '$statusCode')
+          )
+        ),
         Option.map(() => String(response.statusCode))
       )
     ),
     Option.alt(() =>
       pipe(
-        parts[0],
-        Option.fromPredicate(part => part === '$request'),
+        head(parts),
+        Option.chain(part =>
+          pipe(
+            part,
+            Option.fromPredicate(part => part === '$request')
+          )
+        ),
         Option.chain(() =>
           pipe(
             pipe(
-              parts[1],
-              Option.fromPredicate(part => part === 'header'),
+              lookup(1, parts),
+              Option.chain(part =>
+                pipe(
+                  part,
+                  Option.fromPredicate(part => part === 'header')
+                )
+              ),
               Option.chain(() => Option.fromNullable(request.headers && request.headers[parts[2]]))
             ),
             Option.alt(() =>
               pipe(
-                parts[1],
-                Option.fromPredicate(part => part === 'query'),
+                lookup(1, parts),
+                Option.chain(part =>
+                  pipe(
+                    part,
+                    Option.fromPredicate(part => part === 'query')
+                  )
+                ),
                 Option.chain(() => Option.fromNullable(request.url.query && request.url.query[parts[2]]))
               )
             ),
             Option.alt(() =>
               pipe(
-                parts[1],
-                Option.fromPredicate(part => part === 'body'),
+                lookup(1, parts),
+                Option.chain(part =>
+                  pipe(
+                    part,
+                    Option.fromPredicate(part => part === 'body')
+                  )
+                ),
                 Option.chain(() =>
                   pipe(
                     Option.fromNullable(request.body),
@@ -73,21 +104,36 @@ export function resolveRuntimeExpression(
     ),
     Option.alt(() =>
       pipe(
-        parts[0],
-        Option.fromPredicate(part => part === '$response'),
+        head(parts),
+        Option.chain(part =>
+          pipe(
+            part,
+            Option.fromPredicate(part => part === '$response')
+          )
+        ),
         Option.chain(() =>
           pipe(
             pipe(
-              parts[1],
-              Option.fromPredicate(part => part === 'header'),
+              lookup(1, parts),
+              Option.chain(part =>
+                pipe(
+                  part,
+                  Option.fromPredicate(part => part === 'header')
+                )
+              ),
               Option.chain(() => Option.fromNullable(response.headers && response.headers[parts[2]]))
             )
           )
         ),
         Option.alt(() =>
           pipe(
-            parts[1],
-            Option.fromPredicate(part => part === 'body'),
+            lookup(1, parts),
+            Option.chain(part =>
+              pipe(
+                part,
+                Option.fromPredicate(part => part === 'body')
+              )
+            ),
             Option.chain(() =>
               pipe(
                 Option.fromNullable(response.body),
