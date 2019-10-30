@@ -1,9 +1,13 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Segment } from '@stoplight/types';
+import { getSemigroup } from 'fp-ts/lib/NonEmptyArray';
+import { getValidation } from 'fp-ts/lib/Either';
+import { option } from 'fp-ts/lib/Option';
+import { sequenceT } from 'fp-ts/lib/Apply'
 import * as Ajv from 'ajv';
+import { JSONSchema } from '../../';
 // @ts-ignore
 import * as AjvOAI from 'ajv-oai';
-import { JSONSchema } from '../../';
 
 const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' }) as Ajv.Ajv;
 
@@ -35,3 +39,6 @@ export const validateAgainstSchema = (value: any, schema: JSONSchema, prefix?: s
     throw new Error(`AJV validation error: "${error}"`);
   }
 };
+
+export const sequenceValidation = sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()));
+export const sequenceOption = sequenceT(option)

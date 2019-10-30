@@ -22,7 +22,7 @@ export function serializeWithDelimitedStyle(
   separator: string,
   name: string,
   value: Array<string | number | boolean>,
-  explode?: boolean,
+  explode?: boolean
 ): string {
   return explode ? serializeAndExplode(name, value) : serializeAndImplode(separator, name, value);
 }

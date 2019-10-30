@@ -1128,7 +1128,7 @@
     "@types/swagger-schema-official" "~2.0.18"
     "@types/urijs" "~1.19.1"
     lodash "^4.17.15"
-    openapi-schema-to-json-schema "github:stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f"
+    openapi-schema-to-json-schema stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f
     openapi3-ts "~1.3.0"
     urijs "~1.19.1"
 
@@ -1228,11 +1228,6 @@
   version "0.12.2"
   resolved "https://registry.yarnpkg.com/@types/caseless/-/caseless-0.12.2.tgz#f65d3d6389e01eeb458bd54dc8f52b95a9463bc8"
   integrity sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==
-
-"@types/chai@^4.2.0":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.3.tgz#419477a3d5202bad19e14c787940a61dc9ea6407"
-  integrity sha512-VRw2xEGbll3ZiTQ4J02/hUjNqZoue1bMhoo2dgM2LXjDdyaq4q80HgBDHwpI0/VKlo4Eg+BavyQMv/NYgTetzA==
 
 "@types/chance@^1.0.6":
   version "1.0.7"
@@ -6356,7 +6351,6 @@ openapi-sampler@^1.0.0-beta.15:
 
 "openapi-schema-to-json-schema@github:stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f":
   version "2.2.0"
-  uid c8b5f0c74270d505fc39635edef28e09df89601f
   resolved "https://codeload.github.com/stoplightio/openapi-schema-to-json-schema/tar.gz/c8b5f0c74270d505fc39635edef28e09df89601f"
   dependencies:
     deep-equal "^1.0.1"

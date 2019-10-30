@@ -23,24 +23,26 @@ describe('MatrixStyleDeserializer', () => {
   describe('deserialize()', () => {
     describe('value does not begins with a semicolon', () => {
       it('throws exception', () => {
-        expect(() => matrixStyleDeserializer.deserialize('name', { name: 'bad' }, { type: 'string' }))
-          .toThrowError('Matrix serialization style requires parameter to be prefixed with ";"');
-      })
+        expect(() => matrixStyleDeserializer.deserialize('name', { name: 'bad' }, { type: 'string' })).toThrowError(
+          'Matrix serialization style requires parameter to be prefixed with ";"'
+        );
+      });
     });
 
     describe('type is a primitive', () => {
       describe('value is correctly encoded', () => {
         it('return deserialized value', () => {
-          expect(matrixStyleDeserializer.deserialize('name', { name: ';name=value' }, { type: 'string' }, false)).toEqual(
-            'value',
-          );
+          expect(
+            matrixStyleDeserializer.deserialize('name', { name: ';name=value' }, { type: 'string' }, false)
+          ).toEqual('value');
         });
       });
 
       describe('value is incorrectly serialized', () => {
         it('throws error', () => {
-          expect(() => matrixStyleDeserializer.deserialize('name', { name: ';value' }, { type: 'string' }))
-            .toThrowError('Matrix serialization style requires parameter to be prefixed with name');
+          expect(() =>
+            matrixStyleDeserializer.deserialize('name', { name: ';value' }, { type: 'string' })
+          ).toThrowError('Matrix serialization style requires parameter to be prefixed with name');
         });
       });
     });
@@ -49,17 +51,17 @@ describe('MatrixStyleDeserializer', () => {
       describe('explode is not set', () => {
         describe('no value provided', () => {
           it('returns empty array', () => {
-            expect(matrixStyleDeserializer.deserialize('name', { name: ';name=' }, { type: 'array' }, false)).toEqual([]);
+            expect(matrixStyleDeserializer.deserialize('name', { name: ';name=' }, { type: 'array' }, false)).toEqual(
+              []
+            );
           });
         });
 
         describe('comma separated list provided', () => {
           it('returns exploded array', () => {
-            expect(matrixStyleDeserializer.deserialize('name', { name: ';name=a,b,c' }, { type: 'array' }, false)).toEqual([
-              'a',
-              'b',
-              'c',
-            ]);
+            expect(
+              matrixStyleDeserializer.deserialize('name', { name: ';name=a,b,c' }, { type: 'array' }, false)
+            ).toEqual(['a', 'b', 'c']);
           });
         });
       });
@@ -73,11 +75,9 @@ describe('MatrixStyleDeserializer', () => {
 
         describe('comma separated list provided', () => {
           it('returns exploded array', () => {
-            expect(matrixStyleDeserializer.deserialize('name', { name: ';name=a;name=b;name=c' }, { type: 'array' }, true)).toEqual([
-              'a',
-              'b',
-              'c',
-            ]);
+            expect(
+              matrixStyleDeserializer.deserialize('name', { name: ';name=a;name=b;name=c' }, { type: 'array' }, true)
+            ).toEqual(['a', 'b', 'c']);
           });
         });
       });
@@ -90,7 +90,9 @@ describe('MatrixStyleDeserializer', () => {
             expect(list).toEqual(['a', 'b', 'c', 'd']);
             return { a: 'b', c: 'd' };
           });
-          expect(matrixStyleDeserializer.deserialize('name', { name: ';name=a,b,c,d' }, { type: 'object' }, false)).toEqual({
+          expect(
+            matrixStyleDeserializer.deserialize('name', { name: ';name=a,b,c,d' }, { type: 'object' }, false)
+          ).toEqual({
             a: 'b',
             c: 'd',
           });

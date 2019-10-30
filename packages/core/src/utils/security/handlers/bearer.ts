@@ -11,7 +11,7 @@ function isBearerToken(inputHeaders: Headers) {
   return pipe(
     fromNullable(get(inputHeaders, 'authorization')),
     map(authorization => !!authorization.match(/^Bearer\s.+$/)),
-    getOrElse(() => false),
+    getOrElse(() => false)
   );
 }
 
