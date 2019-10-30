@@ -26,9 +26,6 @@ describe('colorizer', () => {
       });
 
       jest.spyOn(logInstance, 'note').mockImplementation((aString) => {
-        console.log('a string', `${aString.toString()}`);
-        console.log('a string' + aString.toString());
-
         // @ts-ignore
         const coloredParam = aString.match(/(endpoint\/)(.*)/)[2];
 
