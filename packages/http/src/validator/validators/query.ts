@@ -1,6 +1,4 @@
 import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
-
-import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IHttpNameValues } from '../../types';
 import { IHttpParamDeserializerRegistry } from '../deserializers/types';
 import { HttpParamsValidator } from './params';
@@ -13,7 +11,7 @@ export class HttpQueryValidator extends HttpParamsValidator<IHttpNameValues> {
   ) {
     super(registry, prefix, style);
   }
-  public validate(target: IHttpNameValues, specs: IHttpQueryParam[]): IPrismDiagnostic[] {
+  public validate(target: IHttpNameValues, specs: IHttpQueryParam[]) {
     return super.validate(target, specs);
   }
 }

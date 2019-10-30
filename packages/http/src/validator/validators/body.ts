@@ -10,6 +10,7 @@ import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
+import { fromArray } from 'fp-ts/lib/NonEmptyArray';
 
 function deserializeFormBody(
   schema: JSONSchema,
@@ -84,9 +85,9 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
 }
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
-  constructor(private prefix: string) {}
+  constructor(private prefix: string) { }
 
-  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
+  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string) {
     const mediaTypeWithContentAndSchema = pipe(
       Option.fromNullable(mediaType),
       Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
@@ -108,7 +109,9 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
           Option.map(diagnostics => applyPrefix(this.prefix, diagnostics)),
         ),
       ),
-      Option.getOrElse<IPrismDiagnostic[]>(() => []),
+      Option.chain(fromArray),
+      Either.fromOption(() => target),
+      Either.swap
     );
   }
 }
@@ -128,7 +131,7 @@ function validateAgainstReservedCharacters(
       const property = encoding.property;
       const value = encodedUriParams[property];
 
-      if (!allowReserved && typeof value === 'string' && value.match(/[\/?#\[\]@!$&'()*+,;=]/)) {
+      if (!allowReserved && typeof value === 'string' && /[/?#[\]@!$&'()*+,;=]/.test(value)) {
         diagnostics.push({
           path: [property],
           message: 'Reserved characters used in request body',

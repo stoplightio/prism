@@ -2,11 +2,11 @@ import { createLogger, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample, DiagnosticSeverity } from '@stoplight/types';
 import { right } from 'fp-ts/lib/ReaderEither';
 import { flatMap } from 'lodash';
-import { assertRight } from '../../__tests__/utils';
 import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import { IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
+import { assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -88,7 +88,7 @@ describe('mocker', () => {
           right({
             code: '202',
             mediaType: 'test',
-            bodyExample: mockResource.responses![0].contents![0].examples![0],
+            bodyExample: mockResource.responses[0].contents![0].examples![0],
             headers: [],
           }),
         );
@@ -107,7 +107,7 @@ describe('mocker', () => {
           right({
             code: '202',
             mediaType: 'test',
-            schema: mockResource.responses![0].contents![0].schema,
+            schema: mockResource.responses[0].contents![0].schema,
             headers: [],
           }),
         );
@@ -165,7 +165,7 @@ describe('mocker', () => {
           right({
             code: '202',
             mediaType: 'test',
-            bodyExample: mockResource.responses![0].contents![0].examples![1],
+            bodyExample: mockResource.responses[0].contents![0].examples![1],
             headers: [],
             schema: { type: 'string' },
           }),

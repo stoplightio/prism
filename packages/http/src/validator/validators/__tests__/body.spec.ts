@@ -1,6 +1,7 @@
 import { HttpParamStyles } from '@stoplight/types';
 import { JSONSchema } from '../../..';
 import { HttpBodyValidator } from '../body';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('HttpBodyValidator', () => {
   const httpBodyValidator = new HttpBodyValidator('body');
@@ -8,48 +9,45 @@ describe('HttpBodyValidator', () => {
   describe('validate()', () => {
     describe('content specs are missing', () => {
       it('returns no validation errors', () => {
-        expect(httpBodyValidator.validate('test', [])).toEqual([]);
+        assertRight(httpBodyValidator.validate('test', []));
       });
     });
 
     describe('request media type is not provided', () => {
       it('returns no validation errors', () => {
-        expect(
+        assertRight(
           httpBodyValidator.validate('test', [
             { mediaType: 'application/not-exists-son', examples: [], encodings: [] },
-          ]),
-        ).toEqual([]);
+          ]));
       });
     });
 
     describe('request media type was not found in spec', () => {
       it('returns no validation errors', () => {
-        expect(
+        assertRight(
           httpBodyValidator.validate(
             'test',
             [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }],
             'application/json',
-          ),
-        ).toEqual([]);
+          ));
       });
     });
 
     describe('body schema is provided', () => {
       it('return validation errors', () => {
         const mockSchema: JSONSchema = { type: 'number' };
-        expect(
+        assertLeft(
           httpBodyValidator.validate(
             'test',
             [{ mediaType: 'application/json', schema: mockSchema, examples: [], encodings: [] }],
             'application/json',
-          ),
-        ).toMatchSnapshot();
+          ), error => expect(error).toContainEqual(expect.objectContaining({ code: "type", message: "should be number" })));
       });
     });
 
     describe('body is form-urlencoded with deep object style', () => {
       it('returns no validation errors', () => {
-        expect(
+        assertRight(
           httpBodyValidator.validate(
             encodeURI('key[a]=str'),
             [
@@ -70,14 +68,13 @@ describe('HttpBodyValidator', () => {
               },
             ],
             'application/x-www-form-urlencoded',
-          ),
-        ).toEqual([]);
+          ));
       });
     });
 
     describe('body is form-urlencoded with deep object style and is not compatible with schema', () => {
       it('returns validation errors', () => {
-        expect(
+        assertLeft(
           httpBodyValidator.validate(
             encodeURI('key[a][ab]=str'),
             [
@@ -104,8 +101,9 @@ describe('HttpBodyValidator', () => {
               },
             ],
             'application/x-www-form-urlencoded',
-          ),
-        ).toMatchSnapshot();
+          ), error => expect(error).toContainEqual(expect.objectContaining({
+            code: 'required', message: 'should have required property \'aa\''
+          })))
       });
     });
   });

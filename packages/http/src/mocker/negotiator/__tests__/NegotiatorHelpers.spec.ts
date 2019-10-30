@@ -9,7 +9,7 @@ import {
 import { Chance } from 'chance';
 import * as Either from 'fp-ts/lib/Either';
 import { left, right } from 'fp-ts/lib/ReaderEither';
-import { assertLeft, assertRight } from '../../../__tests__/utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 

@@ -9,10 +9,10 @@ export class LabelStyleDeserializer implements IHttpHeaderParamStyleDeserializer
     return style === HttpParamStyles.Label;
   }
 
-  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode: boolean = false): any {
+  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode = false): any {
     const type = schema ? schema.type : 'undefined';
 
-    if (parameters[name][0] !== '.') {
+    if (!parameters[name].startsWith('.')) {
       throw new Error('Label serialization style requires parameter to be prefixed with "."');
     }
 

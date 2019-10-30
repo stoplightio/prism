@@ -23,14 +23,16 @@ describe('LabelStyleDeserializer', () => {
   describe('deserialize()', () => {
     describe('value does not begins with a dot', () => {
       it('throws exception', () => {
-        expect(() => labelStyleDeserializer.deserialize('name', { name: 'bad' }, { type: 'string' })).toThrowError('Label serialization style requires parameter to be prefixed with "."');
-      })
+        expect(() => labelStyleDeserializer.deserialize('name', { name: 'bad' }, { type: 'string' })).toThrowError(
+          'Label serialization style requires parameter to be prefixed with "."'
+        );
+      });
     });
 
     describe('type is a primitive', () => {
       it('returns unmodified value', () => {
         expect(labelStyleDeserializer.deserialize('name', { name: '.value' }, { type: 'string' }, false)).toEqual(
-          'value',
+          'value'
         );
       });
     });
