@@ -12,12 +12,14 @@ export const transformPathParamsValues = ((
   transform: (aString: string) => string
 ): string => {
   return path.replace(taggedParamsValues, transform('$2'));
-}).bind({}, new RegExp(`(${PRE_PARAM_VALUE_TAG},)(.*?)(,${POST_PARAM_VALUE_TAG})`, 'gm'));
+}).bind({}, new RegExp(`(${PRE_PARAM_VALUE_TAG})(.*?)(${POST_PARAM_VALUE_TAG})`, 'gm'));
 
 export const attachTagsToParamsValues: ValuesTransformer = values => {
   return mapValues(values, attachPrePostTags);
 };
 
 const attachPrePostTags = (paramValue: unknown) => {
-  return [PRE_PARAM_VALUE_TAG].concat(isArray(paramValue) ? paramValue : `${paramValue}`).concat(POST_PARAM_VALUE_TAG);
+  return isArray(paramValue)
+    ? paramValue.map(v => `${PRE_PARAM_VALUE_TAG}${v}${POST_PARAM_VALUE_TAG}`)
+    : `${PRE_PARAM_VALUE_TAG}${paramValue}${POST_PARAM_VALUE_TAG}`;
 };
