@@ -115,10 +115,11 @@ workflows:
           executor: macos
           install_manually: true
           filters:
+            branches:
+              only: master
             tags:
               only: /.*/
       - harness:
-          name: harness-linux
           executor: docker-harness
           install_manually: false
           filters:
@@ -132,7 +133,7 @@ workflows:
               only: /^v.*/
           requires:
             - build
-            - harness-linux
+            - harness
             - harness-macos
       - upload_artifacts:
           filters:
