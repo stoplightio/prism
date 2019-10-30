@@ -6,7 +6,42 @@ import {
   transformPathParamsValues
 } from '../colorizer';
 
+import { createPrismServerWithLogger } from '../createServer';
+import { PassThrough } from 'stream';
+import { createLogger } from '@stoplight/prism-core';
+import * as httpServer from '@stoplight/prism-http-server';
+
+const logStream = new PassThrough();
+const logInstance = createLogger('CLI', undefined, logStream);
+
 describe('colorizer', () => {
+
+  it('colorizes values for parameters', async () => {
+    // @ts-ignore
+    jest.spyOn(httpServer, 'createServer').mockImplementationOnce(() => {
+      return {
+        listen: () => {}
+      }
+    });
+
+    jest.spyOn(logInstance, 'note').mockImplementation((aString) => {
+      // @ts-ignore
+      const coloredParam = aString.match(/(endpoint\/)(.*)/)[2];
+
+      expect(coloredParam).toContain("\u001b[1m\u001b[36m");
+      expect(coloredParam).toContain("\u001b[39m\u001b[22m");
+    });
+
+    await createPrismServerWithLogger({
+      errors: false,
+      multiprocess: false,
+      host: 'localhost',
+      port: 9999,
+      cors: false,
+      document: './examples/test.yaml',
+      dynamic: false
+    }, logInstance)
+  });
 
   describe('transformPathParamsValues()', () => {
     it('colorizes tagged values of query params', () => {

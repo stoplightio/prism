@@ -51,7 +51,7 @@ async function createSingleProcessPrism(options: CreateBaseServerOptions) {
   }
 }
 
-async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
+export async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
   const operations = await getHttpOperationsFromResource(options.document);
 
   if (operations.length === 0) {
