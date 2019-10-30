@@ -37,12 +37,27 @@ jobs:
           name: Run build
           command: yarn build
   harness:
+    executor: << parameters.executor >>
     parameters:
       executor:
         type: executor
-    executor: << parameters.executor >>
+      install_manually:
+        type: boolean
     steps:
       - checkout
+      - when:
+          condition: <<parameters.install_manually>>
+          steps:
+            - run:
+                command: brew install pipenv
+                environment:
+                  HOMEBREW_NO_AUTO_UPDATE: 1
+            - run: sudo bash -c 'echo "0.0.0.0 httpbin" >> /etc/hosts'
+            - run: git clone https://github.com/postmanlabs/httpbin httpbin
+            - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv lock -r) && pip3 install --no-cache-dir ./
+            - run:
+                command: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
+                background: true
       - run:
           name: Install Dependencies
           command: yarn
@@ -98,13 +113,14 @@ workflows:
       - harness:
           name: harness-macos
           executor: macos
+          install_manually: true
           filters:
-            branches:
-              only: master
             tags:
               only: /.*/
       - harness:
+          name: harness-linux
           executor: docker-harness
+          install_manually: false
           filters:
             tags:
               only: /.*/
@@ -116,7 +132,7 @@ workflows:
               only: /^v.*/
           requires:
             - build
-            - harness
+            - harness-linux
             - harness-macos
       - upload_artifacts:
           filters:
