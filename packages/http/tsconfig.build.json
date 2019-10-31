@@ -9,7 +9,7 @@
         "transform": "ts-transform-import-path-rewrite",
         "import": "transform",
         "alias": {
-          "^../../core/src$": "@stoplight/prism-core"
+          "(../)*core/src$": "@stoplight/prism-core"
         },
         "after": false,
         "afterDeclarations": true,
