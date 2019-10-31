@@ -1,6 +1,6 @@
-import { assertLeft, assertRight } from '@stoplight/prism-http/src/__tests__/utils';
 import { HttpParamStyles } from '@stoplight/types';
 import { createExamplePath } from '../paths';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('createExamplePath()', () => {
   describe('path parameters', () => {
@@ -13,7 +13,7 @@ describe('createExamplePath()', () => {
           request: { path: [{ name: 'p', style: HttpParamStyles.Simple, examples: [{ key: 'foo', value: 'test' }] }] },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path/test'),
+        r => expect(r).toEqual('/path/test')
       );
     });
 
@@ -26,7 +26,7 @@ describe('createExamplePath()', () => {
           request: { path: [{ name: 'p', style: HttpParamStyles.Label, examples: [{ key: 'foo', value: 'test' }] }] },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path/.test'),
+        r => expect(r).toEqual('/path/.test')
       );
     });
 
@@ -39,7 +39,7 @@ describe('createExamplePath()', () => {
           request: { path: [{ name: 'p', style: HttpParamStyles.Matrix, examples: [{ key: 'foo', value: 'test' }] }] },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path/;p=test'),
+        r => expect(r).toEqual('/path/;p=test')
       );
     });
   });
@@ -54,7 +54,7 @@ describe('createExamplePath()', () => {
           request: { query: [{ name: 'p', style: HttpParamStyles.Form, examples: [{ key: 'foo', value: 'test' }] }] },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path?p=test'),
+        r => expect(r).toEqual('/path?p=test')
       );
     });
 
@@ -75,7 +75,7 @@ describe('createExamplePath()', () => {
           },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path?p%5Ba%5D%5Baa%5D=1&p%5Ba%5D%5Bab%5D=2'),
+        r => expect(r).toEqual('/path?p%5Ba%5D%5Baa%5D=1&p%5Ba%5D%5Bab%5D=2')
       );
     });
 
@@ -96,7 +96,7 @@ describe('createExamplePath()', () => {
           },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path?p=1%7C2%7C3'),
+        r => expect(r).toEqual('/path?p=1%7C2%7C3')
       );
     });
 
@@ -117,7 +117,7 @@ describe('createExamplePath()', () => {
           },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path?p=1%202%203'),
+        r => expect(r).toEqual('/path?p=1%202%203')
       );
     });
 
@@ -132,7 +132,7 @@ describe('createExamplePath()', () => {
           },
           responses: [{ code: '200' }],
         }),
-        e => expect(e.message).toEqual('Pipe delimited style is only applicable to array parameter'),
+        e => expect(e.message).toEqual('Pipe delimited style is only applicable to array parameter')
       );
     });
 
@@ -147,7 +147,7 @@ describe('createExamplePath()', () => {
           },
           responses: [{ code: '200' }],
         }),
-        e => expect(e.message).toEqual('Space delimited style is only applicable to array parameter'),
+        e => expect(e.message).toEqual('Space delimited style is only applicable to array parameter')
       );
     });
   });
@@ -194,8 +194,8 @@ describe('createExamplePath()', () => {
         }),
         r =>
           expect(r).toEqual(
-            '/path/test1/.test1,test2/;p3=test1,test2?q1=test1&q2=test1%20test2&q3=test1%7Ctest2&q4=test1&q4=test2&q5%5Ba%5D%5B%5D=test1&q5%5Ba%5D%5B%5D=test2&q5%5Bb%5D%5Bba%5D=1&q5%5Bb%5D%5Bbb%5D=2',
-          ),
+            '/path/test1/.test1,test2/;p3=test1,test2?q1=test1&q2=test1%20test2&q3=test1%7Ctest2&q4=test1&q4=test2&q5%5Ba%5D%5B%5D=test1&q5%5Ba%5D%5B%5D=test2&q5%5Bb%5D%5Bba%5D=1&q5%5Bb%5D%5Bbb%5D=2'
+          )
       );
     });
   });

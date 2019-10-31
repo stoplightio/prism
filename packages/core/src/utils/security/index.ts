@@ -1,40 +1,41 @@
 import { DiagnosticSeverity } from '@stoplight/types';
-import { Either, fold, isLeft, isRight, Left, left } from 'fp-ts/lib/Either';
-import { none, Option, some } from 'fp-ts/lib/Option';
+import * as Either from 'fp-ts/lib/Either';
+import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { flatten, get, identity } from 'lodash';
 import { noop, set } from 'lodash/fp';
 import { IPrismDiagnostic } from '../../types';
 import { securitySchemeHandlers } from './handlers';
 import { SecurityScheme } from './handlers/types';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 function gatherInvalidResults(
-  error: Left<IPrismDiagnostic>,
-  invalidSecuritySchemes: Array<Array<Either<IPrismDiagnostic, unknown>>>,
+  error: Either.Left<IPrismDiagnostic>,
+  invalidSecuritySchemes: Array<Array<Either.Either<IPrismDiagnostic, unknown>>>
 ) {
   const invalidSecurity = gatherWWWAuthHeader(invalidSecuritySchemes, ['tags'], error.left);
-  return some(invalidSecurity);
+  return Option.some(invalidSecurity);
 }
 
 function gatherValidationResults(securitySchemes: SecurityScheme[][], someInput: unknown, resource: unknown) {
   const authResults = getAuthResults(securitySchemes, someInput, resource);
 
-  const validSecurityScheme = authResults.find(authRes => authRes.every(isRight));
-  const invalidSecuritySchemes = authResults.filter(authRes => authRes.some(isLeft));
+  const validSecurityScheme = authResults.find(authRes => authRes.every(Either.isRight));
+  const invalidSecuritySchemes = authResults.filter(authRes => authRes.some(Either.isLeft));
 
-  const firstLeft = invalidSecuritySchemes[0] && invalidSecuritySchemes[0].find(isLeft);
+  const firstLeft = invalidSecuritySchemes[0] && invalidSecuritySchemes[0].find(Either.isLeft);
 
   if (!validSecurityScheme && firstLeft) {
     return gatherInvalidResults(firstLeft, invalidSecuritySchemes);
   } else {
-    return none;
+    return Option.none;
   }
 }
 
 function gatherWWWAuthHeader(
-  authResults: Array<Array<Either<IPrismDiagnostic, unknown>>>,
+  authResults: Array<Array<Either.Either<IPrismDiagnostic, unknown>>>,
   pathToHeader: string[],
-  firstAuthErr: IPrismDiagnostic,
+  firstAuthErr: IPrismDiagnostic
 ) {
   const flattenedAuthResults = flatten(authResults);
 
@@ -44,8 +45,8 @@ function gatherWWWAuthHeader(
     const wwwAuthenticateHeaders = flattenedAuthResults.map(authResult =>
       pipe(
         authResult,
-        fold(result => result.tags || [], noop),
-      ),
+        Either.fold(result => result.tags || [], noop)
+      )
     );
 
     const firstAuthErrWithAuthHeader = set(pathToHeader, flatten(wwwAuthenticateHeaders), firstAuthErr);
@@ -55,17 +56,17 @@ function gatherWWWAuthHeader(
 }
 
 function getAuthResult(
-  firstAuthErrAsLeft: Left<IPrismDiagnostic>,
-  authResult: Array<Either<IPrismDiagnostic, unknown>>,
+  firstAuthErrAsLeft: Either.Left<IPrismDiagnostic>,
+  authResult: Array<Either.Either<IPrismDiagnostic, unknown>>
 ) {
   const firstAuthErr: IPrismDiagnostic = pipe(
     firstAuthErrAsLeft,
-    fold<IPrismDiagnostic, IPrismDiagnostic, IPrismDiagnostic>(identity, identity),
+    Either.fold<IPrismDiagnostic, IPrismDiagnostic, IPrismDiagnostic>(identity, identity)
   );
 
   const invalidResultWithAuthHeader = gatherWWWAuthHeader([authResult], ['tags'], firstAuthErr);
 
-  return [left(invalidResultWithAuthHeader)];
+  return [Either.left(invalidResultWithAuthHeader)];
 }
 
 function getAuthResults(securitySchemes: SecurityScheme[][], someInput: unknown, resource: unknown) {
@@ -75,13 +76,13 @@ function getAuthResults(securitySchemes: SecurityScheme[][], someInput: unknown,
 
       return schemeHandler
         ? schemeHandler.handle(someInput, securityScheme.name, resource)
-        : left({
+        : Either.left({
             message: 'We currently do not support this type of security scheme.',
             severity: DiagnosticSeverity.Warning,
           });
     });
 
-    const firstAuthErrAsLeft = authResult.find(isLeft);
+    const firstAuthErrAsLeft = authResult.find(Either.isLeft);
 
     if (firstAuthErrAsLeft) {
       return getAuthResult(firstAuthErrAsLeft, authResult);
@@ -91,12 +92,20 @@ function getAuthResults(securitySchemes: SecurityScheme[][], someInput: unknown,
   });
 }
 
-export function validateSecurity(someInput: unknown, resource?: unknown): Option<IPrismDiagnostic> {
+export function validateSecurity(
+  someInput: unknown,
+  resource?: unknown
+): Either.Either<NonEmptyArray<IPrismDiagnostic>, unknown> {
   const securitySchemes = get(resource, 'security', []);
 
   if (!securitySchemes.length) {
-    return none;
+    return Either.right(someInput);
   } else {
-    return gatherValidationResults(securitySchemes, someInput, resource);
+    return pipe(
+      gatherValidationResults(securitySchemes, someInput, resource),
+      Either.fromOption(() => someInput),
+      Either.swap,
+      Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
+    );
   }
 }

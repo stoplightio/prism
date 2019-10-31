@@ -8,11 +8,11 @@ export class HttpPathValidator extends HttpParamsValidator<IHttpNameValue> {
   constructor(
     registry: IHttpParamDeserializerRegistry<IHttpNameValue>,
     prefix: string,
-    style: HttpParamStyles = HttpParamStyles.Simple,
+    style: HttpParamStyles = HttpParamStyles.Simple
   ) {
     super(registry, prefix, style);
   }
-  public validate(target: IHttpNameValue, specs: IHttpPathParam[]): IPrismDiagnostic[] {
+  public validate(target: IHttpNameValue, specs: IHttpPathParam[]) {
     return super.validate(target, specs);
   }
 }

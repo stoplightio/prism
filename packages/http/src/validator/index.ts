@@ -1,8 +1,9 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IHttpOperationRequest } from '@stoplight/types';
 import * as caseless from 'caseless';
 import { findFirst } from 'fp-ts/lib/Array';
 import * as Option from 'fp-ts/lib/Option';
+import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
 // @ts-ignore
@@ -16,6 +17,8 @@ import {
 } from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { sequenceValidation, sequenceOption } from './validators/utils';
 import { HttpPathValidator } from './validators/path';
 
 export const bodyValidator = new HttpBodyValidator('body');
@@ -23,66 +26,87 @@ export const headersValidator = new HttpHeadersValidator(headerDeserializerRegis
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
 
+const validateBody = (request: IHttpOperationRequest, body: unknown, mediaType: string) =>
+  pipe(
+    Option.fromNullable(request),
+    Option.mapNullable(request => request.body),
+    Option.chain(requestBody =>
+      pipe(
+        requestBody,
+        Option.fromPredicate(requestBody => !!requestBody.required && !body),
+        Option.map<unknown, NonEmptyArray<IPrismDiagnostic>>(() => [
+          { code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error },
+        ]),
+        Option.alt(() =>
+          pipe(
+            sequenceOption(Option.fromNullable(body), Option.fromNullable(requestBody.contents)),
+            Option.chain(([body, contents]) =>
+              Option.fromEither(Either.swap(bodyValidator.validate(body, contents, mediaType)))
+            )
+          )
+        )
+      )
+    ),
+    Either.fromOption(() => body),
+    Either.swap
+  );
+
 const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
-  const results: IPrismDiagnostic[] = [];
   const mediaType = caseless(element.headers || {}).get('content-type');
-
-  // Replace resource.request in this function with request
   const { request } = resource;
-
   const { body } = element;
-  if (request && request.body) {
-    if (!body && request.body.required) {
-      results.push({ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error });
-    } else if (body) {
-      bodyValidator
-        .validate(body, (request && request.body && request.body.contents) || [], mediaType)
-        .forEach(validationResult => results.push(validationResult));
-    }
-  }
 
-  return results
-    .concat(headersValidator.validate(element.headers || {}, (request && request.headers) || []))
-    .concat(queryValidator.validate(element.url.query || {}, (request && request.query) || []))
-    .concat(pathValidator.validate(getPathParams(element.url.path, resource.path), (request && request.path) || []));
+  return pipe(
+    Either.fromNullable(undefined)(request),
+    Either.fold(
+      e => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
+      request =>
+        sequenceValidation(
+          validateBody(request, body, mediaType),
+          request.headers ? headersValidator.validate(element.headers || {}, request.headers) : Either.right(undefined),
+          request.query ? queryValidator.validate(element.url.query || {}, request.query) : Either.right(undefined),
+          request.path
+            ? pathValidator.validate(getPathParams(element.url.path, resource.path), request.path)
+            : Either.right(undefined)
+        )
+    ),
+    Either.map(() => element)
+  );
 };
+
+const findResponseByStatus = (responses: NonEmptyArray<IHttpOperationResponse>, statusCode: number) =>
+  pipe(
+    findOperationResponse(responses, statusCode),
+    Either.fromOption<IPrismDiagnostic>(() => ({
+      message: 'Unable to match the returned status code with those defined in spec',
+      severity: inRange(statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
+    })),
+    Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(error => [error])
+  );
+
+const mismatchMediaType = (response: IHttpOperationResponse, mediaType: string) =>
+  pipe(
+    Option.fromNullable(response.contents),
+    Option.chain(findFirst(c => c.mediaType === mediaType)),
+    Either.fromOption<IPrismDiagnostic>(() => ({
+      message: `The received media type does not match the one specified in the document`,
+      severity: DiagnosticSeverity.Error,
+    })),
+    Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
+  );
 
 const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
-
   return pipe(
-    findOperationResponse(resource.responses, element.statusCode),
-    Option.fold<IHttpOperationResponse, IPrismDiagnostic[]>(
-      () => [
-        {
-          message: 'Unable to match the returned status code with those defined in spec',
-          severity: inRange(element.statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-        },
-      ],
-      operationResponse => {
-        const mismatchingMediaTypeError = pipe(
-          Option.fromNullable(operationResponse.contents),
-          Option.map(contents =>
-            pipe(
-              contents,
-              findFirst(c => c.mediaType === mediaType),
-              Option.map<IMediaTypeContent, IPrismDiagnostic[]>(() => []),
-              Option.getOrElse<IPrismDiagnostic[]>(() => [
-                {
-                  message: `The received media type does not match the one specified in the document`,
-                  severity: DiagnosticSeverity.Error,
-                },
-              ])
-            )
-          ),
-          Option.getOrElse<IPrismDiagnostic[]>(() => [])
-        );
-
-        return mismatchingMediaTypeError
-          .concat(bodyValidator.validate(element.body, operationResponse.contents || [], mediaType))
-          .concat(headersValidator.validate(element.headers || {}, operationResponse.headers || []));
-      }
-    )
+    findResponseByStatus(resource.responses, element.statusCode),
+    Either.chain(response =>
+      sequenceValidation(
+        mismatchMediaType(response, mediaType),
+        bodyValidator.validate(element.body, response.contents || [], mediaType),
+        headersValidator.validate(element.headers || {}, response.headers || [])
+      )
+    ),
+    Either.map(() => element)
   );
 };
 

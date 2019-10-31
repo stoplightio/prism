@@ -10,10 +10,10 @@ export class MatrixStyleDeserializer implements IHttpHeaderParamStyleDeserialize
     return style === HttpParamStyles.Matrix;
   }
 
-  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode: boolean = false): any {
+  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode = false): any {
     const type = schema ? schema.type : 'undefined';
 
-    if (parameters[name][0] !== ';') {
+    if (!parameters[name].startsWith(';')) {
       throw new Error('Matrix serialization style requires parameter to be prefixed with ";"');
     }
 
@@ -30,7 +30,7 @@ export class MatrixStyleDeserializer implements IHttpHeaderParamStyleDeserialize
 
   private deserializePrimitive(name: string, value: string) {
     const prefix = name + '=';
-    if (value.indexOf(prefix) !== 0) {
+    if (!value.startsWith(prefix)) {
       throw new Error('Matrix serialization style requires parameter to be prefixed with name');
     }
 

@@ -1,6 +1,7 @@
 import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
 import { validateInput, validateOutput } from '../index';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
   body: { name: 'Shopping', completed: 'yes' },
@@ -26,7 +27,7 @@ describe('HttpValidator', () => {
 
       describe('when all required params are provided', () => {
         it('returns no validation errors', () => {
-          expect(validateInput({ resource: httpOperations[0], element: GOOD_INPUT })).toEqual([]);
+          assertRight(validateInput({ resource: httpOperations[0], element: GOOD_INPUT }));
         });
       });
     });
@@ -53,7 +54,7 @@ describe('HttpValidator', () => {
       };
 
       it('returns warnings', () => {
-        expect(
+        assertLeft(
           validateInput({
             resource,
             element: {
@@ -65,22 +66,21 @@ describe('HttpValidator', () => {
                 }
               },
             },
-          }),
-        ).toEqual([
-          {
-            code: "deprecated",
-            message: "Query param productId is deprecated",
-            path: [
-              "query",
-              "productId"
-            ],
-            severity: DiagnosticSeverity.Warning
-          }
-        ]);
+          }), error => expect(error).toEqual([
+            {
+              code: "deprecated",
+              message: "Query param productId is deprecated",
+              path: [
+                "query",
+                "productId"
+              ],
+              severity: DiagnosticSeverity.Warning
+            }
+          ]));
       });
 
       it('does not return warnings', () => {
-        expect(
+        assertRight(
           validateInput({
             resource,
             element: {
@@ -90,14 +90,13 @@ describe('HttpValidator', () => {
                 query: {}
               },
             },
-          }),
-        ).toHaveLength(0);
+          }));
       });
     });
 
     describe('headers validation', () => {
       it('is case insensitive', () => {
-        expect(
+        assertRight(
           validateInput({
             resource: {
               method: 'GET',
@@ -130,24 +129,22 @@ describe('HttpValidator', () => {
                 api_Key: 'ha',
               },
             },
-          }),
-        ).toEqual([]);
+          }));
       });
     });
 
     describe('query validation', () => {
       it('returns only query validation errors', () => {
-        expect(
+        assertLeft(
           validateInput({
             resource: httpOperations[2],
             element: BAD_INPUT,
-          }),
-        ).toContainEqual({
-          code: 'pattern',
-          message: 'should match pattern "^(yes|no)$"',
-          path: ['query', 'overwrite'],
-          severity: DiagnosticSeverity.Error,
-        });
+          }), error => expect(error).toContainEqual({
+            code: 'pattern',
+            message: 'should match pattern "^(yes|no)$"',
+            path: ['query', 'overwrite'],
+            severity: DiagnosticSeverity.Error,
+          }));
       });
     });
   });
