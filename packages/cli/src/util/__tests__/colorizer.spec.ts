@@ -10,24 +10,15 @@ describe('colorizer', () => {
 
   describe('transformPathParamsValues()', () => {
     it('colorizes tagged values of query params', () => {
-      const paramVal = 'sold,pending';
-      const path = `/no_auth/pets/findByStatus?status=${PRE_PARAM_VALUE_TAG}${paramVal}${POST_PARAM_VALUE_TAG}`;
+      const path = `/no_auth/pets/findByStatus?status=${PRE_PARAM_VALUE_TAG}sold,pending${POST_PARAM_VALUE_TAG}`;
 
-      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/findByStatus?status=${chalk.bold.blue(paramVal)}`);
+      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/findByStatus?status=${chalk.bold.blue('sold,pending')}`);
     });
 
     it('colorizes tagged values of path params', () => {
-      const paramVal = 651;
-      const path = `/no_auth/pets/${PRE_PARAM_VALUE_TAG}${paramVal}${POST_PARAM_VALUE_TAG}`;
+      const path = `/no_auth/pets/${PRE_PARAM_VALUE_TAG}651${POST_PARAM_VALUE_TAG}`;
 
-      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/${chalk.bold.blue(`${paramVal}`)}`);
-    });
-
-    it('colorizes values that are equal to multiple or single , characters', () => {
-      const paramVal = ',,,,,,,,,,,,,';
-      const path = `/no_auth/pets/${PRE_PARAM_VALUE_TAG}${paramVal}${POST_PARAM_VALUE_TAG}`;
-
-      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/${chalk.bold.blue(paramVal)}`);
+      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/${chalk.bold.blue(`${651}`)}`);
     });
   });
 
@@ -54,35 +45,22 @@ describe('colorizer', () => {
 
       describe('tagging single values', () => {
         it('tags string values', () => {
-          const val = 'dignissimos';
           const valuesOfParams = {
-            name: val
+            name: 'dignissimos'
           };
 
           expect(attachTagsToParamsValues(valuesOfParams)).toStrictEqual({
-            name: `${PRE_PARAM_VALUE_TAG}${val}${POST_PARAM_VALUE_TAG}`,
+            name: `${PRE_PARAM_VALUE_TAG}dignissimos${POST_PARAM_VALUE_TAG}`,
           });
         });
 
         it('tags numeric values', () => {
-          const val = 170;
           const valuesOfParams = {
-            petId: val
+            petId: 170
           };
 
           expect(attachTagsToParamsValues(valuesOfParams)).toStrictEqual({
-            petId: `${PRE_PARAM_VALUE_TAG}${val}${POST_PARAM_VALUE_TAG}`
-          });
-        });
-
-        it('tags values that are equal to multiple or single , characters', () => {
-          const val = ',,,,,';
-          const valuesOfParams = {
-            name: val
-          };
-
-          expect(attachTagsToParamsValues(valuesOfParams)).toStrictEqual({
-            name: `${PRE_PARAM_VALUE_TAG}${val}${POST_PARAM_VALUE_TAG}`
+            petId: `${PRE_PARAM_VALUE_TAG}170${POST_PARAM_VALUE_TAG}`
           });
         });
       });
