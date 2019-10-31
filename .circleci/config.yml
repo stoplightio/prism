@@ -24,7 +24,7 @@ jobs:
             - yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: Install Dependencies
-          command: yarn
+          command: yarn --frozen-lockfile
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -60,7 +60,7 @@ jobs:
                 background: true
       - run:
           name: Install Dependencies
-          command: yarn
+          command: yarn --frozen-lockfile
       - run:
           name: Create CLI binary
           command: yarn build.binary
@@ -73,7 +73,7 @@ jobs:
       - checkout
       - run:
           name: Install Dependencies
-          command: yarn
+          command: yarn --frozen-lockfile
       - run:
           name: Build all code to JavaScript
           command: npx ttsc --build ./packages/tsconfig.build.json
