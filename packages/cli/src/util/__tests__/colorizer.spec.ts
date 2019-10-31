@@ -18,7 +18,7 @@ describe('colorizer', () => {
     it('colorizes tagged values of path params', () => {
       const path = `/no_auth/pets/${PRE_PARAM_VALUE_TAG}651${POST_PARAM_VALUE_TAG}`;
 
-      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/${chalk.bold.blue(`${651}`)}`);
+      expect(transformPathParamsValues(path, chalk.bold.blue)).toBe(`/no_auth/pets/${chalk.bold.blue('651')}`);
     });
   });
 
