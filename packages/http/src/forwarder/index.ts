@@ -7,7 +7,7 @@ import { defaults, omit } from 'lodash';
 import { format, parse } from 'url';
 import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
 import { posix } from 'path';
-import { parseResponse } from '../util/response';
+import { parseResponse } from '../utils/parseResponse';
 import { pipe } from 'fp-ts/lib/pipeable';
 
 const { version: prismVersion } = require('../../package.json');

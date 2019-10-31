@@ -1,5 +1,5 @@
 import { IHttpCallbackOperation, IHttpOperationRequest } from '@stoplight/types';
-import { resolveRuntimeExpressions } from '../../util/runtimeExpression';
+import { resolveRuntimeExpressions } from '../../utils/runtimeExpression';
 import { IHttpRequest, IHttpResponse } from '../../types';
 import fetch  from 'node-fetch';
 import * as Option from 'fp-ts/lib/Option';
@@ -12,9 +12,9 @@ import { head } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { generate as generateHttpParam } from '../generator/HttpParamGenerator';
 import { validateOutput } from '../../validator';
-import { parseResponse } from '../../util/response';
+import { parseResponse } from '../../utils/parseResponse';
 import withLogger from '../../withLogger';
-import { violationLogger } from '../../util/logger';
+import { violationLogger } from '../../utils/logger';
 import { Logger } from 'pino';
 
 export function runCallback({ callback, request, response }: { callback: IHttpCallbackOperation, request: IHttpRequest, response: IHttpResponse }): Reader.Reader<Logger, Task.Task<void>> {

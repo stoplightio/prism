@@ -1,8 +1,7 @@
-import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
+import { HttpParamStyles, IHttpPathParam } from '@stoplight/types';
 import { path as registry } from '../../deserializers';
 import { HttpPathValidator } from '../path';
 import * as validateAgainstSchemaModule from '../utils';
-import { IHttpPathParam } from '@stoplight/types/dist';
 
 describe('HttpPathValidator', () => {
   const httpPathValidator = new HttpPathValidator(registry, 'path');

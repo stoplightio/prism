@@ -1,4 +1,4 @@
-import { parseResponse, parseResponseBody, parseResponseHeaders } from '../response';
+import { parseResponse, parseResponseBody, parseResponseHeaders } from '../parseResponse';
 import { assertLeft, assertRight } from '../../__tests__/utils';
 import { Headers } from 'node-fetch';
 
