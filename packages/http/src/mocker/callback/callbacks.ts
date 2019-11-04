@@ -83,10 +83,11 @@ function assembleHeaders(request?: IHttpOperationRequest, bodyMediaType?: string
         )
       }),
     )),
-    Option.chain(headers => pipe(
-      Option.fromNullable(bodyMediaType),
-      Option.map(mediaType => ({ ...headers, 'content-type': mediaType })),
-      Option.alt(() => Option.some(headers)),
-    )),
+    Option.reduce(
+      pipe(
+        Option.fromNullable(bodyMediaType),
+        Option.map((mediaType) => ({ 'content-type': mediaType })),
+      ),
+      (mediaTypeHeader, headers) => ({ ...headers, ...mediaTypeHeader })),
   );
 }

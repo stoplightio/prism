@@ -30,7 +30,7 @@ describe('runCallback()', () => {
         callback: {
           callbackName: 'test callback',
           method: 'get',
-          path: 'http://some-distant-remote-address.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
+          path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
           responses: [{ code: '200' }],
           request: {
@@ -56,8 +56,8 @@ describe('runCallback()', () => {
         },
       })(logger)();
 
-      expect(fetch).toHaveBeenCalledWith('http://some-distant-remote-address.com/get/200/5/weird/content', { method: 'get', body: '{"about":"something"}' });
-      expect(logger.info).toHaveBeenNthCalledWith(1, { name: 'CALLBACK' }, 'test callback: Making request to http://some-distant-remote-address.com/get/200/5/weird/content...');
+      expect(fetch).toHaveBeenCalledWith('http://example.com/get/200/5/weird/content', { method: 'get', body: '{"about":"something"}', headers: { 'content-type': 'application/json' } });
+      expect(logger.info).toHaveBeenNthCalledWith(1, { name: 'CALLBACK' }, 'test callback: Making request to http://example.com/get/200/5/weird/content...');
       expect(logger.info).toHaveBeenNthCalledWith(2, { name: 'CALLBACK' }, 'test callback: Request finished');
       expect(logger.error).not.toHaveBeenCalled();
       expect(logger.warn).not.toHaveBeenCalled();
@@ -77,7 +77,7 @@ describe('runCallback()', () => {
         callback: {
           callbackName: 'test callback',
           method: 'get',
-          path: 'http://some-distant-remote-address.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
+          path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
           responses: [{
             code: '200',
@@ -112,10 +112,45 @@ describe('runCallback()', () => {
         },
       })(logger)();
 
-      expect(fetch).toHaveBeenCalledWith('http://some-distant-remote-address.com/get/200/5/weird/content', { method: 'get', body: '{"about":"something"}' });
+      expect(fetch).toHaveBeenCalledWith('http://example.com/get/200/5/weird/content', { method: 'get', body: '{"about":"something"}', headers: { 'content-type': 'application/json' } });
       expect(logger.warn).toHaveBeenNthCalledWith(1, { name: 'VALIDATOR' }, 'Violation: header.test Header param test is deprecated');
       expect(logger.error).toHaveBeenNthCalledWith(1, { name: 'VALIDATOR' }, 'Violation: body.test should NOT be longer than 3 characters');
       expect(logger.error).toHaveBeenNthCalledWith(2, { name: 'VALIDATOR' }, 'Violation: header.test should be equal to one of the allowed values');
+    });
+  });
+
+  describe('callback request defines neither body nor headers', () => {
+    it('makes request without body and headers', async () => {
+      const headers = { 'content-type': 'application/json' };
+      ((fetch as unknown) as jest.Mock).mockResolvedValue({
+        status: 200,
+        headers: { get: (n: string) => headers[n], raw: () => mapValues(headers, (h: string) => h.split(' ')) },
+        json: jest.fn().mockResolvedValue({ test: 'test' }),
+      } as any);
+
+      await runCallback({
+        callback: {
+          callbackName: 'test callback',
+          method: 'get',
+          path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
+          id: '1',
+          responses: [{ code: '200' }],
+        },
+        request: {
+          body: '',
+          headers: {
+            'content-type': 'weird/content',
+          },
+          method: 'get',
+          url: { path: '/subscribe' },
+        },
+        response: {
+          statusCode: 200,
+          body: { id: 5 }
+        },
+      })(logger)();
+
+      expect(fetch).toHaveBeenCalledWith('http://example.com/get/200/5/weird/content', { method: 'get' });
     });
   });
 });
