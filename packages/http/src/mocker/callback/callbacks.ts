@@ -48,24 +48,29 @@ export function runCallback({ callback, request, response }: { callback: IHttpCa
 }
 
 function assembleRequest({ resource, request, response }: { resource: IHttpCallbackOperation, request: IHttpRequest, response: IHttpResponse }) {
+  const bodyAndMediaType = Option.toUndefined(assembleBody(resource.request));
   return {
     url: resolveRuntimeExpressions(resource.path, request, response),
-    headers: Option.toUndefined(assembleHeaders(resource.request)),
-    body: Option.toUndefined(assembleBody(resource.request)),
+    headers: Option.toUndefined(assembleHeaders(resource.request, bodyAndMediaType && bodyAndMediaType.mediaType)),
+    body: bodyAndMediaType && bodyAndMediaType.body,
     method: resource.method,
   };
 }
 
-function assembleBody(request?: IHttpOperationRequest): Option.Option<string> {
+function assembleBody(request?: IHttpOperationRequest): Option.Option<{ body: string, mediaType: string }> {
   return pipe(
     Option.fromNullable(request && request.body && request.body.contents),
     Option.chain(head),
-    Option.chain(generateHttpParam),
-    Option.map(JSON.stringify),
+    Option.chain(param => {
+      return pipe(
+        generateHttpParam(param),
+        Option.map(body => ({ body: JSON.stringify(body), mediaType: param.mediaType })),
+      );
+    }),
   );
 }
 
-function assembleHeaders(request?: IHttpOperationRequest): Option.Option<{ [key: string]: string }> {
+function assembleHeaders(request?: IHttpOperationRequest, bodyMediaType?: string): Option.Option<{ [key: string]: string }> {
   return pipe(
     Option.fromNullable(request && request.headers),
     Option.map(params => pipe(
@@ -77,6 +82,11 @@ function assembleHeaders(request?: IHttpOperationRequest): Option.Option<{ [key:
           Option.fold(() => headers, value => ({ ...headers, [param.name]: value }))
         )
       }),
+    )),
+    Option.chain(headers => pipe(
+      Option.fromNullable(bodyMediaType),
+      Option.map(mediaType => ({ ...headers, 'content-type': mediaType })),
+      Option.alt(() => Option.some(headers)),
     )),
   );
 }
