@@ -1,0 +1,25 @@
+openapi: 3.0.0
+paths:
+  /notify:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                payload:
+                  type: string
+              required:
+              - action
+              - payload
+      responses:
+        '200':
+          content:
+            text/plain:
+              examples:
+                ok:
+                  value: 'ok'

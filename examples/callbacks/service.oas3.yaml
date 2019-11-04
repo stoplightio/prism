@@ -1,0 +1,52 @@
+openapi: 3.0.0
+paths:
+  /subscribe:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                token:
+                  type: string
+              required:
+              - url
+              - token
+      responses:
+        '202':
+          content:
+            text/plain:
+              examples:
+                ok:
+                  value: 'ok'
+
+      callbacks:
+        actions:
+          '{$request.body#/url}?token={$request.body#/token}':
+            post:
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        action:
+                          type: string
+                        payload:
+                          type: string
+                      required:
+                        - action
+                        - payload
+              responses:
+                200:
+                  content:
+                    text/plain:
+                      examples:
+                        ok:
+                          value: 'ok'
