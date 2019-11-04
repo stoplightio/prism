@@ -1171,9 +1171,9 @@
     node-fetch "^2.6.0"
 
 "@stoplight/types@^11.0.0", "@stoplight/types@^11.1.0", "@stoplight/types@^11.1.1":
-  version "11.1.1"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.1.1.tgz#a92d1833adb580a72439f42ba73de8f560fd68b4"
-  integrity sha512-IU8U9y/uO548z15DX/Jl053u9VQG8gCwNtypuD4RtskUA7pvHZl4+zzGK3klgIcO6Ql3Jk4/fcrFaN9vjmdEWg==
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.2.0.tgz#1f9c9c6dcf481f21e68a01cfa6e81b1ea41d4faa"
+  integrity sha512-c4zMAaf+NusHxcfruYDnzBwX3VJ8h1E6KYW/11QqmtsmE+ua3tKYL3PNbrzWh7nz/Vmv0U8zoYMw42F1XxylaA==
   dependencies:
     "@types/json-schema" "^7.0.3"
 
