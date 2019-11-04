@@ -2,11 +2,11 @@ import { createLogger, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample, DiagnosticSeverity } from '@stoplight/types';
 import { right } from 'fp-ts/lib/ReaderEither';
 import { flatMap } from 'lodash';
-import { assertRight } from '../../__tests__/utils';
 import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import { IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
+import { assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
 import { runCallback } from '../callback/callbacks';
 
 jest.mock('../callback/callbacks', () => ({
@@ -93,9 +93,9 @@ describe('mocker', () => {
           right({
             code: '202',
             mediaType: 'test',
-            bodyExample: mockResource.responses![0].contents![0].examples![0],
+            bodyExample: mockResource.responses[0].contents![0].examples![0],
             headers: [],
-          }),
+          })
         );
 
         const mockResult = mock({
@@ -112,9 +112,9 @@ describe('mocker', () => {
           right({
             code: '202',
             mediaType: 'test',
-            schema: mockResource.responses![0].contents![0].schema,
+            schema: mockResource.responses[0].contents![0].schema,
             headers: [],
-          }),
+          })
         );
 
         const response = mock({
@@ -148,16 +148,16 @@ describe('mocker', () => {
               path: 'http://example.com/notify2',
               id: '2',
               responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
-            }
+            },
           ],
         };
         jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
           right({
             code: '202',
             mediaType: 'test',
-            schema: callbacksMockResource.responses![0].contents![0].schema,
+            schema: callbacksMockResource.responses[0].contents![0].schema,
             headers: [],
-          }),
+          })
         );
 
         const response = mock({
@@ -168,10 +168,16 @@ describe('mocker', () => {
 
         assertRight(response, result => {
           expect(runCallback).toHaveBeenCalledTimes(2);
-          expect(runCallback).toHaveBeenNthCalledWith(1, expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c1' }) }));
-          expect(runCallback).toHaveBeenNthCalledWith(2, expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c2' }) }));
+          expect(runCallback).toHaveBeenNthCalledWith(
+            1,
+            expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c1' }) })
+          );
+          expect(runCallback).toHaveBeenNthCalledWith(
+            2,
+            expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c2' }) })
+          );
         });
-      })
+      });
     });
 
     describe('with a negotiator response containing validation results of Warning severity', () => {
@@ -212,10 +218,10 @@ describe('mocker', () => {
           right({
             code: '202',
             mediaType: 'test',
-            bodyExample: mockResource.responses![0].contents![0].examples![1],
+            bodyExample: mockResource.responses[0].contents![0].examples![1],
             headers: [],
             schema: { type: 'string' },
-          }),
+          })
         );
 
         jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue('example value chelsea');
@@ -255,7 +261,7 @@ describe('mocker', () => {
             expect(JSONSchemaGenerator.generateStatic).not.toHaveBeenCalled();
 
             const allExamples = flatMap(mockResource.responses, res =>
-              flatMap(res.contents, content => content.examples || []),
+              flatMap(res.contents, content => content.examples || [])
             ).map(x => {
               if ('value' in x) return x.value;
             });
@@ -281,7 +287,7 @@ describe('mocker', () => {
 
             it('should return the selected example', () => {
               const selectedExample = flatMap(mockResource.responses, res =>
-                flatMap(res.contents, content => content.examples || []),
+                flatMap(res.contents, content => content.examples || [])
               ).find(ex => ex.key === 'test key');
 
               expect(selectedExample).toBeDefined();
@@ -360,7 +366,7 @@ describe('mocker', () => {
 
               it('prefers the default', () =>
                 assertRight(eitherResponseWithDefault, responseWithDefault =>
-                  expect(responseWithDefault.body).toHaveProperty('middlename', 'JJ'),
+                  expect(responseWithDefault.body).toHaveProperty('middlename', 'JJ')
                 ));
             });
 
@@ -374,7 +380,7 @@ describe('mocker', () => {
 
               it('prefers the first example', () =>
                 assertRight(eitherResponseWithMultipleExamples, responseWithMultipleExamples =>
-                  expect(responseWithMultipleExamples.body).toHaveProperty('middlename', 'WW'),
+                  expect(responseWithMultipleExamples.body).toHaveProperty('middlename', 'WW')
                 ));
             });
 
@@ -388,7 +394,7 @@ describe('mocker', () => {
 
               it('fallbacks to string', () =>
                 assertRight(eitherResponseWithNoExamples, responseWithNoExamples =>
-                  expect(responseWithNoExamples.body).toHaveProperty('middlename', 'string'),
+                  expect(responseWithNoExamples.body).toHaveProperty('middlename', 'string')
                 ));
             });
           });

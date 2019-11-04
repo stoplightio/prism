@@ -1,7 +1,8 @@
-import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
+import { HttpParamStyles, IHttpQueryParam, DiagnosticSeverity } from '@stoplight/types';
 import { query as registry } from '../../deserializers';
 import { HttpQueryValidator } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('HttpQueryValidator', () => {
   const httpQueryValidator = new HttpQueryValidator(registry, 'query');
@@ -17,9 +18,10 @@ describe('HttpQueryValidator', () => {
       describe('query param is not present', () => {
         describe('spec defines it as required', () => {
           it('returns validation error', () => {
-            expect(
+            assertLeft(
               httpQueryValidator.validate({}, [{ name: 'aParam', style: HttpParamStyles.Form, required: true }]),
-            ).toMatchSnapshot();
+              error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Error }))
+            );
           });
         });
       });
@@ -35,7 +37,7 @@ describe('HttpQueryValidator', () => {
                 schema: { type: 'number' },
               };
 
-              expect(httpQueryValidator.validate({ param: 'abc' }, [param])).toEqual([]);
+              assertRight(httpQueryValidator.validate({ param: 'abc' }, [param]));
 
               expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
             });
@@ -44,15 +46,15 @@ describe('HttpQueryValidator', () => {
           describe('deserializer is available', () => {
             describe('query param is valid', () => {
               it('validates positively against schema', () => {
-                expect(
+                assertRight(
                   httpQueryValidator.validate({ param: 'abc' }, [
                     {
                       name: 'param',
                       style: HttpParamStyles.Form,
                       schema: { type: 'string' },
                     },
-                  ]),
-                ).toEqual([]);
+                  ])
+                );
 
                 expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
               });
@@ -62,14 +64,14 @@ describe('HttpQueryValidator', () => {
 
         describe('schema was not provided', () => {
           it('omits schema validation', () => {
-            expect(
+            assertRight(
               httpQueryValidator.validate({ param: 'abc' }, [
                 {
                   name: 'param',
                   style: HttpParamStyles.Form,
                 },
-              ]),
-            ).toEqual([]);
+              ])
+            );
 
             expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
           });
@@ -77,7 +79,7 @@ describe('HttpQueryValidator', () => {
 
         describe('deprecated flag is set', () => {
           it('returns deprecation warning', () => {
-            expect(
+            assertLeft(
               httpQueryValidator.validate({ param: 'abc' }, [
                 {
                   name: 'param',
@@ -85,7 +87,8 @@ describe('HttpQueryValidator', () => {
                   style: HttpParamStyles.Form,
                 },
               ]),
-            ).toMatchSnapshot();
+              error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Warning }))
+            );
           });
         });
       });

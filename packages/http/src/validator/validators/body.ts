@@ -10,11 +10,12 @@ import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
+import { fromArray } from 'fp-ts/lib/NonEmptyArray';
 
 function deserializeFormBody(
   schema: JSONSchema,
   encodings: IHttpEncoding[],
-  decodedUriParams: Dictionary<string, string>,
+  decodedUriParams: Dictionary<string, string>
 ) {
   if (!schema.properties) {
     return decodedUriParams;
@@ -35,7 +36,7 @@ function deserializeFormBody(
       }
 
       return deserialized;
-    }),
+    })
   );
 }
 
@@ -59,7 +60,7 @@ function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: st
     specs,
     Array.findFirst(spec => spec.mediaType === mediaType),
     Option.alt(() => Array.head(specs)),
-    Option.map(content => ({ mediaType, content })),
+    Option.map(content => ({ mediaType, content }))
   );
 }
 
@@ -67,7 +68,7 @@ function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, tar
   return pipe(
     mediaType,
     Option.fromPredicate(mt => !typeIs.is(mt, ['application/x-www-form-urlencoded'])),
-    Option.map(() => validateAgainstSchema(target, schema)),
+    Option.map(() => validateAgainstSchema(target, schema))
   );
 }
 
@@ -79,14 +80,14 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     validateAgainstReservedCharacters(encodedUriParams, encodings),
     Either.map(decodeUriEntities),
     Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-    Either.fold(e => Option.some(e), deserialised => Option.some(validateAgainstSchema(deserialised, schema))),
+    Either.fold(e => Option.some(e), deserialised => Option.some(validateAgainstSchema(deserialised, schema)))
   );
 }
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
   constructor(private prefix: string) {}
 
-  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): IPrismDiagnostic[] {
+  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string) {
     const mediaTypeWithContentAndSchema = pipe(
       Option.fromNullable(mediaType),
       Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
@@ -94,9 +95,9 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
       Option.chain(({ mediaType: mt, content }) =>
         pipe(
           Option.fromNullable(content.schema),
-          Option.map(schema => ({ schema, mediaType: mt, content })),
-        ),
-      ),
+          Option.map(schema => ({ schema, mediaType: mt, content }))
+        )
+      )
     );
 
     return pipe(
@@ -105,10 +106,12 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
         pipe(
           validateBodyIfNotFormEncoded(mt, schema, target),
           Option.alt(() => deserializeAndValidate(content, schema, target)),
-          Option.map(diagnostics => applyPrefix(this.prefix, diagnostics)),
-        ),
+          Option.map(diagnostics => applyPrefix(this.prefix, diagnostics))
+        )
       ),
-      Option.getOrElse<IPrismDiagnostic[]>(() => []),
+      Option.chain(fromArray),
+      Either.fromOption(() => target),
+      Either.swap
     );
   }
 }
@@ -119,7 +122,7 @@ function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDia
 
 function validateAgainstReservedCharacters(
   encodedUriParams: Dictionary<string, string>,
-  encodings: IHttpEncoding[],
+  encodings: IHttpEncoding[]
 ): Either.Either<IPrismDiagnostic[], Dictionary<string, string>> {
   return pipe(
     encodings,
@@ -128,7 +131,7 @@ function validateAgainstReservedCharacters(
       const property = encoding.property;
       const value = encodedUriParams[property];
 
-      if (!allowReserved && typeof value === 'string' && value.match(/[\/?#\[\]@!$&'()*+,;=]/)) {
+      if (!allowReserved && typeof value === 'string' && /[/?#[\]@!$&'()*+,;=]/.test(value)) {
         diagnostics.push({
           path: [property],
           message: 'Reserved characters used in request body',
@@ -138,6 +141,6 @@ function validateAgainstReservedCharacters(
 
       return diagnostics;
     }),
-    diagnostics => (diagnostics.length ? Either.left(diagnostics) : Either.right(encodedUriParams)),
+    diagnostics => (diagnostics.length ? Either.left(diagnostics) : Either.right(encodedUriParams))
   );
 }

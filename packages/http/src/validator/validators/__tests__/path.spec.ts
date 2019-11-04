@@ -1,7 +1,9 @@
-import { HttpParamStyles, IHttpPathParam } from '@stoplight/types';
+import { HttpParamStyles } from '@stoplight/types';
 import { path as registry } from '../../deserializers';
 import { HttpPathValidator } from '../path';
 import * as validateAgainstSchemaModule from '../utils';
+import { IHttpPathParam } from '@stoplight/types/dist';
+import { assertLeft, assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('HttpPathValidator', () => {
   const httpPathValidator = new HttpPathValidator(registry, 'path');
@@ -17,14 +19,18 @@ describe('HttpPathValidator', () => {
       describe('path param is not present', () => {
         describe('spec defines it as required', () => {
           it('returns validation error', () => {
-            expect(
+            assertLeft(
               httpPathValidator.validate({}, [{ name: 'aParam', style: HttpParamStyles.Simple, required: true }]),
-            ).toEqual([{
-            code: 'required',
-              message: 'should have required property \'aparam\'',
-              path: ['path'],
-              severity: 0,
-            }]);
+              error =>
+                expect(error).toEqual([
+                  {
+                    code: 'required',
+                    message: "should have required property 'aparam'",
+                    path: ['path'],
+                    severity: 0,
+                  },
+                ])
+            );
           });
         });
       });
@@ -40,8 +46,7 @@ describe('HttpPathValidator', () => {
                 schema: { type: 'number' },
               };
 
-              expect(httpPathValidator.validate({ param: 'abc' }, [param])).toEqual([]);
-
+              assertRight(httpPathValidator.validate({ param: 'abc' }, [param]));
               expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
             });
           });
@@ -49,15 +54,15 @@ describe('HttpPathValidator', () => {
           describe('deserializer is available', () => {
             describe('path param is valid', () => {
               it('validates positively against schema', () => {
-                expect(
+                assertRight(
                   httpPathValidator.validate({ param: 'abc' }, [
                     {
                       name: 'param',
                       style: HttpParamStyles.Simple,
                       schema: { type: 'string' },
                     },
-                  ]),
-                ).toEqual([]);
+                  ])
+                );
 
                 expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
               });
@@ -67,14 +72,14 @@ describe('HttpPathValidator', () => {
 
         describe('schema was not provided', () => {
           it('omits schema validation', () => {
-            expect(
+            assertRight(
               httpPathValidator.validate({ param: 'abc' }, [
                 {
                   name: 'param',
                   style: HttpParamStyles.Simple,
                 },
-              ]),
-            ).toEqual([]);
+              ])
+            );
 
             expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith([]);
           });
@@ -82,7 +87,7 @@ describe('HttpPathValidator', () => {
 
         describe('deprecated flag is set', () => {
           it('returns deprecation warning', () => {
-            expect(
+            assertLeft(
               httpPathValidator.validate({ param: 'abc' }, [
                 {
                   name: 'param',
@@ -90,12 +95,16 @@ describe('HttpPathValidator', () => {
                   style: HttpParamStyles.Simple,
                 },
               ]),
-            ).toEqual([{
-              code: 'deprecated',
-              message: 'Path param param is deprecated',
-              path: ['path', 'param'],
-              severity: 1,
-            }]);
+              error =>
+                expect(error).toEqual([
+                  {
+                    code: 'deprecated',
+                    message: 'Path param param is deprecated',
+                    path: ['path', 'param'],
+                    severity: 1,
+                  },
+                ])
+            );
           });
         });
       });

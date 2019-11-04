@@ -15,6 +15,8 @@ prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.
 ●  note      DELETE     http://127.0.0.1:4010/pets/10
 ```
 
+The generated paths will have their parameters (query or path) bolded and in color.
+
 Then in another tab, you can hit the HTTP server with your favorite HTTP client.
 
 ```bash

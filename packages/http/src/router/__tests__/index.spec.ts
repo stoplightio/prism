@@ -1,4 +1,4 @@
-import { assertLeft, assertRight } from '@stoplight/prism-http/src/__tests__/utils';
+import { assertLeft, assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
 import { HttpMethod, IHttpOperation, IServer } from '@stoplight/types';
 import { Chance } from 'chance';
 import { isRight } from 'fp-ts/lib/Either';
@@ -44,7 +44,7 @@ describe('http router', () => {
             },
           },
         }),
-        error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_SERVER_CONFIGURATION_PROVIDED_ERROR)),
+        error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_SERVER_CONFIGURATION_PROVIDED_ERROR))
       );
     });
 
@@ -60,7 +60,7 @@ describe('http router', () => {
             },
           },
         }),
-        error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_RESOURCE_PROVIDED_ERROR)),
+        error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_RESOURCE_PROVIDED_ERROR))
       );
     });
 
@@ -80,8 +80,8 @@ describe('http router', () => {
                   path,
                 },
               },
-            }),
-          ),
+            })
+          )
         ).toBeTruthy();
       });
 
@@ -106,7 +106,7 @@ describe('http router', () => {
               },
             },
           }),
-          error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR)),
+          error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR))
         );
       });
 
@@ -134,11 +134,11 @@ describe('http router', () => {
                 },
               },
             }),
-            error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR)),
+            error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR))
           );
         });
 
-        test('given a concrete matching server and matched concrete path should match', async () => {
+        test('given a concrete matching server and matched concrete path should match', () => {
           const url = chance.url();
           const path = randomPath({ includeTemplates: false });
           const expectedResource = createResource(method, path, [
@@ -157,7 +157,7 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(expectedResource),
+            resource => expect(resource).toBe(expectedResource)
           );
         });
 
@@ -179,11 +179,11 @@ describe('http router', () => {
                 },
               },
             }),
-            error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR)),
+            error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR))
           );
         });
 
-        test('given a templated matching server and matched concrete path should match', async () => {
+        test('given a templated matching server and matched concrete path should match', () => {
           const url = 'http://{host}/v1';
           const path = randomPath({ includeTemplates: false });
           const expectedResource = createResource(method, path, [
@@ -208,11 +208,11 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(expectedResource),
+            resource => expect(resource).toBe(expectedResource)
           );
         });
 
-        test('given a templated matching server and matched templated path should match', async () => {
+        test('given a templated matching server and matched templated path should match', () => {
           const url = 'http://{host}/v1';
           const path = '/{x}/b';
           const expectedResource = createResource(method, path, [
@@ -237,11 +237,11 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(expectedResource),
+            resource => expect(resource).toBe(expectedResource)
           );
         });
 
-        test('given a concrete matching server and matched templated path should match', async () => {
+        test('given a concrete matching server and matched templated path should match', () => {
           const url = chance.url();
           const templatedPath = '/a/{b}/c';
           const requestPath = '/a/x/c';
@@ -262,7 +262,7 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(expectedResource),
+            resource => expect(resource).toBe(expectedResource)
           );
         });
 
@@ -287,11 +287,11 @@ describe('http router', () => {
                 },
               },
             }),
-            error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR)),
+            error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR))
           );
         });
 
-        test('given a concrete servers and mixed paths should match concrete path', async () => {
+        test('given a concrete servers and mixed paths should match concrete path', () => {
           const templatedPath = '/{x}/y';
           const concretePath = '/a/y';
           const url = 'concrete.com';
@@ -309,11 +309,11 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(resourceWithConcretePath),
+            resource => expect(resource).toBe(resourceWithConcretePath)
           );
         });
 
-        test('given a concrete servers and templated paths should match first resource', async () => {
+        test('given a concrete servers and templated paths should match first resource', () => {
           const templatedPathA = '/{x}/y';
           const templatedPathB = '/a/{z}';
           const url = 'concrete.com';
@@ -331,11 +331,11 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(firstResource),
+            resource => expect(resource).toBe(firstResource)
           );
         });
 
-        test('given a concrete server and templated server should match concrete', async () => {
+        test('given a concrete server and templated server should match concrete', () => {
           const path = '/';
           const url = 'concrete.com';
           const resourceWithConcreteMatch = createResource(method, path, [
@@ -358,11 +358,11 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(resourceWithConcreteMatch),
+            resource => expect(resource).toBe(resourceWithConcreteMatch)
           );
         });
 
-        test('given concrete servers should match by path', async () => {
+        test('given concrete servers should match by path', () => {
           const matchingPath = '/a/b/c';
           const nonMatchingPath = '/a/b/c/d';
           const url = 'concrete.com';
@@ -380,7 +380,7 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(resourceWithMatchingPath),
+            resource => expect(resource).toBe(resourceWithMatchingPath)
           );
         });
 
@@ -400,7 +400,7 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(expectedResource),
+            resource => expect(resource).toBe(expectedResource)
           );
         });
 
@@ -419,11 +419,11 @@ describe('http router', () => {
                 },
               },
             }),
-            error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR)),
+            error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR))
           );
         });
 
-        test('given empty baseUrl and empty server url it should match', async () => {
+        test('given empty baseUrl and empty server url it should match', () => {
           const path = randomPath({ includeTemplates: false });
           const url = '';
           const expectedResource = createResource(method, path, [{ url }]);
@@ -439,11 +439,11 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(expectedResource),
+            resource => expect(resource).toBe(expectedResource)
           );
         });
 
-        test('given no baseUrl and a server url it should ignore servers and match by path', async () => {
+        test('given no baseUrl and a server url it should ignore servers and match by path', () => {
           const path = randomPath({ includeTemplates: false });
           const expectedResource = createResource(method, path, [{ url: 'www.stoplight.io/v1' }]);
 
@@ -457,7 +457,7 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(expectedResource),
+            resource => expect(resource).toBe(expectedResource)
           );
         });
       });
@@ -478,7 +478,7 @@ describe('http router', () => {
               },
             },
           }),
-          error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_METHOD_MATCHED_ERROR)),
+          error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_METHOD_MATCHED_ERROR))
         );
       });
     });

@@ -9,7 +9,7 @@ import {
 import { Chance } from 'chance';
 import * as Either from 'fp-ts/lib/Either';
 import { left, right } from 'fp-ts/lib/ReaderEither';
-import { assertLeft, assertRight } from '../../../__tests__/utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 
@@ -107,7 +107,7 @@ describe('NegotiatorHelpers', () => {
             .instance();
 
           const actualResponse = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(
-            logger,
+            logger
           );
 
           assertPayloadlessResponse(actualResponse);
@@ -137,7 +137,7 @@ describe('NegotiatorHelpers', () => {
             .instance();
 
           const actualConfig = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(
-            logger,
+            logger
           );
           const expectedConfig: IHttpNegotiationResult = {
             code: actualCode,
@@ -172,7 +172,7 @@ describe('NegotiatorHelpers', () => {
             .instance();
 
           const negotiationResult = helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(
-            logger,
+            logger
           );
 
           assertRight(negotiationResult, e => expect(e).toStrictEqual({ code: '422', headers: [] }));
@@ -231,7 +231,7 @@ describe('NegotiatorHelpers', () => {
 
       test('should return an error', () => {
         assertLeft(helpers.negotiateOptionsForInvalidRequest(httpOperation.responses, ['422', '400'])(logger), error =>
-          expect(error).toHaveProperty('message', 'No 422, 400, or default responses defined'),
+          expect(error).toHaveProperty('message', 'No 422, 400, or default responses defined')
         );
       });
     });
@@ -365,7 +365,7 @@ describe('NegotiatorHelpers', () => {
       httpOperation = anHttpOperation(httpOperation).instance();
 
       assertLeft(helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger), error =>
-        expect(error).toHaveProperty('message', 'The server cannot find the requested content'),
+        expect(error).toHaveProperty('message', 'The server cannot find the requested content')
       );
     });
   });
@@ -480,7 +480,7 @@ describe('NegotiatorHelpers', () => {
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
           httpOperation,
           desiredOptions,
-          httpResponseSchema,
+          httpResponseSchema
         )(logger);
 
         expect(helpers.negotiateByPartialOptionsAndHttpContent).toHaveBeenCalledTimes(1);
@@ -490,7 +490,7 @@ describe('NegotiatorHelpers', () => {
             dynamic: desiredOptions.dynamic,
             exampleKey: desiredOptions.exampleKey,
           },
-          contents,
+          contents
         );
         expect(helpers.negotiateDefaultMediaType).not.toHaveBeenCalled();
         assertRight(actualOperationConfig, operationConfig => {
@@ -520,7 +520,7 @@ describe('NegotiatorHelpers', () => {
           const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
             httpOperation,
             desiredOptions,
-            httpResponseSchema,
+            httpResponseSchema
           )(logger);
 
           assertRight(actualOperationConfig, config => expect(config).toHaveProperty('mediaType', 'application/xml'));
@@ -547,7 +547,7 @@ describe('NegotiatorHelpers', () => {
           const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
             httpOperation,
             desiredOptions,
-            httpResponseSchema,
+            httpResponseSchema
           )(logger);
 
           assertRight(actualOperationConfig, config => expect(config).toHaveProperty('mediaType', 'application/json'));
@@ -569,7 +569,7 @@ describe('NegotiatorHelpers', () => {
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
             { ...httpOperation, responses: [{ code: '200', contents: [{ mediaType: 'text/plain ' }] }] },
             desiredOptions,
-            httpResponseSchema,
+            httpResponseSchema
           )(logger);
 
           assertPayloadlessResponse(actualResponse);
@@ -585,7 +585,7 @@ describe('NegotiatorHelpers', () => {
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
             httpOperation,
             desiredOptions,
-            httpResponseSchema,
+            httpResponseSchema
           )(logger);
 
           expect(Either.isLeft(actualResponse)).toBeTruthy();
@@ -611,11 +611,11 @@ describe('NegotiatorHelpers', () => {
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
             { ...httpOperation, responses: [{ code: '200', contents: [{ mediaType: 'text/plain ' }] }] },
             desiredOptions,
-            httpResponseSchema,
+            httpResponseSchema
           )(logger);
 
           assertLeft(actualResponse, e =>
-            expect(e.message).toBe('The server cannot produce a representation for your accept header'),
+            expect(e.message).toBe('The server cannot produce a representation for your accept header')
           );
         });
       });
@@ -645,7 +645,7 @@ describe('NegotiatorHelpers', () => {
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
           httpOperation,
           desiredOptions,
-          httpResponseSchema,
+          httpResponseSchema
         )(logger);
 
         expect(helpers.negotiateByPartialOptionsAndHttpContent).not.toHaveBeenCalled();
@@ -656,7 +656,7 @@ describe('NegotiatorHelpers', () => {
             dynamic: desiredOptions.dynamic,
             exampleKey: desiredOptions.exampleKey,
           },
-          httpResponseSchema,
+          httpResponseSchema
         );
 
         assertRight(actualOperationConfig, operationConfig => {
@@ -709,13 +709,13 @@ describe('NegotiatorHelpers', () => {
               dynamic: partialOptions.dynamic,
               exampleKey: partialOptions.exampleKey,
             },
-            contents[1], // Check that the */* has been requested
+            contents[1] // Check that the */* has been requested
           );
 
           assertRight(actualOperationConfig, operationConfig => {
             expect(operationConfig).toEqual(fakeOperationConfig);
           });
-        },
+        }
       );
     });
 
@@ -838,8 +838,8 @@ describe('NegotiatorHelpers', () => {
 
         assertLeft(negotiationResult, e =>
           expect(e.message).toBe(
-            `Tried to force a dynamic response for: ${httpContent.mediaType} but schema is not defined.`,
-          ),
+            `Tried to force a dynamic response for: ${httpContent.mediaType} but schema is not defined.`
+          )
         );
       });
     });

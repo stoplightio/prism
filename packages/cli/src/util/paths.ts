@@ -14,11 +14,15 @@ import {
 } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { get } from 'lodash';
+import { get, identity } from 'lodash';
 // @ts-ignore
 import { URI } from 'uri-template-lite';
+import { ValuesTransformer } from './colorizer';
 
-export function createExamplePath(operation: IHttpOperation): Either.Either<Error, string> {
+export function createExamplePath(
+  operation: IHttpOperation,
+  transformValues: ValuesTransformer = identity
+): Either.Either<Error, string> {
   return pipe(
     generateTemplateAndValuesForPathParams(operation),
     Either.chain(({ template: pathTemplate, values: pathValues }) =>
@@ -29,7 +33,7 @@ export function createExamplePath(operation: IHttpOperation): Either.Either<Erro
         })
       )
     ),
-    Either.map(({ template, values }) => URI.expand(template, values))
+    Either.map(({ template, values }) => URI.expand(template, transformValues(values)))
   );
 }
 
