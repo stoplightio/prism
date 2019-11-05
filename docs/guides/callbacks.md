@@ -10,17 +10,17 @@ Callback in OpenApi 3 defines an outgoing, asynchronous request that your servic
 
 ## The Example
 
-This example shows how Prism mocks callbacks.
+This example shows how Prism mocks callbacks. There are two services defined: `payment-service` and `client-service`. `payment-service` exposes a subscribe-to-invoice-events method. Client service defines a notification reception endpoint. Our goal is to programmatically subscribe to events about certain invoice.
 
 ### Environment setup
 
-Start service exposing `/subscribe` callback (referred later as `4010`)
+Start `payment-service` exposing `/subscribe` callback.
 
 ```bash
 prism mock -p 4010 examples/callbacks/payment-service.oas3.yaml
 ``` 
 
-Start service exposing `/notify` operation used for receiving callback requests (referred later as `4011`)
+Start `client-service` exposing `/notify` operation used for receiving callback requests.
 
 ```bash
 prism mock -p 4011 examples/callbacks/client-service.oas3.yaml
@@ -34,7 +34,7 @@ Subscribe to callback
 curl -v -H'Content-type: application/json' -d'{ "url": "http://localhost:4011/notify", "token": "ssecurre" }' http://127.0.0.1:4010/invoices/123/subscribe
 ```
 
-Now, the console for `4010` service should show:
+Now, the console for `payment-service` should contain:
 ```
 [HTTP SERVER] post /invoices/123/subscribe ℹ  info      Request received
     [NEGOTIATOR] ℹ  info      Request contains an accept header: */*
@@ -45,7 +45,7 @@ Now, the console for `4010` service should show:
     [CALLBACK] ℹ  info      actions: Request finished
 ```
 
-The console of `4011` service:
+The console of `client-service`:
 
 ```
 [HTTP SERVER] post /notify ℹ  info      Request received
