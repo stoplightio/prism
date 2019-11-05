@@ -80,7 +80,12 @@ export function resolveRuntimeExpression(
     return pipe(
       isPart(1, 'header'),
       Option.chain(() => lookup(2, parts)),
-      Option.chain(part => Option.fromNullable(request.headers && request.headers[part]))
+      Option.chain(part =>
+        pipe(
+          Option.fromNullable(request.headers),
+          Option.mapNullable(headers => headers[part])
+        )
+      )
     );
   }
 
@@ -88,7 +93,12 @@ export function resolveRuntimeExpression(
     return pipe(
       isPart(1, 'query'),
       Option.chain(() => lookup(2, parts)),
-      Option.chain(part => Option.fromNullable(request.url.query && request.url.query[part]))
+      Option.chain(part =>
+        pipe(
+          Option.fromNullable(request.url.query),
+          Option.mapNullable(query => query[part])
+        )
+      )
     );
   }
 
@@ -103,7 +113,12 @@ export function resolveRuntimeExpression(
     return pipe(
       isPart(1, 'header'),
       Option.chain(() => lookup(2, parts)),
-      Option.chain(part => Option.fromNullable(response.headers && response.headers[part]))
+      Option.chain(part =>
+        pipe(
+          Option.fromNullable(response.headers),
+          Option.mapNullable(headers => headers[part])
+        )
+      )
     );
   }
 
