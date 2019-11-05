@@ -22,6 +22,34 @@ export function resolveRuntimeExpression(
 ): Option.Option<string> {
   const parts = expr.split(/[.#]/);
 
+  return pipe(
+    tryMethod(),
+    Option.alt(tryStatusCode),
+    Option.alt(() =>
+      pipe(
+        isPart(0, '$request'),
+        Option.chain(() =>
+          pipe(
+            tryRequestHeader(),
+            Option.alt(tryRequestQuery),
+            Option.alt(tryRequestBody)
+          )
+        )
+      )
+    ),
+    Option.alt(() =>
+      pipe(
+        isPart(0, '$response'),
+        Option.chain(() =>
+          pipe(
+            tryResponseHeader(),
+            Option.alt(tryResponseBody)
+          )
+        )
+      )
+    )
+  );
+
   function isPart(idx: number, type: string) {
     return pipe(
       lookup(idx, parts),
@@ -98,32 +126,4 @@ export function resolveRuntimeExpression(
       )
     );
   }
-
-  return pipe(
-    tryMethod(),
-    Option.alt(tryStatusCode),
-    Option.alt(() =>
-      pipe(
-        isPart(0, '$request'),
-        Option.chain(() =>
-          pipe(
-            tryRequestHeader(),
-            Option.alt(tryRequestQuery),
-            Option.alt(tryRequestBody)
-          )
-        )
-      )
-    ),
-    Option.alt(() =>
-      pipe(
-        isPart(0, '$response'),
-        Option.chain(() =>
-          pipe(
-            tryResponseHeader(),
-            Option.alt(tryResponseBody)
-          )
-        )
-      )
-    )
-  );
 }
