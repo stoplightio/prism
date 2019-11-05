@@ -52,18 +52,24 @@ function assembleRequest({ resource, request, response }: { resource: IHttpCallb
     url: resolveRuntimeExpressions(resource.path, request, response),
     headers: Option.toUndefined(assembleHeaders(resource.request, bodyAndMediaType && bodyAndMediaType.mediaType)),
     body: bodyAndMediaType && bodyAndMediaType.body,
-    method: resource.method,
-  };
+        method: resource.method,
+};
 }
 
 function assembleBody(request?: IHttpOperationRequest): Option.Option<{ body: string, mediaType: string }> {
   return pipe(
-    Option.fromNullable(request && request.body && request.body.contents),
+    Option.fromNullable(request),
+    Option.mapNullable(request => request.body),
+    Option.mapNullable(body => body.contents),
     Option.chain(head),
     Option.chain(param => {
       return pipe(
         generateHttpParam(param),
-        Option.map(body => ({ body: JSON.stringify(body), mediaType: param.mediaType })),
+        Option.chain(body => pipe(
+          Either.stringifyJSON(body, () => undefined),
+          Option.fromEither,
+        )),
+        Option.map(body => ({ body, mediaType: param.mediaType })),
       );
     }),
   );
@@ -71,16 +77,15 @@ function assembleBody(request?: IHttpOperationRequest): Option.Option<{ body: st
 
 function assembleHeaders(request?: IHttpOperationRequest, bodyMediaType?: string): Option.Option<{ [key: string]: string }> {
   return pipe(
-    Option.fromNullable(request && request.headers),
+    Option.fromNullable(request),
+    Option.mapNullable(request => request.headers),
     Option.map(params => pipe(
       params,
-      reduce({}, (headers, param) => {
-        return pipe(
-          param,
-          generateHttpParam,
-          Option.fold(() => headers, value => ({ ...headers, [param.name]: value }))
-        )
-      }),
+      reduce({}, (headers, param) => pipe(
+        param,
+        generateHttpParam,
+        Option.fold(() => headers, value => ({ ...headers, [param.name]: value }))
+      )),
     )),
     Option.reduce(
       pipe(
