@@ -125,13 +125,13 @@ export function resolveRuntimeExpression(
   function tryResponseBody() {
     return pipe(
       isPart(1, 'body'),
-      Option.chain(() => readBody(response))
+      Option.chain(() => readBody(response.body))
     );
   }
 
-  function readBody(reqRes: IHttpRequest | IHttpResponse) {
+  function readBody(body: unknown) {
     return pipe(
-      Option.fromNullable(reqRes.body),
+      Option.fromNullable(body),
       Option.chain(body =>
         pipe(
           lookup(2, parts),
