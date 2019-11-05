@@ -1,6 +1,6 @@
 import { parseResponse, parseResponseBody, parseResponseHeaders } from '../parseResponse';
-import { assertLeft, assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
-import { Headers, Response } from 'node-fetch';
+import { assertResolvesLeft, assertResolvesRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { Headers } from 'node-fetch';
 
 describe('parseResponseBody()', () => {
   describe('body is json', () => {
@@ -12,8 +12,8 @@ describe('parseResponseBody()', () => {
           text: jest.fn(),
         };
 
-        assertRight(
-          await parseResponseBody(response)(),
+        await assertResolvesRight(
+          parseResponseBody(response),
           body => expect(body).toEqual({ test: 'test' }),
         );
 
@@ -29,8 +29,8 @@ describe('parseResponseBody()', () => {
           text: jest.fn(),
         };
 
-        assertLeft(
-          await parseResponseBody(response)(),
+        await assertResolvesLeft(
+          parseResponseBody(response),
           error => expect(error.message).toEqual('Big Bada Boom'),
         );
 
@@ -48,8 +48,8 @@ describe('parseResponseBody()', () => {
           text: jest.fn().mockResolvedValue('<html>Test</html>'),
         };
 
-        assertRight(
-          await parseResponseBody(response)(),
+        await assertResolvesRight(
+          parseResponseBody(response),
           body => expect(body).toEqual('<html>Test</html>'),
         );
 
@@ -65,8 +65,8 @@ describe('parseResponseBody()', () => {
           text: jest.fn().mockRejectedValue(new Error('Big Bada Boom')),
         };
 
-        assertLeft(
-          await parseResponseBody(response)(),
+        await assertResolvesLeft(
+          parseResponseBody(response),
           error => expect(error.message).toEqual('Big Bada Boom'),
         );
 
@@ -83,8 +83,8 @@ describe('parseResponseBody()', () => {
         text: jest.fn().mockResolvedValue('Plavalaguna'),
       };
 
-      assertRight(
-        await parseResponseBody(response)(),
+      await assertResolvesRight(
+        parseResponseBody(response),
         body => expect(body).toEqual('Plavalaguna'),
       );
 
@@ -102,14 +102,14 @@ describe('parseResponseHeaders()', () => {
 
 describe('parseResponse()', () => {
   describe('response is correct', () => {
-    it('returns parsed response', async () => {
-      assertRight(
-        await parseResponse({
+    it('returns parsed response', () => {
+      return assertResolvesRight(
+        parseResponse({
           status: 200,
           headers: new Headers({ 'content-type': 'application/json', 'test': 'test' }),
           json: jest.fn().mockResolvedValue({ test: 'test' }),
           text: jest.fn(),
-        })(),
+        }),
         response => {
           expect(response).toEqual({
             statusCode: 200,
@@ -122,14 +122,14 @@ describe('parseResponse()', () => {
   });
 
   describe('response is invalid', () => {
-    it('returns error', async () => {
-      assertLeft(
-        await parseResponse({
+    it('returns error', () => {
+      return assertResolvesLeft(
+        parseResponse({
           status: 200,
           headers: new Headers(),
           json: jest.fn(),
           text: jest.fn().mockRejectedValue(new Error('Big Bada Boom')),
-        })(),
+        }),
         error => {
           expect(error.message).toEqual('Big Bada Boom');
         }

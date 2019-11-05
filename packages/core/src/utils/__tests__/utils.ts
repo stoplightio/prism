@@ -1,6 +1,7 @@
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Either from 'fp-ts/lib/Either';
+import * as TaskEither from 'fp-ts/lib/TaskEither';
 
 export function assertNone<A>(e: Option.Option<A>) {
   pipe(
@@ -39,4 +40,12 @@ export function assertLeft<L, A>(e: Either.Either<L, A>, onLeft: (a: L) => void 
       throw new Error('Left expected, got a Right: ' + a);
     })
   );
+}
+
+export async function assertResolvesRight<L, A>(e: TaskEither.TaskEither<L, A>, onRight: (a: A) => void = () => {}) {
+  assertRight(await e(), onRight);
+}
+
+export async function assertResolvesLeft<L, A>(e: TaskEither.TaskEither<L, A>, onLeft: (a: L) => void = () => {}) {
+  assertLeft(await e(), onLeft);
 }
