@@ -1,8 +1,7 @@
-import { HttpParamStyles } from '@stoplight/types';
+import { HttpParamStyles, IHttpPathParam } from '@stoplight/types';
 import { path as registry } from '../../deserializers';
 import { HttpPathValidator } from '../path';
 import * as validateAgainstSchemaModule from '../utils';
-import { IHttpPathParam } from '@stoplight/types/dist';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
 
 describe('HttpPathValidator', () => {

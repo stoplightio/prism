@@ -6,7 +6,6 @@ import * as Option from 'fp-ts/lib/Option';
 import * as Either from 'fp-ts/lib/Either';
 import { map, reduce } from 'fp-ts/lib/Array';
 import * as Reader from 'fp-ts/lib/Reader';
-import * as Task from 'fp-ts/lib/Task';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { head } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -17,7 +16,7 @@ import withLogger from '../../withLogger';
 import { violationLogger } from '../../utils/logger';
 import { Logger } from 'pino';
 
-export function runCallback({ callback, request, response }: { callback: IHttpCallbackOperation, request: IHttpRequest, response: IHttpResponse }): Reader.Reader<Logger, Task.Task<void>> {
+export function runCallback({ callback, request, response }: { callback: IHttpCallbackOperation, request: IHttpRequest, response: IHttpResponse }): Reader.Reader<Logger, TaskEither.TaskEither<Error, unknown>> {
   return withLogger(logger => {
     const { url, ...requestInit } = assembleRequest({ resource: callback, request, response });
     const logViolation = violationLogger(logger);
@@ -27,22 +26,22 @@ export function runCallback({ callback, request, response }: { callback: IHttpCa
     return pipe(
       TaskEither.tryCatch(() => fetch(url, requestInit), Either.toError),
       TaskEither.chain(parseResponse),
-      TaskEither.map(element => validateOutput({ resource: callback, element })),
-      TaskEither.map(violations => {
+      TaskEither.map(element => {
         logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Request finished`);
 
-        pipe(
-          violations,
-          map(logViolation)
+        return pipe(
+          validateOutput({ resource: callback, element }),
+          Either.mapLeft(violations => {
+            pipe(violations, map(logViolation));
+            return violations;
+          }),
+          Either.alt(() => Either.right(element)),
         );
       }),
-      TaskEither.fold(
-        error => {
-          logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`);
-          return async () => undefined;
-        },
-        () => async () => undefined
-      ),
+      TaskEither.mapLeft(error => {
+        logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`);
+        return error;
+      }),
     );
   });
 }

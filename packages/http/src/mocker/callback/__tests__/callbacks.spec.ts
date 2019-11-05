@@ -32,7 +32,7 @@ describe('runCallback()', () => {
           method: 'get',
           path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
-          responses: [{ code: '200' }],
+          responses: [{ code: '200', contents: [ { mediaType: 'application/json' } ] }],
           request: {
             body: {
               contents: [{
