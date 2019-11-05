@@ -105,7 +105,7 @@ export function resolveRuntimeExpression(
   function tryRequestBody() {
     return pipe(
       isPart(1, 'body'),
-      Option.chain(() => readBody(request))
+      Option.chain(() => readBody(request.body))
     );
   }
 

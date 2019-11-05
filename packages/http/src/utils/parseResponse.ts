@@ -7,7 +7,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { Dictionary } from '@stoplight/types';
 import { IHttpResponse } from '../types';
 
-export function parseResponseBody(response: Response): TaskEither.TaskEither<Error, any> {
+export function parseResponseBody(response: Response): TaskEither.TaskEither<Error, unknown> {
   return TaskEither.tryCatch(
     () =>
       typeIs(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
