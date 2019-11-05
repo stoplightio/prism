@@ -50,7 +50,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockH
       withLogger(logger =>
         pipe(
           response,
-          Either.map(r => runCallbacks({ resource, request: input.data, response: r })(logger)),
+          Either.map(response => runCallbacks({ resource, request: input.data, response })(logger)),
           Either.chain(() => response)
         )
       )
