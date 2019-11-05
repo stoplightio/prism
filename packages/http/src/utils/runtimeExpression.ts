@@ -6,6 +6,7 @@ import { get as _get } from 'lodash';
 import { pointerToPath } from '@stoplight/json';
 
 export function resolveRuntimeExpressions(input: string, request: IHttpRequest, response: IHttpResponse) {
+  // replace runtime expression placeholders (eg. {$method}) with the resolved values
   return input.replace(/{(.+?)}/g, (_, expr) =>
     pipe(
       resolveRuntimeExpression(expr, request, response),
