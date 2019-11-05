@@ -2,7 +2,7 @@ import { HttpParamStyles, IHttpQueryParam, DiagnosticSeverity } from '@stoplight
 import { query as registry } from '../../deserializers';
 import { HttpQueryValidator } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
-import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('HttpQueryValidator', () => {
   const httpQueryValidator = new HttpQueryValidator(registry, 'query');

@@ -1,4 +1,4 @@
-import { assertSome } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { findBestHttpContentByMediaType } from '../InternalHelpers';
 
 describe('InternalHelpers', () => {

@@ -6,7 +6,7 @@ import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
 import { IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
-import { assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { runCallback } from '../callback/callbacks';
 
 jest.mock('../callback/callbacks', () => ({

@@ -1,4 +1,4 @@
-import { assertLeft, assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { HttpMethod, IHttpOperation, IServer } from '@stoplight/types';
 import { Chance } from 'chance';
 import { isRight } from 'fp-ts/lib/Either';

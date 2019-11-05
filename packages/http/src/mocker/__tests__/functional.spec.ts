@@ -2,7 +2,7 @@ import * as Ajv from 'ajv';
 
 import { createLogger } from '@stoplight/prism-core';
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';
-import { assertLeft, assertRight } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import mock from '../index';
 
 const logger = createLogger('TEST', { enabled: false });

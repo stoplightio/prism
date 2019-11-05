@@ -1,6 +1,6 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import { validateSecurity } from '../security';
-import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('validateSecurity', () => {
   const token = new Buffer('test:test').toString('base64');

@@ -1,4 +1,4 @@
-import { assertNone, assertSome } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertNone, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { findOperationResponse } from '../spec';
 
 describe('findOperationResponse()', () => {

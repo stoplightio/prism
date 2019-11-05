@@ -10,7 +10,7 @@ import {
   validateInput,
   validateOutput,
 } from '../index';
-import { assertRight, assertLeft } from '@stoplight/prism-core/src/utils/__tests__/utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 const validate = (
   resourceExtension?: Partial<IHttpOperation>,
