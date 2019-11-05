@@ -23,7 +23,7 @@ describe('violationLogger', () => {
   });
 
   describe('violation is an warning', () => {
-    it('logs error', () => {
+    it('logs warning', () => {
       violationLogger(logger)({ severity: DiagnosticSeverity.Warning, message: 'Test' });
       expect(logger.error).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledWith({ name: 'VALIDATOR' }, 'Violation: Test');
@@ -32,7 +32,7 @@ describe('violationLogger', () => {
   });
 
   describe('violation is an info', () => {
-    it('logs error', () => {
+    it('logs info', () => {
       violationLogger(logger)({ severity: DiagnosticSeverity.Information, message: 'Test' });
       expect(logger.error).not.toHaveBeenCalled();
       expect(logger.warn).not.toHaveBeenCalled();
