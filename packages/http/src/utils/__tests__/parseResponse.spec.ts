@@ -7,10 +7,10 @@ describe('parseResponseBody()', () => {
     describe('body is parseable', () => {
       it('returns parsed body', async () => {
         const response = {
-          headers: new Map([['content-type', 'application/json']]),
+          headers: new Headers({'content-type': 'application/json' }),
           json: jest.fn().mockResolvedValue({ test: 'test' }),
           text: jest.fn(),
-        } as Pick<Response, 'headers' | 'json' | 'text'>;
+        };
 
         assertRight(
           await parseResponseBody(response)(),
@@ -24,10 +24,10 @@ describe('parseResponseBody()', () => {
     describe('body is not parseable', () => {
       it('returns error', async () => {
         const response = {
-          headers: new Map([['content-type', 'application/json']]),
+          headers: new Headers({ 'content-type': 'application/json' }),
           json: jest.fn().mockRejectedValue(new Error('Big Bada Boom')),
           text: jest.fn(),
-        } as Pick<Response, 'headers' | 'json' | 'text'>;
+        };
 
         assertLeft(
           await parseResponseBody(response)(),
@@ -43,10 +43,10 @@ describe('parseResponseBody()', () => {
     describe('body is readable', () => {
       it('returns body text', async () => {
         const response = {
-          headers: new Map([['content-type', 'text/html']]),
+          headers: new Headers({ 'content-type': 'text/html' }),
           json: jest.fn(),
           text: jest.fn().mockResolvedValue('<html>Test</html>'),
-        } as Pick<Response, 'headers' | 'json' | 'text'>;
+        };
 
         assertRight(
           await parseResponseBody(response)(),
@@ -60,10 +60,10 @@ describe('parseResponseBody()', () => {
     describe('body is not readable', () => {
       it('returns error', async () => {
         const response = {
-          headers: new Map(),
+          headers: new Headers(),
           json: jest.fn(),
           text: jest.fn().mockRejectedValue(new Error('Big Bada Boom')),
-        } as Pick<Response, 'headers' | 'json' | 'text'>;
+        };
 
         assertLeft(
           await parseResponseBody(response)(),
@@ -78,10 +78,10 @@ describe('parseResponseBody()', () => {
   describe('content-type header not set', () => {
     it('returns body text', async () => {
       const response = {
-        headers: new Map(),
+        headers: new Headers(),
         json: jest.fn(),
         text: jest.fn().mockResolvedValue('Plavalaguna'),
-      } as Pick<Response, 'headers' | 'json' | 'text'>;
+      };
 
       assertRight(
         await parseResponseBody(response)(),
@@ -95,7 +95,7 @@ describe('parseResponseBody()', () => {
 
 describe('parseResponseHeaders()', () => {
   it('parses raw headers correctly', () => {
-    expect(parseResponseHeaders({ headers: { raw: () => ({ h1: ['a', 'b'], h2: ['c']}) } } as Pick<Headers, 'raw'>))
+    expect(parseResponseHeaders({ headers: new Headers({ h1: 'a b', h2: 'c' }) }))
       .toEqual({ h1: 'a b', h2: 'c' });
   });
 });
@@ -108,7 +108,8 @@ describe('parseResponse()', () => {
           status: 200,
           headers: new Headers({ 'content-type': 'application/json', 'test': 'test' }),
           json: jest.fn().mockResolvedValue({ test: 'test' }),
-        } as Pick<Response, 'status' | 'headers' | 'json'>)(),
+          text: jest.fn(),
+        })(),
         response => {
           expect(response).toEqual({
             statusCode: 200,
@@ -126,8 +127,9 @@ describe('parseResponse()', () => {
         await parseResponse({
           status: 200,
           headers: new Headers(),
+          json: jest.fn(),
           text: jest.fn().mockRejectedValue(new Error('Big Bada Boom')),
-        } as Pick<Response, 'status' | 'headers' | 'text'>)(),
+        })(),
         error => {
           expect(error.message).toEqual('Big Bada Boom');
         }
