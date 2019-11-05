@@ -77,7 +77,6 @@ function runCallbacks({
   return withLogger(logger =>
     pipe(
       Option.fromNullable(resource.callbacks),
-      Option.alt<IHttpCallbackOperation[]>(() => Option.some([])),
       Option.map(callbacks =>
         pipe(
           callbacks,
