@@ -1,7 +1,15 @@
 openapi: 3.0.0
 paths:
-  /subscribe:
+  /invoices/{id}/subscribe:
+    parameters:
+    - name: id
+      in: path
+      required: true
+      description: The id of the invoice about which you want to receive notifications
+      schema:
+        $ref: '#/components/schemas/invoiceId'
     post:
+      summary: Subscription to events about given invoice
       requestBody:
         required: true
         content:
@@ -19,6 +27,7 @@ paths:
               - token
       responses:
         '202':
+          description: 'Successfully subscribed to events about given invoice'
           content:
             text/plain:
               examples:
@@ -29,24 +38,37 @@ paths:
         actions:
           '{$request.body#/url}?token={$request.body#/token}':
             post:
+              summary: 'Receive notification about certain invoice'
               requestBody:
                 required: true
                 content:
                   application/json:
                     schema:
-                      type: object
-                      properties:
-                        action:
-                          type: string
-                        payload:
-                          type: string
-                      required:
-                        - action
-                        - payload
+                      $ref: '#/components/schemas/notification'
               responses:
                 200:
+                  description: 'Notification successfully processed'
                   content:
                     text/plain:
                       examples:
                         ok:
                           value: 'ok'
+components:
+  schemas:
+    invoiceId:
+      type: integer
+      format: int64
+    notification:
+      type: object
+      properties:
+        invoiceId:
+          $ref: "#/components/schemas/invoiceId"
+        action:
+          type: string
+          enum:
+          - paid
+          - expired
+          - failure
+      required:
+      - invoiceId
+      - action

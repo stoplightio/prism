@@ -1,0 +1,27 @@
+openapi: 3.0.0
+paths:
+  /notify:
+    post:
+      summary: 'Receive notification about certain invoice'
+      security:
+        - Token: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'payment-service.oas3.yaml#/components/schemas/notification'
+      responses:
+        '200':
+          description: 'Notification successfully processed'
+          content:
+            text/plain:
+              examples:
+                ok:
+                  value: 'ok'
+components:
+  securitySchemes:
+    Token:
+      type: apiKey
+      name: token
+      in: query

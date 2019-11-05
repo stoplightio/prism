@@ -153,3 +153,7 @@ When we call `curl http://127.0.0.1:4010/pets/123?__dynamic=true`, the operation
 The more descriptive your description is, the better job Prism can do at creating a mock response.
 
 _**Tip:** If your team needs help creating better quality API description documents, take a look at [Spectral](https://stoplight.io/spectral/). You could enforce the use of `example` properties, or similar._
+
+### Mocking OpenApi 3 callbacks
+
+Follow this guide to learn [how to mock callbacks](./callbacks.md).
