@@ -91,7 +91,7 @@ const findResponseByStatus = (responses: NonEmptyArray<IHttpOperationResponse>, 
     Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(error => [error])
   );
 
-const mismatchMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
+const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
     contents,
     findFirst(c => !!typeIs.is(mediaType, [c.mediaType])),
@@ -119,7 +119,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
           ),
           Option.fold(
             () => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(undefined),
-            contents => mismatchMediaType(contents, mediaType)
+            contents => validateMediaType(contents, mediaType)
           )
         ),
         bodyValidator.validate(element.body, response.contents || [], mediaType),

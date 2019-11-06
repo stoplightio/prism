@@ -2,14 +2,7 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation, HttpParamStyles } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { IHttpRequest } from '../../types';
-import {
-  bodyValidator,
-  headersValidator,
-  queryValidator,
-  pathValidator,
-  validateInput,
-  validateOutput,
-} from '../index';
+import * as validator from '../index';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 const validate = (
@@ -17,7 +10,7 @@ const validate = (
   inputExtension?: Partial<IHttpRequest>,
   length = 3
 ) => () => {
-  const validationResult = validateInput({
+  const validationResult = validator.validateInput({
     resource: Object.assign<IHttpOperation, unknown>(
       {
         method: 'get',
@@ -43,12 +36,12 @@ const mockError: IPrismDiagnostic = {
 };
 
 describe('HttpValidator', () => {
-  describe('validateInput()', () => {
+  describe('validator.validateInput()', () => {
     beforeAll(() => {
-      jest.spyOn(bodyValidator, 'validate').mockReturnValue(Either.left([mockError]));
-      jest.spyOn(headersValidator, 'validate').mockReturnValue(Either.left([mockError]));
-      jest.spyOn(queryValidator, 'validate').mockReturnValue(Either.left([mockError]));
-      jest.spyOn(pathValidator, 'validate').mockReturnValue(Either.left([mockError]));
+      jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(Either.left([mockError]));
+      jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(Either.left([mockError]));
+      jest.spyOn(validator.queryValidator, 'validate').mockReturnValue(Either.left([mockError]));
+      jest.spyOn(validator.pathValidator, 'validate').mockReturnValue(Either.left([mockError]));
     });
 
     afterAll(() => jest.restoreAllMocks());
@@ -118,7 +111,7 @@ describe('HttpValidator', () => {
       describe('request is set', () => {
         describe('request.path is set', () => {
           it('calls the path validator', () => {
-            validateInput({
+            validator.validateInput({
               resource: {
                 method: 'get',
                 path: '/a/{a}/b/{b}',
@@ -131,7 +124,7 @@ describe('HttpValidator', () => {
               element: { method: 'get', url: { path: '/a/1/b/;b=2' } },
             });
 
-            expect(pathValidator.validate).toHaveBeenCalledWith({ a: '1', b: ';b=2' }, [
+            expect(validator.pathValidator.validate).toHaveBeenCalledWith({ a: '1', b: ';b=2' }, [
               { name: 'a', style: HttpParamStyles.Simple },
               { name: 'b', style: HttpParamStyles.Matrix },
             ]);
@@ -144,37 +137,57 @@ describe('HttpValidator', () => {
   describe('validateOutput()', () => {
     describe('output is set', () => {
       beforeAll(() => {
-        jest.spyOn(bodyValidator, 'validate').mockReturnValue(Either.left([mockError]));
-        jest.spyOn(headersValidator, 'validate').mockReturnValue(Either.left([mockError]));
-        jest.spyOn(queryValidator, 'validate').mockReturnValue(Either.left([mockError]));
+        jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(Either.left([mockError]));
+        jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(Either.left([mockError]));
+        jest.spyOn(validator.queryValidator, 'validate').mockReturnValue(Either.left([mockError]));
       });
 
       afterAll(() => jest.restoreAllMocks());
 
-      it('validates the body and headers', () => {
-        assertLeft(
-          validateOutput({
-            resource: {
-              method: 'get',
-              path: '/',
-              id: '1',
-              request: {},
-              responses: [{ code: '200' }],
-            },
-            element: { statusCode: 200 },
-          }),
-          error => expect(error).toHaveLength(2)
-        );
+      describe('the output does not have the media type header', () => {
+        it('validates the body and headers, but not the media type', () => {
+          assertLeft(
+            validator.validateOutput({
+              resource: {
+                method: 'get',
+                path: '/',
+                id: '1',
+                request: {},
+                responses: [{ code: '200' }],
+              },
+              element: { statusCode: 200 },
+            }),
+            error => expect(error).toHaveLength(2)
+          );
 
-        expect(bodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
-        expect(headersValidator.validate).toHaveBeenCalled();
+          expect(validator.bodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
+          expect(validator.headersValidator.validate).toHaveBeenCalled();
+        });
+      });
+
+      describe('the output has the media type header', () => {
+        it('should validate the media type as well', () => {
+          assertLeft(
+            validator.validateOutput({
+              resource: {
+                method: 'get',
+                path: '/',
+                id: '1',
+                request: {},
+                responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
+              },
+              element: { statusCode: 200, headers: { 'content-type': 'text/plain' } },
+            }),
+            e => expect(e).toHaveLength(3)
+          );
+        });
       });
     });
 
     describe('cannot match status code with responses', () => {
       beforeEach(() => {
-        jest.spyOn(bodyValidator, 'validate').mockReturnValue(Either.right({}));
-        jest.spyOn(headersValidator, 'validate').mockReturnValue(Either.right({}));
+        jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(Either.right({}));
+        jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(Either.right({}));
       });
 
       afterEach(() => jest.clearAllMocks());
@@ -189,7 +202,7 @@ describe('HttpValidator', () => {
 
       describe('when the desidered response is between 200 and 300', () => {
         it('returns an error', () => {
-          assertLeft(validateOutput({ resource, element: { statusCode: 201 } }), error =>
+          assertLeft(validator.validateOutput({ resource, element: { statusCode: 201 } }), error =>
             expect(error).toEqual([
               {
                 message: 'Unable to match the returned status code with those defined in spec',
@@ -202,7 +215,7 @@ describe('HttpValidator', () => {
 
       describe('when the desidered response is over 300', () => {
         it('returns an error', () => {
-          assertLeft(validateOutput({ resource, element: { statusCode: 400 } }), error =>
+          assertLeft(validator.validateOutput({ resource, element: { statusCode: 400 } }), error =>
             expect(error).toEqual([
               {
                 message: 'Unable to match the returned status code with those defined in spec',
@@ -238,7 +251,10 @@ describe('HttpValidator', () => {
       describe('when the response has a content type not declared in the spec', () => {
         it('returns an error', () => {
           assertLeft(
-            validateOutput({ resource, element: { statusCode: 200, headers: { 'content-type': 'application/xml' } } }),
+            validator.validateOutput({
+              resource,
+              element: { statusCode: 200, headers: { 'content-type': 'application/xml' } },
+            }),
             error =>
               expect(error).toEqual([
                 {
@@ -254,7 +270,10 @@ describe('HttpValidator', () => {
       describe('when the response has a content type declared in the spec', () => {
         it('returns an error', () => {
           assertRight(
-            validateOutput({ resource, element: { statusCode: 200, headers: { 'content-type': 'application/json' } } }),
+            validator.validateOutput({
+              resource,
+              element: { statusCode: 200, headers: { 'content-type': 'application/json' } },
+            }),
             () => {}
           );
         });
