@@ -163,7 +163,7 @@ describe('HttpValidator', () => {
             },
             element: { statusCode: 200 },
           }),
-          error => expect(error).toHaveLength(3)
+          error => expect(error).toHaveLength(2)
         );
 
         expect(bodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
@@ -242,7 +242,8 @@ describe('HttpValidator', () => {
             error =>
               expect(error).toEqual([
                 {
-                  message: 'The received media type "application/xml" does not match the one specified in the document',
+                  message:
+                    'The received media type "application/xml" does not match the one specified in the current response: application/json',
                   severity: DiagnosticSeverity.Error,
                 },
               ])
