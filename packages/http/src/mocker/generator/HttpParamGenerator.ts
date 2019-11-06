@@ -3,7 +3,6 @@ import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { JSONSchema } from '../../types';
 import { generate as generateDynamicExample } from './JSONSchema';
-import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
 
 export function improveSchema(schema: JSONSchema): JSONSchema {
   const newSchema = { ...schema };
@@ -52,7 +51,7 @@ function pickStaticExample(
   );
 }
 
-export function generate(param: { schema?: JSONSchema4 | JSONSchema6 | JSONSchema7; examples?: Array<INodeExample | INodeExternalExample> }): Option.Option<unknown> {
+export function generate(param: IHttpParam | IHttpContent): Option.Option<unknown> {
   return pipe(
     Option.fromNullable(param.examples),
     pickStaticExample,
