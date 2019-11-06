@@ -1,9 +1,16 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { DiagnosticSeverity, IHttpOperation, IHttpOperationResponse, IHttpOperationRequest } from '@stoplight/types';
+import {
+  DiagnosticSeverity,
+  IHttpOperation,
+  IHttpOperationResponse,
+  IHttpOperationRequest,
+  IMediaTypeContent,
+} from '@stoplight/types';
 import * as caseless from 'caseless';
-import { findFirst } from 'fp-ts/lib/Array';
+import { findFirst, isNonEmpty } from 'fp-ts/lib/Array';
 import * as Option from 'fp-ts/lib/Option';
 import * as Either from 'fp-ts/lib/Either';
+import * as typeIs from 'type-is';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
 // @ts-ignore
@@ -84,14 +91,14 @@ const findResponseByStatus = (responses: NonEmptyArray<IHttpOperationResponse>, 
     Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(error => [error])
   );
 
-const mismatchMediaType = (response: IHttpOperationResponse, mediaType: string) =>
+const mismatchMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
-    Option.fromNullable(response.contents),
-    Option.chain(findFirst(c => c.mediaType === mediaType)),
+    contents,
+    findFirst(c => !!typeIs.is(mediaType, [c.mediaType])),
     Either.fromOption<IPrismDiagnostic>(() => ({
-      message: `The received media type "${
-        mediaType ? mediaType : ''
-      }" does not match the one specified in the document`,
+      message: `The received media type "${mediaType}" does not match the one specified in the current response: ${contents
+        .map(c => c.mediaType)
+        .join(',')}`,
       severity: DiagnosticSeverity.Error,
     })),
     Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
@@ -103,7 +110,19 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
     findResponseByStatus(resource.responses, element.statusCode),
     Either.chain(response =>
       sequenceValidation(
-        mismatchMediaType(response, mediaType),
+        pipe(
+          Option.fromNullable(response.contents),
+          Option.chain(contents =>
+            pipe(
+              contents,
+              Option.fromPredicate(isNonEmpty)
+            )
+          ),
+          Option.fold(
+            () => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(undefined),
+            contents => mismatchMediaType(contents, mediaType)
+          )
+        ),
         bodyValidator.validate(element.body, response.contents || [], mediaType),
         headersValidator.validate(element.headers || {}, response.headers || [])
       )
