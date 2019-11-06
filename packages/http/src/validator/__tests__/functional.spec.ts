@@ -15,7 +15,7 @@ const GOOD_INPUT = Object.assign({}, httpInputs[2], {
 
 const BAD_OUTPUT = Object.assign({}, httpOutputs[1], {
   body: { name: 'Shopping', completed: 'yes' },
-  headers: { 'x-todos-publish': 'yesterday' },
+  headers: { 'x-todos-publish': 'yesterday', 'content-type': 'application/something' },
 });
 
 describe('HttpValidator', () => {

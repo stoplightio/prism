@@ -96,9 +96,8 @@ const mismatchMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType
     contents,
     findFirst(c => !!typeIs.is(mediaType, [c.mediaType])),
     Either.fromOption<IPrismDiagnostic>(() => ({
-      message: `The received media type "${mediaType}" does not match the one specified in the current response: ${contents
-        .map(c => c.mediaType)
-        .join(',')}`,
+      message: `The received media type "${mediaType ||
+        ''}" does not match the one specified in the current response: ${contents.map(c => c.mediaType).join(',')}`,
       severity: DiagnosticSeverity.Error,
     })),
     Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
