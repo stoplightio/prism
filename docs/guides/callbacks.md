@@ -7,7 +7,7 @@ Callback in OpenApi 3 defines an outgoing, asynchronous request that your servic
 ##### Sources:
 
 - [Callback Docs](https://swagger.io/docs/specification/callbacks/)
-- [Callback Object Specification](http://spec.openapis.org/oas/v3.0.2#callbackObject)
+- [Callback Object Specification](https://spec.openapis.org/oas/v3.0.2#callbackObject)
 
 ## The Example
 
@@ -60,5 +60,6 @@ The console of `client-service`:
 After subscribing via `/subscribe`, Prism successfully invoked `/notify` callback with mocked payload.
 
 ## Limitations
+
 - no support for `servers` and `security` definitions inside callback operation
 - no support for `$url` and `$request.path.*` runtime expressions
