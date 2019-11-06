@@ -47,6 +47,9 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockH
     Reader.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
     Reader.chain(result => assembleResponse(result, payloadGenerator)),
     Reader.chain(response =>
+      /*  Note: This is now just logging the errors without propagating them back. This might be moved as a first
+          level concept in Prism.
+      */
       withLogger(logger =>
         pipe(
           response,
