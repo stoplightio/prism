@@ -154,6 +154,6 @@ The more descriptive your description is, the better job Prism can do at creatin
 
 _**Tip:** If your team needs help creating better quality API description documents, take a look at [Spectral](https://stoplight.io/spectral/). You could enforce the use of `example` properties, or similar._
 
-### Mocking OpenApi 3 callbacks
+### Mocking OpenAPI Callbacks
 
 Follow this guide to learn [how to mock callbacks](./callbacks.md).

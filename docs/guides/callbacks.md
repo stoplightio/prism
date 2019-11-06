@@ -7,7 +7,7 @@ Callback in OpenApi 3 defines an outgoing, asynchronous request that your servic
 ##### Sources:
 
 - [Callback Docs](https://swagger.io/docs/specification/callbacks/)
-- [Callback Object Specification](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#callbackObject)
+- [Callback Object Specification](http://spec.openapis.org/oas/v3.0.2#callbackObject)
 
 ## The Example
 
