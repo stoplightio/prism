@@ -81,18 +81,20 @@ function assembleBody(request?: IHttpOperationRequest): Option.Option<{ body: st
     Option.mapNullable(request => request.body),
     Option.mapNullable(body => body.contents),
     Option.chain(head),
-    Option.chain(param => {
-      return pipe(
-        generateHttpParam(param),
-        Option.chain(body =>
-          pipe(
-            Either.stringifyJSON(body, () => undefined),
-            Option.fromEither
-          )
-        ),
+    Option.chain(param =>
+      pipe(
+        param,
+        generateHttpParam,
         Option.map(body => ({ body, mediaType: param.mediaType }))
-      );
-    })
+      )
+    ),
+    Option.chain(({ body, mediaType }) =>
+      pipe(
+        Either.stringifyJSON(body, () => undefined),
+        Either.map(body => ({ body, mediaType })),
+        Option.fromEither
+      )
+    )
   );
 }
 
