@@ -58,3 +58,7 @@ The console of `client-service`:
 ```
 
 After subscribing via `/subscribe`, Prism successfully invoked `/notify` callback with mocked payload.
+
+## Limitations
+- no support for `servers` and `security` definitions inside callback operation
+- no support for `$url` and `$request.path.*` runtime expressions
