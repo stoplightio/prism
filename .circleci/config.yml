@@ -76,7 +76,7 @@ jobs:
           command: yarn --frozen-lockfile
       - run:
           name: Build all code to JavaScript
-          command: npx ttsc --build ./packages/tsconfig.build.json
+          command: yarn build
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publish

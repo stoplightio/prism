@@ -13,7 +13,7 @@
   "scripts": {
     "lint": "eslint ./packages/**/src/**/*.ts",
     "lint.fix": "yarn lint --fix",
-    "build": "tsc --build ./packages/tsconfig.build.json",
+    "build": "ttsc --build ./packages/tsconfig.build.json",
     "posttest": "yarn lint",
     "test": "jest --maxWorkers=2",
     "test.watch": "yarn test --watchAll",
