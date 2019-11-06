@@ -89,7 +89,9 @@ const mismatchMediaType = (response: IHttpOperationResponse, mediaType: string) 
     Option.fromNullable(response.contents),
     Option.chain(findFirst(c => c.mediaType === mediaType)),
     Either.fromOption<IPrismDiagnostic>(() => ({
-      message: `The received media type does not match the one specified in the document`,
+      message: `The received media type "${
+        mediaType ? mediaType : ''
+      }" does not match the one specified in the document`,
       severity: DiagnosticSeverity.Error,
     })),
     Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
