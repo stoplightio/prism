@@ -1,10 +1,11 @@
 # Mocking Callbacks with Prism
 
 ## What are callbacks?
+
 Callback in OpenApi 3 defines an outgoing, asynchronous request that your service will make to some other service. Typical real-life example is a code repository. You can subscribe to certain events on a repo (like commit or tag) and your api will start receiving notifications for those events. Another example is one-time notifications. You can subscribe to a `invoice paid` event and a callback will be invoked when such payment is processed.
 
-
 ##### Sources:
+
 - [Callback Docs](https://swagger.io/docs/specification/callbacks/)
 - [Callback Object Specification](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#callbackObject)
 
@@ -18,13 +19,13 @@ Start `payment-service` exposing `/subscribe` callback.
 
 ```bash
 prism mock -p 4010 examples/callbacks/payment-service.oas3.yaml
-``` 
+```
 
 Start `client-service` exposing `/notify` operation used for receiving callback requests.
 
 ```bash
 prism mock -p 4011 examples/callbacks/client-service.oas3.yaml
-``` 
+```
 
 ### Run!
 
@@ -35,6 +36,7 @@ curl -v -H'Content-type: application/json' -d'{ "url": "http://localhost:4011/no
 ```
 
 Now, the console for `payment-service` should contain:
+
 ```
 [HTTP SERVER] post /invoices/123/subscribe ℹ  info      Request received
     [NEGOTIATOR] ℹ  info      Request contains an accept header: */*
