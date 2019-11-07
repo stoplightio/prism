@@ -39,7 +39,7 @@ Object {
   "_tag": "Left",
   "left": Array [
     Object {
-      "message": "The received media type \\"application/something\\" does not match the one specified in the current response: application/json,application/xml",
+      "message": "The received media type \\"application/something\\" does not match the ones specified in the current response: application/json, application/xml",
       "severity": 0,
     },
     Object {
