@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - The Test Harness framework now requires the `${document}` parameter explicitly [#720](https://github.com/stoplightio/prism/pull/720)
 - Prism now includes a new `proxy` command that will validate the request coming in, send the request to an upstream server and then validate the response coming back [#669](https://github.com/stoplightio/prism/pull/669)
 - Prism has values for path/query params bolded and in color [#743](https://github.com/stoplightio/prism/pull/743)
+- The CLI now displays a timestamp for all the logged operations [#779](https://github.com/stoplightio/prism/pull/779)
 
 ## Fixed
 
