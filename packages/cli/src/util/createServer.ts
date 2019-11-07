@@ -13,6 +13,8 @@ import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer';
 
+signale.config({ displayTimestamp: true });
+
 async function createMultiProcessPrism(options: CreateBaseServerOptions) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
