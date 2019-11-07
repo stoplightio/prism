@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import * as cluster from 'cluster';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { LogDescriptor, Logger } from 'pino';
+import { LogDescriptor, Logger, LoggerOptions } from 'pino';
 import * as signale from 'signale';
 import * as split from 'split2';
 import { PassThrough, Readable } from 'stream';
@@ -15,9 +15,10 @@ import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer
 
 signale.config({ displayTimestamp: true });
 
-const cliSpecificLoggerOptions = {
-  customLevels: { start: 12 },
+const cliSpecificLoggerOptions: LoggerOptions = {
+  customLevels: { start: 11 },
   useLevelLabels: true,
+  level: 'start',
 };
 
 async function createMultiProcessPrism(options: CreateBaseServerOptions) {

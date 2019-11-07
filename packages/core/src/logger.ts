@@ -9,9 +9,10 @@ function createLogger(
   const options: pino.LoggerOptions = defaultsDeep(overrideOptions, {
     name,
     customLevels: {
-      success: 11,
+      success: 12,
     },
-    base: null,
+    level: 'success',
+    base: {},
     timestamp: false,
   });
 
