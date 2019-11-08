@@ -88,16 +88,6 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             },
           };
         })
-      )().then(v =>
-        pipe(
-          v,
-          Either.fold(
-            e => {
-              throw e;
-            },
-            o => o
-          )
-        )
       );
     },
   };
