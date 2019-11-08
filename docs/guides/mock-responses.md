@@ -69,13 +69,13 @@ If the HTTP server has been started in static mode, specific calls can be made i
 
 If the provided OpenAPI Schema Object has a response body example then it'll use that whole thing.
 
-If not, an response body will be created by looking through the whole `schema` object (following any `$ref`'s it finds along the way) to create a full fake response.
+If not, a response body will be created by looking through the whole `schema` object (following any `$ref`'s it finds along the way) to create a full fake response.
 
 - If the property has a default value, then it will return the specified value
 - If the property has an `examples` value, then it will return the first element in the array
-- If the property has nor an example or a default value and it's **nullable**, it will return null
-- If the property has nor an example or a default value and it's **not** nullable, and has a `format` specified it will return a meaningful static value according to the format
-- If the property has nor an example or a default value and it's **not** nullable, and has not a `format` specified it will return `'string'` in case of a number and `0` in case of a string
+- If the property has neither an example nor a default value and is **nullable**, it will return null
+- If the property has neither an example nor a default value and is **not** nullable, but has a `format` specified, then it will return a meaningful static value according to the format
+- If the property has neither an example nor a default value, is not nullable, and has no `format` specified, then it will return `'string'` in case of a string and `0` in case of a number
 
 Let's try an example! 🐶
 
