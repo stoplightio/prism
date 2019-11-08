@@ -8,6 +8,9 @@ import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
 import getHttpOperations, { getHttpOperationsFromResource } from './getHttpOperations';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
+import { fold } from 'fp-ts/lib/TaskEither';
+import * as Task from 'fp-ts/lib/Task';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 interface IClientConfig extends IHttpConfig {
   baseUrl?: string;
@@ -36,7 +39,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
   }
 
   const client: PrismHttp = {
-    async request(url, input, config) {
+    request(url, input, config) {
       const parsedUrl = parseUrl(url);
 
       if (!parsedUrl.pathname) throw new Error('Path name must always be specified');
@@ -49,25 +52,23 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
         query: parseQueryString(parsedUrl.query || ''),
       };
 
-      const data = await obj.request(
-        {
-          ...input,
-          url: httpUrl,
-        },
-        resources,
-        mergedConf
-      );
-
-      const output: PrismOutput = {
-        status: data.output.statusCode,
-        headers: data.output.headers || {},
-        data: data.output.body || {},
-        config: mergedConf,
-        request: { ...input, url: httpUrl },
-        violations: data.validations,
-      };
-
-      return output;
+      return pipe(
+        obj.request({ ...input, url: httpUrl }, resources, mergedConf),
+        fold(
+          e => {
+            throw e;
+          },
+          data =>
+            Task.of({
+              status: data.output.statusCode,
+              headers: data.output.headers || {},
+              data: data.output.body || {},
+              config: mergedConf,
+              request: { ...input, url: httpUrl },
+              violations: data.validations,
+            })
+        )
+      )();
     },
     get(url: string, input?: headersFromRequest | Partial<IClientConfig>, config?: Partial<IClientConfig>) {
       return isInput(input)
