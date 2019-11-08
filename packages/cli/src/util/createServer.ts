@@ -1,11 +1,11 @@
-import { createLogger, logLevels } from '@stoplight/prism-core';
+import { createLogger } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpProxyConfig, getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
 import chalk from 'chalk';
 import * as cluster from 'cluster';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { LogDescriptor, Logger } from 'pino';
+import { LogDescriptor, Logger, LoggerOptions } from 'pino';
 import * as signale from 'signale';
 import * as split from 'split2';
 import { PassThrough, Readable } from 'stream';
@@ -14,6 +14,12 @@ import { createExamplePath } from './paths';
 import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer';
 
 signale.config({ displayTimestamp: true });
+
+const cliSpecificLoggerOptions: LoggerOptions = {
+  customLevels: { start: 11 },
+  useLevelLabels: true,
+  level: 'start',
+};
 
 async function createMultiProcessPrism(options: CreateBaseServerOptions) {
   if (cluster.isMaster) {
@@ -29,7 +35,7 @@ async function createMultiProcessPrism(options: CreateBaseServerOptions) {
 
     return;
   } else {
-    const logInstance = createLogger('CLI');
+    const logInstance = createLogger('CLI', cliSpecificLoggerOptions);
     try {
       return await createPrismServerWithLogger(options, logInstance);
     } catch (e) {
@@ -43,7 +49,7 @@ async function createSingleProcessPrism(options: CreateBaseServerOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
-  const logInstance = createLogger('CLI', undefined, logStream);
+  const logInstance = createLogger('CLI', cliSpecificLoggerOptions, logStream);
   pipeOutputToSignale(logStream);
 
   try {
@@ -85,7 +91,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
       Either.getOrElse(() => resource.path)
     );
 
-    logInstance.note(
+    logInstance.info(
       `${resource.method.toUpperCase().padEnd(10)} ${address}${transformPathParamsValues(path, chalk.bold.cyan)}`
     );
   });
@@ -107,8 +113,7 @@ function pipeOutputToSignale(stream: Readable) {
   }
 
   stream.pipe(split(JSON.parse)).on('data', (logLine: LogDescriptor) => {
-    const logLevelType = logLevels.labels[logLine.level];
-    signale[logLevelType]({ prefix: constructPrefix(logLine), message: logLine.msg });
+    signale[logLine.level]({ prefix: constructPrefix(logLine), message: logLine.msg });
   });
 }
 
