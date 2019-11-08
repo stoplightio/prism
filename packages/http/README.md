@@ -71,20 +71,18 @@ const prism = Prism.createInstance({
 });
 
 // Make a "GET /todos" request
-return prism
-  .process(
-    {
-      method: 'get',
-      url: {
-        path: '/todos',
-      },
-      headers: {
-        Accept: 'text/plain',
-      },
+return prism.process(
+  {
+    method: 'get',
+    url: {
+      path: '/todos',
     },
-    operations
-  )
-  .then(prismResponse => console.log(prismResponse.output));
+    headers: {
+      Accept: 'text/plain',
+    },
+  },
+  operations
+);
 ```
 
 Output
@@ -110,24 +108,22 @@ const Prism = require('@stoplight/prism-http');
 const prism = Prism.createInstance({ mock: { dynamic: false } });
 
 // Make a "GET /todos" request
-return prism
-  .process(
-    {
-      method: 'get',
-      url: {
-        path: '/facts',
-        baseUrl: 'https://cat-fact.herokuapp.com',
-      },
+return prism.process(
+  {
+    method: 'get',
+    url: {
+      path: '/facts',
+      baseUrl: 'https://cat-fact.herokuapp.com',
     },
-    {
-      // We can override the default behaviour per request.
-      mock: {
-        dynamic: true,
-      },
+  },
+  {
+    // We can override the default behaviour per request.
+    mock: {
+      dynamic: true,
     },
-    operations
-  )
-  .then(prismResponse => console.log(prismResponse.output));
+  },
+  operations
+);
 ```
 
 ## Make Request To An Upstream Server
@@ -141,15 +137,13 @@ const Prism = require('@stoplight/prism-http');
 const config = { mock: { dynamic: false } };
 const prism = Prism.createInstance(config);
 
-return prism
-  .request({
-    method: 'get',
-    url: {
-      path: '/facts',
-      baseUrl: 'https://cat-fact.herokuapp.com',
-    },
-  })
-  .then(prismResponse => console.log(prismResponse.output));
+return prism.request({
+  method: 'get',
+  url: {
+    path: '/facts',
+    baseUrl: 'https://cat-fact.herokuapp.com',
+  },
+});
 ```
 
 In response you'll get some... facts about cats. For example:
@@ -316,18 +310,16 @@ const Prism = require('@stoplight/prism-http');
 // Create Prism instance and configure it to make http requests
 const config = { mock: { dynamic: false } };
 const prism = Prism.createInstance(config);
-prism
-  .process(
-    {
-      method: 'get',
-      url: {
-        path: '/facts',
-        baseUrl: 'https://cat-fact.herokuapp.com',
-      },
+prism.process(
+  {
+    method: 'get',
+    url: {
+      path: '/facts',
+      baseUrl: 'https://cat-fact.herokuapp.com',
     },
-    operations
-  )
-  .then(prismResponse => console.log(prismResponse.validations.input));
+  },
+  operations
+);
 ```
 
 You would get this in response
