@@ -32,10 +32,10 @@ describe('validation', () => {
     ['output', 'validateResponse', 'validateOutput', 'validateInput'],
   ])('%s', (_type, fieldType, fnName, reverseFnName) => {
     describe('when enabled', () => {
-      beforeAll(async () => {
+      beforeAll(() => {
         const obj: any = {};
         obj[fieldType] = true;
-        await prismInstance.request('', [], obj);
+        return prismInstance.request('', [], obj)();
       });
 
       afterEach(() => jest.clearAllMocks());

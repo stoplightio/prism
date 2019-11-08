@@ -1,5 +1,5 @@
 import { createInstance, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
-import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
 import * as typeIs from 'type-is';
@@ -77,6 +77,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           .concat(response.validations.input.map(createErrorObjectWithPrefix('request')));
 
         if (inputOutputValidationErrors.length > 0) {
+          reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
+
           const errorViolations = inputOutputValidationErrors.filter(
             v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
           );
@@ -102,9 +104,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           }
         });
 
-        if (inputOutputValidationErrors.length > 0)
-          reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
-
         return TaskEither.fromIOEither(() =>
           Either.tryCatch(() => {
             if (output.headers) reply.headers(output.headers);
@@ -116,9 +115,9 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           }, Either.toError)
         );
       }),
-      TaskEither.mapLeft((e: any) => {
+      TaskEither.mapLeft((e: Error & { status?: number; additional?: { headers?: Dictionary<string> } }) => {
         if (!reply.sent) {
-          const status = 'status' in e ? e.status : 500;
+          const status = e.status || 500;
           reply
             .type('application/problem+json')
             .serializer(JSON.stringify)
