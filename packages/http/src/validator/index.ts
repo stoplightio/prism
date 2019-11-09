@@ -112,12 +112,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
       sequenceValidation(
         pipe(
           Option.fromNullable(response.contents),
-          Option.chain(contents =>
-            pipe(
-              contents,
-              Option.fromPredicate(isNonEmpty)
-            )
-          ),
+          Option.chain(contents => pipe(contents, Option.fromPredicate(isNonEmpty))),
           Option.fold(
             () => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(undefined),
             contents => validateMediaType(contents, mediaType)

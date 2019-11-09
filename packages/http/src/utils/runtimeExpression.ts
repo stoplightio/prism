@@ -28,24 +28,13 @@ export function resolveRuntimeExpression(
     Option.alt(() =>
       pipe(
         isPart(0, '$request'),
-        Option.chain(() =>
-          pipe(
-            tryRequestHeader(),
-            Option.alt(tryRequestQuery),
-            Option.alt(tryRequestBody)
-          )
-        )
+        Option.chain(() => pipe(tryRequestHeader(), Option.alt(tryRequestQuery), Option.alt(tryRequestBody)))
       )
     ),
     Option.alt(() =>
       pipe(
         isPart(0, '$response'),
-        Option.chain(() =>
-          pipe(
-            tryResponseHeader(),
-            Option.alt(tryResponseBody)
-          )
-        )
+        Option.chain(() => pipe(tryResponseHeader(), Option.alt(tryResponseBody)))
       )
     )
   );
