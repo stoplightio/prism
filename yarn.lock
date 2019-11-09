@@ -1540,14 +1540,13 @@ aggregate-error@^3.0.0:
     indent-string "^4.0.0"
 
 ajv-oai@^1.0.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/ajv-oai/-/ajv-oai-1.1.1.tgz#5f3c19ebc6b1628465bc75436c1ade9031b3cab3"
-  integrity sha1-XzwZ68axYoRlvHVDbBrekDGzyrM=
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/ajv-oai/-/ajv-oai-1.1.5.tgz#f6a3ffa6a84ee90234a296ef733e9e18c875365e"
+  integrity sha512-JSBfA99K9cI22qJ8rwCyJ7J15iEMFOeHL8LqH+PL47HzeN7YZc7ZazQNg9eLO6TuPLBCfkiuMNLulKTGMzp25w==
   dependencies:
-    ajv "^6.1.1"
-    decimal.js "^9.0.1"
+    decimal.js "^10.2.0"
 
-ajv@^6.1.1, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.5, ajv@^6.8.1:
+ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.5, ajv@^6.8.1:
   version "6.10.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.10.2.tgz#d3cea04d6b017b2894ad69040fec8b623eb4bd52"
   integrity sha512-TXtUUEYHuaTEbLZWIKUr5pmBuhDLy+8KYtPYdcV8qC+pOZL+NKqYwvWSRrVXHn+ZmRRAu8vJTAznH7Oag6RVRw==
@@ -2633,10 +2632,10 @@ decamelize@^1.1.0, decamelize@^1.1.2, decamelize@^1.2.0:
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
   integrity sha1-9lNNFRSCabIDUue+4m9QH5oZEpA=
 
-decimal.js@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-9.0.1.tgz#1cc8b228177da7ab6498c1cc06eb130a290e6e1e"
-  integrity sha512-2h0iKbJwnImBk4TGk7CG1xadoA0g3LDPlQhQzbZ221zvG0p2YVUedbKIPsOZXKZGx6YmZMJKYOalpCMxSdDqTQ==
+decimal.js@^10.2.0:
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.2.0.tgz#39466113a9e036111d02f82489b5fd6b0b5ed231"
+  integrity sha512-vDPw+rDgn3bZe1+F/pyEwb1oMG2XTlRVgAa6B4KccTEpYgF8w6eQllVbQcfIJnZyvzFtFpxnpGtx8dd7DJp/Rw==
 
 decode-uri-component@^0.2.0:
   version "0.2.0"
