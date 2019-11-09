@@ -179,20 +179,23 @@ function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is
 }
 
 function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: PayloadGenerator): Dictionary<string> {
-  return mapValues(keyBy(headers, h => h.name), header => {
-    if (header.schema) {
-      if (header.examples && header.examples.length > 0) {
-        const example = header.examples[0];
-        if (isINodeExample(example)) {
-          return example.value;
+  return mapValues(
+    keyBy(headers, h => h.name),
+    header => {
+      if (header.schema) {
+        if (header.examples && header.examples.length > 0) {
+          const example = header.examples[0];
+          if (isINodeExample(example)) {
+            return example.value;
+          }
+        } else {
+          const example = payloadGenerator(header.schema);
+          if (!(isObject(example) && isEmpty(example))) return example;
         }
-      } else {
-        const example = payloadGenerator(header.schema);
-        if (!(isObject(example) && isEmpty(example))) return example;
       }
+      return null;
     }
-    return null;
-  });
+  );
 }
 
 function computeBody(

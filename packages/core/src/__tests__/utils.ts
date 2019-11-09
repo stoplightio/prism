@@ -3,7 +3,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as Either from 'fp-ts/lib/Either';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 
-export function assertNone<A>(e: Option.Option<A>) {
+export function assertNone<A>(e: Option.Option<A>): asserts e is Option.None {
   pipe(
     e,
     Option.fold(
@@ -15,7 +15,7 @@ export function assertNone<A>(e: Option.Option<A>) {
   );
 }
 
-export function assertSome<A>(e: Option.Option<A>, onSome: (a: A) => void = () => {}) {
+export function assertSome<A>(e: Option.Option<A>, onSome: (a: A) => void = () => {}): asserts e is Option.Some<A> {
   pipe(
     e,
     Option.fold(() => {
@@ -24,7 +24,10 @@ export function assertSome<A>(e: Option.Option<A>, onSome: (a: A) => void = () =
   );
 }
 
-export function assertRight<L, A>(e: Either.Either<L, A>, onRight: (a: A) => void = () => {}) {
+export function assertRight<L, A>(
+  e: Either.Either<L, A>,
+  onRight: (a: A) => void = () => {}
+): asserts e is Either.Right<A> {
   pipe(
     e,
     Either.fold(l => {
@@ -33,7 +36,10 @@ export function assertRight<L, A>(e: Either.Either<L, A>, onRight: (a: A) => voi
   );
 }
 
-export function assertLeft<L, A>(e: Either.Either<L, A>, onLeft: (a: L) => void = () => {}) {
+export function assertLeft<L, A>(
+  e: Either.Either<L, A>,
+  onLeft: (a: L) => void = () => {}
+): asserts e is Either.Left<L> {
   pipe(
     e,
     Either.fold(onLeft, a => {
