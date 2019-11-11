@@ -3337,14 +3337,14 @@ fast-xml-parser@^3.12.20:
   integrity sha512-3SzQnPNtMVqaBVDzYqYt0BTaaLwkd45wTbsUsH1eiE9dnyc4b8mYcm1Q0Rcx9AWkeTj5UZFTTm55Io5yVWS1tg==
 
 fastify-cors@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/fastify-cors/-/fastify-cors-2.1.3.tgz#5ae8fcc620a47270cd68d46acc3b8dd7919b538b"
-  integrity sha512-ZHFzKn1DddymsxzvdtjEQfkuMfGgwcp++FKuTTMmAN2KFB7hJRmOINffjfRdmUcgXdE4LoSy5XJROWKx/b+CPQ==
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/fastify-cors/-/fastify-cors-2.2.0.tgz#700fca91b735999193699980cb005a25f85d91ce"
+  integrity sha512-xnZmYPWUxrIBEsv5x2JrsDlrskoFkOE0KAwedEe6dn8TCxpARwW6U+nofAKWZMDF+dXkEslRCgrd1ixdEIkB8w==
   dependencies:
-    fastify-plugin "^1.5.0"
+    fastify-plugin "^1.6.0"
     vary "^1.1.2"
 
-fastify-plugin@^1.5.0:
+fastify-plugin@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-1.6.0.tgz#c8198b08608f20c502b5dad26b36e9ae27206d7c"
   integrity sha512-lFa9txg8LZx4tljj33oG53nUXhVg0baZxtP9Pxi0dJmI0NQxzkDk5DS9kr3D7iMalUAp3mvIq16OQumc7eIvLA==
