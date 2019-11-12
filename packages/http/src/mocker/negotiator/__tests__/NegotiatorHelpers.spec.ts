@@ -11,7 +11,7 @@ import * as Either from 'fp-ts/lib/Either';
 import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import helpers from '../NegotiatorHelpers';
-import { IHttpNegotiationResult, NegotiationOptions } from '../types';
+import { IHttpNegotiationResult, NegotiationOptions, NegotiatePartialOptions } from '../types';
 
 const chance = new Chance();
 const logger = createLogger('TEST', { enabled: false });
@@ -749,181 +749,220 @@ describe('NegotiatorHelpers', () => {
     });
   });
 
-  describe('negotiateByPartialOptionsAndHttpContent()', () => {
-    describe('given exampleKey forced', () => {
-      it('and example exists should return that example', () => {
-        const exampleKey = chance.string();
-        const partialOptions = {
-          code: chance.integer({ min: 100, max: 599 }).toString(),
-          exampleKey,
-          dynamic: chance.bool(),
-        };
-        const bodyExample: INodeExample = {
-          key: exampleKey,
-          value: '',
-        };
+  describe('when multiple responses', () => {
+    const code = chance.string();
+    const partialOptions = { code: '200', dynamic: false };
 
-        const httpContent: IMediaTypeContent = {
-          mediaType: chance.string(),
-          examples: [bodyExample],
-          encodings: [],
-        };
-
-        const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-
-        const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
-          code: partialOptions.code,
-          mediaType: httpContent.mediaType,
-          bodyExample,
-        };
-
-        assertRight(actualOperationConfig, operationConfig => {
-          expect(operationConfig).toEqual(expectedConfig);
-        });
+    describe('and json is among them', () => {
+      const negotiationResult = helpers.negotiateDefaultMediaType(partialOptions, {
+        code,
+        headers: [],
+        contents: [
+          { mediaType: 'text/plain', examples: [{ key: 'hey', value: {} }] },
+          { mediaType: 'application/json', examples: [{ key: 'hey', value: {} }] },
+        ],
       });
 
-      it('and example not exist should throw an error', () => {
-        const exampleKey = chance.string();
-        const partialOptions = {
-          code: chance.integer({ min: 100, max: 599 }).toString(),
-          exampleKey,
-          dynamic: chance.bool(),
-        };
-        const httpContent: IMediaTypeContent = {
-          mediaType: chance.string(),
-          examples: [],
-          encodings: [],
-        };
-
-        const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-        assertLeft(negotiationResult, e => {
-          expect(e.message).toBe('The server cannot find the requested content');
+      it('should give json precedence', () => {
+        assertRight(negotiationResult, result => {
+          expect(result.mediaType).toEqual('application/json');
         });
       });
     });
 
-    describe('given exampleKey not forced but dynamic forced', () => {
-      it('and httpContent has schema return that contents', () => {
-        const partialOptions = {
-          code: chance.integer({ min: 100, max: 599 }).toString(),
-          dynamic: true,
-        };
-        const httpContent: IMediaTypeContent = {
-          mediaType: chance.string(),
-          examples: [],
-          schema: { type: 'string' },
-          encodings: [],
-        };
-
-        const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-
-        assertRight(actualOperationConfig, operationConfig => {
-          expect(operationConfig).toEqual({
-            code: partialOptions.code,
-            mediaType: httpContent.mediaType,
-            schema: httpContent.schema,
-          });
-        });
+    describe('and json is not them', () => {
+      const negotiationResult = helpers.negotiateDefaultMediaType(partialOptions, {
+        code,
+        headers: [],
+        contents: [
+          { mediaType: 'application/xml', examples: [{ key: 'hey', value: {} }] },
+          { mediaType: 'text/plain', examples: [{ key: 'hey', value: {} }] },
+        ],
       });
 
-      it('and httpContent has no schema throw error', () => {
-        const partialOptions = {
-          code: chance.integer({ min: 100, max: 599 }).toString(),
-          dynamic: true,
-        };
-        const httpContent: IMediaTypeContent = {
-          mediaType: chance.string(),
-          examples: [],
-          encodings: [],
-        };
+      it('should take the first content type', () => {
+        assertRight(negotiationResult, result => {
+          expect(result.mediaType).toBe('application/xml');
+        });
+      });
+    });
+  });
+});
 
-        const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+describe('negotiateByPartialOptionsAndHttpContent()', () => {
+  describe('given exampleKey forced', () => {
+    it('and example exists should return that example', () => {
+      const exampleKey = chance.string();
+      const partialOptions = {
+        code: chance.integer({ min: 100, max: 599 }).toString(),
+        exampleKey,
+        dynamic: chance.bool(),
+      };
+      const bodyExample: INodeExample = {
+        key: exampleKey,
+        value: '',
+      };
 
-        assertLeft(negotiationResult, e =>
-          expect(e.message).toBe(
-            `Tried to force a dynamic response for: ${httpContent.mediaType} but schema is not defined.`
-          )
-        );
+      const httpContent: IMediaTypeContent = {
+        mediaType: chance.string(),
+        examples: [bodyExample],
+        encodings: [],
+      };
+
+      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+
+      const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
+        code: partialOptions.code,
+        mediaType: httpContent.mediaType,
+        bodyExample,
+      };
+
+      assertRight(actualOperationConfig, operationConfig => {
+        expect(operationConfig).toEqual(expectedConfig);
       });
     });
 
-    describe('given neither exampleKey nor dynamic forced', () => {
-      it('and can find other example return that example', () => {
-        const partialOptions = {
-          code: chance.integer({ min: 100, max: 599 }).toString(),
-          dynamic: false,
-        };
-        const bodyExample: INodeExample | INodeExternalExample = {
-          key: chance.string(),
-          value: '',
-          externalValue: '',
-        };
-        const httpContent: IMediaTypeContent = {
-          mediaType: chance.string(),
-          examples: [
-            bodyExample,
-            {
-              key: chance.string(),
-              value: '',
-              externalValue: '',
-            },
-          ],
-          encodings: [],
-        };
+    it('and example not exist should throw an error', () => {
+      const exampleKey = chance.string();
+      const partialOptions = {
+        code: chance.integer({ min: 100, max: 599 }).toString(),
+        exampleKey,
+        dynamic: chance.bool(),
+      };
+      const httpContent: IMediaTypeContent = {
+        mediaType: chance.string(),
+        examples: [],
+        encodings: [],
+      };
 
-        const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-        const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
+      const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      assertLeft(negotiationResult, e => {
+        expect(e.message).toBe('The server cannot find the requested content');
+      });
+    });
+  });
+
+  describe('given exampleKey not forced but dynamic forced', () => {
+    it('and httpContent has schema return that contents', () => {
+      const partialOptions = {
+        code: chance.integer({ min: 100, max: 599 }).toString(),
+        dynamic: true,
+      };
+      const httpContent: IMediaTypeContent = {
+        mediaType: chance.string(),
+        examples: [],
+        schema: { type: 'string' },
+        encodings: [],
+      };
+
+      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+
+      assertRight(actualOperationConfig, operationConfig => {
+        expect(operationConfig).toEqual({
           code: partialOptions.code,
           mediaType: httpContent.mediaType,
+          schema: httpContent.schema,
+        });
+      });
+    });
+
+    it('and httpContent has no schema throw error', () => {
+      const partialOptions = {
+        code: chance.integer({ min: 100, max: 599 }).toString(),
+        dynamic: true,
+      };
+      const httpContent: IMediaTypeContent = {
+        mediaType: chance.string(),
+        examples: [],
+        encodings: [],
+      };
+
+      const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+
+      assertLeft(negotiationResult, e =>
+        expect(e.message).toBe(
+          `Tried to force a dynamic response for: ${httpContent.mediaType} but schema is not defined.`
+        )
+      );
+    });
+  });
+
+  describe('given neither exampleKey nor dynamic forced', () => {
+    it('and can find other example return that example', () => {
+      const partialOptions = {
+        code: chance.integer({ min: 100, max: 599 }).toString(),
+        dynamic: false,
+      };
+      const bodyExample: INodeExample | INodeExternalExample = {
+        key: chance.string(),
+        value: '',
+        externalValue: '',
+      };
+      const httpContent: IMediaTypeContent = {
+        mediaType: chance.string(),
+        examples: [
           bodyExample,
-        };
+          {
+            key: chance.string(),
+            value: '',
+            externalValue: '',
+          },
+        ],
+        encodings: [],
+      };
 
-        assertRight(actualOperationConfig, operationConfig => {
-          expect(operationConfig).toEqual(expectedConfig);
-        });
+      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
+        code: partialOptions.code,
+        mediaType: httpContent.mediaType,
+        bodyExample,
+      };
+
+      assertRight(actualOperationConfig, operationConfig => {
+        expect(operationConfig).toEqual(expectedConfig);
       });
+    });
 
-      it('and cannot find example but schema exists return dynamic', () => {
-        const partialOptions = {
-          dynamic: false,
-          code: chance.integer({ min: 100, max: 599 }).toString(),
-        };
-        const httpContent: IMediaTypeContent = {
-          mediaType: chance.string(),
-          examples: [],
+    it('and cannot find example but schema exists return dynamic', () => {
+      const partialOptions = {
+        dynamic: false,
+        code: chance.integer({ min: 100, max: 599 }).toString(),
+      };
+      const httpContent: IMediaTypeContent = {
+        mediaType: chance.string(),
+        examples: [],
+        schema: { type: 'string' },
+        encodings: [],
+      };
+
+      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+
+      assertRight(actualOperationConfig, operationConfig => {
+        expect(operationConfig).toEqual({
+          code: partialOptions.code,
+          mediaType: httpContent.mediaType,
           schema: { type: 'string' },
-          encodings: [],
-        };
-
-        const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
-
-        assertRight(actualOperationConfig, operationConfig => {
-          expect(operationConfig).toEqual({
-            code: partialOptions.code,
-            mediaType: httpContent.mediaType,
-            schema: { type: 'string' },
-          });
         });
       });
+    });
 
-      it('and cannot find example and dynamic does not exist throw error', () => {
-        const partialOptions = {
-          dynamic: false,
-          code: chance.integer({ min: 100, max: 599 }).toString(),
-        };
+    it('and cannot find example and dynamic does not exist throw error', () => {
+      const partialOptions = {
+        dynamic: false,
+        code: chance.integer({ min: 100, max: 599 }).toString(),
+      };
 
-        const httpContent: IMediaTypeContent = {
-          mediaType: chance.string(),
-          examples: [],
-          encodings: [],
-        };
+      const httpContent: IMediaTypeContent = {
+        mediaType: chance.string(),
+        examples: [],
+        encodings: [],
+      };
 
-        const proposedResponse = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      const proposedResponse = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
 
-        assertRight(proposedResponse, response => {
-          expect(response).toHaveProperty('code');
-          expect(response).toHaveProperty('mediaType');
-        });
+      assertRight(proposedResponse, response => {
+        expect(response).toHaveProperty('code');
+        expect(response).toHaveProperty('mediaType');
       });
     });
   });
