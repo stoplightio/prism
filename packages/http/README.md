@@ -268,7 +268,7 @@ All of this is pretty standard except the `url.baseUrl` which we will describe i
 Consider a request
 
 ```javascript
-prism.process(
+prism.request(
   {
     method: 'get',
     url: {
