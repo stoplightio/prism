@@ -28,6 +28,7 @@ RUN ./bin/node-prune
 FROM node:12-alpine
 
 WORKDIR /usr/src/prism
+ARG BUILD_TYPE=development
 ENV NODE_ENV production
 
 COPY package.json /usr/src/prism/
@@ -47,6 +48,13 @@ COPY --from=dependencies /usr/src/prism/packages/http/node_modules/ /usr/src/pri
 COPY --from=dependencies /usr/src/prism/packages/cli/node_modules/ /usr/src/prism/packages/cli/node_modules/
 
 WORKDIR /usr/src/prism/packages/cli/
+
+RUN if [ "$BUILD_TYPE" = "development" ] ; then \
+    cd /usr/src/prism/packages/core && yarn link && \
+    cd /usr/src/prism/packages/http && yarn link @stoplight/prism-core && yarn link && \
+    cd /usr/src/prism/packages/http-server && yarn link @stoplight/prism-core && yarn link @stoplight/prism-http && yarn link && \
+    cd /usr/src/prism/packages/cli && yarn link @stoplight/prism-core && yarn link @stoplight/prism-http && yarn link @stoplight/prism-http-server && yarn link ; \
+fi
 
 EXPOSE 4010
 
