@@ -71,7 +71,7 @@ const prism = Prism.createInstance({
 });
 
 // Make a "GET /todos" request
-return prism.process(
+return prism.request(
   {
     method: 'get',
     url: {
