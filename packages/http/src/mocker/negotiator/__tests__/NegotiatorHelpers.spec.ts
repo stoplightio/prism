@@ -11,7 +11,7 @@ import * as Either from 'fp-ts/lib/Either';
 import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import helpers from '../NegotiatorHelpers';
-import { IHttpNegotiationResult, NegotiationOptions, NegotiatePartialOptions } from '../types';
+import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 
 const chance = new Chance();
 const logger = createLogger('TEST', { enabled: false });
@@ -240,7 +240,7 @@ describe('NegotiatorHelpers', () => {
   describe('negotiateOptionsForValidRequest()', () => {
     it('given status code enforced should negotiate a specific code', () => {
       const options = {
-        code: chance.integer({ min: 100, max: 599 }).toString(),
+        code: '200',
         dynamic: false,
       };
 
@@ -267,7 +267,7 @@ describe('NegotiatorHelpers', () => {
       const options = { dynamic: false };
 
       const expectedResult = {
-        code: chance.integer({ min: 100, max: 599 }).toString(),
+        code: '200',
         mediaType: 'application/json',
         headers: [],
       };
@@ -462,7 +462,7 @@ describe('NegotiatorHelpers', () => {
         };
 
         const httpResponseSchema: IHttpOperationResponse = {
-          code: chance.integer({ min: 100, max: 599 }).toString(),
+          code: '200',
           contents: [contents],
           headers: [],
         };
@@ -512,7 +512,7 @@ describe('NegotiatorHelpers', () => {
           }));
 
           const httpResponseSchema: IHttpOperationResponse = {
-            code: chance.integer({ min: 100, max: 599 }).toString(),
+            code: '200',
             contents,
             headers: [],
           };
@@ -539,7 +539,7 @@ describe('NegotiatorHelpers', () => {
           };
 
           const httpResponseSchema: IHttpOperationResponse = {
-            code: chance.integer({ min: 100, max: 599 }).toString(),
+            code: '200',
             contents: [content],
             headers: [],
           };
@@ -629,7 +629,7 @@ describe('NegotiatorHelpers', () => {
         };
 
         const httpResponseSchema: IHttpOperationResponse = {
-          code: chance.integer({ min: 100, max: 599 }).toString(),
+          code: '200',
           contents: [],
           headers: [],
         };
@@ -794,7 +794,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
     it('and example exists should return that example', () => {
       const exampleKey = chance.string();
       const partialOptions = {
-        code: chance.integer({ min: 100, max: 599 }).toString(),
+        code: '200',
         exampleKey,
         dynamic: chance.bool(),
       };
@@ -825,7 +825,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
     it('and example not exist should throw an error', () => {
       const exampleKey = chance.string();
       const partialOptions = {
-        code: chance.integer({ min: 100, max: 599 }).toString(),
+        code: '200',
         exampleKey,
         dynamic: chance.bool(),
       };
@@ -845,7 +845,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
   describe('given exampleKey not forced but dynamic forced', () => {
     it('and httpContent has schema return that contents', () => {
       const partialOptions = {
-        code: chance.integer({ min: 100, max: 599 }).toString(),
+        code: '200',
         dynamic: true,
       };
       const httpContent: IMediaTypeContent = {
@@ -868,7 +868,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
 
     it('and httpContent has no schema throw error', () => {
       const partialOptions = {
-        code: chance.integer({ min: 100, max: 599 }).toString(),
+        code: '200',
         dynamic: true,
       };
       const httpContent: IMediaTypeContent = {
@@ -890,7 +890,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
   describe('given neither exampleKey nor dynamic forced', () => {
     it('and can find other example return that example', () => {
       const partialOptions = {
-        code: chance.integer({ min: 100, max: 599 }).toString(),
+        code: '200',
         dynamic: false,
       };
       const bodyExample: INodeExample | INodeExternalExample = {
@@ -926,7 +926,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
     it('and cannot find example but schema exists return dynamic', () => {
       const partialOptions = {
         dynamic: false,
-        code: chance.integer({ min: 100, max: 599 }).toString(),
+        code: '200',
       };
       const httpContent: IMediaTypeContent = {
         mediaType: chance.string(),
@@ -949,7 +949,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
     it('and cannot find example and dynamic does not exist throw error', () => {
       const partialOptions = {
         dynamic: false,
-        code: chance.integer({ min: 100, max: 599 }).toString(),
+        code: '200',
       };
 
       const httpContent: IMediaTypeContent = {
