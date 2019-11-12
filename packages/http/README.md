@@ -95,6 +95,26 @@ Output
 }
 ```
 
+Note: the `request` method returns a [`TaskEither` monad](https://gcanti.github.io/fp-ts/modules/TaskEither.ts.html). So in case you want to extract the result, you're going to need to use the [pipe](https://gcanti.github.io/fp-ts/modules/pipeable.ts.html#pipe-function) function.
+
+```ts
+  return pipe(
+    prism.request(
+      {
+        method: 'get',
+        url: {
+          path: '/todos',
+        },
+        headers: {
+          Accept: 'text/plain',
+        },
+      },
+      operations
+    ),
+    TaskEither.fold(console.error, data => console.log(data));
+  )(); // returns a Promise
+```
+
 ## Mock Single Response
 
 In the following example we will first instantiate Prism to make requests to an actual server.
