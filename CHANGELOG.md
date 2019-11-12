@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Core types are now correctly referenced in the HTTP package, restoring the type checks when using the package separately [#701](https://github.com/stoplightio/prism/pull/701)
 - By upgrading Json Schema Faker to the latest version, now the schemas with `additionalProperties:false` / `additionalProperties:true` / `additionalProperties:object` will be correctly handled when dynamic mocking is enabled [#719](https://github.com/stoplightio/prism/pull/719)
 - Making a request to an operation with a `deprecated` parameter is no longer causing Prism to return a 422 response [#721](https://github.com/stoplightio/prism/pull/721)
+- The `access-control-allow-origin` header, when CORS is enabled, will now reflect the request origin _AND_ set the Credentials header [#797](https://github.com/stoplightio/prism/pull/797)
 
 # 3.1.1 (2019-09-23)
 
