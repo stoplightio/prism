@@ -19,7 +19,10 @@ const serializers = [
     serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse({ xml: data })),
   },
   {
-    regex: /text\/(plain|html)\b/,
+    regex: {
+      test: (value: string) => !!typeIs.is(value, ['text/*']),
+      toString: () => 'text/*',
+    },
     serializer: (data: unknown) => {
       if (['string', 'undefined'].includes(typeof data)) {
         return data;
