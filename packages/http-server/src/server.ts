@@ -17,7 +17,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     modifyCoreObjects: false,
   });
 
-  if (opts.cors) server.register(fastifyCors, { origin: true });
+  if (opts.cors) server.register(fastifyCors, { origin: true, credentials: true });
 
   server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
     if (typeIs(req, ['application/*+json'])) {
