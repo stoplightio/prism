@@ -108,7 +108,7 @@ const Prism = require('@stoplight/prism-http');
 const prism = Prism.createInstance({ mock: { dynamic: false } });
 
 // Make a "GET /todos" request
-return prism.process(
+return prism.request(
   {
     method: 'get',
     url: {
