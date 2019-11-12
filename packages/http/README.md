@@ -71,20 +71,18 @@ const prism = Prism.createInstance({
 });
 
 // Make a "GET /todos" request
-return prism
-  .process(
-    {
-      method: 'get',
-      url: {
-        path: '/todos',
-      },
-      headers: {
-        Accept: 'text/plain',
-      },
+return prism.request(
+  {
+    method: 'get',
+    url: {
+      path: '/todos',
     },
-    operations
-  )
-  .then(prismResponse => console.log(prismResponse.output));
+    headers: {
+      Accept: 'text/plain',
+    },
+  },
+  operations
+);
 ```
 
 Output
@@ -95,6 +93,26 @@ Output
   headers: { 'Content-type': 'text/plain' },
   body: 'Write great OpenAPI specs!'
 }
+```
+
+Note: the `request` method returns a [`TaskEither` monad](https://gcanti.github.io/fp-ts/modules/TaskEither.ts.html). So in case you want to extract the result, you're going to need to use the [pipe](https://gcanti.github.io/fp-ts/modules/pipeable.ts.html#pipe-function) function.
+
+```ts
+  return pipe(
+    prism.request(
+      {
+        method: 'get',
+        url: {
+          path: '/todos',
+        },
+        headers: {
+          Accept: 'text/plain',
+        },
+      },
+      operations
+    ),
+    TaskEither.fold(console.error, console.log);
+  )(); // returns a Promise
 ```
 
 ## Mock Single Response
@@ -110,24 +128,22 @@ const Prism = require('@stoplight/prism-http');
 const prism = Prism.createInstance({ mock: { dynamic: false } });
 
 // Make a "GET /todos" request
-return prism
-  .process(
-    {
-      method: 'get',
-      url: {
-        path: '/facts',
-        baseUrl: 'https://cat-fact.herokuapp.com',
-      },
+return prism.request(
+  {
+    method: 'get',
+    url: {
+      path: '/facts',
+      baseUrl: 'https://cat-fact.herokuapp.com',
     },
-    {
-      // We can override the default behaviour per request.
-      mock: {
-        dynamic: true,
-      },
+  },
+  {
+    // We can override the default behaviour per request.
+    mock: {
+      dynamic: true,
     },
-    operations
-  )
-  .then(prismResponse => console.log(prismResponse.output));
+  },
+  operations
+);
 ```
 
 ## Make Request To An Upstream Server
@@ -141,15 +157,13 @@ const Prism = require('@stoplight/prism-http');
 const config = { mock: { dynamic: false } };
 const prism = Prism.createInstance(config);
 
-return prism
-  .request({
-    method: 'get',
-    url: {
-      path: '/facts',
-      baseUrl: 'https://cat-fact.herokuapp.com',
-    },
-  })
-  .then(prismResponse => console.log(prismResponse.output));
+return prism.request({
+  method: 'get',
+  url: {
+    path: '/facts',
+    baseUrl: 'https://cat-fact.herokuapp.com',
+  },
+});
 ```
 
 In response you'll get some... facts about cats. For example:
@@ -274,7 +288,7 @@ All of this is pretty standard except the `url.baseUrl` which we will describe i
 Consider a request
 
 ```javascript
-prism.process(
+prism.request(
   {
     method: 'get',
     url: {
@@ -316,18 +330,16 @@ const Prism = require('@stoplight/prism-http');
 // Create Prism instance and configure it to make http requests
 const config = { mock: { dynamic: false } };
 const prism = Prism.createInstance(config);
-prism
-  .process(
-    {
-      method: 'get',
-      url: {
-        path: '/facts',
-        baseUrl: 'https://cat-fact.herokuapp.com',
-      },
+prism.request(
+  {
+    method: 'get',
+    url: {
+      path: '/facts',
+      baseUrl: 'https://cat-fact.herokuapp.com',
     },
-    operations
-  )
-  .then(prismResponse => console.log(prismResponse.validations.input));
+  },
+  operations
+);
 ```
 
 You would get this in response

@@ -7,7 +7,7 @@ import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 export type IPrismDiagnostic = Omit<IDiagnostic, 'range' | 'path'> & { path?: string[] };
 
 export interface IPrism<Resource, Input, Output, Config extends IPrismConfig> {
-  request: (input: Input, resources: Resource[], config?: Config) => Promise<IPrismOutput<Input, Output>>;
+  request: (input: Input, resources: Resource[], config?: Config) => TaskEither<Error, IPrismOutput<Output>>;
 }
 
 export interface IPrismConfig {
@@ -45,8 +45,7 @@ export interface IPrismInput<I> {
   validations: IPrismDiagnostic[];
 }
 
-export interface IPrismOutput<I, O> {
-  input: I;
+export interface IPrismOutput<O> {
   output: O;
   validations: {
     input: IPrismDiagnostic[];

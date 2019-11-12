@@ -1,5 +1,5 @@
 import { createInstance, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
-import { DiagnosticSeverity, HttpMethod, IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
 import * as fastify from 'fastify';
 import * as fastifyCors from 'fastify-cors';
 import * as typeIs from 'type-is';
@@ -7,6 +7,9 @@ import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
+import { pipe } from 'fp-ts/lib/pipeable';
+import * as TaskEither from 'fp-ts/lib/TaskEither';
+import * as Either from 'fp-ts/lib/Either';
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
@@ -40,7 +43,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
   const prism = createInstance(config, components);
 
-  const replyHandler: fastify.RequestHandler = async (request, reply) => {
+  const replyHandler: fastify.RequestHandler = (request, reply) => {
     const {
       req: { method, url },
       body,
@@ -60,72 +63,78 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     };
 
     request.log.info({ input }, 'Request received');
-    try {
-      const operationSpecificConfig = getHttpConfigFromRequest(input);
-      const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
 
-      const response = await prism.request(input, operations, {
-        ...opts.config,
-        mock: mockConfig,
-      });
+    const operationSpecificConfig = getHttpConfigFromRequest(input);
+    const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
 
-      const { output } = response;
+    return pipe(
+      prism.request(input, operations, { ...opts.config, mock: mockConfig }),
+      TaskEither.chain(response => {
+        const { output } = response;
 
-      const inputOutputValidationErrors = response.validations.output
-        .map(createErrorObjectWithPrefix('response'))
-        .concat(response.validations.input.map(createErrorObjectWithPrefix('request')));
+        const inputOutputValidationErrors = response.validations.output
+          .map(createErrorObjectWithPrefix('response'))
+          .concat(response.validations.input.map(createErrorObjectWithPrefix('request')));
 
-      reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
+        if (inputOutputValidationErrors.length > 0) {
+          reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
 
-      if (inputOutputValidationErrors.length > 0) {
-        const errorViolations = inputOutputValidationErrors.filter(
-          v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
-        );
-        if (opts.errors && errorViolations.length > 0) {
-          throw ProblemJsonError.fromTemplate(
-            VIOLATIONS,
-            'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
-            { validation: errorViolations }
+          const errorViolations = inputOutputValidationErrors.filter(
+            v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
           );
+          if (opts.errors && errorViolations.length > 0) {
+            return TaskEither.left(
+              ProblemJsonError.fromTemplate(
+                VIOLATIONS,
+                'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
+                { validation: errorViolations }
+              )
+            );
+          }
         }
-      }
 
-      inputOutputValidationErrors.forEach(validation => {
-        const message = `Violation: ${validation.location || ''} ${validation.message}`;
-        if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Error]) {
-          request.log.error({ name: 'VALIDATOR' }, message);
-        } else if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Warning]) {
-          request.log.warn({ name: 'VALIDATOR' }, message);
+        inputOutputValidationErrors.forEach(validation => {
+          const message = `Violation: ${validation.location || ''} ${validation.message}`;
+          if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Error]) {
+            request.log.error({ name: 'VALIDATOR' }, message);
+          } else if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Warning]) {
+            request.log.warn({ name: 'VALIDATOR' }, message);
+          } else {
+            request.log.info({ name: 'VALIDATOR' }, message);
+          }
+        });
+
+        return TaskEither.fromIOEither(() =>
+          Either.tryCatch(() => {
+            if (output.headers) reply.headers(output.headers);
+
+            reply
+              .code(output.statusCode)
+              .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
+              .send(output.body);
+          }, Either.toError)
+        );
+      }),
+      TaskEither.mapLeft((e: Error & { status?: number; additional?: { headers?: Dictionary<string> } }) => {
+        if (!reply.sent) {
+          const status = e.status || 500;
+          reply
+            .type('application/problem+json')
+            .serializer(JSON.stringify)
+            .code(status);
+
+          if (e.additional && e.additional.headers) {
+            reply.headers(e.additional.headers);
+          }
+
+          reply.send(ProblemJsonError.fromPlainError(e));
         } else {
-          request.log.info({ name: 'VALIDATOR' }, message);
-        }
-      });
-
-      if (output.headers) reply.headers(output.headers);
-
-      reply
-        .code(output.statusCode)
-        .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
-        .send(output.body);
-    } catch (e) {
-      if (!reply.sent) {
-        const status = 'status' in e ? e.status : 500;
-        reply
-          .type('application/problem+json')
-          .serializer(JSON.stringify)
-          .code(status);
-
-        if (e.additional && e.additional.headers) {
-          reply.headers(e.additional.headers);
+          reply.res.end();
         }
 
-        reply.send(ProblemJsonError.fromPlainError(e));
-      } else {
-        reply.res.end();
-      }
-
-      request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
-    }
+        request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
+      })
+    )();
   };
 
   opts.cors

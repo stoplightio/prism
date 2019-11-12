@@ -7,6 +7,7 @@ import { createInstance, IHttpProxyConfig, IHttpRequest, IHttpResponse, ProblemJ
 import { getHttpOperationsFromResource } from '../getHttpOperations';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
+import { assertResolvesRight, assertResolvesLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -43,7 +44,7 @@ async function checkUserAgent(
     },
     resources,
     config
-  );
+  )();
 
   return (nockResult as NockResWithInterceptors).interceptors['0'].req.headers['user-agent'];
 }
@@ -65,43 +66,49 @@ describe('Http Client .request', () => {
     });
 
     describe('baseUrl not set', () => {
-      it('ignores server validation and returns 200', async () => {
-        const result = await prism.request(
-          {
-            method: 'get',
-            url: {
-              path: '/pet',
+      it('ignores server validation and returns 200', () => {
+        assertResolvesRight(
+          prism.request(
+            {
+              method: 'get',
+              url: {
+                path: '/pet',
+              },
             },
-          },
-          resources
+            resources
+          ),
+          result => {
+            expect(result.output).toBeDefined();
+            expect(result.output.statusCode).toBe(200);
+          }
         );
-
-        expect(result.output).toBeDefined();
-        expect(result.output.statusCode).toBe(200);
       });
     });
 
     describe('valid baseUrl set', () => {
-      it('validates server and returns 200', async () => {
-        const result = await prism.request(
-          {
-            method: 'get',
-            url: {
-              path: '/pet',
-              baseUrl: 'http://example.com/api',
+      it('validates server and returns 200', () => {
+        assertResolvesRight(
+          prism.request(
+            {
+              method: 'get',
+              url: {
+                path: '/pet',
+                baseUrl: 'http://example.com/api',
+              },
             },
-          },
-          resources
+            resources
+          ),
+          result => {
+            expect(result.output).toBeDefined();
+            expect(result.output.statusCode).toBe(200);
+          }
         );
-
-        expect(result.output).toBeDefined();
-        expect(result.output.statusCode).toBe(200);
       });
     });
 
     describe('invalid host of baseUrl set', () => {
-      it('throws an error', () => {
-        return expect(
+      it('resolves with an error', () => {
+        assertResolvesLeft(
           prism.request(
             {
               method: 'get',
@@ -111,14 +118,15 @@ describe('Http Client .request', () => {
               },
             },
             resources
-          )
-        ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
+          ),
+          e => expect(e).toMatchObject(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR))
+        );
       });
     });
 
     describe('invalid host and basePath of baseUrl set', () => {
-      it('throws an error', () => {
-        return expect(
+      it('resolves with an error', () => {
+        assertResolvesLeft(
           prism.request(
             {
               method: 'get',
@@ -128,8 +136,9 @@ describe('Http Client .request', () => {
               },
             },
             resources
-          )
-        ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR));
+          ),
+          e => expect(e).toMatchObject(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR))
+        );
       });
     });
 
@@ -163,8 +172,8 @@ describe('Http Client .request', () => {
         };
 
         it('fails the operation', () =>
-          expect(prism.request(request, resources, config)).rejects.toThrowError(
-            ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR)
+          assertResolvesLeft(prism.request(request, resources, config), e =>
+            expect(e).toMatchObject(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR))
           ));
       });
 
@@ -206,8 +215,8 @@ describe('Http Client .request', () => {
     });
 
     describe('path is invalid', () => {
-      it('throws an error', () => {
-        return expect(
+      it('resolves with an error', () => {
+        assertResolvesLeft(
           prism.request(
             {
               method: 'get',
@@ -216,38 +225,42 @@ describe('Http Client .request', () => {
               },
             },
             resources
-          )
-        ).rejects.toThrowError(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
+          ),
+          e => expect(e).toMatchObject(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR))
+        );
       });
     });
 
     describe('when requesting GET /pet/findByStatus', () => {
-      it('with valid query params returns generated body', async () => {
-        const response = await prism.request(
-          {
-            method: 'get',
-            url: {
-              path: '/pet/findByStatus',
-              query: {
-                status: ['available', 'pending'],
+      it('with valid query params returns generated body', () => {
+        assertResolvesRight(
+          prism.request(
+            {
+              method: 'get',
+              url: {
+                path: '/pet/findByStatus',
+                query: {
+                  status: ['available', 'pending'],
+                },
               },
             },
-          },
-          resources
+            resources
+          ),
+          response => {
+            const parsedBody = response.output.body;
+
+            expect(typeof parsedBody).toBe('string');
+            expect(response).toMatchSnapshot({
+              output: {
+                body: expect.anything(),
+              },
+            });
+          }
         );
-
-        const parsedBody = response.output.body;
-
-        expect(typeof parsedBody).toBe('string');
-        expect(response).toMatchSnapshot({
-          output: {
-            body: expect.anything(),
-          },
-        });
       });
 
       it('w/o required params throws a validation error', () => {
-        return expect(
+        assertResolvesLeft(
           prism.request(
             {
               method: 'get',
@@ -256,56 +269,61 @@ describe('Http Client .request', () => {
               },
             },
             resources
-          )
-        ).rejects.toThrowError(ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY));
+          ),
+          e => expect(e).toMatchObject(ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY))
+        );
       });
 
-      it('with valid body param then returns no validation issues', async () => {
-        const response = await prism.request(
-          {
-            method: 'get',
-            url: {
-              path: '/pet/findByStatus',
-              query: {
-                status: ['available'],
+      it('with valid body param then returns no validation issues', () => {
+        assertResolvesRight(
+          prism.request(
+            {
+              method: 'get',
+              url: {
+                path: '/pet/findByStatus',
+                query: {
+                  status: ['available'],
+                },
+              },
+              body: {
+                id: 1,
+                status: 'placed',
+                complete: true,
               },
             },
-            body: {
-              id: 1,
-              status: 'placed',
-              complete: true,
-            },
-          },
-          resources
+            resources
+          ),
+          response =>
+            expect(response.validations).toEqual({
+              input: [],
+              output: [],
+            })
         );
-        expect(response.validations).toEqual({
-          input: [],
-          output: [],
-        });
       });
     });
   });
 
   describe('headers validation', () => {
-    it('validates the headers even if casing does not match', async () => {
-      const response = await prism.request(
-        {
-          method: 'get',
-          url: {
-            path: '/pet/login',
+    it('validates the headers even if casing does not match', () => {
+      assertResolvesRight(
+        prism.request(
+          {
+            method: 'get',
+            url: {
+              path: '/pet/login',
+            },
+            headers: {
+              aPi_keY: 'hello',
+            },
           },
-          headers: {
-            aPi_keY: 'hello',
-          },
-        },
-        resources
+          resources
+        ),
+        response => expect(response.output).toHaveProperty('statusCode', 200)
       );
-
-      expect(response.output).toHaveProperty('statusCode', 200);
     });
 
     it('returns an error if the the header is missing', () => {
-      return expect(
+      assertResolvesLeft(
         prism.request(
           {
             method: 'get',
@@ -315,7 +333,7 @@ describe('Http Client .request', () => {
           },
           resources
         )
-      ).rejects.toThrowError();
+      );
     });
   });
 
@@ -330,18 +348,21 @@ describe('Http Client .request', () => {
     );
     resources = await getHttpOperationsFromResource(staticExamplesOas2Path);
 
-    const response = await prism.request(
-      {
-        method: 'get',
-        url: {
-          path: '/todos',
+    assertResolvesRight(
+      prism.request(
+        {
+          method: 'get',
+          url: {
+            path: '/todos',
+          },
         },
-      },
-      resources
+        resources
+      ),
+      response => {
+        expect(response.output).toBeDefined();
+        expect(response.output.body).toBeInstanceOf(Array);
+      }
     );
-
-    expect(response.output).toBeDefined();
-    expect(response.output.body).toBeInstanceOf(Array);
   });
 });
 
@@ -364,10 +385,10 @@ describe('proxy server', () => {
       );
 
       const resources = await getHttpOperationsFromResource(petStoreOas2Path);
-      const response = await prism.request({ method: 'get', url: { path: '/pets' } }, resources);
-
-      expect(response.output.statusCode).toBe(200);
-      expect(response.output.body).toBe('<html><h1>Hello</h1>');
+      assertResolvesRight(prism.request({ method: 'get', url: { path: '/pets' } }, resources), response => {
+        expect(response.output.statusCode).toBe(200);
+        expect(response.output.body).toBe('<html><h1>Hello</h1>');
+      });
     });
   });
 });

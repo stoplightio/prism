@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism now includes a new `proxy` command that will validate the request coming in, send the request to an upstream server and then validate the response coming back [#669](https://github.com/stoplightio/prism/pull/669)
 - Prism has values for path/query params bolded and in color [#743](https://github.com/stoplightio/prism/pull/743)
 - The CLI now displays a timestamp for all the logged operations [#779](https://github.com/stoplightio/prism/pull/779)
+- Prism has now support for OpenAPI 3.0 callbacks [#716](https://github.com/stoplightio/prism/pull/716)
 
 ## Fixed
 

@@ -8,6 +8,9 @@ import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
 import getHttpOperations, { getHttpOperationsFromResource } from './getHttpOperations';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
+import { fold } from 'fp-ts/lib/TaskEither';
+import * as Task from 'fp-ts/lib/Task';
+import { pipe } from 'fp-ts/lib/pipeable';
 
 interface IClientConfig extends IHttpConfig {
   baseUrl?: string;
@@ -16,7 +19,7 @@ interface IClientConfig extends IHttpConfig {
 function createClientFrom(
   getResource: (v: string) => Promise<IHttpOperation[]>,
   document: string,
-  defaultConfig: IHttpConfig,
+  defaultConfig: IHttpConfig
 ): Promise<PrismHttp> {
   return getResource(document).then(resources => createClientFromOperations(resources, defaultConfig));
 }
@@ -36,7 +39,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
   }
 
   const client: PrismHttp = {
-    async request(url, input, config) {
+    request(url, input, config) {
       const parsedUrl = parseUrl(url);
 
       if (!parsedUrl.pathname) throw new Error('Path name must always be specified');
@@ -49,25 +52,23 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
         query: parseQueryString(parsedUrl.query || ''),
       };
 
-      const data = await obj.request(
-        {
-          ...input,
-          url: httpUrl,
-        },
-        resources,
-        mergedConf,
-      );
-
-      const output: PrismOutput = {
-        status: data.output.statusCode,
-        headers: data.output.headers || {},
-        data: data.output.body || {},
-        config: mergedConf,
-        request: { ...input, url: httpUrl },
-        violations: data.validations,
-      };
-
-      return output;
+      return pipe(
+        obj.request({ ...input, url: httpUrl }, resources, mergedConf),
+        fold(
+          e => {
+            throw e;
+          },
+          data =>
+            Task.of({
+              status: data.output.statusCode,
+              headers: data.output.headers || {},
+              data: data.output.body || {},
+              config: mergedConf,
+              request: { ...input, url: httpUrl },
+              violations: data.validations,
+            })
+        )
+      )();
     },
     get(url: string, input?: headersFromRequest | Partial<IClientConfig>, config?: Partial<IClientConfig>) {
       return isInput(input)
@@ -78,7 +79,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
       url: string,
       body: unknown,
       input?: headersFromRequest | Partial<IClientConfig>,
-      config?: Partial<IClientConfig>,
+      config?: Partial<IClientConfig>
     ) {
       return isInput(input)
         ? this.request(url, { method: 'put', ...input, body }, config)
@@ -88,7 +89,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
       url: string,
       body: unknown,
       input?: headersFromRequest | Partial<IClientConfig>,
-      config?: Partial<IClientConfig>,
+      config?: Partial<IClientConfig>
     ) {
       return isInput(input)
         ? this.request(url, { method: 'post', ...input, body }, config)
@@ -113,7 +114,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
       url: string,
       body: unknown,
       input?: headersFromRequest | Partial<IClientConfig>,
-      config?: Partial<IClientConfig>,
+      config?: Partial<IClientConfig>
     ) {
       return isInput(input)
         ? this.request(url, { method: 'patch', ...input, body }, config)
@@ -135,14 +136,14 @@ type PrismOutput = {
   data: unknown;
   config: IClientConfig;
   request: IHttpRequest;
-  violations: IPrismOutput<IHttpRequest, IHttpResponse>['validations'];
+  violations: IPrismOutput<IHttpResponse>['validations'];
 };
 
 type RequestFunction = (
   this: PrismHttp,
   url: string,
   input: Omit<IHttpRequest, 'url'>,
-  config?: Partial<IClientConfig>,
+  config?: Partial<IClientConfig>
 ) => Promise<PrismOutput>;
 
 interface IRequestFunctionWithMethod {
@@ -150,7 +151,7 @@ interface IRequestFunctionWithMethod {
     this: PrismHttp,
     url: string,
     input: Required<Pick<IHttpRequest, 'headers'>>,
-    config?: Partial<IClientConfig>,
+    config?: Partial<IClientConfig>
   ): Promise<PrismOutput>;
   (this: PrismHttp, url: string, config?: Partial<IClientConfig>): Promise<PrismOutput>;
 }
@@ -161,7 +162,7 @@ interface IRequestFunctionWithMethodWithBody {
     url: string,
     body: unknown,
     input: Required<Pick<IHttpRequest, 'headers'>>,
-    config?: Partial<IClientConfig>,
+    config?: Partial<IClientConfig>
   ): Promise<PrismOutput>;
   (this: PrismHttp, url: string, body: unknown, config?: Partial<IClientConfig>): Promise<PrismOutput>;
 }

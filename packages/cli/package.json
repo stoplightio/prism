@@ -10,7 +10,7 @@
     "@stoplight/prism-core": "^3.1.1",
     "@stoplight/prism-http-server": "^3.1.1",
     "chokidar": "^3.2.1",
-    "fp-ts": "^2.0.5",
+    "fp-ts": "^2.1.1",
     "signale": "^1.4.0",
     "split2": "^3.1.1",
     "tslib": "^1.10.0",

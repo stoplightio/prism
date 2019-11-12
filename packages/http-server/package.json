@@ -24,6 +24,7 @@
     "fast-xml-parser": "^3.12.20",
     "fastify": "^2.7.1",
     "fastify-cors": "^2.1.3",
+    "fp-ts": "^2.1.1",
     "tslib": "^1.10.0",
     "type-is": "^1.6.18"
   }
