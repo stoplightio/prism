@@ -1,13 +1,12 @@
 import { fromNullable, getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
-import { SecurityScheme } from './types';
 import { IHttpRequest } from '../../../../../types';
 import { when } from './utils';
-import { IHttpOperation } from '@stoplight/types';
+import { IHttpOperation, IApiKeySecurityScheme } from '@stoplight/types';
 
 export const apiKeyInCookie = {
-  test: ({ type, in: where }: SecurityScheme) => where === 'cookie' && type === 'apiKey',
+  test: ({ type, in: where }: IApiKeySecurityScheme) => where === 'cookie' && type === 'apiKey',
   handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
     const probablyCookie = get(someInput, ['headers', 'cookie']);
 
@@ -22,7 +21,7 @@ export const apiKeyInCookie = {
 };
 
 export const apiKeyInHeader = {
-  test: ({ type, in: where }: SecurityScheme) => where === 'header' && type === 'apiKey',
+  test: ({ type, in: where }: IApiKeySecurityScheme) => where === 'header' && type === 'apiKey',
   handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
     const isAPIKeyProvided = get(someInput, ['headers', name.toLowerCase()]);
 
@@ -31,7 +30,7 @@ export const apiKeyInHeader = {
 };
 
 export const apiKeyInQuery = {
-  test: ({ type, in: where }: SecurityScheme) => where === 'query' && type === 'apiKey',
+  test: ({ type, in: where }: IApiKeySecurityScheme) => where === 'query' && type === 'apiKey',
   handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
     const isApiKeyInQuery = get(someInput, ['url', 'query', name]);
 
