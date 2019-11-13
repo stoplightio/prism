@@ -1,8 +1,9 @@
 import { IPrismComponents } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import fetch from 'node-fetch';
-import { toError } from 'fp-ts/lib/Either';
+import * as Either from 'fp-ts/lib/Either';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
+import * as Option from 'fp-ts/lib/Option';
 import { defaults, omit } from 'lodash';
 import { format, parse } from 'url';
 import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
@@ -20,6 +21,30 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
     TaskEither.tryCatch(async () => {
       const partialUrl = parse(baseUrl);
 
+      const body = pipe(
+        Option.fromNullable(input.body),
+        Option.chain(body =>
+          pipe(
+            body,
+            Option.fromPredicate(body => typeof body === 'object'),
+            Option.chain(body =>
+              pipe(
+                Either.stringifyJSON(body, Either.toError),
+                Option.fromEither,
+                Option.alt(() => Option.some('')) // @todo it sucks, right?
+              )
+            )
+          )
+        ),
+        Option.chain(body =>
+          pipe(
+            body,
+            Option.fromPredicate(body => typeof body === 'string')
+          )
+        ),
+        Option.toUndefined
+      );
+
       return fetch(
         format({
           ...partialUrl,
@@ -27,13 +52,15 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           query: input.url.query,
         }),
         {
+          body,
+          method: input.method,
           headers: defaults(omit(input.headers, ['host', 'accept']), {
             accept: 'application/json, text/plain, */*',
             'user-agent': `Prism/${prismVersion}`,
           }),
         }
       );
-    }, toError),
+    }, Either.toError),
     TaskEither.chain(parseResponse)
   );
 

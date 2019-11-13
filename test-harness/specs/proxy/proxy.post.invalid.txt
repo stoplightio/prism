@@ -1,0 +1,26 @@
+====test====
+Receiving a POST request and passing it through
+====spec====
+openapi: '3.0.1'
+paths:
+  /post:
+    post:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  json:
+                    type: string
+                    enum:
+                    - '{"id":"666"}'
+====server====
+proxy -p 4010 ${document} http://httpbin
+====command====
+curl -i -X POST http://localhost:4010/post -H "Content-Type: application/json" --data '{"id":"6666"}'
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+sl-violations: [{"location":["response","body","data"],"severity":"Error","code":"enum","message":"should be equal to one of the allowed values"}]
