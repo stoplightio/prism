@@ -1,13 +1,13 @@
-import { DiagnosticSeverity } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import { Either, left, right } from 'fp-ts/lib/Either';
-import { IPrismDiagnostic } from '../../../types';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
 
-export function genRespForScheme<R>(
+export function genRespForScheme(
   isSchemeProper: boolean,
   isCredsGiven: boolean,
-  resource: R,
+  resource: IHttpOperation,
   msg: string
-): Either<IPrismDiagnostic, R> {
+): Either<IPrismDiagnostic, IHttpOperation> {
   if (isSchemeProper) {
     return when(isCredsGiven, undefined, resource);
   }
@@ -26,10 +26,10 @@ export function isScheme(shouldBeScheme: string, authScheme: string) {
   return authScheme.toLowerCase() === shouldBeScheme;
 }
 
-export function when<R>(
+export function when(
   condition: boolean,
   errorMessage: string | undefined,
-  resource: R
-): Either<IPrismDiagnostic, R> {
+  resource: IHttpOperation
+): Either<IPrismDiagnostic, IHttpOperation> {
   return condition ? right(resource) : left(genUnauthorisedErr(errorMessage));
 }
