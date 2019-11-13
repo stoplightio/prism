@@ -39,7 +39,7 @@ export const genUnauthorisedErr = (msg: string): IPrismDiagnostic => ({
 });
 
 export function isScheme(shouldBeScheme: string, authScheme: string) {
-  return (authScheme || '').toLowerCase() === shouldBeScheme;
+  return authScheme.toLowerCase() === shouldBeScheme;
 }
 
 export function when(condition: boolean, errorMessage: string, resource: unknown): Either<IPrismDiagnostic, unknown> {
