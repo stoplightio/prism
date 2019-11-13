@@ -1,13 +1,13 @@
-import { DiagnosticSeverity } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation, IHttpRequest } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { flatten, get, identity } from 'lodash';
 import { noop, set } from 'lodash/fp';
-import { IPrismDiagnostic } from '../../types';
 import { securitySchemeHandlers } from './handlers';
-import { SecurityScheme } from './handlers/types';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { IPrismDiagnostic } from '@stoplight/prism-core';
+import { SecurityScheme } from './handlers/types';
 
 function gatherInvalidResults(
   error: Either.Left<IPrismDiagnostic>,
@@ -17,7 +17,11 @@ function gatherInvalidResults(
   return Option.some(invalidSecurity);
 }
 
-function gatherValidationResults(securitySchemes: SecurityScheme[][], someInput: unknown, resource: unknown) {
+function gatherValidationResults(
+  securitySchemes: SecurityScheme[][],
+  someInput: IHttpRequest,
+  resource: IHttpOperation
+) {
   const authResults = getAuthResults(securitySchemes, someInput, resource);
 
   const validSecurityScheme = authResults.find(authRes => authRes.every(Either.isRight));
@@ -57,7 +61,7 @@ function gatherWWWAuthHeader(
 
 function getAuthResult(
   firstAuthErrAsLeft: Either.Left<IPrismDiagnostic>,
-  authResult: Array<Either.Either<IPrismDiagnostic, unknown>>
+  authResult: Array<Either.Either<IPrismDiagnostic, IHttpOperation>>
 ) {
   const firstAuthErr: IPrismDiagnostic = pipe(
     firstAuthErrAsLeft,
@@ -69,14 +73,14 @@ function getAuthResult(
   return [Either.left(invalidResultWithAuthHeader)];
 }
 
-function getAuthResults(securitySchemes: SecurityScheme[][], someInput: unknown, resource: unknown) {
+function getAuthResults(securitySchemes: SecurityScheme[][], someInput: IHttpRequest, resource: IHttpOperation) {
   return securitySchemes.map(securitySchemePairs => {
     const authResult = securitySchemePairs.map(securityScheme => {
       const schemeHandler = securitySchemeHandlers.find(handler => handler.test(securityScheme));
 
       return schemeHandler
         ? schemeHandler.handle(someInput, securityScheme.name, resource)
-        : Either.left({
+        : Either.left<IPrismDiagnostic>({
             message: 'We currently do not support this type of security scheme.',
             severity: DiagnosticSeverity.Warning,
           });
@@ -93,10 +97,10 @@ function getAuthResults(securitySchemes: SecurityScheme[][], someInput: unknown,
 }
 
 export function validateSecurity(
-  someInput: unknown,
-  resource: unknown
+  someInput: IHttpRequest,
+  resource: IHttpOperation
 ): Either.Either<NonEmptyArray<IPrismDiagnostic>, unknown> {
-  const securitySchemes = get(resource, 'security', []);
+  const securitySchemes = get(resource, 'security', []) as SecurityScheme[][];
 
   if (!securitySchemes.length) {
     return Either.right(someInput);
