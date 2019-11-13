@@ -6,7 +6,7 @@ import { flatten, get, identity } from 'lodash';
 import { noop, set } from 'lodash/fp';
 import { securitySchemeHandlers } from './handlers';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { IPrismDiagnostic } from '@stoplight/prism-core';
+import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { SecurityScheme } from './handlers/types';
 
 function gatherInvalidResults(
@@ -96,20 +96,17 @@ function getAuthResults(securitySchemes: SecurityScheme[][], someInput: IHttpReq
   });
 }
 
-export function validateSecurity(
-  someInput: IHttpRequest,
-  resource: IHttpOperation
-): Either.Either<NonEmptyArray<IPrismDiagnostic>, unknown> {
+export const validateSecurity: ValidatorFn<IHttpOperation, IHttpRequest> = ({ element, resource }) => {
   const securitySchemes = get(resource, 'security', []) as SecurityScheme[][];
 
   if (!securitySchemes.length) {
-    return Either.right(someInput);
+    return Either.right(element);
   } else {
     return pipe(
-      gatherValidationResults(securitySchemes, someInput, resource),
-      Either.fromOption(() => someInput),
+      gatherValidationResults(securitySchemes, element, resource),
+      Either.fromOption(() => element),
       Either.swap,
       Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
     );
   }
-}
+};
