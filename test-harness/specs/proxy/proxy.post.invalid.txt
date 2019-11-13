@@ -12,7 +12,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  json:
+                  data:
                     type: string
                     enum:
                     - '{"id":"666"}'
