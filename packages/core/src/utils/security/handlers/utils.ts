@@ -1,6 +1,5 @@
 import { DiagnosticSeverity } from '@stoplight/types';
-import { Either, left, right, chain, fromNullable } from 'fp-ts/lib/Either';
-import { pipe } from 'fp-ts/lib/pipeable';
+import { Either, left, right } from 'fp-ts/lib/Either';
 import { IPrismDiagnostic } from '../../../types';
 
 export function genRespForScheme<R>(
@@ -9,26 +8,18 @@ export function genRespForScheme<R>(
   resource: R,
   msg: string
 ): Either<IPrismDiagnostic, R> {
-  const handler = [
-    {
-      test: () => isSchemeProper && isCredsGiven,
-      result: right(resource),
-    },
-    {
-      test: () => isSchemeProper,
-      result: left<IPrismDiagnostic>({
-        code: 401,
-        message: 'Invalid security scheme used',
-        severity: DiagnosticSeverity.Error,
-      }),
-    },
-  ].find(possibleHandler => possibleHandler.test());
+  if (isSchemeProper) {
+    if (isCredsGiven) {
+      return right(resource);
+    }
+    return left<IPrismDiagnostic>({
+      code: 401,
+      message: 'Invalid security scheme used',
+      severity: DiagnosticSeverity.Error,
+    });
+  }
 
-  return pipe(
-    handler,
-    fromNullable(genUnauthorisedErr(msg)),
-    chain(handler => handler.result)
-  );
+  return left(genUnauthorisedErr(msg));
 }
 
 export const genUnauthorisedErr = (msg: string): IPrismDiagnostic => ({
