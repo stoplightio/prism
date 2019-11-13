@@ -3,10 +3,11 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 import { SecurityScheme } from './types';
 import { when } from './utils';
+import { IHttpOperation, IHttpRequest } from '@stoplight/types';
 
 export const apiKeyInCookie = {
   test: ({ type, in: where }: SecurityScheme) => where === 'cookie' && type === 'apiKey',
-  handle: (someInput: unknown, name: string, resource: unknown) => {
+  handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
     const probablyCookie = get(someInput, ['headers', 'cookie']);
 
     const isApiKeyInCookie = pipe(
@@ -21,16 +22,16 @@ export const apiKeyInCookie = {
 
 export const apiKeyInHeader = {
   test: ({ type, in: where }: SecurityScheme) => where === 'header' && type === 'apiKey',
-  handle: (someInput: unknown, name: string, resource?: unknown) => {
+  handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
     const isAPIKeyProvided = get(someInput, ['headers', name.toLowerCase()]);
 
-    return when(isAPIKeyProvided, '', resource);
+    return when(!!isAPIKeyProvided, '', resource);
   },
 };
 
 export const apiKeyInQuery = {
   test: ({ type, in: where }: SecurityScheme) => where === 'query' && type === 'apiKey',
-  handle: (someInput: unknown, name: string, resource?: unknown) => {
+  handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
     const isApiKeyInQuery = get(someInput, ['url', 'query', name]);
 
     return when(isApiKeyInQuery, '', resource);
