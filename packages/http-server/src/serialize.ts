@@ -28,8 +28,8 @@ const serializers = [
         return data;
       }
 
-      throw Object.assign(new Error('Cannot serialise complex objects as text/plain'), {
-        detail: 'Cannot serialise complex objects as text/plain',
+      throw Object.assign(new Error('Cannot serialise complex objects as text'), {
+        detail: 'Cannot serialise complex objects as text',
         status: 500,
         name: 'https://stoplight.io/prism/errors#NO_COMPLEX_OBJECT_TEXT_PLAIN',
       });
