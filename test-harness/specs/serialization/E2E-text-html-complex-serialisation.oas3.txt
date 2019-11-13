@@ -1,7 +1,7 @@
 ====test====
 When I send a request to an operation
 And this operation has a complex schema (with no primitives)
-And the returned content type is a text/plain string
+And the returned content type is a text/html string
 Then I should get back a 500 error because we do not know how to serialise it
 ====spec====
 openapi: "3.0.1"
@@ -11,7 +11,7 @@ paths:
       responses:
         200:
           content:
-            text/plain:
+            text/html:
               schema:
                 type: object
                 properties:
@@ -24,7 +24,7 @@ paths:
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i http://localhost:4010/ -H 'accept: text/plain'
+curl -i http://localhost:4010/ -H 'accept: text/html'
 ====expect====
 HTTP/1.1 500 Internal Server Error
 
