@@ -3,7 +3,7 @@ import { httpBasic } from './basicAuth';
 import { bearer, oauth2, openIdConnect } from './bearer';
 import { httpDigest } from './digestAuth';
 
-export const securitySchemeHandlers: typeof apiKeyInCookie[] = [
+export const securitySchemeHandlers = [
   apiKeyInCookie,
   apiKeyInHeader,
   apiKeyInQuery,

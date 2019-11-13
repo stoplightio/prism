@@ -1,9 +1,14 @@
 import { fromNullable, getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get, partial } from 'lodash';
-import { SecurityScheme } from './types';
 import { when } from './utils';
-import { IHttpOperation, Dictionary } from '@stoplight/types';
+import {
+  IHttpOperation,
+  Dictionary,
+  IBearerSecurityScheme,
+  IOpenIdConnectSecurityScheme,
+  IOauth2SecurityScheme,
+} from '@stoplight/types';
 import { IHttpRequest } from '../../../../../types';
 
 const bearerHandler = (msg: string, someInput: IHttpRequest, name: string, resource: IHttpOperation) =>
@@ -18,16 +23,16 @@ function isBearerToken(inputHeaders: Dictionary<string>) {
 }
 
 export const bearer = {
-  test: ({ type, scheme }: SecurityScheme) => scheme === 'bearer' && type === 'http',
+  test: ({ type, scheme }: IBearerSecurityScheme) => scheme === 'bearer' && type === 'http',
   handle: partial(bearerHandler, 'Bearer'),
 };
 
 export const oauth2 = {
-  test: ({ type }: SecurityScheme) => type === 'oauth2',
+  test: ({ type }: IOauth2SecurityScheme) => type === 'oauth2',
   handle: partial(bearerHandler, 'OAuth2'),
 };
 
 export const openIdConnect = {
-  test: ({ type }: SecurityScheme) => type === 'openIdConnect',
+  test: ({ type }: IOpenIdConnectSecurityScheme) => type === 'openIdConnect',
   handle: partial(bearerHandler, 'OpenID'),
 };
