@@ -12,23 +12,22 @@ export function genRespForScheme<R>(
   const handler = [
     {
       test: () => isSchemeProper && isCredsGiven,
-      handle: () => right(resource),
+      result: right(resource),
     },
     {
       test: () => isSchemeProper,
-      handle: () =>
-        left<IPrismDiagnostic>({
-          code: 401,
-          message: 'Invalid security scheme used',
-          severity: DiagnosticSeverity.Error,
-        }),
+      result: left<IPrismDiagnostic>({
+        code: 401,
+        message: 'Invalid security scheme used',
+        severity: DiagnosticSeverity.Error,
+      }),
     },
   ].find(possibleHandler => possibleHandler.test());
 
   return pipe(
     handler,
     fromNullable(genUnauthorisedErr(msg)),
-    chain(handler => handler.handle())
+    chain(handler => handler.result)
   );
 }
 
