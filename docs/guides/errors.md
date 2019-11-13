@@ -192,11 +192,11 @@ This class of errors is returned when the current request is not satisfying the 
 
 This class of errors is returned when anything goes wrong in between your **valid** request and returning a suitable response
 
-### NO_COMPLEX_OBJECT_TEXT_PLAIN
+### NO_COMPLEX_OBJECT_TEXT
 
-**Message: Cannot serialise complex objects as text/plain**
+**Message: Cannot serialise complex objects as text**
 **Returned Status Code: `500`**
-**Explanation:** This error occurs when the current request accepts the `text/plain` as the response content type and Prism decided to respond with that, but the schema associated with the selected response of the operation generated a non primive payload and Prism has no idea how to serialise it.
+**Explanation:** This error occurs when the current request accepts the `text/*` as the response content type and Prism decided to respond with that, but the schema associated with the selected response of the operation generated a non primive payload and Prism has no idea how to serialise it.
 
 ##### Example
 

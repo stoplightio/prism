@@ -1,0 +1,25 @@
+====test====
+When I send a request to an operation
+And this operation returns a text/html string
+Then I should get back the response as a string
+====spec====
+openapi: "3.0.1"
+paths:
+  /:
+    get:
+      responses:
+        200:
+          content:
+            text/html:
+              schema:
+                type: string
+                example: pong
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/ -H 'accept: text/html'
+====expect====
+HTTP/1.1 200 OK
+content-type: text/html
+
+pong

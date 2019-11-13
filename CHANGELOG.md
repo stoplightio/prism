@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Making a request to an operation with a `deprecated` parameter is no longer causing Prism to return a 422 response [#721](https://github.com/stoplightio/prism/pull/721)
 - The `access-control-allow-origin` header, when CORS is enabled, will now reflect the request origin _AND_ set the Credentials header [#797](https://github.com/stoplightio/prism/pull/797)
 - When the request is missing the `Accept` header, Prism will now effectively treat it as a `*/*`, according to the respective CFP [#802](https://github.com/stoplightio/prism/pull/802)
+- Prism will now passthrough as response anything that matches `text/*` instead of only `text/plain` [#796](https://github.com/stoplightio/prism/pull/796)
 
 # 3.1.1 (2019-09-23)
 
