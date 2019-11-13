@@ -11,8 +11,7 @@ export * from './mocker/errors';
 export * from './router/errors';
 export * from './mocker/serializer/style';
 export { generate as generateHttpParam } from './mocker/generator/HttpParamGenerator';
-
-import { IHttpConfig, IHttpRequest, IHttpResponse, PickRequired, PrismHttpComponents, IHttpProxyConfig } from './types';
+import { IHttpConfig, IHttpResponse, IHttpRequest, PickRequired, PrismHttpComponents, IHttpProxyConfig } from './types';
 
 export const createInstance = (
   defaultConfig: IHttpConfig | IHttpProxyConfig,

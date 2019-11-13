@@ -1,4 +1,4 @@
-import { DiagnosticSeverity, IHttpOperation, IHttpRequest } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -8,6 +8,7 @@ import { securitySchemeHandlers } from './handlers';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { SecurityScheme } from './handlers/types';
+import { IHttpRequest } from '../../../../types';
 
 function gatherInvalidResults(
   error: Either.Left<IPrismDiagnostic>,

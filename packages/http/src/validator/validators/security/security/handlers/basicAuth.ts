@@ -2,7 +2,8 @@ import { left } from 'fp-ts/lib/Either';
 import { get } from 'lodash';
 import { SecurityScheme } from './types';
 import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
-import { IHttpOperation, IHttpRequest } from '@stoplight/types';
+import { IHttpOperation } from '@stoplight/types';
+import { IHttpRequest } from '../../../../../types';
 
 const basicWWWAuthenticate = 'Basic realm="*"';
 

@@ -3,10 +3,11 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { get, partial } from 'lodash';
 import { SecurityScheme } from './types';
 import { when } from './utils';
-import { IHttpRequest, IHttpOperation, Dictionary } from '@stoplight/types';
+import { IHttpOperation, Dictionary } from '@stoplight/types';
+import { IHttpRequest } from '../../../../../types';
 
 const bearerHandler = (msg: string, someInput: IHttpRequest, name: string, resource: IHttpOperation) =>
-  when(isBearerToken(get(someInput, 'headers')), msg, resource);
+  when(isBearerToken(someInput.headers || {}), msg, resource);
 
 function isBearerToken(inputHeaders: Dictionary<string>) {
   return pipe(

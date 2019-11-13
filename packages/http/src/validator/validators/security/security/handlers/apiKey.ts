@@ -2,8 +2,9 @@ import { fromNullable, getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 import { SecurityScheme } from './types';
+import { IHttpRequest } from '../../../../../types';
 import { when } from './utils';
-import { IHttpOperation, IHttpRequest } from '@stoplight/types';
+import { IHttpOperation } from '@stoplight/types';
 
 export const apiKeyInCookie = {
   test: ({ type, in: where }: SecurityScheme) => where === 'cookie' && type === 'apiKey',
