@@ -21,36 +21,6 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
     TaskEither.tryCatch(async () => {
       const partialUrl = parse(baseUrl);
 
-      const body = pipe(
-        Option.fromNullable(input.body),
-        Option.chain(body =>
-          pipe(
-            Option.some(body),
-            Option.chain(body =>
-              pipe(
-                body,
-                Option.fromPredicate(body => typeof body === 'object'),
-                Option.chain(body =>
-                  pipe(
-                    Either.stringifyJSON(body, Either.toError),
-                    Option.fromEither,
-                    Option.alt(() => Option.some(''))
-                  )
-                )
-              )
-            ),
-            Option.alt(
-              () =>
-                pipe(
-                  body,
-                  Option.fromPredicate(body => typeof body === 'string')
-                ) as Option.Option<string>
-            )
-          )
-        ),
-        Option.toUndefined
-      );
-
       return fetch(
         format({
           ...partialUrl,
@@ -58,7 +28,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           query: input.url.query,
         }),
         {
-          body,
+          body: serializeBody(input.body),
           method: input.method,
           headers: defaults(omit(input.headers, ['host', 'accept']), {
             accept: 'application/json, text/plain, */*',
@@ -71,3 +41,35 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
   );
 
 export default forward;
+
+function serializeBody(body: unknown) {
+  return pipe(
+    Option.fromNullable(body),
+    Option.chain(body =>
+      pipe(
+        Option.some(body),
+        Option.chain(body =>
+          pipe(
+            body,
+            Option.fromPredicate(body => typeof body === 'object'),
+            Option.chain(body =>
+              pipe(
+                Either.stringifyJSON(body, Either.toError),
+                Option.fromEither,
+                Option.alt(() => Option.some(''))
+              )
+            )
+          )
+        ),
+        Option.alt(
+          () =>
+            pipe(
+              body,
+              Option.fromPredicate(body => typeof body === 'string')
+            ) as Option.Option<string>
+        )
+      )
+    ),
+    Option.toUndefined
+  );
+}
