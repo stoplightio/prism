@@ -1176,6 +1176,13 @@
   dependencies:
     "@types/json-schema" "^7.0.3"
 
+"@stoplight/types@^11.3.0":
+  version "11.3.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.3.0.tgz#23d40cbf2c3c85e5612038b5cf0c003f82809318"
+  integrity sha512-m6N4Bv2O2bYJOXdIwtpLtfQY/3zHUgRuHx2D8ERydX8WE40nKoLqh4wN6nvRcSeGwxjhi0Q0KUAZIe9UsYj6fQ==
+  dependencies:
+    "@types/json-schema" "^7.0.3"
+
 "@stoplight/yaml-ast-parser@0.0.44":
   version "0.0.44"
   resolved "https://registry.yarnpkg.com/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.44.tgz#ed3c962564283e9983f7895a6effc3994286df5e"
