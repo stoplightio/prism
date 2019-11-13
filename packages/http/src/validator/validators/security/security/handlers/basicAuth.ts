@@ -2,10 +2,11 @@ import { left } from 'fp-ts/lib/Either';
 import { get } from 'lodash';
 import { SecurityScheme } from './types';
 import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
+import { IHttpOperation, IHttpRequest } from '@stoplight/types';
 
 const basicWWWAuthenticate = 'Basic realm="*"';
 
-function checkHeader<R>(authorizationHeader: string, resource: R) {
+function checkHeader(authorizationHeader: string, resource: IHttpOperation) {
   const [authScheme, token] = authorizationHeader.split(' ');
 
   const isBasicTokenGiven = !!(token && isBasicToken(token));
@@ -24,7 +25,7 @@ function isBasicToken(token: string) {
 
 export const httpBasic = {
   test: ({ scheme, type }: SecurityScheme) => scheme === 'basic' && type === 'http',
-  handle: (someInput: unknown, name: string, resource: unknown) => {
+  handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
     const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
     return authorizationHeader

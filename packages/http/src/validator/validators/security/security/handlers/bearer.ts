@@ -3,14 +3,15 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { get, partial } from 'lodash';
 import { SecurityScheme } from './types';
 import { when } from './utils';
+import { IHttpRequest, IHttpOperation, Dictionary } from '@stoplight/types';
 
-const bearerHandler = (msg: string, someInput: unknown, name: string, resource?: unknown) =>
+const bearerHandler = (msg: string, someInput: IHttpRequest, name: string, resource: IHttpOperation) =>
   when(isBearerToken(get(someInput, 'headers')), msg, resource);
 
-function isBearerToken(inputHeaders: Headers) {
+function isBearerToken(inputHeaders: Dictionary<string>) {
   return pipe(
     fromNullable(get(inputHeaders, 'authorization')),
-    map(authorization => !!authorization.match(/^Bearer\s.+$/)),
+    map(authorization => !!/^Bearer\s.+$/.exec(authorization)),
     getOrElse(() => false)
   );
 }

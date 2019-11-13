@@ -2,10 +2,11 @@ import { left } from 'fp-ts/lib/Either';
 import { get } from 'lodash';
 import { SecurityScheme } from './types';
 import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
+import { IHttpOperation, IHttpRequest } from '@stoplight/types';
 
 const digestWWWAuthenticate = 'Digest realm="*", nonce="abc123"';
 
-function checkDigestHeader(authorizationHeader: string, resource?: unknown) {
+function checkDigestHeader(authorizationHeader: string, resource: IHttpOperation) {
   const [authScheme, ...info] = authorizationHeader.split(' ');
 
   const isDigestInfoGiven = info && isDigestInfo(info);
@@ -29,7 +30,7 @@ function isDigestInfo(info: string[]) {
 
 export const httpDigest = {
   test: ({ scheme, type }: SecurityScheme) => scheme === 'digest' && type === 'http',
-  handle: (someInput: unknown, name: string, resource?: unknown) => {
+  handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
     const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
     return authorizationHeader
