@@ -94,7 +94,7 @@ function getAuthResults(securitySchemes: SecurityScheme[][], someInput: unknown,
 
 export function validateSecurity(
   someInput: unknown,
-  resource?: unknown
+  resource: unknown
 ): Either.Either<NonEmptyArray<IPrismDiagnostic>, unknown> {
   const securitySchemes = get(resource, 'security', []);
 
