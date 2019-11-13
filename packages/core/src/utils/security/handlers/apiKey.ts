@@ -6,13 +6,13 @@ import { when } from './utils';
 
 export const apiKeyInCookie = {
   test: ({ type, in: where }: SecurityScheme) => where === 'cookie' && type === 'apiKey',
-  handle: (someInput: unknown, name: string, resource?: unknown) => {
+  handle: (someInput: unknown, name: string, resource: unknown) => {
     const probablyCookie = get(someInput, ['headers', 'cookie']);
 
     const isApiKeyInCookie = pipe(
       fromNullable(probablyCookie),
       map(cookie => new RegExp(`${name}=.+`).test(cookie)),
-      getOrElse(() => false),
+      getOrElse(() => false)
     );
 
     return when(isApiKeyInCookie, '', resource);

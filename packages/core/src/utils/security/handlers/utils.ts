@@ -14,7 +14,7 @@ export function genRespForScheme<R>(
   isSchemeProper: boolean,
   isCredsGiven: boolean,
   resource: R,
-  msg: string,
+  msg: string
 ): Either<IPrismDiagnostic, R> {
   const handler = [
     {
@@ -41,6 +41,6 @@ export function isScheme(shouldBeScheme: string, authScheme: string) {
   return (authScheme || '').toLowerCase() === shouldBeScheme;
 }
 
-export function when(condition: boolean, errorMessage: string, resource?: unknown): Either<IPrismDiagnostic, unknown> {
+export function when(condition: boolean, errorMessage: string, resource: unknown): Either<IPrismDiagnostic, unknown> {
   return condition ? right(resource) : left(genUnauthorisedErr(errorMessage));
 }
