@@ -25,21 +25,27 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
         Option.fromNullable(input.body),
         Option.chain(body =>
           pipe(
-            body,
-            Option.fromPredicate(body => typeof body === 'object'),
+            Option.some(body),
             Option.chain(body =>
               pipe(
-                Either.stringifyJSON(body, Either.toError),
-                Option.fromEither,
-                Option.alt(() => Option.some('')) // @todo it sucks, right?
+                body,
+                Option.fromPredicate(body => typeof body === 'object'),
+                Option.chain(body =>
+                  pipe(
+                    Either.stringifyJSON(body, Either.toError),
+                    Option.fromEither,
+                    Option.alt(() => Option.some(''))
+                  )
+                )
               )
+            ),
+            Option.alt(
+              () =>
+                pipe(
+                  body,
+                  Option.fromPredicate(body => typeof body === 'string')
+                ) as Option.Option<string>
             )
-          )
-        ),
-        Option.chain(body =>
-          pipe(
-            body,
-            Option.fromPredicate(body => typeof body === 'string')
           )
         ),
         Option.toUndefined
