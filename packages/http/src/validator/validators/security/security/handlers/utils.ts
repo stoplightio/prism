@@ -1,6 +1,13 @@
 import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
 import { Either, left, right } from 'fp-ts/lib/Either';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
+import { IHttpRequest } from '../../../../../types';
+
+export type ValidateSecurityFn = (
+  someInput: IHttpRequest,
+  name: string,
+  resource: IHttpOperation
+) => Either<IPrismDiagnostic, IHttpOperation>;
 
 export function genRespForScheme(
   isSchemeProper: boolean,

@@ -1,13 +1,12 @@
-import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
+import { IHttpOperation, HttpSecurityScheme } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { flatten, get, identity } from 'lodash';
+import { flatten, identity } from 'lodash';
 import { noop, set } from 'lodash/fp';
-import { securitySchemeHandlers } from './handlers';
+import { findSecurityHandler } from './handlers';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { SecurityScheme } from './handlers/types';
 import { IHttpRequest } from '../../../../types';
 
 function gatherInvalidResults(
@@ -19,7 +18,7 @@ function gatherInvalidResults(
 }
 
 function gatherValidationResults(
-  securitySchemes: SecurityScheme[][],
+  securitySchemes: HttpSecurityScheme[][],
   someInput: IHttpRequest,
   resource: IHttpOperation
 ) {
@@ -74,18 +73,14 @@ function getAuthResult(
   return [Either.left(invalidResultWithAuthHeader)];
 }
 
-function getAuthResults(securitySchemes: SecurityScheme[][], someInput: IHttpRequest, resource: IHttpOperation) {
+function getAuthResults(securitySchemes: HttpSecurityScheme[][], someInput: IHttpRequest, resource: IHttpOperation) {
   return securitySchemes.map(securitySchemePairs => {
-    const authResult = securitySchemePairs.map(securityScheme => {
-      const schemeHandler = securitySchemeHandlers.find(handler => handler.test(securityScheme));
-
-      return schemeHandler
-        ? schemeHandler.handle(someInput, securityScheme.name, resource)
-        : Either.left<IPrismDiagnostic>({
-            message: 'We currently do not support this type of security scheme.',
-            severity: DiagnosticSeverity.Warning,
-          });
-    });
+    const authResult = securitySchemePairs.map(securityScheme =>
+      pipe(
+        findSecurityHandler(securityScheme),
+        Either.chain(f => f(someInput, 'name' in securityScheme ? securityScheme.name : '', resource))
+      )
+    );
 
     const firstAuthErrAsLeft = authResult.find(Either.isLeft);
 
@@ -98,7 +93,7 @@ function getAuthResults(securitySchemes: SecurityScheme[][], someInput: IHttpReq
 }
 
 export const validateSecurity: ValidatorFn<IHttpOperation, IHttpRequest> = ({ element, resource }) => {
-  const securitySchemes = get(resource, 'security', []) as SecurityScheme[][];
+  const securitySchemes = resource.security as HttpSecurityScheme[][];
 
   if (!securitySchemes.length) {
     return Either.right(element);

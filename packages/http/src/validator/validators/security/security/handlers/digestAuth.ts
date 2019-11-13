@@ -28,13 +28,10 @@ function isDigestInfo(info: string[]) {
   );
 }
 
-export const httpDigest = {
-  test: ({ scheme, type }: IBasicSecurityScheme) => scheme === 'digest' && type === 'http',
-  handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
-    const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
+export const httpDigest = (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
+  const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
-    return authorizationHeader
-      ? checkDigestHeader(authorizationHeader, resource)
-      : left(genUnauthorisedErr(digestWWWAuthenticate));
-  },
+  return authorizationHeader
+    ? checkDigestHeader(authorizationHeader, resource)
+    : left(genUnauthorisedErr(digestWWWAuthenticate));
 };

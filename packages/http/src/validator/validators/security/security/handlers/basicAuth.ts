@@ -23,13 +23,10 @@ function isBasicToken(token: string) {
   return tokenParts.length === 2;
 }
 
-export const httpBasic = {
-  test: ({ scheme, type }: IBasicSecurityScheme) => scheme === 'basic' && type === 'http',
-  handle: (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
-    const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
+export const httpBasic = (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
+  const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
-    return authorizationHeader
-      ? checkHeader(authorizationHeader, resource)
-      : left(genUnauthorisedErr(basicWWWAuthenticate));
-  },
+  return authorizationHeader
+    ? checkHeader(authorizationHeader, resource)
+    : left(genUnauthorisedErr(basicWWWAuthenticate));
 };
