@@ -34,6 +34,7 @@ describe('validateSecurity', () => {
             code: 401,
             message: 'Invalid security scheme used',
             severity: DiagnosticSeverity.Error,
+            tags: ['Basic realm="*"'],
           },
         ])
       );
@@ -74,6 +75,7 @@ describe('validateSecurity', () => {
               code: 401,
               message: 'Invalid security scheme used',
               severity: DiagnosticSeverity.Error,
+              tags: ['Digest realm="*", nonce="abc123"'],
             },
           ])
       );
@@ -163,7 +165,12 @@ describe('validateSecurity', () => {
           validateSecurity(
             { headers: {} },
             {
-              security: [[{ scheme: 'basic', type: 'http' }, { in: 'header', type: 'apiKey', name: 'x-api-key' }]],
+              security: [
+                [
+                  { scheme: 'basic', type: 'http' },
+                  { in: 'header', type: 'apiKey', name: 'x-api-key' },
+                ],
+              ],
             }
           ),
           res =>
