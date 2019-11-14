@@ -35,15 +35,23 @@ const securitySchemeHandlers: {
   },
 };
 
+function createDiagnosticFor(scheme: string): IPrismDiagnostic {
+  return {
+    message: `We currently do not support this type of security scheme: ${scheme}`,
+    severity: DiagnosticSeverity.Warning,
+  };
+}
+
 export function findSecurityHandler(scheme: HttpSecurityScheme): Either<IPrismDiagnostic, ValidateSecurityFn> {
   if (scheme.type === 'http') {
-    return fromNullable<IPrismDiagnostic>({
-      message: `We currently do not support this type of security scheme: http/${scheme.scheme}`,
-      severity: DiagnosticSeverity.Warning,
-    })(securitySchemeHandlers[scheme.type][scheme.scheme]);
+    return fromNullable(createDiagnosticFor(`http/${scheme.scheme}`))(
+      securitySchemeHandlers[scheme.type][scheme.scheme]
+    );
   }
   if (scheme.type === 'apiKey') {
-    return right(securitySchemeHandlers[scheme.type][scheme.in]);
+    return fromNullable(createDiagnosticFor(`${scheme.type}/${scheme.in}`))(
+      securitySchemeHandlers[scheme.type][scheme.in]
+    );
   }
-  return right(securitySchemeHandlers[scheme.type]);
+  return fromNullable(createDiagnosticFor(scheme.type))(securitySchemeHandlers[scheme.type]);
 }
