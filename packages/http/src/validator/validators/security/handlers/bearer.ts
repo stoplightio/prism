@@ -1,6 +1,7 @@
 import { fromNullable, getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get, partial } from 'lodash';
+
 import { when } from './utils';
 import { Dictionary } from '@stoplight/types';
 import { IHttpRequest } from '../../../../types';
