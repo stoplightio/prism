@@ -1,8 +1,7 @@
 import { left } from 'fp-ts/lib/Either';
 import { get } from 'lodash';
 import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
-import { IHttpOperation, IBasicSecurityScheme } from '@stoplight/types';
-import { IHttpRequest } from '../../../../../types';
+import { IHttpRequest } from '../../../../types';
 
 const digestWWWAuthenticate = 'Digest realm="*", nonce="abc123"';
 

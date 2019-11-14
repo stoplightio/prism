@@ -1,7 +1,7 @@
 import { left } from 'fp-ts/lib/Either';
 import { get } from 'lodash';
 import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
-import { IHttpRequest } from '../../../../../types';
+import { IHttpRequest } from '../../../../types';
 
 const basicWWWAuthenticate = 'Basic realm="*"';
 

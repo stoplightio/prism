@@ -1,7 +1,7 @@
 import { fromNullable, getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
-import { IHttpRequest } from '../../../../../types';
+import { IHttpRequest } from '../../../../types';
 import { when } from './utils';
 
 export const apiKeyInCookie = (someInput: Pick<IHttpRequest, 'headers' | 'url'>, name: string) => {

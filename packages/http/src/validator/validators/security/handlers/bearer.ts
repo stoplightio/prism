@@ -3,7 +3,7 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { get, partial } from 'lodash';
 import { when } from './utils';
 import { Dictionary } from '@stoplight/types';
-import { IHttpRequest } from '../../../../../types';
+import { IHttpRequest } from '../../../../types';
 
 const bearerHandler = (msg: string, someInput: Pick<IHttpRequest, 'headers' | 'url'>) =>
   when(isBearerToken(someInput.headers || {}), msg);

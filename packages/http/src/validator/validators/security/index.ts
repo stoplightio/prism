@@ -7,7 +7,7 @@ import { noop, set } from 'lodash/fp';
 import { findSecurityHandler } from './handlers';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import { IHttpRequest } from '../../../../types';
+import { IHttpRequest } from '../../../types';
 
 function gatherInvalidResults(
   error: Either.Left<IPrismDiagnostic>,
