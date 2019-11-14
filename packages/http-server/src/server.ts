@@ -67,7 +67,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     const operationSpecificConfig = getHttpConfigFromRequest(input);
     const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
 
-    return pipe(
+    pipe(
       prism.request(input, operations, { ...opts.config, mock: mockConfig }),
       TaskEither.chain(response => {
         const { output } = response;
