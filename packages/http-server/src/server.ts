@@ -66,7 +66,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
     const operationSpecificConfig = getHttpConfigFromRequest(input);
     const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
-
+    // Do not return, or Fastify will try to send the response again.
     pipe(
       prism.request(input, operations, { ...opts.config, mock: mockConfig }),
       TaskEither.chain(response => {
