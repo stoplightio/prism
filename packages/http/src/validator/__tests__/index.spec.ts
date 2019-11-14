@@ -117,7 +117,10 @@ describe('HttpValidator', () => {
                 path: '/a/{a}/b/{b}',
                 id: '1',
                 request: {
-                  path: [{ name: 'a', style: HttpParamStyles.Simple }, { name: 'b', style: HttpParamStyles.Matrix }],
+                  path: [
+                    { name: 'a', style: HttpParamStyles.Simple },
+                    { name: 'b', style: HttpParamStyles.Matrix },
+                  ],
                 },
                 responses: [{ code: '200' }],
               },
@@ -205,7 +208,7 @@ describe('HttpValidator', () => {
           assertLeft(validator.validateOutput({ resource, element: { statusCode: 201 } }), error =>
             expect(error).toEqual([
               {
-                message: 'Unable to match the returned status code with those defined in spec',
+                message: 'Unable to match the returned status code with those defined in the document: 200',
                 severity: DiagnosticSeverity.Error,
               },
             ])
@@ -218,7 +221,7 @@ describe('HttpValidator', () => {
           assertLeft(validator.validateOutput({ resource, element: { statusCode: 400 } }), error =>
             expect(error).toEqual([
               {
-                message: 'Unable to match the returned status code with those defined in spec',
+                message: 'Unable to match the returned status code with those defined in the document: 200',
                 severity: DiagnosticSeverity.Warning,
               },
             ])
