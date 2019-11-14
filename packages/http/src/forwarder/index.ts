@@ -48,5 +48,7 @@ function serializeBody(body: unknown) {
     return Either.right(body);
   }
 
-  return Either.stringifyJSON(body, Either.toError);
+  if (body) return Either.stringifyJSON(body, Either.toError);
+
+  return Either.right(undefined);
 }
