@@ -4,7 +4,7 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../../types';
 
 export type ValidateSecurityFn = (
-  someInput: Pick<IHttpRequest, 'headers' | 'url'>,
+  input: Pick<IHttpRequest, 'headers' | 'url'>,
   name: string
 ) => Either<IPrismDiagnostic, boolean>;
 

@@ -1,5 +1,5 @@
 import { DiagnosticSeverity, HttpSecurityScheme } from '@stoplight/types';
-import { validateSecurity } from '../security';
+import { validateSecurity } from '../';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import { IHttpRequest } from '../../../../types';
 

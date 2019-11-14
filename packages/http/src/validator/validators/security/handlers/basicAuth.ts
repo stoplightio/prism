@@ -22,8 +22,8 @@ function isBasicToken(token: string) {
   return tokenParts.length === 2;
 }
 
-export const httpBasic = (someInput: Pick<IHttpRequest, 'headers' | 'url'>) => {
-  const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
+export const httpBasic = (input: Pick<IHttpRequest, 'headers' | 'url'>) => {
+  const authorizationHeader = get(input, ['headers', 'authorization'], '');
 
   return authorizationHeader ? checkHeader(authorizationHeader) : left(genUnauthorisedErr(basicWWWAuthenticate));
 };

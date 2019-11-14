@@ -19,9 +19,9 @@ function gatherInvalidResults(
 
 function gatherValidationResults(
   securitySchemes: HttpSecurityScheme[][],
-  someInput: Pick<IHttpRequest, 'headers' | 'url'>
+  input: Pick<IHttpRequest, 'headers' | 'url'>
 ) {
-  const authResults = getAuthResults(securitySchemes, someInput);
+  const authResults = getAuthResults(securitySchemes, input);
 
   const validSecurityScheme = authResults.find(authRes => authRes.every(Either.isRight));
   const invalidSecuritySchemes = authResults.filter(authRes => authRes.some(Either.isLeft));
@@ -62,7 +62,7 @@ function getAuthResult(
   firstAuthErrAsLeft: Either.Left<IPrismDiagnostic>,
   authResult: Array<Either.Either<IPrismDiagnostic, boolean>>
 ) {
-  const firstAuthErr: IPrismDiagnostic = pipe(
+  const firstAuthErr = pipe(
     firstAuthErrAsLeft,
     Either.fold<IPrismDiagnostic, IPrismDiagnostic, IPrismDiagnostic>(identity, identity)
   );
@@ -72,12 +72,12 @@ function getAuthResult(
   return [Either.left(invalidResultWithAuthHeader)];
 }
 
-function getAuthResults(securitySchemes: HttpSecurityScheme[][], someInput: Pick<IHttpRequest, 'headers' | 'url'>) {
+function getAuthResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHttpRequest, 'headers' | 'url'>) {
   return securitySchemes.map(securitySchemePairs => {
     const authResult = securitySchemePairs.map(securityScheme =>
       pipe(
         findSecurityHandler(securityScheme),
-        Either.chain(f => f(someInput, 'name' in securityScheme ? securityScheme.name : ''))
+        Either.chain(f => f(input, 'name' in securityScheme ? securityScheme.name : ''))
       )
     );
 
@@ -95,7 +95,7 @@ export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, Pic
   element,
   resource,
 }) => {
-  const securitySchemes = resource.security as HttpSecurityScheme[][];
+  const securitySchemes = resource.security;
 
   if (!securitySchemes || !securitySchemes.length) {
     return Either.right(element);
