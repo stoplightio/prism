@@ -86,7 +86,9 @@ const findResponseByStatus = (responses: NonEmptyArray<IHttpOperationResponse>, 
   pipe(
     findOperationResponse(responses, statusCode),
     Either.fromOption<IPrismDiagnostic>(() => ({
-      message: 'Unable to match the returned status code with those defined in spec',
+      message: `Unable to match the returned status code with those defined in the document: ${responses
+        .map(response => response.code)
+        .join(',')}`,
       severity: inRange(statusCode, 200, 300) ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
     })),
     Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(error => [error])

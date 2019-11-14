@@ -66,8 +66,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
     const operationSpecificConfig = getHttpConfigFromRequest(input);
     const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
-
-    return pipe(
+    // Do not return, or Fastify will try to send the response again.
+    pipe(
       prism.request(input, operations, { ...opts.config, mock: mockConfig }),
       TaskEither.chain(response => {
         const { output } = response;
@@ -132,7 +132,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           reply.res.end();
         }
 
-        request.log.error({ input, offset: 1 }, `Request terminated with error: ${e}`);
+        request.log.error({ input }, `Request terminated with error: ${e}`);
       })
     )();
   };
