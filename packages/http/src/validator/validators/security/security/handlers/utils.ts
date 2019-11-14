@@ -3,7 +3,10 @@ import { Either, left, right } from 'fp-ts/lib/Either';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../../../types';
 
-export type ValidateSecurityFn = (someInput: IHttpRequest, name: string) => Either<IPrismDiagnostic, boolean>;
+export type ValidateSecurityFn = (
+  someInput: Pick<IHttpRequest, 'headers' | 'url'>,
+  name: string
+) => Either<IPrismDiagnostic, boolean>;
 
 export function genRespForScheme(
   isSchemeProper: boolean,

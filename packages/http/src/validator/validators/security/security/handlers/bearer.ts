@@ -5,7 +5,8 @@ import { when } from './utils';
 import { Dictionary } from '@stoplight/types';
 import { IHttpRequest } from '../../../../../types';
 
-const bearerHandler = (msg: string, someInput: IHttpRequest) => when(isBearerToken(someInput.headers || {}), msg);
+const bearerHandler = (msg: string, someInput: Pick<IHttpRequest, 'headers' | 'url'>) =>
+  when(isBearerToken(someInput.headers || {}), msg);
 
 function isBearerToken(inputHeaders: Dictionary<string>) {
   return pipe(

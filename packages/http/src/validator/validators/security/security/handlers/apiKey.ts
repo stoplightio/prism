@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { IHttpRequest } from '../../../../../types';
 import { when } from './utils';
 
-export const apiKeyInCookie = (someInput: IHttpRequest, name: string) => {
+export const apiKeyInCookie = (someInput: Pick<IHttpRequest, 'headers' | 'url'>, name: string) => {
   const probablyCookie = get(someInput, ['headers', 'cookie']);
 
   const isApiKeyInCookie = pipe(
@@ -16,13 +16,13 @@ export const apiKeyInCookie = (someInput: IHttpRequest, name: string) => {
   return when(isApiKeyInCookie, undefined);
 };
 
-export const apiKeyInHeader = (someInput: IHttpRequest, name: string) => {
+export const apiKeyInHeader = (someInput: Pick<IHttpRequest, 'headers' | 'url'>, name: string) => {
   const isAPIKeyProvided = get(someInput, ['headers', name.toLowerCase()]);
 
   return when(!!isAPIKeyProvided, undefined);
 };
 
-export const apiKeyInQuery = (someInput: IHttpRequest, name: string) => {
+export const apiKeyInQuery = (someInput: Pick<IHttpRequest, 'headers' | 'url'>, name: string) => {
   const isApiKeyInQuery = get(someInput, ['url', 'query', name]);
 
   return when(isApiKeyInQuery, undefined);

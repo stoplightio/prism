@@ -17,7 +17,10 @@ function gatherInvalidResults(
   return Option.some(invalidSecurity);
 }
 
-function gatherValidationResults(securitySchemes: HttpSecurityScheme[][], someInput: IHttpRequest) {
+function gatherValidationResults(
+  securitySchemes: HttpSecurityScheme[][],
+  someInput: Pick<IHttpRequest, 'headers' | 'url'>
+) {
   const authResults = getAuthResults(securitySchemes, someInput);
 
   const validSecurityScheme = authResults.find(authRes => authRes.every(Either.isRight));
@@ -69,7 +72,7 @@ function getAuthResult(
   return [Either.left(invalidResultWithAuthHeader)];
 }
 
-function getAuthResults(securitySchemes: HttpSecurityScheme[][], someInput: IHttpRequest) {
+function getAuthResults(securitySchemes: HttpSecurityScheme[][], someInput: Pick<IHttpRequest, 'headers' | 'url'>) {
   return securitySchemes.map(securitySchemePairs => {
     const authResult = securitySchemePairs.map(securityScheme =>
       pipe(
@@ -88,7 +91,7 @@ function getAuthResults(securitySchemes: HttpSecurityScheme[][], someInput: IHtt
   });
 }
 
-export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, IHttpRequest> = ({
+export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, Pick<IHttpRequest, 'headers' | 'url'>> = ({
   element,
   resource,
 }) => {

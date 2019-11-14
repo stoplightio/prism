@@ -22,7 +22,7 @@ function isBasicToken(token: string) {
   return tokenParts.length === 2;
 }
 
-export const httpBasic = (someInput: IHttpRequest) => {
+export const httpBasic = (someInput: Pick<IHttpRequest, 'headers' | 'url'>) => {
   const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
   return authorizationHeader ? checkHeader(authorizationHeader) : left(genUnauthorisedErr(basicWWWAuthenticate));

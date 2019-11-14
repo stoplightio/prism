@@ -28,7 +28,7 @@ function isDigestInfo(info: string[]) {
   );
 }
 
-export const httpDigest = (someInput: IHttpRequest) => {
+export const httpDigest = (someInput: Pick<IHttpRequest, 'headers' | 'url'>) => {
   const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
   return authorizationHeader ? checkDigestHeader(authorizationHeader) : left(genUnauthorisedErr(digestWWWAuthenticate));
