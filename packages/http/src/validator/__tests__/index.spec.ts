@@ -117,7 +117,10 @@ describe('HttpValidator', () => {
                 path: '/a/{a}/b/{b}',
                 id: '1',
                 request: {
-                  path: [{ name: 'a', style: HttpParamStyles.Simple }, { name: 'b', style: HttpParamStyles.Matrix }],
+                  path: [
+                    { name: 'a', style: HttpParamStyles.Simple },
+                    { name: 'b', style: HttpParamStyles.Matrix },
+                  ],
                 },
                 responses: [{ code: '200' }],
               },
@@ -273,8 +276,7 @@ describe('HttpValidator', () => {
             validator.validateOutput({
               resource,
               element: { statusCode: 200, headers: { 'content-type': 'application/json' } },
-            }),
-            () => {}
+            })
           );
         });
       });
