@@ -10,6 +10,7 @@ describe('validation', () => {
   const components = {
     validateInput: jest.fn().mockReturnValue(['something']),
     validateOutput: jest.fn().mockReturnValue(['something']),
+    validateSecurity: jest.fn().mockReturnValue(['something']),
     route: jest.fn().mockReturnValue(Either.right('hey')),
     forward: jest.fn().mockReturnValue(
       TaskEither.right({

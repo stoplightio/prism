@@ -13,6 +13,7 @@ import * as Either from 'fp-ts/lib/Either';
 import * as typeIs from 'type-is';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
+import { validateSecurity } from './validators/security';
 // @ts-ignore
 import { URI } from 'uri-template-lite';
 
@@ -132,4 +133,4 @@ function getPathParams(path: string, template: string) {
   return new URI.Template(template).match(path);
 }
 
-export { validateInput, validateOutput };
+export { validateInput, validateOutput, validateSecurity };

@@ -276,8 +276,7 @@ describe('HttpValidator', () => {
             validator.validateOutput({
               resource,
               element: { statusCode: 200, headers: { 'content-type': 'application/json' } },
-            }),
-            () => {}
+            })
           );
         });
       });

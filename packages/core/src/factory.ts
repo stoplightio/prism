@@ -4,7 +4,6 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig } from './types';
-import { validateSecurity } from './utils/security';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { getSemigroup } from 'fp-ts/lib/NonEmptyArray';
 
@@ -31,9 +30,12 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     pipe(
       sequenceValidation(
         config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
-        config.checkSecurity ? validateSecurity(input, resource) : Either.right(input)
+        config.checkSecurity ? components.validateSecurity({ resource, element: input }) : Either.right(input)
       ),
-      Either.fold(inputValidations => inputValidations as IPrismDiagnostic[], () => []),
+      Either.fold(
+        inputValidations => inputValidations as IPrismDiagnostic[],
+        () => []
+      ),
       inputValidations => TaskEither.right({ resource, inputValidations })
     );
 
