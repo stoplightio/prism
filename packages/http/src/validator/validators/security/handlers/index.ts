@@ -38,7 +38,7 @@ const securitySchemeHandlers: {
 export function findSecurityHandler(scheme: HttpSecurityScheme): Either<IPrismDiagnostic, ValidateSecurityFn> {
   if (scheme.type === 'http') {
     return fromNullable<IPrismDiagnostic>({
-      message: 'We currently do not support this type of security scheme.',
+      message: `We currently do not support this type of security scheme: http/${scheme.scheme}`,
       severity: DiagnosticSeverity.Warning,
     })(securitySchemeHandlers[scheme.type][scheme.scheme]);
   }
