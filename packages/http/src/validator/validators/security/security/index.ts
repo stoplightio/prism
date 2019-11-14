@@ -17,12 +17,8 @@ function gatherInvalidResults(
   return Option.some(invalidSecurity);
 }
 
-function gatherValidationResults(
-  securitySchemes: HttpSecurityScheme[][],
-  someInput: IHttpRequest,
-  resource: IHttpOperation
-) {
-  const authResults = getAuthResults(securitySchemes, someInput, resource);
+function gatherValidationResults(securitySchemes: HttpSecurityScheme[][], someInput: IHttpRequest) {
+  const authResults = getAuthResults(securitySchemes, someInput);
 
   const validSecurityScheme = authResults.find(authRes => authRes.every(Either.isRight));
   const invalidSecuritySchemes = authResults.filter(authRes => authRes.some(Either.isLeft));
@@ -61,7 +57,7 @@ function gatherWWWAuthHeader(
 
 function getAuthResult(
   firstAuthErrAsLeft: Either.Left<IPrismDiagnostic>,
-  authResult: Array<Either.Either<IPrismDiagnostic, IHttpOperation>>
+  authResult: Array<Either.Either<IPrismDiagnostic, boolean>>
 ) {
   const firstAuthErr: IPrismDiagnostic = pipe(
     firstAuthErrAsLeft,
@@ -73,12 +69,12 @@ function getAuthResult(
   return [Either.left(invalidResultWithAuthHeader)];
 }
 
-function getAuthResults(securitySchemes: HttpSecurityScheme[][], someInput: IHttpRequest, resource: IHttpOperation) {
+function getAuthResults(securitySchemes: HttpSecurityScheme[][], someInput: IHttpRequest) {
   return securitySchemes.map(securitySchemePairs => {
     const authResult = securitySchemePairs.map(securityScheme =>
       pipe(
         findSecurityHandler(securityScheme),
-        Either.chain(f => f(someInput, 'name' in securityScheme ? securityScheme.name : '', resource))
+        Either.chain(f => f(someInput, 'name' in securityScheme ? securityScheme.name : ''))
       )
     );
 
@@ -92,14 +88,17 @@ function getAuthResults(securitySchemes: HttpSecurityScheme[][], someInput: IHtt
   });
 }
 
-export const validateSecurity: ValidatorFn<IHttpOperation, IHttpRequest> = ({ element, resource }) => {
+export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, IHttpRequest> = ({
+  element,
+  resource,
+}) => {
   const securitySchemes = resource.security as HttpSecurityScheme[][];
 
   if (!securitySchemes.length) {
     return Either.right(element);
   } else {
     return pipe(
-      gatherValidationResults(securitySchemes, element, resource),
+      gatherValidationResults(securitySchemes, element),
       Either.fromOption(() => element),
       Either.swap,
       Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])

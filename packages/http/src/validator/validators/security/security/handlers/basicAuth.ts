@@ -1,18 +1,17 @@
 import { left } from 'fp-ts/lib/Either';
 import { get } from 'lodash';
 import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
-import { IHttpOperation, IBasicSecurityScheme } from '@stoplight/types';
 import { IHttpRequest } from '../../../../../types';
 
 const basicWWWAuthenticate = 'Basic realm="*"';
 
-function checkHeader(authorizationHeader: string, resource: IHttpOperation) {
+function checkHeader(authorizationHeader: string) {
   const [authScheme, token] = authorizationHeader.split(' ');
 
   const isBasicTokenGiven = !!(token && isBasicToken(token));
   const isBasicScheme = isScheme('basic', authScheme);
 
-  return genRespForScheme(isBasicScheme, isBasicTokenGiven, resource, basicWWWAuthenticate);
+  return genRespForScheme(isBasicScheme, isBasicTokenGiven, basicWWWAuthenticate);
 }
 
 function isBasicToken(token: string) {
@@ -23,10 +22,8 @@ function isBasicToken(token: string) {
   return tokenParts.length === 2;
 }
 
-export const httpBasic = (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
+export const httpBasic = (someInput: IHttpRequest) => {
   const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
-  return authorizationHeader
-    ? checkHeader(authorizationHeader, resource)
-    : left(genUnauthorisedErr(basicWWWAuthenticate));
+  return authorizationHeader ? checkHeader(authorizationHeader) : left(genUnauthorisedErr(basicWWWAuthenticate));
 };

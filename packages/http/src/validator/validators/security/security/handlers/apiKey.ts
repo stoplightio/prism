@@ -3,9 +3,8 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 import { IHttpRequest } from '../../../../../types';
 import { when } from './utils';
-import { IHttpOperation } from '@stoplight/types';
 
-export const apiKeyInCookie = (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
+export const apiKeyInCookie = (someInput: IHttpRequest, name: string) => {
   const probablyCookie = get(someInput, ['headers', 'cookie']);
 
   const isApiKeyInCookie = pipe(
@@ -14,17 +13,17 @@ export const apiKeyInCookie = (someInput: IHttpRequest, name: string, resource: 
     getOrElse(() => false)
   );
 
-  return when(isApiKeyInCookie, '', resource);
+  return when(isApiKeyInCookie, undefined);
 };
 
-export const apiKeyInHeader = (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
+export const apiKeyInHeader = (someInput: IHttpRequest, name: string) => {
   const isAPIKeyProvided = get(someInput, ['headers', name.toLowerCase()]);
 
-  return when(!!isAPIKeyProvided, '', resource);
+  return when(!!isAPIKeyProvided, undefined);
 };
 
-export const apiKeyInQuery = (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
+export const apiKeyInQuery = (someInput: IHttpRequest, name: string) => {
   const isApiKeyInQuery = get(someInput, ['url', 'query', name]);
 
-  return when(isApiKeyInQuery, '', resource);
+  return when(isApiKeyInQuery, undefined);
 };

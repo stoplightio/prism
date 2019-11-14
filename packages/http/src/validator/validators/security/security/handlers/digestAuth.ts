@@ -6,13 +6,13 @@ import { IHttpRequest } from '../../../../../types';
 
 const digestWWWAuthenticate = 'Digest realm="*", nonce="abc123"';
 
-function checkDigestHeader(authorizationHeader: string, resource: IHttpOperation) {
+function checkDigestHeader(authorizationHeader: string) {
   const [authScheme, ...info] = authorizationHeader.split(' ');
 
   const isDigestInfoGiven = info && isDigestInfo(info);
   const isDigestScheme = isScheme('digest', authScheme);
 
-  return genRespForScheme(isDigestScheme, isDigestInfoGiven, resource, digestWWWAuthenticate);
+  return genRespForScheme(isDigestScheme, isDigestInfoGiven, digestWWWAuthenticate);
 }
 
 function isDigestInfo(info: string[]) {
@@ -28,10 +28,8 @@ function isDigestInfo(info: string[]) {
   );
 }
 
-export const httpDigest = (someInput: IHttpRequest, name: string, resource: IHttpOperation) => {
+export const httpDigest = (someInput: IHttpRequest) => {
   const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
 
-  return authorizationHeader
-    ? checkDigestHeader(authorizationHeader, resource)
-    : left(genUnauthorisedErr(digestWWWAuthenticate));
+  return authorizationHeader ? checkDigestHeader(authorizationHeader) : left(genUnauthorisedErr(digestWWWAuthenticate));
 };

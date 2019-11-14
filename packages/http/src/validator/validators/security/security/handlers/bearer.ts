@@ -2,11 +2,10 @@ import { fromNullable, getOrElse, map } from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get, partial } from 'lodash';
 import { when } from './utils';
-import { IHttpOperation, Dictionary } from '@stoplight/types';
+import { Dictionary } from '@stoplight/types';
 import { IHttpRequest } from '../../../../../types';
 
-const bearerHandler = (msg: string, someInput: IHttpRequest, name: string, resource: IHttpOperation) =>
-  when(isBearerToken(someInput.headers || {}), msg, resource);
+const bearerHandler = (msg: string, someInput: IHttpRequest) => when(isBearerToken(someInput.headers || {}), msg);
 
 function isBearerToken(inputHeaders: Dictionary<string>) {
   return pipe(

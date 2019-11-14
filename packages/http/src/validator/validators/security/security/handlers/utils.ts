@@ -3,20 +3,15 @@ import { Either, left, right } from 'fp-ts/lib/Either';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../../../types';
 
-export type ValidateSecurityFn = (
-  someInput: IHttpRequest,
-  name: string,
-  resource: IHttpOperation
-) => Either<IPrismDiagnostic, IHttpOperation>;
+export type ValidateSecurityFn = (someInput: IHttpRequest, name: string) => Either<IPrismDiagnostic, boolean>;
 
 export function genRespForScheme(
   isSchemeProper: boolean,
   isCredsGiven: boolean,
-  resource: IHttpOperation,
   msg: string
-): Either<IPrismDiagnostic, IHttpOperation> {
+): Either<IPrismDiagnostic, boolean> {
   if (isSchemeProper) {
-    return when(isCredsGiven, undefined, resource);
+    return when(isCredsGiven, undefined);
   }
 
   return left(genUnauthorisedErr(msg));
@@ -33,10 +28,6 @@ export function isScheme(shouldBeScheme: string, authScheme: string) {
   return authScheme.toLowerCase() === shouldBeScheme;
 }
 
-export function when(
-  condition: boolean,
-  errorMessage: string | undefined,
-  resource: IHttpOperation
-): Either<IPrismDiagnostic, IHttpOperation> {
-  return condition ? right(resource) : left(genUnauthorisedErr(errorMessage));
+export function when(condition: boolean, errorMessage: string | undefined): Either<IPrismDiagnostic, boolean> {
+  return condition ? right(true) : left(genUnauthorisedErr(errorMessage));
 }
