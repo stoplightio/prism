@@ -1,17 +1,17 @@
 import { left } from 'fp-ts/lib/Either';
 import { get } from 'lodash';
-import { SecurityScheme } from './types';
 import { genRespForScheme, genUnauthorisedErr, isScheme } from './utils';
+import { IHttpRequest } from '../../../../types';
 
 const digestWWWAuthenticate = 'Digest realm="*", nonce="abc123"';
 
-function checkDigestHeader(authorizationHeader: string, resource?: unknown) {
+function checkDigestHeader(authorizationHeader: string) {
   const [authScheme, ...info] = authorizationHeader.split(' ');
 
   const isDigestInfoGiven = info && isDigestInfo(info);
   const isDigestScheme = isScheme('digest', authScheme);
 
-  return genRespForScheme(isDigestScheme, isDigestInfoGiven, resource, digestWWWAuthenticate);
+  return genRespForScheme(isDigestScheme, isDigestInfoGiven, digestWWWAuthenticate);
 }
 
 function isDigestInfo(info: string[]) {
@@ -27,13 +27,8 @@ function isDigestInfo(info: string[]) {
   );
 }
 
-export const httpDigest = {
-  test: ({ scheme, type }: SecurityScheme) => scheme === 'digest' && type === 'http',
-  handle: (someInput: unknown, name: string, resource?: unknown) => {
-    const authorizationHeader = get(someInput, ['headers', 'authorization'], '');
+export const httpDigest = (input: Pick<IHttpRequest, 'headers' | 'url'>) => {
+  const authorizationHeader = get(input, ['headers', 'authorization'], '');
 
-    return authorizationHeader
-      ? checkDigestHeader(authorizationHeader, resource)
-      : left(genUnauthorisedErr(digestWWWAuthenticate));
-  },
+  return authorizationHeader ? checkDigestHeader(authorizationHeader) : left(genUnauthorisedErr(digestWWWAuthenticate));
 };

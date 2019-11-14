@@ -112,7 +112,7 @@ const helpers = {
     const httpContent = hasContents(response)
       ? pipe(
           findDefaultContentType(response),
-          Option.alt(() => findBestHttpContentByMediaType(response, ['application/json']))
+          Option.alt(() => findBestHttpContentByMediaType(response, ['application/json', '*/*']))
         )
       : Option.none;
 
