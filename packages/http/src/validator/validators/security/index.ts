@@ -60,7 +60,7 @@ function gatherWWWAuthHeader(
 
 function getAuthResult(
   firstAuthErrAsLeft: Either.Left<IPrismDiagnostic>,
-  authResult: Array<Either.Either<IPrismDiagnostic, boolean>>
+  authResult: Array<Either.Either<IPrismDiagnostic, unknown>>
 ) {
   const firstAuthErr = pipe(
     firstAuthErrAsLeft,

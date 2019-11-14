@@ -6,13 +6,13 @@ import { IHttpRequest } from '../../../../types';
 export type ValidateSecurityFn = (
   input: Pick<IHttpRequest, 'headers' | 'url'>,
   name: string
-) => Either<IPrismDiagnostic, boolean>;
+) => Either<IPrismDiagnostic, unknown>;
 
 export function genRespForScheme(
   isSchemeProper: boolean,
   isCredsGiven: boolean,
   msg: string
-): Either<IPrismDiagnostic, boolean> {
+): Either<IPrismDiagnostic, unknown> {
   if (isSchemeProper) {
     return when(isCredsGiven, undefined);
   }
@@ -31,6 +31,6 @@ export function isScheme(shouldBeScheme: string, authScheme: string) {
   return authScheme.toLowerCase() === shouldBeScheme;
 }
 
-export function when(condition: boolean, errorMessage: string | undefined): Either<IPrismDiagnostic, boolean> {
+export function when(condition: boolean, errorMessage: string | undefined): Either<IPrismDiagnostic, unknown> {
   return condition ? right(true) : left(genUnauthorisedErr(errorMessage));
 }
