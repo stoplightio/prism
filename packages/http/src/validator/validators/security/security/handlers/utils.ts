@@ -1,4 +1,4 @@
-import { DiagnosticSeverity, IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity } from '@stoplight/types';
 import { Either, left, right } from 'fp-ts/lib/Either';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../../../types';

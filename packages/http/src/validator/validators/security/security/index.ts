@@ -94,7 +94,7 @@ export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, IHt
 }) => {
   const securitySchemes = resource.security as HttpSecurityScheme[][];
 
-  if (!securitySchemes.length) {
+  if (!securitySchemes || !securitySchemes.length) {
     return Either.right(element);
   } else {
     return pipe(
