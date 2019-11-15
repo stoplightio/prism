@@ -71,25 +71,50 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
       return pipe(
         TaskEither.fromEither(components.route({ resources, input })),
-        TaskEither.chain(resource => inputValidation(resource, input, config)),
-        TaskEither.chain(({ resource, inputValidations }) => mockOrForward(resource, input, config, inputValidations)),
-        TaskEither.map(({ output, resource, inputValidations }) => {
-          const outputValidations = config.validateResponse
-            ? pipe(
-                Option.fromEither(Either.swap(components.validateOutput({ resource, element: output }))),
-                Option.getOrElse<IPrismDiagnostic[]>(() => [])
-              )
-            : [];
+        TaskEither.fold(
+          error => {
+            if (config.errors && isProxyConfig(config)) {
+              components.logger.warn(
+                `The selected route hasn't been found and the errors is set false. Prims will proxy the request to the upstream server but no validation will happen`
+              );
+              return pipe(
+                components.forward(input, config.upstream.href),
+                TaskEither.map(output => ({
+                  input,
+                  output,
+                  validations: {
+                    input: [],
+                    output: [],
+                  },
+                }))
+              );
+            } else return TaskEither.left(error);
+          },
+          resource =>
+            pipe(
+              inputValidation(resource, input, config),
+              TaskEither.chain(({ resource, inputValidations }) =>
+                mockOrForward(resource, input, config, inputValidations)
+              ),
+              TaskEither.map(({ output, resource, inputValidations }) => {
+                const outputValidations = config.validateResponse
+                  ? pipe(
+                      Option.fromEither(Either.swap(components.validateOutput({ resource, element: output }))),
+                      Option.getOrElse<IPrismDiagnostic[]>(() => [])
+                    )
+                  : [];
 
-          return {
-            input,
-            output,
-            validations: {
-              input: inputValidations,
-              output: outputValidations,
-            },
-          };
-        })
+                return {
+                  input,
+                  output,
+                  validations: {
+                    input: inputValidations,
+                    output: outputValidations,
+                  },
+                };
+              })
+            )
+        )
       );
     },
   };

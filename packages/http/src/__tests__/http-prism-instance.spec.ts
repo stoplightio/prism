@@ -59,7 +59,7 @@ describe('Http Client .request', () => {
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
       prism = createInstance(
-        { validateRequest: true, checkSecurity: true, validateResponse: true, mock: { dynamic: false } },
+        { validateRequest: true, checkSecurity: true, validateResponse: true, mock: { dynamic: false }, errors: false },
         { logger }
       );
       resources = await getHttpOperationsFromResource(specPath);
@@ -149,6 +149,7 @@ describe('Http Client .request', () => {
         checkSecurity: true,
         validateRequest: true,
         validateResponse: true,
+        errors: false,
         upstream: new URL(baseUrl),
       };
 
@@ -208,7 +209,7 @@ describe('Http Client .request', () => {
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
       prism = createInstance(
-        { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false } },
+        { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false }, errors: false },
         { logger }
       );
       resources = await getHttpOperationsFromResource(noRefsPetstoreMinimalOas2Path);
@@ -343,7 +344,7 @@ describe('Http Client .request', () => {
 
   it('returns stringified static example when one defined in spec', async () => {
     prism = createInstance(
-      { mock: { dynamic: false }, checkSecurity: true, validateRequest: true, validateResponse: true },
+      { mock: { dynamic: false }, checkSecurity: true, validateRequest: true, validateResponse: true, errors: false },
       { logger }
     );
     resources = await getHttpOperationsFromResource(staticExamplesOas2Path);
@@ -380,7 +381,14 @@ describe('proxy server', () => {
   describe('when the base URL has a different port', () => {
     it('will take in account when proxying', async () => {
       const prism = createInstance(
-        { mock: false, checkSecurity: true, validateRequest: true, validateResponse: true, upstream: new URL(baseUrl) },
+        {
+          mock: false,
+          checkSecurity: true,
+          validateRequest: true,
+          validateResponse: true,
+          upstream: new URL(baseUrl),
+          errors: false,
+        },
         { logger }
       );
 

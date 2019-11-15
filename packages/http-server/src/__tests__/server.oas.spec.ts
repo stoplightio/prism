@@ -23,6 +23,7 @@ async function instantiatePrism(specPath: string) {
       checkSecurity: true,
       validateRequest: true,
       validateResponse: true,
+      errors: false,
       mock: { dynamic: false },
     },
     errors: false,

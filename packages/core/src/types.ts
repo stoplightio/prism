@@ -15,6 +15,7 @@ export interface IPrismConfig {
   checkSecurity: boolean;
   validateRequest: boolean;
   validateResponse: boolean;
+  errors: boolean;
 }
 
 export type ValidatorFn<Resource, T> = (opts: {

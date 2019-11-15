@@ -11,6 +11,7 @@ describe('User Http Client', () => {
         mock: { dynamic: false },
         validateRequest: true,
         validateResponse: true,
+        errors: false,
         checkSecurity: true,
       };
 
