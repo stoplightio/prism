@@ -73,7 +73,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         TaskEither.fromEither(components.route({ resources, input })),
         TaskEither.fold(
           error => {
-            if (config.errors && isProxyConfig(config)) {
+            if (!config.errors && isProxyConfig(config)) {
               components.logger.warn(
                 `The selected route hasn't been found and the errors is set false. Prims will proxy the request to the upstream server but no validation will happen`
               );

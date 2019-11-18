@@ -1,0 +1,21 @@
+====test====
+Receiving a response we cannot serialize but it's a string gets passed through
+====spec====
+swagger: "2.0"
+paths:
+  /html:
+    get:
+      produces:
+        - application/html
+      responses:
+        200:
+          description: OK
+====server====
+proxy -p 4010 ${document} http://httpbin
+====command====
+curl -i http://localhost:4010/json
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"slideshow":{"author":"Yours Truly","date":"date of publication","slides":[{"title":"Wake up to WonderWidgets!","type":"all"},{"items":["Why <em>WonderWidgets</em> are great","Who <em>buys</em> WonderWidgets"],"title":"Overview","type":"all"}],"title":"Sample Slide Show"}}
