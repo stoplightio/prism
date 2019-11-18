@@ -84,7 +84,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                     input: [
                       {
                         message:
-                          "The selected route hasn't been found and the errors is set false. Prims will proxy the request to the upstream server but no validation will happen",
+                          "The selected route hasn't been found and the errors is set false. Prism will proxy the request to the upstream server but no validation will happen",
                         severity: DiagnosticSeverity.Warning,
                       },
                     ],
