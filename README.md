@@ -1,9 +1,9 @@
 # Prism
 
-[![Build Status](https://dev.azure.com/vncz/vncz/_apis/build/status/stoplightio.prism?branchName=master)](https://dev.azure.com/vncz/vncz/_build/latest?definitionId=1&branchName=master)
+[![Buy us a tree](https://img.shields.io/badge/Buy%20us%20a%20tree-%F0%9F%8C%B3-lightgreen)](https://offset.earth/stoplightinc)
 [![CircleCI](https://circleci.com/gh/stoplightio/prism.svg?style=svg)](https://circleci.com/gh/stoplightio/prism)
 
-Prism is a set of packages for API mocking with **OpenAPI v2** (formerly known as Swagger Specification) and **OpenAPI v3**.
+Prism is a set of packages for API mocking with **OpenAPI v2** (formerly known as Swagger) and **OpenAPI v3**.
 
 For example, given an API specification you can spin up a mock HTTP server and respond realistically based on your requests
 
