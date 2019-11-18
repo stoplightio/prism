@@ -13,7 +13,7 @@ import { parseSpecFile, xmlValidator } from './helpers';
 const glob = globFs({ gitignore: true });
 jest.setTimeout(5000);
 
-const WAIT_FOR_LINE = 'Server listening at';
+const WAIT_FOR_LINE = 'Prism is listening';
 const WAIT_FOR_LINE_TIMEOUT = 3000;
 
 describe('harness', () => {
