@@ -3,9 +3,10 @@ import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
 import { defaults } from 'lodash';
-import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig } from './types';
+import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig, IPrismOutput } from './types';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { getSemigroup } from 'fp-ts/lib/NonEmptyArray';
+import { DiagnosticSeverity } from '@stoplight/types';
 
 const sequenceValidation = sequenceT(Either.getValidation(getSemigroup<IPrismDiagnostic>()));
 
@@ -19,7 +20,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 ): IPrism<Resource, Input, Output, Config> {
   type ResourceAndValidation = {
     resource: Resource;
-    inputValidations: IPrismDiagnostic[];
+    validations: IPrismDiagnostic[];
   };
 
   const inputValidation = (
@@ -33,17 +34,17 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         config.checkSecurity ? components.validateSecurity({ resource, element: input }) : Either.right(input)
       ),
       Either.fold(
-        inputValidations => inputValidations as IPrismDiagnostic[],
+        validations => validations as IPrismDiagnostic[],
         () => []
       ),
-      inputValidations => TaskEither.right({ resource, inputValidations })
+      validations => TaskEither.right({ resource, validations })
     );
 
   const mockOrForward = (
     resource: Resource,
     input: Input,
     config: Config,
-    inputValidations: IPrismDiagnostic[]
+    validations: IPrismDiagnostic[]
   ): TaskEither.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
     const produceOutput = isProxyConfig(config)
       ? components.forward(input, config.upstream.href)
@@ -51,7 +52,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           components.mock({
             resource,
             input: {
-              validations: inputValidations,
+              validations,
               data: input,
             },
             config: config.mock,
@@ -60,7 +61,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
     return pipe(
       produceOutput,
-      TaskEither.map(output => ({ output, resource, inputValidations }))
+      TaskEither.map(output => ({ output, resource, validations }))
     );
   };
 
@@ -74,16 +75,19 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         TaskEither.fold(
           error => {
             if (!config.errors && isProxyConfig(config)) {
-              components.logger.warn(
-                `The selected route hasn't been found and the errors is set false. Prims will proxy the request to the upstream server but no validation will happen`
-              );
               return pipe(
                 components.forward(input, config.upstream.href),
-                TaskEither.map(output => ({
+                TaskEither.map<Output, IPrismOutput<Output>>(output => ({
                   input,
                   output,
                   validations: {
-                    input: [],
+                    input: [
+                      {
+                        message:
+                          "The selected route hasn't been found and the errors is set false. Prims will proxy the request to the upstream server but no validation will happen",
+                        severity: DiagnosticSeverity.Warning,
+                      },
+                    ],
                     output: [],
                   },
                 }))
@@ -93,10 +97,8 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           resource =>
             pipe(
               inputValidation(resource, input, config),
-              TaskEither.chain(({ resource, inputValidations }) =>
-                mockOrForward(resource, input, config, inputValidations)
-              ),
-              TaskEither.map(({ output, resource, inputValidations }) => {
+              TaskEither.chain(({ resource, validations }) => mockOrForward(resource, input, config, validations)),
+              TaskEither.map(({ output, resource, validations: inputValidations }) => {
                 const outputValidations = config.validateResponse
                   ? pipe(
                       Option.fromEither(Either.swap(components.validateOutput({ resource, element: output }))),

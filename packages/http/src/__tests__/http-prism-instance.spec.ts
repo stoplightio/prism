@@ -144,15 +144,6 @@ describe('Http Client .request', () => {
 
     describe('mocking is off', () => {
       const baseUrl = 'https://stoplight.io';
-      const config: IHttpProxyConfig = {
-        mock: false,
-        checkSecurity: true,
-        validateRequest: true,
-        validateResponse: true,
-        errors: false,
-        upstream: new URL(baseUrl),
-      };
-
       const serverReply = 'hello world';
 
       beforeEach(() => {
@@ -163,22 +154,49 @@ describe('Http Client .request', () => {
 
       afterEach(() => nock.cleanAll());
 
-      describe('path is not valid', () => {
-        const request: IHttpRequest = {
-          method: 'get',
-          url: {
-            path: '/x-bet',
-            baseUrl,
-          },
+      describe.each<[boolean, string]>([
+        [false, 'will let the request go through'],
+        [true, 'fails the operation'],
+      ])('errors flag is %s', (errors, testText) => {
+        const config: IHttpProxyConfig = {
+          mock: false,
+          checkSecurity: true,
+          validateRequest: true,
+          validateResponse: true,
+          errors,
+          upstream: new URL(baseUrl),
         };
 
-        it('fails the operation', () =>
-          assertResolvesLeft(prism.request(request, resources, config), e =>
-            expect(e).toMatchObject(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR))
-          ));
+        describe('path is not valid', () => {
+          const request: IHttpRequest = {
+            method: 'get',
+            url: {
+              path: '/x-bet',
+              baseUrl,
+            },
+          };
+
+          it(testText, () => {
+            const op = prism.request(request, resources, config);
+            errors
+              ? assertResolvesLeft(op, e =>
+                  expect(e).toMatchObject(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR))
+                )
+              : assertResolvesRight(op);
+          });
+        });
       });
 
       describe('Prism user-agent header', () => {
+        const config: IHttpProxyConfig = {
+          mock: false,
+          checkSecurity: true,
+          validateRequest: true,
+          validateResponse: true,
+          errors: false,
+          upstream: new URL(baseUrl),
+        };
+
         describe('when the defaults are used', () => {
           it('should use Prism/<<version>> for the header', async () => {
             const userAgent = await checkUserAgent(config, prism, resources, {}, 'https://stoplight.io');
