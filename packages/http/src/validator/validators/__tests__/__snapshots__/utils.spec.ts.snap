@@ -28,19 +28,6 @@ Array [
 ]
 `;
 
-exports[`convertAjvErrors() message field is missing converts properly 1`] = `
-Array [
-  Object {
-    "code": "required",
-    "message": "",
-    "path": Array [
-      "b",
-    ],
-    "severity": 0,
-  },
-]
-`;
-
 exports[`validateAgainstSchema() has validation errors returns validation errors 1`] = `
 Array [
   Object {

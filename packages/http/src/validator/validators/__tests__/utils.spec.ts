@@ -29,8 +29,8 @@ describe('convertAjvErrors()', () => {
   describe('message field is missing', () => {
     it('converts properly', () => {
       expect(
-        convertAjvErrors([Object.assign({}, errorObjectFixture, { message: undefined })], DiagnosticSeverity.Error)
-      ).toMatchSnapshot();
+        convertAjvErrors([Object.assign({}, errorObjectFixture, { message: undefined })], DiagnosticSeverity.Error)[0]
+      ).toHaveProperty('message', '');
     });
   });
 
