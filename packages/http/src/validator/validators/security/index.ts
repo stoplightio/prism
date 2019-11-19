@@ -19,23 +19,18 @@ function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: Pi
   const invalidSecuritySchemes = authResults.filter(Either.isLeft);
 
   if (!validSecurityScheme && invalidSecuritySchemes.length > 0) {
-    return Option.some(
-      getWWWAuthHeader(
-        invalidSecuritySchemes.map(t => t.left),
-        ['tags']
-      )
-    );
+    return Option.some(getWWWAuthHeader(invalidSecuritySchemes.map(t => t.left)));
   } else {
     return Option.none;
   }
 }
 
-function getWWWAuthHeader(authResults: IPrismDiagnostic[], pathToHeader: string[]) {
+function getWWWAuthHeader(authResults: IPrismDiagnostic[]) {
   if (authResults.length === 1) {
     return authResults[0];
   } else {
     const wwwAuthenticateHeaders = authResults.map(authResult => authResult.tags || []);
-    const firstAuthErrWithAuthHeader = set(pathToHeader, flatten(wwwAuthenticateHeaders), authResults[0]);
+    const firstAuthErrWithAuthHeader = set(['tags'], flatten(wwwAuthenticateHeaders), authResults[0]);
 
     return wwwAuthenticateHeaders.every(identity) ? firstAuthErrWithAuthHeader : authResults[0];
   }
@@ -52,12 +47,7 @@ function getAuthResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHt
 
     return pipe(
       eitherSequence(authResults),
-      Either.mapLeft(() =>
-        getWWWAuthHeader(
-          authResults.filter(Either.isLeft).map(t => t.left),
-          ['tags']
-        )
-      )
+      Either.mapLeft(() => getWWWAuthHeader(authResults.filter(Either.isLeft).map(t => t.left)))
     );
   });
 }
