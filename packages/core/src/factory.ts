@@ -76,7 +76,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           error => {
             if (!config.errors && isProxyConfig(config)) {
               return pipe(
-                components.forward(input, config.upstream.href),
+                components.forward(input, config.upstream.href)(components.logger.child({ name: 'PROXY' })),
                 TaskEither.map<Output, IPrismOutput<Output>>(output => ({
                   input,
                   output,
@@ -84,7 +84,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                     input: [
                       {
                         message:
-                          "The selected route hasn't been found and the errors is set false. Prism will proxy the request to the upstream server but no validation will happen",
+                          "The selected route hasn't been found and the errors is set false. Prism has proxied the request to the upstream server but no validation will happen",
                         severity: DiagnosticSeverity.Warning,
                       },
                     ],
