@@ -45,3 +45,4 @@ export function parseSpecFile(spec: string) {
     expectLoose: splitted[1 + expectLooseIndex],
   };
 }
+
