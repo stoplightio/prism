@@ -3,7 +3,7 @@ import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { flatten, identity } from 'lodash';
-import { noop, set } from 'lodash/fp';
+import { set } from 'lodash/fp';
 import { findSecurityHandler } from './handlers';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { isNonEmpty, array } from 'fp-ts/lib/Array';
@@ -18,14 +18,11 @@ function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: Pi
   const validSecurityScheme = authResults.some(Either.isRight);
   const invalidSecuritySchemes = authResults.filter(Either.isLeft);
 
-  const firstLeft = invalidSecuritySchemes[0];
-
-  if (!validSecurityScheme && firstLeft) {
+  if (!validSecurityScheme && invalidSecuritySchemes.length > 0) {
     return Option.some(
       getWWWAuthHeader(
         invalidSecuritySchemes.map(t => t.left),
-        ['tags'],
-        firstLeft.left
+        ['tags']
       )
     );
   } else {
@@ -33,14 +30,14 @@ function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: Pi
   }
 }
 
-function getWWWAuthHeader(authResults: IPrismDiagnostic[], pathToHeader: string[], firstAuthErr: IPrismDiagnostic) {
+function getWWWAuthHeader(authResults: IPrismDiagnostic[], pathToHeader: string[]) {
   if (authResults.length === 1) {
-    return firstAuthErr;
+    return authResults[0];
   } else {
     const wwwAuthenticateHeaders = authResults.map(authResult => authResult.tags || []);
-    const firstAuthErrWithAuthHeader = set(pathToHeader, flatten(wwwAuthenticateHeaders), firstAuthErr);
+    const firstAuthErrWithAuthHeader = set(pathToHeader, flatten(wwwAuthenticateHeaders), authResults[0]);
 
-    return wwwAuthenticateHeaders.every(identity) ? firstAuthErrWithAuthHeader : firstAuthErr;
+    return wwwAuthenticateHeaders.every(identity) ? firstAuthErrWithAuthHeader : authResults[0];
   }
 }
 
@@ -55,11 +52,10 @@ function getAuthResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHt
 
     return pipe(
       eitherSequence(authResults),
-      Either.mapLeft(err =>
+      Either.mapLeft(() =>
         getWWWAuthHeader(
           authResults.filter(Either.isLeft).map(t => t.left),
-          ['tags'],
-          err
+          ['tags']
         )
       )
     );
