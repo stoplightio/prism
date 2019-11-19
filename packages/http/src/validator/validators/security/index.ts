@@ -6,6 +6,7 @@ import { flatten, identity } from 'lodash';
 import { noop, set } from 'lodash/fp';
 import { findSecurityHandler } from './handlers';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { isNonEmpty } from 'fp-ts/lib/Array';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../types';
 
@@ -97,14 +98,14 @@ export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, Pic
 }) => {
   const securitySchemes = resource.security;
 
-  if (!securitySchemes || !securitySchemes.length) {
-    return Either.right(element);
-  } else {
+  if (securitySchemes && isNonEmpty(securitySchemes)) {
     return pipe(
       gatherValidationResults(securitySchemes, element),
       Either.fromOption(() => element),
       Either.swap,
       Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
     );
+  } else {
+    return Either.right(element);
   }
 };
