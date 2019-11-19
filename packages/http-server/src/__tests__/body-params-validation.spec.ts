@@ -368,7 +368,7 @@ describe('body params validation', () => {
                 {
                   code: 'enum',
                   location: ['body', 'status'],
-                  message: 'should be equal to one of the allowed values',
+                  message: 'should be equal to one of the allowed values: placed, approved, delivered',
                   severity: 'Error',
                 },
               ],
@@ -495,7 +495,7 @@ describe('body params validation', () => {
               location: ['body', 'status'],
               severity: 'Error',
               code: 'enum',
-              message: 'should be equal to one of the allowed values',
+              message: 'should be equal to one of the allowed values: open, close',
             },
           ],
         });

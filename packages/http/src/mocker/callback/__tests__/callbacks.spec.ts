@@ -12,7 +12,6 @@ describe('runCallback()', () => {
     info: jest.fn(),
   };
 
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -32,15 +31,17 @@ describe('runCallback()', () => {
           method: 'get',
           path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
-          responses: [{ code: '200', contents: [ { mediaType: 'application/json' } ] }],
+          responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
           request: {
             body: {
-              contents: [{
-                mediaType: 'application/json',
-                examples: [{ key: 'e1', value: { about: 'something' }}]
-              }],
+              contents: [
+                {
+                  mediaType: 'application/json',
+                  examples: [{ key: 'e1', value: { about: 'something' } }],
+                },
+              ],
             },
-          }
+          },
         },
         request: {
           body: '',
@@ -52,12 +53,20 @@ describe('runCallback()', () => {
         },
         response: {
           statusCode: 200,
-          body: { id: 5 }
+          body: { id: 5 },
         },
       })(logger)();
 
-      expect(fetch).toHaveBeenCalledWith('http://example.com/get/200/5/weird/content', { method: 'get', body: '{"about":"something"}', headers: { 'content-type': 'application/json' } });
-      expect(logger.info).toHaveBeenNthCalledWith(1, { name: 'CALLBACK' }, 'test callback: Making request to http://example.com/get/200/5/weird/content...');
+      expect(fetch).toHaveBeenCalledWith('http://example.com/get/200/5/weird/content', {
+        method: 'get',
+        body: '{"about":"something"}',
+        headers: { 'content-type': 'application/json' },
+      });
+      expect(logger.info).toHaveBeenNthCalledWith(
+        1,
+        { name: 'CALLBACK' },
+        'test callback: Making request to http://example.com/get/200/5/weird/content...'
+      );
       expect(logger.info).toHaveBeenNthCalledWith(2, { name: 'CALLBACK' }, 'test callback: Request finished');
       expect(logger.error).not.toHaveBeenCalled();
       expect(logger.warn).not.toHaveBeenCalled();
@@ -66,7 +75,7 @@ describe('runCallback()', () => {
 
   describe('callback response is incorrect', () => {
     it('logs violations', async () => {
-      const headers = { 'content-type': 'application/json', 'test': 'test' };
+      const headers = { 'content-type': 'application/json', test: 'test' };
       ((fetch as unknown) as jest.Mock).mockResolvedValue({
         status: 200,
         headers: { get: (n: string) => headers[n], raw: () => mapValues(headers, (h: string) => h.split(' ')) },
@@ -79,24 +88,35 @@ describe('runCallback()', () => {
           method: 'get',
           path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
-          responses: [{
-            code: '200',
-            headers: [
-              { name: 'test', style: HttpParamStyles.Simple, deprecated: true, schema: { type: 'string', enum: ['a'] } },
-            ],
-            contents: [{
-              mediaType: 'application/json',
-              schema: { type: 'object', properties: { test: { type: 'string', maxLength: 3, } } },
-            }],
-          }],
+          responses: [
+            {
+              code: '200',
+              headers: [
+                {
+                  name: 'test',
+                  style: HttpParamStyles.Simple,
+                  deprecated: true,
+                  schema: { type: 'string', enum: ['a'] },
+                },
+              ],
+              contents: [
+                {
+                  mediaType: 'application/json',
+                  schema: { type: 'object', properties: { test: { type: 'string', maxLength: 3 } } },
+                },
+              ],
+            },
+          ],
           request: {
             body: {
-              contents: [{
-                mediaType: 'application/json',
-                examples: [{ key: 'e1', value: { about: 'something' }}],
-              }],
+              contents: [
+                {
+                  mediaType: 'application/json',
+                  examples: [{ key: 'e1', value: { about: 'something' } }],
+                },
+              ],
             },
-          }
+          },
         },
         request: {
           body: '',
@@ -108,14 +128,30 @@ describe('runCallback()', () => {
         },
         response: {
           statusCode: 200,
-          body: { id: 5 }
+          body: { id: 5 },
         },
       })(logger)();
 
-      expect(fetch).toHaveBeenCalledWith('http://example.com/get/200/5/weird/content', { method: 'get', body: '{"about":"something"}', headers: { 'content-type': 'application/json' } });
-      expect(logger.warn).toHaveBeenNthCalledWith(1, { name: 'VALIDATOR' }, 'Violation: header.test Header param test is deprecated');
-      expect(logger.error).toHaveBeenNthCalledWith(1, { name: 'VALIDATOR' }, 'Violation: body.test should NOT be longer than 3 characters');
-      expect(logger.error).toHaveBeenNthCalledWith(2, { name: 'VALIDATOR' }, 'Violation: header.test should be equal to one of the allowed values');
+      expect(fetch).toHaveBeenCalledWith('http://example.com/get/200/5/weird/content', {
+        method: 'get',
+        body: '{"about":"something"}',
+        headers: { 'content-type': 'application/json' },
+      });
+      expect(logger.warn).toHaveBeenNthCalledWith(
+        1,
+        { name: 'VALIDATOR' },
+        'Violation: header.test Header param test is deprecated'
+      );
+      expect(logger.error).toHaveBeenNthCalledWith(
+        1,
+        { name: 'VALIDATOR' },
+        'Violation: body.test should NOT be longer than 3 characters'
+      );
+      expect(logger.error).toHaveBeenNthCalledWith(
+        2,
+        { name: 'VALIDATOR' },
+        'Violation: header.test should be equal to one of the allowed values: a'
+      );
     });
   });
 
@@ -146,7 +182,7 @@ describe('runCallback()', () => {
         },
         response: {
           statusCode: 200,
-          body: { id: 5 }
+          body: { id: 5 },
         },
       })(logger)();
 
