@@ -12,10 +12,7 @@ import { IHttpRequest } from '../../../types';
 
 const eitherSequence = array.sequence(Either.either);
 
-function gatherValidationResults(
-  securitySchemes: HttpSecurityScheme[][],
-  input: Pick<IHttpRequest, 'headers' | 'url'>
-) {
+function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHttpRequest, 'headers' | 'url'>) {
   const authResults = getAuthResults(securitySchemes, input);
 
   const validSecurityScheme = authResults.some(Either.isRight);
@@ -24,13 +21,13 @@ function gatherValidationResults(
   const firstLeft = invalidSecuritySchemes[0];
 
   if (!validSecurityScheme && firstLeft) {
-    return Option.some(gatherWWWAuthHeader(invalidSecuritySchemes, ['tags'], firstLeft.left));
+    return Option.some(getWWWAuthHeader(invalidSecuritySchemes, ['tags'], firstLeft.left));
   } else {
     return Option.none;
   }
 }
 
-function gatherWWWAuthHeader(
+function getWWWAuthHeader(
   authResults: Either.Either<IPrismDiagnostic, unknown>[],
   pathToHeader: string[],
   firstAuthErr: IPrismDiagnostic
@@ -62,7 +59,7 @@ function getAuthResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHt
 
     return pipe(
       eitherSequence(authResults),
-      Either.mapLeft(err => gatherWWWAuthHeader(authResults, ['tags'], err))
+      Either.mapLeft(err => getWWWAuthHeader(authResults, ['tags'], err))
     );
   });
 }
@@ -75,7 +72,7 @@ export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, Pic
 
   if (securitySchemes && isNonEmpty(securitySchemes)) {
     return pipe(
-      gatherValidationResults(securitySchemes, element),
+      getValidationResults(securitySchemes, element),
       Either.fromOption(() => element),
       Either.swap,
       Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
