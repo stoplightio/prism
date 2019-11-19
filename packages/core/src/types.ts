@@ -1,6 +1,7 @@
 import { IDiagnostic } from '@stoplight/types';
 import { Either } from 'fp-ts/lib/Either';
 import { ReaderEither } from 'fp-ts/lib/ReaderEither';
+import { ReaderTaskEither } from 'fp-ts/lib/ReaderTaskEither';
 import { TaskEither } from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
@@ -32,7 +33,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   validateInput: ValidatorFn<Resource, Input>;
   validateSecurity: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
-  forward: (input: Input, baseUrl: string) => TaskEither<Error, Output>;
+  forward: (input: Input, baseUrl: string) => ReaderTaskEither<Logger, Error, Output>;
   mock: (opts: {
     resource: Resource;
     input: IPrismInput<Input>;

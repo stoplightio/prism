@@ -46,7 +46,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     inputValidations: IPrismDiagnostic[]
   ): TaskEither.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
     const produceOutput = isProxyConfig(config)
-      ? components.forward(input, config.upstream.href)
+      ? components.forward(input, config.upstream.href)(components.logger.child({ name: 'PROXY' }))
       : TaskEither.fromEither(
           components.mock({
             resource,

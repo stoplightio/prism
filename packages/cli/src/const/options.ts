@@ -6,4 +6,5 @@ export const LOG_COLOR_MAP = {
   NEGOTIATOR: { index: 1, color: chalk.bgCyanBright },
   VALIDATOR: { index: 1, color: chalk.bgGreenBright },
   CALLBACK: { index: 1, color: chalk.bgBlue },
+  PROXY: { index: 1, color: chalk.bgMagentaBright },
 };
