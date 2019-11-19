@@ -6,6 +6,13 @@ import { mapValues } from 'lodash';
 jest.mock('node-fetch');
 
 describe('forward', () => {
+  const logger: any = {
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  };
+
   describe('when POST method with json body', () => {
     it('forwards request to upstream', () => {
       const headers = { 'content-type': 'application/json' };
@@ -24,7 +31,7 @@ describe('forward', () => {
             url: { path: '/test' },
           },
           'http://example.com'
-        ),
+        )(logger),
         () => {
           expect(fetch).toHaveBeenCalledWith(
             'http://example.com/test',
@@ -56,7 +63,7 @@ describe('forward', () => {
             url: { path: '/test' },
           },
           'http://example.com'
-        )
+        )(logger)
       );
     });
   });
@@ -80,7 +87,7 @@ describe('forward', () => {
             url: { path: '/test' },
           },
           'http://example.com'
-        ),
+        )(logger),
         () => {
           expect(fetch).toHaveBeenCalledWith(
             'http://example.com/test',

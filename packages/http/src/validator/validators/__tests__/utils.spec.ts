@@ -1,14 +1,15 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as convertAjvErrorsModule from '../utils';
 import { convertAjvErrors, validateAgainstSchema } from '../utils';
+import { ErrorObject } from 'ajv';
 
 describe('convertAjvErrors()', () => {
-  const errorObjectFixture = {
+  const errorObjectFixture: ErrorObject = {
     dataPath: 'a.b',
     keyword: 'required',
     message: 'c is required',
     schemaPath: '..',
-    params: '',
+    params: {},
   };
 
   describe('all fields defined', () => {
@@ -20,7 +21,7 @@ describe('convertAjvErrors()', () => {
   describe('keyword field is missing', () => {
     it('converts properly', () => {
       expect(
-        convertAjvErrors([Object.assign({}, errorObjectFixture, { keyword: undefined })], DiagnosticSeverity.Error),
+        convertAjvErrors([Object.assign({}, errorObjectFixture, { keyword: undefined })], DiagnosticSeverity.Error)
       ).toMatchSnapshot();
     });
   });
@@ -28,8 +29,8 @@ describe('convertAjvErrors()', () => {
   describe('message field is missing', () => {
     it('converts properly', () => {
       expect(
-        convertAjvErrors([Object.assign({}, errorObjectFixture, { message: undefined })], DiagnosticSeverity.Error),
-      ).toMatchSnapshot();
+        convertAjvErrors([Object.assign({}, errorObjectFixture, { message: undefined })], DiagnosticSeverity.Error)[0]
+      ).toHaveProperty('message', '');
     });
   });
 
@@ -75,7 +76,7 @@ describe('validateAgainstSchema()', () => {
             schemaPath: '#/type',
           },
         ],
-        DiagnosticSeverity.Error,
+        DiagnosticSeverity.Error
       );
     });
   });
