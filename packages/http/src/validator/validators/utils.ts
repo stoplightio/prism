@@ -21,7 +21,7 @@ export const convertAjvErrors = (errors: Ajv.ErrorObject[] | undefined | null, s
     return {
       path: error.dataPath.split('.').slice(1),
       code: error.keyword || '',
-      message: `${error.message}${allowedParameters}` || '',
+      message: `${error.message || ''}${allowedParameters || ''}`,
       severity,
     };
   });

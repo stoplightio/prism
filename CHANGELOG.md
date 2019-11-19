@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism has values for path/query params bolded and in color [#743](https://github.com/stoplightio/prism/pull/743)
 - The CLI now displays a timestamp for all the logged operations [#779](https://github.com/stoplightio/prism/pull/779)
 - Prism has now support for OpenAPI 3.0 callbacks [#716](https://github.com/stoplightio/prism/pull/716)
+- Prism body validator will now show allowed enum parameters in error messages [#828](https://github.com/stoplightio/prism/pull/828)
 
 ## Fixed
 
