@@ -6,22 +6,25 @@ import { option } from 'fp-ts/lib/Option';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import * as Ajv from 'ajv';
 import { JSONSchema } from '../../';
-// @ts-ignore
 import * as AjvOAI from 'ajv-oai';
 
-const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' }) as Ajv.Ajv;
+const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' });
 
 export const convertAjvErrors = (errors: Ajv.ErrorObject[] | undefined | null, severity: DiagnosticSeverity) => {
   if (!errors) {
     return [];
   }
 
-  return errors.map<IPrismDiagnostic & { path: Segment[] }>(error => ({
-    path: error.dataPath.split('.').slice(1),
-    code: error.keyword || '',
-    message: error.message || '',
-    severity,
-  }));
+  return errors.map<IPrismDiagnostic & { path: Segment[] }>(error => {
+    const allowedParameters = 'allowedValues' in error.params ? `: ${error.params.allowedValues.join(', ')}` : '';
+
+    return {
+      path: error.dataPath.split('.').slice(1),
+      code: error.keyword || '',
+      message: `${error.message || ''}${allowedParameters}`,
+      severity,
+    };
+  });
 };
 
 export const validateAgainstSchema = (value: any, schema: JSONSchema, prefix?: string): IPrismDiagnostic[] => {
