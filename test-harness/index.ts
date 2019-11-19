@@ -45,75 +45,77 @@ describe('harness', () => {
 
     const testText = `${file}${os.EOL}${parsed.test}`;
 
-    test(testText, async done => {
+    test(testText, done => {
       const [command, ...args] = parsed.command.split(/ +/).map(t => t.trim());
 
-      const prismMockProcessHandle = await startPrism(parsed.server, tmpFileHandle.name);
+      startPrism(parsed.server, tmpFileHandle.name, (error, prismMockProcessHandle) => {
+        if (error) {
+          throw error;
+        }
 
-      const clientCommandHandle = spawnSync(command, args, {
-        shell: true,
-        encoding: 'utf8',
-        windowsVerbatimArguments: false,
-      });
-      const output: any = parseResponse(clientCommandHandle.stdout.trim());
-      const expected: any = parseResponse((parsed.expect || parsed.expectLoose).trim());
+        const clientCommandHandle = spawnSync(command, args, {
+          shell: true,
+          encoding: 'utf8',
+          windowsVerbatimArguments: false,
+        });
+        const output: any = parseResponse(clientCommandHandle.stdout.trim());
+        const expected: any = parseResponse((parsed.expect || parsed.expectLoose).trim());
 
-      const isXml = xmlValidator.test(
-        get(output, ['header', 'content-type'], ''),
-        expected.body
-      );
+        const isXml = xmlValidator.test(
+          get(output, ['header', 'content-type'], ''),
+          expected.body
+        );
 
-      try {
-        if (isXml) {
-          return xmlValidator.validate(expected, output).then(res => {
-            expect(res).toStrictEqual([]);
-            delete expected.body;
-            delete output.body;
+        try {
+          if (isXml) {
+            return xmlValidator.validate(expected, output).then(res => {
+              expect(res).toStrictEqual([]);
+              delete expected.body;
+              delete output.body;
 
-            const isValid = validate(expected, output).valid;
+              const isValid = validate(expected, output).valid;
+              expect(isValid).toBeTruthy();
+
+              return shutdownPrism(prismMockProcessHandle, done);
+            });
+          }
+
+          const isValid = validate(expected, output).valid;
+
+          if (!!isValid) {
             expect(isValid).toBeTruthy();
-
-            return shutdownPrism(prismMockProcessHandle, done);
-          });
+          } else {
+            expect(output).toMatchObject(expected);
+          }
+          if (parsed.expect) {
+            expect(output.body).toStrictEqual(expected.body);
+          }
+        } finally {
+          shutdownPrism(prismMockProcessHandle, done);
         }
-
-        const isValid = validate(expected, output).valid;
-
-        if (!!isValid) {
-          expect(isValid).toBeTruthy();
-        } else {
-          expect(output).toMatchObject(expected);
-        }
-        if (parsed.expect) {
-          expect(output.body).toStrictEqual(expected.body);
-        }
-      } finally {
-        shutdownPrism(prismMockProcessHandle, done);
-      }
+      });
     });
   });
 });
 
-async function startPrism(server, filename): Promise<ChildProcess> {
-  return new Promise((resolve, reject) => {
-    const serverArgs = server.split(/ +/).map(t => t.trim().replace('${document}', filename));
-    const prismMockProcessHandle = spawn(path.join(__dirname, '../cli-binaries/prism-cli'), serverArgs);
+function startPrism(server, filename, done: (error?: Error, handle?: ChildProcess) => void) {
+  const serverArgs = server.split(/ +/).map(t => t.trim().replace('${document}', filename));
+  const prismMockProcessHandle = spawn(path.join(__dirname, '../cli-binaries/prism-cli'), serverArgs);
 
-    const timeout = setTimeout(
-      () => {
-        shutdownPrism(prismMockProcessHandle, () => {
-          reject(new Error(`Timeout while waiting for "${WAIT_FOR_LINE}" log line`));
-        });
-      },
-      WAIT_FOR_LINE_TIMEOUT
-    );
+  const timeout = setTimeout(
+    () => {
+      shutdownPrism(prismMockProcessHandle, () => {
+      done(new Error(`Timeout while waiting for "${WAIT_FOR_LINE}" log line`));
+      });
+    },
+    WAIT_FOR_LINE_TIMEOUT
+  );
 
-    prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
-      if (line.includes(WAIT_FOR_LINE)) {
-        clearTimeout(timeout);
-        resolve(prismMockProcessHandle);
-      }
-    });
+  prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
+    if (line.includes(WAIT_FOR_LINE)) {
+      clearTimeout(timeout);
+    done(undefined, prismMockProcessHandle);
+    }
   });
 }
 
