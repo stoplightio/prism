@@ -16,7 +16,7 @@
     "tslib": "^1.10.0",
     "uri-template-lite": "^19.4.0",
     "urijs": "^1.19.1",
-    "yargs": "^14.0.0"
+    "yargs": "^15.0.1"
   },
   "engines": {
     "node": ">=8.0.0"
