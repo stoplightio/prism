@@ -6,17 +6,11 @@ import { flatten, identity } from 'lodash';
 import { noop, set } from 'lodash/fp';
 import { findSecurityHandler } from './handlers';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { isNonEmpty } from 'fp-ts/lib/Array';
+import { isNonEmpty, array } from 'fp-ts/lib/Array';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../types';
 
-function gatherInvalidResults(
-  error: Either.Left<IPrismDiagnostic>,
-  invalidSecuritySchemes: Array<Array<Either.Either<IPrismDiagnostic, unknown>>>
-) {
-  const invalidSecurity = gatherWWWAuthHeader(invalidSecuritySchemes, ['tags'], error.left);
-  return Option.some(invalidSecurity);
-}
+const eitherSequence = array.sequence(Either.either);
 
 function gatherValidationResults(
   securitySchemes: HttpSecurityScheme[][],
@@ -24,29 +18,27 @@ function gatherValidationResults(
 ) {
   const authResults = getAuthResults(securitySchemes, input);
 
-  const validSecurityScheme = authResults.find(authRes => authRes.every(Either.isRight));
-  const invalidSecuritySchemes = authResults.filter(authRes => authRes.some(Either.isLeft));
+  const validSecurityScheme = authResults.some(Either.isRight);
+  const invalidSecuritySchemes = authResults.filter(Either.isLeft);
 
-  const firstLeft = invalidSecuritySchemes[0] && invalidSecuritySchemes[0].find(Either.isLeft);
+  const firstLeft = invalidSecuritySchemes[0];
 
   if (!validSecurityScheme && firstLeft) {
-    return gatherInvalidResults(firstLeft, invalidSecuritySchemes);
+    return Option.some(gatherWWWAuthHeader(invalidSecuritySchemes, ['tags'], firstLeft.left));
   } else {
     return Option.none;
   }
 }
 
 function gatherWWWAuthHeader(
-  authResults: Array<Array<Either.Either<IPrismDiagnostic, unknown>>>,
+  authResults: Either.Either<IPrismDiagnostic, unknown>[],
   pathToHeader: string[],
   firstAuthErr: IPrismDiagnostic
 ) {
-  const flattenedAuthResults = flatten(authResults);
-
-  if (flattenedAuthResults.length === 1) {
+  if (authResults.length === 1) {
     return firstAuthErr;
   } else {
-    const wwwAuthenticateHeaders = flattenedAuthResults.map(authResult =>
+    const wwwAuthenticateHeaders = authResults.map(authResult =>
       pipe(
         authResult,
         Either.fold(result => result.tags || [], noop)
@@ -59,36 +51,19 @@ function gatherWWWAuthHeader(
   }
 }
 
-function getAuthResult(
-  firstAuthErrAsLeft: Either.Left<IPrismDiagnostic>,
-  authResult: Array<Either.Either<IPrismDiagnostic, unknown>>
-) {
-  const firstAuthErr = pipe(
-    firstAuthErrAsLeft,
-    Either.fold<IPrismDiagnostic, IPrismDiagnostic, IPrismDiagnostic>(identity, identity)
-  );
-
-  const invalidResultWithAuthHeader = gatherWWWAuthHeader([authResult], ['tags'], firstAuthErr);
-
-  return [Either.left(invalidResultWithAuthHeader)];
-}
-
 function getAuthResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHttpRequest, 'headers' | 'url'>) {
   return securitySchemes.map(securitySchemePairs => {
-    const authResult = securitySchemePairs.map(securityScheme =>
+    const authResults = securitySchemePairs.map(securityScheme =>
       pipe(
         findSecurityHandler(securityScheme),
         Either.chain(f => f(input, 'name' in securityScheme ? securityScheme.name : ''))
       )
     );
 
-    const firstAuthErrAsLeft = authResult.find(Either.isLeft);
-
-    if (firstAuthErrAsLeft) {
-      return getAuthResult(firstAuthErrAsLeft, authResult);
-    } else {
-      return authResult;
-    }
+    return pipe(
+      eitherSequence(authResults),
+      Either.mapLeft(err => gatherWWWAuthHeader(authResults, ['tags'], err))
+    );
   });
 }
 
