@@ -5,12 +5,12 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { flatten, identity } from 'lodash';
 import { set } from 'lodash/fp';
 import { findSecurityHandler } from './handlers';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray';
 import { isNonEmpty, array } from 'fp-ts/lib/Array';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../types';
 
-const eitherSequence = array.sequence(Either.either);
+const eitherSequence = array.sequence(Either.getValidation(getSemigroup<IPrismDiagnostic>()));
 
 function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHttpRequest, 'headers' | 'url'>) {
   const authResults = getAuthResults(securitySchemes, input);
@@ -41,14 +41,12 @@ function getAuthResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHt
     const authResults = securitySchemePairs.map(securityScheme =>
       pipe(
         findSecurityHandler(securityScheme),
-        Either.chain(f => f(input, 'name' in securityScheme ? securityScheme.name : ''))
+        Either.chain(f => f(input, 'name' in securityScheme ? securityScheme.name : '')),
+        Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
       )
     );
 
-    return pipe(
-      eitherSequence(authResults),
-      Either.mapLeft(() => getWWWAuthHeader(authResults.filter(Either.isLeft).map(t => t.left)))
-    );
+    return pipe(eitherSequence(authResults), Either.mapLeft(getWWWAuthHeader));
   });
 }
 
