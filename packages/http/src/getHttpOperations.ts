@@ -1,6 +1,6 @@
 import { transformOas2Operation, transformOas3Operation } from '@stoplight/http-spec';
+import { resolveFile, resolveHttp } from '@stoplight/json-ref-readers';
 import { Resolver } from '@stoplight/json-ref-resolver';
-import { resolveFile, resolveHttp } from '@stoplight/ref-resolvers';
 import { IHttpOperation } from '@stoplight/types';
 import { parse } from '@stoplight/yaml';
 import fetch from 'node-fetch';
