@@ -9,25 +9,14 @@ import { isNonEmpty, array } from 'fp-ts/lib/Array';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../types';
 
-const eitherSequence = array.sequence(Either.getValidation(getSemigroup<IPrismDiagnostic>()));
+const EV = Either.getValidation(getSemigroup<IPrismDiagnostic>());
+const eitherSequence = array.sequence(EV);
 
 function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHttpRequest, 'headers' | 'url'>) {
   const [first, ...others] = getAuthResultsAND(securitySchemes, input);
 
   return pipe(
-    others.reduce(
-      (prev, current) =>
-        pipe(
-          prev,
-          Either.orElse(err =>
-            pipe(
-              current,
-              Either.mapLeft(e => err.concat(e) as NonEmptyArray<IPrismDiagnostic>)
-            )
-          )
-        ),
-      first
-    ),
+    others.reduce((prev, current) => EV.alt(prev, () => current), first),
     Either.mapLeft(getWWWAuthHeader)
   );
 }
