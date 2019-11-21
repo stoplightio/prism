@@ -16,21 +16,21 @@ const EitherValidation = Either.getValidation(getSemigroup<IPrismDiagnostic>());
 const eitherSequence = array.sequence(EitherValidation);
 
 function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: HeadersAndUrl) {
-  const [first, ...others] = getAuthResultsAND(securitySchemes, input);
+  const [first, ...others] = getAuthenticationArray(securitySchemes, input);
   return others.reduce((prev, current) => EitherValidation.alt(prev, () => current), first);
 }
 
-function getWWWAuthHeader(authResults: NonEmptyArray<IPrismDiagnostic>) {
+function setErrorTag(authResults: NonEmptyArray<IPrismDiagnostic>) {
   const tags = authResults.map(authResult => authResult.tags || []);
   return set(['tags'], flatten(tags), authResults[0]);
 }
 
-function getAuthResultsAND(securitySchemes: HttpSecurityScheme[][], input: HeadersAndUrl) {
+function getAuthenticationArray(securitySchemes: HttpSecurityScheme[][], input: HeadersAndUrl) {
   return securitySchemes.map(securitySchemePairs => {
     const authResults = securitySchemePairs.map(securityScheme =>
       pipe(
         findSecurityHandler(securityScheme),
-        Either.chain(f => f(input, 'name' in securityScheme ? securityScheme.name : '')),
+        Either.chain(securityHandler => securityHandler(input, 'name' in securityScheme ? securityScheme.name : '')),
         Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
       )
     );
@@ -48,7 +48,7 @@ export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, Hea
       securitySchemes =>
         pipe(
           getValidationResults(securitySchemes, element),
-          Either.mapLeft<NonEmptyArray<IPrismDiagnostic>, NonEmptyArray<IPrismDiagnostic>>(e => [getWWWAuthHeader(e)]),
+          Either.mapLeft<NonEmptyArray<IPrismDiagnostic>, NonEmptyArray<IPrismDiagnostic>>(e => [setErrorTag(e)]),
           Either.map(() => element)
         )
     )
