@@ -1,5 +1,6 @@
 import { IHttpOperation, HttpSecurityScheme } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
+import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { flatten, identity } from 'lodash';
 import { set } from 'lodash/fp';
@@ -40,15 +41,15 @@ export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, Pic
   element,
   resource,
 }) => {
-  const securitySchemes = resource.security;
-
-  if (securitySchemes && isNonEmpty(securitySchemes)) {
-    return pipe(
-      getValidationResults(securitySchemes, element),
-      Either.mapLeft<NonEmptyArray<IPrismDiagnostic>, NonEmptyArray<IPrismDiagnostic>>(e => [getWWWAuthHeader(e)]),
-      Either.map(() => element)
-    );
-  } else {
-    return Either.right(element);
-  }
+  return pipe(
+    Option.fromNullable(resource.security),
+    Option.chain(securitySchemes => pipe(securitySchemes, Option.fromPredicate(isNonEmpty))),
+    Option.map(securitySchemes => pipe(
+        getValidationResults(securitySchemes, element),
+        Either.mapLeft<NonEmptyArray<IPrismDiagnostic>, NonEmptyArray<IPrismDiagnostic>>(e => [getWWWAuthHeader(e)]),
+        Either.map(() => element)
+      )
+    ),
+    Option.fold(() => Either.right(element), identity as <T>(a: T) => T),
+  );
 };
