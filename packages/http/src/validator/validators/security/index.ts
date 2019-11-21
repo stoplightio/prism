@@ -9,16 +9,12 @@ import { isNonEmpty, array } from 'fp-ts/lib/Array';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../types';
 
-const EV = Either.getValidation(getSemigroup<IPrismDiagnostic>());
-const eitherSequence = array.sequence(EV);
+const EitherValidation = Either.getValidation(getSemigroup<IPrismDiagnostic>());
+const eitherSequence = array.sequence(EitherValidation);
 
 function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: Pick<IHttpRequest, 'headers' | 'url'>) {
   const [first, ...others] = getAuthResultsAND(securitySchemes, input);
-
-  return pipe(
-    others.reduce((prev, current) => EV.alt(prev, () => current), first),
-    Either.mapLeft(getWWWAuthHeader)
-  );
+  return others.reduce((prev, current) => EitherValidation.alt(prev, () => current), first);
 }
 
 function getWWWAuthHeader(authResults: IPrismDiagnostic[]) {
@@ -55,7 +51,7 @@ export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, Pic
   if (securitySchemes && isNonEmpty(securitySchemes)) {
     return pipe(
       getValidationResults(securitySchemes, element),
-      Either.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e]),
+      Either.mapLeft<NonEmptyArray<IPrismDiagnostic>, NonEmptyArray<IPrismDiagnostic>>(e => [getWWWAuthHeader(e)]),
       Either.map(() => element)
     );
   } else {
