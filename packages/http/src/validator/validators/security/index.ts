@@ -1,7 +1,7 @@
 import { IHttpOperation, HttpSecurityScheme } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { flatten, identity } from 'lodash';
+import { flatten } from 'lodash';
 import { set } from 'lodash/fp';
 import { findSecurityHandler } from './handlers';
 import { NonEmptyArray, getSemigroup } from 'fp-ts/lib/NonEmptyArray';
@@ -17,15 +17,9 @@ function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: Pi
   return others.reduce((prev, current) => EitherValidation.alt(prev, () => current), first);
 }
 
-function getWWWAuthHeader(authResults: IPrismDiagnostic[]) {
-  if (authResults.length === 1) {
-    return authResults[0];
-  } else {
-    const wwwAuthenticateHeaders = authResults.map(authResult => authResult.tags || []);
-    const firstAuthErrWithAuthHeader = set(['tags'], flatten(wwwAuthenticateHeaders), authResults[0]);
-
-    return wwwAuthenticateHeaders.every(identity) ? firstAuthErrWithAuthHeader : authResults[0];
-  }
+function getWWWAuthHeader(authResults: NonEmptyArray<IPrismDiagnostic>) {
+  const tags = authResults.map(authResult => authResult.tags || []);
+  return set(['tags'], flatten(tags), authResults[0]);
 }
 
 function getAuthResultsAND(securitySchemes: HttpSecurityScheme[][], input: Pick<IHttpRequest, 'headers' | 'url'>) {
