@@ -2,6 +2,7 @@ import { CommandModule } from 'yargs';
 import { CreateMockServerOptions, createMultiProcessPrism, createSingleProcessPrism } from '../util/createServer';
 import sharedOptions from './sharedOptions';
 import { runPrismAndSetupWatcher } from '../util/runner';
+import { pick } from 'lodash';
 
 const mockCommand: CommandModule = {
   describe: 'Start a mock server with the given document file',
@@ -22,19 +23,19 @@ const mockCommand: CommandModule = {
         },
       }),
   handler: parsedArgs => {
-    const {
-      multiprocess,
-      dynamic,
-      port,
-      host,
-      cors,
-      document,
-      errors,
-    } = (parsedArgs as unknown) as CreateMockServerOptions;
+    const options = pick(
+      (parsedArgs as unknown) as CreateMockServerOptions,
+      'cors',
+      'dynamic',
+      'port',
+      'host',
+      'document',
+      'multiprocess',
+      'errors',
+      'verbose'
+    );
 
-    const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
-    const options = { cors, dynamic, port, host, document, multiprocess, errors };
-
+    const createPrism = options.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
     return runPrismAndSetupWatcher(createPrism, options);
   },
 };

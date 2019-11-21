@@ -26,7 +26,7 @@ const proxyCommand: CommandModule = {
       })
       .options(sharedOptions),
   handler: parsedArgs => {
-    const p: CreateProxyServerOptions = pick(
+    const options: CreateProxyServerOptions = pick(
       (parsedArgs as unknown) as CreateProxyServerOptions,
       'dynamic',
       'cors',
@@ -35,11 +35,12 @@ const proxyCommand: CommandModule = {
       'document',
       'multiprocess',
       'upstream',
-      'errors'
+      'errors',
+      'verbose'
     );
 
-    const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
-    return runPrismAndSetupWatcher(createPrism, p);
+    const createPrism = options.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
+    return runPrismAndSetupWatcher(createPrism, options);
   },
 };
 

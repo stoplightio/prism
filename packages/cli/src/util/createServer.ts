@@ -16,9 +16,7 @@ import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer
 signale.config({ displayTimestamp: true });
 
 const cliSpecificLoggerOptions: LoggerOptions = {
-  customLevels: { start: 11 },
   useLevelLabels: true,
-  level: 'start',
 };
 
 async function createMultiProcessPrism(options: CreateBaseServerOptions) {
@@ -35,7 +33,7 @@ async function createMultiProcessPrism(options: CreateBaseServerOptions) {
 
     return;
   } else {
-    const logInstance = createLogger('CLI', cliSpecificLoggerOptions);
+    const logInstance = createLogger('CLI', { ...cliSpecificLoggerOptions, level: options.verbose ? 'debug' : 'info' });
     try {
       return await createPrismServerWithLogger(options, logInstance);
     } catch (e) {
@@ -49,7 +47,11 @@ async function createSingleProcessPrism(options: CreateBaseServerOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
-  const logInstance = createLogger('CLI', cliSpecificLoggerOptions, logStream);
+  const logInstance = createLogger(
+    'CLI',
+    { ...cliSpecificLoggerOptions, level: options.verbose ? 'debug' : 'info' },
+    logStream
+  );
   pipeOutputToSignale(logStream);
 
   try {
@@ -96,7 +98,6 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
       `${resource.method.toUpperCase().padEnd(10)} ${address}${transformPathParamsValues(path, chalk.bold.cyan)}`
     );
   });
-  logInstance.start(`Prism is listening on ${address}`);
 
   return server;
 }
@@ -130,6 +131,7 @@ type CreateBaseServerOptions = {
   document: string;
   multiprocess: boolean;
   errors: boolean;
+  verbose: boolean;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {

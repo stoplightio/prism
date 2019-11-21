@@ -37,6 +37,12 @@ const sharedOptions: Dictionary<Options> = {
     boolean: true,
     default: false,
   },
+
+  verbose: {
+    boolean: true,
+    default: false,
+    description: 'Turns on verbose logging',
+  },
 };
 
 export default sharedOptions;

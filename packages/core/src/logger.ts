@@ -1,7 +1,7 @@
 import * as pino from 'pino';
 import { defaultsDeep } from 'lodash';
 
-function createLogger(
+export function createLogger(
   name: string,
   overrideOptions: pino.LoggerOptions = {},
   destination?: pino.DestinationStream
@@ -19,5 +19,3 @@ function createLogger(
   if (destination) return pino(options, destination);
   return pino(options);
 }
-
-export { createLogger };

@@ -5,7 +5,7 @@ import { mapValues } from 'lodash';
 
 jest.mock('node-fetch');
 
-describe('forward', () => {
+describe('forward()', () => {
   const logger: any = {
     error: jest.fn(),
     warn: jest.fn(),
