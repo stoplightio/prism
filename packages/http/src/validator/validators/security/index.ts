@@ -43,7 +43,7 @@ export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, Pic
 }) => {
   return pipe(
     Option.fromNullable(resource.security),
-    Option.chain(securitySchemes => pipe(securitySchemes, Option.fromPredicate(isNonEmpty))),
+    Option.chain(Option.fromPredicate(isNonEmpty)),
     Option.map(securitySchemes => pipe(
         getValidationResults(securitySchemes, element),
         Either.mapLeft<NonEmptyArray<IPrismDiagnostic>, NonEmptyArray<IPrismDiagnostic>>(e => [getWWWAuthHeader(e)]),
