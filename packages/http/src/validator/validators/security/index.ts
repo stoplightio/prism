@@ -48,8 +48,10 @@ export const validateSecurity: ValidatorFn<Pick<IHttpOperation, 'security'>, Hea
       securitySchemes =>
         pipe(
           getValidationResults(securitySchemes, element),
-          Either.mapLeft<NonEmptyArray<IPrismDiagnostic>, NonEmptyArray<IPrismDiagnostic>>(e => [setErrorTag(e)]),
-          Either.map(() => element)
+          Either.bimap(
+            e => [setErrorTag(e)],
+            () => element
+          )
         )
     )
   );
