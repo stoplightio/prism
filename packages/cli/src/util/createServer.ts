@@ -1,7 +1,7 @@
 import { createLogger } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpProxyConfig, getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import * as cluster from 'cluster';
 import * as Either from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';

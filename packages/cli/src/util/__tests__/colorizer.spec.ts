@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import {
   PRE_PARAM_VALUE_TAG,
   POST_PARAM_VALUE_TAG,

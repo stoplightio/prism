@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 
 export const LOG_COLOR_MAP = {
   CLI: { index: 0, color: chalk.bgWhiteBright },
