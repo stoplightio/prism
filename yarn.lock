@@ -3376,9 +3376,9 @@ fast-safe-stringify@^2.0.7:
   integrity sha512-Utm6CdzT+6xsDk2m8S6uL8VHxNwI6Jub+e9NYTcAms28T84pTa25GJQV9j0CY0N1rM8hK4x6grpF2BQf+2qwVA==
 
 fast-xml-parser@^3.12.20:
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.14.0.tgz#6fc1e927d13ac2e2ff8ccc5812c4f881fbc91284"
-  integrity sha512-3SzQnPNtMVqaBVDzYqYt0BTaaLwkd45wTbsUsH1eiE9dnyc4b8mYcm1Q0Rcx9AWkeTj5UZFTTm55Io5yVWS1tg==
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.15.0.tgz#0f5b562013482e2dab19b7ffd033621e1d000fa7"
+  integrity sha512-CZyUVoZjCZDINdK4A/7EeSS89+DfH9Ce1BtKaRMCocdENomRx9cBFN77Z2+tEc2RmhIFjJRajYeNlepWl0U4tg==
 
 fastify-cors@^3.0.0:
   version "3.0.0"
