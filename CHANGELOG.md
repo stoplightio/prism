@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Fixed
+
+- Put `chalk` as an explicit dependency in the CLI package [#854](https://github.com/stoplightio/prism/pull/854)
+
 # 3.2.0 (2019-11-21)
 
 ## Added
