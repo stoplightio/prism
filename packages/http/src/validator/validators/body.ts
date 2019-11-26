@@ -10,7 +10,7 @@ import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
-import { fromArray } from 'fp-ts/lib/NonEmptyArray';
+import { fromArray, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 function deserializeFormBody(
   schema: JSONSchema,
@@ -68,11 +68,11 @@ function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, tar
   return pipe(
     mediaType,
     Option.fromPredicate(mt => !typeIs.is(mt, ['application/x-www-form-urlencoded'])),
-    Option.map(() => validateAgainstSchema(target, schema))
+    Option.map(() => ({ parsed: target, violations: validateAgainstSchema(target, schema) })),
   );
 }
 
-function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string) {
+function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string): Either.Either<NonEmptyArray<IPrismDiagnostic>, { parsed: unknown, violations: IPrismDiagnostic[] }> {
   const encodings = get(content, 'encodings', []);
   const encodedUriParams = splitUriParams(target);
 
@@ -80,14 +80,14 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     validateAgainstReservedCharacters(encodedUriParams, encodings),
     Either.map(decodeUriEntities),
     Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-    Either.fold(e => Option.some(e), deserialised => Option.some(validateAgainstSchema(deserialised, schema)))
+    Either.map(parsed => ({ violations: validateAgainstSchema(parsed, schema), parsed })),
   );
 }
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
   constructor(private prefix: string) {}
 
-  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string) {
+  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string): Either.Either<NonEmptyArray<IPrismDiagnostic>, { parsed: any, violations: IPrismDiagnostic[] }> {
     const mediaTypeWithContentAndSchema = pipe(
       Option.fromNullable(mediaType),
       Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
@@ -102,16 +102,15 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
 
     return pipe(
       mediaTypeWithContentAndSchema,
-      Option.chain(({ content, mediaType: mt, schema }) =>
-        pipe(
-          validateBodyIfNotFormEncoded(mt, schema, target),
-          Option.alt(() => deserializeAndValidate(content, schema, target)),
-          Option.map(diagnostics => applyPrefix(this.prefix, diagnostics))
-        )
+      Either.fromOption((): NonEmptyArray<IPrismDiagnostic> => [{ path: [], message: 'No spec matched', severity: DiagnosticSeverity.Error }]),
+      Either.chain(({ content, mediaType: mt, schema }) => pipe(
+        validateBodyIfNotFormEncoded(mt, schema, target),
+        Option.fold(() => deserializeAndValidate(content, schema, target), a => Either.right(a)),
+      )),
+      Either.bimap(
+        v => applyPrefix(this.prefix, v) as NonEmptyArray<IPrismDiagnostic>,
+        ({ parsed, violations }) => ({ parsed, violations: applyPrefix(this.prefix, violations) })
       ),
-      Option.chain(fromArray),
-      Either.fromOption(() => target),
-      Either.swap
     );
   }
 }
@@ -123,7 +122,7 @@ function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDia
 function validateAgainstReservedCharacters(
   encodedUriParams: Dictionary<string, string>,
   encodings: IHttpEncoding[]
-): Either.Either<IPrismDiagnostic[], Dictionary<string, string>> {
+): Either.Either<NonEmptyArray<IPrismDiagnostic>, Dictionary<string, string>> {
   return pipe(
     encodings,
     Array.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
@@ -141,6 +140,6 @@ function validateAgainstReservedCharacters(
 
       return diagnostics;
     }),
-    diagnostics => (diagnostics.length ? Either.left(diagnostics) : Either.right(encodedUriParams))
-  );
+    diagnostics => pipe(fromArray(diagnostics), Option.fold(() => Either.right(encodedUriParams), violations => Either.left(violations)))
+    );
 }

@@ -4,7 +4,7 @@ import { Either } from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 export interface IHttpValidator<Target, Specs> {
-  validate(target: Target, specs: Specs[], mediaType?: string): Either<NonEmptyArray<IPrismDiagnostic>, Target>;
+  validate(target: Target, specs: Specs[], mediaType?: string): Either<NonEmptyArray<IPrismDiagnostic>, { violations: IPrismDiagnostic[], parsed: any }>;
 }
 
 export interface ISchemaValidator<S = JSONSchema> {
