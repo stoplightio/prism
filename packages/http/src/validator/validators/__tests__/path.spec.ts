@@ -3,7 +3,7 @@ import { path as registry } from '../../deserializers';
 import { HttpPathValidator } from '../path';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
-import { some } from 'fp-ts/lib/Option';
+import * as Option from 'fp-ts/lib/Option';
 
 describe('HttpPathValidator', () => {
   const httpPathValidator = new HttpPathValidator(registry, 'path');
@@ -47,7 +47,7 @@ describe('HttpPathValidator', () => {
               };
 
               assertRight(httpPathValidator.validate({ param: 'abc' }, [param]));
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(some([]));
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
             });
           });
 
@@ -64,7 +64,7 @@ describe('HttpPathValidator', () => {
                   ])
                 );
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(some([]));
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
               });
             });
           });
@@ -81,7 +81,7 @@ describe('HttpPathValidator', () => {
               ])
             );
 
-            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(some([]));
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
           });
         });
 

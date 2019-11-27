@@ -3,7 +3,7 @@ import { query as registry } from '../../deserializers';
 import { HttpHeadersValidator } from '../headers';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
-import { some } from 'fp-ts/lib/Option';
+import * as Option from 'fp-ts/lib/Option';
 
 describe('HttpHeadersValidator', () => {
   const httpHeadersValidator = new HttpHeadersValidator(registry, 'header');
@@ -49,7 +49,7 @@ describe('HttpHeadersValidator', () => {
                 ])
               );
 
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(some([]));
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
             });
           });
 
@@ -66,7 +66,7 @@ describe('HttpHeadersValidator', () => {
                   ])
                 );
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(some([]));
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
               });
             });
           });
@@ -83,7 +83,7 @@ describe('HttpHeadersValidator', () => {
               ])
             );
 
-            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(some([]));
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
           });
         });
 
