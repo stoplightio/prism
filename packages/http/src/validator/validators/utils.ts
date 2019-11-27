@@ -2,7 +2,7 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Segment } from '@stoplight/types';
 import { getSemigroup } from 'fp-ts/lib/NonEmptyArray';
 import { getValidation } from 'fp-ts/lib/Either';
-import { option } from 'fp-ts/lib/Option';
+import { option, tryCatch, Option } from 'fp-ts/lib/Option';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import * as Ajv from 'ajv';
 import { JSONSchema } from '../../';
@@ -27,20 +27,22 @@ export const convertAjvErrors = (errors: Ajv.ErrorObject[] | undefined | null, s
   });
 };
 
-export const validateAgainstSchema = (value: any, schema: JSONSchema, prefix?: string): IPrismDiagnostic[] => {
-  try {
+export const validateAgainstSchema = (
+  value: unknown,
+  schema: JSONSchema,
+  prefix?: string
+): Option<IPrismDiagnostic[]> => {
+  return tryCatch(() => {
     const validate = ajv.compile(schema);
     const valid = validate(value);
     if (!valid) {
       return convertAjvErrors(validate.errors, DiagnosticSeverity.Error).map(error => {
-        const path = prefix ? [prefix, ...error.path] : [...error.path];
+        const path = prefix ? [prefix, ...error.path] : error.path;
         return Object.assign({}, error, { path });
       });
     }
     return [];
-  } catch (error) {
-    throw new Error(`AJV validation error: "${error}"`);
-  }
+  });
 };
 
 export const sequenceValidation = sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()));

@@ -68,7 +68,7 @@ function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, tar
   return pipe(
     mediaType,
     Option.fromPredicate(mt => !typeIs.is(mt, ['application/x-www-form-urlencoded'])),
-    Option.map(() => validateAgainstSchema(target, schema))
+    Option.chain(() => validateAgainstSchema(target, schema))
   );
 }
 
@@ -80,7 +80,10 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     validateAgainstReservedCharacters(encodedUriParams, encodings),
     Either.map(decodeUriEntities),
     Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-    Either.fold(e => Option.some(e), deserialised => Option.some(validateAgainstSchema(deserialised, schema)))
+    Either.fold(
+      e => Option.some(e),
+      deserialised => validateAgainstSchema(deserialised, schema)
+    )
   );
 }
 
