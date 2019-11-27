@@ -27,17 +27,3 @@ Array [
   },
 ]
 `;
-
-exports[`validateAgainstSchema() has validation errors returns validation errors 1`] = `
-Array [
-  Object {
-    "message": "should be number",
-    "name": "type",
-    "path": Array [
-      "pfx",
-    ],
-    "severity": 0,
-    "summary": "should be number",
-  },
-]
-`;

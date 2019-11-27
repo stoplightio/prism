@@ -66,7 +66,10 @@ describe('validateAgainstSchema()', () => {
           summary: 'should be number',
         },
       ]);
-      assertSome(validateAgainstSchema('test', { type: 'number' }, 'pfx'), e => expect(e).toMatchSnapshot());
+      assertSome(validateAgainstSchema('test', { type: 'number' }, 'pfx'), error =>
+        expect(error).toContainEqual(expect.objectContaining({ message: 'should be number' }))
+      );
+
       expect(convertAjvErrorsModule.convertAjvErrors).toHaveBeenCalledWith(
         [
           {
