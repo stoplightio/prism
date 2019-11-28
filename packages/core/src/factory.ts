@@ -14,7 +14,7 @@ function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
   return !p.mock;
 }
 
-const createWarningOutput = <Output>(output: Output): IPrismOutput<Output> => {
+function createWarningOutput<Output>(output: Output): IPrismOutput<Output> {
   return {
     output,
     validations: {
@@ -27,7 +27,7 @@ const createWarningOutput = <Output>(output: Output): IPrismOutput<Output> => {
       output: [],
     },
   };
-};
+}
 
 export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
@@ -109,7 +109,6 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                   : [];
 
                 return {
-                  input,
                   output,
                   validations: {
                     input: inputValidations,
