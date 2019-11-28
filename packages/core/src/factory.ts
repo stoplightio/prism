@@ -14,6 +14,21 @@ function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
   return !p.mock;
 }
 
+const createWarningOutput = <Output>(output: Output): IPrismOutput<Output> => {
+  return {
+    output,
+    validations: {
+      input: [
+        {
+          message: 'Selected route not found',
+          severity: DiagnosticSeverity.Warning,
+        },
+      ],
+      output: [],
+    },
+  };
+};
+
 export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   defaultConfig: Config,
   components: IPrismComponents<Resource, Input, Output, Config>
@@ -77,20 +92,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
             if (!config.errors && isProxyConfig(config)) {
               return pipe(
                 components.forward(input, config.upstream.href)(components.logger.child({ name: 'PROXY' })),
-                TaskEither.map<Output, IPrismOutput<Output>>(output => ({
-                  input,
-                  output,
-                  validations: {
-                    input: [
-                      {
-                        message:
-                          "The selected route hasn't been found and the errors is set false. Prism has proxied the request to the upstream server but no validation will happen",
-                        severity: DiagnosticSeverity.Warning,
-                      },
-                    ],
-                    output: [],
-                  },
-                }))
+                TaskEither.map(createWarningOutput)
               );
             } else return TaskEither.left(error);
           },
