@@ -13,7 +13,7 @@ function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
   return !p.mock;
 }
 
-function createWarningOutput<Output>(output: Output): IPrismOutput<Output> {
+const createWarningOutput = <Output>(output: Output): IPrismOutput<Output> => {
   return {
     output,
     validations: {
@@ -63,15 +63,15 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     const produceOutput = isProxyConfig(config)
       ? components.forward(input, config.upstream.href)(components.logger.child({ name: 'PROXY' }))
       : TaskEither.fromEither(
-          components.mock({
-            resource,
-            input: {
-              validations,
-              data: input,
-            },
-            config: config.mock,
-          })(components.logger.child({ name: 'NEGOTIATOR' }))
-        );
+        components.mock({
+          resource,
+          input: {
+            validations,
+            data: input,
+          },
+          config: config.mock,
+        })(components.logger.child({ name: 'NEGOTIATOR' }))
+      );
 
     return pipe(
       produceOutput,
@@ -102,9 +102,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               TaskEither.map(({ output, resource, validations: inputValidations }) => {
                 const outputValidations = config.validateResponse
                   ? pipe(
-                      Either.swap(components.validateOutput({ resource, element: output })),
-                      Either.getOrElse<Output, IPrismDiagnostic[]>(() => [])
-                    )
+                    Either.swap(components.validateOutput({ resource, element: output })),
+                    Either.getOrElse<Output, IPrismDiagnostic[]>(() => [])
+                  )
                   : [];
 
                 return {
