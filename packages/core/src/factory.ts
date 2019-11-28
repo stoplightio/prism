@@ -13,7 +13,7 @@ function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
   return !p.mock;
 }
 
-const createWarningOutput = <Output>(output: Output): IPrismOutput<Output> => {
+function createWarningOutput<Output>(output: Output): IPrismOutput<Output> {
   return {
     output,
     validations: {
