@@ -1,8 +1,9 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Segment } from '@stoplight/types';
-import { getSemigroup } from 'fp-ts/lib/NonEmptyArray';
+import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { getValidation } from 'fp-ts/lib/Either';
-import { option, tryCatch, Option } from 'fp-ts/lib/Option';
+import * as Option from 'fp-ts/lib/Option';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import * as Ajv from 'ajv';
 import { JSONSchema } from '../../';
@@ -31,19 +32,23 @@ export const validateAgainstSchema = (
   value: unknown,
   schema: JSONSchema,
   prefix?: string
-): Option<IPrismDiagnostic[]> => {
-  return tryCatch(() => {
-    const validate = ajv.compile(schema);
-    const valid = validate(value);
-    if (!valid) {
-      return convertAjvErrors(validate.errors, DiagnosticSeverity.Error).map(error => {
-        const path = prefix ? [prefix, ...error.path] : error.path;
-        return Object.assign({}, error, { path });
-      });
-    }
-    return [];
-  });
+): Option.Option<NonEmptyArray<IPrismDiagnostic>> => {
+  return pipe(
+    Option.tryCatch(() => ajv.compile(schema)),
+    Option.chain(validate => {
+      const valid = validate(value);
+      if (!valid) {
+        return Option.some(
+          convertAjvErrors(validate.errors, DiagnosticSeverity.Error).map(error => {
+            const path = prefix ? [prefix, ...error.path] : error.path;
+            return Object.assign({}, error, { path });
+          }) as NonEmptyArray<IPrismDiagnostic>
+        );
+      }
+      return Option.none;
+    })
+  );
 };
 
 export const sequenceValidation = sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()));
-export const sequenceOption = sequenceT(option);
+export const sequenceOption = sequenceT(Option.option);
