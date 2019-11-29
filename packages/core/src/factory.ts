@@ -1,7 +1,6 @@
 import * as Either from 'fp-ts/lib/Either';
-import * as Option from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
 import * as TaskEither from 'fp-ts/lib/TaskEither';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig, IPrismOutput } from './types';
 import { sequenceT } from 'fp-ts/lib/Apply';
