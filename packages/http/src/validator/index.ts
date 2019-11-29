@@ -36,8 +36,7 @@ export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'pa
 
 const validateBody = (request: IHttpOperationRequest, body: unknown, mediaType: string) =>
   pipe(
-    Option.fromNullable(request),
-    Option.mapNullable(request => request.body),
+    Option.fromNullable(request.body),
     Option.chain(requestBody =>
       pipe(
         requestBody,
