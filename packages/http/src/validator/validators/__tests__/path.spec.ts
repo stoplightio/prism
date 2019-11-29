@@ -47,7 +47,7 @@ describe('HttpPathValidator', () => {
               };
 
               assertRight(httpPathValidator.validate({ param: 'abc' }, [param]));
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
             });
           });
 
@@ -64,7 +64,7 @@ describe('HttpPathValidator', () => {
                   ])
                 );
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
               });
             });
           });
@@ -81,7 +81,7 @@ describe('HttpPathValidator', () => {
               ])
             );
 
-            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
           });
         });
 

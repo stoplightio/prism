@@ -40,7 +40,7 @@ describe('HttpQueryValidator', () => {
 
               assertRight(httpQueryValidator.validate({ param: 'abc' }, [param]));
 
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
             });
           });
 
@@ -57,7 +57,7 @@ describe('HttpQueryValidator', () => {
                   ])
                 );
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
               });
             });
           });
@@ -74,7 +74,7 @@ describe('HttpQueryValidator', () => {
               ])
             );
 
-            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
           });
         });
 

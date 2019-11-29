@@ -94,26 +94,27 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
           Option.fromNullable(content.schema),
           Option.map(schema => ({ schema, mediaType: mt, content }))
         )
-      ),
-      Either.fromOption(() => target)
+      )
     );
 
     return pipe(
       findContentByMediaType,
-      Either.chain(({ content, mediaType: mt, schema }) =>
-        pipe(
-          isFormEncoded(mt),
-          Option.fold(
-            () =>
-              pipe(
-                validateAgainstSchema(target, schema),
-                Either.fromOption(() => target),
-                Either.swap
-              ),
-            () => pipe(deserializeAndValidate(content, schema, target))
-          ),
-          Either.mapLeft(diagnostics => applyPrefix(this.prefix, diagnostics))
-        )
+      Option.fold(
+        () => Either.right(target),
+        ({ content, mediaType: mt, schema }) =>
+          pipe(
+            isFormEncoded(mt),
+            Option.fold(
+              () =>
+                pipe(
+                  validateAgainstSchema(target, schema),
+                  Either.fromOption(() => target),
+                  Either.swap
+                ),
+              () => pipe(deserializeAndValidate(content, schema, target))
+            ),
+            Either.mapLeft(diagnostics => applyPrefix(this.prefix, diagnostics))
+          )
       )
     );
   }

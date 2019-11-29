@@ -2,7 +2,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import * as convertAjvErrorsModule from '../utils';
 import { convertAjvErrors, validateAgainstSchema } from '../utils';
 import { ErrorObject } from 'ajv';
-import { assertSome } from '@stoplight/prism-core/src/__tests__/utils';
+import { assertSome, assertNone } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('convertAjvErrors()', () => {
   const errorObjectFixture: ErrorObject = {
@@ -50,7 +50,7 @@ describe('validateAgainstSchema()', () => {
 
   describe('has no validation errors', () => {
     it('returns no validation errors', () => {
-      assertSome(validateAgainstSchema('test', { type: 'string' }, 'pfx'), e => expect(e).toEqual([]));
+      assertNone(validateAgainstSchema('test', { type: 'string' }, 'pfx'));
       expect(convertAjvErrorsModule.convertAjvErrors).not.toHaveBeenCalled();
     });
   });
