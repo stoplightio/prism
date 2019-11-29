@@ -5,6 +5,7 @@ import {
   IHttpOperationResponse,
   IHttpOperationRequest,
   IMediaTypeContent,
+  IHttpOperationRequestBody,
 } from '@stoplight/types';
 import * as caseless from 'caseless';
 import { findFirst, isNonEmpty } from 'fp-ts/lib/Array';
@@ -26,7 +27,7 @@ import {
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { sequenceValidation } from './validators/utils';
+import { sequenceValidation, sequenceOption } from './validators/utils';
 import { HttpPathValidator } from './validators/path';
 
 export const bodyValidator = new HttpBodyValidator('body');
@@ -43,16 +44,23 @@ const validateBody = (
     Option.fromNullable(request.body),
     Option.fold(
       () => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(body),
-      requestBody => {
-        if (!!requestBody.required && !body)
-          return Either.left([
-            { code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error },
-          ]);
-
-        if (body && requestBody.contents) return bodyValidator.validate(body, requestBody.contents, mediaType);
-
-        return Either.right(body);
-      }
+      requestBody =>
+        pipe(
+          requestBody,
+          Either.fromPredicate<NonEmptyArray<IPrismDiagnostic>, IHttpOperationRequestBody>(
+            requestBody => !(!!requestBody.required && !body),
+            () => [{ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error }]
+          ),
+          Either.chain(() =>
+            pipe(
+              sequenceOption(Option.fromNullable(body), Option.fromNullable(requestBody.contents)),
+              Option.fold(
+                () => Either.right(body),
+                ([body, contents]) => bodyValidator.validate(body, contents, mediaType)
+              )
+            )
+          )
+        )
     )
   );
 

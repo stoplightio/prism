@@ -50,4 +50,5 @@ export const validateAgainstSchema = (
   );
 };
 
+export const sequenceOption = sequenceT(Option.option);
 export const sequenceValidation = sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()));
