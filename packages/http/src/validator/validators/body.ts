@@ -5,7 +5,6 @@ import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
-import * as typeIs from 'type-is';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
@@ -79,10 +78,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
 }
 
 function isFormEncoded(mediaType: string) {
-  return pipe(
-    mediaType,
-    Option.fromPredicate(mt => !typeIs.is(mt, ['application/x-www-form-urlencoded']))
-  );
+  return Option.fromPredicate<string>(mediaType => mediaType === 'application/x-www-form-urlencoded')(mediaType);
 }
 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
@@ -107,10 +103,15 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
       Either.chain(({ content, mediaType: mt, schema }) =>
         pipe(
           isFormEncoded(mt),
-          Option.chain(() => validateAgainstSchema(target, schema)),
-          Either.fromOption(() => target),
-          Either.swap,
-          Either.alt(() => deserializeAndValidate(content, schema, target)),
+          Option.fold(
+            () =>
+              pipe(
+                validateAgainstSchema(target, schema),
+                Either.fromOption(() => target),
+                Either.swap
+              ),
+            () => pipe(deserializeAndValidate(content, schema, target))
+          ),
           Either.mapLeft(diagnostics => applyPrefix(this.prefix, diagnostics))
         )
       )
