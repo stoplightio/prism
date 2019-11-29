@@ -26,7 +26,7 @@ import {
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { sequenceValidation, sequenceOption } from './validators/utils';
+import { sequenceValidation } from './validators/utils';
 import { HttpPathValidator } from './validators/path';
 
 export const bodyValidator = new HttpBodyValidator('body');
@@ -34,28 +34,26 @@ export const headersValidator = new HttpHeadersValidator(headerDeserializerRegis
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
 
-const validateBody = (request: IHttpOperationRequest, body: unknown, mediaType: string) =>
+const validateBody = (
+  request: IHttpOperationRequest,
+  body: unknown,
+  mediaType: string
+): Either.Either<NonEmptyArray<IPrismDiagnostic>, unknown> =>
   pipe(
     Option.fromNullable(request.body),
-    Option.chain(requestBody =>
-      pipe(
-        requestBody,
-        Option.fromPredicate(requestBody => !!requestBody.required && !body),
-        Option.map<unknown, NonEmptyArray<IPrismDiagnostic>>(() => [
-          { code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error },
-        ]),
-        Option.alt(() =>
-          pipe(
-            sequenceOption(Option.fromNullable(body), Option.fromNullable(requestBody.contents)),
-            Option.chain(([body, contents]) =>
-              Option.fromEither(Either.swap(bodyValidator.validate(body, contents, mediaType)))
-            )
-          )
-        )
-      )
-    ),
-    Either.fromOption(() => body),
-    Either.swap
+    Option.fold(
+      () => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(body),
+      requestBody => {
+        if (!!requestBody.required && !body)
+          return Either.left([
+            { code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error },
+          ]);
+
+        if (body && requestBody.contents) return bodyValidator.validate(body, requestBody.contents, mediaType);
+
+        return Either.right(body);
+      }
+    )
   );
 
 const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
