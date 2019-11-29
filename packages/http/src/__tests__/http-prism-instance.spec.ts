@@ -266,14 +266,8 @@ describe('Http Client .request', () => {
             resources
           ),
           response => {
-            const parsedBody = response.output.body;
-
-            expect(typeof parsedBody).toBe('string');
-            expect(response).toMatchSnapshot({
-              output: {
-                body: expect.anything(),
-              },
-            });
+            expect(response).toHaveProperty('output.body');
+            expect(typeof response.output.body).toBe('string');
           }
         );
       });
