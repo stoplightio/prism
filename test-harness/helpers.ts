@@ -3,7 +3,7 @@ import * as xmlDiff from 'diff-js-xml';
 import * as parser from 'fast-xml-parser';
 import * as typeIs from 'type-is';
 
-type Result = { body: string; headers: Dictionary<string, string> };
+type Result = { body: string; headers: Dictionary<string> };
 
 export const xmlValidator = {
   test: (contentType: string, content: string) => {
@@ -45,4 +45,3 @@ export function parseSpecFile(spec: string) {
     expectLoose: splitted[1 + expectLooseIndex],
   };
 }
-

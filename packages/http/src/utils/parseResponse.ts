@@ -19,7 +19,7 @@ export function parseResponseBody(
   );
 }
 
-export function parseResponseHeaders(response: Pick<Response, 'headers'>): Dictionary<string, string> {
+export function parseResponseHeaders(response: Pick<Response, 'headers'>): Dictionary<string> {
   return mapValues(response.headers.raw(), hValue => hValue.join(' '));
 }
 
