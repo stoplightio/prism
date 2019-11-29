@@ -77,10 +77,6 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
   );
 }
 
-function isFormEncoded(mediaType: string) {
-  return Option.fromPredicate<string>(mediaType => mediaType === 'application/x-www-form-urlencoded')(mediaType);
-}
-
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
   constructor(private prefix: string) {}
 
@@ -103,7 +99,8 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
         () => Either.right(target),
         ({ content, mediaType: mt, schema }) =>
           pipe(
-            isFormEncoded(mt),
+            mt,
+            Option.fromPredicate(mediaType => mediaType === 'application/x-www-form-urlencoded'),
             Option.fold(
               () =>
                 pipe(
