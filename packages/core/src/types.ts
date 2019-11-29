@@ -19,10 +19,7 @@ export interface IPrismConfig {
   errors: boolean;
 }
 
-export type ValidatorFn<Resource, Element, EOut extends Element = Element> = (opts: {
-  resource: Resource;
-  element: Element;
-}) => Either<NonEmptyArray<IPrismDiagnostic>, EOut>;
+export type ValidatorFn<R, E> = (opts: { resource: R; element: E }) => Either<NonEmptyArray<IPrismDiagnostic>, E>;
 
 export type IPrismProxyConfig = IPrismConfig & {
   mock: false;
