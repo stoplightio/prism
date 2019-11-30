@@ -1,8 +1,6 @@
 import { IHttpOperationConfig, IHttpRequest } from '@stoplight/prism-http';
 
 export const getHttpConfigFromRequest = (req: IHttpRequest): Partial<IHttpOperationConfig> => {
-  // For some reason this fixed the code coverage.
-
   const httpOperationConfig: Partial<IHttpOperationConfig> = {};
   const query = req.url.query;
 

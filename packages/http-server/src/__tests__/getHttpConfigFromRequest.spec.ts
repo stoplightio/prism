@@ -8,79 +8,43 @@ describe('getHttpConfigFromRequest()', () => {
           method: 'get',
           url: { path: '/' },
         })
-      ).toMatchSnapshot();
+      ).toEqual({});
     });
+
     test('and no matching query should return my own default', () => {
       return expect(
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: {} },
         })
-      ).toMatchSnapshot();
+      ).toEqual({});
     });
+
     test('extracts code', () => {
       return expect(
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __code: '202' } },
         })
-      ).toMatchSnapshot();
+      ).toHaveProperty('code', '202');
     });
+
     test('extracts example', () => {
       return expect(
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __example: 'bear' } },
         })
-      ).toMatchSnapshot();
+      ).toHaveProperty('exampleKey', 'bear');
     });
+
     test('extracts dynamic', () => {
       return expect(
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __dynamic: 'true' } },
         })
-      ).toMatchSnapshot();
-    });
-  });
-
-  describe('given default config function', () => {
-    test('and that function returns a mock should combine with query params', () => {
-      return expect(
-        getHttpConfigFromRequest({
-          method: 'get',
-          url: { path: '/', query: { __code: '400' } },
-        })
-      ).toMatchSnapshot();
-    });
-  });
-
-  describe('given default config object', () => {
-    test('that is boolean and no matching query params should return that config object', () => {
-      return expect(
-        getHttpConfigFromRequest({
-          method: 'get',
-          url: { path: '/', query: {} },
-        })
-      ).toMatchSnapshot();
-    });
-
-    test('that is boolean and matching query should return that query', () => {
-      return expect(
-        getHttpConfigFromRequest({
-          method: 'get',
-          url: { path: '/', query: { __code: '200', __example: 'bear' } },
-        })
-      ).toMatchSnapshot();
-    });
-
-    test('that is a map and matching query should return combined', () => {
-      return expect(
-        getHttpConfigFromRequest({
-          method: 'get',
-          url: { path: '/', query: { __code: '200', __example: 'bear' } },
-        })
-      ).toMatchSnapshot();
+      ).toHaveProperty('dynamic', true);
     });
   });
 });
