@@ -53,17 +53,10 @@ const validateIfBodySpecIsProvided = (body: unknown, mediaType: string, contents
     )
   );
 
-const validateBody = (request: IHttpOperationRequest, body: unknown, mediaType: string) =>
+const validateBody = (requestBody: IHttpOperationRequestBody, body: unknown, mediaType: string) =>
   pipe(
-    Option.fromNullable(request.body),
-    Option.fold(
-      () => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(body),
-      requestBody =>
-        pipe(
-          checkBodyIsProvided(requestBody, body),
-          Either.chain(() => validateIfBodySpecIsProvided(body, mediaType, requestBody.contents))
-        )
-    )
+    checkBodyIsProvided(requestBody, body),
+    Either.chain(() => validateIfBodySpecIsProvided(body, mediaType, requestBody.contents))
   );
 
 const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
@@ -77,7 +70,7 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
       e => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
       request =>
         sequenceValidation(
-          validateBody(request, body, mediaType),
+          request.body ? validateBody(request.body, body, mediaType) : Either.right(undefined),
           request.headers ? headersValidator.validate(element.headers || {}, request.headers) : Either.right(undefined),
           request.query ? queryValidator.validate(element.url.query || {}, request.query) : Either.right(undefined),
           request.path
