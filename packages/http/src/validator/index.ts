@@ -35,31 +35,33 @@ export const headersValidator = new HttpHeadersValidator(headerDeserializerRegis
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
 
-const validateBody = (
-  request: IHttpOperationRequest,
-  body: unknown,
-  mediaType: string
-): Either.Either<NonEmptyArray<IPrismDiagnostic>, unknown> =>
+const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unknown) =>
+  pipe(
+    requestBody,
+    Either.fromPredicate<NonEmptyArray<IPrismDiagnostic>, IHttpOperationRequestBody>(
+      requestBody => !(!!requestBody.required && !body),
+      () => [{ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error }]
+    )
+  );
+
+const validateIfBodySpecIsProvided = (body: unknown, mediaType: string, contents?: IMediaTypeContent[]) =>
+  pipe(
+    sequenceOption(Option.fromNullable(body), Option.fromNullable(contents)),
+    Option.fold(
+      () => Either.right(body),
+      ([body, contents]) => bodyValidator.validate(body, contents, mediaType)
+    )
+  );
+
+const validateBody = (request: IHttpOperationRequest, body: unknown, mediaType: string) =>
   pipe(
     Option.fromNullable(request.body),
     Option.fold(
       () => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(body),
       requestBody =>
         pipe(
-          requestBody,
-          Either.fromPredicate<NonEmptyArray<IPrismDiagnostic>, IHttpOperationRequestBody>(
-            requestBody => !(!!requestBody.required && !body),
-            () => [{ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error }]
-          ),
-          Either.chain(() =>
-            pipe(
-              sequenceOption(Option.fromNullable(body), Option.fromNullable(requestBody.contents)),
-              Option.fold(
-                () => Either.right(body),
-                ([body, contents]) => bodyValidator.validate(body, contents, mediaType)
-              )
-            )
-          )
+          checkBodyIsProvided(requestBody, body),
+          Either.chain(() => validateIfBodySpecIsProvided(body, mediaType, requestBody.contents))
         )
     )
   );
