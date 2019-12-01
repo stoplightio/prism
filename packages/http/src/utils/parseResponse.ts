@@ -19,8 +19,8 @@ export function parseResponseBody(
   );
 }
 
-export function parseResponseHeaders(response: Pick<Response, 'headers'>): Dictionary<string> {
-  return mapValues(response.headers.raw(), hValue => hValue.join(' '));
+export function parseResponseHeaders(headers: Dictionary<string[]>): Dictionary<string> {
+  return mapValues(headers, hValue => hValue.join(' '));
 }
 
 export function parseResponse(
@@ -30,7 +30,7 @@ export function parseResponse(
     parseResponseBody(response),
     TaskEither.map(body => ({
       statusCode: response.status,
-      headers: parseResponseHeaders(response),
+      headers: parseResponseHeaders(response.headers.raw()),
       body,
     }))
   );
