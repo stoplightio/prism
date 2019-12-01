@@ -11,14 +11,20 @@ import * as AjvOAI from 'ajv-oai';
 
 const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' });
 
-export const convertAjvErrors = (errors: NonEmptyArray<Ajv.ErrorObject>, severity: DiagnosticSeverity) =>
+export const convertAjvErrors = (
+  errors: NonEmptyArray<Ajv.ErrorObject>,
+  severity: DiagnosticSeverity,
+  prefix?: string
+) =>
   pipe(
     errors,
     map(error => {
       const allowedParameters = 'allowedValues' in error.params ? `: ${error.params.allowedValues.join(', ')}` : '';
+      const errorPath = error.dataPath.split('.').slice(1);
+      const path = prefix ? [prefix, ...errorPath] : errorPath;
 
       return {
-        path: error.dataPath.split('.').slice(1),
+        path,
         code: error.keyword || '',
         message: `${error.message || ''}${allowedParameters}`,
         severity,
@@ -29,25 +35,15 @@ export const validateAgainstSchema = (
   value: unknown,
   schema: JSONSchema,
   prefix?: string
-): Option.Option<NonEmptyArray<IPrismDiagnostic>> => {
-  return pipe(
+): Option.Option<NonEmptyArray<IPrismDiagnostic>> =>
+  pipe(
     Option.tryCatch(() => ajv.compile(schema)),
     Option.chain(validate => {
-      const valid = validate(value);
-      if (!valid) return fromArray(validate.errors!);
-      return Option.none;
+      validate(value);
+      return fromArray(validate.errors!);
     }),
-    Option.map(errors =>
-      pipe(
-        convertAjvErrors(errors, DiagnosticSeverity.Error),
-        map(error => {
-          const path = prefix ? [prefix, ...error.path] : error.path;
-          return Object.assign({}, error, { path });
-        })
-      )
-    )
+    Option.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))
   );
-};
 
 export const sequenceOption = sequenceT(Option.option);
 export const sequenceValidation = sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()));
