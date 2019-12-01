@@ -27,11 +27,7 @@ import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } f
 
 const outputNoContentFoundMessage = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
-const findEmptyResponse = (
-  response: IHttpOperationResponse,
-  headers: IHttpHeaderParam[],
-  mediaTypes: string[]
-): Option.Option<IHttpNegotiationResult> =>
+const findEmptyResponse = (response: IHttpOperationResponse, headers: IHttpHeaderParam[], mediaTypes: string[]) =>
   pipe(
     mediaTypes,
     findIndex(ct => ct.includes('*/*')),
