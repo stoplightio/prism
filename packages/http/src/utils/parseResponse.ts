@@ -7,26 +7,24 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { Dictionary } from '@stoplight/types';
 import { IHttpResponse } from '../types';
 
-export function parseResponseBody(
+export const parseResponseBody = (
   response: Pick<Response, 'headers' | 'json' | 'text'>
-): TaskEither.TaskEither<Error, unknown> {
-  return TaskEither.tryCatch(
+): TaskEither.TaskEither<Error, unknown> =>
+  TaskEither.tryCatch(
     () =>
       typeIs(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
         ? response.json()
         : response.text(),
     Either.toError
   );
-}
 
-export function parseResponseHeaders(headers: Dictionary<string[]>): Dictionary<string> {
-  return mapValues(headers, hValue => hValue.join(' '));
-}
+export const parseResponseHeaders = (headers: Dictionary<string[]>): Dictionary<string> =>
+  mapValues(headers, hValue => hValue.join(' '));
 
-export function parseResponse(
+export const parseResponse = (
   response: Pick<Response, 'headers' | 'json' | 'text' | 'status'>
-): TaskEither.TaskEither<Error, IHttpResponse> {
-  return pipe(
+): TaskEither.TaskEither<Error, IHttpResponse> =>
+  pipe(
     parseResponseBody(response),
     TaskEither.map(body => ({
       statusCode: response.status,
@@ -34,4 +32,3 @@ export function parseResponse(
       body,
     }))
   );
-}
