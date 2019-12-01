@@ -64,13 +64,12 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockH
       /*  Note: This is now just logging the errors without propagating them back. This might be moved as a first
           level concept in Prism.
       */
-      withLogger(logger =>
+      logger =>
         pipe(
           response,
           Either.map(response => runCallbacks({ resource, request: input.data, response })(logger)),
           Either.chain(() => response)
         )
-      )
     )
   );
 };
@@ -205,7 +204,7 @@ function assembleResponse(
   result: Either.Either<Error, IHttpNegotiationResult>,
   payloadGenerator: PayloadGenerator
 ): Reader.Reader<Logger, Either.Either<Error, IHttpResponse>> {
-  return withLogger(logger =>
+  return logger =>
     pipe(
       result,
       Either.map(negotiationResult => {
@@ -225,8 +224,7 @@ function assembleResponse(
 
         return response;
       })
-    )
-  );
+    );
 }
 
 function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is INodeExample {

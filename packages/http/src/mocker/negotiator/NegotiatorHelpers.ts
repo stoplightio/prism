@@ -156,7 +156,7 @@ const helpers = {
     const { code, headers } = response;
     const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
-    return withLogger(logger => {
+    return logger => {
       if (_httpOperation.method === 'head') {
         logger.info(`Responding with an empty body to a HEAD request.`);
 
@@ -222,7 +222,7 @@ const helpers = {
         },
         response
       );
-    });
+    };
   },
 
   negotiateOptionsForDefaultCode(
@@ -293,7 +293,7 @@ const helpers = {
   ): Reader.Reader<Logger, Option.Option<IHttpOperationResponse>> {
     const [first, ...others] = statusCodes;
 
-    return withLogger<Option.Option<IHttpOperationResponse>>(logger =>
+    return logger =>
       pipe(
         others.reduce(
           (previous, current, index) =>
@@ -326,8 +326,7 @@ const helpers = {
           logger.success(`Found response ${response.code}. I'll try with it.`);
           return response;
         })
-      )
-    );
+      );
   },
 
   negotiateOptionsForInvalidRequest(
@@ -336,52 +335,50 @@ const helpers = {
   ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
       helpers.findResponse(httpResponses, statusCodes),
-      Reader.chain(foundResponse =>
-        withLogger(logger =>
-          pipe(
-            foundResponse,
-            Either.fromOption(() => new Error('No 422, 400, or default responses defined')),
-            Either.chain(response => {
-              // find first response with any static examples
-              const contentWithExamples = response.contents && response.contents.find(contentHasExamples);
+      Reader.chain(foundResponse => logger =>
+        pipe(
+          foundResponse,
+          Either.fromOption(() => new Error('No 422, 400, or default responses defined')),
+          Either.chain(response => {
+            // find first response with any static examples
+            const contentWithExamples = response.contents && response.contents.find(contentHasExamples);
 
-              if (contentWithExamples) {
-                logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
+            if (contentWithExamples) {
+              logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
+              return Either.right({
+                code: response.code,
+                mediaType: contentWithExamples.mediaType,
+                bodyExample: contentWithExamples.examples[0],
+                headers: response.headers || [],
+              });
+            } else {
+              logger.trace(`Unable to find a content with an example defined for the response ${response.code}`);
+              // find first response with a schema
+              const responseWithSchema = response.contents && response.contents.find(content => !!content.schema);
+              if (responseWithSchema) {
+                logger.success(`The response ${response.code} has a schema. I'll keep going with this one`);
                 return Either.right({
                   code: response.code,
-                  mediaType: contentWithExamples.mediaType,
-                  bodyExample: contentWithExamples.examples[0],
+                  mediaType: responseWithSchema.mediaType,
+                  schema: responseWithSchema.schema,
                   headers: response.headers || [],
                 });
               } else {
-                logger.trace(`Unable to find a content with an example defined for the response ${response.code}`);
-                // find first response with a schema
-                const responseWithSchema = response.contents && response.contents.find(content => !!content.schema);
-                if (responseWithSchema) {
-                  logger.success(`The response ${response.code} has a schema. I'll keep going with this one`);
-                  return Either.right({
-                    code: response.code,
-                    mediaType: responseWithSchema.mediaType,
-                    schema: responseWithSchema.schema,
-                    headers: response.headers || [],
-                  });
-                } else {
-                  return pipe(
-                    findEmptyResponse(
-                      response,
-                      response.headers || [],
-                      get(contentWithExamples, 'mediaType', get(responseWithSchema, 'schema')) || ['*/*']
-                    ),
-                    Either.fromOption(() => {
-                      logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
+                return pipe(
+                  findEmptyResponse(
+                    response,
+                    response.headers || [],
+                    get(contentWithExamples, 'mediaType', get(responseWithSchema, 'schema')) || ['*/*']
+                  ),
+                  Either.fromOption(() => {
+                    logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
 
-                      return new Error(`Neither schema nor example defined for ${response.code} response.`);
-                    })
-                  );
-                }
+                    return new Error(`Neither schema nor example defined for ${response.code} response.`);
+                  })
+                );
               }
-            })
-          )
+            }
+          })
         )
       )
     );

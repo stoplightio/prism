@@ -12,11 +12,10 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { generate as generateHttpParam } from '../generator/HttpParamGenerator';
 import { validateOutput } from '../../validator';
 import { parseResponse } from '../../utils/parseResponse';
-import withLogger from '../../withLogger';
 import { violationLogger } from '../../utils/logger';
 import { Logger } from 'pino';
 
-export function runCallback({
+export const runCallback = ({
   callback,
   request,
   response,
@@ -24,36 +23,31 @@ export function runCallback({
   callback: IHttpCallbackOperation;
   request: IHttpRequest;
   response: IHttpResponse;
-}): ReaderTaskEither.ReaderTaskEither<Logger, void, unknown> {
-  return withLogger(logger => {
-    const { url, requestData } = assembleRequest({ resource: callback, request, response });
-    const logViolation = violationLogger(logger);
+}): ReaderTaskEither.ReaderTaskEither<Logger, void, unknown> => logger => {
+  const { url, requestData } = assembleRequest({ resource: callback, request, response });
+  const logViolation = violationLogger(logger);
 
-    logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Making request to ${url}...`);
+  logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Making request to ${url}...`);
 
-    return pipe(
-      TaskEither.tryCatch(() => fetch(url, requestData), Either.toError),
-      TaskEither.chain(parseResponse),
-      TaskEither.mapLeft(error =>
-        logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`)
-      ),
-      TaskEither.chain(element => {
-        logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Request finished`);
+  return pipe(
+    TaskEither.tryCatch(() => fetch(url, requestData), Either.toError),
+    TaskEither.chain(parseResponse),
+    TaskEither.mapLeft(error =>
+      logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`)
+    ),
+    TaskEither.chain(element => {
+      logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Request finished`);
 
-        return pipe(
-          validateOutput({ resource: callback, element }),
-          Either.mapLeft(violations => {
-            pipe(
-              violations,
-              map(logViolation)
-            );
-          }),
-          TaskEither.fromEither
-        );
-      })
-    );
-  });
-}
+      return pipe(
+        validateOutput({ resource: callback, element }),
+        Either.mapLeft(violations => {
+          pipe(violations, map(logViolation));
+        }),
+        TaskEither.fromEither
+      );
+    })
+  );
+};
 
 function assembleRequest({
   resource,
@@ -112,7 +106,10 @@ function assembleHeaders(
           pipe(
             param,
             generateHttpParam,
-            Option.fold(() => headers, value => ({ ...headers, [param.name]: value }))
+            Option.fold(
+              () => headers,
+              value => ({ ...headers, [param.name]: value })
+            )
           )
         )
       )
