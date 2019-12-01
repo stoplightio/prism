@@ -149,7 +149,7 @@ const helpers = {
   },
 
   negotiateOptionsBySpecificResponse(
-    _httpOperation: IHttpOperation,
+    httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse
   ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
@@ -157,7 +157,7 @@ const helpers = {
     const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
     return logger => {
-      if (_httpOperation.method === 'head') {
+      if (httpOperation.method === 'head') {
         logger.info(`Responding with an empty body to a HEAD request.`);
 
         return Either.right({
