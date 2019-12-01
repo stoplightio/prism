@@ -34,12 +34,6 @@ describe('convertAjvErrors()', () => {
       ).toHaveProperty('message', '');
     });
   });
-
-  describe('errors are not set', () => {
-    it('converts properly', () => {
-      expect(convertAjvErrors(null, DiagnosticSeverity.Error)).toMatchSnapshot();
-    });
-  });
 });
 
 describe('validateAgainstSchema()', () => {
@@ -60,7 +54,7 @@ describe('validateAgainstSchema()', () => {
       jest.spyOn(convertAjvErrorsModule, 'convertAjvErrors').mockImplementationOnce(() => [
         {
           message: 'should be number',
-          name: 'type',
+          code: '10',
           path: [],
           severity: DiagnosticSeverity.Error,
           summary: 'should be number',
@@ -80,7 +74,8 @@ describe('validateAgainstSchema()', () => {
             schemaPath: '#/type',
           },
         ],
-        DiagnosticSeverity.Error
+        DiagnosticSeverity.Error,
+        'pfx'
       );
     });
   });

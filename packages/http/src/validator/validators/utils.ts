@@ -1,5 +1,5 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { DiagnosticSeverity, Segment } from '@stoplight/types';
+import { DiagnosticSeverity } from '@stoplight/types';
 import { getSemigroup, NonEmptyArray, fromArray, map } from 'fp-ts/lib/NonEmptyArray';
 import { getValidation } from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
@@ -18,7 +18,7 @@ export const convertAjvErrors = (
 ) =>
   pipe(
     errors,
-    map(error => {
+    map<Ajv.ErrorObject, IPrismDiagnostic>(error => {
       const allowedParameters = 'allowedValues' in error.params ? `: ${error.params.allowedValues.join(', ')}` : '';
       const errorPath = error.dataPath.split('.').slice(1);
       const path = prefix ? [prefix, ...errorPath] : errorPath;
@@ -31,17 +31,15 @@ export const convertAjvErrors = (
       };
     })
   );
-export const validateAgainstSchema = (
-  value: unknown,
-  schema: JSONSchema,
-  prefix?: string
-): Option.Option<NonEmptyArray<IPrismDiagnostic>> =>
+
+export const validateAgainstSchema = (value: unknown, schema: JSONSchema, prefix?: string) =>
   pipe(
     Option.tryCatch(() => ajv.compile(schema)),
     Option.chain(validate => {
       validate(value);
-      return fromArray(validate.errors!);
+      return Option.fromNullable(validate.errors);
     }),
+    Option.chain(fromArray),
     Option.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))
   );
 

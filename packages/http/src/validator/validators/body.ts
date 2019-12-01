@@ -85,10 +85,10 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
       Option.fromNullable(mediaType),
       Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
       Option.alt(() => Option.some({ content: specs[0] || {}, mediaType: 'random' })),
-      Option.chain(({ mediaType: mt, content }) =>
+      Option.chain(({ mediaType, content }) =>
         pipe(
           Option.fromNullable(content.schema),
-          Option.map(schema => ({ schema, mediaType: mt, content }))
+          Option.map(schema => ({ schema, mediaType, content }))
         )
       )
     );

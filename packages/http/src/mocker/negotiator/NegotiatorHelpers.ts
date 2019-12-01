@@ -109,7 +109,7 @@ const helpers = {
     response: IHttpOperationResponse
   ): Either.Either<Error, IHttpNegotiationResult> {
     const { code, dynamic, exampleKey } = partialOptions;
-    const httpContent = hasContents(response)
+    const findHttpContent = hasContents(response)
       ? pipe(
           findDefaultContentType(response),
           Option.alt(() => findBestHttpContentByMediaType(response, ['application/json', '*/*']))
@@ -117,7 +117,7 @@ const helpers = {
       : Option.none;
 
     return pipe(
-      httpContent,
+      findHttpContent,
       Option.fold(
         () =>
           Either.right<Error, IHttpNegotiationResult>({
