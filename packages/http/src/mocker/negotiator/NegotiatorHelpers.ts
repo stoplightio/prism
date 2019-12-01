@@ -3,7 +3,7 @@ import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stop
 import { IHttpHeaderParam } from '@stoplight/types';
 import * as Either from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { isEmpty } from 'fp-ts/lib/Array';
+import { isEmpty, findIndex } from 'fp-ts/lib/Array';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Reader from 'fp-ts/lib/Reader';
@@ -34,7 +34,7 @@ const findEmptyResponse = (
 ): Option.Option<IHttpNegotiationResult> =>
   pipe(
     mediaTypes,
-    Option.fromPredicate(contentTypes => isEmpty(contentTypes.filter(ct => !ct.includes('*/*')))),
+    findIndex(ct => ct.includes('*/*')),
     Option.map(() => ({ code: response.code, headers }))
   );
 
