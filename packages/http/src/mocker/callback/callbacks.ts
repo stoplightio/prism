@@ -15,7 +15,7 @@ import { parseResponse } from '../../utils/parseResponse';
 import { violationLogger } from '../../utils/logger';
 import { Logger } from 'pino';
 
-export const runCallback = ({
+export function runCallback({
   callback,
   request,
   response,
@@ -23,31 +23,33 @@ export const runCallback = ({
   callback: IHttpCallbackOperation;
   request: IHttpRequest;
   response: IHttpResponse;
-}): ReaderTaskEither.ReaderTaskEither<Logger, void, unknown> => logger => {
-  const { url, requestData } = assembleRequest({ resource: callback, request, response });
-  const logViolation = violationLogger(logger);
+}): ReaderTaskEither.ReaderTaskEither<Logger, void, unknown> {
+  return logger => {
+    const { url, requestData } = assembleRequest({ resource: callback, request, response });
+    const logViolation = violationLogger(logger);
 
-  logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Making request to ${url}...`);
+    logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Making request to ${url}...`);
 
-  return pipe(
-    TaskEither.tryCatch(() => fetch(url, requestData), Either.toError),
-    TaskEither.chain(parseResponse),
-    TaskEither.mapLeft(error =>
-      logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`)
-    ),
-    TaskEither.chain(element => {
-      logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Request finished`);
+    return pipe(
+      TaskEither.tryCatch(() => fetch(url, requestData), Either.toError),
+      TaskEither.chain(parseResponse),
+      TaskEither.mapLeft(error =>
+        logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`)
+      ),
+      TaskEither.chain(element => {
+        logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Request finished`);
 
-      return pipe(
-        validateOutput({ resource: callback, element }),
-        Either.mapLeft(violations => {
-          pipe(violations, map(logViolation));
-        }),
-        TaskEither.fromEither
-      );
-    })
-  );
-};
+        return pipe(
+          validateOutput({ resource: callback, element }),
+          Either.mapLeft(violations => {
+            pipe(violations, map(logViolation));
+          }),
+          TaskEither.fromEither
+        );
+      })
+    );
+  };
+}
 
 function assembleRequest({
   resource,
