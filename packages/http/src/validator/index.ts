@@ -5,6 +5,7 @@ import {
   IHttpOperationResponse,
   IHttpOperationRequest,
   IMediaTypeContent,
+  IHttpOperationRequestBody,
 } from '@stoplight/types';
 import * as caseless from 'caseless';
 import { findFirst, isNonEmpty } from 'fp-ts/lib/Array';
@@ -34,29 +35,28 @@ export const headersValidator = new HttpHeadersValidator(headerDeserializerRegis
 export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
 export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
 
-const validateBody = (request: IHttpOperationRequest, body: unknown, mediaType: string) =>
+const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unknown) =>
   pipe(
-    Option.fromNullable(request),
-    Option.mapNullable(request => request.body),
-    Option.chain(requestBody =>
-      pipe(
-        requestBody,
-        Option.fromPredicate(requestBody => !!requestBody.required && !body),
-        Option.map<unknown, NonEmptyArray<IPrismDiagnostic>>(() => [
-          { code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error },
-        ]),
-        Option.alt(() =>
-          pipe(
-            sequenceOption(Option.fromNullable(body), Option.fromNullable(requestBody.contents)),
-            Option.chain(([body, contents]) =>
-              Option.fromEither(Either.swap(bodyValidator.validate(body, contents, mediaType)))
-            )
-          )
-        )
-      )
-    ),
-    Either.fromOption(() => body),
-    Either.swap
+    requestBody,
+    Either.fromPredicate<NonEmptyArray<IPrismDiagnostic>, IHttpOperationRequestBody>(
+      requestBody => !(!!requestBody.required && !body),
+      () => [{ code: 'required', message: 'Body parameter is required', severity: DiagnosticSeverity.Error }]
+    )
+  );
+
+const validateIfBodySpecIsProvided = (body: unknown, mediaType: string, contents?: IMediaTypeContent[]) =>
+  pipe(
+    sequenceOption(Option.fromNullable(body), Option.fromNullable(contents)),
+    Option.fold(
+      () => Either.right(body),
+      ([body, contents]) => bodyValidator.validate(body, contents, mediaType)
+    )
+  );
+
+const validateBody = (requestBody: IHttpOperationRequestBody, body: unknown, mediaType: string) =>
+  pipe(
+    checkBodyIsProvided(requestBody, body),
+    Either.chain(() => validateIfBodySpecIsProvided(body, mediaType, requestBody.contents))
   );
 
 const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
@@ -70,7 +70,7 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
       e => Either.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
       request =>
         sequenceValidation(
-          validateBody(request, body, mediaType),
+          request.body ? validateBody(request.body, body, mediaType) : Either.right(undefined),
           request.headers ? headersValidator.validate(element.headers || {}, request.headers) : Either.right(undefined),
           request.query ? queryValidator.validate(element.url.query || {}, request.query) : Either.right(undefined),
           request.path

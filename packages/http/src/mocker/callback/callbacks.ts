@@ -1,4 +1,4 @@
-import { IHttpCallbackOperation, IHttpOperationRequest } from '@stoplight/types';
+import { IHttpCallbackOperation, IHttpOperationRequest, Dictionary } from '@stoplight/types';
 import { resolveRuntimeExpressions } from '../../utils/runtimeExpression';
 import { IHttpRequest, IHttpResponse } from '../../types';
 import fetch from 'node-fetch';
@@ -12,7 +12,6 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { generate as generateHttpParam } from '../generator/HttpParamGenerator';
 import { validateOutput } from '../../validator';
 import { parseResponse } from '../../utils/parseResponse';
-import withLogger from '../../withLogger';
 import { violationLogger } from '../../utils/logger';
 import { Logger } from 'pino';
 
@@ -25,7 +24,7 @@ export function runCallback({
   request: IHttpRequest;
   response: IHttpResponse;
 }): ReaderTaskEither.ReaderTaskEither<Logger, void, unknown> {
-  return withLogger(logger => {
+  return logger => {
     const { url, requestData } = assembleRequest({ resource: callback, request, response });
     const logViolation = violationLogger(logger);
 
@@ -43,16 +42,13 @@ export function runCallback({
         return pipe(
           validateOutput({ resource: callback, element }),
           Either.mapLeft(violations => {
-            pipe(
-              violations,
-              map(logViolation)
-            );
+            pipe(violations, map(logViolation));
           }),
           TaskEither.fromEither
         );
       })
     );
-  });
+  };
 }
 
 function assembleRequest({
@@ -98,10 +94,7 @@ function assembleBody(request?: IHttpOperationRequest): Option.Option<{ body: st
   );
 }
 
-function assembleHeaders(
-  request?: IHttpOperationRequest,
-  bodyMediaType?: string
-): Option.Option<{ [key: string]: string }> {
+function assembleHeaders(request?: IHttpOperationRequest, bodyMediaType?: string): Option.Option<Dictionary<string>> {
   return pipe(
     Option.fromNullable(request),
     Option.mapNullable(request => request.headers),
@@ -112,7 +105,10 @@ function assembleHeaders(
           pipe(
             param,
             generateHttpParam,
-            Option.fold(() => headers, value => ({ ...headers, [param.name]: value }))
+            Option.fold(
+              () => headers,
+              value => ({ ...headers, [param.name]: value })
+            )
           )
         )
       )

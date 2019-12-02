@@ -5,17 +5,16 @@ import * as Either from 'fp-ts/lib/Either';
 import * as Option from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
-import * as typeIs from 'type-is';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
-import { fromArray } from 'fp-ts/lib/NonEmptyArray';
+import * as NonEmptyArray from 'fp-ts/lib/NonEmptyArray';
 
 export function deserializeFormBody(
   schema: JSONSchema,
   encodings: IHttpEncoding[],
-  decodedUriParams: Dictionary<string, string>
+  decodedUriParams: Dictionary<string>
 ) {
   if (!schema.properties) {
     return decodedUriParams;
@@ -41,14 +40,14 @@ export function deserializeFormBody(
 }
 
 export function splitUriParams(target: string) {
-  return target.split('&').reduce((result: Dictionary<string, string>, pair: string) => {
+  return target.split('&').reduce((result: Dictionary<string>, pair: string) => {
     const [key, ...rest] = pair.split('=');
     result[key] = rest.join('=');
     return result;
   }, {});
 }
 
-export function decodeUriEntities(target: Dictionary<string, string>) {
+export function decodeUriEntities(target: Dictionary<string>) {
   return Object.entries(target).reduce((result, [k, v]) => {
     result[decodeURIComponent(k)] = decodeURIComponent(v);
     return result;
@@ -64,14 +63,6 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
   );
 }
 
-function validateBodyIfNotFormEncoded(mediaType: string, schema: JSONSchema, target: unknown) {
-  return pipe(
-    mediaType,
-    Option.fromPredicate(mt => !typeIs.is(mt, ['application/x-www-form-urlencoded'])),
-    Option.chain(() => validateAgainstSchema(target, schema))
-  );
-}
-
 function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string) {
   const encodings = get(content, 'encodings', []);
   const encodedUriParams = splitUriParams(target);
@@ -80,9 +71,12 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     validateAgainstReservedCharacters(encodedUriParams, encodings),
     Either.map(decodeUriEntities),
     Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-    Either.fold(
-      e => Option.some(e),
-      deserialised => validateAgainstSchema(deserialised, schema)
+    Either.chain(deserialised =>
+      pipe(
+        validateAgainstSchema(deserialised, schema),
+        Either.fromOption(() => deserialised),
+        Either.swap
+      )
     )
   );
 }
@@ -91,42 +85,56 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
   constructor(private prefix: string) {}
 
   public validate(target: any, specs: IMediaTypeContent[], mediaType?: string) {
-    const mediaTypeWithContentAndSchema = pipe(
+    const findContentByMediaType = pipe(
       Option.fromNullable(mediaType),
       Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
       Option.alt(() => Option.some({ content: specs[0] || {}, mediaType: 'random' })),
-      Option.chain(({ mediaType: mt, content }) =>
+      Option.chain(({ mediaType, content }) =>
         pipe(
           Option.fromNullable(content.schema),
-          Option.map(schema => ({ schema, mediaType: mt, content }))
+          Option.map(schema => ({ schema, mediaType, content }))
         )
       )
     );
 
     return pipe(
-      mediaTypeWithContentAndSchema,
-      Option.chain(({ content, mediaType: mt, schema }) =>
-        pipe(
-          validateBodyIfNotFormEncoded(mt, schema, target),
-          Option.alt(() => deserializeAndValidate(content, schema, target)),
-          Option.map(diagnostics => applyPrefix(this.prefix, diagnostics))
-        )
-      ),
-      Option.chain(fromArray),
-      Either.fromOption(() => target),
-      Either.swap
+      findContentByMediaType,
+      Option.fold(
+        () => Either.right(target),
+        ({ content, mediaType: mt, schema }) =>
+          pipe(
+            mt,
+            Option.fromPredicate(mediaType => mediaType === 'application/x-www-form-urlencoded'),
+            Option.fold(
+              () =>
+                pipe(
+                  validateAgainstSchema(target, schema),
+                  Either.fromOption(() => target),
+                  Either.swap
+                ),
+              () => pipe(deserializeAndValidate(content, schema, target))
+            ),
+            Either.mapLeft(diagnostics => applyPrefix(this.prefix, diagnostics))
+          )
+      )
     );
   }
 }
 
-function applyPrefix(prefix: string, diagnostics: IPrismDiagnostic[]): IPrismDiagnostic[] {
-  return diagnostics.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }));
+function applyPrefix(
+  prefix: string,
+  diagnostics: NonEmptyArray.NonEmptyArray<IPrismDiagnostic>
+): NonEmptyArray.NonEmptyArray<IPrismDiagnostic> {
+  return pipe(
+    diagnostics,
+    NonEmptyArray.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }))
+  );
 }
 
 function validateAgainstReservedCharacters(
-  encodedUriParams: Dictionary<string, string>,
+  encodedUriParams: Dictionary<string>,
   encodings: IHttpEncoding[]
-): Either.Either<IPrismDiagnostic[], Dictionary<string, string>> {
+): Either.Either<NonEmptyArray.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
   return pipe(
     encodings,
     Array.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
@@ -144,6 +152,6 @@ function validateAgainstReservedCharacters(
 
       return diagnostics;
     }),
-    diagnostics => (diagnostics.length ? Either.left(diagnostics) : Either.right(encodedUriParams))
+    diagnostics => (Array.isNonEmpty(diagnostics) ? Either.left(diagnostics) : Either.right(encodedUriParams))
   );
 }

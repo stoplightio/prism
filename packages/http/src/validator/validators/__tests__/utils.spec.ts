@@ -2,7 +2,7 @@ import { DiagnosticSeverity } from '@stoplight/types';
 import * as convertAjvErrorsModule from '../utils';
 import { convertAjvErrors, validateAgainstSchema } from '../utils';
 import { ErrorObject } from 'ajv';
-import { assertSome } from '@stoplight/prism-core/src/__tests__/utils';
+import { assertSome, assertNone } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('convertAjvErrors()', () => {
   const errorObjectFixture: ErrorObject = {
@@ -34,12 +34,6 @@ describe('convertAjvErrors()', () => {
       ).toHaveProperty('message', '');
     });
   });
-
-  describe('errors are not set', () => {
-    it('converts properly', () => {
-      expect(convertAjvErrors(null, DiagnosticSeverity.Error)).toMatchSnapshot();
-    });
-  });
 });
 
 describe('validateAgainstSchema()', () => {
@@ -50,7 +44,7 @@ describe('validateAgainstSchema()', () => {
 
   describe('has no validation errors', () => {
     it('returns no validation errors', () => {
-      assertSome(validateAgainstSchema('test', { type: 'string' }, 'pfx'), e => expect(e).toEqual([]));
+      assertNone(validateAgainstSchema('test', { type: 'string' }, 'pfx'));
       expect(convertAjvErrorsModule.convertAjvErrors).not.toHaveBeenCalled();
     });
   });
@@ -60,7 +54,7 @@ describe('validateAgainstSchema()', () => {
       jest.spyOn(convertAjvErrorsModule, 'convertAjvErrors').mockImplementationOnce(() => [
         {
           message: 'should be number',
-          name: 'type',
+          code: '10',
           path: [],
           severity: DiagnosticSeverity.Error,
           summary: 'should be number',
@@ -80,7 +74,8 @@ describe('validateAgainstSchema()', () => {
             schemaPath: '#/type',
           },
         ],
-        DiagnosticSeverity.Error
+        DiagnosticSeverity.Error,
+        'pfx'
       );
     });
   });

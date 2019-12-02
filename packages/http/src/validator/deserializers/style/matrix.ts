@@ -50,7 +50,7 @@ export class MatrixStyleDeserializer implements IHttpHeaderParamStyleDeserialize
   }
 
   private deserializeImplodeObject(value: string) {
-    return value.split(';').reduce((result: Dictionary<string, string>, pair) => {
+    return value.split(';').reduce((result: Dictionary<string>, pair) => {
       const [k, v] = pair.split('=');
       return { ...result, [k]: v };
     }, {});

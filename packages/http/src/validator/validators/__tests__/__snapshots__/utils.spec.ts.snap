@@ -13,8 +13,6 @@ Array [
 ]
 `;
 
-exports[`convertAjvErrors() errors are not set converts properly 1`] = `Array []`;
-
 exports[`convertAjvErrors() keyword field is missing converts properly 1`] = `
 Array [
   Object {

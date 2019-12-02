@@ -49,7 +49,7 @@ describe('HttpHeadersValidator', () => {
                 ])
               );
 
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
             });
           });
 
@@ -66,7 +66,7 @@ describe('HttpHeadersValidator', () => {
                   ])
                 );
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
               });
             });
           });
@@ -83,7 +83,7 @@ describe('HttpHeadersValidator', () => {
               ])
             );
 
-            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.some([]));
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
           });
         });
 
