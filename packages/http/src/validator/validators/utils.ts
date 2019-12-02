@@ -35,9 +35,9 @@ export const convertAjvErrors = (
 export const validateAgainstSchema = (value: unknown, schema: JSONSchema, prefix?: string) =>
   pipe(
     Option.tryCatch(() => ajv.compile(schema)),
-    Option.chain(validate => {
+    Option.mapNullable(validate => {
       validate(value);
-      return Option.fromNullable(validate.errors);
+      return validate.errors;
     }),
     Option.chain(fromArray),
     Option.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))
