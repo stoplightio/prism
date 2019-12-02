@@ -72,7 +72,11 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     Either.map(decodeUriEntities),
     Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     Either.chain(deserialised =>
-      Either.swap(Either.fromOption(() => deserialised)(validateAgainstSchema(deserialised, schema)))
+      pipe(
+        validateAgainstSchema(deserialised, schema),
+        Either.fromOption(() => deserialised),
+        Either.swap
+      )
     )
   );
 }
