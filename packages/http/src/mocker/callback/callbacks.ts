@@ -1,4 +1,4 @@
-import { IHttpCallbackOperation, IHttpOperationRequest } from '@stoplight/types';
+import { IHttpCallbackOperation, IHttpOperationRequest, Dictionary } from '@stoplight/types';
 import { resolveRuntimeExpressions } from '../../utils/runtimeExpression';
 import { IHttpRequest, IHttpResponse } from '../../types';
 import fetch from 'node-fetch';
@@ -92,10 +92,7 @@ function assembleBody(request?: IHttpOperationRequest): Option.Option<{ body: st
   );
 }
 
-function assembleHeaders(
-  request?: IHttpOperationRequest,
-  bodyMediaType?: string
-): Option.Option<{ [key: string]: string }> {
+function assembleHeaders(request?: IHttpOperationRequest, bodyMediaType?: string): Option.Option<Dictionary<string>> {
   return pipe(
     Option.fromNullable(request),
     Option.mapNullable(request => request.headers),
