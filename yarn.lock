@@ -8498,9 +8498,9 @@ uri-js@^4.2.2:
     punycode "^2.1.0"
 
 uri-template-lite@^19.4.0:
-  version "19.4.0"
-  resolved "https://registry.yarnpkg.com/uri-template-lite/-/uri-template-lite-19.4.0.tgz#cbc2c072cf4931428a2f9d3aea36b8254a33cce5"
-  integrity sha512-VY8dgwyMwnCztkzhq0cA/YhNmO+YZqow//5FdmgE2fZU/JPi+U0rPL7MRDi0F+Ch4vJ7nYidWzeWAeY7uywe9g==
+  version "19.11.0"
+  resolved "https://registry.yarnpkg.com/uri-template-lite/-/uri-template-lite-19.11.0.tgz#ac27bf090cd1da60d21b57905603c85036b21227"
+  integrity sha512-ajU/nyV/NXDvXAxfTRPa4ECtRVT/PmNE0ifwfkgUVMf0Q+O8pixTVMZnie1XTCsSrDWvhWylruMVkrJQOfkPEA==
 
 urijs@^1.19.1, urijs@~1.19.1, urijs@~1.19.2:
   version "1.19.2"
