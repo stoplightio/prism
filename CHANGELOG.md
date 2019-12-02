@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Fixed
+
+Correctly handle the possibility of a body/headers generation failure [#875](https://github.com/stoplightio/prism/pull/875)
+
 # 3.2.1 (2019-11-21)
 
 ## Fixed
