@@ -1,6 +1,7 @@
 import { createLogger, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample, DiagnosticSeverity } from '@stoplight/types';
 import { right } from 'fp-ts/lib/ReaderEither';
+import * as Either from 'fp-ts/lib/Either';
 import { flatMap } from 'lodash';
 import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
@@ -166,7 +167,7 @@ describe('mocker', () => {
           input: mockInput,
         })(logger);
 
-        assertRight(response, result => {
+        assertRight(response, () => {
           expect(runCallback).toHaveBeenCalledTimes(2);
           expect(runCallback).toHaveBeenNthCalledWith(
             1,
@@ -193,11 +194,11 @@ describe('mocker', () => {
                       properties: {
                         param1: { type: 'string' },
                         param2: { type: 'string' },
-                      }
-                    }
-                  }
-                ]
-              }
+                      },
+                    },
+                  },
+                ],
+              },
             },
             callbacks: [
               {
@@ -236,12 +237,16 @@ describe('mocker', () => {
           })(logger);
 
           assertRight(response, () => {
-            expect(runCallback).toHaveBeenCalledWith(expect.objectContaining({ request: expect.objectContaining({
-              body: {
-                param1: 'test1',
-                param2: 'test2',
-              }
-            }) }));
+            expect(runCallback).toHaveBeenCalledWith(
+              expect.objectContaining({
+                request: expect.objectContaining({
+                  body: {
+                    param1: 'test1',
+                    param2: 'test2',
+                  },
+                }),
+              })
+            );
           });
         });
       });
@@ -291,7 +296,7 @@ describe('mocker', () => {
           })
         );
 
-        jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue('example value chelsea');
+        jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue(Either.right('example value chelsea'));
 
         const mockResult = mock({
           config: { dynamic: true },
@@ -309,7 +314,7 @@ describe('mocker', () => {
           const generatedExample = { hello: 'world' };
 
           beforeAll(() => {
-            jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue(generatedExample);
+            jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue(Either.right(generatedExample));
             jest.spyOn(JSONSchemaGenerator, 'generateStatic');
           });
 

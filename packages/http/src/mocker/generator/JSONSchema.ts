@@ -6,6 +6,7 @@ import { JSONSchema } from '../../types';
 import * as jsf from 'json-schema-faker';
 // @ts-ignore
 import * as sampler from 'openapi-sampler';
+import { Either, tryCatch, toError } from 'fp-ts/lib/Either';
 
 jsf.extend('faker', () => faker);
 
@@ -20,10 +21,10 @@ jsf.option({
   maxLength: 100,
 });
 
-export function generate(source: JSONSchema): unknown {
-  return jsf.generate(cloneDeep(source));
+export function generate(source: JSONSchema): Either<Error, unknown> {
+  return tryCatch(() => jsf.generate(cloneDeep(source)), toError);
 }
 
-export function generateStatic(source: JSONSchema): unknown {
-  return sampler.sample(source);
+export function generateStatic(source: JSONSchema): Either<Error, unknown> {
+  return tryCatch(() => sampler.sample(source), toError);
 }

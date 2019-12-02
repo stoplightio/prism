@@ -1,10 +1,11 @@
 import { get } from 'lodash';
 import { JSONSchema } from '../../../types';
 import { generate } from '../JSONSchema';
+import { assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('JSONSchema generator', () => {
   const ipRegExp = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
-  const emailRegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const emailRegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const uuidRegExp = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/;
 
   describe('generate()', () => {
@@ -18,12 +19,13 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property not matching anything in particular', () => {
-        const instance = generate(schema);
-        expect(instance).toHaveProperty('name');
-        const name = get(instance, 'name');
+        assertRight(generate(schema), instance => {
+          expect(instance).toHaveProperty('name');
+          const name = get(instance, 'name');
 
-        expect(ipRegExp.test(name)).toBeFalsy();
-        expect(emailRegExp.test(name)).toBeFalsy();
+          expect(ipRegExp.test(name)).toBeFalsy();
+          expect(emailRegExp.test(name)).toBeFalsy();
+        });
       });
     });
 
@@ -37,12 +39,13 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property matching the email regex', () => {
-        const instance = generate(schema);
-        expect(instance).toHaveProperty('email');
-        const email = get(instance, 'email');
+        assertRight(generate(schema), instance => {
+          expect(instance).toHaveProperty('email');
+          const email = get(instance, 'email');
 
-        expect(ipRegExp.test(email)).toBeFalsy();
-        expect(emailRegExp.test(email)).toBeTruthy();
+          expect(ipRegExp.test(email)).toBeFalsy();
+          expect(emailRegExp.test(email)).toBeTruthy();
+        });
       });
     });
 
@@ -56,17 +59,17 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property matching uuid regex', () => {
-        const instance = generate(schema);
-        const id = get(instance, 'id');
-
-        expect(uuidRegExp.test(id)).toBeTruthy();
+        assertRight(generate(schema), instance => {
+          const id = get(instance, 'id');
+          expect(uuidRegExp.test(id)).toBeTruthy();
+        });
       });
 
       it('will not be presented in the form of UUID as a URN', () => {
-        const instance = generate(schema);
-        const id = get(instance, 'id');
-
-        expect(uuidRegExp.test(id)).not.toContainEqual('urn:uuid');
+        assertRight(generate(schema), instance => {
+          const id = get(instance, 'id');
+          expect(uuidRegExp.test(id)).not.toContainEqual('urn:uuid');
+        });
       });
     });
 
@@ -80,12 +83,13 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property matching the ip regex', () => {
-        const instance = generate(schema);
-        expect(instance).toHaveProperty('ip');
-        const ip = get(instance, 'ip');
+        assertRight(generate(schema), instance => {
+          expect(instance).toHaveProperty('ip');
+          const ip = get(instance, 'ip');
 
-        expect(ipRegExp.test(ip)).toBeTruthy();
-        expect(emailRegExp.test(ip)).toBeFalsy();
+          expect(ipRegExp.test(ip)).toBeTruthy();
+          expect(emailRegExp.test(ip)).toBeFalsy();
+        });
       });
     });
 

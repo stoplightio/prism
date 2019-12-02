@@ -1,7 +1,6 @@
 import { IPrismComponents, IPrismInput } from '@stoplight/prism-core';
 import {
   DiagnosticSeverity,
-  Dictionary,
   IHttpHeaderParam,
   IHttpOperation,
   INodeExample,
@@ -10,12 +9,13 @@ import {
 
 import * as caseless from 'caseless';
 import * as Either from 'fp-ts/lib/Either';
+import * as Record from 'fp-ts/lib/Record';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as Reader from 'fp-ts/lib/Reader';
 import * as Option from 'fp-ts/lib/Option';
 import * as ReaderEither from 'fp-ts/lib/ReaderEither';
 import { map } from 'fp-ts/lib/Array';
-import { isEmpty, isObject, keyBy, mapValues, groupBy, get } from 'lodash';
+import { isNumber, isString, keyBy, mapValues, groupBy, get } from 'lodash';
 import { Logger } from 'pino';
 import * as typeIs from 'type-is';
 import {
@@ -39,6 +39,10 @@ import {
   findContentByMediaTypeOrFirst,
   splitUriParams,
 } from '../validator/validators/body';
+import { sequenceT } from 'fp-ts/lib/Apply';
+
+const eitherRecordSequence = Record.sequence(Either.either);
+const eitherSequence = sequenceT(Either.either);
 
 const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockHttpConfig>['mock'] = ({
   resource,
@@ -208,23 +212,28 @@ function assembleResponse(
   return withLogger(logger =>
     pipe(
       result,
-      Either.map(negotiationResult => {
-        const mockedBody = computeBody(negotiationResult, payloadGenerator);
-        const mockedHeaders = computeMockedHeaders(negotiationResult.headers || [], payloadGenerator);
+      Either.chain(negotiationResult =>
+        pipe(
+          eitherSequence(
+            computeBody(negotiationResult, payloadGenerator),
+            computeMockedHeaders(negotiationResult.headers || [], payloadGenerator)
+          ),
+          Either.map(([mockedBody, mockedHeaders]) => {
+            const response: IHttpResponse = {
+              statusCode: parseInt(negotiationResult.code),
+              headers: {
+                ...mockedHeaders,
+                ...(negotiationResult.mediaType && { 'Content-type': negotiationResult.mediaType }),
+              },
+              body: mockedBody,
+            };
 
-        const response: IHttpResponse = {
-          statusCode: parseInt(negotiationResult.code),
-          headers: {
-            ...mockedHeaders,
-            ...(negotiationResult.mediaType && { 'Content-type': negotiationResult.mediaType }),
-          },
-          body: mockedBody,
-        };
+            logger.success(`Responding with the requested status code ${response.statusCode}`);
 
-        logger.success(`Responding with the requested status code ${response.statusCode}`);
-
-        return response;
-      })
+            return response;
+          })
+        )
+      )
     )
   );
 }
@@ -233,36 +242,43 @@ function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is
   return !!nodeExample && 'value' in nodeExample;
 }
 
-function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: PayloadGenerator): Dictionary<string> {
-  return mapValues(
-    keyBy(headers, h => h.name),
-    header => {
-      if (header.schema) {
-        if (header.examples && header.examples.length > 0) {
-          const example = header.examples[0];
-          if (isINodeExample(example)) {
-            return example.value;
+function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: PayloadGenerator) {
+  return eitherRecordSequence(
+    mapValues(
+      keyBy(headers, h => h.name),
+      header => {
+        if (header.schema) {
+          if (header.examples && header.examples.length > 0) {
+            const example = header.examples[0];
+            if (isINodeExample(example)) {
+              return Either.right(example.value);
+            }
+          } else {
+            return pipe(
+              payloadGenerator(header.schema),
+              Either.map(example => {
+                if (isNumber(example) || isString(example)) return example;
+                return null;
+              })
+            );
           }
-        } else {
-          const example = payloadGenerator(header.schema);
-          if (!(isObject(example) && isEmpty(example))) return example;
         }
+        return Either.right(null);
       }
-      return null;
-    }
+    )
   );
 }
 
 function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
   payloadGenerator: PayloadGenerator
-) {
+): Either.Either<Error, unknown> {
   if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
-    return negotiationResult.bodyExample.value;
+    return Either.right(negotiationResult.bodyExample.value);
   } else if (negotiationResult.schema) {
     return payloadGenerator(negotiationResult.schema);
   }
-  return undefined;
+  return Either.right(undefined);
 }
 
 export default mock;

@@ -59,7 +59,7 @@ export function generate(param: IHttpParam | IHttpContent): Option.Option<unknow
       pipe(
         Option.fromNullable(param.schema),
         Option.map(improveSchema),
-        Option.map(generateDynamicExample)
+        Option.chain(schema => Option.fromEither(generateDynamicExample(schema)))
       )
     )
   );

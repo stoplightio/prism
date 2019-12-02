@@ -1,6 +1,7 @@
 import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
 import { Dictionary, HttpMethod, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
+import { Either } from 'fp-ts/lib/Either';
 
 export type PrismHttpInstance = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
 
@@ -97,7 +98,7 @@ export class ProblemJsonError extends Error {
 }
 
 export type ContentExample = INodeExample | INodeExternalExample;
-export type PayloadGenerator = (f: JSONSchema) => unknown;
+export type PayloadGenerator = (f: JSONSchema) => Either<Error, unknown>;
 
 export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
