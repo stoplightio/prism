@@ -9,7 +9,7 @@ import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
-import { NonEmptyArray, map } from 'fp-ts/lib/NonEmptyArray';
+import * as NonEmptyArray from 'fp-ts/lib/NonEmptyArray';
 
 export function deserializeFormBody(
   schema: JSONSchema,
@@ -121,17 +121,20 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
   }
 }
 
-function applyPrefix(prefix: string, diagnostics: NonEmptyArray<IPrismDiagnostic>): NonEmptyArray<IPrismDiagnostic> {
+function applyPrefix(
+  prefix: string,
+  diagnostics: NonEmptyArray.NonEmptyArray<IPrismDiagnostic>
+): NonEmptyArray.NonEmptyArray<IPrismDiagnostic> {
   return pipe(
     diagnostics,
-    map(d => ({ ...d, path: [prefix, ...(d.path || [])] }))
+    NonEmptyArray.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }))
   );
 }
 
 function validateAgainstReservedCharacters(
   encodedUriParams: Dictionary<string>,
   encodings: IHttpEncoding[]
-): Either.Either<NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
+): Either.Either<NonEmptyArray.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
   return pipe(
     encodings,
     Array.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
