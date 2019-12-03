@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import { JSONSchema } from '../../../types';
 import { generate } from '../JSONSchema';
-import { assertRight } from '@stoplight/prism-core/src/__tests__/utils';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('JSONSchema generator', () => {
   const ipRegExp = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
@@ -91,6 +91,31 @@ describe('JSONSchema generator', () => {
           expect(emailRegExp.test(ip)).toBeFalsy();
         });
       });
+    });
+
+    describe('when used with a schema that is not valid', () => {
+      const schema: JSONSchema = {
+        type: 'object',
+        properties: {
+          _embedded: {
+            type: 'object',
+            additionalProperties: {
+              allOf: [
+                {
+                  $ref: '#/definitions/supermodelIoAdidasApiHAL',
+                },
+                {
+                  type: 'array',
+                  items: {
+                    $ref: '#/definitions/supermodelIoAdidasApiHAL',
+                  },
+                },
+              ],
+            },
+          },
+        },
+      };
+      it('will return a left', () => assertLeft(generate(schema)));
     });
 
     it('operates on sealed schema objects', () => {
