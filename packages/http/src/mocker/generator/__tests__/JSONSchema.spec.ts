@@ -98,23 +98,11 @@ describe('JSONSchema generator', () => {
         type: 'object',
         properties: {
           _embedded: {
-            type: 'object',
-            additionalProperties: {
-              allOf: [
-                {
-                  $ref: '#/definitions/supermodelIoAdidasApiHAL',
-                },
-                {
-                  type: 'array',
-                  items: {
-                    $ref: '#/definitions/supermodelIoAdidasApiHAL',
-                  },
-                },
-              ],
-            },
+            $ref: '#/definitions/supermodelIoAdidasApiHAL',
           },
         },
       };
+
       it('will return a left', () => assertLeft(generate(schema)));
     });
 
