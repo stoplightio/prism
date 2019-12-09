@@ -1547,7 +1547,7 @@ ajv-oai@^1.0.0:
   dependencies:
     decimal.js "^10.2.0"
 
-ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.5, ajv@^6.8.1:
+ajv@6.10.2, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.5, ajv@^6.8.1:
   version "6.10.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.10.2.tgz#d3cea04d6b017b2894ad69040fec8b623eb4bd52"
   integrity sha512-TXtUUEYHuaTEbLZWIKUr5pmBuhDLy+8KYtPYdcV8qC+pOZL+NKqYwvWSRrVXHn+ZmRRAu8vJTAznH7Oag6RVRw==
@@ -2706,10 +2706,10 @@ deep-eql@^3.0.1:
   dependencies:
     type-detect "^4.0.0"
 
-deep-equal@1.1.0, deep-equal@^1.0.1:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.1.0.tgz#3103cdf8ab6d32cf4a8df7865458f2b8d33f3745"
-  integrity sha512-ZbfWJq/wN1Z273o7mUSjILYqehAktR2NVoSrOukDkU9kg2v/Uv89yU4Cvz8seJeAmtN5oqiefKq8FPuXOboqLw==
+deep-equal@1.1.1, deep-equal@^1.0.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.1.1.tgz#b5c98c942ceffaf7cb051e24e1434a25a2e6076a"
+  integrity sha512-yd9c5AdiqVcR+JjcwUQb9DkhJc8ngNr0MahEBGvDiJw8puWab2yZlh+nkasOnZP+EGTAP6rRp2JzJhJZzvNF8g==
   dependencies:
     is-arguments "^1.0.4"
     is-date-object "^1.0.1"
@@ -3720,17 +3720,18 @@ gauge@~2.7.3:
     wide-align "^1.1.0"
 
 gavel@^8.0.3:
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/gavel/-/gavel-8.1.1.tgz#c3f82e5ef468661bda9ff7800c58c51e979b3477"
-  integrity sha512-TgMghBKUOL7/zaNvn71X+e7jg16fL1lycDtltrfiSgGhHKNQHN9+77kkEpBVkwCl5kERId3kFlhjqU9W7l4ODw==
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/gavel/-/gavel-8.2.1.tgz#cc1f8e1e5e57e44dc2563c2e345673d373ceb135"
+  integrity sha512-SO+hiBItF98XykgEQR2z07E+xYloTVTXKeDJN1PZRlDR9kMY1OccPkvka5r2wYXguMwhNcdEko1o1bSZoZFPTA==
   dependencies:
+    ajv "6.10.2"
     amanda "1.0.1"
     caseless "0.12.0"
     clone "2.1.2"
     commander "3.0.2"
     content-type "1.0.4"
     curl-trace-parser "0.0.10"
-    deep-equal "1.1.0"
+    deep-equal "1.1.1"
     http-string-parser "0.0.6"
     json-pointer "0.6.0"
     media-typer "1.1.0"
