@@ -1118,9 +1118,9 @@
     any-observable "^0.3.0"
 
 "@stoplight/http-spec@^2.2.3":
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.4.1.tgz#3eee458f874fb3c6b65bcf9ecdb640e5e9fb9941"
-  integrity sha512-7rKy0EYjPoOoIN7WY8M0gF3XJvVyEHzEy5NDtcbuqauu1mMOG7rHhYHepNpKOUgv23D9P/feV5JPHprcTLcz1w==
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.4.2.tgz#a7216d04e5e471b1e3f5e43981777f2208b75fb9"
+  integrity sha512-u+WshZjOYYGQIpceQFNl6149L3Isox7Xa1cAyTvibAtjsrluvrmYg5hTvxeF8XVcqcIbhMuwFU1ZUur8HAu7Bw==
   dependencies:
     "@stoplight/json" "^3.2.1"
     "@stoplight/types" "^11.2.0"
