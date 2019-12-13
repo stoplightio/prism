@@ -111,7 +111,7 @@ Note: the `request` method returns a [`TaskEither` monad](https://gcanti.github.
       },
       operations
     ),
-    TaskEither.fold(console.error, console.log);
+    TE.fold(console.error, console.log);
   )(); // returns a Promise
 ```
 

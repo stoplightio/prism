@@ -1,7 +1,7 @@
 import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/types';
 import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
-import * as Either from 'fp-ts/lib/Either';
-import * as Option from 'fp-ts/lib/Option';
+import * as E from 'fp-ts/lib/Either';
+import * as O from 'fp-ts/lib/Option';
 import { fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { JSONSchema4 } from 'json-schema';
@@ -57,11 +57,11 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
 
     return pipe(
       validateAgainstSchema(parameterValues, schema, prefix),
-      Option.map(schemaDiagnostic => schemaDiagnostic.concat(deprecatedWarnings)),
-      Option.chain(fromArray),
-      Option.alt(() => fromArray(deprecatedWarnings)),
-      Either.fromOption(() => target),
-      Either.swap
+      O.map(schemaDiagnostic => schemaDiagnostic.concat(deprecatedWarnings)),
+      O.chain(fromArray),
+      O.alt(() => fromArray(deprecatedWarnings)),
+      E.fromOption(() => target),
+      E.swap
     );
   }
 }

@@ -8,12 +8,12 @@ import {
 } from '@stoplight/types';
 
 import * as caseless from 'caseless';
-import * as Either from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
 import * as Record from 'fp-ts/lib/Record';
 import { pipe } from 'fp-ts/lib/pipeable';
-import * as Reader from 'fp-ts/lib/Reader';
-import * as Option from 'fp-ts/lib/Option';
-import * as ReaderEither from 'fp-ts/lib/ReaderEither';
+import * as R from 'fp-ts/lib/Reader';
+import * as O from 'fp-ts/lib/Option';
+import * as RE from 'fp-ts/lib/ReaderEither';
 import { map } from 'fp-ts/lib/Array';
 import { isNumber, isString, keyBy, mapValues, groupBy, get } from 'lodash';
 import { Logger } from 'pino';
@@ -41,8 +41,8 @@ import {
 } from '../validator/validators/body';
 import { sequenceT } from 'fp-ts/lib/Apply';
 
-const eitherRecordSequence = Record.sequence(Either.either);
-const eitherSequence = sequenceT(Either.either);
+const eitherRecordSequence = Record.sequence(E.either);
+const eitherSequence = sequenceT(E.either);
 
 const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockHttpConfig>['mock'] = ({
   resource,
@@ -62,17 +62,17 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockH
 
       return config;
     }),
-    Reader.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
-    Reader.chain(result => assembleResponse(result, payloadGenerator)),
-    Reader.chain(response =>
+    R.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
+    R.chain(result => assembleResponse(result, payloadGenerator)),
+    R.chain(response =>
       /*  Note: This is now just logging the errors without propagating them back. This might be moved as a first
           level concept in Prism.
       */
       logger =>
         pipe(
           response,
-          Either.map(response => runCallbacks({ resource, request: input.data, response })(logger)),
-          Either.chain(() => response)
+          E.map(response => runCallbacks({ resource, request: input.data, response })(logger)),
+          E.chain(() => response)
         )
     )
   );
@@ -89,8 +89,8 @@ function runCallbacks({
 }) {
   return withLogger(logger =>
     pipe(
-      Option.fromNullable(resource.callbacks),
-      Option.map(callbacks =>
+      O.fromNullable(resource.callbacks),
+      O.map(callbacks =>
         pipe(
           callbacks,
           map(callback =>
@@ -113,10 +113,10 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   if (!typeIs.is(mediaType, ['application/x-www-form-urlencoded'])) return request;
 
   const specs = pipe(
-    Option.fromNullable(resource.request),
-    Option.mapNullable(request => request.body),
-    Option.mapNullable(body => body.contents),
-    Option.getOrElse(() => [] as IMediaTypeContent[])
+    O.fromNullable(resource.request),
+    O.mapNullable(request => request.body),
+    O.mapNullable(body => body.contents),
+    O.getOrElse(() => [] as IMediaTypeContent[])
   );
 
   const encodedUriParams = splitUriParams(request.body as string);
@@ -126,10 +126,10 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   }
 
   const content = pipe(
-    Option.fromNullable(mediaType),
-    Option.chain(mediaType => findContentByMediaTypeOrFirst(specs, mediaType)),
-    Option.map(({ content }) => content),
-    Option.getOrElse(() => specs[0] || {})
+    O.fromNullable(mediaType),
+    O.chain(mediaType => findContentByMediaTypeOrFirst(specs, mediaType)),
+    O.map(({ content }) => content),
+    O.getOrElse(() => specs[0] || {})
   );
 
   const encodings = get(content, 'encodings', []);
@@ -146,10 +146,10 @@ function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttp
 
   return pipe(
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
-    Reader.chain(() =>
+    R.chain(() =>
       pipe(
         helpers.negotiateOptionsForInvalidRequest(resource.responses, securityValidation ? ['401'] : ['422', '400']),
-        ReaderEither.mapLeft(() =>
+        RE.mapLeft(() =>
           securityValidation
             ? ProblemJsonError.fromTemplate(
                 UNAUTHORIZED,
@@ -199,25 +199,25 @@ function negotiateResponse(
           'The request passed the validation rules. Looking for the best response'
         );
       }),
-      Reader.chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig))
+      R.chain(() => helpers.negotiateOptionsForValidRequest(resource, mockConfig))
     );
   }
 }
 
 function assembleResponse(
-  result: Either.Either<Error, IHttpNegotiationResult>,
+  result: E.Either<Error, IHttpNegotiationResult>,
   payloadGenerator: PayloadGenerator
-): Reader.Reader<Logger, Either.Either<Error, IHttpResponse>> {
+): R.Reader<Logger, E.Either<Error, IHttpResponse>> {
   return logger =>
     pipe(
       result,
-      Either.chain(negotiationResult =>
+      E.chain(negotiationResult =>
         pipe(
           eitherSequence(
             computeBody(negotiationResult, payloadGenerator),
             computeMockedHeaders(negotiationResult.headers || [], payloadGenerator)
           ),
-          Either.map(([mockedBody, mockedHeaders]) => {
+          E.map(([mockedBody, mockedHeaders]) => {
             const response: IHttpResponse = {
               statusCode: parseInt(negotiationResult.code),
               headers: {
@@ -249,19 +249,19 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: Pay
           if (header.examples && header.examples.length > 0) {
             const example = header.examples[0];
             if (isINodeExample(example)) {
-              return Either.right(example.value);
+              return E.right(example.value);
             }
           } else {
             return pipe(
               payloadGenerator(header.schema),
-              Either.map(example => {
+              E.map(example => {
                 if (isNumber(example) || isString(example)) return example;
                 return null;
               })
             );
           }
         }
-        return Either.right(null);
+        return E.right(null);
       }
     )
   );
@@ -270,13 +270,13 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: Pay
 function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
   payloadGenerator: PayloadGenerator
-): Either.Either<Error, unknown> {
+): E.Either<Error, unknown> {
   if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
-    return Either.right(negotiationResult.bodyExample.value);
+    return E.right(negotiationResult.bodyExample.value);
   } else if (negotiationResult.schema) {
     return payloadGenerator(negotiationResult.schema);
   }
-  return Either.right(undefined);
+  return E.right(undefined);
 }
 
 export default mock;

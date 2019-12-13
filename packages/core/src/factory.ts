@@ -1,5 +1,5 @@
-import * as Either from 'fp-ts/lib/Either';
-import * as TaskEither from 'fp-ts/lib/TaskEither';
+import * as E from 'fp-ts/lib/Either';
+import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig, IPrismOutput } from './types';
@@ -7,7 +7,7 @@ import { sequenceT } from 'fp-ts/lib/Apply';
 import { getSemigroup } from 'fp-ts/lib/NonEmptyArray';
 import { DiagnosticSeverity } from '@stoplight/types';
 
-const sequenceValidation = sequenceT(Either.getValidation(getSemigroup<IPrismDiagnostic>()));
+const sequenceValidation = sequenceT(E.getValidation(getSemigroup<IPrismDiagnostic>()));
 
 function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
   return !p.mock;
@@ -41,17 +41,17 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     resource: Resource,
     input: Input,
     config: Config
-  ): TaskEither.TaskEither<Error, ResourceAndValidation> =>
+  ): TE.TaskEither<Error, ResourceAndValidation> =>
     pipe(
       sequenceValidation(
-        config.validateRequest ? components.validateInput({ resource, element: input }) : Either.right(input),
-        config.checkSecurity ? components.validateSecurity({ resource, element: input }) : Either.right(input)
+        config.validateRequest ? components.validateInput({ resource, element: input }) : E.right(input),
+        config.checkSecurity ? components.validateSecurity({ resource, element: input }) : E.right(input)
       ),
-      Either.fold(
+      E.fold(
         validations => validations as IPrismDiagnostic[],
         () => []
       ),
-      validations => TaskEither.right({ resource, validations })
+      validations => TE.right({ resource, validations })
     );
 
   const mockOrForward = (
@@ -59,10 +59,10 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     input: Input,
     config: Config,
     validations: IPrismDiagnostic[]
-  ): TaskEither.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
+  ): TE.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
     const produceOutput = isProxyConfig(config)
       ? components.forward(input, config.upstream.href)(components.logger.child({ name: 'PROXY' }))
-      : TaskEither.fromEither(
+      : TE.fromEither(
           components.mock({
             resource,
             input: {
@@ -75,7 +75,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
     return pipe(
       produceOutput,
-      TaskEither.map(output => ({ output, resource, validations }))
+      TE.map(output => ({ output, resource, validations }))
     );
   };
 
@@ -85,25 +85,25 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       const config = defaults<unknown, Config>(c, defaultConfig);
 
       return pipe(
-        TaskEither.fromEither(components.route({ resources, input })),
-        TaskEither.fold(
+        TE.fromEither(components.route({ resources, input })),
+        TE.fold(
           error => {
             if (!config.errors && isProxyConfig(config)) {
               return pipe(
                 components.forward(input, config.upstream.href)(components.logger.child({ name: 'PROXY' })),
-                TaskEither.map(createWarningOutput)
+                TE.map(createWarningOutput)
               );
-            } else return TaskEither.left(error);
+            } else return TE.left(error);
           },
           resource =>
             pipe(
               inputValidation(resource, input, config),
-              TaskEither.chain(({ resource, validations }) => mockOrForward(resource, input, config, validations)),
-              TaskEither.map(({ output, resource, validations: inputValidations }) => {
+              TE.chain(({ resource, validations }) => mockOrForward(resource, input, config, validations)),
+              TE.map(({ output, resource, validations: inputValidations }) => {
                 const outputValidations = config.validateResponse
                   ? pipe(
-                      Either.swap(components.validateOutput({ resource, element: output })),
-                      Either.getOrElse<Output, IPrismDiagnostic[]>(() => [])
+                      E.swap(components.validateOutput({ resource, element: output })),
+                      E.getOrElse<Output, IPrismDiagnostic[]>(() => [])
                     )
                   : [];
 

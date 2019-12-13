@@ -1,7 +1,7 @@
 import { Response } from 'node-fetch';
 import { is as typeIs } from 'type-is';
-import * as Either from 'fp-ts/lib/Either';
-import * as TaskEither from 'fp-ts/lib/TaskEither';
+import * as E from 'fp-ts/lib/Either';
+import * as TE from 'fp-ts/lib/TaskEither';
 import { mapValues } from 'lodash';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Dictionary } from '@stoplight/types';
@@ -9,13 +9,13 @@ import { IHttpResponse } from '../types';
 
 export const parseResponseBody = (
   response: Pick<Response, 'headers' | 'json' | 'text'>
-): TaskEither.TaskEither<Error, unknown> =>
-  TaskEither.tryCatch(
+): TE.TaskEither<Error, unknown> =>
+  TE.tryCatch(
     () =>
       typeIs(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
         ? response.json()
         : response.text(),
-    Either.toError
+    E.toError
   );
 
 export const parseResponseHeaders = (headers: Dictionary<string[]>): Dictionary<string> =>
@@ -23,10 +23,10 @@ export const parseResponseHeaders = (headers: Dictionary<string[]>): Dictionary<
 
 export const parseResponse = (
   response: Pick<Response, 'headers' | 'json' | 'text' | 'status'>
-): TaskEither.TaskEither<Error, IHttpResponse> =>
+): TE.TaskEither<Error, IHttpResponse> =>
   pipe(
     parseResponseBody(response),
-    TaskEither.map(body => ({
+    TE.map(body => ({
       statusCode: response.status,
       headers: parseResponseHeaders(response.headers.raw()),
       body,

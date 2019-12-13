@@ -7,7 +7,7 @@ import {
   INodeExternalExample,
 } from '@stoplight/types';
 import { Chance } from 'chance';
-import * as Either from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
 import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import helpers from '../NegotiatorHelpers';
@@ -16,7 +16,7 @@ import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 const chance = new Chance();
 const logger = createLogger('TEST', { enabled: false });
 
-const assertPayloadlessResponse = (actualResponse: Either.Either<Error, IHttpNegotiationResult>) => {
+const assertPayloadlessResponse = (actualResponse: E.Either<Error, IHttpNegotiationResult>) => {
   assertRight(actualResponse, response => {
     expect(response).not.toHaveProperty('bodyExample');
     expect(response).not.toHaveProperty('mediaType');
@@ -472,9 +472,7 @@ describe('NegotiatorHelpers', () => {
           mediaType: desiredOptions.mediaTypes[0],
           headers: [],
         };
-        jest
-          .spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent')
-          .mockReturnValue(Either.right(fakeOperationConfig));
+        jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(E.right(fakeOperationConfig));
         jest.spyOn(helpers, 'negotiateDefaultMediaType');
 
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
@@ -588,7 +586,7 @@ describe('NegotiatorHelpers', () => {
             httpResponseSchema
           )(logger);
 
-          expect(Either.isLeft(actualResponse)).toBeTruthy();
+          expect(E.isLeft(actualResponse)).toBeTruthy();
         });
       });
 
@@ -640,7 +638,7 @@ describe('NegotiatorHelpers', () => {
         };
 
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent');
-        jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(Either.right(fakeOperationConfig));
+        jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(E.right(fakeOperationConfig));
 
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
           httpOperation,
@@ -698,9 +696,7 @@ describe('NegotiatorHelpers', () => {
           headers: [],
         };
 
-        jest
-          .spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent')
-          .mockReturnValue(Either.right(fakeOperationConfig));
+        jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(E.right(fakeOperationConfig));
 
         const actualOperationConfig = helpers.negotiateDefaultMediaType(partialOptions, response);
 

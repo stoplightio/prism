@@ -1,5 +1,5 @@
 import { IHttpContent, IHttpParam, INodeExample, INodeExternalExample } from '@stoplight/types';
-import * as Option from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { JSONSchema } from '../../types';
 import { generate as generateDynamicExample } from './JSONSchema';
@@ -41,25 +41,23 @@ export function improveSchema(schema: JSONSchema): JSONSchema {
   return newSchema;
 }
 
-function pickStaticExample(
-  examples: Option.Option<Array<INodeExample | INodeExternalExample>>
-): Option.Option<unknown> {
+function pickStaticExample(examples: O.Option<Array<INodeExample | INodeExternalExample>>): O.Option<unknown> {
   return pipe(
     examples,
-    Option.mapNullable(exs => exs[Math.floor(Math.random() * exs.length)]),
-    Option.mapNullable(example => (example as INodeExample).value)
+    O.mapNullable(exs => exs[Math.floor(Math.random() * exs.length)]),
+    O.mapNullable(example => (example as INodeExample).value)
   );
 }
 
-export function generate(param: IHttpParam | IHttpContent): Option.Option<unknown> {
+export function generate(param: IHttpParam | IHttpContent): O.Option<unknown> {
   return pipe(
-    Option.fromNullable(param.examples),
+    O.fromNullable(param.examples),
     pickStaticExample,
-    Option.alt(() =>
+    O.alt(() =>
       pipe(
-        Option.fromNullable(param.schema),
-        Option.map(improveSchema),
-        Option.chain(schema => Option.fromEither(generateDynamicExample(schema)))
+        O.fromNullable(param.schema),
+        O.map(improveSchema),
+        O.chain(schema => O.fromEither(generateDynamicExample(schema)))
       )
     )
   );

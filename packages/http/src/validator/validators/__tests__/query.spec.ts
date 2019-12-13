@@ -3,7 +3,7 @@ import { query as registry } from '../../deserializers';
 import { HttpQueryValidator } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
-import * as Option from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 
 describe('HttpQueryValidator', () => {
   const httpQueryValidator = new HttpQueryValidator(registry, 'query');
@@ -40,7 +40,7 @@ describe('HttpQueryValidator', () => {
 
               assertRight(httpQueryValidator.validate({ param: 'abc' }, [param]));
 
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
             });
           });
 
@@ -57,7 +57,7 @@ describe('HttpQueryValidator', () => {
                   ])
                 );
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
               });
             });
           });
@@ -74,7 +74,7 @@ describe('HttpQueryValidator', () => {
               ])
             );
 
-            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
           });
         });
 

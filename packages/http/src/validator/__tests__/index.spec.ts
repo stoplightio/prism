@@ -1,6 +1,6 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation, HttpParamStyles } from '@stoplight/types';
-import * as Either from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
 import { IHttpRequest } from '../../types';
 import * as validator from '../index';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
@@ -38,10 +38,10 @@ const mockError: IPrismDiagnostic = {
 describe('HttpValidator', () => {
   describe('validator.validateInput()', () => {
     beforeAll(() => {
-      jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(Either.left([mockError]));
-      jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(Either.left([mockError]));
-      jest.spyOn(validator.queryValidator, 'validate').mockReturnValue(Either.left([mockError]));
-      jest.spyOn(validator.pathValidator, 'validate').mockReturnValue(Either.left([mockError]));
+      jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(E.left([mockError]));
+      jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(E.left([mockError]));
+      jest.spyOn(validator.queryValidator, 'validate').mockReturnValue(E.left([mockError]));
+      jest.spyOn(validator.pathValidator, 'validate').mockReturnValue(E.left([mockError]));
     });
 
     afterAll(() => jest.restoreAllMocks());
@@ -140,9 +140,9 @@ describe('HttpValidator', () => {
   describe('validateOutput()', () => {
     describe('output is set', () => {
       beforeAll(() => {
-        jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(Either.left([mockError]));
-        jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(Either.left([mockError]));
-        jest.spyOn(validator.queryValidator, 'validate').mockReturnValue(Either.left([mockError]));
+        jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(E.left([mockError]));
+        jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(E.left([mockError]));
+        jest.spyOn(validator.queryValidator, 'validate').mockReturnValue(E.left([mockError]));
       });
 
       afterAll(() => jest.restoreAllMocks());
@@ -189,8 +189,8 @@ describe('HttpValidator', () => {
 
     describe('cannot match status code with responses', () => {
       beforeEach(() => {
-        jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(Either.right({}));
-        jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(Either.right({}));
+        jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(E.right({}));
+        jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(E.right({}));
       });
 
       afterEach(() => jest.clearAllMocks());

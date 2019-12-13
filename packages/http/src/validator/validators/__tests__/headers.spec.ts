@@ -3,7 +3,7 @@ import { query as registry } from '../../deserializers';
 import { HttpHeadersValidator } from '../headers';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
-import * as Option from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 
 describe('HttpHeadersValidator', () => {
   const httpHeadersValidator = new HttpHeadersValidator(registry, 'header');
@@ -49,7 +49,7 @@ describe('HttpHeadersValidator', () => {
                 ])
               );
 
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
             });
           });
 
@@ -66,7 +66,7 @@ describe('HttpHeadersValidator', () => {
                   ])
                 );
 
-                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
+                expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
               });
             });
           });
@@ -83,7 +83,7 @@ describe('HttpHeadersValidator', () => {
               ])
             );
 
-            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(Option.none);
+            expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
           });
         });
 

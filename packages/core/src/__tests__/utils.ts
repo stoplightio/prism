@@ -1,13 +1,13 @@
-import * as Option from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { noop } from 'lodash';
 import { pipe } from 'fp-ts/lib/pipeable';
-import * as Either from 'fp-ts/lib/Either';
-import * as TaskEither from 'fp-ts/lib/TaskEither';
+import * as E from 'fp-ts/lib/Either';
+import * as TE from 'fp-ts/lib/TaskEither';
 
-export function assertNone<A>(e: Option.Option<A>): asserts e is Option.None {
+export function assertNone<A>(e: O.Option<A>): asserts e is O.None {
   pipe(
     e,
-    Option.fold(
+    O.fold(
       () => ({}),
       a => {
         throw new Error('None expected, got a Some: ' + a);
@@ -16,40 +16,37 @@ export function assertNone<A>(e: Option.Option<A>): asserts e is Option.None {
   );
 }
 
-export function assertSome<A>(e: Option.Option<A>, onSome: (a: A) => void = noop): asserts e is Option.Some<A> {
+export function assertSome<A>(e: O.Option<A>, onSome: (a: A) => void = noop): asserts e is O.Some<A> {
   pipe(
     e,
-    Option.fold(() => {
+    O.fold(() => {
       throw new Error('Some expected, got a None');
     }, onSome)
   );
 }
 
-export function assertRight<L, A>(
-  e: Either.Either<L, A>,
-  onRight: (a: A) => void = noop
-): asserts e is Either.Right<A> {
+export function assertRight<L, A>(e: E.Either<L, A>, onRight: (a: A) => void = noop): asserts e is E.Right<A> {
   pipe(
     e,
-    Either.fold(l => {
+    E.fold(l => {
       throw new Error('Right expected, got a Left: ' + l);
     }, onRight)
   );
 }
 
-export function assertLeft<L, A>(e: Either.Either<L, A>, onLeft: (a: L) => void = noop): asserts e is Either.Left<L> {
+export function assertLeft<L, A>(e: E.Either<L, A>, onLeft: (a: L) => void = noop): asserts e is E.Left<L> {
   pipe(
     e,
-    Either.fold(onLeft, a => {
+    E.fold(onLeft, a => {
       throw new Error('Left expected, got a Right: ' + a);
     })
   );
 }
 
-export async function assertResolvesRight<L, A>(e: TaskEither.TaskEither<L, A>, onRight: (a: A) => void = noop) {
+export async function assertResolvesRight<L, A>(e: TE.TaskEither<L, A>, onRight: (a: A) => void = noop) {
   assertRight(await e(), onRight);
 }
 
-export async function assertResolvesLeft<L, A>(e: TaskEither.TaskEither<L, A>, onLeft: (a: L) => void = noop) {
+export async function assertResolvesLeft<L, A>(e: TE.TaskEither<L, A>, onLeft: (a: L) => void = noop) {
   assertLeft(await e(), onLeft);
 }

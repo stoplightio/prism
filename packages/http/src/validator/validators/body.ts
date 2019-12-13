@@ -1,8 +1,8 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Dictionary, IHttpEncoding, IMediaTypeContent } from '@stoplight/types';
 import * as Array from 'fp-ts/lib/Array';
-import * as Either from 'fp-ts/lib/Either';
-import * as Option from 'fp-ts/lib/Option';
+import * as E from 'fp-ts/lib/Either';
+import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get } from 'lodash';
 import { JSONSchema } from '../../types';
@@ -58,8 +58,8 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
   return pipe(
     specs,
     Array.findFirst(spec => spec.mediaType === mediaType),
-    Option.alt(() => Array.head(specs)),
-    Option.map(content => ({ mediaType, content }))
+    O.alt(() => Array.head(specs)),
+    O.map(content => ({ mediaType, content }))
   );
 }
 
@@ -69,13 +69,13 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
 
   return pipe(
     validateAgainstReservedCharacters(encodedUriParams, encodings),
-    Either.map(decodeUriEntities),
-    Either.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-    Either.chain(deserialised =>
+    E.map(decodeUriEntities),
+    E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
+    E.chain(deserialised =>
       pipe(
         validateAgainstSchema(deserialised, schema),
-        Either.fromOption(() => deserialised),
-        Either.swap
+        E.fromOption(() => deserialised),
+        E.swap
       )
     )
   );
@@ -86,35 +86,35 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
 
   public validate(target: any, specs: IMediaTypeContent[], mediaType?: string) {
     const findContentByMediaType = pipe(
-      Option.fromNullable(mediaType),
-      Option.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
-      Option.alt(() => Option.some({ content: specs[0] || {}, mediaType: 'random' })),
-      Option.chain(({ mediaType, content }) =>
+      O.fromNullable(mediaType),
+      O.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
+      O.alt(() => O.some({ content: specs[0] || {}, mediaType: 'random' })),
+      O.chain(({ mediaType, content }) =>
         pipe(
-          Option.fromNullable(content.schema),
-          Option.map(schema => ({ schema, mediaType, content }))
+          O.fromNullable(content.schema),
+          O.map(schema => ({ schema, mediaType, content }))
         )
       )
     );
 
     return pipe(
       findContentByMediaType,
-      Option.fold(
-        () => Either.right(target),
+      O.fold(
+        () => E.right(target),
         ({ content, mediaType: mt, schema }) =>
           pipe(
             mt,
-            Option.fromPredicate(mediaType => mediaType === 'application/x-www-form-urlencoded'),
-            Option.fold(
+            O.fromPredicate(mediaType => mediaType === 'application/x-www-form-urlencoded'),
+            O.fold(
               () =>
                 pipe(
                   validateAgainstSchema(target, schema),
-                  Either.fromOption(() => target),
-                  Either.swap
+                  E.fromOption(() => target),
+                  E.swap
                 ),
               () => pipe(deserializeAndValidate(content, schema, target))
             ),
-            Either.mapLeft(diagnostics => applyPrefix(this.prefix, diagnostics))
+            E.mapLeft(diagnostics => applyPrefix(this.prefix, diagnostics))
           )
       )
     );
@@ -134,7 +134,7 @@ function applyPrefix(
 function validateAgainstReservedCharacters(
   encodedUriParams: Dictionary<string>,
   encodings: IHttpEncoding[]
-): Either.Either<NonEmptyArray.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
+): E.Either<NonEmptyArray.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
   return pipe(
     encodings,
     Array.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
@@ -152,6 +152,6 @@ function validateAgainstReservedCharacters(
 
       return diagnostics;
     }),
-    diagnostics => (Array.isNonEmpty(diagnostics) ? Either.left(diagnostics) : Either.right(encodedUriParams))
+    diagnostics => (Array.isNonEmpty(diagnostics) ? E.left(diagnostics) : E.right(encodedUriParams))
   );
 }

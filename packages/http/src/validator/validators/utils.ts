@@ -2,7 +2,7 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { getSemigroup, NonEmptyArray, fromArray, map } from 'fp-ts/lib/NonEmptyArray';
 import { getValidation } from 'fp-ts/lib/Either';
-import * as Option from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import * as Ajv from 'ajv';
@@ -34,14 +34,14 @@ export const convertAjvErrors = (
 
 export const validateAgainstSchema = (value: unknown, schema: JSONSchema, prefix?: string) =>
   pipe(
-    Option.tryCatch(() => ajv.compile(schema)),
-    Option.mapNullable(validate => {
+    O.tryCatch(() => ajv.compile(schema)),
+    O.mapNullable(validate => {
       validate(value);
       return validate.errors;
     }),
-    Option.chain(fromArray),
-    Option.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))
+    O.chain(fromArray),
+    O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))
   );
 
-export const sequenceOption = sequenceT(Option.option);
+export const sequenceOption = sequenceT(O.option);
 export const sequenceValidation = sequenceT(getValidation(getSemigroup<IPrismDiagnostic>()));

@@ -2,9 +2,9 @@ import { IPrismComponents } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import fetch from 'node-fetch';
 import { pipe } from 'fp-ts/lib/pipeable';
-import * as Either from 'fp-ts/lib/Either';
-import * as TaskEither from 'fp-ts/lib/TaskEither';
-import * as ReaderTaskEither from 'fp-ts/lib/ReaderTaskEither';
+import * as E from 'fp-ts/lib/Either';
+import * as TE from 'fp-ts/lib/TaskEither';
+import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import { defaults, omit } from 'lodash';
 import { format, parse } from 'url';
 import { posix } from 'path';
@@ -17,11 +17,11 @@ const { version: prismVersion } = require('../../package.json');
 const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>['forward'] = (
   input: IHttpRequest,
   baseUrl: string
-): ReaderTaskEither.ReaderTaskEither<Logger, Error, IHttpResponse> => logger =>
+): RTE.ReaderTaskEither<Logger, Error, IHttpResponse> => logger =>
   pipe(
-    TaskEither.fromEither(serializeBody(input.body)),
-    TaskEither.chain(body =>
-      TaskEither.tryCatch(async () => {
+    TE.fromEither(serializeBody(input.body)),
+    TE.chain(body =>
+      TE.tryCatch(async () => {
         const partialUrl = parse(baseUrl);
         const url = format({
           ...partialUrl,
@@ -39,19 +39,19 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
             'user-agent': `Prism/${prismVersion}`,
           }),
         });
-      }, Either.toError)
+      }, E.toError)
     ),
-    TaskEither.chain(parseResponse)
+    TE.chain(parseResponse)
   );
 
 export default forward;
 
 function serializeBody(body: unknown) {
   if (typeof body === 'string') {
-    return Either.right(body);
+    return E.right(body);
   }
 
-  if (body) return Either.stringifyJSON(body, Either.toError);
+  if (body) return E.stringifyJSON(body, E.toError);
 
-  return Either.right(undefined);
+  return E.right(undefined);
 }

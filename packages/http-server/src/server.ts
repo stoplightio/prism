@@ -8,8 +8,8 @@ import { serialize } from './serialize';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { pipe } from 'fp-ts/lib/pipeable';
-import * as TaskEither from 'fp-ts/lib/TaskEither';
-import * as Either from 'fp-ts/lib/Either';
+import * as TE from 'fp-ts/lib/TaskEither';
+import * as E from 'fp-ts/lib/Either';
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
@@ -69,7 +69,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     // Do not return, or Fastify will try to send the response again.
     pipe(
       prism.request(input, operations, { ...opts.config, mock: mockConfig }),
-      TaskEither.chain(response => {
+      TE.chain(response => {
         const { output } = response;
 
         const inputValidationErrors = response.validations.input.map(createErrorObjectWithPrefix('request'));
@@ -84,7 +84,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           );
 
           if (opts.errors && errorViolations.length > 0) {
-            return TaskEither.left(
+            return TE.left(
               ProblemJsonError.fromTemplate(
                 VIOLATIONS,
                 'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
@@ -105,18 +105,18 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           }
         });
 
-        return TaskEither.fromIOEither(() =>
-          Either.tryCatch(() => {
+        return TE.fromIOEither(() =>
+          E.tryCatch(() => {
             if (output.headers) reply.headers(output.headers);
 
             reply
               .code(output.statusCode)
               .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
               .send(output.body);
-          }, Either.toError)
+          }, E.toError)
         );
       }),
-      TaskEither.mapLeft((e: Error & { status?: number; additional?: { headers?: Dictionary<string> } }) => {
+      TE.mapLeft((e: Error & { status?: number; additional?: { headers?: Dictionary<string> } }) => {
         if (!reply.sent) {
           const status = e.status || 500;
           reply

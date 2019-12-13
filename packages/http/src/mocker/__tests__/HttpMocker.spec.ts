@@ -1,7 +1,7 @@
 import { createLogger, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation, INodeExample, DiagnosticSeverity } from '@stoplight/types';
 import { right } from 'fp-ts/lib/ReaderEither';
-import * as Either from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
 import { flatMap } from 'lodash';
 import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
@@ -296,7 +296,7 @@ describe('mocker', () => {
           })
         );
 
-        jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue(Either.right('example value chelsea'));
+        jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue(E.right('example value chelsea'));
 
         const mockResult = mock({
           config: { dynamic: true },
@@ -314,7 +314,7 @@ describe('mocker', () => {
           const generatedExample = { hello: 'world' };
 
           beforeAll(() => {
-            jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue(Either.right(generatedExample));
+            jest.spyOn(JSONSchemaGenerator, 'generate').mockReturnValue(E.right(generatedExample));
             jest.spyOn(JSONSchemaGenerator, 'generateStatic');
           });
 

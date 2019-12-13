@@ -1,5 +1,5 @@
 import { IHttpRequest, IHttpResponse } from '../types';
-import * as Option from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { lookup } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get as _get } from 'lodash';
@@ -10,7 +10,7 @@ export function resolveRuntimeExpressions(input: string, request: IHttpRequest, 
   return input.replace(/{(.+?)}/g, (_, expr) =>
     pipe(
       resolveRuntimeExpression(expr, request, response),
-      Option.getOrElse(() => '')
+      O.getOrElse(() => '')
     )
   );
 }
@@ -19,22 +19,22 @@ export function resolveRuntimeExpression(
   expr: string,
   request: IHttpRequest,
   response: IHttpResponse
-): Option.Option<string> {
+): O.Option<string> {
   const parts = expr.split(/[.#]/);
 
   return pipe(
     tryMethod(),
-    Option.alt(tryStatusCode),
-    Option.alt(() =>
+    O.alt(tryStatusCode),
+    O.alt(() =>
       pipe(
         isPart(0, '$request'),
-        Option.chain(() => pipe(tryRequestHeader(), Option.alt(tryRequestQuery), Option.alt(tryRequestBody)))
+        O.chain(() => pipe(tryRequestHeader(), O.alt(tryRequestQuery), O.alt(tryRequestBody)))
       )
     ),
-    Option.alt(() =>
+    O.alt(() =>
       pipe(
         isPart(0, '$response'),
-        Option.chain(() => pipe(tryResponseHeader(), Option.alt(tryResponseBody)))
+        O.chain(() => pipe(tryResponseHeader(), O.alt(tryResponseBody)))
       )
     )
   );
@@ -42,10 +42,10 @@ export function resolveRuntimeExpression(
   function isPart(idx: number, type: string) {
     return pipe(
       lookup(idx, parts),
-      Option.chain(part =>
+      O.chain(part =>
         pipe(
           part,
-          Option.fromPredicate(part => part === type)
+          O.fromPredicate(part => part === type)
         )
       )
     );
@@ -54,25 +54,25 @@ export function resolveRuntimeExpression(
   function tryMethod() {
     return pipe(
       isPart(0, '$method'),
-      Option.map(() => String(request.method))
+      O.map(() => String(request.method))
     );
   }
 
   function tryStatusCode() {
     return pipe(
       isPart(0, '$statusCode'),
-      Option.map(() => String(response.statusCode))
+      O.map(() => String(response.statusCode))
     );
   }
 
   function tryRequestHeader() {
     return pipe(
       isPart(1, 'header'),
-      Option.chain(() => lookup(2, parts)),
-      Option.chain(part =>
+      O.chain(() => lookup(2, parts)),
+      O.chain(part =>
         pipe(
-          Option.fromNullable(request.headers),
-          Option.mapNullable(headers => headers[part])
+          O.fromNullable(request.headers),
+          O.mapNullable(headers => headers[part])
         )
       )
     );
@@ -81,11 +81,11 @@ export function resolveRuntimeExpression(
   function tryRequestQuery() {
     return pipe(
       isPart(1, 'query'),
-      Option.chain(() => lookup(2, parts)),
-      Option.chain(part =>
+      O.chain(() => lookup(2, parts)),
+      O.chain(part =>
         pipe(
-          Option.fromNullable(request.url.query),
-          Option.mapNullable(query => query[part])
+          O.fromNullable(request.url.query),
+          O.mapNullable(query => query[part])
         )
       )
     );
@@ -94,18 +94,18 @@ export function resolveRuntimeExpression(
   function tryRequestBody() {
     return pipe(
       isPart(1, 'body'),
-      Option.chain(() => readBody(request.body))
+      O.chain(() => readBody(request.body))
     );
   }
 
   function tryResponseHeader() {
     return pipe(
       isPart(1, 'header'),
-      Option.chain(() => lookup(2, parts)),
-      Option.chain(part =>
+      O.chain(() => lookup(2, parts)),
+      O.chain(part =>
         pipe(
-          Option.fromNullable(response.headers),
-          Option.mapNullable(headers => headers[part])
+          O.fromNullable(response.headers),
+          O.mapNullable(headers => headers[part])
         )
       )
     );
@@ -114,18 +114,18 @@ export function resolveRuntimeExpression(
   function tryResponseBody() {
     return pipe(
       isPart(1, 'body'),
-      Option.chain(() => readBody(response.body))
+      O.chain(() => readBody(response.body))
     );
   }
 
   function readBody(body: unknown) {
     return pipe(
-      Option.fromNullable(body),
-      Option.chain(body =>
+      O.fromNullable(body),
+      O.chain(body =>
         pipe(
           lookup(2, parts),
-          Option.chain(part => Option.tryCatch(() => pointerToPath('#' + part))),
-          Option.chain(path => Option.fromNullable(_get(body, path)))
+          O.chain(part => O.tryCatch(() => pointerToPath('#' + part))),
+          O.chain(path => O.fromNullable(_get(body, path)))
         )
       )
     );

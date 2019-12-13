@@ -1,13 +1,13 @@
 import { ProblemJsonError } from '@stoplight/prism-core';
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import { IHttpHeaderParam } from '@stoplight/types';
-import * as Either from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { isEmpty, findIndex } from 'fp-ts/lib/Array';
-import * as Option from 'fp-ts/lib/Option';
+import * as O from 'fp-ts/lib/Option';
 import { pipe } from 'fp-ts/lib/pipeable';
-import * as Reader from 'fp-ts/lib/Reader';
-import * as ReaderEither from 'fp-ts/lib/ReaderEither';
+import * as R from 'fp-ts/lib/Reader';
+import * as RE from 'fp-ts/lib/ReaderEither';
 import { get, tail } from 'lodash';
 import { Logger } from 'pino';
 import withLogger from '../../withLogger';
@@ -31,14 +31,14 @@ const findEmptyResponse = (response: IHttpOperationResponse, headers: IHttpHeade
   pipe(
     mediaTypes,
     findIndex(ct => ct.includes('*/*')),
-    Option.map(() => ({ code: response.code, headers }))
+    O.map(() => ({ code: response.code, headers }))
   );
 
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
     { code, exampleKey, dynamic }: NegotiatePartialOptions,
     httpContent: IMediaTypeContent
-  ): Either.Either<Error, Omit<IHttpNegotiationResult, 'headers'>> {
+  ): E.Either<Error, Omit<IHttpNegotiationResult, 'headers'>> {
     const { mediaType } = httpContent;
 
     if (exampleKey) {
@@ -46,13 +46,13 @@ const helpers = {
       const example = findExampleByKey(httpContent, exampleKey);
       if (example) {
         // example exists, return
-        return Either.right({
+        return E.right({
           code,
           mediaType,
           bodyExample: example,
         });
       } else {
-        return Either.left(
+        return E.left(
           ProblemJsonError.fromTemplate(
             NOT_FOUND,
             `Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`
@@ -61,32 +61,32 @@ const helpers = {
       }
     } else if (dynamic === true) {
       if (httpContent.schema) {
-        return Either.right({
+        return E.right({
           code,
           mediaType,
           schema: httpContent.schema,
         });
       } else {
-        return Either.left(new Error(`Tried to force a dynamic response for: ${mediaType} but schema is not defined.`));
+        return E.left(new Error(`Tried to force a dynamic response for: ${mediaType} but schema is not defined.`));
       }
     } else {
       // try to find a static example first
       const example = findBestExample(httpContent);
       if (example) {
         // if example exists, return
-        return Either.right({
+        return E.right({
           code,
           mediaType,
           bodyExample: example,
         });
       } else if (httpContent.schema) {
-        return Either.right({
+        return E.right({
           code,
           mediaType,
           schema: httpContent.schema,
         });
       } else {
-        return Either.right({
+        return E.right({
           code,
           mediaType,
         });
@@ -97,20 +97,20 @@ const helpers = {
   negotiateDefaultMediaType(
     partialOptions: NegotiatePartialOptions,
     response: IHttpOperationResponse
-  ): Either.Either<Error, IHttpNegotiationResult> {
+  ): E.Either<Error, IHttpNegotiationResult> {
     const { code, dynamic, exampleKey } = partialOptions;
     const findHttpContent = hasContents(response)
       ? pipe(
           findDefaultContentType(response),
-          Option.alt(() => findBestHttpContentByMediaType(response, ['application/json', '*/*']))
+          O.alt(() => findBestHttpContentByMediaType(response, ['application/json', '*/*']))
         )
-      : Option.none;
+      : O.none;
 
     return pipe(
       findHttpContent,
-      Option.fold(
+      O.fold(
         () =>
-          Either.right<Error, IHttpNegotiationResult>({
+          E.right<Error, IHttpNegotiationResult>({
             code,
             mediaType: 'text/plain',
             bodyExample: {
@@ -129,7 +129,7 @@ const helpers = {
               },
               content
             ),
-            Either.map(contentNegotiationResult => ({
+            E.map(contentNegotiationResult => ({
               headers: response.headers || [],
               ...contentNegotiationResult,
             }))
@@ -142,7 +142,7 @@ const helpers = {
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse
-  ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
+  ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     const { code, headers } = response;
     const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
@@ -150,7 +150,7 @@ const helpers = {
       if (httpOperation.method === 'head') {
         logger.info(`Responding with an empty body to a HEAD request.`);
 
-        return Either.right({
+        return E.right({
           code: response.code,
           headers: response.headers || [],
         });
@@ -158,20 +158,20 @@ const helpers = {
 
       if (mediaTypes) {
         // a user provided mediaType
-        const httpContent = hasContents(response) ? findBestHttpContentByMediaType(response, mediaTypes) : Option.none;
+        const httpContent = hasContents(response) ? findBestHttpContentByMediaType(response, mediaTypes) : O.none;
 
         return pipe(
           httpContent,
-          Option.fold(
+          O.fold(
             () =>
               pipe(
                 findEmptyResponse(response, headers || [], mediaTypes),
-                Option.map(payloadlessResponse => {
+                O.map(payloadlessResponse => {
                   logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
 
                   return payloadlessResponse;
                 }),
-                Either.fromOption<Error>(() => {
+                E.fromOption<Error>(() => {
                   logger.warn(outputNoContentFoundMessage(mediaTypes));
 
                   return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
@@ -189,7 +189,7 @@ const helpers = {
                   },
                   content
                 ),
-                Either.map(contentNegotiationResult => ({
+                E.map(contentNegotiationResult => ({
                   headers: headers || [],
                   ...contentNegotiationResult,
                   mediaType:
@@ -218,11 +218,11 @@ const helpers = {
   negotiateOptionsForDefaultCode(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions
-  ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
+  ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
       findLowest2xx(httpOperation.responses),
-      ReaderEither.fromOption(() => new Error('No 2** response defined, cannot mock')),
-      ReaderEither.chain(lowest2xxResponse =>
+      RE.fromOption(() => new Error('No 2** response defined, cannot mock')),
+      RE.chain(lowest2xxResponse =>
         helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, lowest2xxResponse)
       )
     );
@@ -232,31 +232,31 @@ const helpers = {
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
     code: string
-  ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
+  ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     // find response by provided status code
     return pipe(
       withLogger(logger =>
         pipe(
           findResponseByStatusCode(httpOperation.responses, code),
-          Option.alt(() => {
+          O.alt(() => {
             logger.info(`Unable to find a ${code} response definition`);
             return createResponseFromDefault(httpOperation.responses, code);
           })
         )
       ),
-      Reader.chain(responseByForcedStatusCode =>
+      R.chain(responseByForcedStatusCode =>
         pipe(
           responseByForcedStatusCode,
-          ReaderEither.fromOption(() =>
+          RE.fromOption(() =>
             ProblemJsonError.fromTemplate(NOT_FOUND, `Requested status code ${code} is not defined in the document.`)
           ),
-          ReaderEither.chain(response =>
+          RE.chain(response =>
             pipe(
               helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, response),
-              ReaderEither.orElse(() =>
+              RE.orElse(() =>
                 pipe(
                   helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions),
-                  ReaderEither.mapLeft(error => new Error(`${error}. We tried default response, but we got ${error}`))
+                  RE.mapLeft(error => new Error(`${error}. We tried default response, but we got ${error}`))
                 )
               )
             )
@@ -269,7 +269,7 @@ const helpers = {
   negotiateOptionsForValidRequest(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions
-  ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
+  ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     const { code } = desiredOptions;
     if (code) {
       return helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code);
@@ -280,7 +280,7 @@ const helpers = {
   findResponse(
     httpResponses: IHttpOperationResponse[],
     statusCodes: NonEmptyArray<string>
-  ): Reader.Reader<Logger, Option.Option<IHttpOperationResponse>> {
+  ): R.Reader<Logger, O.Option<IHttpOperationResponse>> {
     const [first, ...others] = statusCodes;
 
     return logger =>
@@ -289,30 +289,30 @@ const helpers = {
           (previous, current, index) =>
             pipe(
               previous,
-              Option.alt(() => {
+              O.alt(() => {
                 logger.trace(`Unable to find a ${statusCodes[index]} response definition`);
                 return findResponseByStatusCode(httpResponses, current);
               })
             ),
           pipe(findResponseByStatusCode(httpResponses, first))
         ),
-        Option.alt(() => {
+        O.alt(() => {
           logger.trace(`Unable to find a ${tail(statusCodes)} response definition`);
           return pipe(
             createResponseFromDefault(httpResponses, first),
-            Option.fold(
+            O.fold(
               () => {
                 logger.trace("Unable to find a 'default' response definition");
-                return Option.none;
+                return O.none;
               },
               response => {
                 logger.success(`Created a ${response.code} from a default response`);
-                return Option.some(response);
+                return O.some(response);
               }
             )
           );
         }),
-        Option.map(response => {
+        O.map(response => {
           logger.success(`Found response ${response.code}. I'll try with it.`);
           return response;
         })
@@ -322,20 +322,20 @@ const helpers = {
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
     statusCodes: NonEmptyArray<string>
-  ): ReaderEither.ReaderEither<Logger, Error, IHttpNegotiationResult> {
+  ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
       helpers.findResponse(httpResponses, statusCodes),
-      Reader.chain(foundResponse => logger =>
+      R.chain(foundResponse => logger =>
         pipe(
           foundResponse,
-          Either.fromOption(() => new Error('No 422, 400, or default responses defined')),
-          Either.chain(response => {
+          E.fromOption(() => new Error('No 422, 400, or default responses defined')),
+          E.chain(response => {
             // find first response with any static examples
             const contentWithExamples = response.contents && response.contents.find(contentHasExamples);
 
             if (contentWithExamples) {
               logger.success(`The response ${response.code} has an example. I'll keep going with this one`);
-              return Either.right({
+              return E.right({
                 code: response.code,
                 mediaType: contentWithExamples.mediaType,
                 bodyExample: contentWithExamples.examples[0],
@@ -347,7 +347,7 @@ const helpers = {
               const responseWithSchema = response.contents && response.contents.find(content => !!content.schema);
               if (responseWithSchema) {
                 logger.success(`The response ${response.code} has a schema. I'll keep going with this one`);
-                return Either.right({
+                return E.right({
                   code: response.code,
                   mediaType: responseWithSchema.mediaType,
                   schema: responseWithSchema.schema,
@@ -360,7 +360,7 @@ const helpers = {
                     response.headers || [],
                     get(contentWithExamples, 'mediaType', get(responseWithSchema, 'schema')) || ['*/*']
                   ),
-                  Either.fromOption(() => {
+                  E.fromOption(() => {
                     logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
 
                     return new Error(`Neither schema nor example defined for ${response.code} response.`);

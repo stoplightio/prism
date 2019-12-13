@@ -3,7 +3,7 @@ import { IHttpConfig, IHttpProxyConfig, getHttpOperationsFromResource } from '@s
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
 import * as chalk from 'chalk';
 import * as cluster from 'cluster';
-import * as Either from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { LogDescriptor, Logger, LoggerOptions } from 'pino';
 import * as signale from 'signale';
@@ -89,7 +89,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
   operations.forEach(resource => {
     const path = pipe(
       createExamplePath(resource, attachTagsToParamsValues),
-      Either.getOrElse(() => resource.path)
+      E.getOrElse(() => resource.path)
     );
 
     logInstance.info(

@@ -1,8 +1,8 @@
 // @ts-ignore
 import logger from 'abstract-logging';
-import * as Either from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
 import { asks } from 'fp-ts/lib/ReaderEither';
-import * as TaskEither from 'fp-ts/lib/TaskEither';
+import * as TE from 'fp-ts/lib/TaskEither';
 import { Logger } from 'pino';
 import { factory, IPrismConfig } from '..';
 
@@ -11,9 +11,9 @@ describe('validation', () => {
     validateInput: jest.fn().mockReturnValue(['something']),
     validateOutput: jest.fn().mockReturnValue(['something']),
     validateSecurity: jest.fn().mockReturnValue(['something']),
-    route: jest.fn().mockReturnValue(Either.right('hey')),
+    route: jest.fn().mockReturnValue(E.right('hey')),
     forward: jest.fn().mockReturnValue(
-      TaskEither.right({
+      TE.right({
         statusCode: 200,
         headers: {},
         body: {},

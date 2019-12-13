@@ -12,7 +12,7 @@ import {
   IHttpPathParam,
   IHttpQueryParam,
 } from '@stoplight/types';
-import * as Either from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get, identity } from 'lodash';
 // @ts-ignore
@@ -22,52 +22,52 @@ import { ValuesTransformer } from './colorizer';
 export function createExamplePath(
   operation: IHttpOperation,
   transformValues: ValuesTransformer = identity
-): Either.Either<Error, string> {
+): E.Either<Error, string> {
   return pipe(
     generateTemplateAndValuesForPathParams(operation),
-    Either.chain(({ template: pathTemplate, values: pathValues }) =>
+    E.chain(({ template: pathTemplate, values: pathValues }) =>
       pipe(
         generateTemplateAndValuesForQueryParams(pathTemplate, operation),
-        Either.map(({ template: queryTemplate, values: queryValues }) => {
+        E.map(({ template: queryTemplate, values: queryValues }) => {
           return { template: queryTemplate, values: { ...pathValues, ...queryValues } };
         })
       )
     ),
-    Either.map(({ template, values }) => URI.expand(template, transformValues(values)))
+    E.map(({ template, values }) => URI.expand(template, transformValues(values)))
   );
 }
 
-function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
+function generateParamValue(spec: IHttpParam): E.Either<Error, unknown> {
   return pipe(
     generateHttpParam(spec),
-    Either.fromOption(() => new Error(`Cannot generate value for: ${spec.name}`)),
-    Either.chain(value => {
+    E.fromOption(() => new Error(`Cannot generate value for: ${spec.name}`)),
+    E.chain(value => {
       switch (spec.style) {
         case HttpParamStyles.DeepObject:
-          return Either.right(serializeWithDeepObjectStyle(spec.name, value));
+          return E.right(serializeWithDeepObjectStyle(spec.name, value));
 
         case HttpParamStyles.PipeDelimited:
           return pipe(
             value,
-            Either.fromPredicate(
+            E.fromPredicate(
               Array.isArray,
               () => new Error('Pipe delimited style is only applicable to array parameter')
             ),
-            Either.map(v => serializeWithPipeDelimitedStyle(spec.name, v, spec.explode))
+            E.map(v => serializeWithPipeDelimitedStyle(spec.name, v, spec.explode))
           );
 
         case HttpParamStyles.SpaceDelimited:
           return pipe(
             value,
-            Either.fromPredicate(
+            E.fromPredicate(
               Array.isArray,
               () => new Error('Space delimited style is only applicable to array parameter')
             ),
-            Either.map(v => serializeWithSpaceDelimitedStyle(spec.name, v, spec.explode))
+            E.map(v => serializeWithSpaceDelimitedStyle(spec.name, v, spec.explode))
           );
 
         default:
-          return Either.right(value);
+          return E.right(value);
       }
     })
   );
@@ -75,20 +75,20 @@ function generateParamValue(spec: IHttpParam): Either.Either<Error, unknown> {
 
 function generateParamValues(specs: IHttpParam[]) {
   return specs.reduce(
-    (valuesOrError: Either.Either<Error, Dictionary<unknown, string>>, spec) =>
+    (valuesOrError: E.Either<Error, Dictionary<unknown, string>>, spec) =>
       pipe(
         valuesOrError,
-        Either.chain(values =>
+        E.chain(values =>
           pipe(
             generateParamValue(spec),
-            Either.map(value => ({
+            E.map(value => ({
               ...values,
               [spec.name]: value,
             }))
           )
         )
       ),
-    Either.right({})
+    E.right({})
   );
 }
 
@@ -97,10 +97,10 @@ function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
 
   return pipe(
     generateParamValues(specs),
-    Either.chain(values =>
+    E.chain(values =>
       pipe(
         createPathUriTemplate(operation.path, specs),
-        Either.map(template => ({ template, values }))
+        E.map(template => ({ template, values }))
       )
     )
   );
@@ -111,26 +111,26 @@ function generateTemplateAndValuesForQueryParams(template: string, operation: IH
 
   return pipe(
     generateParamValues(specs),
-    Either.map(values => ({ template: createQueryUriTemplate(template, specs), values }))
+    E.map(values => ({ template: createQueryUriTemplate(template, specs), values }))
   );
 }
 
-function createPathUriTemplate(inputPath: string, specs: IHttpPathParam[]): Either.Either<Error, string> {
+function createPathUriTemplate(inputPath: string, specs: IHttpPathParam[]): E.Either<Error, string> {
   // defaults for query: style=Simple exploded=false
   return specs
     .filter(spec => spec.required !== false)
     .reduce(
-      (pathOrError: Either.Either<Error, string>, spec) =>
+      (pathOrError: E.Either<Error, string>, spec) =>
         pipe(
           pathOrError,
-          Either.chain(path =>
+          E.chain(path =>
             pipe(
               createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
-              Either.map(template => path.replace(`{${spec.name}}`, template))
+              E.map(template => path.replace(`{${spec.name}}`, template))
             )
           )
         ),
-      Either.right(inputPath)
+      E.right(inputPath)
     );
 }
 
@@ -138,16 +138,16 @@ function createParamUriTemplate(name: string, style: HttpParamStyles, explode: b
   const starOrVoid = explode ? '*' : '';
   switch (style) {
     case HttpParamStyles.Simple:
-      return Either.right(`{${name}${starOrVoid}}`);
+      return E.right(`{${name}${starOrVoid}}`);
 
     case HttpParamStyles.Label:
-      return Either.right(`{.${name}${starOrVoid}}`);
+      return E.right(`{.${name}${starOrVoid}}`);
 
     case HttpParamStyles.Matrix:
-      return Either.right(`{;${name}${starOrVoid}}`);
+      return E.right(`{;${name}${starOrVoid}}`);
 
     default:
-      return Either.left(new Error(`Unsupported parameter style: ${style}`));
+      return E.left(new Error(`Unsupported parameter style: ${style}`));
   }
 }
 
