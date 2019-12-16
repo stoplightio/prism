@@ -3720,9 +3720,9 @@ gauge@~2.7.3:
     wide-align "^1.1.0"
 
 gavel@^8.0.3:
-  version "8.2.1"
-  resolved "https://registry.yarnpkg.com/gavel/-/gavel-8.2.1.tgz#cc1f8e1e5e57e44dc2563c2e345673d373ceb135"
-  integrity sha512-SO+hiBItF98XykgEQR2z07E+xYloTVTXKeDJN1PZRlDR9kMY1OccPkvka5r2wYXguMwhNcdEko1o1bSZoZFPTA==
+  version "8.2.2"
+  resolved "https://registry.yarnpkg.com/gavel/-/gavel-8.2.2.tgz#998973817015e843f39fa9714a279008cfe28ad2"
+  integrity sha512-1XkLT4LHs2LneGUYjFnHcCWwUIVzL0BS9oc+/Hi1D4U/JNS4iqjjJJEqZmJl67LqBCZG39b8TrgUND/4+ya8rQ==
   dependencies:
     ajv "6.10.2"
     amanda "1.0.1"
