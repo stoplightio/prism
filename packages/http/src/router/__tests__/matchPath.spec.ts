@@ -8,10 +8,12 @@ const chance = new Chance();
 
 describe('matchPath()', () => {
   test('request path must start with a slash or throw error', () => {
-    const requestPath = randomPath({ leadingSlash: false });
-    const operationPath = randomPath({ leadingSlash: true });
+    const requestPath = randomPath({ leadingSlash: true });
+    const operationPath = randomPath({ leadingSlash: false });
     assertLeft(matchPath(requestPath, operationPath), e =>
-      expect(e.message).toBe(`The request path '${requestPath}' must start with a slash.`)
+      expect(e.message).toBe(
+        `Given request path '${requestPath}' the operation path '${operationPath}' must start with a slash.`
+      )
     );
   });
 

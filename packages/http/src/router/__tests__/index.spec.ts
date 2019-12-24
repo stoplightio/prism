@@ -55,8 +55,8 @@ describe('http router', () => {
           input: {
             method: pickOneHttpMethod(),
             url: {
-              baseUrl: '',
-              path: '',
+              baseUrl: '/',
+              path: '/',
             },
           },
         }),
