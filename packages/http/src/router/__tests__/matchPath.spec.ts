@@ -2,6 +2,7 @@ import { Chance } from 'chance';
 import { matchPath } from '../matchPath';
 import { MatchType } from '../types';
 import { randomPath } from './utils';
+import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 
 const chance = new Chance();
 
@@ -9,22 +10,24 @@ describe('matchPath()', () => {
   test('request path must start with a slash or throw error', () => {
     const requestPath = randomPath({ leadingSlash: false });
     const operationPath = randomPath({ leadingSlash: true });
-    expect(() => matchPath(requestPath, operationPath)).toThrow(
-      `The request path '${requestPath}' must start with a slash.`,
+    assertLeft(matchPath(requestPath, operationPath), e =>
+      expect(e.message).toBe(`The request path '${requestPath}' must start with a slash.`)
     );
   });
 
   test('operation path must start with a slash or throw error', () => {
     const requestPath = randomPath({ leadingSlash: true });
     const operationPath = randomPath({ leadingSlash: false });
-    expect(() => matchPath(requestPath, operationPath)).toThrow(
-      `Given request path '${requestPath}' the operation path '${operationPath}' must start with a slash.`,
+    assertLeft(matchPath(requestPath, operationPath), e =>
+      expect(e.message).toBe(
+        `Given request path '${requestPath}' the operation path '${operationPath}' must start with a slash.`
+      )
     );
   });
 
   test('root path should match another root path', () => {
     const path = '/';
-    expect(matchPath(path, path)).toEqual(MatchType.CONCRETE);
+    assertRight(matchPath(path, path), e => expect(e).toEqual(MatchType.CONCRETE));
   });
 
   test('any concrete path should match an equal concrete path', () => {
@@ -34,7 +37,7 @@ describe('matchPath()', () => {
       includeTemplates: false,
     });
 
-    expect(matchPath(path, path)).toEqual(MatchType.CONCRETE);
+    assertRight(matchPath(path, path), e => expect(e).toEqual(MatchType.CONCRETE));
   });
 
   test('none request path should match path with less fragments', () => {
@@ -51,7 +54,7 @@ describe('matchPath()', () => {
       trailingSlash,
     });
 
-    expect(matchPath(requestPath, operationPath)).toEqual(MatchType.NOMATCH);
+    assertRight(matchPath(requestPath, operationPath), e => expect(e).toEqual(MatchType.NOMATCH));
   });
 
   test('none request path should match concrete path with more fragments', () => {
@@ -66,29 +69,29 @@ describe('matchPath()', () => {
       includeTemplates: false,
     });
 
-    expect(matchPath(requestPath, operationPath)).toEqual(MatchType.NOMATCH);
+    assertRight(matchPath(requestPath, operationPath), e => expect(e).toEqual(MatchType.NOMATCH));
   });
 
   test('request path should match a templated path and resolve variables', () => {
-    expect(matchPath('/a', '/{a}')).toEqual(MatchType.TEMPLATED);
+    assertRight(matchPath('/a', '/{a}'), e => expect(e).toEqual(MatchType.TEMPLATED));
 
-    expect(matchPath('/a/b', '/{a}/{b}')).toEqual(MatchType.TEMPLATED);
+    assertRight(matchPath('/a/b', '/{a}/{b}'), e => expect(e).toEqual(MatchType.TEMPLATED));
 
-    expect(matchPath('/a/b', '/a/{b}')).toEqual(MatchType.TEMPLATED);
+    assertRight(matchPath('/a/b', '/a/{b}'), e => expect(e).toEqual(MatchType.TEMPLATED));
 
-    expect(matchPath('/test.json', '/test.{format}')).toEqual(MatchType.TEMPLATED);
+    assertRight(matchPath('/test.json', '/test.{format}'), e => expect(e).toEqual(MatchType.TEMPLATED));
   });
 
   test('request path should match a template path and resolve undefined variables', () => {
-    expect(matchPath('/', '/{a}')).toEqual(MatchType.TEMPLATED);
+    assertRight(matchPath('/', '/{a}'), e => expect(e).toEqual(MatchType.TEMPLATED));
 
-    expect(matchPath('//', '/{a}/')).toEqual(MatchType.TEMPLATED);
+    assertRight(matchPath('//', '/{a}/'), e => expect(e).toEqual(MatchType.TEMPLATED));
 
-    expect(matchPath('//b', '/{a}/{b}')).toEqual(MatchType.TEMPLATED);
+    assertRight(matchPath('//b', '/{a}/{b}'), e => expect(e).toEqual(MatchType.TEMPLATED));
 
-    expect(matchPath('/a/', '/{a}/{b}')).toEqual(MatchType.TEMPLATED);
+    assertRight(matchPath('/a/', '/{a}/{b}'), e => expect(e).toEqual(MatchType.TEMPLATED));
 
-    expect(matchPath('//', '/{a}/{b}')).toEqual(MatchType.TEMPLATED);
+    assertRight(matchPath('//', '/{a}/{b}'), e => expect(e).toEqual(MatchType.TEMPLATED));
   });
 
   test('none path should match templated operation with more path fragments', () => {
@@ -106,6 +109,6 @@ describe('matchPath()', () => {
       trailingSlash: false,
     });
 
-    expect(matchPath(requestPath, operationPath)).toEqual(MatchType.NOMATCH);
+    assertRight(matchPath(requestPath, operationPath), e => expect(e).toEqual(MatchType.NOMATCH));
   });
 });
