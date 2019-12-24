@@ -1,6 +1,8 @@
 import { IPrismComponents } from '@stoplight/prism-core';
 import { IHttpOperation, IServer } from '@stoplight/types';
-import { left, right } from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/lib/Either';
+import * as A from 'fp-ts/lib/Array';
+import { pipe } from 'fp-ts/lib/pipeable';
 import { IHttpConfig, IHttpRequest, ProblemJsonError } from '../types';
 import {
   NO_METHOD_MATCHED_ERROR,
@@ -13,103 +15,122 @@ import { matchBaseUrl } from './matchBaseUrl';
 import { matchPath } from './matchPath';
 import { IMatch, MatchType } from './types';
 
+const eitherSequence = A.array.sequence(E.either);
+
 const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig>['route'] = ({ resources, input }) => {
   const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
 
-  if (!resources.length) {
-    return left(
+  if (!requestPath.startsWith('/')) {
+    return E.left(new Error(`The request path '${requestPath}' must start with a slash.`));
+  }
+
+  return pipe(
+    resources,
+    E.fromPredicate(A.isNonEmpty, () =>
       ProblemJsonError.fromTemplate(
         NO_RESOURCE_PROVIDED_ERROR,
         `The current document does not have any resource to match with.`
       )
-    );
-  }
+    ),
+    E.chain(resources =>
+      eitherSequence(
+        resources.map(resource =>
+          pipe(
+            matchPath(requestPath, resource.path),
+            E.map(pathMatch => {
+              if (pathMatch === MatchType.NOMATCH)
+                return {
+                  pathMatch,
+                  methodMatch: MatchType.NOMATCH,
+                  resource,
+                };
 
-  let matches = resources.map<IMatch>(resource => {
-    const pathMatch = matchPath(requestPath, resource.path);
-    if (pathMatch === MatchType.NOMATCH)
-      return {
-        pathMatch,
-        methodMatch: MatchType.NOMATCH,
-        resource,
-      };
+              const methodMatch = matchByMethod(input, resource) ? MatchType.CONCRETE : MatchType.NOMATCH;
 
-    const methodMatch = matchByMethod(input, resource) ? MatchType.CONCRETE : MatchType.NOMATCH;
+              if (methodMatch === MatchType.NOMATCH) {
+                return {
+                  pathMatch,
+                  methodMatch,
+                  resource,
+                };
+              }
 
-    if (methodMatch === MatchType.NOMATCH) {
-      return {
-        pathMatch,
-        methodMatch,
-        resource,
-      };
-    }
+              const { servers = [] } = resource;
 
-    const { servers = [] } = resource;
+              if (requestBaseUrl && servers.length > 0) {
+                const serverMatch = matchServer(servers, requestBaseUrl);
 
-    if (requestBaseUrl && servers.length > 0) {
-      const serverMatch = matchServer(servers, requestBaseUrl);
+                return {
+                  pathMatch,
+                  methodMatch,
+                  serverMatch,
+                  resource,
+                };
+              }
 
-      return {
-        pathMatch,
-        methodMatch,
-        serverMatch,
-        resource,
-      };
-    }
-
-    return {
-      pathMatch,
-      methodMatch,
-      serverMatch: null,
-      resource,
-    };
-  });
-
-  matches = matches.filter(match => match.pathMatch !== MatchType.NOMATCH);
-
-  if (!matches.length) {
-    return left(
-      ProblemJsonError.fromTemplate(
-        NO_PATH_MATCHED_ERROR,
-        `The route ${requestPath} hasn't been found in the specification file`
-      )
-    );
-  }
-
-  matches = matches.filter(match => match.methodMatch !== MatchType.NOMATCH);
-
-  if (!matches.length) {
-    return left(
-      ProblemJsonError.fromTemplate(
-        NO_METHOD_MATCHED_ERROR,
-        `The route ${requestPath} has been matched, but it does not have "${input.method}" method defined`
-      )
-    );
-  }
-
-  if (requestBaseUrl) {
-    if (resources.every(resource => !resource.servers || resource.servers.length === 0)) {
-      return left(
-        ProblemJsonError.fromTemplate(
-          NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
-          `No server configuration has been provided, although ${requestBaseUrl} is set as server url`
+              return {
+                pathMatch,
+                methodMatch,
+                serverMatch: null,
+                resource,
+              };
+            })
+          )
         )
-      );
-    }
+      )
+    ),
+    E.chain(candidateMatches => {
+      const pathMatches = candidateMatches.filter(match => match.pathMatch !== MatchType.NOMATCH);
 
-    matches = matches.filter(match => !!match.serverMatch && match.serverMatch !== MatchType.NOMATCH);
+      if (!pathMatches.length) {
+        return E.left(
+          ProblemJsonError.fromTemplate(
+            NO_PATH_MATCHED_ERROR,
+            `The route ${requestPath} hasn't been found in the specification file`
+          )
+        );
+      }
 
-    if (!matches.length) {
-      return left(
-        ProblemJsonError.fromTemplate(
-          NO_SERVER_MATCHED_ERROR,
-          `The server url ${requestBaseUrl} hasn't been matched with any of the provided servers`
-        )
-      );
-    }
-  }
+      const methodMatches = pathMatches.filter(match => match.methodMatch !== MatchType.NOMATCH);
 
-  return right(disambiguateMatches(matches));
+      if (!methodMatches.length) {
+        return E.left(
+          ProblemJsonError.fromTemplate(
+            NO_METHOD_MATCHED_ERROR,
+            `The route ${requestPath} has been matched, but it does not have "${input.method}" method defined`
+          )
+        );
+      }
+
+      if (requestBaseUrl) {
+        if (resources.every(resource => !resource.servers || resource.servers.length === 0)) {
+          return E.left(
+            ProblemJsonError.fromTemplate(
+              NO_SERVER_CONFIGURATION_PROVIDED_ERROR,
+              `No server configuration has been provided, although ${requestBaseUrl} is set as server url`
+            )
+          );
+        }
+
+        const serverMatches = methodMatches.filter(
+          match => !!match.serverMatch && match.serverMatch !== MatchType.NOMATCH
+        );
+
+        if (!serverMatches.length) {
+          return E.left(
+            ProblemJsonError.fromTemplate(
+              NO_SERVER_MATCHED_ERROR,
+              `The server url ${requestBaseUrl} hasn't been matched with any of the provided servers`
+            )
+          );
+        }
+
+        return E.right(disambiguateMatches(serverMatches));
+      }
+
+      return E.right(disambiguateMatches(pathMatches));
+    })
+  );
 };
 
 function matchServer(servers: IServer[], requestBaseUrl: string) {
