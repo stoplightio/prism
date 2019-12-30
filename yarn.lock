@@ -1118,13 +1118,13 @@
     any-observable "^0.3.0"
 
 "@stoplight/http-spec@^2.2.3":
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.4.3.tgz#0c65111ad9258b62ec8a852ec580656ae8a68500"
-  integrity sha512-64Yw8m8IqQJaSib79DPvQkl+pYPQkaLE4Bb/GS2QhB9v0gUWhcpr/o7CxGBITr1RqSmhfPLDMtTbc5HmCH+bxg==
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.5.0.tgz#67617680565d389c62c29e944efb795238ab4d17"
+  integrity sha512-gvyqZa15Bshg020IE5Q8DtBdgKW70rX1K+KhMW/Y4JmhXBHOqJPR7fW04dbEkygEAzkhWDEWksNhKn2+gRb6zA==
   dependencies:
-    "@stoplight/json" "^3.2.1"
-    "@stoplight/types" "^11.2.0"
-    "@types/swagger-schema-official" "~2.0.19"
+    "@stoplight/json" "^3.4.0"
+    "@stoplight/types" "^11.4.0"
+    "@types/swagger-schema-official" "~2.0.20"
     "@types/urijs" "~1.19.4"
     lodash "^4.17.15"
     openapi-schema-to-json-schema "github:stoplightio/openapi-schema-to-json-schema#c8b5f0c74270d505fc39635edef28e09df89601f"
@@ -1154,7 +1154,7 @@
     tslib "^1.10.0"
     urijs "~1.19.1"
 
-"@stoplight/json@^3.1.2", "@stoplight/json@^3.2.1":
+"@stoplight/json@^3.1.2", "@stoplight/json@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.4.0.tgz#c2557ced0834a127b1ce524e77f15364d814047a"
   integrity sha512-Ljjj11Wa+MusOMeXTehLbuJQJe8CG3sovCGcD/6c8Zyz1n39EsDLZwJIpQ6/DQAdKChiJGWdcULsrGdheFaiLg==
@@ -1169,10 +1169,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.3.0.tgz#da2282352a4eb23c09d5106b9d1650d30a9ca2ad"
   integrity sha512-t74/MHMgmFVMQhdQ/2Q766GryNTIW8McH8+vB25oeoBhYKTOrJ/wPDt+OCxIWHPUlcSi2fTWa4FKQ8qgmP2jVA==
 
-"@stoplight/types@^11.1.1", "@stoplight/types@^11.2.0", "@stoplight/types@^11.3.0":
-  version "11.3.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.3.0.tgz#23d40cbf2c3c85e5612038b5cf0c003f82809318"
-  integrity sha512-m6N4Bv2O2bYJOXdIwtpLtfQY/3zHUgRuHx2D8ERydX8WE40nKoLqh4wN6nvRcSeGwxjhi0Q0KUAZIe9UsYj6fQ==
+"@stoplight/types@^11.1.1", "@stoplight/types@^11.3.0", "@stoplight/types@^11.4.0":
+  version "11.4.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.4.0.tgz#a2bedbbec37700d3c5a8c7d36c763a61d7a8bce7"
+  integrity sha512-kMh1Sv7bA8BdbUaRXsRyi2K8Y5PzPOUWNSjB4qKOi0P6+dLczjlKggEIw9Xzuu1tCgBFdEvNwjnYDey0iqgeZQ==
   dependencies:
     "@types/json-schema" "^7.0.3"
 
@@ -1366,10 +1366,10 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
 
-"@types/swagger-schema-official@~2.0.19":
-  version "2.0.19"
-  resolved "https://registry.yarnpkg.com/@types/swagger-schema-official/-/swagger-schema-official-2.0.19.tgz#8e890e5b146b31c6fa9052616ca28229b11eb883"
-  integrity sha512-jxL2fC4PNNz1T7C5GLqcvYBX38W9VkQS/e0QM/8ljnyLrGakdzo27WX1PkGcim+GXwiQR0DaoMKjQOx398JeAA==
+"@types/swagger-schema-official@~2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@types/swagger-schema-official/-/swagger-schema-official-2.0.20.tgz#5f5935a47d7713393efde071fd97a4408cc03487"
+  integrity sha512-GHdvwZQg7i+6AUMnP+tqYJJbt59SuYu8k9dzX8E6TJ5QFXKW9FxfdfqT5g+VcyuEua+/YaRzumqJ6wcQMuSP5Q==
 
 "@types/type-is@^1.6.3":
   version "1.6.3"
