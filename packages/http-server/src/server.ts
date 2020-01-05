@@ -109,6 +109,10 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           E.tryCatch(() => {
             if (output.headers) reply.headers(output.headers);
 
+            // Since we are buffering the whole response body, do not relay the "transfer-encoding" header if it exist.
+            // It will be combined with the "Content-Length" header which is not valid and will cause certain clients to fail(etc. Postman)
+            reply.removeHeader('transfer-encoding');
+
             reply
               .code(output.statusCode)
               .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
