@@ -3411,9 +3411,9 @@ fast-xml-parser@^3.12.20:
   integrity sha512-MStlD6aNPZCd9msF5wBh2VJ0jAE2zz85ipk+OIPO+pZi64ckY//oGi5kskcTVRj2bMSmBI5F2SY1IGWHWZzbCA==
 
 fastify-cors@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/fastify-cors/-/fastify-cors-3.0.0.tgz#63b914d8256be6c6ae7d4cb90e33eaa56a1261c7"
-  integrity sha512-bLV7OIZ7ojvLaf0jOEsqAO4ShrBSc6412R6SVDIrFK6vIUAezTAVgk9MqcklZnc3ch/N/IC9kGPu5AfhqAIHkg==
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/fastify-cors/-/fastify-cors-3.0.1.tgz#6773aa3756beb886637736ee97a3d6063d9d0f10"
+  integrity sha512-NVaYO8iMqlnMcnKo2jrmbY3DbMsgXJfn4uzDcBLFGOgbKXjJ70plqtBi2XlEjWahty1uCkcrvRDHXaXgiruzww==
   dependencies:
     fastify-plugin "^1.6.0"
     vary "^1.1.2"
