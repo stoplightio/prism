@@ -10,9 +10,6 @@ function getTemplateParamName(pathFragment: string) {
   return match && match[1];
 }
 
-/**
- * @returns `true` if matched concrete, `false` if not matched, `path param values` if matched templated
- */
 export function matchPath(requestPath: string, operationPath: string): E.Either<Error, MatchType> {
   if (!operationPath.startsWith('/')) {
     return E.left(
