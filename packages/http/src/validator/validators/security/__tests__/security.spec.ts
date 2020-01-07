@@ -16,7 +16,7 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses Basic authorization', () => {
-    const securityScheme: HttpSecurityScheme[][] = [[{ scheme: 'basic', type: 'http' }]];
+    const securityScheme: HttpSecurityScheme[][] = [[{ scheme: 'basic', type: 'http', key: 'sec' }]];
 
     it('passes the validation', () => {
       assertRight(
@@ -65,7 +65,7 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses Digest authorization', () => {
-    const securityScheme: HttpSecurityScheme[][] = [[{ scheme: 'digest', type: 'http' }]];
+    const securityScheme: HttpSecurityScheme[][] = [[{ scheme: 'digest', type: 'http', key: 'sec' }]];
 
     it('passes the validation', () => {
       assertRight(
@@ -99,7 +99,7 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses Bearer authorization', () => {
-    const securityScheme: HttpSecurityScheme[][] = [[{ scheme: 'bearer', type: 'http' }]];
+    const securityScheme: HttpSecurityScheme[][] = [[{ scheme: 'bearer', type: 'http', key: 'sec' }]];
 
     it('passes the validation', () => {
       assertRight(
@@ -130,7 +130,7 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses OAuth2 authorization', () => {
-    const securityScheme: HttpSecurityScheme[][] = [[{ type: 'oauth2', flows: {} }]];
+    const securityScheme: HttpSecurityScheme[][] = [[{ type: 'oauth2', flows: {}, key: 'sec' }]];
 
     it('it passes the validation', () => {
       assertRight(
@@ -161,7 +161,9 @@ describe('validateSecurity', () => {
   });
 
   describe('when security scheme uses OpenID authorization', () => {
-    const securityScheme: HttpSecurityScheme[][] = [[{ type: 'openIdConnect', openIdConnectUrl: 'https://google.it' }]];
+    const securityScheme: HttpSecurityScheme[][] = [
+      [{ type: 'openIdConnect', openIdConnectUrl: 'https://google.it', key: 'sec' }],
+    ];
 
     it('passes the validation', () => {
       assertRight(
@@ -200,8 +202,8 @@ describe('validateSecurity', () => {
             resource: {
               security: [
                 [
-                  { scheme: 'basic', type: 'http' },
-                  { in: 'header', type: 'apiKey', name: 'x-api-key' },
+                  { scheme: 'basic', type: 'http', key: 'sec' },
+                  { in: 'header', type: 'apiKey', name: 'x-api-key', key: 'sec' },
                 ],
               ],
             },
@@ -220,7 +222,9 @@ describe('validateSecurity', () => {
     });
 
     describe('when api key is expected to be found in a header', () => {
-      const securityScheme: HttpSecurityScheme[][] = [[{ in: 'header', type: 'apiKey', name: 'x-api-key' }]];
+      const securityScheme: HttpSecurityScheme[][] = [
+        [{ in: 'header', type: 'apiKey', name: 'x-api-key', key: 'sec' }],
+      ];
 
       it('passes the validation', () => {
         assertRight(
@@ -248,7 +252,7 @@ describe('validateSecurity', () => {
     });
 
     describe('when api key is expected to be found in the query', () => {
-      const securityScheme: HttpSecurityScheme[][] = [[{ in: 'query', type: 'apiKey', name: 'key' }]];
+      const securityScheme: HttpSecurityScheme[][] = [[{ in: 'query', type: 'apiKey', name: 'key', key: 'sec' }]];
 
       it('passes the validation', () => {
         assertRight(
@@ -274,7 +278,7 @@ describe('validateSecurity', () => {
     });
 
     describe('when api key is expected to be found in a cookie', () => {
-      const securityScheme: HttpSecurityScheme[][] = [[{ in: 'cookie', type: 'apiKey', name: 'key' }]];
+      const securityScheme: HttpSecurityScheme[][] = [[{ in: 'cookie', type: 'apiKey', name: 'key', key: 'sec' }]];
 
       it('passes the validation', () => {
         assertRight(
@@ -302,8 +306,8 @@ describe('validateSecurity', () => {
 
   describe('OR relation between security schemes', () => {
     const securityScheme: HttpSecurityScheme[][] = [
-      [{ scheme: 'bearer', type: 'http' }],
-      [{ scheme: 'basic', type: 'http' }],
+      [{ scheme: 'bearer', type: 'http', key: 'sec' }],
+      [{ scheme: 'basic', type: 'http', key: 'sec' }],
     ];
 
     it('fails with an invalid security scheme error', () => {
@@ -354,11 +358,12 @@ describe('validateSecurity', () => {
       in: 'header' as const,
       type: 'apiKey' as const,
       name: 'x-api-key' as const,
+      key: 'sec' as const,
     };
 
     describe('when 2 different security schemes are expected', () => {
       describe('expecting oauth + apikey', () => {
-        const securityScheme: HttpSecurityScheme[][] = [[headerScheme, { type: 'oauth2', flows: {} }]];
+        const securityScheme: HttpSecurityScheme[][] = [[headerScheme, { type: 'oauth2', flows: {}, key: 'sec' }]];
 
         it('fails with an invalid security scheme error', () => {
           assertLeft(
@@ -394,7 +399,7 @@ describe('validateSecurity', () => {
 
       describe('expecting openid + apikey', () => {
         const securityScheme: HttpSecurityScheme[][] = [
-          [headerScheme, { type: 'openIdConnect', openIdConnectUrl: 'https://google.it' }],
+          [headerScheme, { type: 'openIdConnect', openIdConnectUrl: 'https://google.it', key: 'sec' }],
         ];
 
         it('fails with an invalid security scheme error', () => {
@@ -438,6 +443,7 @@ describe('validateSecurity', () => {
             in: 'query',
             type: 'apiKey',
             name: 'apiKey',
+            key: 'sec',
           },
         ],
       ];
