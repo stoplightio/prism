@@ -1,7 +1,8 @@
-import { createInstance, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
+import { createInstance, IHttpNameValue, IHttpNameValues, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
-import * as fastify from 'fastify';
+import { IncomingMessage, ServerResponse, IncomingHttpHeaders, Server } from 'http';
 import * as fastifyCors from 'fastify-cors';
+import micri, { send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
@@ -10,15 +11,130 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
+import { MicriHandler } from 'micri/dist';
+
+function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValues {
+  const params = {};
+  for (const key of searchParams.keys()) {
+    const values = searchParams.getAll(key);
+    params[key] = values.length === 1 ? values[0] : values;
+  }
+  return params;
+}
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
-  const server = fastify({
-    logger: components.logger,
-    disableRequestLogging: true,
-    modifyCoreObjects: false,
-  });
+  const micriHandler: MicriHandler = async (request: IncomingMessage, reply: ServerResponse) => {
+    const {
+      url,
+      method,
+      headers,
+    } = request;
+
+    if (!url) {
+      return TE.left(new Error('Missing URL in request!'));
+    }
+
+    const body = await text(request);
+
+    const { searchParams, pathname } = new URL(url);
+
+    const input = {
+      method: (method ? method.toLowerCase() : 'get') as HttpMethod,
+      url: {
+        path: pathname,
+        baseUrl: searchParams.get('__server') || undefined,
+        query: searchParamsToNameValues(searchParams),
+      },
+      headers: headers as IHttpNameValue,
+      body,
+    };
+
+    console.log({ input }, 'Request received');
+
+    const operationSpecificConfig = getHttpConfigFromRequest(input);
+    const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
+    // Do not return, or Fastify will try to send the response again.
+    pipe(
+      prism.request(input, operations, { ...opts.config, mock: mockConfig }),
+      TE.chain(response => {
+        const { output } = response;
+
+        const inputValidationErrors = response.validations.input.map(createErrorObjectWithPrefix('request'));
+        const outputValidationErrors = response.validations.output.map(createErrorObjectWithPrefix('response'));
+        const inputOutputValidationErrors = inputValidationErrors.concat(outputValidationErrors);
+
+        if (inputOutputValidationErrors.length > 0) {
+          reply.setHeader('sl-violations', JSON.stringify(inputOutputValidationErrors));
+
+          const errorViolations = outputValidationErrors.filter(
+            v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
+          );
+
+          if (opts.errors && errorViolations.length > 0) {
+            return TE.left(
+              ProblemJsonError.fromTemplate(
+                VIOLATIONS,
+                'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
+                { validation: errorViolations }
+              )
+            );
+          }
+        }
+
+        inputOutputValidationErrors.forEach(validation => {
+          const message = `Violation: ${validation.location.join('.') || ''} ${validation.message}`;
+          if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Error]) {
+            // request.log.error({ name: 'VALIDATOR' }, message);
+            console.log({ name: 'VALIDATOR' }, message);
+          } else if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Warning]) {
+            // request.log.warn({ name: 'VALIDATOR' }, message);
+            console.log({ name: 'VALIDATOR' }, message);
+          } else {
+            // request.log.info({ name: 'VALIDATOR' }, message);
+            console.log({ name: 'VALIDATOR' }, message);
+          }
+        });
+
+        return TE.fromIOEither(() =>
+          E.tryCatch(() => {
+            if (output.headers)
+              Object.entries(output.headers).forEach(([name, value]) => reply.setHeader(name, value));
+
+            reply.statusCode = output.statusCode;
+
+            send(
+              reply,
+              output.statusCode,
+              serialize(output.body, reply.getHeader('content-type') as string | undefined)
+            );
+          }, E.toError)
+        );
+      }),
+      TE.mapLeft((e: Error & { status?: number; additional?: { headers?: Dictionary<string> } }) => {
+        if (!reply.finished) {
+          reply.setHeader('content-type', 'application/problem+json');
+
+          if (e.additional && e.additional.headers)
+            Object.entries(e.additional.headers).forEach(([name, value]) => reply.setHeader(name, value));
+
+          send(
+            reply,
+            e.status || 500,
+            JSON.stringify(ProblemJsonError.fromPlainError(e))
+          );
+        } else {
+          reply.end();
+        }
+
+        // request.log.error({ input }, `Request terminated with error: ${e}`);
+        console.log({ input }, `Request terminated with error: ${e}`);
+      })
+    )();
+  };
+
+  const server = micri(micriHandler);
 
   if (opts.cors) server.register(fastifyCors, { origin: true, credentials: true });
 
@@ -43,119 +159,24 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
   const prism = createInstance(config, components);
 
-  const replyHandler: fastify.RequestHandler = (request, reply) => {
-    const {
-      req: { method, url },
-      body,
-      headers,
-      query,
-    } = request;
-
-    const input = {
-      method: (method ? method.toLowerCase() : 'get') as HttpMethod,
-      url: {
-        path: (url || '/').split('?')[0],
-        query,
-        baseUrl: query.__server,
-      },
-      headers,
-      body,
-    };
-
-    request.log.info({ input }, 'Request received');
-
-    const operationSpecificConfig = getHttpConfigFromRequest(input);
-    const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
-    // Do not return, or Fastify will try to send the response again.
-    pipe(
-      prism.request(input, operations, { ...opts.config, mock: mockConfig }),
-      TE.chain(response => {
-        const { output } = response;
-
-        const inputValidationErrors = response.validations.input.map(createErrorObjectWithPrefix('request'));
-        const outputValidationErrors = response.validations.output.map(createErrorObjectWithPrefix('response'));
-        const inputOutputValidationErrors = inputValidationErrors.concat(outputValidationErrors);
-
-        if (inputOutputValidationErrors.length > 0) {
-          reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
-
-          const errorViolations = outputValidationErrors.filter(
-            v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
-          );
-
-          if (opts.errors && errorViolations.length > 0) {
-            return TE.left(
-              ProblemJsonError.fromTemplate(
-                VIOLATIONS,
-                'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
-                { validation: errorViolations }
-              )
-            );
-          }
-        }
-
-        inputOutputValidationErrors.forEach(validation => {
-          const message = `Violation: ${validation.location.join('.') || ''} ${validation.message}`;
-          if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Error]) {
-            request.log.error({ name: 'VALIDATOR' }, message);
-          } else if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Warning]) {
-            request.log.warn({ name: 'VALIDATOR' }, message);
-          } else {
-            request.log.info({ name: 'VALIDATOR' }, message);
-          }
-        });
-
-        return TE.fromIOEither(() =>
-          E.tryCatch(() => {
-            if (output.headers) reply.headers(output.headers);
-
-            reply
-              .code(output.statusCode)
-              .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
-              .send(output.body);
-          }, E.toError)
-        );
-      }),
-      TE.mapLeft((e: Error & { status?: number; additional?: { headers?: Dictionary<string> } }) => {
-        if (!reply.sent) {
-          const status = e.status || 500;
-          reply
-            .type('application/problem+json')
-            .serializer(JSON.stringify)
-            .code(status);
-
-          if (e.additional && e.additional.headers) {
-            reply.headers(e.additional.headers);
-          }
-
-          reply.send(ProblemJsonError.fromPlainError(e));
-        } else {
-          reply.res.end();
-        }
-
-        request.log.error({ input }, `Request terminated with error: ${e}`);
-      })
-    )();
-  };
-
-  opts.cors
+/*  opts.cors
     ? server.route({
         url: '*',
         method: ['GET', 'DELETE', 'HEAD', 'PATCH', 'POST', 'PUT'],
         handler: replyHandler,
       })
-    : server.all('*', replyHandler);
+    : server.all('*', replyHandler);*/
 
-  const prismServer: IPrismHttpServer = {
+  return {
     get prism() {
       return prism;
     },
 
-    get fastify() {
+    get server() {
       return server;
     },
 
-    listen: (port: number, ...args: any[]) => server.listen(port, ...args),
+``    listen: new Promise(resolve => (port: number, ...args: any[]) => server.listen(port, ...args, resolve)),
   };
   return prismServer;
 };
