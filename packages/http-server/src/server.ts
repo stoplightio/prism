@@ -36,6 +36,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       return TE.left(new Error('Missing URL in request!'));
     }
 
+    // @todo deserialize if json
     const body = await text(request);
 
     const { searchParams, pathname } = new URL(url);
@@ -51,11 +52,12 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       body,
     };
 
+    // @todo handle logging
     console.log({ input }, 'Request received');
 
     const operationSpecificConfig = getHttpConfigFromRequest(input);
     const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
-    // Do not return, or Fastify will try to send the response again.
+
     pipe(
       prism.request(input, operations, { ...opts.config, mock: mockConfig }),
       TE.chain(response => {
@@ -101,8 +103,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           E.tryCatch(() => {
             if (output.headers)
               Object.entries(output.headers).forEach(([name, value]) => reply.setHeader(name, value));
-
-            reply.statusCode = output.statusCode;
 
             send(
               reply,
@@ -176,9 +176,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       return server;
     },
 
-``    listen: new Promise(resolve => (port: number, ...args: any[]) => server.listen(port, ...args, resolve)),
+    listen: (port: number, ...args: any[]) => new Promise(resolve => server.listen(port, ...args, resolve)),
   };
-  return prismServer;
 };
 
 const createErrorObjectWithPrefix = (locationPrefix: string) => (detail: IPrismDiagnostic) => ({
