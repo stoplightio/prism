@@ -2,7 +2,7 @@ import { createInstance, IHttpNameValue, IHttpNameValues, ProblemJsonError, VIOL
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
 import { IncomingMessage, ServerResponse, IncomingHttpHeaders, Server } from 'http';
 import { AddressInfo } from 'net';
-import micri, { send, text } from 'micri';
+import micri, { Router, send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
@@ -141,9 +141,20 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     )();
   };
 
-  const server = micri(micriHandler);
-
-  // if (opts.cors) server.register(fastifyCors, { origin: true, credentials: true });
+  const server = micri(
+    Router.router(
+      Router.on.options(
+        () => true,
+        (req: IncomingMessage, res: ServerResponse) => {
+          res.setHeader('Access-Control-Allow-Origin', req.headers['origin'] || '*' as string);
+          res.setHeader('Access-Control-Allow-Credentials', 'true');
+          res.setHeader('Access-Control-Allow-Methods', 'GET,DELETE,HEAD,PATCH,POST,PUT');
+          send(res, 204);
+        },
+      ),
+      Router.otherwise(micriHandler)
+    )
+  );
 
   /* server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
     if (typeIs(req, ['application/*+json'])) {
@@ -165,14 +176,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   });*/
 
   const prism = createInstance(config, components);
-
-/*  opts.cors
-    ? server.route({
-        url: '*',
-        method: ['GET', 'DELETE', 'HEAD', 'PATCH', 'POST', 'PUT'],
-        handler: replyHandler,
-      })
-    : server.all('*', replyHandler);*/
 
   return {
     get prism() {
