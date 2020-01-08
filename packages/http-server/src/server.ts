@@ -1,7 +1,7 @@
 import { createInstance, IHttpNameValue, IHttpNameValues, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
 import { IncomingMessage, ServerResponse, IncomingHttpHeaders, Server } from 'http';
-import * as fastifyCors from 'fastify-cors';
+import { AddressInfo } from 'net';
 import micri, { send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
@@ -22,6 +22,12 @@ function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValue
   return params;
 }
 
+function addressInfoToString(address: AddressInfo | string | null) {
+  if (!address) return '';
+  const a = address as AddressInfo;
+  return `http://${a.address}:${a.port}`;
+}
+
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
@@ -30,6 +36,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       url,
       method,
       headers,
+      socket,
     } = request;
 
     if (!url) {
@@ -39,7 +46,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     // @todo deserialize if json
     const body = await text(request);
 
-    const { searchParams, pathname } = new URL(url);
+    const { searchParams, pathname } = new URL(url, addressInfoToString(socket.address()));
 
     const input = {
       method: (method ? method.toLowerCase() : 'get') as HttpMethod,
@@ -136,9 +143,9 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
   const server = micri(micriHandler);
 
-  if (opts.cors) server.register(fastifyCors, { origin: true, credentials: true });
+  // if (opts.cors) server.register(fastifyCors, { origin: true, credentials: true });
 
-  server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
+  /* server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
     if (typeIs(req, ['application/*+json'])) {
       try {
         return done(null, JSON.parse(body));
@@ -155,7 +162,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     error.status = 415;
     Error.captureStackTrace(error);
     return done(error);
-  });
+  });*/
 
   const prism = createInstance(config, components);
 
@@ -176,7 +183,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       return server;
     },
 
-    listen: (port: number, ...args: any[]) => new Promise(resolve => server.listen(port, ...args, resolve)),
+    listen: (port: number, ...args: any[]) => new Promise(resolve => server.listen(port, ...args, () => resolve(addressInfoToString(server.address())))),
   };
 };
 
