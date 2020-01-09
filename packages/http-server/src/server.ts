@@ -2,7 +2,7 @@ import { createInstance, IHttpNameValue, IHttpNameValues, ProblemJsonError, VIOL
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
 import { IncomingMessage, ServerResponse, IncomingHttpHeaders, Server } from 'http';
 import { AddressInfo } from 'net';
-import micri, { Router, send, text } from 'micri';
+import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
@@ -28,6 +28,16 @@ function addressInfoToString(address: AddressInfo | string | null) {
   return `http://${a.address}:${a.port}`;
 }
 
+function parseRequestBody(request: IncomingMessage) {
+  if (typeIs(request, ['application/json', 'application/*+json'])) {
+    return json(request);
+  } else if (typeIs(request, ['application/x-www-form-urlencoded'])) {
+    return {};
+  } else {
+    return text(request);
+  }
+}
+
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
@@ -43,8 +53,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       return TE.left(new Error('Missing URL in request!'));
     }
 
-    // @todo deserialize if json
-    const body = await text(request);
+    const body = await parseRequestBody(request);
 
     const { searchParams, pathname } = new URL(url, addressInfoToString(socket.address()));
 
