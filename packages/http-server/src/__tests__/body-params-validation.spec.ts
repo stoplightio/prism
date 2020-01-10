@@ -311,7 +311,7 @@ describe('body params validation', () => {
         test('returns 422 & error message', async () => {
           const response = await makeRequest('/json-body-required', { method: 'POST' });
           expect(response.status).toBe(422);
-          expect(response.json()).toMatchObject({
+          expect(await response.json()).toMatchObject({
             validation: [{ code: 'required', message: 'Body parameter is required', severity: 'Error' }],
           });
         });

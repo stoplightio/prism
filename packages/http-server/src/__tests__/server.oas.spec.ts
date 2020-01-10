@@ -286,7 +286,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     });
 
     it('fallbacks to application/json in case the Accept header is not provided', async () => {
-      const response = await makeRequest('/store/inventory');
+      const response = await makeRequest('/store/inventory', { headers: { accept: '' } });
       expect(response.status).toBe(200);
       expect(response.headers.get('content-type')).toEqual('application/json');
     });
