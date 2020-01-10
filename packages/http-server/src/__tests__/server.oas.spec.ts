@@ -36,12 +36,12 @@ describe('GET /pet?__server', () => {
   let server: IPrismHttpServer;
   let address: string;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     server = await instantiatePrism(resolve(__dirname, 'fixtures', 'templated-server-example.oas3.yaml'));
-    address = await server.listen(10000, '127.0.0.1');
+    address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
   });
 
-  afterAll(() => server.server.close());
+  afterEach(() => server.server.close());
 
   describe.each([['http://stoplight.io/api'], ['https://stoplight.io/api']])('valid server %s', serverUrl => {
     it('returns 200', () => {
@@ -56,8 +56,8 @@ describe('GET /pet?__server', () => {
     serverUrl => {
       it('returns 404 and problem json payload', async () => {
         const response = await requestPetGivenServer(serverUrl);
-        await expect(response).toMatchObject({ status: 404 });
-        await expect(response.text()).resolves.toEqual(expectedPayload(serverUrl));
+        expect(response).toMatchObject({ status: 404 });
+        return expect(response.text()).resolves.toEqual(expectedPayload(serverUrl));
       });
     }
   );
@@ -74,12 +74,12 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
   let server: IPrismHttpServer;
   let address: string;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     server = await instantiatePrism(resolve(__dirname, 'fixtures', file));
-    address = await server.listen(10000, '127.0.0.1');
+    address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
   });
 
-  afterAll(() => server.server.close());
+  afterEach(() => server.server.close());
 
   function makeRequest(url: string, init?: RequestInit) {
     return fetch(new URL(url, address), init);
@@ -99,7 +99,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     expect(payload).toHaveProperty('status');
   });
 
- it('should not mock a verb that is not defined on a path', async () => {
+  it('should not mock a verb that is not defined on a path', async () => {
     const response = await makeRequest('/pets/123', { method: 'PATCH' });
     expect(response.status).toBe(405);
     checkErrorPayloadShape(await response.text());
@@ -154,7 +154,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
   });
 
   it('will return the default response when using the __code property with a non existing code', async () => {
-    const response = await makeRequest('/pets/123?__code=499',);
+    const response = await makeRequest('/pets/123?__code=499');
     expect(response.status).toBe(499);
   });
 
@@ -175,7 +175,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
       'x-rate-limit': file === 'petstore.oas3.yaml' ? 1000 : expect.stringMatching(/^\d+$/),
       'x-stats': file === 'petstore.oas3.yaml' ? 1500 : expect.stringMatching(/^\d+$/),
       'x-expires-after': expect.any(String),
-      'x-strange-header': "null",
+      'x-strange-header': 'null',
     };
 
     for (const headerName of Object.keys(expectedValues)) {

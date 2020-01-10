@@ -29,6 +29,16 @@ function addressInfoToString(address: AddressInfo | string | null) {
 }
 
 function parseRequestBody(request: IncomingMessage) {
+  // if no body provided then return null instead of empty string
+  if (
+    ['POST', 'PUT', 'PATCH'].includes(request.method || '')
+    && request.headers['content-type'] === undefined
+    && request.headers['transfer-encoding'] === undefined
+    && (request.headers['content-length'] === '0' || request.headers['content-length'] === undefined)
+  ) {
+    return null;
+  }
+
   if (typeIs(request, ['application/json', 'application/*+json'])) {
     return json(request);
   } else if (typeIs(request, ['application/x-www-form-urlencoded'])) {

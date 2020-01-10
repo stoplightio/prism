@@ -3,7 +3,6 @@ import { IHttpOperation } from '@stoplight/types';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { IPrismHttpServer } from '../types';
-import { makeRe } from 'minimatch';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -249,7 +248,7 @@ describe('body params validation', () => {
           security: [],
         },
       ]);
-      address = await server.listen(10000, '127.0.0.1');
+      address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
     });
 
     function makeRequest(url: string, init?: RequestInit) {
@@ -262,7 +261,7 @@ describe('body params validation', () => {
           const response = await makeRequest('/json-body-no-request-content-type', {
             method: 'POST',
             body: JSON.stringify({ id: 'string' }),
-            headers: { 'content-type': 'application/json' }
+            headers: { 'content-type': 'application/json' },
           });
 
           expect(response.status).toBe(422);

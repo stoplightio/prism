@@ -28,11 +28,9 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
               /* server.fastify.log.info(
                 'No operations found in the current file, continuing with the previously loaded spec.'
               ); */
-              console.log(
-                'No operations found in the current file, continuing with the previously loaded spec.'
-              );
+              console.log('No operations found in the current file, continuing with the previously loaded spec.');
             } else {
-              return new Promise((resolve, reject) => server.server.close(error => error ? reject(error) : resolve()))
+              return new Promise((resolve, reject) => server.server.close(error => (error ? reject(error) : resolve())))
                 .then(() => {
                   // server.fastify.log.info('Loading the updated operations...');
                   console.log('Loading the updated operations...');
@@ -50,7 +48,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
             // server.fastify.log.info('Something went terribly wrong, trying to start Prism with the original document.');
             console.log('Something went terribly wrong, trying to start Prism with the original document.');
 
-            return new Promise((resolve, reject) => server.server.close(error => error ? reject(error) : resolve()))
+            return new Promise((resolve, reject) => server.server.close(error => (error ? reject(error) : resolve())))
               .then(() => createPrism(options))
               .catch(() => process.exit(1));
           });
