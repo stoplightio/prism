@@ -31,8 +31,7 @@ function addressInfoToString(address: AddressInfo | string | null) {
 function parseRequestBody(request: IncomingMessage) {
   // if no body provided then return null instead of empty string
   if (
-    ['POST', 'PUT', 'PATCH'].includes(request.method || '')
-    && request.headers['content-type'] === undefined
+    request.headers['content-type'] === undefined
     && request.headers['transfer-encoding'] === undefined
     && (request.headers['content-length'] === '0' || request.headers['content-length'] === undefined)
   ) {
@@ -41,8 +40,6 @@ function parseRequestBody(request: IncomingMessage) {
 
   if (typeIs(request, ['application/json', 'application/*+json'])) {
     return json(request);
-  } else if (typeIs(request, ['application/x-www-form-urlencoded'])) {
-    return {};
   } else {
     return text(request);
   }
@@ -163,7 +160,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   const server = micri(
     Router.router(
       Router.on.options(
-        () => true,
+        () => opts.cors,
         (req: IncomingMessage, res: ServerResponse) => {
           res.setHeader('Access-Control-Allow-Origin', req.headers['origin'] || '*' as string);
           res.setHeader('Access-Control-Allow-Credentials', 'true');
