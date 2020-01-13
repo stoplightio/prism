@@ -21,7 +21,7 @@ const cliSpecificLoggerOptions: LoggerOptions = {
   level: 'start',
 };
 
-function createMultiProcessPrism(options: CreateBaseServerOptions) {
+async function createMultiProcessPrism(options: CreateBaseServerOptions) {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -45,7 +45,7 @@ function createMultiProcessPrism(options: CreateBaseServerOptions) {
   }
 }
 
-function createSingleProcessPrism(options: CreateBaseServerOptions) {
+async function createSingleProcessPrism(options: CreateBaseServerOptions) {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
