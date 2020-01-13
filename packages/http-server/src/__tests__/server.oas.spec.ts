@@ -90,7 +90,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
 
     expect(response.status).toBe(200);
 
-    const payload = JSON.parse(await response.text());
+    const payload = await response.json();
     expect(payload).toHaveProperty('id');
     expect(payload).toHaveProperty('category');
     expect(payload).toHaveProperty('name');
@@ -117,7 +117,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
 
     expect(response.status).toBe(418);
 
-    const payload = JSON.parse(await response.text());
+    const payload = await response.json();
     expect(payload).toHaveProperty('name');
   });
 
@@ -142,7 +142,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     const response = await makeRequest('/user/username');
 
     expect(response.status).toBe(200);
-    const payload = JSON.parse(await response.text());
+    const payload = await response.json();
     expect(payload).toHaveProperty('id');
     expect(payload).toHaveProperty('username');
     expect(payload).toHaveProperty('firstName');
@@ -188,7 +188,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
       const response = await makeRequest('/pets/10?__server=https://google.com');
 
       expect(response.status).toBe(404);
-      const parsed = JSON.parse(await response.text());
+      const parsed = await response.json();
 
       expect(parsed).toHaveProperty('type', 'https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR');
       expect(parsed).toHaveProperty(
@@ -206,7 +206,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     if (file === 'petstore.oas3.json') {
       it('returns requested response example using __example property', async () => {
         const response = await makeRequest('/pets/123?__example=cat');
-        const payload = JSON.parse(await response.text());
+        const payload = await response.json();
 
         expect(response.status).toBe(200);
         expect(payload).toStrictEqual({
