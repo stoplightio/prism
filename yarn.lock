@@ -1250,9 +1250,9 @@
   integrity sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==
 
 "@types/chance@^1.0.6":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@types/chance/-/chance-1.0.7.tgz#c680a3891a505d8c626ec3a46bb1c0496419dfb6"
-  integrity sha512-LBOkJ7899SSLm08KicLYX3DqWUhfDspMLWNGuV1UPpL3iUENSvI0THGlf05n9yNHTR7zDlV/mCGZ7ZJ0ws8v3Q==
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@types/chance/-/chance-1.0.8.tgz#48e0a5648f54487a9128915fe090154fb1a2f348"
+  integrity sha512-S1VWROFGexiUYyBFsP0NRjp6PkJ4rKECQ3HQJ0cJKW/2BcNyas9lXATRdnTNnN4CsICjEXTltAalAo8dJQQLKg==
 
 "@types/color-name@^1.1.1":
   version "1.1.1"
@@ -1270,9 +1270,9 @@
   integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
 
 "@types/faker@^4.1.5":
-  version "4.1.8"
-  resolved "https://registry.yarnpkg.com/@types/faker/-/faker-4.1.8.tgz#95240361f1379addae0a005ced7c5c77b0b1e1d8"
-  integrity sha512-9ARxZRyXXCMMf8KjYhnD+GHE789HGwIqa1dolCRl/C6ExwvBIUmnIktLeY71TPmFOQiU3DQwrbQEX0pkyqX1tQ==
+  version "4.1.9"
+  resolved "https://registry.yarnpkg.com/@types/faker/-/faker-4.1.9.tgz#5539f331eb66fc40f06ad307e52ed83f2a3fe1bb"
+  integrity sha512-4ZFqA3CEXB6MgT8sDV8E5LhW+O9ndONsHeQXMbEwfOsjoQ4UXKqTJKru+BjDBUfobYEpQz1WYF9/uzQsvbY2wA==
 
 "@types/glob@^7.1.1":
   version "7.1.1"
@@ -1353,9 +1353,9 @@
   integrity sha512-eAdu+NW1IkCdmp85SnhyKha+OOREQMT9lXaoICQxa7bhSauRiLzu3WSNt9Mf2piuJvWeXF/G0hGWHr63xNpIRA==
 
 "@types/pino@^5.8.11":
-  version "5.14.0"
-  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-5.14.0.tgz#e5226bf6d5da52e2d6b641309abee5f30b2d7a56"
-  integrity sha512-i4jTU0G9HL/wy7WbVMqcM/5Z6cFzbcLN6/T46rqQauIoiDqcEySR7SN4FfJvtv+RoBtJkQjDneq0Ytrj95cQHg==
+  version "5.15.1"
+  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-5.15.1.tgz#1d7bfdecbdcb64ec63a672be9bb9524b323f96e4"
+  integrity sha512-skJZ2VBHUva/dF4b2/3zOYVOZLyeaYT7wtPyf8+aoh0VuqfW8JO7PK9oJY8yRZVkN4K7RDdA5UFuH0QbbENZaw==
   dependencies:
     "@types/node" "*"
     "@types/pino-std-serializers" "*"
@@ -6747,9 +6747,9 @@ pino-std-serializers@^2.4.2:
   integrity sha512-WaL504dO8eGs+vrK+j4BuQQq6GLKeCCcHaMB2ItygzVURcL1CycwNEUHTD/lHFHs/NL5qAz2UKrjYWXKSf4aMQ==
 
 pino@^5.13.2:
-  version "5.15.0"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-5.15.0.tgz#6703164ce74dd4786d44887cd33268e13fd463d8"
-  integrity sha512-7+FXMTA3H3sNP5+2miY2K9JKnAAW5GKuhHfNWsukFCsPprGQY3ctqpwbV74wAHW3Nl93cEEQ1G82MgOLM8P7TQ==
+  version "5.16.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-5.16.0.tgz#94d01cb38b5f4a16dd4d7c47aa489fbfe40c3c06"
+  integrity sha512-k9cDzHd9S/oYSQ9B9g9+7RXkfsZX78sQXERC8x4p2XArECZXULx9nqNwZvJHsLj779wPCt+ybN+dG8jFR70p6Q==
   dependencies:
     fast-redact "^2.0.0"
     fast-safe-stringify "^2.0.7"
@@ -8794,9 +8794,9 @@ yargs@^14.2.2:
     yargs-parser "^15.0.0"
 
 yargs@^15.0.1:
-  version "15.0.2"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.0.2.tgz#4248bf218ef050385c4f7e14ebdf425653d13bd3"
-  integrity sha512-GH/X/hYt+x5hOat4LMnCqMd8r5Cv78heOMIJn1hr7QPPBqfeC6p89Y78+WB9yGDvfpCvgasfmWLzNzEioOUD9Q==
+  version "15.1.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.1.0.tgz#e111381f5830e863a89550bd4b136bb6a5f37219"
+  integrity sha512-T39FNN1b6hCW4SOIk1XyTOWxtXdcen0t+XYrysQmChzSipvhBO8Bj0nK1ozAasdk24dNWuMZvr4k24nz+8HHLg==
   dependencies:
     cliui "^6.0.0"
     decamelize "^1.2.0"
