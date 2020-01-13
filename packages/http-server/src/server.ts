@@ -75,8 +75,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       body,
     };
 
-    // @todo handle logging
-    console.log({ input }, 'Request received');
+    components.logger.info({ input }, 'Request received')
 
     const operationSpecificConfig = getHttpConfigFromRequest(input);
     const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
@@ -111,14 +110,11 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         inputOutputValidationErrors.forEach(validation => {
           const message = `Violation: ${validation.location.join('.') || ''} ${validation.message}`;
           if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Error]) {
-            // request.log.error({ name: 'VALIDATOR' }, message);
-            console.log({ name: 'VALIDATOR' }, message);
+            components.logger.error({ name: 'VALIDATOR' }, message);
           } else if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Warning]) {
-            // request.log.warn({ name: 'VALIDATOR' }, message);
-            console.log({ name: 'VALIDATOR' }, message);
+            components.logger.warn({ name: 'VALIDATOR' }, message);
           } else {
-            // request.log.info({ name: 'VALIDATOR' }, message);
-            console.log({ name: 'VALIDATOR' }, message);
+            components.logger.info({ name: 'VALIDATOR' }, message);
           }
         });
 
@@ -151,8 +147,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           reply.end();
         }
 
-        // request.log.error({ input }, `Request terminated with error: ${e}`);
-        console.log({ input }, `Request terminated with error: ${e}`);
+        components.logger.error({ input }, `Request terminated with error: ${e}`);
       })
     )();
   };
@@ -171,25 +166,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       Router.otherwise(micriHandler)
     )
   );
-
-  /* server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
-    if (typeIs(req, ['application/*+json'])) {
-      try {
-        return done(null, JSON.parse(body));
-      } catch (e) {
-        return done(e);
-      }
-    }
-
-    if (typeIs(req, ['application/x-www-form-urlencoded'])) {
-      return done(null, body);
-    }
-
-    const error: Error & { status?: number } = new Error(`Unsupported media type.`);
-    error.status = 415;
-    Error.captureStackTrace(error);
-    return done(error);
-  });*/
 
   const prism = createInstance(config, components);
 
