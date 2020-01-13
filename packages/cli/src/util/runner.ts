@@ -19,21 +19,18 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
       });
 
       watcher.on('change', () => {
-        // server.fastify.log.info('Restarting Prism...');
-        console.log('Restarting Prism...');
+        server.logger.info('Restarting Prism...');
 
         getHttpOperationsFromResource(options.document)
           .then(operations => {
             if (operations.length === 0) {
-              /* server.fastify.log.info(
+              server.logger.info(
                 'No operations found in the current file, continuing with the previously loaded spec.'
-              ); */
-              console.log('No operations found in the current file, continuing with the previously loaded spec.');
+              );
             } else {
-              return new Promise((resolve, reject) => server.server.close(error => (error ? reject(error) : resolve())))
+              return new Promise((resolve, reject) => server.micri.close(error => (error ? reject(error) : resolve())))
                 .then(() => {
-                  // server.fastify.log.info('Loading the updated operations...');
-                  console.log('Loading the updated operations...');
+                  server.logger.info('Loading the updated operations...');
 
                   return createPrism(options);
                 })
@@ -45,10 +42,9 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
             }
           })
           .catch(() => {
-            // server.fastify.log.info('Something went terribly wrong, trying to start Prism with the original document.');
-            console.log('Something went terribly wrong, trying to start Prism with the original document.');
+            server.logger.info('Something went terribly wrong, trying to start Prism with the original document.');
 
-            return new Promise((resolve, reject) => server.server.close(error => (error ? reject(error) : resolve())))
+            return new Promise((resolve, reject) => server.micri.close(error => (error ? reject(error) : resolve())))
               .then(() => createPrism(options))
               .catch(() => process.exit(1));
           });

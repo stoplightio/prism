@@ -26,7 +26,7 @@ describe('body params validation', () => {
   let address: string;
 
   afterEach(() => {
-    return server.server.close();
+    return server.micri.close();
   });
 
   describe('http operation with body param', () => {
@@ -364,8 +364,8 @@ describe('body params validation', () => {
     });
   });
 
-  /*describe('http operation with form data param', () => {
-    beforeEach(() => {
+  describe('http operation with form data param', () => {
+    beforeEach(async () => {
       server = instantiatePrism2([
         {
           id: '?http-operation-id?',
@@ -422,18 +422,23 @@ describe('body params validation', () => {
           security: [],
         },
       ]);
+      address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
     });
+
+    function makeRequest(url: string, init?: RequestInit) {
+      return fetch(new URL(url, address), init);
+    }
 
     describe('required parameter not in body', () => {
       test('returns 422', async () => {
-        const response = await server.fastify.inject({
+        const response = await makeRequest('/path', {
           method: 'POST',
-          url: '/path',
-          payload: {},
+          body: '{}',
+          headers: { 'content-type': 'application/json' },
         });
 
-        expect(response.statusCode).toBe(422);
-        const parsed = JSON.parse(response.payload);
+        expect(response.status).toBe(422);
+        const parsed = await response.json();
         expect(parsed).toMatchObject({
           type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
           validation: [
@@ -456,17 +461,17 @@ describe('body params validation', () => {
 
     describe('parameter does not match enum criteria', () => {
       test('returns 422 & proper validation message', async () => {
-        const response = await server.fastify.inject({
+        const response = await makeRequest('/path', {
           method: 'POST',
-          url: '/path',
-          payload: {
+          body: JSON.stringify({
             id: 'not integer',
             status: 'somerundomestuff',
-          },
+          }),
+          headers: { 'content-type': 'application/json' },
         });
 
-        expect(response.statusCode).toBe(422);
-        const parsed = JSON.parse(response.payload);
+        expect(response.status).toBe(422);
+        const parsed = await response.json();
         expect(parsed).toMatchObject({
           type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
           validation: [
@@ -489,17 +494,17 @@ describe('body params validation', () => {
 
     describe('valid parameter provided', () => {
       test('returns 200', async () => {
-        const response = await server.fastify.inject({
+        const response = await makeRequest('/path', {
           method: 'POST',
-          url: '/path',
-          payload: {
+          body: JSON.stringify({
             id: 123,
             status: 'open',
-          },
+          }),
+          headers: { 'content-type': 'application/json' },
         });
 
-        expect(response.statusCode).toBe(200);
+        expect(response.status).toBe(200);
       });
     });
-  });*/
+  });
 });

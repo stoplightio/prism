@@ -41,7 +41,7 @@ describe('GET /pet?__server', () => {
     address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
   });
 
-  afterEach(() => server.server.close());
+  afterEach(() => server.micri.close());
 
   describe.each([['http://stoplight.io/api'], ['https://stoplight.io/api']])('valid server %s', serverUrl => {
     it('returns 200', () => {
@@ -79,7 +79,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
   });
 
-  afterEach(() => server.server.close());
+  afterEach(() => server.micri.close());
 
   function makeRequest(url: string, init?: RequestInit) {
     return fetch(new URL(url, address), init);
