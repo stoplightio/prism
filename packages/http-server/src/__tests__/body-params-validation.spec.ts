@@ -32,6 +32,10 @@ describe('body params validation', () => {
 
   afterEach(() => server.close());
 
+  function makeRequest(url: string, init?: RequestInit) {
+    return fetch(new URL(url, server.address), init);
+  }
+
   describe('http operation with body param', () => {
     beforeEach(async () => {
       server = await instantiatePrism(30000, [
@@ -253,10 +257,6 @@ describe('body params validation', () => {
       ]);
     });
 
-    function makeRequest(url: string, init?: RequestInit) {
-      return fetch(new URL(url, server.address), init);
-    }
-
     describe('operation with no request content type defined', () => {
       describe('property type invalid', () => {
         test('returns 422 & error message', async () => {
@@ -368,7 +368,7 @@ describe('body params validation', () => {
 
   describe('http operation with form data param', () => {
     beforeEach(async () => {
-      server = await instantiatePrism(30003, [
+      server = await instantiatePrism(30001, [
         {
           id: '?http-operation-id?',
           method: 'post',
@@ -425,10 +425,6 @@ describe('body params validation', () => {
         },
       ]);
     });
-
-    function makeRequest(url: string, init?: RequestInit) {
-      return fetch(new URL(url, server.address), init);
-    }
 
     describe('required parameter not in body', () => {
       test('returns 422', async () => {

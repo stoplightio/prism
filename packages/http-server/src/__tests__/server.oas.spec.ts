@@ -30,7 +30,7 @@ async function instantiatePrism(port: number, specPath: string) {
     cors: true,
   });
 
-  const address = await server.listen(30003, '127.0.0.1');
+  const address = await server.listen(port, '127.0.0.1');
 
   return {
     close: server.close.bind(server),
