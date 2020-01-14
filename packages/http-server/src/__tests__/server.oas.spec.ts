@@ -3,7 +3,6 @@ import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { resolve } from 'path';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
-import { IPrismHttpServer } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -16,9 +15,9 @@ function checkErrorPayloadShape(payload: string) {
   expect(parsedPayload).toHaveProperty('detail');
 }
 
-async function instantiatePrism(specPath: string) {
+async function instantiatePrism(port: number, specPath: string) {
   const operations = await getHttpOperationsFromResource(specPath);
-  return createServer(operations, {
+  const server = createServer(operations, {
     components: { logger },
     config: {
       checkSecurity: true,
@@ -30,15 +29,20 @@ async function instantiatePrism(specPath: string) {
     errors: false,
     cors: true,
   });
+
+  const address = await server.listen(30003, '127.0.0.1');
+
+  return {
+    close: server.close.bind(server),
+    address,
+  };
 }
 
 describe('GET /pet?__server', () => {
-  let server: IPrismHttpServer;
-  let address: string;
+  let server: { close: () => Promise<void>; address: string };
 
   beforeEach(async () => {
-    server = await instantiatePrism(resolve(__dirname, 'fixtures', 'templated-server-example.oas3.yaml'));
-    address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
+    server = await instantiatePrism(30002, resolve(__dirname, 'fixtures', 'templated-server-example.oas3.yaml'));
   });
 
   afterEach(() => server.close());
@@ -66,23 +70,21 @@ describe('GET /pet?__server', () => {
     `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url ${serverUrl} hasn't been matched with any of the provided servers"}`;
 
   function requestPetGivenServer(serverUrl: string) {
-    return fetch(new URL(`/pet?__server=${serverUrl}`, address), { method: 'GET' });
+    return fetch(new URL(`/pet?__server=${serverUrl}`, server.address), { method: 'GET' });
   }
 });
 
 describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('server %s', file => {
-  let server: IPrismHttpServer;
-  let address: string;
+  let server: { close: () => Promise<void>; address: string };
 
   beforeEach(async () => {
-    server = await instantiatePrism(resolve(__dirname, 'fixtures', file));
-    address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
+    server = await instantiatePrism(30003, resolve(__dirname, 'fixtures', file));
   });
 
   afterEach(() => server.close());
 
   function makeRequest(url: string, init?: RequestInit) {
-    return fetch(new URL(url, address), init);
+    return fetch(new URL(url, server.address), init);
   }
 
   it('should mock back /pets/:petId', async () => {

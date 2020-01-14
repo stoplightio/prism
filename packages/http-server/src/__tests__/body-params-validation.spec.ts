@@ -2,12 +2,11 @@ import { createLogger } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
-import { IPrismHttpServer } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
 
-function instantiatePrism2(operations: IHttpOperation[]) {
-  return createServer(operations, {
+async function instantiatePrism(port: number, operations: IHttpOperation[]) {
+  const server = createServer(operations, {
     components: { logger },
     cors: true,
     config: {
@@ -19,17 +18,23 @@ function instantiatePrism2(operations: IHttpOperation[]) {
     },
     errors: false,
   });
+
+  const address = await server.listen(port, '127.0.0.1');
+
+  return {
+    close: server.close.bind(server),
+    address,
+  };
 }
 
 describe('body params validation', () => {
-  let server: IPrismHttpServer;
-  let address: string;
+  let server: { close: () => Promise<void>; address: string };
 
   afterEach(() => server.close());
 
   describe('http operation with body param', () => {
     beforeEach(async () => {
-      server = instantiatePrism2([
+      server = await instantiatePrism(30000, [
         {
           id: '?http-operation-id?',
           method: 'post',
@@ -246,11 +251,10 @@ describe('body params validation', () => {
           security: [],
         },
       ]);
-      address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
     });
 
     function makeRequest(url: string, init?: RequestInit) {
-      return fetch(new URL(url, address), init);
+      return fetch(new URL(url, server.address), init);
     }
 
     describe('operation with no request content type defined', () => {
@@ -364,7 +368,7 @@ describe('body params validation', () => {
 
   describe('http operation with form data param', () => {
     beforeEach(async () => {
-      server = instantiatePrism2([
+      server = await instantiatePrism(30003, [
         {
           id: '?http-operation-id?',
           method: 'post',
@@ -420,11 +424,10 @@ describe('body params validation', () => {
           security: [],
         },
       ]);
-      address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
     });
 
     function makeRequest(url: string, init?: RequestInit) {
-      return fetch(new URL(url, address), init);
+      return fetch(new URL(url, server.address), init);
     }
 
     describe('required parameter not in body', () => {
