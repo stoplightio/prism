@@ -435,8 +435,7 @@ describe('body params validation', () => {
         });
 
         expect(response.status).toBe(422);
-        const parsed = await response.json();
-        expect(parsed).toMatchObject({
+        await expect(response.json()).resolves.toMatchObject({
           type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
           validation: [
             {
@@ -468,8 +467,7 @@ describe('body params validation', () => {
         });
 
         expect(response.status).toBe(422);
-        const parsed = await response.json();
-        expect(parsed).toMatchObject({
+        await expect(response.json()).resolves.toMatchObject({
           type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
           validation: [
             {
