@@ -1,6 +1,6 @@
 import { createInstance, IHttpNameValue, IHttpNameValues, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
-import { IncomingMessage, ServerResponse, IncomingHttpHeaders, Server } from 'http';
+import { IncomingMessage, ServerResponse } from 'http';
 import { AddressInfo } from 'net';
 import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
@@ -11,7 +11,7 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
-import { MicriHandler } from 'micri/dist';
+import { MicriHandler } from 'micri';
 
 function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValues {
   const params = {};
@@ -35,7 +35,7 @@ function parseRequestBody(request: IncomingMessage) {
     && request.headers['transfer-encoding'] === undefined
     && (request.headers['content-length'] === '0' || request.headers['content-length'] === undefined)
   ) {
-    return null;
+    return Promise.resolve(null);
   }
 
   if (typeIs(request, ['application/json', 'application/*+json'])) {
@@ -48,7 +48,7 @@ function parseRequestBody(request: IncomingMessage) {
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
-  const micriHandler: MicriHandler = async (request: IncomingMessage, reply: ServerResponse) => {
+  const handler: MicriHandler = async (request, reply) => {
     const {
       url,
       method,
@@ -163,7 +163,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           send(res, 204);
         },
       ),
-      Router.otherwise(micriHandler)
+      Router.otherwise(handler)
     )
   );
 
