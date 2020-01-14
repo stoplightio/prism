@@ -25,9 +25,7 @@ describe('body params validation', () => {
   let server: IPrismHttpServer;
   let address: string;
 
-  afterEach(() => {
-    return server.micri.close();
-  });
+  afterEach(() => server.close());
 
   describe('http operation with body param', () => {
     beforeEach(async () => {
@@ -265,7 +263,7 @@ describe('body params validation', () => {
           });
 
           expect(response.status).toBe(422);
-          expect(await response.json()).toMatchObject({
+          return expect(response.json()).resolves.toMatchObject({
             validation: [
               {
                 code: 'type',
@@ -289,7 +287,7 @@ describe('body params validation', () => {
           });
 
           expect(response.status).toBe(422);
-          expect(await response.json()).toMatchObject({
+          await expect(response.json()).resolves.toMatchObject({
             validation: [{ code: 'required', message: "should have required property 'id'", severity: 'Error' }],
           });
         });
@@ -310,7 +308,7 @@ describe('body params validation', () => {
         test('returns 422 & error message', async () => {
           const response = await makeRequest('/json-body-required', { method: 'POST' });
           expect(response.status).toBe(422);
-          expect(await response.json()).toMatchObject({
+          await expect(response.json()).resolves.toMatchObject({
             validation: [{ code: 'required', message: 'Body parameter is required', severity: 'Error' }],
           });
         });
@@ -326,7 +324,7 @@ describe('body params validation', () => {
             });
 
             expect(response.status).toBe(422);
-            expect(await response.json()).toMatchObject({
+            await expect(response.json()).resolves.toMatchObject({
               validation: [
                 {
                   code: 'type',
@@ -348,7 +346,7 @@ describe('body params validation', () => {
             });
 
             expect(response.status).toBe(422);
-            expect(await response.json()).toMatchObject({
+            await expect(response.json()).resolves.toMatchObject({
               validation: [
                 {
                   code: 'enum',

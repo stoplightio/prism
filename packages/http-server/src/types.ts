@@ -11,7 +11,7 @@ export interface IPrismHttpServerOpts {
 
 export interface IPrismHttpServer {
   readonly prism: PrismHttpInstance;
-  readonly micri: Server;
   readonly logger: Logger;
+  close: () => Promise<void>;
   listen: (port: number, address?: string, backlog?: number) => Promise<string>;
 }

@@ -41,7 +41,7 @@ describe('GET /pet?__server', () => {
     address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
   });
 
-  afterEach(() => server.micri.close());
+  afterEach(() => server.close());
 
   describe.each([['http://stoplight.io/api'], ['https://stoplight.io/api']])('valid server %s', serverUrl => {
     it('returns 200', () => {
@@ -79,7 +79,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     address = await server.listen(Math.ceil(30000 + Math.random() * 30000), '127.0.0.1');
   });
 
-  afterEach(() => server.micri.close());
+  afterEach(() => server.close());
 
   function makeRequest(url: string, init?: RequestInit) {
     return fetch(new URL(url, address), init);
@@ -109,7 +109,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     const response = await makeRequest('/pets/123?__code=404');
 
     expect(response.status).toBe(404);
-    expect(await response.text()).toBe('');
+    await expect(response.text()).resolves.toBe('');
   });
 
   it('will return requested error response with payload', async () => {
@@ -236,7 +236,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
         it(`when the server is not valid for this exact operation then return error`, async () => {
           const response = await makeRequest('/store/inventory?__server=https://petstore.swagger.io/v2');
           expect(response.status).toBe(404);
-          expect(await response.text()).toEqual(
+          await expect(response.text()).resolves.toEqual(
             '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}'
           );
         });
@@ -244,7 +244,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
         it(`when the server is invalid return error`, async () => {
           const response = await makeRequest('/store/inventory?__server=https://notvalid.com');
           expect(response.status).toBe(404);
-          expect(await response.text()).toEqual(
+          await expect(response.text()).resolves.toEqual(
             '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}'
           );
         });

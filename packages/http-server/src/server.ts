@@ -174,12 +174,18 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       return prism;
     },
 
-    get micri() {
-      return server;
-    },
-
     get logger() {
       return components.logger;
+    },
+
+    close() {
+      return new Promise((resolve, reject) => server.close((error) => {
+        if (error) {
+          reject(error);
+        }
+
+        resolve();
+      }));
     },
 
     listen: (port: number, ...args: any[]) => new Promise(resolve => server.listen(port, ...args, () => resolve(addressInfoToString(server.address())))),

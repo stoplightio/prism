@@ -26,8 +26,5 @@
     "micri": "^2.0.1",
     "tslib": "^1.10.0",
     "type-is": "^1.6.18"
-  },
-  "devDependencies": {
-    "node-fetch": "^2.6.0"
   }
 }
