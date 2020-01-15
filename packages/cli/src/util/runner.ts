@@ -19,19 +19,19 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
       });
 
       watcher.on('change', () => {
-        server.fastify.log.info('Restarting Prism...');
+        server.logger.info('Restarting Prism...');
 
         getHttpOperationsFromResource(options.document)
           .then(operations => {
             if (operations.length === 0) {
-              server.fastify.log.info(
+              server.logger.info(
                 'No operations found in the current file, continuing with the previously loaded spec.'
               );
             } else {
-              return server.fastify
+              return server
                 .close()
                 .then(() => {
-                  server.fastify.log.info('Loading the updated operations...');
+                  server.logger.info('Loading the updated operations...');
 
                   return createPrism(options);
                 })
@@ -43,9 +43,9 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
             }
           })
           .catch(() => {
-            server.fastify.log.info('Something went terribly wrong, trying to start Prism with the original document.');
+            server.logger.info('Something went terribly wrong, trying to start Prism with the original document.');
 
-            return server.fastify
+            return server
               .close()
               .then(() => createPrism(options))
               .catch(() => process.exit(1));

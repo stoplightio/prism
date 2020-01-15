@@ -37,7 +37,7 @@ async function createMultiProcessPrism(options: CreateBaseServerOptions) {
   } else {
     const logInstance = createLogger('CLI', cliSpecificLoggerOptions);
     try {
-      return await createPrismServerWithLogger(options, logInstance);
+      return createPrismServerWithLogger(options, logInstance);
     } catch (e) {
       logInstance.fatal(e.message);
       cluster.worker.kill();
@@ -53,7 +53,7 @@ async function createSingleProcessPrism(options: CreateBaseServerOptions) {
   pipeOutputToSignale(logStream);
 
   try {
-    return await createPrismServerWithLogger(options, logInstance);
+    return createPrismServerWithLogger(options, logInstance);
   } catch (e) {
     logInstance.fatal(e.message);
   }

@@ -1,13 +1,13 @@
 import { createLogger } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
-import * as fastify from 'fastify';
+import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
-import { IPrismHttpServer } from '../types';
+import { ThenArg } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
 
-function instantiatePrism2(operations: IHttpOperation[]) {
-  return createServer(operations, {
+async function instantiatePrism(operations: IHttpOperation[]) {
+  const server = createServer(operations, {
     components: { logger },
     cors: true,
     config: {
@@ -19,18 +19,28 @@ function instantiatePrism2(operations: IHttpOperation[]) {
     },
     errors: false,
   });
+
+  // be careful with selecting the port: it can't be the same in different suite because test suites run in parallel
+  const address = await server.listen(30000, '127.0.0.1');
+
+  return {
+    close: server.close.bind(server),
+    address,
+  };
 }
 
 describe('body params validation', () => {
-  let server: IPrismHttpServer;
+  let server: ThenArg<ReturnType<typeof instantiatePrism>>;
 
-  afterAll(() => {
-    return server.fastify.close();
-  });
+  afterEach(() => server.close());
+
+  function makeRequest(url: string, init?: RequestInit) {
+    return fetch(new URL(url, server.address), init);
+  }
 
   describe('http operation with body param', () => {
-    beforeEach(() => {
-      server = instantiatePrism2([
+    beforeEach(async () => {
+      server = await instantiatePrism([
         {
           id: '?http-operation-id?',
           method: 'post',
@@ -250,22 +260,16 @@ describe('body params validation', () => {
     });
 
     describe('operation with no request content type defined', () => {
-      const operation: fastify.HTTPInjectOptions = {
-        method: 'POST',
-        url: '/json-body-no-request-content-type',
-      };
-
       describe('property type invalid', () => {
         test('returns 422 & error message', async () => {
-          const response = await server.fastify.inject({
-            ...operation,
-            payload: {
-              id: 'string',
-            },
+          const response = await makeRequest('/json-body-no-request-content-type', {
+            method: 'POST',
+            body: JSON.stringify({ id: 'string' }),
+            headers: { 'content-type': 'application/json' },
           });
 
-          expect(response.statusCode).toBe(422);
-          expect(JSON.parse(response.payload)).toMatchObject({
+          expect(response.status).toBe(422);
+          return expect(response.json()).resolves.toMatchObject({
             validation: [
               {
                 code: 'type',
@@ -280,20 +284,16 @@ describe('body params validation', () => {
     });
 
     describe('operation with required property', () => {
-      const operation: fastify.HTTPInjectOptions = {
-        method: 'POST',
-        url: '/json-body-property-required',
-      };
-
       describe('when property not provided', () => {
         test('returns 422 & error message', async () => {
-          const response = await server.fastify.inject({
-            ...operation,
-            payload: {},
+          const response = await makeRequest('/json-body-property-required', {
+            method: 'POST',
+            body: '{}',
+            headers: { 'content-type': 'application/json' },
           });
 
-          expect(response.statusCode).toBe(422);
-          expect(JSON.parse(response.payload)).toMatchObject({
+          expect(response.status).toBe(422);
+          expect(response.json()).resolves.toMatchObject({
             validation: [{ code: 'required', message: "should have required property 'id'", severity: 'Error' }],
           });
         });
@@ -303,28 +303,18 @@ describe('body params validation', () => {
     describe('operation with optional body', () => {
       describe('when no body provided', () => {
         test('returns 200', async () => {
-          const response = await server.fastify.inject({
-            method: 'POST',
-            url: '/json-body-optional',
-          });
-
-          expect(response.statusCode).toBe(200);
+          const response = await makeRequest('/json-body-optional', { method: 'POST' });
+          expect(response.status).toBe(200);
         });
       });
     });
 
     describe('operation with required body', () => {
-      const operation: fastify.HTTPInjectOptions = {
-        method: 'POST',
-        url: '/json-body-required',
-      };
-
       describe('when no body provided', () => {
         test('returns 422 & error message', async () => {
-          const response = await server.fastify.inject(operation);
-
-          expect(response.statusCode).toBe(422);
-          expect(JSON.parse(response.payload)).toMatchObject({
+          const response = await makeRequest('/json-body-required', { method: 'POST' });
+          expect(response.status).toBe(422);
+          expect(response.json()).resolves.toMatchObject({
             validation: [{ code: 'required', message: 'Body parameter is required', severity: 'Error' }],
           });
         });
@@ -333,15 +323,14 @@ describe('body params validation', () => {
       describe('when body provided', () => {
         describe('and property type invalid', () => {
           test('returns 422 & error message', async () => {
-            const response = await server.fastify.inject({
-              ...operation,
-              payload: {
-                id: 'string',
-              },
+            const response = await makeRequest('/json-body-required', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ id: 'string' }),
             });
 
-            expect(response.statusCode).toBe(422);
-            expect(JSON.parse(response.payload)).toMatchObject({
+            expect(response.status).toBe(422);
+            expect(response.json()).resolves.toMatchObject({
               validation: [
                 {
                   code: 'type',
@@ -356,15 +345,14 @@ describe('body params validation', () => {
 
         describe('and property not one of enum', () => {
           test('returns 422 & error message', async () => {
-            const response = await server.fastify.inject({
-              ...operation,
-              payload: {
-                status: 'string',
-              },
+            const response = await makeRequest('/json-body-required', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ status: 'string' }),
             });
 
-            expect(response.statusCode).toBe(422);
-            expect(JSON.parse(response.payload)).toMatchObject({
+            expect(response.status).toBe(422);
+            expect(response.json()).resolves.toMatchObject({
               validation: [
                 {
                   code: 'enum',
@@ -381,8 +369,8 @@ describe('body params validation', () => {
   });
 
   describe('http operation with form data param', () => {
-    beforeEach(() => {
-      server = instantiatePrism2([
+    beforeEach(async () => {
+      server = await instantiatePrism([
         {
           id: '?http-operation-id?',
           method: 'post',
@@ -442,15 +430,14 @@ describe('body params validation', () => {
 
     describe('required parameter not in body', () => {
       test('returns 422', async () => {
-        const response = await server.fastify.inject({
+        const response = await makeRequest('/path', {
           method: 'POST',
-          url: '/path',
-          payload: {},
+          body: '{}',
+          headers: { 'content-type': 'application/json' },
         });
 
-        expect(response.statusCode).toBe(422);
-        const parsed = JSON.parse(response.payload);
-        expect(parsed).toMatchObject({
+        expect(response.status).toBe(422);
+        expect(response.json()).resolves.toMatchObject({
           type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
           validation: [
             {
@@ -472,18 +459,17 @@ describe('body params validation', () => {
 
     describe('parameter does not match enum criteria', () => {
       test('returns 422 & proper validation message', async () => {
-        const response = await server.fastify.inject({
+        const response = await makeRequest('/path', {
           method: 'POST',
-          url: '/path',
-          payload: {
+          body: JSON.stringify({
             id: 'not integer',
             status: 'somerundomestuff',
-          },
+          }),
+          headers: { 'content-type': 'application/json' },
         });
 
-        expect(response.statusCode).toBe(422);
-        const parsed = JSON.parse(response.payload);
-        expect(parsed).toMatchObject({
+        expect(response.status).toBe(422);
+        expect(response.json()).resolves.toMatchObject({
           type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
           validation: [
             {
@@ -505,16 +491,16 @@ describe('body params validation', () => {
 
     describe('valid parameter provided', () => {
       test('returns 200', async () => {
-        const response = await server.fastify.inject({
+        const response = await makeRequest('/path', {
           method: 'POST',
-          url: '/path',
-          payload: {
+          body: JSON.stringify({
             id: 123,
             status: 'open',
-          },
+          }),
+          headers: { 'content-type': 'application/json' },
         });
 
-        expect(response.statusCode).toBe(200);
+        expect(response.status).toBe(200);
       });
     });
   });

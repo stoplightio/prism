@@ -1,5 +1,6 @@
 import { IHttpConfig, PickRequired, PrismHttpComponents, PrismHttpInstance } from '@stoplight/prism-http';
-import { FastifyInstance } from 'fastify';
+import { Server } from 'micri';
+import { Logger } from 'pino';
 
 export interface IPrismHttpServerOpts {
   components: PickRequired<Partial<PrismHttpComponents>, 'logger'>;
@@ -10,6 +11,11 @@ export interface IPrismHttpServerOpts {
 
 export interface IPrismHttpServer {
   readonly prism: PrismHttpInstance;
-  readonly fastify: FastifyInstance;
+  readonly logger: Logger;
+  close: () => Promise<void>;
   listen: (port: number, address?: string, backlog?: number) => Promise<string>;
 }
+
+export type ThenArg<T> = T extends Promise<infer U> ? U :
+  T extends ((...args: any[]) => Promise<infer U>) ? U :
+    T;

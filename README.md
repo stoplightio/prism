@@ -67,7 +67,6 @@ In case you're interested in all logical decision we make to figure out the best
 
 [code_of_conduct]: CODE_OF_CONDUCT.md
 [contributing]: CONTRIBUTING.md
-[fastify]: https://www.fastify.io/
 [download-release]: https://github.com/stoplightio/prism/releases/latest
 [core]: https://www.npmjs.com/package/@stoplight/prism-core
 [http]: https://www.npmjs.com/package/@stoplight/prism-http

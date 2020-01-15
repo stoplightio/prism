@@ -22,9 +22,8 @@
     "@stoplight/prism-core": "^3.2.3",
     "@stoplight/prism-http": "^3.2.3",
     "fast-xml-parser": "^3.12.20",
-    "fastify": "^2.7.1",
-    "fastify-cors": "^3.0.0",
     "fp-ts": "^2.1.1",
+    "micri": "^2.0.1",
     "tslib": "^1.10.0",
     "type-is": "^1.6.18"
   }

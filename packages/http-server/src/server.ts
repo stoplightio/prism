@@ -1,7 +1,8 @@
-import { createInstance, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
+import { createInstance, IHttpNameValue, IHttpNameValues, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
-import * as fastify from 'fastify';
-import * as fastifyCors from 'fastify-cors';
+import { IncomingMessage, ServerResponse } from 'http';
+import { AddressInfo } from 'net';
+import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
@@ -10,63 +11,73 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
+import { MicriHandler } from 'micri';
+
+function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValues {
+  const params = {};
+  for (const key of searchParams.keys()) {
+    const values = searchParams.getAll(key);
+    params[key] = values.length === 1 ? values[0] : values;
+  }
+  return params;
+}
+
+function addressInfoToString(address: AddressInfo | string | null) {
+  if (!address) return '';
+  const a = address as AddressInfo;
+  return `http://${a.address}:${a.port}`;
+}
+
+function parseRequestBody(request: IncomingMessage) {
+  // if no body provided then return null instead of empty string
+  if (
+    request.headers['content-type'] === undefined
+    && request.headers['transfer-encoding'] === undefined
+    && (request.headers['content-length'] === '0' || request.headers['content-length'] === undefined)
+  ) {
+    return Promise.resolve(null);
+  }
+
+  if (typeIs(request, ['application/json', 'application/*+json'])) {
+    return json(request);
+  } else {
+    return text(request);
+  }
+}
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
-  const server = fastify({
-    logger: components.logger,
-    disableRequestLogging: true,
-    modifyCoreObjects: false,
-  });
-
-  if (opts.cors) server.register(fastifyCors, { origin: true, credentials: true });
-
-  server.addContentTypeParser('*', { parseAs: 'string' }, (req, body, done) => {
-    if (typeIs(req, ['application/*+json'])) {
-      try {
-        return done(null, JSON.parse(body));
-      } catch (e) {
-        return done(e);
-      }
-    }
-
-    if (typeIs(req, ['application/x-www-form-urlencoded'])) {
-      return done(null, body);
-    }
-
-    const error: Error & { status?: number } = new Error(`Unsupported media type.`);
-    error.status = 415;
-    Error.captureStackTrace(error);
-    return done(error);
-  });
-
-  const prism = createInstance(config, components);
-
-  const replyHandler: fastify.RequestHandler = (request, reply) => {
+  const handler: MicriHandler = async (request, reply) => {
     const {
-      req: { method, url },
-      body,
+      url,
+      method,
       headers,
-      query,
     } = request;
+
+    const body = await parseRequestBody(request);
+
+    const { searchParams, pathname } = new URL(
+      url!, // url can't be empty for HTTP request
+      'http://example.com' // needed because URL can't handle relative URLs
+    );
 
     const input = {
       method: (method ? method.toLowerCase() : 'get') as HttpMethod,
       url: {
-        path: (url || '/').split('?')[0],
-        query,
-        baseUrl: query.__server,
+        path: pathname,
+        baseUrl: searchParams.get('__server') || undefined,
+        query: searchParamsToNameValues(searchParams),
       },
-      headers,
+      headers: headers as IHttpNameValue,
       body,
     };
 
-    request.log.info({ input }, 'Request received');
+    components.logger.info({ input }, 'Request received');
 
     const operationSpecificConfig = getHttpConfigFromRequest(input);
     const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
-    // Do not return, or Fastify will try to send the response again.
+
     pipe(
       prism.request(input, operations, { ...opts.config, mock: mockConfig }),
       TE.chain(response => {
@@ -77,7 +88,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         const inputOutputValidationErrors = inputValidationErrors.concat(outputValidationErrors);
 
         if (inputOutputValidationErrors.length > 0) {
-          reply.header('sl-violations', JSON.stringify(inputOutputValidationErrors));
+          reply.setHeader('sl-violations', JSON.stringify(inputOutputValidationErrors));
 
           const errorViolations = outputValidationErrors.filter(
             v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
@@ -97,67 +108,86 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         inputOutputValidationErrors.forEach(validation => {
           const message = `Violation: ${validation.location.join('.') || ''} ${validation.message}`;
           if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Error]) {
-            request.log.error({ name: 'VALIDATOR' }, message);
+            components.logger.error({ name: 'VALIDATOR' }, message);
           } else if (validation.severity === DiagnosticSeverity[DiagnosticSeverity.Warning]) {
-            request.log.warn({ name: 'VALIDATOR' }, message);
+            components.logger.warn({ name: 'VALIDATOR' }, message);
           } else {
-            request.log.info({ name: 'VALIDATOR' }, message);
+            components.logger.info({ name: 'VALIDATOR' }, message);
           }
         });
 
         return TE.fromIOEither(() =>
           E.tryCatch(() => {
-            if (output.headers) reply.headers(output.headers);
+            if (output.headers)
+              Object.entries(output.headers).forEach(([name, value]) => reply.setHeader(name, value));
 
-            reply
-              .code(output.statusCode)
-              .serializer((payload: unknown) => serialize(payload, reply.getHeader('content-type')))
-              .send(output.body);
+            send(
+              reply,
+              output.statusCode,
+              serialize(output.body, reply.getHeader('content-type') as string | undefined)
+            );
           }, E.toError)
         );
       }),
       TE.mapLeft((e: Error & { status?: number; additional?: { headers?: Dictionary<string> } }) => {
-        if (!reply.sent) {
-          const status = e.status || 500;
-          reply
-            .type('application/problem+json')
-            .serializer(JSON.stringify)
-            .code(status);
+        if (!reply.finished) {
+          reply.setHeader('content-type', 'application/problem+json');
 
-          if (e.additional && e.additional.headers) {
-            reply.headers(e.additional.headers);
-          }
+          if (e.additional && e.additional.headers)
+            Object.entries(e.additional.headers).forEach(([name, value]) => reply.setHeader(name, value));
 
-          reply.send(ProblemJsonError.fromPlainError(e));
+          send(
+            reply,
+            e.status || 500,
+            JSON.stringify(ProblemJsonError.fromPlainError(e))
+          );
         } else {
-          reply.res.end();
+          reply.end();
         }
 
-        request.log.error({ input }, `Request terminated with error: ${e}`);
+        components.logger.error({ input }, `Request terminated with error: ${e}`);
       })
     )();
   };
 
-  opts.cors
-    ? server.route({
-        url: '*',
-        method: ['GET', 'DELETE', 'HEAD', 'PATCH', 'POST', 'PUT'],
-        handler: replyHandler,
-      })
-    : server.all('*', replyHandler);
+  const server = micri(
+    Router.router(
+      Router.on.options(
+        () => opts.cors,
+        (req: IncomingMessage, res: ServerResponse) => {
+          res.setHeader('Access-Control-Allow-Origin', req.headers['origin'] || '*' as string);
+          res.setHeader('Access-Control-Allow-Credentials', 'true');
+          res.setHeader('Access-Control-Allow-Methods', 'GET,DELETE,HEAD,PATCH,POST,PUT');
+          send(res, 204);
+        },
+      ),
+      Router.otherwise(handler)
+    )
+  );
 
-  const prismServer: IPrismHttpServer = {
+  const prism = createInstance(config, components);
+
+  return {
     get prism() {
       return prism;
     },
 
-    get fastify() {
-      return server;
+    get logger() {
+      return components.logger;
     },
 
-    listen: (port: number, ...args: any[]) => server.listen(port, ...args),
+    close() {
+      return new Promise((resolve, reject) => server.close((error) => {
+        if (error) {
+          reject(error);
+        }
+
+        resolve();
+      }));
+    },
+
+    listen: (port: number, ...args: any[]) => new Promise(resolve => server.listen(port, ...args, () => resolve(addressInfoToString(server.address())))),
   };
-  return prismServer;
 };
 
 const createErrorObjectWithPrefix = (locationPrefix: string) => (detail: IPrismDiagnostic) => ({
