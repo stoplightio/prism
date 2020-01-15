@@ -15,7 +15,7 @@ function checkErrorPayloadShape(payload: string) {
   expect(parsedPayload).toHaveProperty('detail');
 }
 
-async function instantiatePrism(port: number, specPath: string) {
+async function instantiatePrism(specPath: string) {
   const operations = await getHttpOperationsFromResource(specPath);
   const server = createServer(operations, {
     components: { logger },
@@ -30,7 +30,7 @@ async function instantiatePrism(port: number, specPath: string) {
     cors: true,
   });
 
-  const address = await server.listen(port, '127.0.0.1');
+  const address = await server.listen(30001, '127.0.0.1');
 
   return {
     close: server.close.bind(server),
@@ -42,7 +42,7 @@ describe('GET /pet?__server', () => {
   let server: { close: () => Promise<void>; address: string };
 
   beforeEach(async () => {
-    server = await instantiatePrism(30002, resolve(__dirname, 'fixtures', 'templated-server-example.oas3.yaml'));
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', 'templated-server-example.oas3.yaml'));
   });
 
   afterEach(() => server.close());
@@ -78,7 +78,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
   let server: { close: () => Promise<void>; address: string };
 
   beforeEach(async () => {
-    server = await instantiatePrism(30003, resolve(__dirname, 'fixtures', file));
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', file));
   });
 
   afterEach(() => server.close());

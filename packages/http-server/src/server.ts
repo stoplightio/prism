@@ -53,14 +53,13 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       url,
       method,
       headers,
-      socket,
     } = request;
 
     const body = await parseRequestBody(request);
 
     const { searchParams, pathname } = new URL(
       url!, // url can't be empty for HTTP request
-      addressInfoToString(socket.address())
+      'http://example.com' // needed because URL can't handle relative URLs
     );
 
     const input = {

@@ -5,7 +5,7 @@ import { createServer } from '../';
 
 const logger = createLogger('TEST', { enabled: false });
 
-async function instantiatePrism(port: number, operations: IHttpOperation[]) {
+async function instantiatePrism(operations: IHttpOperation[]) {
   const server = createServer(operations, {
     components: { logger },
     cors: true,
@@ -19,7 +19,7 @@ async function instantiatePrism(port: number, operations: IHttpOperation[]) {
     errors: false,
   });
 
-  const address = await server.listen(port, '127.0.0.1');
+  const address = await server.listen(30000, '127.0.0.1');
 
   return {
     close: server.close.bind(server),
@@ -38,7 +38,7 @@ describe('body params validation', () => {
 
   describe('http operation with body param', () => {
     beforeEach(async () => {
-      server = await instantiatePrism(30000, [
+      server = await instantiatePrism([
         {
           id: '?http-operation-id?',
           method: 'post',
@@ -368,7 +368,7 @@ describe('body params validation', () => {
 
   describe('http operation with form data param', () => {
     beforeEach(async () => {
-      server = await instantiatePrism(30001, [
+      server = await instantiatePrism([
         {
           id: '?http-operation-id?',
           method: 'post',
