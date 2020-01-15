@@ -56,13 +56,12 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       socket,
     } = request;
 
-    if (!url) {
-      return TE.left(new Error('Missing URL in request!'));
-    }
-
     const body = await parseRequestBody(request);
 
-    const { searchParams, pathname } = new URL(url, addressInfoToString(socket.address()));
+    const { searchParams, pathname } = new URL(
+      url!, // url can't be empty for HTTP request
+      addressInfoToString(socket.address())
+    );
 
     const input = {
       method: (method ? method.toLowerCase() : 'get') as HttpMethod,
@@ -75,7 +74,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       body,
     };
 
-    components.logger.info({ input }, 'Request received')
+    components.logger.info({ input }, 'Request received');
 
     const operationSpecificConfig = getHttpConfigFromRequest(input);
     const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
