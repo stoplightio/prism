@@ -3,6 +3,7 @@ import { getHttpOperationsFromResource } from '@stoplight/prism-http';
 import { resolve } from 'path';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
+import { ThenArg } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -40,7 +41,7 @@ async function instantiatePrism(specPath: string) {
 }
 
 describe('GET /pet?__server', () => {
-  let server: { close: () => Promise<void>; address: string };
+  let server: ThenArg<ReturnType<typeof instantiatePrism>>;
 
   beforeEach(async () => {
     server = await instantiatePrism(resolve(__dirname, 'fixtures', 'templated-server-example.oas3.yaml'));
@@ -76,7 +77,7 @@ describe('GET /pet?__server', () => {
 });
 
 describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('server %s', file => {
-  let server: { close: () => Promise<void>; address: string };
+  let server: ThenArg<ReturnType<typeof instantiatePrism>>;
 
   beforeEach(async () => {
     server = await instantiatePrism(resolve(__dirname, 'fixtures', file));

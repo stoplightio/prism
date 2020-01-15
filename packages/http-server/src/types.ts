@@ -15,3 +15,7 @@ export interface IPrismHttpServer {
   close: () => Promise<void>;
   listen: (port: number, address?: string, backlog?: number) => Promise<string>;
 }
+
+export type ThenArg<T> = T extends Promise<infer U> ? U :
+  T extends ((...args: any[]) => Promise<infer U>) ? U :
+    T;
