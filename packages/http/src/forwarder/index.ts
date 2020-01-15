@@ -1,5 +1,5 @@
 import { IPrismComponents } from '@stoplight/prism-core';
-import { IHttpOperation, Dictionary } from '@stoplight/types';
+import { IHttpOperation } from '@stoplight/types';
 import fetch from 'node-fetch';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as E from 'fp-ts/lib/Either';
@@ -43,7 +43,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
       }, E.toError)
     ),
     TE.chain(parseResponse),
-    TE.chain(stripHopByHopHeaders)
+    TE.map(stripHopByHopHeaders)
   );
 
 export default forward;
@@ -58,9 +58,7 @@ function serializeBody(body: unknown) {
   return E.right(undefined);
 }
 
-const stripHopByHopHeaders = (response: IHttpResponse): TE.TaskEither<Error, IHttpResponse> => {
-  hopByHopHeaders.forEach(header => {
-    delete (response.headers as Dictionary<string, string>)[header];
-  });
-  return TE.right(response);
+const stripHopByHopHeaders = (response: IHttpResponse): IHttpResponse => {
+  response.headers = omit(response.headers, hopByHopHeaders);
+  return response;
 };
