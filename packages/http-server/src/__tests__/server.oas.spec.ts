@@ -30,6 +30,7 @@ async function instantiatePrism(specPath: string) {
     cors: true,
   });
 
+  // be careful with selecting the port: it can't be the same in different suite because test suites run in parallel
   const address = await server.listen(30001, '127.0.0.1');
 
   return {

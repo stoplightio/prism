@@ -19,6 +19,7 @@ async function instantiatePrism(operations: IHttpOperation[]) {
     errors: false,
   });
 
+  // be careful with selecting the port: it can't be the same in different suite because test suites run in parallel
   const address = await server.listen(30000, '127.0.0.1');
 
   return {
