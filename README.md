@@ -1,11 +1,12 @@
 # Prism
 
+[![CircleCI](https://img.shields.io/circleci/build/github/stoplightio/prism/master)](https://circleci.com/gh/stoplightio/prism)
+[![NPM Downloads](https://img.shields.io/npm/dw/@stoplight/prism-cli?color=blue)](https://www.npmjs.com/package/@stoplight/prism-cli)
 [![Buy us a tree](https://img.shields.io/badge/Buy%20us%20a%20tree-%F0%9F%8C%B3-lightgreen)](https://offset.earth/stoplightinc)
-[![CircleCI](https://circleci.com/gh/stoplightio/prism.svg?style=svg)](https://circleci.com/gh/stoplightio/prism)
 
 Prism is a set of packages for API mocking with **OpenAPI v2** (formerly known as Swagger) and **OpenAPI v3**.
 
-For example, given an API specification you can spin up a mock HTTP server and respond realistically based on your requests
+For example, given an API description document you can spin up a mock HTTP server and respond realistically based on your requests
 
 ![Demo of Prism Mock Server being called with curl from the CLI](./examples/prism-cli.svg)
 
