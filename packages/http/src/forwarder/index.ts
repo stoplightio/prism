@@ -48,7 +48,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
 
 export default forward;
 
-function serializeBody(body: unknown) {
+function serializeBody(body: unknown): E.Either<Error, string | undefined> {
   if (typeof body === 'string') {
     return E.right(body);
   }

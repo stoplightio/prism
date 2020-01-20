@@ -102,23 +102,16 @@ describe('forward', () => {
   describe('when upstream return hop-by-hop headers', () => {
     it('forwarder strips them all', () => {
       const headers = mapValues(keyBy(hopByHopHeaders), () => 'n/a');
+
       ((fetch as unknown) as jest.Mock).mockReturnValue({
         headers: { get: (n: string) => headers[n], raw: () => mapValues(headers, (h: string) => h.split(' ')) },
         text: jest.fn().mockResolvedValue(''),
       });
-      return assertResolvesRight(
-        forward(
-          {
-            method: 'get',
-            url: { path: '/test' },
-          },
-          'http://example.com'
-        )(logger),
-        r => {
-          hopByHopHeaders.forEach(hopHeader => {
-            expect(r.headers?.[hopHeader]).toBeUndefined();
-          });
-        }
+
+      return assertResolvesRight(forward({ method: 'get', url: { path: '/test' } }, 'http://example.com')(logger), r =>
+        hopByHopHeaders.forEach(hopHeader => {
+          expect(r.headers?.[hopHeader]).toBeUndefined();
+        })
       );
     });
   });
