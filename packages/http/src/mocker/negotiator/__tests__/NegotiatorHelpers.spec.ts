@@ -12,6 +12,7 @@ import { left, right } from 'fp-ts/lib/ReaderEither';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 const chance = new Chance();
 const logger = createLogger('TEST', { enabled: false });
@@ -39,7 +40,7 @@ function anHttpOperation(givenHttpOperation?: IHttpOperation) {
     instance() {
       return httpOperation;
     },
-    withResponses(responses: IHttpOperationResponse[] & { 0: IHttpOperationResponse }) {
+    withResponses(responses: NonEmptyArray<IHttpOperationResponse>) {
       httpOperation.responses = responses;
       return this;
     },
