@@ -1,7 +1,7 @@
-import { HttpParamStyles } from '@stoplight/types';
+import { HttpParamStyles, IMediaTypeContent } from '@stoplight/types';
 import { JSONSchema } from '../../..';
-import { HttpBodyValidator } from '../body';
-import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
+import { HttpBodyValidator, findContentByMediaTypeOrFirst } from '../body';
+import { assertRight, assertLeft, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('HttpBodyValidator', () => {
   const httpBodyValidator = new HttpBodyValidator('body');
@@ -113,6 +113,23 @@ describe('HttpBodyValidator', () => {
               })
             )
         );
+      });
+    });
+  });
+
+  describe('findContentByMediaTypeOrFirst()', () => {
+    describe('when a spec has a content type', () => {
+      const content: IMediaTypeContent = {
+        mediaType: 'application/x-www-form-urlencoded',
+      };
+
+      describe('and I request for the content type with the charset', () => {
+        const foundContent = findContentByMediaTypeOrFirst(
+          [content],
+          'application/x-www-form-urlencoded; charset=UTF-8'
+        );
+
+        it('should return the generic content', () => assertSome(foundContent));
       });
     });
   });

@@ -1,15 +1,15 @@
 import { IHttpOperationResponse } from '@stoplight/types';
 import { head } from 'fp-ts/lib/Array';
 import { Option } from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 export function findOperationResponse(
-  responseSpecs: IHttpOperationResponse[],
-  statusCode: number,
+  responseSpecs: NonEmptyArray<IHttpOperationResponse>,
+  statusCode: number
 ): Option<IHttpOperationResponse> {
   const sortedSpecs = responseSpecs
     .filter(
-      spec => new RegExp(`^${spec.code.replace(/X/g, '\\d')}$`).test(String(statusCode)) || spec.code === 'default',
+      spec => new RegExp(`^${spec.code.replace(/X/g, '\\d')}$`).test(String(statusCode)) || spec.code === 'default'
     )
     .sort((s1, s2) => {
       if (s1.code === 'default') {
@@ -23,8 +23,5 @@ export function findOperationResponse(
       return s1.code.split('X').length - s2.code.split('X').length;
     });
 
-  return pipe(
-    sortedSpecs,
-    head,
-  );
+  return head(sortedSpecs);
 }
