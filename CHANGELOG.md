@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Prism's proxy will now strip all the Hop By Hop headers [#921](https://github.com/stoplightio/prism/pull/921)
 - Prism is now normalising the media types so that when looking for compatible contents charsets and other parameters are not taken in consideration [#944](https://github.com/stoplightio/prism/pull/944)
+- Prims's external HTTP Client is now correctly costructing the internal log object [#952](https://github.com/stoplightio/prism/pull/952)
 
 # 3.2.3 (2019-12-19)
 
