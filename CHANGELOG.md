@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 3.2.4 (2020-01-28)
+
 ## Changed
 
 - Replaced Fastify HTTP server with its tinier counterpart: Micri [#927](https://github.com/stoplightio/prism/pull/927)
