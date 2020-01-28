@@ -2,9 +2,9 @@
 
 Prism CLI has two commands: `mock` and `proxy`.
 
-## Mock server
+## Mock Server
 
-Running Prism on the CLI will create a HTTP mock server.
+[Mocking](../guides/01-mocking.md) is available through the CLI mock command.
 
 ```bash
 prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml
@@ -15,9 +15,11 @@ prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.
 ●  note      DELETE     http://127.0.0.1:4010/pets/10
 ```
 
-The generated paths will have their parameters (query or path) bolded and in color.
+Here you can see all the "operations" (ak.k.a endpoints or resources) that Prism has found in your 
+API description. Prism will shove an example, default, or other reasonably realistic value in there
+so you can copy and paste (or Ctrl+Click / CMD+Click in fancy terminals) to open the URL in your browser.
 
-Then in another tab, you can hit the HTTP server with your favorite HTTP client.
+You can use whatever HTTP client you like, for example, trusty curl:
 
 ```bash
 curl -s -D "/dev/stderr" http://127.0.0.1:4010/pets/123 | json_pp
@@ -84,24 +86,25 @@ curl -v http://127.0.0.1:4010/pets/123?__dynamic=false
 
 This command creates an HTTP server that will proxy all the requests to the specified upstream server. Prism will analyze the request coming in and the response coming back from the upstream server and report the discrepancies with what's declared in the provided OpenAPI document.
 
-**Note:** Currently the proxy command _expects_ a JSON Payload for both the request and the response. If the response's `content-type` header does not indicate a JSON-ish payload (`application/json`, `application/*+json`), then the payload will be just returned as text and send back to the original client.
+Learn more about the ideas here in our [Validation Proxy guide](../guides/03-validation-proxy.md), or see below for the quick n dirty how to CLI.
 
-```
-prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
+```bash
+$ prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
 
-[CLI] …  awaiting  Starting Prism…
+[CLI] ...  awaiting  Starting Prism...
 [HTTP SERVER] ℹ  info      Server listening at http://127.0.0.1:4010
 [CLI] ●  note      GET        http://127.0.0.1:4010/pets
 [CLI] ●  note      POST       http://127.0.0.1:4010/pets
 [CLI] ●  note      GET        http://127.0.0.1:4010/pets/10
 ```
 
-The output violations will be reported on the standard output and as a response header (`sl-violations`)
+The output violations will be reported on the standard output and as a response header (`sl-violations`).
 
 ```bash
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
-… …
+```
 
+```bash
 curl -v -s http://localhost:4010/pet/10 > /dev/null
 
 < sl-violations: [{"location":["request"],"severity":"Error","code":401,"message":"Invalid security scheme used"}]
@@ -113,8 +116,9 @@ The header is a handy way to see contract mismatches or incorrect usage in a way
 
 ```bash
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --errors
-… …
+```
 
+```bash
 curl -v -X POST http://localhost:4010/pet/
 
 < HTTP/1.1 422 Unprocessable Entity
@@ -123,7 +127,8 @@ curl -v -X POST http://localhost:4010/pet/
 
 The response body contains the found output violations.
 
-**Note:** Server definitions (OAS3) and Host + BasePath (OAS2) are ignored. You need to manually specify the upstream URL when invoking Prism.
+<!-- theme: info -->
+> Server definitions (OAS3) and Host + BasePath (OAS2) are ignored. You need to manually specify the upstream URL when invoking Prism.
 
 ## Running in Production
 

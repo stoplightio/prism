@@ -22,15 +22,17 @@ npm install -g @stoplight/prism-cli
 yarn global add @stoplight/prism-cli
 ```
 
-For more installation options, see [Getting Started > Installation](https://stoplight.io/p/docs/gh/stoplightio/prism/docs/getting-started/installation.md)
+For more installation options, see our [installation documentation](./docs/getting-started/01-installation.md).
 
-## Getting Started
+## Documentation
 
-After [installation](https://stoplight.io/p/docs/gh/stoplightio/prism/docs/getting-started/installation.md) take a look at our [getting started documentation](https://stoplight.io/p/docs/gh/stoplightio/prism/docs/getting-started/concepts.md).
+You can find ![Prism documentation on Stoplight.io](https://stoplight.io/p/docs/gh/stoplightio/prism).
+
+- [Getting Started](./docs/getting-started/01-installation.md)
+- [Guides](./docs/guides/01-mocking.md)
 
 ## What's next for Prism?
 
-- [x] Server Validation
 - [x] Content Negotiation
 - [x] Security Validation
 - [ ] Custom Mocking

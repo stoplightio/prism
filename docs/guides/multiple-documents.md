@@ -1,7 +1,6 @@
-# Serving multiple OAS documents
+# Serving Multiple OpenAPI Documents
 
-A single Prism instance serves one OAS document.
-In order to serve multiple documents, the best way is to usually have multiple instances of Prism running on different documents and then serve their content using a reverse Proxy. We're going to show an example using multiple docker containers.
+A single Prism instance serves one OpenAPI document, but serving multiple documents is possible by running Prism on different documents, then serving their content using a reverse Proxy. 
 
 ## Preparing configuration files
 

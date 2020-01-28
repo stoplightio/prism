@@ -12,7 +12,7 @@ The goal of this document is to provide you with some basic code examples to get
 
 ## Important
 
-If you're a regular user and not a PRO, you might to want to use the [User facing client](../../docs/guides/client.md) which provides a better an higher lever API
+If you're a regular user and not a PRO, you might to want to use the [User facing client](../../docs/guides/http-client.md) which provides a better an higher lever API
 
 # Table of Contents
 

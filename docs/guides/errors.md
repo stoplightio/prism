@@ -158,7 +158,9 @@ paths:
             text/plain: hello
 ```
 
-`curl http://localhost:4010/todos -H "accept: application/json"`
+```
+curl http://localhost:4010/todos -H "accept: application/json"`
+```
 
 ---
 
