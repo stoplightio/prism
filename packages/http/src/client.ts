@@ -24,16 +24,16 @@ function createClientFrom(
   return getResource(document).then(resources => createClientFromOperations(resources, defaultConfig));
 }
 
+Object.defineProperties(logger, {
+  child: { get: () => () => logger },
+  success: { get: () => logger.info },
+  trace: { get: () => logger.info },
+});
+
 const createClientFromResource = partial(createClientFrom, getHttpOperationsFromResource);
 const createClientFromString = partial(createClientFrom, getHttpOperations);
 
 function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IClientConfig): PrismHttp {
-  Object.defineProperties(logger, {
-    child: { get: () => logger },
-    success: { get: () => logger.info },
-    trace: { get: () => logger.info },
-  });
-
   const obj = createInstance(defaultConfig, { logger });
 
   type headersFromRequest = Required<Pick<IHttpRequest, 'headers'>>;
