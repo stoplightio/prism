@@ -2,7 +2,7 @@
 
 Unlike mocking, the validation proxy expects there to be a real API running somewhere. This could be a localhost environment, docker container, hosted sandbox environment, or deployed to actual production, doesn't matter.
 
-The proxy feature will help you identify discrepancies between the OpenAPI document (supposedly the source of truth) and any other server you designate as the proxy. This can help frontend developers integrating with your API, or other backend developers, who might want to channel their requests through Prism to see if they are making valid requests. The proxy can also be enabled in staging or any other pre-production environment, like a dress rehearsal before the opening night of a play.
+The proxy feature will help you identify discrepancies between the OpenAPI document (supposedly the source of truth) and any other server you designate as the target. This can help frontend developers integrating with your API, or other backend developers, who might want to channel their requests through Prism to see if they are making valid requests. The proxy can also be enabled in staging or any other pre-production environment, like a dress rehearsal before the opening night of a play.
 
 ## Use Cases
 
@@ -41,5 +41,4 @@ Now you can use Prism to test traffic against the API description. This could be
 
 <!-- theme:info -->
 > Future versions of Prism will include ways to sniff existing traffic, without requests being made directly to it. sniffing nginx logs, or piping other forms of traffic through. [Get in touch with ideas](https://github.com/stoplightio/prism/issues/955).
-
 
