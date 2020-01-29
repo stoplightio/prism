@@ -15,7 +15,7 @@ prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.
 ●  note      DELETE     http://127.0.0.1:4010/pets/10
 ```
 
-Here you can see all the "operations" (ak.k.a endpoints or resources) that Prism has found in your 
+Here you can see all the "operations" (a.k.a endpoints or resources) that Prism has found in your 
 API description. Prism will shove an example, default, or other reasonably realistic value in there
 so you can copy and paste (or Ctrl+Click / CMD+Click in fancy terminals) to open the URL in your browser.
 

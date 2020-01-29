@@ -24,13 +24,13 @@ curl -L https://raw.githack.com/stoplightio/prism/master/install | sh
 Prism is available as a Docker image. We recommend specifying the major version you'd like to use as a tag:
 
 ```bash
-docker run -P stoplight/prism:3 mock -h 0.0.0.0 api.oas2.yml
+docker run --init -P stoplight/prism:3 mock -h 0.0.0.0 api.oas2.yml
 ```
 
-If the document you want to lint is on your computer, you'll need to mount the directory where the file resides as a volume:
+If the document you want to mock is on your computer, you'll need to mount the directory where the file resides as a volume:
 
 ```bash
-docker run --rm -it -v $(pwd):/tmp stoplight/spectral lint "/tmp/file.yaml"
+docker run --init --rm -it -v $(pwd):/tmp -P stoplight/prism:3 mock -h 0.0.0.0 "/tmp/file.yaml"
 ```
 
 Now everything is installed, let's look at some of the [concepts](./02-concepts.md).
