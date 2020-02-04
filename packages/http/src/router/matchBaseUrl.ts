@@ -15,7 +15,7 @@ export function matchBaseUrl(server: IServer, baseUrl: string) {
         O.fromNullable(regex.exec(baseUrl)),
         O.fold(
           () => MatchType.NOMATCH,
-          matches => (matches.length ? MatchType.CONCRETE : MatchType.CONCRETE)
+          matches => (matches.length > 1 ? MatchType.TEMPLATED : MatchType.CONCRETE)
         )
       )
     ),
