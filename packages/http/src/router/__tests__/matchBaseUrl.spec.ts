@@ -1,5 +1,6 @@
 import { convertTemplateToRegExp, matchBaseUrl } from '../matchBaseUrl';
 import { MatchType } from '../types';
+import * as E from 'fp-ts/lib/Either';
 
 describe('matchServer.ts', () => {
   describe('matchServer()', () => {
@@ -8,7 +9,7 @@ describe('matchServer.ts', () => {
         {
           url: 'http://www.example.com/',
         },
-        'http://www.example.com/',
+        'http://www.example.com/'
       );
 
       expect(serverMatch).toEqual(MatchType.CONCRETE);
@@ -22,7 +23,7 @@ describe('matchServer.ts', () => {
       expect(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.google.com/')).toEqual(MatchType.NOMATCH);
 
       expect(matchBaseUrl({ url: 'http://www.example.com:8081/v1' }, 'http://www.example.com/v1')).toEqual(
-        MatchType.NOMATCH,
+        MatchType.NOMATCH
       );
     });
 
@@ -55,8 +56,8 @@ describe('matchServer.ts', () => {
               host: { default: 'www.example.com' },
             },
           },
-          'http://stoplight.io/v1',
-        ),
+          'http://stoplight.io/v1'
+        )
       ).toEqual(MatchType.TEMPLATED);
     });
 
@@ -136,7 +137,7 @@ describe('matchServer.ts', () => {
   describe('convertTemplateToRegExp()', () => {
     test('given no variables should resolve to the original string', () => {
       const regexp = convertTemplateToRegExp('{a}');
-      expect(regexp).toEqual(/^{a}$/);
+      expect(regexp).toEqual(E.right(/^{a}$/));
     });
 
     test('given no a variable with enums should alternate these enums', () => {
@@ -146,7 +147,7 @@ describe('matchServer.ts', () => {
           enum: ['y', 'z'],
         },
       });
-      expect(regexp).toEqual(/^(y|z)$/);
+      expect(regexp).toEqual(E.right(/^(y|z)$/));
     });
 
     test('single variable should resolve a single group regexp', () => {
@@ -156,17 +157,19 @@ describe('matchServer.ts', () => {
         },
       });
 
-      expect(regexp).toEqual(/^(.*?)$/);
+      expect(regexp).toEqual(E.right(/^(.*?)$/));
     });
 
-    test('given single variable and no matching variable should throw', () => {
-      expect(() =>
-        convertTemplateToRegExp('{a}', {
-          b: {
-            default: 'vb',
-          },
-        }),
-      ).toThrow(`Variable 'a' is not defined, cannot parse input.`);
+    test('given single variable and no matching variable should return Left', () => {
+      expect(
+        E.isLeft(
+          convertTemplateToRegExp('{a}', {
+            b: {
+              default: 'vb',
+            },
+          })
+        )
+      ).toBeTruthy();
     });
 
     test('given two variables should return multi group', () => {
@@ -180,7 +183,7 @@ describe('matchServer.ts', () => {
         },
       });
 
-      expect(regexp).toEqual(/^(.*?)(vb2)$/);
+      expect(regexp).toEqual(E.right(/^(.*?)(vb2)$/));
     });
 
     test('given a URL should return a pattern', () => {
@@ -198,7 +201,7 @@ describe('matchServer.ts', () => {
         },
       });
 
-      expect(regexp).toEqual(/^(https|http):\/\/www.example.com:(.*?)\/(v1|v2)$/);
+      expect(regexp).toEqual(E.right(/^(https|http):\/\/www.example.com:(.*?)\/(v1|v2)$/));
     });
 
     test('given a similar enums should put longer ones first', () => {
@@ -209,7 +212,7 @@ describe('matchServer.ts', () => {
         },
       });
 
-      expect(regexp).toEqual(/^(http:\/\/example.com:8080|http:\/\/example.com)$/);
+      expect(regexp).toEqual(E.right(/^(http:\/\/example.com:8080|http:\/\/example.com)$/));
     });
   });
 });
