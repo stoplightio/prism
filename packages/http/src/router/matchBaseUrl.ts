@@ -10,13 +10,12 @@ const variableRegexp = /{(.*?)}/g;
 export function matchBaseUrl(server: IServer, baseUrl: string) {
   return pipe(
     convertTemplateToRegExp(server.url, server.variables),
-    E.map(regex =>
+    E.chain(regex =>
       pipe(
-        O.fromNullable(regex.exec(baseUrl)),
-        O.fold(
-          () => MatchType.NOMATCH,
-          matches => (matches.length > 1 ? MatchType.TEMPLATED : MatchType.CONCRETE)
-        )
+        regex.exec(baseUrl),
+        E.fromNullable(new Error('No matches')),
+        E.map(matches => (matches.length > 1 ? MatchType.TEMPLATED : MatchType.CONCRETE)),
+        E.orElse(() => E.right<Error, MatchType>(MatchType.NOMATCH))
       )
     ),
     E.fold(
