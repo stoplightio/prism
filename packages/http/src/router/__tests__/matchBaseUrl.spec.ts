@@ -12,28 +12,24 @@ describe('matchServer.ts', () => {
         'http://www.example.com/'
       );
 
-      assertRight(serverMatch, result => result === MatchType.CONCRETE);
+      assertRight(serverMatch, result => expect(result).toBe(MatchType.CONCRETE));
     });
 
     test('concrete server url does not match request url', () => {
-      assertRight(
-        matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.example.com/'),
-        result => result === MatchType.NOMATCH
+      assertRight(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.example.com/'), result =>
+        expect(result).toBe(MatchType.NOMATCH)
       );
 
-      assertRight(
-        matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.example'),
-        result => result === MatchType.NOMATCH
+      assertRight(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.example'), result =>
+        expect(result).toBe(MatchType.NOMATCH)
       );
 
-      assertRight(
-        matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.google.com/'),
-        result => result === MatchType.NOMATCH
+      assertRight(matchBaseUrl({ url: 'http://www.example.com' }, 'http://www.google.com/'), result =>
+        expect(result).toBe(MatchType.NOMATCH)
       );
 
-      assertRight(
-        matchBaseUrl({ url: 'http://www.example.com:8081/v1' }, 'http://www.example.com/v1'),
-        result => result === MatchType.NOMATCH
+      assertRight(matchBaseUrl({ url: 'http://www.example.com:8081/v1' }, 'http://www.example.com/v1'), result =>
+        expect(result).toBe(MatchType.NOMATCH)
       );
     });
 
@@ -48,13 +44,18 @@ describe('matchServer.ts', () => {
         },
       };
 
-      assertRight(matchBaseUrl(serverConfig, 'http://www.example.com'), result => result === MatchType.TEMPLATED);
-
-      assertRight(matchBaseUrl(serverConfig, 'http://www.example.com:8080'), result => result === MatchType.TEMPLATED);
-
-      assertRight(matchBaseUrl(serverConfig, 'http://www.example.com:808'), result => result === MatchType.NOMATCH);
-
-      assertRight(matchBaseUrl(serverConfig, 'http://www.example.com:80801'), result => result === MatchType.NOMATCH);
+      assertRight(matchBaseUrl(serverConfig, 'http://www.example.com'), result =>
+        expect(result).toBe(MatchType.TEMPLATED)
+      );
+      assertRight(matchBaseUrl(serverConfig, 'http://www.example.com:8080'), result =>
+        expect(result).toBe(MatchType.TEMPLATED)
+      );
+      assertRight(matchBaseUrl(serverConfig, 'http://www.example.com:808'), result =>
+        expect(result).toBe(MatchType.NOMATCH)
+      );
+      assertRight(matchBaseUrl(serverConfig, 'http://www.example.com:80801'), result =>
+        expect(result).toBe(MatchType.NOMATCH)
+      );
     });
 
     test('server url with templated wildcard host to match request url', () => {
@@ -68,7 +69,7 @@ describe('matchServer.ts', () => {
           },
           'http://stoplight.io/v1'
         ),
-        result => result === MatchType.TEMPLATED
+        result => expect(result).toBe(MatchType.TEMPLATED)
       );
     });
 
@@ -83,11 +84,13 @@ describe('matchServer.ts', () => {
         },
       };
 
-      assertRight(matchBaseUrl(serverConfig, 'http://stoplight.io/v1'), result => result === MatchType.TEMPLATED);
-
-      assertRight(matchBaseUrl(serverConfig, 'http://google.io/v1'), result => result === MatchType.TEMPLATED);
-
-      assertRight(matchBaseUrl(serverConfig, 'http://bummers.io/v1'), result => result === MatchType.NOMATCH);
+      assertRight(matchBaseUrl(serverConfig, 'http://stoplight.io/v1'), result =>
+        expect(result).toBe(MatchType.TEMPLATED)
+      );
+      assertRight(matchBaseUrl(serverConfig, 'http://google.io/v1'), result =>
+        expect(result).toBe(MatchType.TEMPLATED)
+      );
+      assertRight(matchBaseUrl(serverConfig, 'http://bummers.io/v1'), result => expect(result).toBe(MatchType.NOMATCH));
     });
 
     describe('a complex server template should match request url', () => {
@@ -114,11 +117,11 @@ describe('matchServer.ts', () => {
       };
 
       function toMatchTemplate(requestBaseUrl: string) {
-        assertRight(matchBaseUrl(serverConfig, requestBaseUrl), result => result === MatchType.TEMPLATED);
+        assertRight(matchBaseUrl(serverConfig, requestBaseUrl), result => expect(result).toBe(MatchType.TEMPLATED));
       }
 
       function notToMatchTemplate(requestBaseUrl: string) {
-        assertRight(matchBaseUrl(serverConfig, requestBaseUrl), result => result === MatchType.NOMATCH);
+        assertRight(matchBaseUrl(serverConfig, requestBaseUrl), result => expect(result).toBe(MatchType.NOMATCH));
       }
 
       test('should match variants of enums', () => {
