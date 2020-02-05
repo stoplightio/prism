@@ -7,7 +7,7 @@ import { MatchType } from './types';
 
 const variableRegexp = /{(.*?)}/g;
 
-export function matchBaseUrl(server: IServer, baseUrl: string) {
+export function matchBaseUrl(server: IServer, baseUrl: string): E.Either<Error, MatchType> {
   return pipe(
     convertTemplateToRegExp(server.url, server.variables),
     E.chain(regex =>
@@ -17,12 +17,6 @@ export function matchBaseUrl(server: IServer, baseUrl: string) {
         E.map(matches => (matches.length > 1 ? MatchType.TEMPLATED : MatchType.CONCRETE)),
         E.orElse(() => E.right<Error, MatchType>(MatchType.NOMATCH))
       )
-    ),
-    E.fold(
-      e => {
-        throw e;
-      },
-      matchType => matchType
     )
   );
 }

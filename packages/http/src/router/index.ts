@@ -37,43 +37,43 @@ const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig
         resources.map(resource =>
           pipe(
             matchPath(requestPath, resource.path),
-            E.map(pathMatch => {
+            E.chain<
+              Error,
+              MatchType,
+              { pathMatch: MatchType; methodMatch: MatchType; serverMatch?: MatchType; resource: IHttpOperation }
+            >(pathMatch => {
               if (pathMatch === MatchType.NOMATCH)
-                return {
+                return E.right({
                   pathMatch,
                   methodMatch: MatchType.NOMATCH,
                   resource,
-                };
+                });
 
               const methodMatch = matchByMethod(input, resource) ? MatchType.CONCRETE : MatchType.NOMATCH;
 
               if (methodMatch === MatchType.NOMATCH) {
-                return {
+                return E.right({
                   pathMatch,
                   methodMatch,
                   resource,
-                };
+                });
               }
 
               const { servers = [] } = resource;
 
               if (requestBaseUrl && servers.length > 0) {
-                const serverMatch = matchServer(servers, requestBaseUrl);
-
-                return {
-                  pathMatch,
-                  methodMatch,
-                  serverMatch,
-                  resource,
-                };
+                const serverMatchEither = matchServer(servers, requestBaseUrl);
+                return pipe(
+                  serverMatchEither,
+                  E.map(serverMatch => ({ pathMatch, methodMatch, serverMatch, resource }))
+                );
               }
 
-              return {
+              return E.right({
                 pathMatch,
                 methodMatch,
-                serverMatch: null,
                 resource,
-              };
+              });
             })
           )
         )
@@ -133,12 +133,13 @@ const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig
   );
 };
 
-function matchServer(servers: IServer[], requestBaseUrl: string) {
-  const serverMatches = servers
-    .map(server => matchBaseUrl(server, requestBaseUrl))
-    .filter(match => match !== MatchType.NOMATCH);
-
-  return disambiguateServers(serverMatches);
+function matchServer(servers: IServer[], requestBaseUrl: string): E.Either<Error, MatchType> {
+  return pipe(
+    servers.map(server => matchBaseUrl(server, requestBaseUrl)),
+    eitherSequence,
+    E.map(matches => matches.filter(match => match !== MatchType.NOMATCH)),
+    E.map(disambiguateServers)
+  );
 }
 
 function matchByMethod(request: IHttpRequest, operation: IHttpOperation): boolean {
