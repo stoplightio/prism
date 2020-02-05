@@ -1,6 +1,6 @@
 import { convertTemplateToRegExp, matchBaseUrl } from '../matchBaseUrl';
 import { MatchType } from '../types';
-import * as E from 'fp-ts/lib/Either';
+import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('matchServer.ts', () => {
   describe('matchServer()', () => {
@@ -137,7 +137,7 @@ describe('matchServer.ts', () => {
   describe('convertTemplateToRegExp()', () => {
     test('given no variables should resolve to the original string', () => {
       const regexp = convertTemplateToRegExp('{a}');
-      expect(regexp).toEqual(E.right(/^{a}$/));
+      assertRight(regexp, result => expect(result).toEqual(/^{a}$/));
     });
 
     test('given no a variable with enums should alternate these enums', () => {
@@ -147,7 +147,7 @@ describe('matchServer.ts', () => {
           enum: ['y', 'z'],
         },
       });
-      expect(regexp).toEqual(E.right(/^(y|z)$/));
+      assertRight(regexp, result => expect(result).toEqual(/^(y|z)$/));
     });
 
     test('single variable should resolve a single group regexp', () => {
@@ -157,19 +157,17 @@ describe('matchServer.ts', () => {
         },
       });
 
-      expect(regexp).toEqual(E.right(/^(.*?)$/));
+      assertRight(regexp, result => expect(result).toEqual(/^(.*?)$/));
     });
 
     test('given single variable and no matching variable should return Left', () => {
-      expect(
-        E.isLeft(
-          convertTemplateToRegExp('{a}', {
-            b: {
-              default: 'vb',
-            },
-          })
-        )
-      ).toBeTruthy();
+      assertLeft(
+        convertTemplateToRegExp('{a}', {
+          b: {
+            default: 'vb',
+          },
+        })
+      );
     });
 
     test('given two variables should return multi group', () => {
@@ -183,7 +181,7 @@ describe('matchServer.ts', () => {
         },
       });
 
-      expect(regexp).toEqual(E.right(/^(.*?)(vb2)$/));
+      assertRight(regexp, result => expect(result).toEqual(/^(.*?)(vb2)$/));
     });
 
     test('given a URL should return a pattern', () => {
@@ -201,7 +199,7 @@ describe('matchServer.ts', () => {
         },
       });
 
-      expect(regexp).toEqual(E.right(/^(https|http):\/\/www.example.com:(.*?)\/(v1|v2)$/));
+      assertRight(regexp, result => expect(result).toEqual(/^(https|http):\/\/www.example.com:(.*?)\/(v1|v2)$/));
     });
 
     test('given a similar enums should put longer ones first', () => {
@@ -212,7 +210,7 @@ describe('matchServer.ts', () => {
         },
       });
 
-      expect(regexp).toEqual(E.right(/^(http:\/\/example.com:8080|http:\/\/example.com)$/));
+      assertRight(regexp, result => expect(result).toEqual(/^(http:\/\/example.com:8080|http:\/\/example.com)$/));
     });
   });
 });
