@@ -81,3 +81,15 @@ For the shortcut methods (since the only mandatory option is intrinsic in the fu
 ```ts
 client.get('https://google.it', { validateRequest: false }).then(response => console.log(response));
 ```
+
+You can also use relative links when doing requests. In such case you won't be able to use the proxy and the server validation will be disabled:
+
+```ts
+client.get('/users/10', { validateRequest: false }).then(response => console.log(response));
+```
+
+…or you can also set the base path in the options object:
+
+```ts
+client.get('/users/10', { baseUrl: 'https://api.stoplight.io/' }).then(response => console.log(response));
+```

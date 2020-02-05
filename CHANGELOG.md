@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 3.2.6 (2020-02-03)
+
+## Fixed
+
+- Correctly set `access-control-expose-headers` headers for preflight and regular responses when CORS is enabled [#958](https://github.com/stoplightio/prism/pull/958)
+- Prism public HTTP Client fixes and docs improvements [#959](https://github.com/stoplightio/prism/pull/959)
+
 # 3.2.5 (2020-01-30)
 
 ## Fixed

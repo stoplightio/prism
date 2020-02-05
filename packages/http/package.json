@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-http",
-  "version": "3.2.5",
+  "version": "3.2.6",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -20,7 +20,7 @@
     "@stoplight/json": "^3.1.2",
     "@stoplight/json-ref-readers": "^1.1.1",
     "@stoplight/json-ref-resolver": "^3.0.1",
-    "@stoplight/prism-core": "^3.2.5",
+    "@stoplight/prism-core": "^3.2.6",
     "@stoplight/yaml": "^3.0.2",
     "abstract-logging": "^2.0.0",
     "accepts": "^1.3.7",

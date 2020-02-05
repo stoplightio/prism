@@ -68,7 +68,6 @@ export class ProblemJsonError extends Error {
       template.status,
       detail || ''
     );
-    Error.captureStackTrace(error, ProblemJsonError);
 
     return error;
   }
@@ -84,6 +83,5 @@ export class ProblemJsonError extends Error {
 
   constructor(readonly name: string, readonly message: string, readonly status: number, readonly detail: string) {
     super(message);
-    Error.captureStackTrace(this, ProblemJsonError);
   }
 }

@@ -17,7 +17,6 @@ async function instantiatePrism(operations: IHttpOperation[]) {
       mock: { dynamic: false },
       errors: false,
     },
-    errors: false,
   });
 
   // be careful with selecting the port: it can't be the same in different suite because test suites run in parallel

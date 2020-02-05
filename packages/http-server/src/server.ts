@@ -90,7 +90,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
           );
 
-          if (opts.errors && errorViolations.length > 0) {
+          if (opts.config.errors && errorViolations.length > 0) {
             return TE.left(
               ProblemJsonError.fromTemplate(
                 VIOLATIONS,

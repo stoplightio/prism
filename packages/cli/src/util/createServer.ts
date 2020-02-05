@@ -12,6 +12,7 @@ import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer';
+import { CreatePrism } from './runner';
 
 signale.config({ displayTimestamp: true });
 
@@ -21,7 +22,7 @@ const cliSpecificLoggerOptions: LoggerOptions = {
   level: 'start',
 };
 
-async function createMultiProcessPrism(options: CreateBaseServerOptions) {
+const createMultiProcessPrism: CreatePrism = async options => {
   if (cluster.isMaster) {
     cluster.setupMaster({ silent: true });
 
@@ -43,9 +44,9 @@ async function createMultiProcessPrism(options: CreateBaseServerOptions) {
       cluster.worker.kill();
     }
   }
-}
+};
 
-async function createSingleProcessPrism(options: CreateBaseServerOptions) {
+const createSingleProcessPrism: CreatePrism = async options => {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
@@ -57,7 +58,7 @@ async function createSingleProcessPrism(options: CreateBaseServerOptions) {
   } catch (e) {
     logInstance.fatal(e.message);
   }
-}
+};
 
 async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
   const operations = await getHttpOperationsFromResource(options.document);
@@ -74,14 +75,13 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
   };
 
   const config: IHttpProxyConfig | IHttpConfig = isProxyServerOptions(options)
-    ? { ...shared, mock: false, upstream: options.upstream }
-    : { ...shared, mock: { dynamic: options.dynamic } };
+    ? { ...shared, mock: false, upstream: options.upstream, errors: options.errors }
+    : { ...shared, mock: { dynamic: options.dynamic }, errors: options.errors };
 
   const server = createHttpServer(operations, {
     cors: options.cors,
     config,
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
-    errors: options.errors,
   });
 
   const address = await server.listen(options.port, options.host);

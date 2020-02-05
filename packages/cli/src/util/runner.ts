@@ -4,7 +4,7 @@ import * as chokidar from 'chokidar';
 import * as os from 'os';
 import { CreateMockServerOptions } from './createServer';
 
-type CreatePrism = (options: CreateMockServerOptions) => Promise<IPrismHttpServer | void>;
+export type CreatePrism = (options: CreateMockServerOptions) => Promise<IPrismHttpServer | void>;
 
 export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: CreateMockServerOptions) {
   return createPrism(options).then(possiblyServer => {
