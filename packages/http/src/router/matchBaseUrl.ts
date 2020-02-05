@@ -41,10 +41,7 @@ export function convertTemplateToRegExp(
   );
 
   function replaceString(vars: { [name: string]: INodeVariable }, input: string) {
-    return E.tryCatch<Error, string>(
-      () => replaceStringUnsafe(input),
-      e => (e instanceof Error ? e : new Error('unknown error'))
-    );
+    return E.tryCatch<Error, string>(() => replaceStringUnsafe(input), E.toError);
 
     function replaceStringUnsafe(input: string): string {
       return input.replace(variableRegexp, (_match, variableName) => {
