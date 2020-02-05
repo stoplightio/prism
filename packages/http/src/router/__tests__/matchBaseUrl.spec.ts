@@ -177,7 +177,8 @@ describe('matchServer.ts', () => {
           b: {
             default: 'vb',
           },
-        })
+        }),
+        e => expect(e).toHaveProperty('message', `Variable 'a' is not defined, cannot parse input.`)
       );
     });
 
