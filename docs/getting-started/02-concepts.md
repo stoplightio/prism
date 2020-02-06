@@ -4,7 +4,7 @@ Prism is a CLI and TypeScript toolkit for various bits of HTTP and API Descripti
 functionality. 
 
 - [Mocking](#mocking)
-- [Validaiton Proxy](#validaton-proxy)
+- [Validation Proxy](#validation-proxy)
 
 Learn what these things mean below.
 
@@ -31,7 +31,7 @@ planned for the future, so get in touch if you're interested in helping us with 
 
 Read more about this in our [mocking guide](../guides/01-mocking.md).
 
-## Validaton Proxy
+## Validation Proxy
 
 Mocking helps when there is no real API, and helps API consumers feel confident they're 
 building applications that will work with the API properly. THen, when the API has been built, 
