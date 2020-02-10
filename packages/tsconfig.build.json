@@ -1,5 +1,5 @@
 {
-  "exclude": ["**/__tests__"],
+  "exclude": ["**/__tests__", "*/dist"],
   "include": [],
   "extends": "./tsconfig.json",
   "references": [
