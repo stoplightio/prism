@@ -1591,9 +1591,9 @@ aggregate-error@^3.0.0:
     indent-string "^4.0.0"
 
 ajv-oai@^1.0.0:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/ajv-oai/-/ajv-oai-1.1.5.tgz#f6a3ffa6a84ee90234a296ef733e9e18c875365e"
-  integrity sha512-JSBfA99K9cI22qJ8rwCyJ7J15iEMFOeHL8LqH+PL47HzeN7YZc7ZazQNg9eLO6TuPLBCfkiuMNLulKTGMzp25w==
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/ajv-oai/-/ajv-oai-1.2.0.tgz#93ba0d3c64edf55e575c9d9f52fe494251c5b6d0"
+  integrity sha512-BQ2HL/ZfiMm68Xdy7dkS49Vnnq+gSsxfOugJB4TA8Kmu4Ie9ZIa4K4VQYbcHxyW4ccg6l9VB57PjRA2RPh1elw==
   dependencies:
     decimal.js "^10.2.0"
 
