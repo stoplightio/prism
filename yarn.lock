@@ -1617,11 +1617,6 @@ ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-amanda@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/amanda/-/amanda-1.0.1.tgz#0929f3ce0dcd4a74d28d054e2b2e712cbc8ce582"
-  integrity sha512-DJZMA1t7skqQgH5yq4NxBfqun+jDQUSYJRYGg+AqnKc3I0/hs8eX3PDdlfgiADkHgo4HlesD5QuoqFcCYA280Q==
-
 ansi-escapes@^3.0.0, ansi-escapes@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-3.2.0.tgz#8780b98ff9dbf5638152d1f1fe5c1d7b4442976b"
@@ -3689,13 +3684,12 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
-gavel@^8.0.3:
-  version "8.2.3"
-  resolved "https://registry.yarnpkg.com/gavel/-/gavel-8.2.3.tgz#1576ed35b566816ffde1a8081be6b9c995f0eb04"
-  integrity sha512-+l4wDX6QabJ7FqjsjcPYHQslPlByfqn8/UGIp5altB3RKWg2lxkdwS+bPmGRyu2bRmr52mH3OCxvx7y7/2fOaw==
+gavel@^9.1.1:
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/gavel/-/gavel-9.1.1.tgz#4107fa9a21b78ef6d9ee0e6381030829620986f6"
+  integrity sha512-cCNY+LzQsW5uFLUABFreV+7lI8R/6FGpMpKl7eY/SltlDYU1Mdg+xFHgYITX4f1tgJJ8g07yVHW8jGao7IHlUg==
   dependencies:
     ajv "6.10.2"
-    amanda "1.0.1"
     caseless "0.12.0"
     clone "2.1.2"
     commander "3.0.2"
