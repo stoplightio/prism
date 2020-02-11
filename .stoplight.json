@@ -5,7 +5,7 @@
     },
     "markdown": {
       "rootDir": "docs",
-      "include": ["docs/**"]
+      "include": ["README.md", "docs/**"]
     },
     "image": {
       "rootDir": "docs",
