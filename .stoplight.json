@@ -5,11 +5,11 @@
     },
     "markdown": {
       "rootDir": "docs",
-      "include": ["**"]
+      "include": ["docs/**"]
     },
     "image": {
-      "rootDir": "assets/images",
-      "include": ["**"]
+      "rootDir": "docs",
+      "include": ["docs/**"]
     },
     "json_schema": {
       "rootDir": "models"
