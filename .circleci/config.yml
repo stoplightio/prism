@@ -147,8 +147,4 @@ workflows:
       - stoplight/analyze:
           filters:
             branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-          requires:
-            - upload_artifacts
+              only: master
