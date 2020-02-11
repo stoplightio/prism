@@ -68,7 +68,7 @@ If you are interested in contributing to Prism itself, check out our [contributi
 
 Prism is built on top of lots of excellent packages, and here are a few we'd like to say a special thanks to.
 
-- [ajv ](https://www.npmjs.com/package/ajv )
+- [ajv](https://www.npmjs.com/package/ajv)
 - [faker](https://www.npmjs.com/package/faker)
 - [fp-ts](https://www.npmjs.com/package/fp-ts)
 - [gavel](https://www.npmjs.com/package/gavel)
@@ -78,7 +78,7 @@ Prism is built on top of lots of excellent packages, and here are a few we'd lik
 - [openapi-sampler](https://www.npmjs.com/package/openapi-sampler)
 - [yargs](https://www.npmjs.com/package/yargs)
 
-Check these projects out! 
+Check these projects out!
 
 [code_of_conduct]: CODE_OF_CONDUCT.md
 [contributing]: CONTRIBUTING.md
