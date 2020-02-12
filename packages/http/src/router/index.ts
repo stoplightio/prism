@@ -128,7 +128,7 @@ const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig
         return E.right(disambiguateMatches(serverMatches));
       }
 
-      return E.right(disambiguateMatches(pathMatches));
+      return E.right(disambiguateMatches(methodMatches));
     })
   );
 };

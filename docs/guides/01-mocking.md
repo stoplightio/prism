@@ -23,6 +23,12 @@ Prism will try to return meaningful responses based on whatever information it h
 The first thing to understand is that the Prism HTTP Server respects [Content Negotiation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation). If your API is a mixture of JSON, XML and form data, you can use `Accept`
 and `Content-Type` just like with a real API, and it should work as expected, or fail if you request non-existent types.
 
+### The "Decision Engine" 
+
+The response Prism decides to give can be figred out with this decision flow diagram.
+
+![](../../packages/http/docs/images/mock-server-dfd.png)
+
 ### Response Examples
 
 If a response has an example, it will be used for the response. If there are multiple examples then they can be selected by name. Let's take a look part of an OpenAPI description, this is an operation with a response that has a 200 OK and multiple examples:

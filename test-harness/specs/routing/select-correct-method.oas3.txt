@@ -1,0 +1,35 @@
+====test====
+When multiple actions are mapped to a single endpoint, selects the correct response based on the incomming HTTP method
+====spec====
+openapi: 3.0.0
+paths:
+  /test:
+    post:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response-for-post:
+                    type: string
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response-for-get:
+                    type: string
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X GET http://localhost:4010/test
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"response-for-get":"string"}

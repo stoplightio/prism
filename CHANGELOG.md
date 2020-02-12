@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 3.2.8 (2020-02-11)
+
+## Fixed
+
+- Correctly discriminate methods in the router when server is not defined [#969](https://github.com/stoplightio/prism/pull/969)
+
 # 3.2.7 (2020-02-06)
 
 ## Fixed

@@ -1,0 +1,18 @@
+{
+  "formats": {
+    "openapi": {
+      "rootDir": "reference"
+    },
+    "markdown": {
+      "rootDir": "docs",
+      "include": ["README.md", "docs/**"]
+    },
+    "image": {
+      "rootDir": "docs",
+      "include": ["docs/**"]
+    },
+    "json_schema": {
+      "rootDir": "models"
+    }
+  }
+}

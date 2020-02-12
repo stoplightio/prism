@@ -64,9 +64,21 @@ see what URLs you have available.
 
 If you are interested in contributing to Prism itself, check out our [contributing docs ⇗][contributing] and [code of conduct ⇗][code_of_conduct] to get started.
 
-## Prism Decision Flow Diagram
+## Thanks
 
-In case you're interested in all logical decision we make to figure out the best HTTP response to the specific request, you can consult our [diagram](./packages/http/docs/images/mock-server-dfd.png)
+Prism is built on top of lots of excellent packages, and here are a few we'd like to say a special thanks to.
+
+- [ajv](https://www.npmjs.com/package/ajv)
+- [faker](https://www.npmjs.com/package/faker)
+- [fp-ts](https://www.npmjs.com/package/fp-ts)
+- [gavel](https://www.npmjs.com/package/gavel)
+- [json-schema-faker](https://www.npmjs.com/package/json-schema-faker)
+- [lerna](https://www.npmjs.com/package/lerna)
+- [micri](https://www.npmjs.com/package/micri)
+- [openapi-sampler](https://www.npmjs.com/package/openapi-sampler)
+- [yargs](https://www.npmjs.com/package/yargs)
+
+Check these projects out!
 
 [code_of_conduct]: CODE_OF_CONDUCT.md
 [contributing]: CONTRIBUTING.md

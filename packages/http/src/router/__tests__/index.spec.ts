@@ -161,26 +161,24 @@ describe('http router', () => {
           );
         });
 
-        test(`given two resources with different servers
-              when routing to third server
-              with path matching of one of the resources
-              throws an error`, () => {
-          assertLeft(
-            route({
-              resources: [
-                createResource(method, '/pet', [{ url: 'http://example.com/api' }]),
-                createResource(method, '/owner', [{ url: 'http://stg.example.com/api/v2' }]),
-              ],
-              input: {
-                method,
-                url: {
-                  baseUrl: 'http://oopsy.com',
-                  path: '/owner',
+        describe('given two resources with different servers when routing to third server with path matching of one of the resources', () => {
+          it('throws an error', () =>
+            assertLeft(
+              route({
+                resources: [
+                  createResource(method, '/pet', [{ url: 'http://example.com/api' }]),
+                  createResource(method, '/owner', [{ url: 'http://stg.example.com/api/v2' }]),
+                ],
+                input: {
+                  method,
+                  url: {
+                    baseUrl: 'http://oopsy.com',
+                    path: '/owner',
+                  },
                 },
-              },
-            }),
-            error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR))
-          );
+              }),
+              error => expect(error).toEqual(ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR))
+            ));
         });
 
         test('given a templated matching server and matched concrete path should match', () => {
@@ -458,6 +456,26 @@ describe('http router', () => {
               },
             }),
             resource => expect(resource).toBe(expectedResource)
+          );
+        });
+
+        test('given two methods, no baseUrl and a matching path and method it should match by path', () => {
+          const path = randomPath({ includeTemplates: false });
+          const alternativeMethod = pickOneHttpMethod();
+
+          const resources = [createResource(method, path, []), createResource(alternativeMethod, path, [])];
+
+          assertRight(
+            route({
+              resources,
+              input: {
+                method: alternativeMethod,
+                url: {
+                  path,
+                },
+              },
+            }),
+            resource => expect(resource).toBe(resources[1])
           );
         });
       });
