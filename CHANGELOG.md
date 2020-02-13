@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Fixed
+
+- Correctly evaluate the `ServerMatch` property so that Prism will prefer concrete matches over templated ones [#983](https://github.com/stoplightio/prism/pull/983)
+
 # 3.2.8 (2020-02-11)
 
 ## Fixed
