@@ -1,50 +1,56 @@
 import { getHttpConfigFromRequest } from '../getHttpConfigFromRequest';
+import { assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('getHttpConfigFromRequest()', () => {
   describe('given no default config', () => {
     test('and no query should return my own default', () => {
-      return expect(
+      return assertRight(
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/' },
-        })
-      ).toEqual({});
+        }),
+        parsed => expect(parsed).toEqual({})
+      );
     });
 
     test('and no matching query should return my own default', () => {
-      return expect(
+      return assertRight(
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: {} },
-        })
-      ).toEqual({});
+        }),
+        parsed => expect(parsed).toEqual({})
+      );
     });
 
     test('extracts code', () => {
-      return expect(
+      return assertRight(
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __code: '202' } },
-        })
-      ).toHaveProperty('code', '202');
+        }),
+        parsed => expect(parsed).toHaveProperty('code', '202')
+      );
     });
 
     test('extracts example', () => {
-      return expect(
+      return assertRight(
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __example: 'bear' } },
-        })
-      ).toHaveProperty('exampleKey', 'bear');
+        }),
+        parsed => expect(parsed).toHaveProperty('exampleKey', 'bear')
+      );
     });
 
     test('extracts dynamic', () => {
-      return expect(
+      return assertRight(
         getHttpConfigFromRequest({
           method: 'get',
           url: { path: '/', query: { __dynamic: 'true' } },
-        })
-      ).toHaveProperty('dynamic', true);
+        }),
+        parsed => expect(parsed).toHaveProperty('dynamic', true)
+      );
     });
   });
 });
