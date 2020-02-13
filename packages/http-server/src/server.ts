@@ -71,11 +71,13 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
     components.logger.info({ input }, 'Request received');
 
-    const operationSpecificConfig = getHttpConfigFromRequest(input);
-    const mockConfig = opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig };
-
     pipe(
-      prism.request(input, operations, { ...opts.config, mock: mockConfig }),
+      getHttpConfigFromRequest(input),
+      E.map(operationSpecificConfig =>
+        opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig }
+      ),
+      TE.fromEither,
+      TE.chain(mockConfig => prism.request(input, operations, { ...opts.config, mock: mockConfig })),
       TE.chain(response => {
         const { output } = response;
 
