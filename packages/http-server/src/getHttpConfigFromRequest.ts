@@ -5,14 +5,17 @@ import * as t from 'io-ts';
 import { failure } from 'io-ts/lib/PathReporter';
 import { BooleanFromString } from 'io-ts-types/lib/BooleanFromString';
 
-const preferencesDecoder = t.partial(
-  {
-    __code: t.string,
-    __dynamic: t.string.pipe(BooleanFromString),
-    __example: t.string,
-  },
-  'Preferences'
-);
+const preferencesDecoder = t.union([
+  t.undefined,
+  t.partial(
+    {
+      __code: t.string,
+      __dynamic: t.string.pipe(BooleanFromString),
+      __example: t.string,
+    },
+    'Preferences'
+  ),
+]);
 
 export const getHttpConfigFromRequest = (
   req: IHttpRequest
@@ -21,6 +24,6 @@ export const getHttpConfigFromRequest = (
     preferencesDecoder.decode(req.url.query),
     E.bimap(
       err => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, failure(err).join('; ')),
-      parsed => ({ code: parsed.__code, dynamic: parsed.__dynamic, exampleKey: parsed.__example })
+      parsed => ({ code: parsed?.__code, dynamic: parsed?.__dynamic, exampleKey: parsed?.__example })
     )
   );
