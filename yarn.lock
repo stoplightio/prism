@@ -4353,6 +4353,11 @@ invariant@^2.2.4:
   dependencies:
     loose-envify "^1.0.0"
 
+io-ts@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.1.0.tgz#5623a8eb567686651364443dac6826c2bdc40d64"
+  integrity sha512-GnTYtJRVu8L9QEhJrkJBaVr6aR13IBH+MEIeq0WW0IE1zIk9XzMNqqf220p8InJGYwuoHNTVsHDvBQzFIp4ieg==
+
 ip@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/ip/-/ip-1.1.5.tgz#bdded70114290828c0a039e72ef25f5aaec4354a"
