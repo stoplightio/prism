@@ -1,0 +1,31 @@
+====test====
+When a path has multiple matches it selects the concrete first
+====spec====
+openapi: 3.0.0
+paths:
+  /test/{id}:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+  /test/fixed:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: number
+
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X GET http://localhost:4010/test/fixed
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+0

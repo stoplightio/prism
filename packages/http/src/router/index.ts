@@ -162,7 +162,7 @@ function disambiguateMatches(matches: IMatch[]): IHttpOperation {
 
 function areServerAndPath(match: IMatch, serverType: MatchType, pathType: MatchType) {
   const serverMatch = match.serverMatch;
-  if (serverMatch === null) {
+  if (!serverMatch) {
     // server match will only be null if server matching is disabled.
     // therefore skip comparison.
     return match.pathMatch === pathType;
