@@ -459,7 +459,7 @@ describe('http router', () => {
           );
         });
 
-        test('given two methods, no baseUrl and a matching path and method it should match by path', () => {
+        test('given two methods, no baseUrl, a matching path and method it should match by path', () => {
           const path = randomPath({ includeTemplates: false });
           const alternativeMethod = pickOneHttpMethod();
 
@@ -477,6 +477,28 @@ describe('http router', () => {
             }),
             resource => expect(resource).toBe(resources[1])
           );
+        });
+
+        describe('given a concrete and a templated path', () => {
+          const path = '/test/fixed';
+          const templatedPath = '/test/{userId}';
+
+          const resources = [createResource(method, templatedPath, []), createResource(method, path, [])];
+
+          it('should prefer the concrete path when the concrete is asked', () => {
+            assertRight(
+              route({
+                resources,
+                input: {
+                  method,
+                  url: {
+                    path: path,
+                  },
+                },
+              }),
+              resource => expect(resource).toBe(resources[1])
+            );
+          });
         });
       });
 
