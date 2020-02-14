@@ -4,6 +4,8 @@ import * as E from 'fp-ts/lib/Either';
 import * as t from 'io-ts';
 import { failure } from 'io-ts/lib/PathReporter';
 import { BooleanFromString } from 'io-ts-types/lib/BooleanFromString';
+//@ts-ignore
+import * as parsePreferHeader from 'parse-prefer-header';
 
 const preferencesDecoder = t.union([
   t.undefined,
@@ -19,11 +21,15 @@ const preferencesDecoder = t.union([
 
 export const getHttpConfigFromRequest = (
   req: IHttpRequest
-): E.Either<Error, Partial<Omit<IHttpOperationConfig, 'mediaType'>>> =>
-  pipe(
-    preferencesDecoder.decode(req.url.query),
+): E.Either<Error, Partial<Omit<IHttpOperationConfig, 'mediaType'>>> => {
+  const preferenceSource =
+    req.headers && req.headers['prefer'] ? parsePreferHeader(req.headers['prefer']) : req.url.query;
+
+  return pipe(
+    preferencesDecoder.decode(preferenceSource),
     E.bimap(
       err => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, failure(err).join('; ')),
       parsed => ({ code: parsed?.__code, dynamic: parsed?.__dynamic, exampleKey: parsed?.__example })
     )
   );
+};
