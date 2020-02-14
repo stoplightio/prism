@@ -19,9 +19,9 @@ const preferencesDecoder = t.union([
   ),
 ]);
 
-export const getHttpConfigFromRequest = (
-  req: IHttpRequest
-): E.Either<Error, Partial<Omit<IHttpOperationConfig, 'mediaType'>>> => {
+type requestPreference = Partial<Omit<IHttpOperationConfig, 'mediaType'>>;
+
+export const getHttpConfigFromRequest = (req: IHttpRequest): E.Either<Error, requestPreference> => {
   const preferenceSource =
     req.headers && req.headers['prefer'] ? parsePreferHeader(req.headers['prefer']) : req.url.query;
 
