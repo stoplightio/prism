@@ -1,4 +1,11 @@
-import { createInstance, IHttpNameValue, IHttpNameValues, ProblemJsonError, VIOLATIONS } from '@stoplight/prism-http';
+import {
+  createInstance,
+  IHttpNameValue,
+  IHttpNameValues,
+  ProblemJsonError,
+  VIOLATIONS,
+  IHttpConfig,
+} from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
 import { IncomingMessage, ServerResponse } from 'http';
 import { AddressInfo } from 'net';
@@ -71,12 +78,17 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
     components.logger.info({ input }, 'Request received');
 
+    const mockConfig: TE.TaskEither<Error, IHttpConfig['mock']> =
+      opts.config.mock === false
+        ? TE.right(false)
+        : pipe(
+            getHttpConfigFromRequest(input),
+            E.map(operationSpecificConfig => Object.assign(opts.config.mock, operationSpecificConfig)),
+            TE.fromEither
+          );
+
     pipe(
-      getHttpConfigFromRequest(input),
-      E.map(operationSpecificConfig =>
-        opts.config.mock === false ? false : { ...opts.config.mock, ...operationSpecificConfig }
-      ),
-      TE.fromEither,
+      mockConfig,
       TE.chain(mockConfig => prism.request(input, operations, { ...opts.config, mock: mockConfig })),
       TE.chain(response => {
         const { output } = response;
