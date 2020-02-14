@@ -55,7 +55,7 @@ describe('getHttpConfigFromRequest()', () => {
       });
     });
 
-    describe.only('headers', () => {
+    describe('headers', () => {
       test('extracts code', () => {
         return assertRight(
           getHttpConfigFromRequest({

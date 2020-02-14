@@ -15,7 +15,7 @@ const headerPreferencesDecoder = t.union([
       dynamic: t.string.pipe(BooleanFromString),
       example: t.string,
     },
-    'Preferences'
+    'headerPreferences'
   ),
 ]);
 
@@ -27,7 +27,7 @@ const queryPreferencesDecoder = t.union([
       __dynamic: t.string.pipe(BooleanFromString),
       __example: t.string,
     },
-    'Preferences'
+    'queryPreferences'
   ),
 ]);
 
