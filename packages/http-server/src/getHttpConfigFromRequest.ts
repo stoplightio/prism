@@ -19,7 +19,7 @@ const PreferencesDecoder = t.union([
   ),
 ]);
 
-type requestPreference = Partial<Omit<IHttpOperationConfig, 'mediaType'>>;
+type RequestPreference = Partial<Omit<IHttpOperationConfig, 'mediaType'>>;
 
 export const getHttpConfigFromRequest = (req: IHttpRequest): E.Either<Error, requestPreference> => {
   const preferences =
