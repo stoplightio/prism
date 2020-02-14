@@ -61,7 +61,7 @@ describe('getHttpConfigFromRequest()', () => {
           getHttpConfigFromRequest({
             method: 'get',
             url: { path: '/' },
-            headers: { prefer: '__code=202' },
+            headers: { prefer: 'code=202' },
           }),
           parsed => expect(parsed).toHaveProperty('code', '202')
         );
@@ -72,7 +72,7 @@ describe('getHttpConfigFromRequest()', () => {
           getHttpConfigFromRequest({
             method: 'get',
             url: { path: '/' },
-            headers: { prefer: '__example=bear' },
+            headers: { prefer: 'example=bear' },
           }),
           parsed => expect(parsed).toHaveProperty('exampleKey', 'bear')
         );
@@ -83,7 +83,7 @@ describe('getHttpConfigFromRequest()', () => {
           getHttpConfigFromRequest({
             method: 'get',
             url: { path: '/' },
-            headers: { prefer: '__dynamic=true' },
+            headers: { prefer: 'dynamic=true' },
           }),
           parsed => expect(parsed).toHaveProperty('dynamic', true)
         );
@@ -94,7 +94,7 @@ describe('getHttpConfigFromRequest()', () => {
           getHttpConfigFromRequest({
             method: 'get',
             url: { path: '/', query: { __dynamic: 'false' } },
-            headers: { prefer: '__dynamic=true' },
+            headers: { prefer: 'dynamic=true' },
           }),
           parsed => expect(parsed).toHaveProperty('dynamic', true)
         );

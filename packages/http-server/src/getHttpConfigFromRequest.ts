@@ -7,7 +7,19 @@ import { BooleanFromString } from 'io-ts-types/lib/BooleanFromString';
 //@ts-ignore
 import * as parsePreferHeader from 'parse-prefer-header';
 
-const preferencesDecoder = t.union([
+const headerPreferencesDecoder = t.union([
+  t.undefined,
+  t.partial(
+    {
+      code: t.string,
+      dynamic: t.string.pipe(BooleanFromString),
+      example: t.string,
+    },
+    'Preferences'
+  ),
+]);
+
+const queryPreferencesDecoder = t.union([
   t.undefined,
   t.partial(
     {
@@ -23,13 +35,18 @@ type requestPreference = Partial<Omit<IHttpOperationConfig, 'mediaType'>>;
 
 export const getHttpConfigFromRequest = (req: IHttpRequest): E.Either<Error, requestPreference> => {
   const preferenceSource =
-    req.headers && req.headers['prefer'] ? parsePreferHeader(req.headers['prefer']) : req.url.query;
+    req.headers && req.headers['prefer']
+      ? pipe(
+          headerPreferencesDecoder.decode(parsePreferHeader(req.headers['prefer'])),
+          E.map(parsed => ({ code: parsed?.code, dynamic: parsed?.dynamic, exampleKey: parsed?.example }))
+        )
+      : pipe(
+          queryPreferencesDecoder.decode(req.url.query),
+          E.map(parsed => ({ code: parsed?.__code, dynamic: parsed?.__dynamic, exampleKey: parsed?.__example }))
+        );
 
   return pipe(
-    preferencesDecoder.decode(preferenceSource),
-    E.bimap(
-      err => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, failure(err).join('; ')),
-      parsed => ({ code: parsed?.__code, dynamic: parsed?.__dynamic, exampleKey: parsed?.__example })
-    )
+    preferenceSource,
+    E.mapLeft(err => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, failure(err).join('; ')))
   );
 };
