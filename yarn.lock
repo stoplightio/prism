@@ -8285,9 +8285,9 @@ tsutils@^3.17.1:
     tslib "^1.8.1"
 
 ttypescript@^1.5.7:
-  version "1.5.8"
-  resolved "https://registry.yarnpkg.com/ttypescript/-/ttypescript-1.5.8.tgz#82fc316a47be3136e993abf0dbd2768cc68d1db3"
-  integrity sha512-uXye71UE5iPDOA3mDN9UUtconKGYwjg6m2UgnxVJYyCItE+MliSCZ4kf2asjpJsJQtgPKyu9iAaC4ero1UIbwQ==
+  version "1.5.10"
+  resolved "https://registry.yarnpkg.com/ttypescript/-/ttypescript-1.5.10.tgz#5045083a91cf09a735ecc95d4711c1f3b83f2059"
+  integrity sha512-Hk7TRej1hM+p+Fo+Pyb/XK9pe9CAt3Sh5n5YRutxFS8hUgkh2u1Vd2K40kMcNP3WYhiVFBMqXwM/2E8O95Ep6g==
   dependencies:
     resolve "^1.9.0"
 
