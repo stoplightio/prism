@@ -6,10 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 3.2.9 (2020-02-19)
+
 ## Fixed
 
 - Correctly evaluate the `ServerMatch` property so that Prism will prefer concrete matches over templated ones [#983](https://github.com/stoplightio/prism/pull/983)
-- HTTP Client now correctly return empty bodies [#993](https://github.com/stoplightio/prism/pull/993)
+- HTTP Client now correctly returns empty bodies [#993](https://github.com/stoplightio/prism/pull/993)
 
 # 3.2.8 (2020-02-11)
 
