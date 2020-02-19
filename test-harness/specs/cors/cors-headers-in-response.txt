@@ -22,3 +22,4 @@ curl -i -X GET http://localhost:4010/todos
 HTTP/1.1 200 OK
 access-control-allow-origin: *
 access-control-allow-headers: *
+access-control-allow-credentials: true
