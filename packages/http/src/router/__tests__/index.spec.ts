@@ -475,7 +475,7 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(resources[1])
+            resource => expect(resource.method).toBe(alternativeMethod)
           );
         });
 
