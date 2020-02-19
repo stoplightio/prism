@@ -62,7 +62,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
             Task.of({
               status: data.output.statusCode,
               headers: data.output.headers || {},
-              data: data.output.body || {},
+              data: data.output.body,
               config: mergedConf,
               request: { ...input, url: httpUrl },
               violations: data.validations,
