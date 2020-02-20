@@ -23,7 +23,7 @@ Prism will try to return meaningful responses based on whatever information it h
 The first thing to understand is that the Prism HTTP Server respects [Content Negotiation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation). If your API is a mixture of JSON, XML and form data, you can use `Accept`
 and `Content-Type` just like with a real API, and it should work as expected, or fail if you request non-existent types.
 
-### The "Decision Engine" 
+### The "Decision Engine"
 
 The response Prism decides to give can be figred out with this decision flow diagram.
 
@@ -67,7 +67,7 @@ Calling `curl http://127.0.0.1:4010/pets/123` on this will give:
 }
 ```
 
-Changing the URL to `http://127.0.0.1:4010/pets/123?__example=dog`
+Calling the same URL with the `Prefer` header `example=dog` `http://127.0.0.1:4010/pets/123` will yield to:
 
 ```json
 {
@@ -87,7 +87,7 @@ prism mock api.oas3.yaml # Static examples
 prism mock -d api.oas3.yaml # Dynamic examples
 ```
 
-If the HTTP server has been started in static mode, specific calls can be made in dynamic mode by appending `?__dynamic=true` to any URL.
+If the HTTP server has been started in static mode, specific calls can be made in dynamic mode by specifying the `Prefer` header with the `dynamic` key to `true`
 
 #### Static Response Generation
 
@@ -159,7 +159,7 @@ Pet:
         x-faker: image.imageUrl
 ```
 
-When we call `curl http://127.0.0.1:4010/pets/123?__dynamic=true`, the operation references this component so we get a doggie:
+When we call `curl http://127.0.0.1:4010/pets/123 -H "Prefer: dynamic=true"`, the operation references this component so we get a doggie:
 
 ```json
 {
@@ -177,14 +177,15 @@ When we call `curl http://127.0.0.1:4010/pets/123?__dynamic=true`, the operation
 The more descriptive your description is, the better job Prism can do at creating a mock response.
 
 <!-- theme: info -->
+
 > **Tip:** If your team needs help creating better quality API description documents, take a look at [Spectral](https://stoplight.io/spectral/). You could enforce the use of `example` properties, or similar.
 
 ### Request Validation
 
 Having a mock server which only gave responses would not be very useful, which is why
 Prism imitates request validation too. Seeing as an OpenAPI description document is
-full of all sorts of validation rules like type, format, max length, etc., Prism can 
-validate incoming messages, and provide validation feedback if people are sending invalid 
-requests to it. 
+full of all sorts of validation rules like type, format, max length, etc., Prism can
+validate incoming messages, and provide validation feedback if people are sending invalid
+requests to it.
 
 Read more about this in our [Request Validation guide](./02-request-validation.md).
