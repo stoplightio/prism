@@ -15,7 +15,7 @@ prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.
 ●  note      DELETE     http://127.0.0.1:4010/pets/10
 ```
 
-Here you can see all the "operations" (a.k.a endpoints or resources) that Prism has found in your 
+Here you can see all the "operations" (a.k.a endpoints or resources) that Prism has found in your
 API description. Prism will shove an example, default, or other reasonably realistic value in there
 so you can copy and paste (or Ctrl+Click / CMD+Click in fancy terminals) to open the URL in your browser.
 
@@ -52,10 +52,10 @@ In such a case, Prism will keep serving operations loaded with the previous rest
 
 #### Force Response Status
 
-Prism can be forced to return different HTTP responses by specifying the status code in the query string:
+Prism can be forced to return different HTTP responses by specifying the status code in the `Prefer` header
 
 ```bash
-curl -v http://127.0.0.1:4010/pets/123?__code=404
+curl -v http://127.0.0.1:4010/pets/123 -H "Prefer: code=404"
 
 HTTP/1.1 404 Not Found
 content-type: application/json
@@ -68,18 +68,18 @@ The body, headers, etc. for this response will be taken from the API description
 
 #### Request Specific Examples
 
-You can request a specific example from your document by using the `__example` query string parameter.
+You can request a specific example from your document by using the `Prefer` header `example`
 
 ```bash
-curl -v http://127.0.0.1:4010/pets/123?__example=exampleKey
+curl -v http://127.0.0.1:4010/pets/123 -H "Prefer: example=exampleKey"
 ```
 
 #### Dynamic Response
 
-You can override the `--dynamic|-d` CLI param (which decides whether the generated example is static or dynamic) through the `__dynamic` query string parameter.
+You can override the `--dynamic|-d` CLI param (which decides whether the generated example is static or dynamic) through the `dynamic` key in the `Prefer` header.
 
 ```bash
-curl -v http://127.0.0.1:4010/pets/123?__dynamic=false
+curl -v http://127.0.0.1:4010/pets/123 -H "Prefer: dynamic=false"
 ```
 
 ## Proxy
@@ -128,6 +128,7 @@ curl -v -X POST http://localhost:4010/pet/
 The response body contains the found output violations.
 
 <!-- theme: info -->
+
 > Server definitions (OAS3) and Host + BasePath (OAS2) are ignored. You need to manually specify the upstream URL when invoking Prism.
 
 ## Running in Production
