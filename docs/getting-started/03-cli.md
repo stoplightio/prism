@@ -50,6 +50,10 @@ In such a case, Prism will keep serving operations loaded with the previous rest
 
 ## Modifying Responses
 
+Prism's behavior in looking for the response for your request can be modified with a series of parameters that you can either pass through the `Prefer` header or through a query string parameter. Query string parameters are _deprecated_ and will be removed in the next major release.
+
+Keep in mind, all the query parameters need to be prefixed with `__` — so if the Prefer header parameter is `code`, the query string will be `__code`
+
 #### Force Response Status
 
 Prism can be forced to return different HTTP responses by specifying the status code in the `Prefer` header
