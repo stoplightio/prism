@@ -4318,9 +4318,9 @@ io-ts-types@^0.5.5:
   integrity sha512-REkSSrgkfxFzDy32dsrPiQqGERO2o4KUtSox96B4ZKFSiB5mg0zl4cXl072TvROzcvuc0zGPlFzrRTYWaTcj/w==
 
 io-ts@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.1.0.tgz#5623a8eb567686651364443dac6826c2bdc40d64"
-  integrity sha512-GnTYtJRVu8L9QEhJrkJBaVr6aR13IBH+MEIeq0WW0IE1zIk9XzMNqqf220p8InJGYwuoHNTVsHDvBQzFIp4ieg==
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.1.1.tgz#d8230ed5a30f43ceaeeeb1094bb6b4937d9c604a"
+  integrity sha512-6mDCiTc/0uNtC8M1u/kcNiw5JUTlREFCGV7pjcbrQrUDguLkOpuzb4wbJcU78G74QvkhQdvT3F3dAupycXN95g==
 
 ip@^1.1.5:
   version "1.1.5"
