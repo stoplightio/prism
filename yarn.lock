@@ -1172,11 +1172,11 @@
     urijs "~1.19.1"
 
 "@stoplight/json@^3.1.2", "@stoplight/json@^3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.4.0.tgz#c2557ced0834a127b1ce524e77f15364d814047a"
-  integrity sha512-Ljjj11Wa+MusOMeXTehLbuJQJe8CG3sovCGcD/6c8Zyz1n39EsDLZwJIpQ6/DQAdKChiJGWdcULsrGdheFaiLg==
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.5.1.tgz#afc6ffcbe2ada8f9b16680fd7885688cf9beec7e"
+  integrity sha512-O5WUW2yfAvtrqeq60YrbxpTvk87Ti2IeJ5oVa2XNJ2s+IIxx0CM+j316QoOjSGs+twrRpwb3jT9CFPrq7Ghkzg==
   dependencies:
-    "@stoplight/types" "^11.1.1"
+    "@stoplight/types" "^11.4.0"
     jsonc-parser "~2.2.0"
     lodash "^4.17.15"
     safe-stable-stringify "^1.1"
