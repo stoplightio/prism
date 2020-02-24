@@ -206,7 +206,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     });
 
     // oas2 does not support overriding servers and named examples
-    if (file === 'petstore.oas3.json') {
+    if (file === 'petstore.no-auth.oas3.yaml') {
       it('returns requested response example using __example property', async () => {
         const response = await makeRequest('/pets/123?__example=cat');
         const payload = await response.json();
