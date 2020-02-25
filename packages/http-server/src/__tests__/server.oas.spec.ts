@@ -7,6 +7,8 @@ import { ThenArg } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
 
+const oas3File = 'petstore.no-auth.oas3.yaml' as const;
+
 function checkErrorPayloadShape(payload: string) {
   const parsedPayload = JSON.parse(payload);
 
@@ -175,8 +177,8 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     // according to the schema
 
     const expectedValues = {
-      'x-rate-limit': file === 'petstore.oas3.yaml' ? 1000 : expect.stringMatching(/^\d+$/),
-      'x-stats': file === 'petstore.oas3.yaml' ? 1500 : expect.stringMatching(/^\d+$/),
+      'x-rate-limit': file === oas3File ? 1000 : expect.stringMatching(/^\d+$/),
+      'x-stats': file === oas3File ? 1500 : expect.stringMatching(/^\d+$/),
       'x-expires-after': expect.any(String),
       'x-strange-header': 'null',
     };
@@ -206,7 +208,7 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     });
 
     // oas2 does not support overriding servers and named examples
-    if (file === 'petstore.no-auth.oas3.yaml') {
+    if (file === oas3File) {
       it('returns requested response example using __example property', async () => {
         const response = await makeRequest('/pets/123?__example=cat');
         const payload = await response.json();
