@@ -19,4 +19,5 @@ node_modules/
 # IDE
 dist
 .vscode
+.idea
 cli-binaries
