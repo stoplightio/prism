@@ -7,7 +7,8 @@ import { ThenArg } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
 
-const oas3File = 'petstore.no-auth.oas3.yaml' as const;
+const oas3File = 'petstore.no-auth.oas3.yaml';
+const oas2File = 'petstore.no-auth.oas2.yaml';
 
 function checkErrorPayloadShape(payload: string) {
   const parsedPayload = JSON.parse(payload);
@@ -77,7 +78,7 @@ describe('GET /pet?__server', () => {
   }
 });
 
-describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('server %s', file => {
+describe.each([[oas2File], [oas3File]])('server %s', file => {
   let server: ThenArg<ReturnType<typeof instantiatePrism>>;
 
   beforeEach(async () => {
@@ -177,8 +178,8 @@ describe.each([['petstore.no-auth.oas2.yaml', 'petstore.no-auth.oas3.yaml']])('s
     // according to the schema
 
     const expectedValues = {
-      'x-rate-limit': file === oas3File ? 1000 : expect.stringMatching(/^\d+$/),
-      'x-stats': file === oas3File ? 1500 : expect.stringMatching(/^\d+$/),
+      'x-rate-limit': file === oas3File ? '1000' : expect.stringMatching(/^\d+$/),
+      'x-stats': file === oas3File ? '1500' : expect.stringMatching(/^\d+$/),
       'x-expires-after': expect.any(String),
       'x-strange-header': 'null',
     };
