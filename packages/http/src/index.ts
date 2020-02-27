@@ -6,7 +6,6 @@ import mock from './mocker';
 import route from './router';
 import { validateInput, validateOutput, validateSecurity } from './validator';
 export * from './types';
-export * from './getHttpOperations';
 export * from './mocker/errors';
 export * from './router/errors';
 export * from './mocker/serializer/style';
