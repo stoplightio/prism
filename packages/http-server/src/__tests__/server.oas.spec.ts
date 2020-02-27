@@ -1,5 +1,5 @@
 import { createLogger } from '@stoplight/prism-core';
-import { getHttpOperationsFromResource } from '@stoplight/prism-http';
+import { getHttpOperationsFromResource } from '@stoplight/prism-cli/src/getHttpOperations';
 import { resolve } from 'path';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
