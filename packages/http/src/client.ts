@@ -1,10 +1,9 @@
 import { IPrismOutput } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
-import { defaults, partial } from 'lodash';
+import { defaults } from 'lodash';
 import { parse as parseQueryString } from 'querystring';
 import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
-import getHttpOperations, { getHttpOperationsFromResource } from './getHttpOperations';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { fold } from 'fp-ts/lib/TaskEither';
 import * as Task from 'fp-ts/lib/Task';
@@ -17,17 +16,6 @@ logger.success = logger.info;
 interface IClientConfig extends IHttpConfig {
   baseUrl?: string;
 }
-
-function createClientFrom(
-  getResource: (v: string) => Promise<IHttpOperation[]>,
-  document: string,
-  defaultConfig: IHttpConfig
-): Promise<PrismHttp> {
-  return getResource(document).then(resources => createClientFromOperations(resources, defaultConfig));
-}
-
-const createClientFromResource = partial(createClientFrom, getHttpOperationsFromResource);
-const createClientFromString = partial(createClientFrom, getHttpOperations);
 
 function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IClientConfig): PrismHttp {
   const obj = createInstance(defaultConfig, { logger });
@@ -179,4 +167,4 @@ export type PrismHttp = {
   trace: IRequestFunctionWithMethod;
 };
 
-export { createClientFromResource, createClientFromString, createClientFromOperations };
+export { createClientFromOperations };

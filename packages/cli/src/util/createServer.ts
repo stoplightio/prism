@@ -1,5 +1,5 @@
 import { createLogger } from '@stoplight/prism-core';
-import { IHttpConfig, IHttpProxyConfig, getHttpOperationsFromResource } from '@stoplight/prism-http';
+import { IHttpConfig, IHttpProxyConfig } from '@stoplight/prism-http';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
 import * as chalk from 'chalk';
 import * as cluster from 'cluster';
@@ -13,6 +13,7 @@ import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer';
 import { CreatePrism } from './runner';
+import { getHttpOperationsFromResource } from '../getHttpOperations';
 
 signale.config({ displayTimestamp: true });
 
