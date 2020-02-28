@@ -1,4 +1,4 @@
-import * as operationUtils from '@stoplight/prism-cli/src/getHttpOperations';
+import * as operationUtils from '@stoplight/prism-cli/src/operations';
 import * as yargs from 'yargs';
 import { createMultiProcessPrism, createSingleProcessPrism } from '../../util/createServer';
 import mockCommand from '../mock';

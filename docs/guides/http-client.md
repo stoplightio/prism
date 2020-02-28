@@ -25,7 +25,7 @@ To create the required operations array you can use two utilities function defin
 ### Create from file or HTTP resource
 
 ```ts
-const { default, getHttpOperationsFromResource } = require('@stoplight/prism-cli/dist/getHttpOperations')
+const { getHttpOperationsFromSpec, getHttpOperationsFromResource } = require('@stoplight/prism-cli/dist/operations')
 
 const operations = await getHttpOperationsFromResource('examples/petstore.oas2.yaml');
 
@@ -39,7 +39,7 @@ paths:
           description: hello
 `;
 
-const operations = await default(descriptionDoc);
+const operations = await getHttpOperationsFromSpec(descriptionDoc);
 
 ```
 

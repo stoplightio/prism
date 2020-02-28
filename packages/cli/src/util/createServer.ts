@@ -13,7 +13,7 @@ import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer';
 import { CreatePrism } from './runner';
-import { getHttpOperationsFromResource } from '../getHttpOperations';
+import { getHttpOperationsFromResource } from '../operations';
 
 signale.config({ displayTimestamp: true });
 
