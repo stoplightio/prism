@@ -22,10 +22,10 @@ export async function getHttpOperationsFromResource(file: string): Promise<IHttp
   const isRemote = /^https?:\/\//i.test(file);
   const fileContent = isRemote ? await fetch(file).then(d => d.text()) : fs.readFileSync(file, { encoding: 'utf8' });
 
-  return getHttpOperations(fileContent, isRemote ? file : resolve(file));
+  return getHttpOperationsFromSpec(fileContent, isRemote ? file : resolve(file));
 }
 
-export default async function getHttpOperations(specContent: string, baseUri?: string): Promise<IHttpOperation[]> {
+export async function getHttpOperationsFromSpec(specContent: string, baseUri?: string): Promise<IHttpOperation[]> {
   const parsedContent = parse(specContent);
   const { result: resolvedContent, errors } = await httpAndFileResolver.resolve(parsedContent, { baseUri });
 
