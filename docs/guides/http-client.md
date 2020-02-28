@@ -5,6 +5,8 @@ Prism includes a fully-featured HTTP Client that you can use to seamlessly perfo
 ### Create From Manual Http Operations
 
 ```ts
+const { createClientFromOperations } = require('@stoplight/prism-http/dist/client');
+
 const client = createClientFromOperations(
   [
     {
@@ -18,21 +20,15 @@ const client = createClientFromOperations(
 );
 ```
 
-To create an Operation, you can use two utilities function defined in the `@stoplight/prism-cli` package:
+To create the required operations array you can use two utilities function defined in the `@stoplight/prism-cli` package:
 
 ### Create from a filename or http resource
 
 ```ts
-const client = await createClientFromResource('examples/petstore.oas2.yaml', {
-  mock: true,
-  validateRequest: true,
-  validateResponse: true,
-});
-```
+const { default, getHttpOperationsFromResource } = require('@stoplight/prism-cli/dist/getHttpOperations')
 
-### Create from OpenAPI string
+const operations = await getHttpOperationsFromResource('examples/petstore.oas2.yaml');
 
-```ts
 const descriptionDoc = `
 openapi: 3.0.2
 paths:
@@ -43,11 +39,8 @@ paths:
           description: hello
 `;
 
-const client = await createClientFromString(descriptionDoc, {
-  mock: true,
-  validateRequest: true,
-  validateResponse: true,
-});
+const operations = await default(descriptionDoc);
+
 ```
 
 ---
