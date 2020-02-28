@@ -2,7 +2,7 @@
 
 Prism includes a fully-featured HTTP Client that you can use to seamlessly perform requests to both a real server and a mocked document. The client is modeled after Axios so it may feel familiar.
 
-### Create From Manual Http Operations
+### Create From Manual HTTP Operations
 
 ```ts
 const { createClientFromOperations } = require('@stoplight/prism-http/dist/client');
@@ -22,7 +22,7 @@ const client = createClientFromOperations(
 
 To create the required operations array you can use two utilities function defined in the `@stoplight/prism-cli` package:
 
-### Create from a filename or http resource
+### Create from file or HTTP resource
 
 ```ts
 const { default, getHttpOperationsFromResource } = require('@stoplight/prism-cli/dist/getHttpOperations')
