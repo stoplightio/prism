@@ -5,7 +5,8 @@ WORKDIR /usr/src/prism
 COPY package.json yarn.lock /usr/src/prism/
 COPY packages/ /usr/src/prism/packages/
 
-RUN yarn && yarn build
+RUN yarn add -W -D ttypescript typescript ts-transform-import-path-rewrite
+RUN yarn build
 
 ###############################################################
 FROM node:12 as dependencies
