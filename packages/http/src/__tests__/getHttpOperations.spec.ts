@@ -2,8 +2,8 @@ import getHttpOperations from '../getHttpOperations';
 
 describe('getHttpOperations()', () => {
   describe('ref resolving fails', () => {
-    it('fails with exception', async () => {
-      await expect(
+    it('fails with exception', () => {
+      return expect(
         getHttpOperations(
           JSON.stringify({
             openapi: '3.0.0',
@@ -15,8 +15,8 @@ describe('getHttpOperations()', () => {
       );
     });
 
-    it('deduplicates similar errors', async () => {
-      await expect(
+    it('deduplicates similar errors', () => {
+      return expect(
         getHttpOperations(
           JSON.stringify({
             openapi: '3.0.0',
@@ -32,18 +32,18 @@ describe('getHttpOperations()', () => {
 
   describe('ref resolving succeeds', () => {
     describe('OpenAPI 2 document is provided', () => {
-      it('detects it properly', async () => {
-        await expect(getHttpOperations(JSON.stringify({ swagger: '2.0' }))).resolves.toBeTruthy();
+      it('detects it properly', () => {
+        return expect(getHttpOperations(JSON.stringify({ swagger: '2.0' }))).resolves.toBeTruthy();
       });
     });
 
     describe('OpenAPI 3 document is provided', () => {
-      it('detects it properly', async () => {
-        await expect(getHttpOperations(JSON.stringify({ openapi: '3.0.0' }))).resolves.toBeTruthy();
+      it('detects it properly', () => {
+        return expect(getHttpOperations(JSON.stringify({ openapi: '3.0.0' }))).resolves.toBeTruthy();
       });
 
-      it('returns correct HttpOperation', async () => {
-        await expect(
+      it('returns correct HttpOperation', () => {
+        return expect(
           getHttpOperations(
             JSON.stringify({
               openapi: '3.0.0',
@@ -70,14 +70,14 @@ describe('getHttpOperations()', () => {
     });
 
     describe('Postman Collection document is provided', () => {
-      it('detects it properly', async () => {
-        await expect(getHttpOperations(JSON.stringify({ item: [] }))).resolves.toBeTruthy();
+      it('detects it properly', () => {
+        return expect(getHttpOperations(JSON.stringify({ info: { name: 'Test' }, item: [] }))).resolves.toBeTruthy();
       });
     });
 
     describe('unknown document is provided', () => {
-      it('throws error', async () => {
-        await expect(getHttpOperations(JSON.stringify({}))).rejects.toThrow(/^Unsupported document format$/);
+      it('throws error', () => {
+        return expect(getHttpOperations(JSON.stringify({}))).rejects.toThrow(/^Unsupported document format$/);
       });
     });
   });

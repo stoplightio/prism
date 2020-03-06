@@ -4,7 +4,7 @@ for a request to an endpoint, which security depends on global security definiti
 ====spec====
 {
   "info": {
-    "_postman_id": "37c4cd69-28e5-48aa-8386-a4ec010216e4"
+    "name": "Test"
   },
   "auth": {
     "type": "basic"

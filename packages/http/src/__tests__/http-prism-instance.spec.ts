@@ -351,7 +351,7 @@ describe('Http Client .request', () => {
     );
     resources = await getHttpOperationsFromResource(staticExamplesOas2Path);
 
-    assertResolvesRight(
+    return assertResolvesRight(
       prism.request(
         {
           method: 'get',

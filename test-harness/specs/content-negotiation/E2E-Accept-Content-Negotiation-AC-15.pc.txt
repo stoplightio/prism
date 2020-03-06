@@ -3,7 +3,7 @@ Sending multiple values in Accept header selects the first one matched.
 ====spec====
 {
   "info": {
-    "_postman_id": "37c4cd69-28e5-48aa-8386-a4ec010216e4"
+    "name": "Test"
   },
   "item": [
     {

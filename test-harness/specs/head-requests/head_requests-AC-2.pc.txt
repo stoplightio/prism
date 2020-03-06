@@ -3,7 +3,7 @@ Sending a HEAD request results in a 405 when no HEAD operation is defined.
 ====spec====
 {
   "info": {
-    "_postman_id": "37c4cd69-28e5-48aa-8386-a4ec010216e4"
+    "name": "Test"
   },
   "item": [
     {

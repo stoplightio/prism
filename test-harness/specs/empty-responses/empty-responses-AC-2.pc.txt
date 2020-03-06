@@ -3,7 +3,7 @@ Prism responds with a 406 when the content-type from Accept header cannot be mat
 ====spec====
 {
   "info": {
-    "_postman_id": "37c4cd69-28e5-48aa-8386-a4ec010216e4"
+    "name": "Test"
   },
   "item": [
     {

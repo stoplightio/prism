@@ -8,9 +8,9 @@ import * as fs from 'fs';
 import { get, uniq } from 'lodash';
 import { EOL } from 'os';
 import { resolve } from 'path';
-import { Spec } from 'swagger-schema-official';
-import { OpenAPIObject } from 'openapi3-ts';
-import { CollectionDefinition } from 'postman-collection';
+import type { Spec } from 'swagger-schema-official';
+import type { OpenAPIObject } from 'openapi3-ts';
+import type { CollectionDefinition } from 'postman-collection';
 
 const httpAndFileResolver = new Resolver({
   resolvers: {
@@ -45,7 +45,7 @@ export default async function getHttpOperations(specContent: string, baseUri?: s
   return transformOperations(resolvedContent);
 }
 
-function detectTransformOperationsFn(parsedContent: unknown): ((content: any) => IHttpOperation[]) | undefined {
+function detectTransformOperationsFn(parsedContent: unknown) {
   if (isOpenAPI2(parsedContent)) return transformOas2Operations;
   if (isOpenAPI3(parsedContent)) return transformOas3Operations;
   if (isPostmanCollection(parsedContent)) return transformPostmanCollectionOperations;
@@ -60,5 +60,5 @@ function isOpenAPI3(document: unknown): document is OpenAPIObject {
 }
 
 function isPostmanCollection(document: unknown): document is CollectionDefinition {
-  return Array.isArray(get(document, 'item'));
+  return Array.isArray(get(document, 'item')) && get(document, 'info.name');
 }
