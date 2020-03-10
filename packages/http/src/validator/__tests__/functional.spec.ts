@@ -1,4 +1,4 @@
-import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles, IHttpOperation, HttpMethod } from '@stoplight/types';
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
 import { validateInput, validateOutput } from '../index';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
@@ -159,6 +159,23 @@ describe('HttpValidator', () => {
       it('returns validation errors for whole request structure', () => {
         expect(validateOutput({ resource: httpOperations[1], element: BAD_OUTPUT })).toMatchSnapshot();
       });
+    });
+  });
+
+  describe('bug', () => {
+    it('repro case', () => {
+      const x = {
+        method: 'post' as HttpMethod,
+        url: { path: '/todos', query: {} },
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: { '{}': '' },
+      };
+      expect(() =>
+        validateInput({
+          resource: httpOperations[2],
+          element: x,
+        })
+      ).not.toThrow();
     });
   });
 });
