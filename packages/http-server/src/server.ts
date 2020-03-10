@@ -7,7 +7,7 @@ import {
   IHttpConfig,
 } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse, IncomingHttpHeaders } from 'http';
 import { AddressInfo } from 'net';
 import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
@@ -155,28 +155,38 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     )();
   };
 
+  function setCommonCORSHeaders(incomingHeaders: IncomingHttpHeaders, res: ServerResponse) {
+    res.setHeader('Access-Control-Allow-Origin', incomingHeaders['origin'] || '*');
+    res.setHeader('Access-Control-Allow-Headers', incomingHeaders['access-control-request-headers'] || '*');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Expose-Headers', incomingHeaders['access-control-expose-headers'] || '*');
+  }
+
   const server = micri(
     Router.router(
       Router.on.options(
         () => opts.cors,
         (req: IncomingMessage, res: ServerResponse) => {
-          res.setHeader('Access-Control-Allow-Origin', req.headers['origin'] || '*');
-          res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
-          res.setHeader('Access-Control-Allow-Credentials', 'true');
-          res.setHeader('Access-Control-Allow-Methods', 'GET,DELETE,HEAD,PATCH,POST,PUT');
-          res.setHeader('Access-Control-Expose-Headers', req.headers['access-control-expose-headers'] || '*');
-          res.setHeader('Vary', 'origin');
-          res.setHeader('Content-Length', '0');
-          send(res, 204);
+          setCommonCORSHeaders(req.headers, res);
+
+          if (!!req.headers['origin'] && !!req.headers['access-control-request-method']) {
+            // This is a preflight request, so we'll respond with the appropriate CORS response
+            res.setHeader(
+              'Access-Control-Allow-Methods',
+              req.headers['access-control-request-method'] || 'GET,DELETE,HEAD,PATCH,POST,PUT,OPTIONS'
+            );
+
+            res.setHeader('Vary', 'origin');
+            res.setHeader('Content-Length', '0');
+            return send(res, 204);
+          }
+
+          return handler(req, res);
         }
       ),
       Router.otherwise((req, res, options) => {
-        if (opts.cors) {
-          res.setHeader('Access-Control-Allow-Origin', req.headers['origin'] || '*');
-          res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
-          res.setHeader('Access-Control-Allow-Credentials', 'true');
-          res.setHeader('Access-Control-Expose-Headers', req.headers['access-control-expose-headers'] || '*');
-        }
+        if (opts.cors) setCommonCORSHeaders(req.headers, res);
+
         return handler(req, res, options);
       })
     )
