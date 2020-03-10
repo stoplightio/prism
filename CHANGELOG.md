@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Fixed
+
+- Prism is now able to correctly differentiate between a preflight request and a regular `OPTIONS` request [#1031](https://github.com/stoplightio/prism/pull/1031)
+
 # 3.3.0 (2020-03-10)
 
 ## Added
