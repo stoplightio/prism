@@ -1,5 +1,5 @@
 ====test====
-When prism is started without the --dynamic flag,
+When prism is started with no dynamic flag,
 responses should be built with examples from the spec.
 ====spec====
 swagger: "2.0"

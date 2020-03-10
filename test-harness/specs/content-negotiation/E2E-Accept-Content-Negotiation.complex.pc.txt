@@ -1,0 +1,47 @@
+====test====
+When I send a request to an operation with Accept header containing multiple types.
+And this operation can produce a response that matches one of them.
+And matched response's Content-Type is not first one from Accept header.
+Then I should get back a response matching that format
+And this response should have Content-Type header matching that format
+And this response should have 200 status code
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "name": "Get Raw Honey",
+      "request": {
+        "url": {
+          "path": ["honey"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "id": "9c110a8f-2306-4184-9e73-145d99104713",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"honey\":\"killer bees\"}"
+        }
+      ],
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X GET http://localhost:4010/honey -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,application/json;q=0.8,application/signed-exchange;v=b3"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"honey":"killer bees"}

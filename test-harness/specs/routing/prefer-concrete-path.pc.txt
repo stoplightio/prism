@@ -1,0 +1,63 @@
+====test====
+When a path has multiple matches it selects the concrete first
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["test","{id}"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "id": "9c110a8f-2306-4184-9e73-145d99104713",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "string"
+        }
+      ]
+    },
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3e",
+      "request": {
+        "url": {
+          "path": ["test","fixed"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "id": "9c110a8f-2306-4184-9e73-145d99104712",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "0"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X GET http://localhost:4010/test/fixed
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+0

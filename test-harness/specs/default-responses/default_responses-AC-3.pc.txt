@@ -1,0 +1,45 @@
+====test====
+When I send a request to an operation
+And I force the response by adding __code to the path (ie http://localhost:4010/pets/123?__code=304)
+And this operation has no response with such code defined
+And this operation does not have default response defined
+Then I should get back a response with 404 status code
+And the response's payload should describe the error
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"ok\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos?__code=304
+====expect====
+HTTP/1.1 404 Not Found
+content-type: application/problem+json
+
+{"type":"https://stoplight.io/prism/errors#NOT_FOUND","title":"The server cannot find the requested content","status":404,"detail":"Requested status code 304 is not defined in the document."}

@@ -11,15 +11,15 @@ paths:
       produces:
         - text/plain
       responses:
+        204:
+          description: test1
+        210:
+          description: test2
         202:
           description: ok
           schema:
             type: string
             example: ok
-        204:
-          description: test1
-        210:
-          description: test2
 ====server====
 mock -p 4010 ${document}
 ====command====
@@ -27,6 +27,5 @@ curl -i http://localhost:4010/todos
 ====expect====
 HTTP/1.1 202 Accepted
 content-type: text/plain
-Connection: keep-alive
 
 ok

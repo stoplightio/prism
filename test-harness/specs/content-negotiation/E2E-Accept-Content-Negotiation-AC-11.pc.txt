@@ -1,0 +1,44 @@
+====test====
+When I send a request to an operation with Accept header containing application/json;q=0.8, application/xml, text/plain;q=0.5
+And this operation does not produce a response with either the content-type of application/json or application/xml
+Then I should get back a response with the content-type of text/plain
+And this response should have 200 status code
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "Get Todo Items",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "hello"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "accept: application/json;q=0.8, application/xml, text/plain;q=0.5"
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+hello

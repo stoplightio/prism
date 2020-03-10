@@ -33,6 +33,7 @@
     "@types/node": "^13.1.1",
     "@types/node-fetch": "2.5.4",
     "@types/pino": "^5.8.11",
+    "@types/postman-collection": "^3.5.0",
     "@types/raw-body": "^2.3.0",
     "@types/signale": "^1.2.1",
     "@types/split2": "^2.1.6",

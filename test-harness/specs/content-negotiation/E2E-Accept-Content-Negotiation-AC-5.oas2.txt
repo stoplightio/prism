@@ -1,6 +1,6 @@
 ====test====
 When I send a request to an operation with Accept header containing application/*
-And this operation can produce a response with content-type of application/*
+And this operation can produce responses with content-type matching application/* (application/json, application/xml)
 Then I should get back a response with the first content-type that matched application/*
 And this response should have 200 status code
 ====spec====
@@ -23,7 +23,5 @@ mock -p 4010 ${document}
 curl -i http://localhost:4010/todos -H "accept: application/*"
 ====expect====
 HTTP/1.1 200 OK
-content-type: application/json
-Connection: keep-alive
 
 "hello"

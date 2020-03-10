@@ -6,9 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 3.3.0 (2020-03-10)
+
 ## Added
 
 - Prism now supports sending its configuration parameters through the `Prefer` header [#984](https://github.com/stoplightio/prism/pull/984)
+- Experimental Postman Collection support [#985](https://github.com/stoplightio/prism/pull/985)
 
 # 3.2.9 (2020-02-19)
 

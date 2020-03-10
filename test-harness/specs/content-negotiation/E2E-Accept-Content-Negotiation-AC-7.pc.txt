@@ -1,0 +1,43 @@
+====test====
+When I send a request to an operation with Accept header containing */*
+And this operation produces a response with content-type matching */* (text/plain)
+Then I should get back a response with Content-Type of text/plain
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "Get Todo Items",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "hello"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "accept: */*"
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+hello

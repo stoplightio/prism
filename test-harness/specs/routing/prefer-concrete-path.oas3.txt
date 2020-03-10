@@ -8,7 +8,7 @@ paths:
       responses:
         '200':
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
   /test/fixed:

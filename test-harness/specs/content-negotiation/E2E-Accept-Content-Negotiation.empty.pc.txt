@@ -1,0 +1,44 @@
+====test====
+When the request has an empty Accept header
+Prism will fallback to application/json first, and then */*
+if nothing is found
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "name": "Get Raw Honey",
+      "request": {
+        "url": {
+          "path": ["path"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "id": "9c110a8f-2306-4184-9e73-145d99104713",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "string"
+        }
+      ],
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -H "Accept:" http://localhost:4010/path
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+string

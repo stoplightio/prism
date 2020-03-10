@@ -1,0 +1,52 @@
+====test====
+Sending multiple values in Accept header selects the first one matched.
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["check-email"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "OK, the email is available",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"string\""
+        },
+        {
+          "description": "OK, the email is available",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "1"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/check-email -H "Accept: application/json, text/plain, */*"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+"string"

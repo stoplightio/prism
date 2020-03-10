@@ -1,0 +1,59 @@
+====test====
+Not providing required credentials returns the schema generated response for 401.
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "in",
+        "value": "query",
+        "type": "string"
+      },
+      {
+        "key": "key",
+        "value": "apiKey",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "description": "OK"
+        },
+        {
+          "code": 401,
+          "description": "unauthorized",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "0"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -d -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 401 Unauthorized
+
+0

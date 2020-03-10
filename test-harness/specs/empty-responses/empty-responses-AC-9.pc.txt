@@ -1,0 +1,45 @@
+====test====
+Prism responds with a payload when content-type can be matched.
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "description": "abc",
+      "request": {
+        "url": {
+          "path": ["path"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "No Content",
+          "code": 204
+        },
+        {
+          "description": "a response",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "abc"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/path -H "Accept: text/plain"
+====expect====
+HTTP/1.1 200 OK
+
+abc

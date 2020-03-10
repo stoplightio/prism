@@ -23,7 +23,5 @@ curl -i -X GET http://localhost:4010/todos -H "accept: application/xml, applicat
 ====expect====
 HTTP/1.1 200 OK
 content-type: application/json
-content-length: 7
-Connection: keep-alive
 
 "hello"

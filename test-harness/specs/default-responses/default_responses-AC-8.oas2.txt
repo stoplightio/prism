@@ -1,0 +1,32 @@
+====test====
+When I send a request to an operation
+And in the headers I specify `Prefer: code=201`
+And the operation has such status code response defined
+Then I get back a response with a status code of 201
+====spec====
+swagger: "2.0"
+paths:
+  /todos:
+    get:
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: ok
+          schema:
+            type: string
+            example: ok
+        201:
+          description: ok
+          schema:
+            type: string
+            example: even more ok
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "Prefer: code=201"
+====expect====
+HTTP/1.1 201 OK
+content-type: text/plain
+
+even more ok

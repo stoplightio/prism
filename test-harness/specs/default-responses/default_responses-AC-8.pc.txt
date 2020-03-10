@@ -1,0 +1,53 @@
+====test====
+When I send a request to an operation
+And in the headers I specify `Prefer: code=201`
+And the operation has such status code response defined
+Then I get back a response with a status code of 201
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"ok\""
+        },
+        {
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"even more ok\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "Prefer: code=201"
+====expect====
+HTTP/1.1 201 OK
+content-type: application/json
+
+"even more ok"

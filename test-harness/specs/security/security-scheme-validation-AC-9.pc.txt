@@ -1,0 +1,50 @@
+====test====
+Adding a required header of "Authorization: Bearer <<BEARER_TOKEN>>" results in granted access.
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "TestToken",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "description": "OK",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"test\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "Authorization: Bearer abc123"
+====expect====
+HTTP/1.1 200 OK
+
+"test"

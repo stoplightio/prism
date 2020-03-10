@@ -1,0 +1,39 @@
+====test====
+Sending a HEAD request results in a response with an empty payload.
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "description": "todos-head",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "HEAD"
+      },
+      "response": [
+        {
+          "description": "todos-head-200",
+          "code": 200,
+          "header": [
+            {
+              "key": "nonce",
+              "value": "abc"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl --head http://localhost:4010/todos -H "Accept: application/json"
+====expect====
+HTTP/1.1 200 OK
+nonce: abc

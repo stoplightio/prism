@@ -1,5 +1,5 @@
 ====test====
-When the request has an empty or invalid Accept header
+When the request has an empty Accept header
 Prism will fallback to application/json first, and then */*
 if nothing is found
 ====spec====

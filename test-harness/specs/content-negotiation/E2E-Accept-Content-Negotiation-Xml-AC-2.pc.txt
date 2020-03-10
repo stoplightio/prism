@@ -1,0 +1,41 @@
+====test====
+Responding with an XML — with the example forwarded directly from the example
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["pets"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "successful operation",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/xml"
+            }
+          ],
+          "body": "<abc>1</abc>"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://127.0.0.1:4010/pets -H "Accept: application/xml"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/xml
+
+<abc>1</abc>

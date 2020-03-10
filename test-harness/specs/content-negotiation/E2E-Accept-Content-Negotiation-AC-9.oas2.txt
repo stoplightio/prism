@@ -24,6 +24,5 @@ curl -i http://localhost:4010/todos -H "accept: application/json;q=0.8, applicat
 ====expect====
 HTTP/1.1 200 OK
 content-type: application/xml
-Connection: keep-alive
 
 <project><foo>1</foo><bar>2</bar></project>

@@ -1,0 +1,48 @@
+====test====
+Making a request to an operation that overrides a global security to none
+and my http request is not sending any http header
+will results in granted access.
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "auth": {
+    "type": "basic"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "description": "OK",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"test\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+
+"test"

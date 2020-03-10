@@ -52,11 +52,10 @@ describe('GET /pet?__server', () => {
   afterEach(() => server.close());
 
   describe.each([['http://stoplight.io/api'], ['https://stoplight.io/api']])('valid server %s', serverUrl => {
-    it('returns 200', () => {
-      return expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
+    it('returns 200', () =>
+      expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
         status: 200,
-      });
-    });
+      }));
   });
 
   describe.each([['https://stoplight.com/api'], ['https://google.com/api'], ['https://stopligt.io/v1']])(
@@ -115,7 +114,7 @@ describe.each([[oas2File], [oas3File]])('server %s', file => {
     const response = await makeRequest('/pets/123?__code=404');
 
     expect(response.status).toBe(404);
-    expect(response.text()).resolves.toBe('');
+    return expect(response.text()).resolves.toBe('');
   });
 
   it('will return requested error response with payload', async () => {
@@ -123,8 +122,7 @@ describe.each([[oas2File], [oas3File]])('server %s', file => {
 
     expect(response.status).toBe(418);
 
-    const payload = await response.json();
-    expect(payload).toHaveProperty('name');
+    return expect(response.json()).resolves.toHaveProperty('name');
   });
 
   it('returns 404 with error when a non-existent example is requested', async () => {
@@ -242,7 +240,7 @@ describe.each([[oas2File], [oas3File]])('server %s', file => {
         it(`when the server is not valid for this exact operation then return error`, async () => {
           const response = await makeRequest('/store/inventory?__server=https://petstore.swagger.io/v2');
           expect(response.status).toBe(404);
-          expect(response.text()).resolves.toEqual(
+          return expect(response.text()).resolves.toEqual(
             '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}'
           );
         });
@@ -250,7 +248,7 @@ describe.each([[oas2File], [oas3File]])('server %s', file => {
         it(`when the server is invalid return error`, async () => {
           const response = await makeRequest('/store/inventory?__server=https://notvalid.com');
           expect(response.status).toBe(404);
-          expect(response.text()).resolves.toEqual(
+          return expect(response.text()).resolves.toEqual(
             '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}'
           );
         });

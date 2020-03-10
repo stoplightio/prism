@@ -1,0 +1,51 @@
+====test====
+When I send a request to an operation
+And that operation has any 2xx defined
+And the request was valid
+Then I get back the lowest 2xx response (e.g. if 204 and 210 are defined, return 204)
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "test1",
+          "code": 204
+        },
+        {
+          "description": "test2",
+          "code": 210
+        },
+        {
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"ok\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 202 Accepted
+content-type: application/json
+
+"ok"

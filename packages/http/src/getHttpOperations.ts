@@ -1,13 +1,16 @@
-import { transformOas2Operation, transformOas3Operation } from '@stoplight/http-spec';
+import { transformOas2Operations, transformOas3Operations, transformPostmanCollectionOperations } from '@stoplight/http-spec';
 import { resolveFile, resolveHttp } from '@stoplight/json-ref-readers';
 import { Resolver } from '@stoplight/json-ref-resolver';
 import { IHttpOperation } from '@stoplight/types';
 import { parse } from '@stoplight/yaml';
 import fetch from 'node-fetch';
 import * as fs from 'fs';
-import { flatten, get, keys, map, uniq } from 'lodash';
+import { get, uniq } from 'lodash';
 import { EOL } from 'os';
 import { resolve } from 'path';
+import type { Spec } from 'swagger-schema-official';
+import type { OpenAPIObject } from 'openapi3-ts';
+import type { CollectionDefinition } from 'postman-collection';
 
 const httpAndFileResolver = new Resolver({
   resolvers: {
@@ -36,23 +39,26 @@ export default async function getHttpOperations(specContent: string, baseUri?: s
     );
   }
 
-  const isOas2 = get(parsedContent, 'swagger');
+  const transformOperations = detectTransformOperationsFn(parsedContent);
+  if (!transformOperations) throw new Error('Unsupported document format');
 
-  const transformOperationFn = isOas2 ? transformOas2Operation : transformOas3Operation;
+  return transformOperations(resolvedContent);
+}
 
-  const paths = keys(get(resolvedContent, 'paths'));
-  const methods = ['get', 'post', 'put', 'delete', 'options', 'head', 'patch', 'trace'];
-  return flatten(
-    map(paths, path =>
-      keys(get(resolvedContent, ['paths', path]))
-        .filter(pathKey => methods.includes(pathKey))
-        .map(method =>
-          transformOperationFn({
-            document: resolvedContent,
-            path,
-            method,
-          })
-        )
-    )
-  );
+function detectTransformOperationsFn(parsedContent: unknown) {
+  if (isOpenAPI2(parsedContent)) return transformOas2Operations;
+  if (isOpenAPI3(parsedContent)) return transformOas3Operations;
+  if (isPostmanCollection(parsedContent)) return transformPostmanCollectionOperations;
+}
+
+function isOpenAPI2(document: unknown): document is Spec {
+  return get(document, 'swagger');
+}
+
+function isOpenAPI3(document: unknown): document is OpenAPIObject {
+  return get(document, 'openapi');
+}
+
+function isPostmanCollection(document: unknown): document is CollectionDefinition {
+  return Array.isArray(get(document, 'item')) && get(document, 'info.name');
 }

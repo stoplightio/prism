@@ -1,0 +1,55 @@
+====test====
+When I send a request (with no Accept header) to an operation
+And this operation defines some responses
+Then I should get back the first response defined for that operation
+And this response should have 200 status code
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "Get Todo Items",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"hello\""
+        },
+        {
+          "description": "Get Todo Items",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/vnd.api+json"
+            }
+          ],
+          "body": "\"vendor\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+"hello"

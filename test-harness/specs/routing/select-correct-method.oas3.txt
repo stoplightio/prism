@@ -1,5 +1,5 @@
 ====test====
-When multiple actions are mapped to a single endpoint, selects the correct response based on the incomming HTTP method
+When multiple actions are mapped to a single endpoint, selects the correct response based on the incoming HTTP method
 ====spec====
 openapi: 3.0.0
 paths:

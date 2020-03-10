@@ -1,5 +1,5 @@
 ====test====
-When prism is started with the --dynamic flag,
+When prism is started with no dynamic flag,
 responses should be built with examples from the spec.
 ====spec====
 openapi: 3.0.2

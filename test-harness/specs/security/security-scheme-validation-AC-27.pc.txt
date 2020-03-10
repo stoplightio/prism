@@ -1,0 +1,68 @@
+====test====
+If I have a request secured by a global security definition
+And such request defines a 422 response
+And I am sending a request that fails the input validation
+It will prefer the 422 user-defined response instead of creating one on the fly
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "auth": {
+    "type": "basic"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["users"]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": "{\"a\":0}",
+        "method": "POST"
+      },
+      "response": [
+        {
+          "code": 200,
+          "description": "OK"
+        },
+        {
+          "code": 401,
+          "description": "InvalidAuthorization",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"xyz\""
+        },
+        {
+          "code": 422,
+          "description": "InvalidPayload",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"abc\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/users -H "Authorization: Basic dGVzdDp0ZXN0" -H "Content-type: application/json" -d "{\"a\":{\"b\":0}}"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+
+"abc"

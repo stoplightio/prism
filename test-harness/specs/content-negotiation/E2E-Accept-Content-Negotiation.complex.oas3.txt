@@ -26,11 +26,9 @@ paths:
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i -X GET http://localhost:4010/honey -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
+curl -i -X GET http://localhost:4010/honey -H "accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,application/json;q=0.8,application/signed-exchange;v=b3"
 ====expect====
 HTTP/1.1 200 OK
 content-type: application/json
-content-length: 23
-Connection: keep-alive
 
 {"honey":"killer bees"}
