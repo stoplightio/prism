@@ -177,6 +177,9 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             );
 
             res.setHeader('Vary', 'origin');
+
+            // This should not be required since we're responding with a 204, which has no content by definition. However
+            // Safari does not really understand that and throws a Network Error. Explicit is better than implicit.
             res.setHeader('Content-Length', '0');
             return send(res, 204);
           }
