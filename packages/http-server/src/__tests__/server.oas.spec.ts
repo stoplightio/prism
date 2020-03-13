@@ -1,6 +1,7 @@
 import { createLogger } from '@stoplight/prism-core';
-import { getHttpOperationsFromResource } from '@stoplight/prism-http';
+import { getHttpOperationsFromResource, IHttpConfig } from '@stoplight/prism-http';
 import { resolve } from 'path';
+import { merge } from 'lodash';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { ThenArg } from '../types';
@@ -19,17 +20,20 @@ function checkErrorPayloadShape(payload: string) {
   expect(parsedPayload).toHaveProperty('detail');
 }
 
-async function instantiatePrism(specPath: string) {
+async function instantiatePrism(specPath: string, configOverride?: Partial<IHttpConfig>) {
   const operations = await getHttpOperationsFromResource(specPath);
   const server = createServer(operations, {
     components: { logger },
-    config: {
-      checkSecurity: true,
-      validateRequest: true,
-      validateResponse: true,
-      errors: false,
-      mock: { dynamic: false },
-    },
+    config: merge(
+      {
+        checkSecurity: true,
+        validateRequest: true,
+        validateResponse: true,
+        errors: false,
+        mock: { dynamic: false },
+      },
+      configOverride
+    ),
     cors: true,
   });
 
@@ -75,6 +79,36 @@ describe('GET /pet?__server', () => {
   function requestPetGivenServer(serverUrl: string) {
     return fetch(new URL(`/pet?__server=${serverUrl}`, server.address), { method: 'GET' });
   }
+});
+
+describe('dynamic flag preservation', () => {
+  let server: ThenArg<ReturnType<typeof instantiatePrism>>;
+
+  beforeAll(async () => {
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', 'petstore.no-auth.oas3.yaml'), {
+      mock: { dynamic: true },
+    });
+  });
+
+  afterAll(() => server.close());
+
+  describe('when running the server with dynamic to true', () => {
+    describe('and there is no preference header sent', () => {
+      describe('and I hit the same endpoint twice', () => {
+        let payload: unknown;
+        let secondPayload: unknown;
+
+        beforeAll(async () => {
+          payload = await (await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' })).json();
+          secondPayload = await (
+            await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' })
+          ).json();
+        });
+
+        it('shuold return two different objects', () => expect(payload).not.toStrictEqual(secondPayload));
+      });
+    });
+  });
 });
 
 describe.each([[oas2File], [oas3File]])('server %s', file => {
