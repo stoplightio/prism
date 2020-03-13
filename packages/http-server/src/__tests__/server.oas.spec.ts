@@ -99,10 +99,12 @@ describe('dynamic flag preservation', () => {
         let secondPayload: unknown;
 
         beforeAll(async () => {
-          payload = await (await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' })).json();
-          secondPayload = await (
-            await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' })
-          ).json();
+          payload = await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' }).then(r =>
+            r.json()
+          );
+          secondPayload = await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' }).then(r =>
+            r.json()
+          );
         });
 
         it('shuold return two different objects', () => expect(payload).not.toStrictEqual(secondPayload));
