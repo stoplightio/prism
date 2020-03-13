@@ -1,0 +1,44 @@
+====test====
+Adding a header of "Authorization: Basic <<TOKEN>>" where TOKEN is base64 encoded <<ID>>:<<PASS>> combination
+for a request to an endpoint, which security depends on global security definitions, results in granted access.
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "auth": {
+    "type": "basic"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "description": "OK",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"test\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "Authorization: Basic dGVzdDp0ZXN0"
+====expect====
+HTTP/1.1 200 OK
+
+"test"

@@ -1,5 +1,7 @@
 ====test====
-Making a request to an operation with removed global security results in granted access.
+Making a request to an operation that overrides a global security to none
+and my http request is not sending any http header
+will results in granted access.
 ====spec====
 openapi: 3.0.2
 paths:

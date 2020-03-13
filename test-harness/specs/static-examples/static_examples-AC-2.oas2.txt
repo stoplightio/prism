@@ -1,6 +1,7 @@
 ====test====
 When prism is started with the --dynamic flag,
-responses should continue to match expected document structure.
+And I am setting the __dynamic query string value to false
+The responses should have as body the example value provided
 ====spec====
 swagger: "2.0"
 paths:

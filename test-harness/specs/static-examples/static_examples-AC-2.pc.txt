@@ -1,0 +1,41 @@
+====test====
+When prism is started with the --dynamic flag,
+And I am setting the __dynamic query string value to false
+The responses should have as body the example value provided
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"title\":\"Work\",\"description\":\"string\",\"priority\":0}"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock --dynamic -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos?__dynamic=false
+====expect====
+HTTP/1.1 200 OK
+
+{"title":"Work","description":"string","priority":0}

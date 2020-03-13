@@ -1,7 +1,7 @@
 ====test====
 When I send a request to an operation with Accept header containing application/vnd.api+json
 And this operation can produce a response with content-type of application/vnd.api+json and content-type of application/json
-Then I should get back a response with the specified vendor
+Then I should get back a response with content of type application/vnd.api+json
 And this response should have 200 status code
 ====spec====
 swagger: "2.0"
@@ -24,6 +24,5 @@ curl -i http://localhost:4010/todos -H "accept: application/vnd.api+json"
 ====expect====
 HTTP/1.1 200 OK
 content-type: application/vnd.api+json
-Connection: keep-alive
 
 "vendor"

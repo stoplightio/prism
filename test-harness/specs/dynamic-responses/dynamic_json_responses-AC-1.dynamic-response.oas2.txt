@@ -1,5 +1,5 @@
 ====test====
-Prism generates dynamic values for schema when no static examples are provided.
+Prism generates dynamic values when instructed to do so.
 
 Given there are no examples defined for an operation
 And this operation can produce application/json response

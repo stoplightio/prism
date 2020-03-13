@@ -12,7 +12,8 @@ paths:
           schema:
             type: integer
       responses:
-        default: {}
+        default:
+            description: test
       security:
         - api_key: []
 components:

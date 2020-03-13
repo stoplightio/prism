@@ -1,0 +1,36 @@
+====test====
+Prism is able to respond with an empty response when authorization fails.
+AC-6 adds Accept header (AC-3 does not).
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "description": "abc",
+      "request": {
+        "url": {
+          "path": ["users"]
+        },
+        "auth": {
+          "type": "basic"
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "abc",
+          "code": 401
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -sIXGET http://localhost:4010/users -H "Accept: application/xml"
+====expect====
+HTTP/1.1 401 Unauthorized

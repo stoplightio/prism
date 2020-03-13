@@ -224,6 +224,26 @@ paths:
 
 `curl -X POST http://localhost:4010/ -A 'Accept: text/plain'`
 
+### NO_SUCCESS_RESPONSE_DEFINED
+
+**Message: No response in the range 200-299 defined**
+**Returned Status Code: `500`**
+**Explanation:** This error occurs when the current request has matched a corresponding HTTP Operation and has passed all the validations, but there's no successful response (200-299) that could be returned.
+
+##### Example
+
+```yaml
+openapi: '3.0.1'
+paths:
+  /:
+    get:
+      responses:
+        300:
+          description: 'Desc'
+```
+
+`curl -X POST http://localhost:4010/ -A 'Accept: text/plain'`
+
 ## Unknown error
 
 In case you get an `UNKNOWN` error, it likely means we **screwed it up** and we haven't handled this particular edge case. If you encounter one of these, opening an [issue](https://github.com/stoplightio/prism/issues/new?labels=bug&template=bug_report.md) might be a good idea.

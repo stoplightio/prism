@@ -23,7 +23,5 @@ curl -i http://localhost:4010/todos
 ====expect====
 HTTP/1.1 200 OK
 content-type: application/json
-content-length: 7
-Connection: keep-alive
 
 "hello"

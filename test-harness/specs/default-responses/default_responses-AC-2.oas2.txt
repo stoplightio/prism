@@ -29,6 +29,5 @@ curl -i -X GET http://localhost:4010/todos?__code=201
 ====expect====
 HTTP/1.1 201 Created
 content-type: text/plain
-Connection: keep-alive
 
 example

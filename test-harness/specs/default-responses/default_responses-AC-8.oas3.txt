@@ -1,0 +1,28 @@
+====test====
+When I send a request to an operation
+And in the headers I specify `Prefer: code=201`
+And the operation has such status code response defined
+Then I get back a response with a status code of 201
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              example: ok
+        201:
+          content:
+            application/json:
+              example: even more ok
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "Prefer: code=201"
+====expect====
+HTTP/1.1 201 OK
+content-type: application/json
+
+"even more ok"

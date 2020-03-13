@@ -1,0 +1,47 @@
+====test====
+Prism generates dynamic values when instructed to do so.
+
+Given there are no examples defined for an operation
+And this operation can produce application/json response
+And this operation response defines an example
+And I make a request to this operation
+And the request has Accept header of application/json
+Then I should get a response with dynamically generated JSON as payload
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "Get Todo Items",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\"title\": \"Test title\",\"description\": \"Test description\",\"priority\": 100}"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -d -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "accept: application/json"
+====expect-loose====
+HTTP/1.1 200 OK
+
+{"title": "officia voluptate amet ut","description": "sit","priority": 94921765}

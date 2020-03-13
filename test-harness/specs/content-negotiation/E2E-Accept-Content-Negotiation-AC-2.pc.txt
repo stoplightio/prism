@@ -1,0 +1,53 @@
+====test====
+When I send a request to an operation with Accept header containing application/xml, application/json
+And this operation can produce a response with content-type of application/xml and application/json
+Then I should get back a response with content-type of application/xml
+And this response should have 200 status code
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"hello\""
+        },
+        {
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/xml"
+            }
+          ],
+          "body": "<project><foo>1</foo><bar>2</bar></project>"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X GET http://localhost:4010/todos -H "accept: application/xml, application/json"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/xml
+
+<project><foo>1</foo><bar>2</bar></project>

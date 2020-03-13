@@ -9,7 +9,9 @@
     "/pet": {
       "get": {
         "responses": {
-          "200": {}
+          "200": {
+            "description": "test"
+          }
         }
       }
     },
@@ -21,7 +23,9 @@
       ],
       "get": {
         "responses": {
-          "200": {}
+          "200": {
+            "description": "test"
+          }
         }
       }
     }

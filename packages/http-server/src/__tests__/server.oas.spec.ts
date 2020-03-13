@@ -1,6 +1,8 @@
 import { createLogger } from '@stoplight/prism-core';
 import { getHttpOperationsFromResource } from '@stoplight/prism-cli/src/operations';
+import { IHttpConfig } from '@stoplight/prism-http';
 import { resolve } from 'path';
+import { merge } from 'lodash';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { ThenArg } from '../types';
@@ -19,17 +21,20 @@ function checkErrorPayloadShape(payload: string) {
   expect(parsedPayload).toHaveProperty('detail');
 }
 
-async function instantiatePrism(specPath: string) {
+async function instantiatePrism(specPath: string, configOverride?: Partial<IHttpConfig>) {
   const operations = await getHttpOperationsFromResource(specPath);
   const server = createServer(operations, {
     components: { logger },
-    config: {
-      checkSecurity: true,
-      validateRequest: true,
-      validateResponse: true,
-      errors: false,
-      mock: { dynamic: false },
-    },
+    config: merge(
+      {
+        checkSecurity: true,
+        validateRequest: true,
+        validateResponse: true,
+        errors: false,
+        mock: { dynamic: false },
+      },
+      configOverride
+    ),
     cors: true,
   });
 
@@ -52,11 +57,10 @@ describe('GET /pet?__server', () => {
   afterEach(() => server.close());
 
   describe.each([['http://stoplight.io/api'], ['https://stoplight.io/api']])('valid server %s', serverUrl => {
-    it('returns 200', () => {
-      return expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
+    it('returns 200', () =>
+      expect(requestPetGivenServer(serverUrl)).resolves.toMatchObject({
         status: 200,
-      });
-    });
+      }));
   });
 
   describe.each([['https://stoplight.com/api'], ['https://google.com/api'], ['https://stopligt.io/v1']])(
@@ -76,6 +80,38 @@ describe('GET /pet?__server', () => {
   function requestPetGivenServer(serverUrl: string) {
     return fetch(new URL(`/pet?__server=${serverUrl}`, server.address), { method: 'GET' });
   }
+});
+
+describe('dynamic flag preservation', () => {
+  let server: ThenArg<ReturnType<typeof instantiatePrism>>;
+
+  beforeAll(async () => {
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', 'petstore.no-auth.oas3.yaml'), {
+      mock: { dynamic: true },
+    });
+  });
+
+  afterAll(() => server.close());
+
+  describe('when running the server with dynamic to true', () => {
+    describe('and there is no preference header sent', () => {
+      describe('and I hit the same endpoint twice', () => {
+        let payload: unknown;
+        let secondPayload: unknown;
+
+        beforeAll(async () => {
+          payload = await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' }).then(r =>
+            r.json()
+          );
+          secondPayload = await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' }).then(r =>
+            r.json()
+          );
+        });
+
+        it('shuold return two different objects', () => expect(payload).not.toStrictEqual(secondPayload));
+      });
+    });
+  });
 });
 
 describe.each([[oas2File], [oas3File]])('server %s', file => {
@@ -115,7 +151,7 @@ describe.each([[oas2File], [oas3File]])('server %s', file => {
     const response = await makeRequest('/pets/123?__code=404');
 
     expect(response.status).toBe(404);
-    expect(response.text()).resolves.toBe('');
+    return expect(response.text()).resolves.toBe('');
   });
 
   it('will return requested error response with payload', async () => {
@@ -123,8 +159,7 @@ describe.each([[oas2File], [oas3File]])('server %s', file => {
 
     expect(response.status).toBe(418);
 
-    const payload = await response.json();
-    expect(payload).toHaveProperty('name');
+    return expect(response.json()).resolves.toHaveProperty('name');
   });
 
   it('returns 404 with error when a non-existent example is requested', async () => {
@@ -242,7 +277,7 @@ describe.each([[oas2File], [oas3File]])('server %s', file => {
         it(`when the server is not valid for this exact operation then return error`, async () => {
           const response = await makeRequest('/store/inventory?__server=https://petstore.swagger.io/v2');
           expect(response.status).toBe(404);
-          expect(response.text()).resolves.toEqual(
+          return expect(response.text()).resolves.toEqual(
             '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}'
           );
         });
@@ -250,7 +285,7 @@ describe.each([[oas2File], [oas3File]])('server %s', file => {
         it(`when the server is invalid return error`, async () => {
           const response = await makeRequest('/store/inventory?__server=https://notvalid.com');
           expect(response.status).toBe(404);
-          expect(response.text()).resolves.toEqual(
+          return expect(response.text()).resolves.toEqual(
             '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}'
           );
         });

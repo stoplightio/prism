@@ -1,7 +1,7 @@
 ====test====
-Making a request (and not including any credentials) to an endpoint,
+Making a request that includes the correct credentials to an endpoint,
 which security depends on the one and only global security definition,
-results in a 401 status code response.
+results in a 200 status code response.
 ====spec====
 openapi: 3.0.2
 paths:

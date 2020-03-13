@@ -1,5 +1,7 @@
 ====test====
-Not providing required credentials returns an example for 401.
+If the current document provides a response with 401 as status code
+And the current request is not providing the required credentials
+I should receive the exact specified 401 response (and not a generated one)
 ====spec====
 openapi: 3.0.2
 paths:

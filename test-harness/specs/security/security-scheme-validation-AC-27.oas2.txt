@@ -1,5 +1,8 @@
 ====test====
-A defined 422 response is returned when security validation is passed.
+If I have a request secured by a global security definition
+And such request defines a 422 response
+And I am sending a request that fails the input validation
+It will prefer the 422 user-defined response instead of creating one on the fly
 ====spec====
 swagger: "2.0"
 produces:

@@ -1,8 +1,8 @@
 ====test====
 If I run Prism with a document that has the OPTION verb handled
 And the CORS support is enabled
-And I do a request with OPTIONS as verb
-I should get a 204 response with the CORS headers ignoring the specification one
+And I do a preflight request
+I should get a 204 response with the CORS headers
 ====spec====
 swagger: "2.0"
 paths:
@@ -17,11 +17,11 @@ paths:
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i -X OPTIONS http://localhost:4010/todos
+curl -i -X OPTIONS http://localhost:4010/todos -H "Origin: http://test.com" -H "Access-Control-Request-Method: GET"
 ====expect====
 HTTP/1.1 204 No Content
 vary: Origin
 access-control-allow-origin: *
 access-control-allow-headers: *
 access-control-allow-credentials: true
-access-control-allow-methods: GET,HEAD,PUT,PATCH,POST,DELETE
+access-control-allow-methods: GET

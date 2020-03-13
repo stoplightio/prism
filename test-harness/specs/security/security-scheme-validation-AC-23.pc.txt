@@ -1,0 +1,45 @@
+====test====
+Making a request that includes the correct credentials to an endpoint,
+which security depends on the one and only global security definition,
+results in a 200 status code response.
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "auth": {
+    "type": "digest"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "description": "OK",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"test\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H 'Authorization: Digest username="", realm="", nonce="", uri="", response=""'
+====expect====
+HTTP/1.1 200 OK
+
+"test"

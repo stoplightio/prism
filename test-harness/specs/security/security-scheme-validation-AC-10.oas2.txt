@@ -1,5 +1,7 @@
 ====test====
-Adding a required header of "Authorization: Bearer <<BEARER_TOKEN>>" results in granted access.
+When the current operation has an auth of type OAuth2
+And I send a request with the header of "Authorization: Bearer <<BEARER_TOKEN>>"
+It will results in granted access.
 ====spec====
 swagger: '2.0'
 paths:

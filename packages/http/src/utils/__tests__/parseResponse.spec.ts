@@ -1,80 +1,74 @@
 import { parseResponse, parseResponseBody, parseResponseHeaders } from '../parseResponse';
 import { assertResolvesLeft, assertResolvesRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { Headers } from 'node-fetch';
-import { Dictionary } from '@stoplight/types';
 
 describe('parseResponseBody()', () => {
   describe('body is json', () => {
     describe('body is parseable', () => {
-      it('returns parsed body', async () => {
+      it('returns parsed body', () => {
         const response = {
           headers: new Headers({ 'content-type': 'application/json' }),
           json: jest.fn().mockResolvedValue({ test: 'test' }),
           text: jest.fn(),
         };
 
-        await assertResolvesRight(parseResponseBody(response), body => expect(body).toEqual({ test: 'test' }));
-
         expect(response.text).not.toHaveBeenCalled();
+        return assertResolvesRight(parseResponseBody(response), body => expect(body).toEqual({ test: 'test' }));
       });
     });
 
     describe('body is not parseable', () => {
-      it('returns error', async () => {
+      it('returns error', () => {
         const response = {
           headers: new Headers({ 'content-type': 'application/json' }),
           json: jest.fn().mockRejectedValue(new Error('Big Bada Boom')),
           text: jest.fn(),
         };
 
-        await assertResolvesLeft(parseResponseBody(response), error => expect(error.message).toEqual('Big Bada Boom'));
-
         expect(response.text).not.toHaveBeenCalled();
+        return assertResolvesLeft(parseResponseBody(response), error => expect(error.message).toEqual('Big Bada Boom'));
       });
     });
   });
 
   describe('body is not json', () => {
     describe('body is readable', () => {
-      it('returns body text', async () => {
+      it('returns body text', () => {
         const response = {
           headers: new Headers({ 'content-type': 'text/html' }),
           json: jest.fn(),
           text: jest.fn().mockResolvedValue('<html>Test</html>'),
         };
 
-        await assertResolvesRight(parseResponseBody(response), body => expect(body).toEqual('<html>Test</html>'));
-
         expect(response.json).not.toHaveBeenCalled();
+        return assertResolvesRight(parseResponseBody(response), body => expect(body).toEqual('<html>Test</html>'));
       });
     });
 
     describe('body is not readable', () => {
-      it('returns error', async () => {
+      it('returns error', () => {
         const response = {
           headers: new Headers(),
           json: jest.fn(),
           text: jest.fn().mockRejectedValue(new Error('Big Bada Boom')),
         };
 
-        await assertResolvesLeft(parseResponseBody(response), error => expect(error.message).toEqual('Big Bada Boom'));
-
         expect(response.json).not.toHaveBeenCalled();
+        return assertResolvesLeft(parseResponseBody(response), error => expect(error.message).toEqual('Big Bada Boom'));
       });
     });
   });
 
   describe('content-type header not set', () => {
-    it('returns body text', async () => {
+    it('returns body text', () => {
       const response = {
         headers: new Headers(),
         json: jest.fn(),
         text: jest.fn().mockResolvedValue('Plavalaguna'),
       };
 
-      await assertResolvesRight(parseResponseBody(response), body => expect(body).toEqual('Plavalaguna'));
-
       expect(response.json).not.toHaveBeenCalled();
+      return assertResolvesRight(parseResponseBody(response), body => expect(body).toEqual('Plavalaguna'));
     });
   });
 });
@@ -90,8 +84,8 @@ describe('parseResponseHeaders()', () => {
 
 describe('parseResponse()', () => {
   describe('response is correct', () => {
-    it('returns parsed response', () => {
-      return assertResolvesRight(
+    it('returns parsed response', () =>
+      assertResolvesRight(
         parseResponse({
           status: 200,
           headers: new Headers({ 'content-type': 'application/json', test: 'test' }),
@@ -105,13 +99,12 @@ describe('parseResponse()', () => {
             body: { test: 'test' },
           });
         }
-      );
-    });
+      ));
   });
 
   describe('response is invalid', () => {
-    it('returns error', () => {
-      return assertResolvesLeft(
+    it('returns error', () =>
+      assertResolvesLeft(
         parseResponse({
           status: 200,
           headers: new Headers(),
@@ -121,7 +114,6 @@ describe('parseResponse()', () => {
         error => {
           expect(error.message).toEqual('Big Bada Boom');
         }
-      );
-    });
+      ));
   });
 });

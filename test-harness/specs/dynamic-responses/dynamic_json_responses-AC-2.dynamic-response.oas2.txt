@@ -1,10 +1,9 @@
 ====test====
-Prism generates dynamic values for schema when no static examples are provided.
-
-Given there are examples defined for an operation
-And this operation can produce application/json response
-And this operation response defines a JSON Schema (schema field)
-And I make a request to this operationAnd the request has Accept header of application/json
+Prism generates dynamic values for schema when the __dynamic query parameter is set.
+Given an operation that can produce application/json response
+And this operation has a response with schema
+And I make a request to this operation
+And the request has Accept header of application/json
 And I add __dynamic=true to the query path
 Then I should get a response with dynamically generated JSON as payload
 ====spec====

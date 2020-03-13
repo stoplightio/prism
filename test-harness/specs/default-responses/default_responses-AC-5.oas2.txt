@@ -1,8 +1,8 @@
 ====test====
 When I send a request to an operation
-And in the path I specify ?__code=some-code (ie ?__code=200)
+And in the path I specify ?__code=some-code (ie ?__code=201)
 And the operation has such status code response defined
-Then I get back a response with a status code of 200
+Then I get back a response with a status code of 201
 ====spec====
 swagger: "2.0"
 paths:
@@ -16,13 +16,17 @@ paths:
           schema:
             type: string
             example: ok
+        201:
+          description: ok
+          schema:
+            type: string
+            example: even more ok
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i http://localhost:4010/todos?__code=200
+curl -i http://localhost:4010/todos?__code=201
 ====expect====
-HTTP/1.1 200 OK
+HTTP/1.1 201 OK
 content-type: text/plain
-Connection: keep-alive
 
-ok
+even more ok

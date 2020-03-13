@@ -1,0 +1,29 @@
+====test====
+If I run Prism with a document
+And the CORS support is enabled
+And I do a request with OPTIONS as verb
+I should still get the defined response in the spec
+====spec====
+openapi: 3.0.0
+paths:
+  /test:
+    options:
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  test:
+                    type: string
+                    default: OPTIONS worked
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X OPTIONS http://localhost:4010/test
+====expect====
+HTTP/1.1 200 OK
+
+{"test":"OPTIONS worked"}

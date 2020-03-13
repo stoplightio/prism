@@ -1,6 +1,6 @@
 ====test====
 When I send a request to an operation
-And I force the response by adding __code to the path (ie http://localhost:4010/pets/123?__code=200)
+And I force the response by adding __code to the path (ie http://localhost:4010/pets/123?__code=304)
 And this operation has no response with such code defined
 And this operation does not have default response defined
 Then I should get back a response with 404 status code
@@ -23,6 +23,5 @@ curl -i http://localhost:4010/todos?__code=304
 ====expect====
 HTTP/1.1 404 Not Found
 content-type: application/problem+json
-Connection: keep-alive
 
 {"type":"https://stoplight.io/prism/errors#NOT_FOUND","title":"The server cannot find the requested content","status":404,"detail":"Requested status code 304 is not defined in the document."}

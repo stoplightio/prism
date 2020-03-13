@@ -6,9 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 3.3.1 (2020-03-13)
+
+## Fixed
+
+- Prism is now able to correctly differentiate between a preflight request and a regular `OPTIONS` request [#1031](https://github.com/stoplightio/prism/pull/1031)
+- Fixed a condition where Prism would ignore CLI flags in case the nor `Prefer` or Query String preferences were passed [#1034](https://github.com/stoplightio/prism/pull/1034)
+- Created a specific error when a 200-299 response cannot be found for a successful request [#1035](https://github.com/stoplightio/prism/pull/1035)
+
+# 3.3.0 (2020-03-10)
+
 ## Added
 
 - Prism now supports sending its configuration parameters through the `Prefer` header [#984](https://github.com/stoplightio/prism/pull/984)
+- Experimental Postman Collection support [#985](https://github.com/stoplightio/prism/pull/985)
 
 # 3.2.9 (2020-02-19)
 

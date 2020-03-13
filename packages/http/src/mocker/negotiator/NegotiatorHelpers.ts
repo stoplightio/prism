@@ -9,7 +9,7 @@ import * as RE from 'fp-ts/lib/ReaderEither';
 import { get, tail } from 'lodash';
 import { Logger } from 'pino';
 import withLogger from '../../withLogger';
-import { NOT_ACCEPTABLE, NOT_FOUND } from '../errors';
+import { NOT_ACCEPTABLE, NOT_FOUND, NO_SUCCESS_RESPONSE_DEFINED } from '../errors';
 import {
   contentHasExamples,
   createResponseFromDefault,
@@ -220,7 +220,7 @@ const helpers = {
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
       findLowest2xx(httpOperation.responses),
-      RE.fromOption(() => new Error('No 2** response defined, cannot mock')),
+      RE.fromOption(() => ProblemJsonError.fromTemplate(NO_SUCCESS_RESPONSE_DEFINED)),
       RE.chain(lowest2xxResponse =>
         helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, lowest2xxResponse)
       )

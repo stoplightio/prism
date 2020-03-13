@@ -1,0 +1,55 @@
+====test====
+When I send a request to an operation with Accept header containing application/vnd.api+json
+And this operation can produce a response with content-type of application/vnd.api+json and content-type of application/json
+Then I should get back a response with content of type application/vnd.api+json
+And this response should have 200 status code
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["todos"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "description": "Get Todo Items",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"hello\""
+        },
+        {
+          "description": "Get Todo Items",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/vnd.api+json"
+            }
+          ],
+          "body": "\"vendor\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "accept: application/vnd.api+json"
+====expect====
+HTTP/1.1 200 OK
+content-type: application/vnd.api+json
+
+"vendor"

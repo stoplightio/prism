@@ -1,8 +1,8 @@
 ====test====
 When I send a request to an operation
-And in the path I specify ?_code=some-code (ie ?__code=200)
+And in the path I specify ?_code=some-code (ie ?__code=201)
 And the operation has such status code response defined
-Then I get back a response with a status code of 200
+Then I get back a response with a status code of 201
 ====spec====
 openapi: 3.0.2
 paths:
@@ -13,13 +13,16 @@ paths:
           content:
             application/json:
               example: ok
+        201:
+          content:
+            application/json:
+              example: even more ok
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i http://localhost:4010/todos?__code=200
+curl -i http://localhost:4010/todos?__code=201
 ====expect====
-HTTP/1.1 200 OK
+HTTP/1.1 201 OK
 content-type: application/json
-Connection: keep-alive
 
-"ok"
+"even more ok"

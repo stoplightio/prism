@@ -1,0 +1,43 @@
+====test====
+When I send a request to an operation
+And the operation has a required path segment
+And in the request I sent that segment is missing
+I should get a 404 response back
+And the payload of the response should be in application/problem+json content-type
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["pet","a","{b}"]
+        },
+        "method": "GET"
+      },
+      "response": [
+        {
+          "code": 200,
+          "description": "ok",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "\"abc\""
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -sIXGET http://127.0.0.1:4010/pet/a
+====expect====
+HTTP/1.1 404 Not Found
+content-type: application/problem+json

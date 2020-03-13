@@ -12,6 +12,9 @@ paths:
             application/json:
               schema:
                 type: string
+            text/plain:
+              schema:
+                type: number
 ====server====
 mock -p 4010 ${document}
 ====command====

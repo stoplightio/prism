@@ -442,7 +442,7 @@ describe('NegotiatorHelpers', () => {
 
       const negotiationResult = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions)(logger);
       assertLeft(negotiationResult, e => {
-        expect(e.message).toBe('No 2** response defined, cannot mock');
+        expect(e.name).toBe('https://stoplight.io/prism/errors#NO_SUCCESS_RESPONSE_DEFINED');
       });
     });
   });

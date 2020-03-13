@@ -7,3 +7,8 @@
 **/__tests__
 **/test-harness
 **/.tsbuildinfo
+**/.git
+install
+jest.*
+*.md
+azure-pipelines.yml
