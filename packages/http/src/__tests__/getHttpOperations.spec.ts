@@ -1,10 +1,10 @@
-import getHttpOperations from '../getHttpOperations';
+import { getHttpOperationsFromSpec } from '@stoplight/prism-cli/src/operations';
 
-describe('getHttpOperations()', () => {
+describe('getHttpOperationsFromSpec()', () => {
   describe('ref resolving fails', () => {
     it('fails with exception', () => {
       return expect(
-        getHttpOperations(
+        getHttpOperationsFromSpec(
           JSON.stringify({
             openapi: '3.0.0',
             paths: { $ref: 'abc://' },
@@ -17,7 +17,7 @@ describe('getHttpOperations()', () => {
 
     it('deduplicates similar errors', () => {
       return expect(
-        getHttpOperations(
+        getHttpOperationsFromSpec(
           JSON.stringify({
             openapi: '3.0.0',
             paths: { $ref: 'abc://' },
@@ -33,18 +33,18 @@ describe('getHttpOperations()', () => {
   describe('ref resolving succeeds', () => {
     describe('OpenAPI 2 document is provided', () => {
       it('detects it properly', () => {
-        return expect(getHttpOperations(JSON.stringify({ swagger: '2.0' }))).resolves.toBeTruthy();
+        return expect(getHttpOperationsFromSpec(JSON.stringify({ swagger: '2.0' }))).resolves.toBeTruthy();
       });
     });
 
     describe('OpenAPI 3 document is provided', () => {
       it('detects it properly', () => {
-        return expect(getHttpOperations(JSON.stringify({ openapi: '3.0.0' }))).resolves.toBeTruthy();
+        return expect(getHttpOperationsFromSpec(JSON.stringify({ openapi: '3.0.0' }))).resolves.toBeTruthy();
       });
 
       it('returns correct HttpOperation', () => {
         return expect(
-          getHttpOperations(
+          getHttpOperationsFromSpec(
             JSON.stringify({
               openapi: '3.0.0',
               paths: {
@@ -71,13 +71,15 @@ describe('getHttpOperations()', () => {
 
     describe('Postman Collection document is provided', () => {
       it('detects it properly', () => {
-        return expect(getHttpOperations(JSON.stringify({ info: { name: 'Test' }, item: [] }))).resolves.toBeTruthy();
+        return expect(
+          getHttpOperationsFromSpec(JSON.stringify({ info: { name: 'Test' }, item: [] }))
+        ).resolves.toBeTruthy();
       });
     });
 
     describe('unknown document is provided', () => {
       it('throws error', () => {
-        return expect(getHttpOperations(JSON.stringify({}))).rejects.toThrow(/^Unsupported document format$/);
+        return expect(getHttpOperationsFromSpec(JSON.stringify({}))).rejects.toThrow(/^Unsupported document format$/);
       });
     });
   });
