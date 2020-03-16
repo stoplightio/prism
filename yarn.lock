@@ -1299,20 +1299,20 @@
     type-detect "4.0.8"
 
 "@stoplight/http-spec@^2.8.2":
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.8.2.tgz#26f74f1dd341936ab2f1a65fe91b43b8e85a8fe5"
-  integrity sha512-8Fk6pX/pB7PUkuvHw4T12YkOd1HBRBMSzjz1AZ5F9ue6F7hdEQ4qY/pYJ5ITlCdhGGhUHFQsq5gRDVR/BgGacw==
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.9.2.tgz#7b303e094c2a72fa4363148afbb7ad0cf90a73e6"
+  integrity sha512-KVG21V2El3P7t+esHxGk1hwdq+Ax/0SCm2EFgCuZKEaIRJiicgCmlJDaPmOgxPzhFeinuVqoCuZ48dtDi51DMg==
   dependencies:
     "@openapi-contrib/openapi-schema-to-json-schema" "^3.0"
-    "@stoplight/json" "^3.4.0"
+    "@stoplight/json" "^3.5.1"
     "@stoplight/types" "^11.4.0"
-    "@types/swagger-schema-official" "~2.0.20"
+    "@types/swagger-schema-official" "~2.0.21"
     "@types/to-json-schema" "^0.2.0"
     "@types/type-is" "^1.6.3"
-    "@types/urijs" "~1.19.4"
+    "@types/urijs" "~1.19.7"
     lodash "^4.17.15"
     openapi3-ts "~1.3.0"
-    postman-collection "^3.5.5"
+    postman-collection "^3.6.0"
     to-json-schema "^0.2.3"
     type-is "^1.6.18"
     urijs "~1.19.2"
@@ -1340,7 +1340,7 @@
     tslib "^1.10.0"
     urijs "~1.19.1"
 
-"@stoplight/json@^3.1.2", "@stoplight/json@^3.4.0":
+"@stoplight/json@^3.1.2", "@stoplight/json@^3.5.1":
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.5.1.tgz#afc6ffcbe2ada8f9b16680fd7885688cf9beec7e"
   integrity sha512-O5WUW2yfAvtrqeq60YrbxpTvk87Ti2IeJ5oVa2XNJ2s+IIxx0CM+j316QoOjSGs+twrRpwb3jT9CFPrq7Ghkzg==
@@ -1567,10 +1567,10 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
 
-"@types/swagger-schema-official@~2.0.20":
-  version "2.0.20"
-  resolved "https://registry.yarnpkg.com/@types/swagger-schema-official/-/swagger-schema-official-2.0.20.tgz#5f5935a47d7713393efde071fd97a4408cc03487"
-  integrity sha512-GHdvwZQg7i+6AUMnP+tqYJJbt59SuYu8k9dzX8E6TJ5QFXKW9FxfdfqT5g+VcyuEua+/YaRzumqJ6wcQMuSP5Q==
+"@types/swagger-schema-official@~2.0.21":
+  version "2.0.21"
+  resolved "https://registry.yarnpkg.com/@types/swagger-schema-official/-/swagger-schema-official-2.0.21.tgz#56812a86dcd57ba60e5c51705ee96a2b2dc9b374"
+  integrity sha512-n9BbLOjR4Hre7B4TSGGMPohOgOg8tcp00uxqsIE00uuWQC0QuX57G1bqC1csLsk2DpTGtHkd0dEb3ipsCZ9dAA==
 
 "@types/to-json-schema@^0.2.0":
   version "0.2.0"
@@ -1586,10 +1586,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/urijs@^1.19", "@types/urijs@~1.19.4":
-  version "1.19.4"
-  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.4.tgz#29c4a694d4842d7f95e359a26223fc1865f1ab13"
-  integrity sha512-uHUvuLfy4YkRHL4UH8J8oRsINhdEHd9ymag7KJZVT94CjAmY1njoUzhazJsZjwfy+IpWKQKGVyXCwzhZvg73Fg==
+"@types/urijs@^1.19", "@types/urijs@~1.19.7":
+  version "1.19.7"
+  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.7.tgz#94dae48b40300135db8cc3796b12252850383193"
+  integrity sha512-0YN0GGB2Xab5cuHerBQw/NvWUnkdVfDNdBjXtTr+2AE1c9t29HVvV+IkXwp+fwqN8/05U/XjaQ7pk+jP41ypqA==
 
 "@types/yargs-parser@*":
   version "13.1.0"
@@ -7182,7 +7182,7 @@ postcss@^7.0.5:
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-postman-collection@^3.5.5:
+postman-collection@^3.5.5, postman-collection@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/postman-collection/-/postman-collection-3.6.0.tgz#e739e80dce1d78cb6b44d1c942895d6aa0c5c9b7"
   integrity sha512-B+oAJb0ILsXBj7fJzFmFaZBghLnqwBUetHi7xUjDWzJ668gKdW5sNEBmC/Sojzo7dLgIZjVMnsCnmYtorJv0Kg==
