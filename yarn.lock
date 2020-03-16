@@ -1356,11 +1356,12 @@
   integrity sha512-t74/MHMgmFVMQhdQ/2Q766GryNTIW8McH8+vB25oeoBhYKTOrJ/wPDt+OCxIWHPUlcSi2fTWa4FKQ8qgmP2jVA==
 
 "@stoplight/types@^11.1.1", "@stoplight/types@^11.3.0", "@stoplight/types@^11.4.0":
-  version "11.4.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.4.0.tgz#a2bedbbec37700d3c5a8c7d36c763a61d7a8bce7"
-  integrity sha512-kMh1Sv7bA8BdbUaRXsRyi2K8Y5PzPOUWNSjB4qKOi0P6+dLczjlKggEIw9Xzuu1tCgBFdEvNwjnYDey0iqgeZQ==
+  version "11.5.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.5.0.tgz#d7f766878a1012b4ba663de0c6704d37047e66dd"
+  integrity sha512-Pnfto5aCBvO1fcTMRSQA9xObrCAAbRz0Nnqd8XZX9mgVV4GIIMI38uCL+zzCp0vsrB79Gxt1Fs0pEJZQeTMMjQ==
   dependencies:
-    "@types/json-schema" "^7.0.3"
+    "@types/json-schema" "^7.0.4"
+    utility-types "^3.10.0"
 
 "@stoplight/yaml-ast-parser@0.0.44":
   version "0.0.44"
@@ -1476,7 +1477,7 @@
     jest-diff "^25.1.0"
     pretty-format "^25.1.0"
 
-"@types/json-schema@*", "@types/json-schema@^7.0.3":
+"@types/json-schema@*", "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.4":
   version "7.0.4"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.4.tgz#38fd73ddfd9b55abb1e1b2ed578cb55bd7b7d339"
   integrity sha512-8+KAKzEvSUdeo+kmqnKrqgeE+LcA0tjYWFY7RPProVYwnqDjukzO+3b6dLD56rYX5TdWejnEOLJYOIeh4CXKuA==
@@ -8990,6 +8991,11 @@ util.promisify@^1.0.0:
   dependencies:
     define-properties "^1.1.2"
     object.getownpropertydescriptors "^2.0.3"
+
+utility-types@^3.10.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/utility-types/-/utility-types-3.10.0.tgz#ea4148f9a741015f05ed74fd615e1d20e6bed82b"
+  integrity sha512-O11mqxmi7wMKCo6HKFt5AhO4BwY3VV68YU07tgxfz8zJTIxr4BpsezN49Ffwy9j3ZpwwJp4fkRwjRzq3uWE6Rg==
 
 uuid@3.4.0:
   version "3.4.0"
