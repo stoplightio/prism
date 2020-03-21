@@ -1,3 +1,5 @@
+<!-- markdown-link-check-disable -->
+
 # Change Log
 
 All notable changes to this project will be documented in this file.
@@ -396,3 +398,5 @@ This is nothing more than the beta 6 rebranded.
 - **router:** WIP add disambiguation and server matching ([c778ae6](https://github.com/stoplightio/prism/commit/c778ae6))
 - **router:** WIP dummy router implementation and specs ([2dc3f8b](https://github.com/stoplightio/prism/commit/2dc3f8b))
 - **sampler:** add basic class structure and basic implementation ([2c31635](https://github.com/stoplightio/prism/commit/2c31635))
+
+<!-- markdown-link-check-enable-->

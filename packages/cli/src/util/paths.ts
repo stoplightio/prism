@@ -44,7 +44,15 @@ function generateParamValue(spec: IHttpParam): E.Either<Error, unknown> {
     E.chain(value => {
       switch (spec.style) {
         case HttpParamStyles.DeepObject:
-          return E.right(serializeWithDeepObjectStyle(spec.name, value));
+          return pipe(
+            value,
+            E.fromPredicate(
+              (value: unknown): value is string | Dictionary<unknown, string> =>
+                typeof value === 'string' || typeof value === 'object',
+              () => new Error('Expected string parameter')
+            ),
+            E.map(value => serializeWithDeepObjectStyle(spec.name, value))
+          );
 
         case HttpParamStyles.PipeDelimited:
           return pipe(
