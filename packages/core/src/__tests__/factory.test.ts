@@ -34,7 +34,14 @@ describe('validation', () => {
   ])('%s', (_type, fieldType, fnName, reverseFnName) => {
     describe('when enabled', () => {
       beforeAll(() => {
-        const obj: any = {};
+        const obj: IPrismConfig = {
+          checkSecurity: true,
+          errors: true,
+          validateRequest: false,
+          validateResponse: false,
+          mock: true,
+        };
+
         obj[fieldType] = true;
         return prismInstance.request('', [], obj)();
       });
