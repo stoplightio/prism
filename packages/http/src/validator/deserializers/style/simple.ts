@@ -9,7 +9,7 @@ export class SimpleStyleDeserializer implements IHttpHeaderParamStyleDeserialize
     return style === HttpParamStyles.Simple;
   }
 
-  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode?: boolean): any {
+  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode?: boolean): unknown {
     const type = schema ? schema.type : 'undefined';
     const value = parameters[name];
 

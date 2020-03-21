@@ -8,6 +8,6 @@ export interface IHttpValidator<Target, Specs> {
 }
 
 export interface ISchemaValidator<S = JSONSchema> {
-  validate(content: any, schema: S): IPrismDiagnostic[];
+  validate(content: unknown, schema: S): IPrismDiagnostic[];
   supports(mediaType: string): boolean;
 }

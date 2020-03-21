@@ -105,7 +105,7 @@ function startPrism(server, filename, done: (error?: Error, handle?: ChildProces
   const timeout = setTimeout(
     () => {
       shutdownPrism(prismMockProcessHandle, () => {
-      done(new Error(`Timeout while waiting for "${WAIT_FOR_LINE}" log line`));
+        done(new Error(`Timeout while waiting for "${WAIT_FOR_LINE}" log line`));
       });
     },
     WAIT_FOR_LINE_TIMEOUT
@@ -114,12 +114,12 @@ function startPrism(server, filename, done: (error?: Error, handle?: ChildProces
   prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
     if (line.includes(WAIT_FOR_LINE)) {
       clearTimeout(timeout);
-    done(undefined, prismMockProcessHandle);
+      done(undefined, prismMockProcessHandle);
     }
   });
 }
 
-function shutdownPrism(processHandle: ChildProcess, done: (...args: any[]) => any) {
+function shutdownPrism(processHandle: ChildProcess, done: (...args: unknown[]) => any) {
   processHandle.kill();
   return processHandle.on('exit', done);
 }

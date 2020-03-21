@@ -30,10 +30,10 @@ function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValue
   return params;
 }
 
-function addressInfoToString(address: AddressInfo | string | null) {
-  if (!address) return '';
-  const a = address as AddressInfo;
-  return `http://${a.address}:${a.port}`;
+function addressInfoToString(addressInfo: AddressInfo | string | null) {
+  if (!addressInfo) return '';
+  if (typeof addressInfo === 'string') return addressInfo;
+  return `http://${addressInfo.address}:${addressInfo.port}`;
 }
 
 function parseRequestBody(request: IncomingMessage) {

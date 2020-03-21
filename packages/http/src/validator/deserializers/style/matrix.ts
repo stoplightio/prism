@@ -9,7 +9,7 @@ export class MatrixStyleDeserializer implements IHttpHeaderParamStyleDeserialize
     return style === HttpParamStyles.Matrix;
   }
 
-  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode = false): any {
+  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode = false): unknown {
     const type = schema ? schema.type : 'undefined';
 
     if (!parameters[name].startsWith(';')) {

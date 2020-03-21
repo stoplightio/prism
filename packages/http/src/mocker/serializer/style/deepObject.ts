@@ -1,4 +1,6 @@
-export function serializeWithDeepObjectStyle(name: string, value: any) {
+import { Dictionary, Primitive } from '@stoplight/types';
+
+export function serializeWithDeepObjectStyle(name: string, value: Dictionary<unknown>) {
   return serialize(name, [], value);
 }
 

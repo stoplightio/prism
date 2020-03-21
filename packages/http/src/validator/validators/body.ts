@@ -85,7 +85,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
 export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent> {
   constructor(private prefix: string) {}
 
-  public validate(target: any, specs: IMediaTypeContent[], mediaType?: string) {
+  public validate(target: unknown, specs: IMediaTypeContent[], mediaType?: string) {
     const findContentByMediaType = pipe(
       O.fromNullable(mediaType),
       O.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
@@ -113,7 +113,15 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
                   E.fromOption(() => target),
                   E.swap
                 ),
-              () => pipe(deserializeAndValidate(content, schema, target))
+              () =>
+                pipe(
+                  target,
+                  E.fromPredicate<NonEmptyArray.NonEmptyArray<IPrismDiagnostic>, unknown, string>(
+                    (target: unknown): target is string => typeof target === 'string',
+                    () => [{ message: 'Target is not a string', code: '422', severity: DiagnosticSeverity.Error }]
+                  ),
+                  E.chain(target => deserializeAndValidate(content, schema, target))
+                )
             ),
             E.mapLeft(diagnostics => applyPrefix(this.prefix, diagnostics))
           )
