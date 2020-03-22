@@ -32,6 +32,9 @@ jobs:
           paths:
             - node_modules/
       - run:
+          name: Lint the codebase
+          command: yarn eslint ./packages/**/*.ts
+      - run:
           name: Run tests
           command: yarn test
       - run:
