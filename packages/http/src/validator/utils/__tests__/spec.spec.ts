@@ -12,9 +12,9 @@ describe('findOperationResponse()', () => {
             { code: 'default', contents: [], headers: [] },
             { code: '1XX', contents: [], headers: [] },
           ],
-          200,
+          200
         ),
-        value => expect(value).toEqual({ code: '20X', contents: [], headers: [] }),
+        value => expect(value).toEqual({ code: '20X', contents: [], headers: [] })
       );
     });
   });
@@ -28,9 +28,9 @@ describe('findOperationResponse()', () => {
             { code: 'default', contents: [], headers: [] },
             { code: '1XX', contents: [], headers: [] },
           ],
-          422,
+          422
         ),
-        value => expect(value).toEqual({ code: 'default', contents: [], headers: [] }),
+        value => expect(value).toEqual({ code: 'default', contents: [], headers: [] })
       );
     });
   });
@@ -39,9 +39,12 @@ describe('findOperationResponse()', () => {
     it('returns nothing', () => {
       assertNone(
         findOperationResponse(
-          [{ code: '2XX', contents: [], headers: [] }, { code: '1XX', contents: [], headers: [] }],
-          500,
-        ),
+          [
+            { code: '2XX', contents: [], headers: [] },
+            { code: '1XX', contents: [], headers: [] },
+          ],
+          500
+        )
       );
     });
   });

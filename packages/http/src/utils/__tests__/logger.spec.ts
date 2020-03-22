@@ -8,7 +8,6 @@ describe('violationLogger', () => {
     info: jest.fn(),
   };
 
-
   beforeEach(() => {
     jest.clearAllMocks();
   });

@@ -19,7 +19,7 @@ describe('serializeWithDeepObjectStyle()', () => {
 
   it('handles mixed objects and arrays', () => {
     expect(serializeWithDeepObjectStyle('a', { aa: { aaa: [{ aaaa: '1' }, { aaaa: '2' }] } })).toEqual(
-      'a[aa][aaa][][aaaa]=1&a[aa][aaa][][aaaa]=2',
+      'a[aa][aaa][][aaaa]=1&a[aa][aaa][][aaaa]=2'
     );
   });
 });

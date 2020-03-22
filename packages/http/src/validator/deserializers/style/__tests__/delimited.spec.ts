@@ -25,7 +25,7 @@ describe('DelimitedStyleDeserializer', () => {
     describe('schema type is not array', () => {
       it('throws exception', () => {
         expect(() =>
-          delimitedStyleDeserializer.deserialize('key', {}, { type: 'string' }, false),
+          delimitedStyleDeserializer.deserialize('key', {}, { type: 'string' }, false)
         ).toThrowErrorMatchingSnapshot();
       });
     });
@@ -51,7 +51,7 @@ describe('DelimitedStyleDeserializer', () => {
         describe('query param is an array', () => {
           it('splits last query param array element', () => {
             expect(
-              delimitedStyleDeserializer.deserialize('key', { key: ['a|b|c', 'd|e|f'] }, { type: 'array' }, false),
+              delimitedStyleDeserializer.deserialize('key', { key: ['a|b|c', 'd|e|f'] }, { type: 'array' }, false)
             ).toEqual(['d', 'e', 'f']);
           });
         });

@@ -59,12 +59,15 @@ describe('DeepObjectStyleDeserializer', () => {
                   },
                 },
               },
-            },
-          ),
+            }
+          )
         ).toEqual({
           a: 'str',
           b: { ba: 'str', bb: {}, bc: ['bc0', 'bc1'] },
-          c: [{ a: 'c0a', b: 'c0b' }, { a: 'c0a', b: 'c0b' }],
+          c: [
+            { a: 'c0a', b: 'c0b' },
+            { a: 'c0a', b: 'c0b' },
+          ],
         });
       });
 
