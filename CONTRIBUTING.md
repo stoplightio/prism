@@ -115,8 +115,7 @@ The application will wait for a debugger to be attached and break on the first l
 Prism is using TypeScript's incremental compiler capability that sometimes does not work. The best way to fix the issue is to simply remove any compiled file as well the incremental files:
 
 ```sh
-rm -rf packages/**/dist
-rm -rf packages/**/*.tsbuildinfo
+yarn build --clean
 ```
 
 ## Support
