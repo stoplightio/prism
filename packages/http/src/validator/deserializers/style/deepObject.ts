@@ -13,9 +13,7 @@ export class DeepObjectStyleDeserializer implements IHttpQueryParamStyleDeserial
     }
 
     function constructArray(currentPath: string[], items: unknown): object[] {
-      const path = resolve(currentPath)
-        .replace(/\[/g, '\\[')
-        .replace(/\]/g, '\\]');
+      const path = resolve(currentPath).replace(/\[/g, '\\[').replace(/\]/g, '\\]');
 
       const regexp = new RegExp(`^${path}\\[([0-9]+)\\]`);
 

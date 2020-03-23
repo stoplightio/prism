@@ -1,14 +1,7 @@
 import { partial } from 'lodash';
 
 function serializeAndImplode(separator: string, name: string, value: Array<string | number | boolean>) {
-  return (
-    encodeURIComponent(name) +
-    '=' +
-    value
-      .map(String)
-      .map(encodeURIComponent)
-      .join(separator)
-  );
+  return encodeURIComponent(name) + '=' + value.map(String).map(encodeURIComponent).join(separator);
 }
 
 function serializeAndExplode(name: string, value: Array<string | number | boolean>) {

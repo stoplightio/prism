@@ -317,9 +317,7 @@ describe('NegotiatorHelpers', () => {
       };
 
       negotiateOptionsBySpecificResponseMock.mockReturnValue(right(fakeOperationConfig));
-      httpOperation = anHttpOperation(httpOperation)
-        .withResponses([fakeResponse])
-        .instance();
+      httpOperation = anHttpOperation(httpOperation).withResponses([fakeResponse]).instance();
 
       const actualOperationConfig = helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger);
 
@@ -345,9 +343,7 @@ describe('NegotiatorHelpers', () => {
 
       negotiateOptionsBySpecificResponseMock.mockReturnValue(left(new Error('Hey')));
       negotiateOptionsForDefaultCodeMock.mockReturnValue(right(fakeOperationConfig));
-      httpOperation = anHttpOperation(httpOperation)
-        .withResponses([fakeResponse])
-        .instance();
+      httpOperation = anHttpOperation(httpOperation).withResponses([fakeResponse]).instance();
 
       const actualOperationConfig = helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger);
 
@@ -385,9 +381,7 @@ describe('NegotiatorHelpers', () => {
         headers: [],
       };
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(right(fakeOperationConfig));
-      httpOperation = anHttpOperation(httpOperation)
-        .withResponses([response])
-        .instance();
+      httpOperation = anHttpOperation(httpOperation).withResponses([response]).instance();
 
       const actualOperationConfig = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions)(logger);
 
