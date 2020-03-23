@@ -36,7 +36,7 @@ jobs:
           command: yarn eslint ./packages/**/*.ts
       - run:
           name: Run tests
-          command: yarn test
+          command: yarn test --colors --maxWorkers=2
       - run:
           name: Run build
           command: yarn build
