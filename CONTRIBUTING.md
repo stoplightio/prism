@@ -105,12 +105,7 @@ The application will wait for a debugger to be attached and break on the first l
 
 ### Common issues
 
-1. `jest --watch` throws ENOSPC error
-
-- [optional] Install `watchman` as per [documentation](https://facebook.github.io/watchman/docs/install.html#installing-from-source)
-- Modify `fs.inotify.max_user_watches` as per [issue resolution](https://github.com/facebook/jest/issues/3254)
-
-2. I am receiving weird errors from TypeScript, but I didn't touch any part of the build process!
+1. I am receiving weird errors from TypeScript, but I didn't touch any part of the build process!
 
 Prism is using TypeScript's incremental compiler capability that sometimes does not work. The best way to fix the issue is to simply remove any compiled file as well the incremental files:
 
