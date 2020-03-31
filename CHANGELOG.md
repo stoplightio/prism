@@ -8,11 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Fixed
+
+- All the dependencies used by the various Prism packages have been explicitily declared avoiding some resolutions problems in case you are using Prism programmatically [#1072](https://github.com/stoplightio/prism/pull/1072)
+
 # 3.3.2 (2020-03-16)
+
+## Fixed
 
 - Prism will not correctly consider that HTTP Security Schemes are case insensitive [#1044](https://github.com/stoplightio/prism/pull/1044)
 
-## Fixed
 
 # 3.3.1 (2020-03-13)
 
