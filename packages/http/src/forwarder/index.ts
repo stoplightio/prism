@@ -35,7 +35,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
         return fetch(url, {
           body,
           method: input.method,
-          headers: defaults(omit(input.headers, ['host', 'accept']), {
+          headers: defaults(omit(input.headers, ['host']), {
             accept: 'application/json, text/plain, */*',
             'user-agent': `Prism/${prismVersion}`,
           }),
