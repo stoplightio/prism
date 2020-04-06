@@ -20,28 +20,25 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
   baseUrl: string
 ): RTE.ReaderTaskEither<Logger, Error, IHttpResponse> => logger =>
   pipe(
-    TE.fromEither(serializeBody(input.body)),
-    TE.chain(body =>
-      TE.tryCatch(async () => {
-        const partialUrl = parse(baseUrl);
-        const url = format({
-          ...partialUrl,
-          pathname: posix.join(partialUrl.pathname || '', input.url.path),
-          query: input.url.query,
-        });
+    TE.tryCatch(async () => {
+      const partialUrl = parse(baseUrl);
+      const url = format({
+        ...partialUrl,
+        pathname: posix.join(partialUrl.pathname || '', input.url.path),
+        query: input.url.query,
+      });
 
-        logger.info(`Forwarding "${input.method}" request to ${url}...`);
+      logger.info(`Forwarding "${input.method}" request to ${url}...`);
 
-        return fetch(url, {
-          body: input.rawBody,
-          method: input.method,
-          headers: defaults(omit(input.headers, ['host']), {
-            accept: 'application/json, text/plain, */*',
-            'user-agent': `Prism/${prismVersion}`,
-          }),
-        });
-      }, E.toError)
-    ),
+      return fetch(url, {
+        body: input.rawBody,
+        method: input.method,
+        headers: defaults(omit(input.headers, ['host']), {
+          accept: 'application/json, text/plain, */*',
+          'user-agent': `Prism/${prismVersion}`,
+        }),
+      });
+    }, E.toError),
     TE.chain(parseResponse),
     TE.map(stripHopByHopHeaders)
   );

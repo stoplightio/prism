@@ -60,7 +60,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     const { url, method, headers } = request;
 
     const body = await parseRequestBody(request);
-    let rawBody = null;
+    let rawBody;
     if (body !== null) {
       rawBody = await text(request);
     }
