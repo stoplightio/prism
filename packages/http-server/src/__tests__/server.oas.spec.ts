@@ -81,7 +81,7 @@ describe('GET /pet?__server', () => {
   }
 });
 
-describe('dynamic flag preservation', () => {
+describe('Prefer header overrides', () => {
   let server: ThenArg<ReturnType<typeof instantiatePrism>>;
 
   beforeAll(async () => {
@@ -108,6 +108,26 @@ describe('dynamic flag preservation', () => {
         });
 
         it('shuold return two different objects', () => expect(payload).not.toStrictEqual(secondPayload));
+      });
+    });
+
+    describe('and I send a request with Prefer header selecting a specific example', () => {
+      describe('and then I send a second request with no prefer header', () => {
+        let payload: unknown;
+        let secondPayload: unknown;
+
+        beforeAll(async () => {
+          payload = await fetch(new URL('/no_auth/pets?name=joe', server.address), {
+            method: 'GET',
+            headers: { prefer: 'example=a_name' },
+          }).then(r => r.json());
+          secondPayload = await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' }).then(r =>
+            r.json()
+          );
+        });
+
+        it('first object should be the example', () => expect(payload).toHaveProperty('name', 'clark'));
+        it('second object should be a dynamic object', () => expect(secondPayload).toBeInstanceOf(Array));
       });
     });
   });

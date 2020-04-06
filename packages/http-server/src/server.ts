@@ -16,7 +16,7 @@ import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
-import { merge } from 'lodash';
+import { merge } from 'lodash/fp';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
