@@ -45,16 +45,6 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
 
 export default forward;
 
-function serializeBody(body: unknown): E.Either<Error, string | undefined> {
-  if (typeof body === 'string') {
-    return E.right(body);
-  }
-
-  if (body) return E.stringifyJSON(body, E.toError);
-
-  return E.right(undefined);
-}
-
 const stripHopByHopHeaders = (response: IHttpResponse): IHttpResponse => {
   response.headers = omit(response.headers, hopByHopHeaders);
   return response;

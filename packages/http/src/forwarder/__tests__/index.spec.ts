@@ -28,7 +28,7 @@ describe('forward', () => {
         forward(
           {
             method: 'post',
-            body: { some: 'data' },
+            rawBody: '{"some":"data"}',
             url: { path: '/test' },
           },
           'http://example.com'
@@ -39,32 +39,6 @@ describe('forward', () => {
             expect.objectContaining({ method: 'post', body: '{"some":"data"}' })
           );
         }
-      );
-    });
-  });
-
-  describe('when POST method with circular json body', () => {
-    it('will fail and blame you', () => {
-      const headers = { 'content-type': 'application/json' };
-
-      ((fetch as unknown) as jest.Mock).mockResolvedValue({
-        headers: { get: (n: string) => headers[n], raw: () => mapValues(headers, (h: string) => h.split(' ')) },
-        json: jest.fn().mockResolvedValue({}),
-        text: jest.fn(),
-      });
-
-      const body = { x: {} };
-      body.x = { y: body };
-
-      return assertResolvesLeft(
-        forward(
-          {
-            method: 'post',
-            body,
-            url: { path: '/test' },
-          },
-          'http://example.com'
-        )(logger)
       );
     });
   });
@@ -83,7 +57,7 @@ describe('forward', () => {
         forward(
           {
             method: 'post',
-            body: 'some body',
+            rawBody: 'some body',
             headers,
             url: { path: '/test' },
           },
