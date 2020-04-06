@@ -40,6 +40,7 @@ export interface IHttpRequest {
   url: IHttpUrl;
   headers?: IHttpNameValue;
   body?: unknown;
+  rawBody?: string;
 }
 
 export interface IHttpResponse {

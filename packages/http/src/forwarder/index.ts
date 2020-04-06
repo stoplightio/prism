@@ -33,7 +33,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
         logger.info(`Forwarding "${input.method}" request to ${url}...`);
 
         return fetch(url, {
-          body,
+          body: input.rawBody,
           method: input.method,
           headers: defaults(omit(input.headers, ['host', 'accept']), {
             accept: 'application/json, text/plain, */*',

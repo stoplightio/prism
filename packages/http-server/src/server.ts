@@ -60,6 +60,10 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     const { url, method, headers } = request;
 
     const body = await parseRequestBody(request);
+    let rawBody = null;
+    if (body !== null) {
+      rawBody = await text(request);
+    }
 
     const { searchParams, pathname } = new URL(
       url!, // url can't be empty for HTTP request
@@ -74,6 +78,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         query: searchParamsToNameValues(searchParams),
       },
       headers: headers as IHttpNameValue,
+      rawBody,
       body,
     };
 
