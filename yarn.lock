@@ -1544,9 +1544,9 @@
     raw-body "*"
 
 "@types/signale@^1.2.1":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@types/signale/-/signale-1.4.0.tgz#2d461d51a91eee0fc9de8398f0f2cda7cd1333bb"
-  integrity sha512-9CA+KU3yjiBbmZRnQ3zcmvYzat3Ph+RzqeHBdZJ/NAZkmByrcIboJ8Aq1Bzq7btNTaaiDx6g0jAPM9Jzz/yQZQ==
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@types/signale/-/signale-1.4.1.tgz#6137a6fd7960b48703dd2793c5b795480368b246"
+  integrity sha512-05d9fUDqRnt36rizLgo38SbPTrkMzdhXpvSHSAhxzokgIUPGNUoXHV0zYjPpTd4IryDADJ0mGHpfJ/Yhjyh9JQ==
   dependencies:
     "@types/node" "*"
 
