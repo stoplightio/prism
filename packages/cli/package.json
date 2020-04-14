@@ -39,8 +39,8 @@
     "url": "https://github.com/stoplightio/prism.git"
   },
   "scripts": {
-    "cli": "node -r ts-node/register/transpile-only src/index.ts",
-    "cli:debug": "node -r ts-node/register/transpile-only --inspect-brk src/index.ts"
+    "cli": "node -r ts-node/register/transpile-only -r tsconfig-paths/register src/index.ts src/index.ts",
+    "cli:debug": "node -r ts-node/register/transpile-only -r tsconfig-paths/register --inspect-brk src/index.ts"
   },
   "types": "dist/index.d.ts"
 }
