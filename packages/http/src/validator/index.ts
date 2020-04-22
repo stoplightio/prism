@@ -64,7 +64,8 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
   const { body } = element;
 
   return pipe(
-    E.fromNullable(undefined)(request),
+    request,
+    E.fromNullable(undefined),
     E.fold(
       e => E.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
       request =>
