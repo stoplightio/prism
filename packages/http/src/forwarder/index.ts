@@ -1,4 +1,4 @@
-import { IPrismComponents } from '@stoplight/prism-core';
+import { IPrismComponents, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import fetch from 'node-fetch';
 import { pipe } from 'fp-ts/lib/pipeable';
@@ -12,30 +12,32 @@ import { Logger } from 'pino';
 import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
 import { parseResponse } from '../utils/parseResponse';
 import { hopByHopHeaders } from './resources';
+import { handleInputValidation } from '../mocker';
 
 const { version: prismVersion } = require('../../package.json');
 
 const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>['forward'] = (
-  input: IHttpRequest,
+  input: IPrismInput<IHttpRequest>,
   baseUrl: string
 ): RTE.ReaderTaskEither<Logger, Error, IHttpResponse> => logger =>
   pipe(
-    TE.fromEither(serializeBody(input.body)),
+    TE.fromEither(handleInputValidation(input, [])(logger)),
+    TE.chain(() => TE.fromEither(serializeBody(input.data.body))),
     TE.chain(body =>
       TE.tryCatch(async () => {
         const partialUrl = parse(baseUrl);
         const url = format({
           ...partialUrl,
-          pathname: posix.join(partialUrl.pathname || '', input.url.path),
-          query: input.url.query,
+          pathname: posix.join(partialUrl.pathname || '', input.data.url.path),
+          query: input.data.url.query,
         });
 
-        logger.info(`Forwarding "${input.method}" request to ${url}...`);
+        logger.info(`Forwarding "${input.data.method}" request to ${url}...`);
 
         return fetch(url, {
           body,
-          method: input.method,
-          headers: defaults(omit(input.headers, ['host']), {
+          method: input.data.method,
+          headers: defaults(omit(input.data.headers, ['host']), {
             accept: 'application/json, text/plain, */*',
             'user-agent': `Prism/${prismVersion}`,
           }),
