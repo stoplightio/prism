@@ -5,6 +5,7 @@ import {
   IHttpOperation,
   INodeExample,
   IMediaTypeContent,
+  IHttpOperationResponse,
 } from '@stoplight/types';
 
 import * as caseless from 'caseless';
@@ -141,14 +142,14 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   });
 }
 
-function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
+export function handleInputValidation(input: IPrismInput<IHttpRequest>, responses: IHttpOperationResponse[]) {
   const securityValidation = input.validations.find(validation => validation.code === 401);
 
   return pipe(
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
     R.chain(() =>
       pipe(
-        helpers.negotiateOptionsForInvalidRequest(resource.responses, securityValidation ? ['401'] : ['422', '400']),
+        helpers.negotiateOptionsForInvalidRequest(responses, securityValidation ? ['401'] : ['422', '400']),
         RE.mapLeft(() =>
           securityValidation
             ? ProblemJsonError.fromTemplate(
@@ -189,7 +190,7 @@ function negotiateResponse(
   );
 
   if (errors) {
-    return handleInputValidation(input, resource);
+    return handleInputValidation(input, resource.responses);
   } else {
     return pipe(
       withLogger(logger => {
