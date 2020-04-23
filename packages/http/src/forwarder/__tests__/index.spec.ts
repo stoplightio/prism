@@ -27,9 +27,12 @@ describe('forward', () => {
       return assertResolvesRight(
         forward(
           {
-            method: 'post',
-            body: { some: 'data' },
-            url: { path: '/test' },
+            validations: [],
+            data: {
+              method: 'post',
+              body: { some: 'data' },
+              url: { path: '/test' },
+            },
           },
           'http://example.com'
         )(logger),
@@ -59,9 +62,12 @@ describe('forward', () => {
       return assertResolvesLeft(
         forward(
           {
-            method: 'post',
-            body,
-            url: { path: '/test' },
+            validations: [],
+            data: {
+              method: 'post',
+              body,
+              url: { path: '/test' },
+            },
           },
           'http://example.com'
         )(logger)
@@ -82,10 +88,13 @@ describe('forward', () => {
       return assertResolvesRight(
         forward(
           {
-            method: 'post',
-            body: 'some body',
-            headers,
-            url: { path: '/test' },
+            validations: [],
+            data: {
+              method: 'post',
+              body: 'some body',
+              headers,
+              url: { path: '/test' },
+            },
           },
           'http://example.com'
         )(logger),
@@ -108,10 +117,12 @@ describe('forward', () => {
         text: jest.fn().mockResolvedValue(''),
       });
 
-      return assertResolvesRight(forward({ method: 'get', url: { path: '/test' } }, 'http://example.com')(logger), r =>
-        hopByHopHeaders.forEach(hopHeader => {
-          expect(r.headers?.[hopHeader]).toBeUndefined();
-        })
+      return assertResolvesRight(
+        forward({ data: { method: 'get', url: { path: '/test' } }, validations: [] }, 'http://example.com')(logger),
+        r =>
+          hopByHopHeaders.forEach(hopHeader => {
+            expect(r.headers?.[hopHeader]).toBeUndefined();
+          })
       );
     });
   });
