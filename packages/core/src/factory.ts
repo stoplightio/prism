@@ -45,8 +45,8 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     config: Config
   ): E.Either<Error, ResourceAndValidation> => {
     const validations = compact([
-      config.validateRequest ? components.validateInput({ resource, element: input }) : undefined,
       config.checkSecurity ? components.validateSecurity({ resource, element: input }) : undefined,
+      config.validateRequest ? components.validateInput({ resource, element: input }) : undefined,
     ]);
 
     return pipe(
