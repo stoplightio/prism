@@ -4,8 +4,9 @@ import { pipe } from 'fp-ts/lib/pipeable';
 import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig, IPrismOutput } from './types';
 import { sequenceT } from 'fp-ts/lib/Apply';
-import { getSemigroup } from 'fp-ts/lib/NonEmptyArray';
+import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { DiagnosticSeverity } from '@stoplight/types';
+import { identity } from 'fp-ts/lib/function';
 
 const sequenceValidation = sequenceT(E.getValidation(getSemigroup<IPrismDiagnostic>()));
 
@@ -47,10 +48,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         config.validateRequest ? components.validateInput({ resource, element: input }) : E.right(input),
         config.checkSecurity ? components.validateSecurity({ resource, element: input }) : E.right(input)
       ),
-      E.fold(
-        validations => validations as IPrismDiagnostic[],
-        () => []
-      ),
+      E.fold<NonEmptyArray<IPrismDiagnostic>, unknown, IPrismDiagnostic[]>(identity, () => []),
       validations => TE.right({ resource, validations })
     );
 
