@@ -38,18 +38,14 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     validations: IPrismDiagnostic[];
   };
 
-  const inputValidation = (
-    resource: Resource,
-    input: Input,
-    config: Config
-  ): TE.TaskEither<Error, ResourceAndValidation> =>
+  const inputValidation = (resource: Resource, input: Input, config: Config): E.Either<Error, ResourceAndValidation> =>
     pipe(
       sequenceValidation(
         config.validateRequest ? components.validateInput({ resource, element: input }) : E.right(input),
         config.checkSecurity ? components.validateSecurity({ resource, element: input }) : E.right(input)
       ),
       E.fold<NonEmptyArray<IPrismDiagnostic>, unknown, IPrismDiagnostic[]>(identity, () => []),
-      validations => TE.right({ resource, validations })
+      validations => E.right({ resource, validations })
     );
 
   const mockOrForward = (
@@ -95,7 +91,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           },
           resource =>
             pipe(
-              inputValidation(resource, input, config),
+              TE.fromEither(inputValidation(resource, input, config)),
               TE.chain(({ resource, validations }) => mockOrForward(resource, input, config, validations)),
               TE.map(({ output, resource, validations: inputValidations }) => {
                 const outputValidations = config.validateResponse
