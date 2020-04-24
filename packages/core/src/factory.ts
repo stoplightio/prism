@@ -1,14 +1,15 @@
 import * as E from 'fp-ts/lib/Either';
+import * as A from 'fp-ts/lib/Array';
+import { compact } from 'lodash';
 import * as TE from 'fp-ts/lib/TaskEither';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig, IPrismOutput } from './types';
-import { sequenceT } from 'fp-ts/lib/Apply';
 import { getSemigroup, NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { identity } from 'fp-ts/lib/function';
 
-const sequenceValidation = sequenceT(E.getValidation(getSemigroup<IPrismDiagnostic>()));
+const eitherSequence = A.array.sequence(E.getValidation(getSemigroup<IPrismDiagnostic>()));
 
 function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
   return !p.mock;
@@ -38,15 +39,22 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     validations: IPrismDiagnostic[];
   };
 
-  const inputValidation = (resource: Resource, input: Input, config: Config): E.Either<Error, ResourceAndValidation> =>
-    pipe(
-      sequenceValidation(
-        config.validateRequest ? components.validateInput({ resource, element: input }) : E.right(input),
-        config.checkSecurity ? components.validateSecurity({ resource, element: input }) : E.right(input)
-      ),
+  const inputValidation = (
+    resource: Resource,
+    input: Input,
+    config: Config
+  ): E.Either<Error, ResourceAndValidation> => {
+    const validations = compact([
+      config.validateRequest ? components.validateInput({ resource, element: input }) : undefined,
+      config.checkSecurity ? components.validateSecurity({ resource, element: input }) : undefined,
+    ]);
+
+    return pipe(
+      eitherSequence(validations),
       E.fold<NonEmptyArray<IPrismDiagnostic>, unknown, IPrismDiagnostic[]>(identity, () => []),
       validations => E.right({ resource, validations })
     );
+  };
 
   const mockOrForward = (
     resource: Resource,
