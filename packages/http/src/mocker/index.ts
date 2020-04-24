@@ -1,4 +1,4 @@
-import { IPrismComponents, IPrismInput } from '@stoplight/prism-core';
+import { IPrismComponents, IPrismInput, IPrismDiagnostic } from '@stoplight/prism-core';
 import {
   DiagnosticSeverity,
   IHttpHeaderParam,
@@ -12,6 +12,7 @@ import * as caseless from 'caseless';
 import * as E from 'fp-ts/lib/Either';
 import * as Record from 'fp-ts/lib/Record';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as A from 'fp-ts/lib/Array';
 import * as R from 'fp-ts/lib/Reader';
 import * as O from 'fp-ts/lib/Option';
 import * as RE from 'fp-ts/lib/ReaderEither';
@@ -41,6 +42,7 @@ import {
   splitUriParams,
 } from '../validator/validators/body';
 import { sequenceT } from 'fp-ts/lib/Apply';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 const eitherRecordSequence = Record.sequence(E.either);
 const eitherSequence = sequenceT(E.either);
@@ -142,8 +144,11 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   });
 }
 
-function handleInputValidation(input: IPrismInput<unknown>, responses: IHttpOperationResponse[]) {
-  const securityValidation = input.validations.find(validation => validation.code === 401);
+export function handleInvalidInput(
+  failedValidations: NonEmptyArray<IPrismDiagnostic>,
+  responses: IHttpOperationResponse[]
+) {
+  const securityValidation = failedValidations.find(validation => validation.code === 401);
 
   return pipe(
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
@@ -165,7 +170,7 @@ function handleInputValidation(input: IPrismInput<unknown>, responses: IHttpOper
                 UNPROCESSABLE_ENTITY,
                 'Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
                 {
-                  validation: input.validations.map(detail => ({
+                  validation: failedValidations.map(detail => ({
                     location: detail.path,
                     severity: DiagnosticSeverity[detail.severity],
                     code: detail.code,
@@ -189,8 +194,8 @@ function negotiateResponse(
     validation => validation.severity
   );
 
-  if (errors) {
-    return handleInputValidation(input, resource);
+  if (errors && A.isNonEmpty(input.validations)) {
+    return handleInvalidInput(input.validations, resource.responses);
   } else {
     return pipe(
       withLogger(logger => {
