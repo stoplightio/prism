@@ -159,7 +159,7 @@ export function handleInvalidInput(
           securityValidation
             ? ProblemJsonError.fromTemplate(
                 UNAUTHORIZED,
-                '',
+                'Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you.',
                 securityValidation.tags && securityValidation.tags.length
                   ? {
                       headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
