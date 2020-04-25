@@ -36,9 +36,7 @@ docker run --init --rm -it -v $(pwd):/tmp -P stoplight/prism:3 mock -h 0.0.0.0 "
 If you want to start the proxy server, you can run a command like this:
 
 ```bash
-docker run --add-host=dockerhost:192.168.1.40 --init --rm -it -d --name myprism -p 4010:4010 -v $(pwd):/tmp -P stoplight/prism:3 proxy -h 0.0.0.0 "/tmp/file.yml" http://dockerhost:8080 --errors
-```
-
-where _192.168.1.40_ is your local IP address (you can get it running `ipconfig getifaddr en0` and _http://dockerhost:8080_ is where the application is currently running. 
+docker run --init --rm -it -d --name myprism -p 4010:4010 -v $(pwd):/tmp -P stoplight/prism:3 proxy -h 0.0.0.0 "/tmp/file.yml" http://host.docker.internal:8080 --errors
+``` 
 
 Now everything is installed, let's look at some of the [concepts](./02-concepts.md).
