@@ -6069,9 +6069,9 @@ merge2@^1.2.3:
   integrity sha512-2j4DAdlBOkiSZIsaXk4mTE3sRS02yBHAtfy127xRV3bQUFqXkjHCHLW6Scv7DwNRbIWNHH8zpnz9zMaKXIdvYw==
 
 micri@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/micri/-/micri-4.1.0.tgz#ba388a79dbcbf32e783fb18c5c502f776b085e8f"
-  integrity sha512-pMlGgsgtrUKO+bedThDMPcY2J+6XPQx3w4h9N0LtP2kdRtdjVPuafTrgCkEdEYvcO/3K5vhD9+MT3qtiTuDz1g==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/micri/-/micri-4.1.1.tgz#faa6c9f5709d9eb99c9783478bbccc1bbe6f1050"
+  integrity sha512-7PAmZIh31YHmH9GVJKylavcmJo6coy4rAfUcl0/DrmnrQ4lKGHxRasrrsQwKChAETnxY3AFEMF8D5Gefuja5HA==
 
 micromatch@^2.3.11, micromatch@^2.3.7:
   version "2.3.11"
