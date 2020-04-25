@@ -144,7 +144,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   });
 }
 
-export function handleInvalidInput(
+export function createInvalidInputResponse(
   failedValidations: NonEmptyArray<IPrismDiagnostic>,
   responses: IHttpOperationResponse[]
 ) {
@@ -195,7 +195,7 @@ function negotiateResponse(
   );
 
   if (errors && A.isNonEmpty(input.validations)) {
-    return handleInvalidInput(input.validations, resource.responses);
+    return createInvalidInputResponse(input.validations, resource.responses);
   } else {
     return pipe(
       withLogger(logger => {
