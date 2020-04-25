@@ -34,7 +34,7 @@
     "lodash": "^4.17.15",
     "node-fetch": "^2.6.0",
     "openapi-sampler": "^1.0.0-beta.15",
-    "pino": "^6.2.0",
+    "pino": "^6.2.1",
     "tslib": "^1.10.0",
     "type-is": "^1.6.18",
     "uri-template-lite": "^19.4.0"

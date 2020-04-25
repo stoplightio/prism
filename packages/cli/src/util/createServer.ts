@@ -18,8 +18,10 @@ signale.config({ displayTimestamp: true });
 
 const cliSpecificLoggerOptions: LoggerOptions = {
   customLevels: { start: 11 },
-  useLevelLabels: true,
   level: 'start',
+  formatters: {
+    level: level => ({ level }),
+  },
 };
 
 const createMultiProcessPrism: CreatePrism = async options => {
