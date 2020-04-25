@@ -3,6 +3,7 @@ import forward from '../index';
 import { assertResolvesRight, assertResolvesLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import { keyBy, mapValues } from 'lodash';
 import { hopByHopHeaders } from '../resources';
+import { DiagnosticSeverity } from '@stoplight/types';
 
 jest.mock('node-fetch');
 
@@ -125,5 +126,21 @@ describe('forward', () => {
           })
       );
     });
+  });
+
+  describe('and there are input validation errors', () => {
+    it('will refuse to forward and return an error', () =>
+      assertResolvesLeft(
+        forward(
+          {
+            validations: [{ code: 1, message: 'Hello', severity: DiagnosticSeverity.Error }],
+            data: {
+              method: 'post',
+              url: { path: '/test' },
+            },
+          },
+          'http://example.com'
+        )(logger)
+      ));
   });
 });
