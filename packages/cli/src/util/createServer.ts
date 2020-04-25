@@ -37,27 +37,22 @@ const createMultiProcessPrism: CreatePrism = async options => {
     return;
   } else {
     const logInstance = createLogger('CLI', cliSpecificLoggerOptions);
-    try {
-      return createPrismServerWithLogger(options, logInstance);
-    } catch (e) {
+
+    return createPrismServerWithLogger(options, logInstance).catch(e => {
       logInstance.fatal(e.message);
       cluster.worker.kill();
-    }
+    });
   }
 };
 
-const createSingleProcessPrism: CreatePrism = async options => {
+const createSingleProcessPrism: CreatePrism = options => {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
   const logInstance = createLogger('CLI', cliSpecificLoggerOptions, logStream);
   pipeOutputToSignale(logStream);
 
-  try {
-    return createPrismServerWithLogger(options, logInstance);
-  } catch (e) {
-    logInstance.fatal(e.message);
-  }
+  return createPrismServerWithLogger(options, logInstance).catch(e => logInstance.fatal(e.message));
 };
 
 async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
