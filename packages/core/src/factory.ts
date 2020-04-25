@@ -11,7 +11,7 @@ import { identity } from 'fp-ts/lib/function';
 
 const eitherSequence = A.array.sequence(E.getValidation(getSemigroup<IPrismDiagnostic>()));
 
-function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
+export function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
   return !p.mock;
 }
 
@@ -100,7 +100,14 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           resource =>
             pipe(
               TE.fromEither(inputValidation(resource, input, config)),
-              TE.chain(({ resource, validations }) => mockOrForward(resource, input, config, validations)),
+              TE.chain(({ resource, validations }) =>
+                A.isNonEmpty(validations)
+                  ? pipe(
+                      TE.fromEither(components.inputValidationGate(validations)),
+                      TE.chain(input => mockOrForward(resource, input, config, validations))
+                    )
+                  : mockOrForward(resource, input, config, validations)
+              ),
               TE.map(({ output, resource, validations: inputValidations }) => {
                 const outputValidations = config.validateResponse
                   ? pipe(

@@ -31,6 +31,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   validateInput: ValidatorFn<Resource, Input>;
   validateSecurity: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
+  inputValidationGate: (inputValidations: NonEmptyArray<IPrismDiagnostic>) => Either<Error, Input>;
   forward: (input: Input, baseUrl: string) => ReaderTaskEither<Logger, Error, Output>;
   mock: (opts: {
     resource: Resource;
