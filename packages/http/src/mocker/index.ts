@@ -165,14 +165,14 @@ export function createInvalidInputResponse(
   );
 }
 
-const createUnauthorisedResponse = (tags?: string[]) =>
+export const createUnauthorisedResponse = (tags?: string[]) =>
   ProblemJsonError.fromTemplate(
     UNAUTHORIZED,
     'Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you.',
     tags && tags.length ? { headers: { 'WWW-Authenticate': tags.join(',') } } : undefined
   );
 
-const createUnprocessableEntityResponse = (validations: NonEmptyArray<IPrismDiagnostic>) =>
+export const createUnprocessableEntityResponse = (validations: NonEmptyArray<IPrismDiagnostic>) =>
   ProblemJsonError.fromTemplate(
     UNPROCESSABLE_ENTITY,
     'Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
