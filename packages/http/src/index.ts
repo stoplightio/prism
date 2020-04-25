@@ -13,16 +13,7 @@ export * from './mocker/errors';
 export * from './router/errors';
 export * from './mocker/serializer/style';
 export { generate as generateHttpParam } from './mocker/generator/HttpParamGenerator';
-import {
-  IHttpConfig,
-  IHttpResponse,
-  IHttpRequest,
-  PickRequired,
-  PrismHttpComponents,
-  IHttpProxyConfig,
-  ProblemJsonError,
-} from './types';
-import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './mocker/errors';
+import { IHttpConfig, IHttpResponse, IHttpRequest, PickRequired, PrismHttpComponents, IHttpProxyConfig } from './types';
 
 export const createInstance = (
   defaultConfig: IHttpConfig | IHttpProxyConfig,
@@ -37,40 +28,5 @@ export const createInstance = (
       validateSecurity,
       mock,
       forward,
-      inputValidationGate: (
-        validations: NonEmptyArray<IPrismDiagnostic>,
-        resource: IHttpOperation
-      ): E.Either<Error, IHttpOperation> => {
-        if (isProxyConfig(defaultConfig)) {
-          const securityValidation = validations.find(validation => validation.code === 401);
-
-          const error = securityValidation
-            ? ProblemJsonError.fromTemplate(
-                UNAUTHORIZED,
-                'Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you.',
-                securityValidation.tags && securityValidation.tags.length
-                  ? {
-                      headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
-                    }
-                  : undefined
-              )
-            : ProblemJsonError.fromTemplate(
-                UNPROCESSABLE_ENTITY,
-                'Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-                {
-                  validation: validations.map(detail => ({
-                    location: detail.path,
-                    severity: DiagnosticSeverity[detail.severity],
-                    code: detail.code,
-                    message: detail.message,
-                  })),
-                }
-              );
-
-          return E.left(error);
-        }
-
-        return E.right(resource);
-      },
     })
   );

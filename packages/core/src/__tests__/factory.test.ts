@@ -11,7 +11,6 @@ describe('validation', () => {
     validateInput: jest.fn().mockReturnValue(['something']),
     validateOutput: jest.fn().mockReturnValue(['something']),
     validateSecurity: jest.fn().mockReturnValue(['something']),
-    inputValidationGate: jest.fn().mockReturnValue(['something']),
     route: jest.fn().mockReturnValue(E.right('hey')),
     forward: jest.fn().mockReturnValue(
       TE.right({
