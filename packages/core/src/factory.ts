@@ -84,7 +84,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   return {
     request: (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
-      const config = defaults<unknown, Config>(c, defaultConfig);
+      const config: Config = defaults(c, defaultConfig);
 
       return pipe(
         TE.fromEither(components.route({ resources, input })),

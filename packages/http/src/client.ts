@@ -44,7 +44,7 @@ function createClientFromOperations(resources: IHttpOperation[], defaultConfig: 
 
       if (!parsedUrl.pathname) throw new Error('Path name must always be specified');
 
-      const mergedConf = defaults(config, defaultConfig);
+      const mergedConf: IClientConfig = defaults(config, defaultConfig);
 
       const httpUrl: IHttpUrl = {
         baseUrl: parsedUrl.host ? `${parsedUrl.protocol}//${parsedUrl.host}` : mergedConf.baseUrl,
