@@ -1,6 +1,6 @@
 # Serving Multiple OpenAPI Documents
 
-A single Prism instance serves one OpenAPI document, but serving multiple documents is possible by running multiple Prism instances on different documents, then serving their content using a reverse Proxy. 
+A single Prism instance serves one OpenAPI document, but serving multiple documents is possible by running multiple Prism instances on different documents, then serving their content using a reverse Proxy.
 
 ## Preparing configuration files
 
@@ -10,9 +10,10 @@ Depending on your needs, you might have a `docker-compose.yaml` file like this:
 version: '3'
 services:
   proxy:
-    image: nginx:alpine
+    image: caddy
+    command
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./Caddyfile:/etc/caddy/Caddyfile
     ports:
       - '8080:80'
     depends_on:
@@ -30,30 +31,13 @@ services:
       https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
 ```
 
-And the corresponding `nginx.conf` file:
+And the corresponding `Caddyfile` file:
 
 ```
-worker_processes auto;
+localhost
 
-events {
-  worker_connections 512;
-}
-
-http {
-  server {
-    listen 80;
-
-    location /app_1 {
-      rewrite ^/app_1/(.*) /$1 break;
-      proxy_pass http://prism_1:4010/;
-    }
-
-    location /app_2 {
-      rewrite ^/app_2/(.*) /$1 break;
-      proxy_pass http://prism_2:4010/;
-    }
-  }
-}
+reverse_proxy /app_1/* prism_1:4010
+reverse_proxy /app_2/* prism_2:4010
 ```
 
 This configuration will allow access to the first Prism instance on `localhost:8080/app_1` and the second instance on `localhost:8080/app_2` endpoint.
