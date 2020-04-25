@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Fixed
+
+- Correctly catch some exceptions and propagate them to the CLI [#1107](https://github.com/stoplightio/prism/pull/1107)
+
 # 3.3.3 (2020-04-02)
 
 ## Fixed
@@ -15,13 +19,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - All the dependencies used by the various Prism packages have been explicitily declared avoiding some resolutions problems in case you are using Prism programmatically [#1072](https://github.com/stoplightio/prism/pull/1072)
 - Prism's current options aren't overriden internally anymore because of the `Prefer` header set [#1074](https://github.com/stoplightio/prism/pull/1074)
 
-
 # 3.3.2 (2020-03-16)
 
 ## Fixed
 
 - Prism will not correctly consider that HTTP Security Schemes are case insensitive [#1044](https://github.com/stoplightio/prism/pull/1044)
-
 
 # 3.3.1 (2020-03-13)
 
