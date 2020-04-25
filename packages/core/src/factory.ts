@@ -11,7 +11,7 @@ import { identity } from 'fp-ts/lib/function';
 
 const eitherSequence = A.array.sequence(E.getValidation(getSemigroup<IPrismDiagnostic>()));
 
-export function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
+function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
   return !p.mock;
 }
 
@@ -62,15 +62,17 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     config: Config,
     validations: IPrismDiagnostic[]
   ): TE.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
+    const prismInput = {
+      validations,
+      data: input,
+    };
+
     const produceOutput = isProxyConfig(config)
-      ? components.forward(input, config.upstream.href)(components.logger.child({ name: 'PROXY' }))
+      ? components.forward(prismInput, config.upstream.href)(components.logger.child({ name: 'PROXY' }))
       : TE.fromEither(
           components.mock({
             resource,
-            input: {
-              validations,
-              data: input,
-            },
+            input: prismInput,
             config: config.mock,
           })(components.logger.child({ name: 'NEGOTIATOR' }))
         );
@@ -92,7 +94,10 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           error => {
             if (!config.errors && isProxyConfig(config)) {
               return pipe(
-                components.forward(input, config.upstream.href)(components.logger.child({ name: 'PROXY' })),
+                components.forward(
+                  { data: input, validations: [] },
+                  config.upstream.href
+                )(components.logger.child({ name: 'PROXY' })),
                 TE.map(createWarningOutput)
               );
             } else return TE.left(error);

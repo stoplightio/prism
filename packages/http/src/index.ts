@@ -1,11 +1,9 @@
-import { factory, IPrismDiagnostic, isProxyConfig } from '@stoplight/prism-core';
-import { IHttpOperation, DiagnosticSeverity } from '@stoplight/types';
+import { factory } from '@stoplight/prism-core';
+import { IHttpOperation } from '@stoplight/types';
 import { defaults } from 'lodash';
 import forward from './forwarder';
 import mock from './mocker';
 import route from './router';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import * as E from 'fp-ts/lib/Either';
 import { validateInput, validateOutput, validateSecurity } from './validator';
 export * from './types';
 export * from './getHttpOperations';
