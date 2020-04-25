@@ -1423,18 +1423,19 @@
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
 
-"@stoplight/yaml-ast-parser@0.0.44":
-  version "0.0.44"
-  resolved "https://registry.yarnpkg.com/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.44.tgz#ed3c962564283e9983f7895a6effc3994286df5e"
-  integrity sha512-PdY8p2Ufgtorf4d2DbKMfknILMa8KwuyyMMR/2lgK1mLaU8F5PKWYc+h9hIzC+ar0bh7m9h2rINo32m7ADfVyA==
+"@stoplight/yaml-ast-parser@0.0.45":
+  version "0.0.45"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.45.tgz#672c0a1511d581843be5a9c55899ca95a30dcadb"
+  integrity sha512-0MTEvgp3XMdeMUSTCGiNECuC+YlLbzytDEIOJVDHrrmzVZpIR3gGnHI6mmPI4P7saPxUiHxFF2uuoTuCNlKjrw==
 
 "@stoplight/yaml@^3.0.2":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-3.6.0.tgz#ed1257ea7861b3a96d6e870013a9530f013150f1"
-  integrity sha512-38EhZjNsVwuwrxPawr5R3Q1QhO3l/MTLD5F/d0v7vIrvWgde6GJzdh6rmWbrKJttEqqwuqX8mpLjWihWB7Qm1A==
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-3.8.1.tgz#2a2accdb8b3b6df5c3f1ba93086ca9deb99be0e4"
+  integrity sha512-wbhcgo7dTjwjjwFziC/SAcQlwPucYhYq6vjzyOjj8zeOVnnmoa7hzU1i9Kj31473FG/re7xtt6j3LWu2VnYbxg==
   dependencies:
+    "@stoplight/ordered-object-literal" "^1.0.1"
     "@stoplight/types" "^11.1.1"
-    "@stoplight/yaml-ast-parser" "0.0.44"
+    "@stoplight/yaml-ast-parser" "0.0.45"
     lodash "^4.17.15"
 
 "@types/babel__core@^7.1.7":
