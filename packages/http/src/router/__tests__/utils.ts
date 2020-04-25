@@ -31,7 +31,7 @@ const defaultRandomPathOptions: NonNullable<IRandomPathOptions> = {
 };
 
 export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions): string {
-  const options = defaults(opts, defaultRandomPathOptions);
+  const options = defaults(defaultRandomPathOptions, opts);
 
   const randomPathFragments = randomArray(
     () => (options.includeTemplates && chance.bool() ? `{${chance.word()}}` : chance.word()),
