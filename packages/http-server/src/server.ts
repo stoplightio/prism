@@ -220,7 +220,16 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     },
 
     listen: (port: number, ...args: any[]) =>
-      new Promise(resolve => server.listen(port, ...args, () => resolve(addressInfoToString(server.address())))),
+      new Promise((resolve, reject) => {
+        try {
+          server.listen(port, ...args, (err: unknown) => {
+            if (err) return reject(err);
+            return resolve(addressInfoToString(server.address()));
+          });
+        } catch (e) {
+          reject(e);
+        }
+      }),
   };
 };
 
