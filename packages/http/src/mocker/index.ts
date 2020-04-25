@@ -157,32 +157,34 @@ export function createInvalidInputResponse(
         helpers.negotiateOptionsForInvalidRequest(responses, securityValidation ? ['401'] : ['422', '400']),
         RE.mapLeft(() =>
           securityValidation
-            ? ProblemJsonError.fromTemplate(
-                UNAUTHORIZED,
-                'Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you.',
-                securityValidation.tags && securityValidation.tags.length
-                  ? {
-                      headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
-                    }
-                  : undefined
-              )
-            : ProblemJsonError.fromTemplate(
-                UNPROCESSABLE_ENTITY,
-                'Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-                {
-                  validation: failedValidations.map(detail => ({
-                    location: detail.path,
-                    severity: DiagnosticSeverity[detail.severity],
-                    code: detail.code,
-                    message: detail.message,
-                  })),
-                }
-              )
+            ? createUnauthorisedResponse(securityValidation.tags)
+            : createUnprocessableEntityResponse(failedValidations)
         )
       )
     )
   );
 }
+
+const createUnauthorisedResponse = (tags?: string[]) =>
+  ProblemJsonError.fromTemplate(
+    UNAUTHORIZED,
+    'Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you.',
+    tags && tags.length ? { headers: { 'WWW-Authenticate': tags.join(',') } } : undefined
+  );
+
+const createUnprocessableEntityResponse = (validations: NonEmptyArray<IPrismDiagnostic>) =>
+  ProblemJsonError.fromTemplate(
+    UNPROCESSABLE_ENTITY,
+    'Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+    {
+      validation: validations.map(detail => ({
+        location: detail.path,
+        severity: DiagnosticSeverity[detail.severity],
+        code: detail.code,
+        message: detail.message,
+      })),
+    }
+  );
 
 function negotiateResponse(
   mockConfig: IHttpOperationConfig,
