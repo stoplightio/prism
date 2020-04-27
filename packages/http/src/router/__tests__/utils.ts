@@ -1,6 +1,7 @@
 import { HttpMethod } from '@stoplight/types';
 import { Chance } from 'chance';
 import { defaults } from 'lodash/fp';
+import { DeepNonNullable } from 'utility-types';
 
 const chance = new Chance();
 const httpMethods: HttpMethod[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
@@ -24,10 +25,11 @@ type IRandomPathOptions = {
   leadingSlash?: boolean;
 };
 
-const defaultRandomPathOptions: NonNullable<IRandomPathOptions> = {
+const defaultRandomPathOptions: DeepNonNullable<IRandomPathOptions> = {
   pathFragments: 3,
   includeTemplates: true,
   leadingSlash: true,
+  trailingSlash: false,
 };
 
 export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions): string {
