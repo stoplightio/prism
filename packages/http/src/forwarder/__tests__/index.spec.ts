@@ -140,7 +140,8 @@ describe('forward', () => {
             },
           },
           'http://example.com'
-        )(logger)
+        )(logger),
+        e => expect(e).toHaveProperty('status', 422)
       ));
   });
 });
