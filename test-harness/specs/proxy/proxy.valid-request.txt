@@ -1,5 +1,5 @@
 ====test====
-Sending an invalid request through the proxy server returns a validation error
+Sending a valid request through the proxy server returns correctly gets forwarded
 ====spec====
 swagger: "2.0"
 paths:
