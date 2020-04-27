@@ -43,6 +43,7 @@ const createMultiProcessPrism: CreatePrism = async options => {
     return createPrismServerWithLogger(options, logInstance).catch(e => {
       logInstance.fatal(e.message);
       cluster.worker.kill();
+      throw e;
     });
   }
 };
