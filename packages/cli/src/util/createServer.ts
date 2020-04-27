@@ -18,8 +18,10 @@ signale.config({ displayTimestamp: true });
 
 const cliSpecificLoggerOptions: LoggerOptions = {
   customLevels: { start: 11 },
-  useLevelLabels: true,
   level: 'start',
+  formatters: {
+    level: level => ({ level }),
+  },
 };
 
 const createMultiProcessPrism: CreatePrism = async options => {
@@ -37,27 +39,26 @@ const createMultiProcessPrism: CreatePrism = async options => {
     return;
   } else {
     const logInstance = createLogger('CLI', cliSpecificLoggerOptions);
-    try {
-      return createPrismServerWithLogger(options, logInstance);
-    } catch (e) {
+
+    return createPrismServerWithLogger(options, logInstance).catch(e => {
       logInstance.fatal(e.message);
       cluster.worker.kill();
-    }
+      throw e;
+    });
   }
 };
 
-const createSingleProcessPrism: CreatePrism = async options => {
+const createSingleProcessPrism: CreatePrism = options => {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
   const logStream = new PassThrough();
   const logInstance = createLogger('CLI', cliSpecificLoggerOptions, logStream);
   pipeOutputToSignale(logStream);
 
-  try {
-    return createPrismServerWithLogger(options, logInstance);
-  } catch (e) {
+  return createPrismServerWithLogger(options, logInstance).catch(e => {
     logInstance.fatal(e.message);
-  }
+    throw e;
+  });
 };
 
 async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {

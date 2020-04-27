@@ -7,9 +7,9 @@ import { CreateMockServerOptions } from './createServer';
 export type CreatePrism = (options: CreateMockServerOptions) => Promise<IPrismHttpServer | void>;
 
 export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: CreateMockServerOptions) {
-  return createPrism(options).then(possiblyServer => {
-    if (possiblyServer) {
-      let server: IPrismHttpServer = possiblyServer;
+  return createPrism(options).then(possibleServer => {
+    if (possibleServer) {
+      let server: IPrismHttpServer = possibleServer;
 
       const watcher = chokidar.watch(options.document, {
         // See https://github.com/paulmillr/chokidar#persistence

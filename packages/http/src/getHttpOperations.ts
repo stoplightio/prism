@@ -27,7 +27,9 @@ const httpAndFileResolver = new Resolver({
 
 export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
   const isRemote = /^https?:\/\//i.test(file);
-  const fileContent = isRemote ? await fetch(file).then(d => d.text()) : fs.readFileSync(file, { encoding: 'utf8' });
+  const fileContent = await (isRemote
+    ? fetch(file).then(d => d.text())
+    : fs.promises.readFile(file, { encoding: 'utf8' }));
 
   return getHttpOperations(fileContent, isRemote ? file : resolve(file));
 }
