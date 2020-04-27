@@ -54,7 +54,10 @@ const createSingleProcessPrism: CreatePrism = options => {
   const logInstance = createLogger('CLI', cliSpecificLoggerOptions, logStream);
   pipeOutputToSignale(logStream);
 
-  return createPrismServerWithLogger(options, logInstance).catch(e => logInstance.fatal(e.message));
+  return createPrismServerWithLogger(options, logInstance).catch(e => {
+    logInstance.fatal(e.message);
+    throw e;
+  });
 };
 
 async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
