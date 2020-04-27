@@ -11,7 +11,7 @@
     "@stoplight/prism-http": "^3.3.3",
     "@stoplight/prism-http-server": "^3.3.3",
     "@stoplight/types": "^11.6.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "chokidar": "^3.2.1",
     "fp-ts": "^2.5.3",
     "lodash": "^4.17.15",
