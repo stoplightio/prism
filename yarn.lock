@@ -1352,10 +1352,10 @@
   dependencies:
     type-detect "4.0.8"
 
-"@stoplight/http-spec@2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.11.0.tgz#27fc7a9bb67d809a240e39b4169da5cf87146424"
-  integrity sha512-UY0BvkRkAMhG825Ywy4n1mUU7V7DEpgxGA6KprV7juwVM42Mvn22HiFdXLzl1hnb+soIobIyAUItACe8sbhYBA==
+"@stoplight/http-spec@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.12.0.tgz#6477ad72bfc109d1903d20c9759b3d27d4e95e64"
+  integrity sha512-5nfQTvJPfbSkieWWwY0Qbe3C6VeO83T4mALs7m7gNb8C/gf2Jtm5yZDoVibzATCRWiok2Kvix+urlLY8JGzV0w==
   dependencies:
     "@openapi-contrib/openapi-schema-to-json-schema" "^3.0"
     "@stoplight/json" "^3.5.1"
@@ -1659,12 +1659,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/urijs@^1.19":
-  version "1.19.4"
-  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.4.tgz#29c4a694d4842d7f95e359a26223fc1865f1ab13"
-  integrity sha512-uHUvuLfy4YkRHL4UH8J8oRsINhdEHd9ymag7KJZVT94CjAmY1njoUzhazJsZjwfy+IpWKQKGVyXCwzhZvg73Fg==
-
-"@types/urijs@~1.19.7":
+"@types/urijs@^1.19", "@types/urijs@~1.19.7":
   version "1.19.7"
   resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.7.tgz#94dae48b40300135db8cc3796b12252850383193"
   integrity sha512-0YN0GGB2Xab5cuHerBQw/NvWUnkdVfDNdBjXtTr+2AE1c9t29HVvV+IkXwp+fwqN8/05U/XjaQ7pk+jP41ypqA==
