@@ -11,12 +11,12 @@ paths:
           required: true
           type: string
       produces:
-        - text/plain
+        - text/html
       responses:
         201:
           description: OK
 ====server====
-proxy -p 4010 ${document} http://httpbin
+proxy -p 4010 ${document} http://httpbin --errors
 ====command====
 curl -i http://localhost:4010/status/201 -H "X-Company-Auth: 10"
 ====expect====

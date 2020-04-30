@@ -1,5 +1,5 @@
 ====test====
-Sending an invalid request through the proxy server returns a validation error
+Sending an invalid request through the proxy server with the --errors flag returns a validation error
 ====spec====
 swagger: "2.0"
 paths:
@@ -16,7 +16,7 @@ paths:
         201:
           description: OK
 ====server====
-proxy -p 4010 ${document} http://httpbin
+proxy -p 4010 ${document} http://httpbin --errors
 ====command====
 curl -i http://localhost:4010/status/201
 ====expect====
