@@ -58,21 +58,19 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
 
   const mockOrForward = (
     resource: Resource,
-    input: Input,
+    data: Input,
     config: Config,
     validations: IPrismDiagnostic[]
   ): TE.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
-    const prismInput = {
-      validations,
-      data: input,
-    };
-
     const produceOutput = isProxyConfig(config)
-      ? components.forward(prismInput, config.upstream.href)(components.logger.child({ name: 'PROXY' }))
+      ? components.forward(
+          { validations: config.errors ? validations : [], data },
+          config.upstream.href
+        )(components.logger.child({ name: 'PROXY' }))
       : TE.fromEither(
           components.mock({
             resource,
-            input: prismInput,
+            input: { data, validations },
             config: config.mock,
           })(components.logger.child({ name: 'NEGOTIATOR' }))
         );
