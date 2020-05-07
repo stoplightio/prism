@@ -12,9 +12,9 @@ import * as fs from 'fs';
 import { get, uniq } from 'lodash';
 import { EOL } from 'os';
 import { resolve } from 'path';
-import { Spec } from 'swagger-schema-official';
-import { OpenAPIObject } from 'openapi3-ts';
-import { CollectionDefinition } from 'postman-collection';
+import type { Spec } from 'swagger-schema-official';
+import type { OpenAPIObject } from 'openapi3-ts';
+import type { CollectionDefinition } from 'postman-collection';
 
 const httpAndFileResolver = new Resolver({
   resolvers: {
