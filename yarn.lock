@@ -1401,7 +1401,7 @@
   dependencies:
     type-detect "4.0.8"
 
-"@stoplight/http-spec@2.12.0", "@stoplight/http-spec@^2.2.3":
+"@stoplight/http-spec@^2.12.0":
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.12.0.tgz#6477ad72bfc109d1903d20c9759b3d27d4e95e64"
   integrity sha512-5nfQTvJPfbSkieWWwY0Qbe3C6VeO83T4mALs7m7gNb8C/gf2Jtm5yZDoVibzATCRWiok2Kvix+urlLY8JGzV0w==
