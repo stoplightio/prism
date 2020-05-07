@@ -1401,26 +1401,7 @@
   dependencies:
     type-detect "4.0.8"
 
-"@stoplight/http-spec@2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.11.0.tgz#27fc7a9bb67d809a240e39b4169da5cf87146424"
-  integrity sha512-UY0BvkRkAMhG825Ywy4n1mUU7V7DEpgxGA6KprV7juwVM42Mvn22HiFdXLzl1hnb+soIobIyAUItACe8sbhYBA==
-  dependencies:
-    "@openapi-contrib/openapi-schema-to-json-schema" "^3.0"
-    "@stoplight/json" "^3.5.1"
-    "@stoplight/types" "^11.5.0"
-    "@types/swagger-schema-official" "~2.0.21"
-    "@types/to-json-schema" "^0.2.0"
-    "@types/type-is" "^1.6.3"
-    "@types/urijs" "~1.19.7"
-    json-schema-generator "^2.0.6"
-    lodash "^4.17.15"
-    openapi3-ts "~1.3.0"
-    postman-collection "^3.6.0"
-    type-is "^1.6.18"
-    urijs "~1.19.2"
-
-"@stoplight/http-spec@^2.2.3":
+"@stoplight/http-spec@2.12.0", "@stoplight/http-spec@^2.2.3":
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.12.0.tgz#6477ad72bfc109d1903d20c9759b3d27d4e95e64"
   integrity sha512-5nfQTvJPfbSkieWWwY0Qbe3C6VeO83T4mALs7m7gNb8C/gf2Jtm5yZDoVibzATCRWiok2Kvix+urlLY8JGzV0w==
