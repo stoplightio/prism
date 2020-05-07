@@ -1,10 +1,9 @@
 import { IHttpOperationResponse } from '@stoplight/types';
 import { head } from 'fp-ts/lib/Array';
 import { Option } from 'fp-ts/lib/Option';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 export function findOperationResponse(
-  responseSpecs: NonEmptyArray<IHttpOperationResponse>,
+  responseSpecs: IHttpOperationResponse[],
   statusCode: number
 ): Option<IHttpOperationResponse> {
   const sortedSpecs = responseSpecs

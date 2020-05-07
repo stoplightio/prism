@@ -1,9 +1,12 @@
 import { IHttpRequest, IHttpResponse } from '../types';
 import * as O from 'fp-ts/lib/Option';
+import { Do } from 'fp-ts-contrib/lib/Do';
 import { lookup } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get as _get } from 'lodash';
 import { pointerToPath } from '@stoplight/json';
+
+const DoOption = Do(O.option);
 
 export function resolveRuntimeExpressions(input: string, request: IHttpRequest, response: IHttpResponse) {
   // replace runtime expression placeholders (eg. {$method}) with the resolved values
@@ -40,15 +43,7 @@ export function resolveRuntimeExpression(
   );
 
   function isPart(idx: number, type: string) {
-    return pipe(
-      lookup(idx, parts),
-      O.chain(part =>
-        pipe(
-          part,
-          O.fromPredicate(part => part === type)
-        )
-      )
-    );
+    return pipe(lookup(idx, parts), O.chain(O.fromPredicate(part => part === type)));
   }
 
   function tryMethod() {
@@ -80,14 +75,11 @@ export function resolveRuntimeExpression(
 
   function tryRequestQuery() {
     return pipe(
-      isPart(1, 'query'),
-      O.chain(() => lookup(2, parts)),
-      O.chain(part =>
-        pipe(
-          O.fromNullable(request.url.query),
-          O.mapNullable(query => query[part])
-        )
-      )
+      DoOption.do(isPart(1, 'query'))
+        .bind('query', O.fromNullable(request.url.query))
+        .bind('part', lookup(2, parts))
+        .done(),
+      O.chain(({ part, query }) => O.fromNullable(query[part]))
     );
   }
 
@@ -120,14 +112,16 @@ export function resolveRuntimeExpression(
 
   function readBody(body: unknown) {
     return pipe(
-      O.fromNullable(body),
-      O.chain(body =>
-        pipe(
-          lookup(2, parts),
-          O.chain(part => O.tryCatch(() => pointerToPath('#' + part))),
-          O.chain(path => O.fromNullable(_get(body, path)))
+      DoOption.bind('body', O.fromNullable(body))
+        .bind(
+          'path',
+          pipe(
+            lookup(2, parts),
+            O.chain(part => O.tryCatch(() => pointerToPath('#' + part)))
+          )
         )
-      )
+        .done(),
+      O.chain(({ body, path }) => O.fromNullable(_get(body, path)))
     );
   }
 }

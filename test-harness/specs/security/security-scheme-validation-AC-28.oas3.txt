@@ -1,0 +1,39 @@
+====test====
+If I have a request with a scheme that has mixed casing
+And I am sending a request with the correct scheme in a different casing
+it shuold pass the validation because HTTP schemes are case insensitive
+====spec====
+openapi: 3.0.2
+paths:
+  /ping:
+    get:
+      security:
+        - bearer: []
+        - basic: []
+      responses:
+        '200':
+          description: ping response
+          content:
+            text/plain:
+              schema:
+                type: string
+                example:
+                  ack!
+components:
+  securitySchemes:
+    basic:
+      type: http
+      scheme: BaSiC
+    bearer:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: http://foo/
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/ping --header 'Authorization: Basic MTpk'
+====expect====
+HTTP/1.1 200 OK
+
+ack!

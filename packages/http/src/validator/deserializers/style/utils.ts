@@ -1,5 +1,7 @@
+import { Dictionary } from '@stoplight/types';
+
 export function createObjectFromKeyValList(items: string[]) {
-  return items.reduce((obj: any, item, i) => {
+  return items.reduce((obj: Dictionary<unknown>, item, i) => {
     if (i % 2 === 0) {
       obj[item] = undefined;
     } else {

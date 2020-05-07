@@ -1,0 +1,25 @@
+====test====
+Sending an invalid request through the proxy server with the --errors flag returns a validation error
+====spec====
+swagger: "2.0"
+paths:
+  /status/201:
+    get:
+      parameters:
+        - name: X-Company-Auth
+          in: header
+          required: true
+          type: string
+      produces:
+        - text/plain
+      responses:
+        201:
+          description: OK
+====server====
+proxy -p 4010 ${document} http://httpbin --errors
+====command====
+curl -i http://localhost:4010/status/201
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["header"],"severity":"Error","code":"required","message":"should have required property 'x-company-auth'"}]}

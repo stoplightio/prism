@@ -19,6 +19,12 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "arrowParens": "avoid"
+      }
+    ],
     "@typescript-eslint/no-triple-slash-reference": "off",
     "@typescript-eslint/prefer-interface": "off",
     "@typescript-eslint/interface-name-prefix": "off",

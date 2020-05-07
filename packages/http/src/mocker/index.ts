@@ -1,20 +1,23 @@
-import { IPrismComponents, IPrismInput } from '@stoplight/prism-core';
+import { IPrismComponents, IPrismInput, IPrismDiagnostic } from '@stoplight/prism-core';
 import {
   DiagnosticSeverity,
   IHttpHeaderParam,
   IHttpOperation,
   INodeExample,
   IMediaTypeContent,
+  IHttpOperationResponse,
 } from '@stoplight/types';
 
 import * as caseless from 'caseless';
 import * as E from 'fp-ts/lib/Either';
 import * as Record from 'fp-ts/lib/Record';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as A from 'fp-ts/lib/Array';
 import * as R from 'fp-ts/lib/Reader';
 import * as O from 'fp-ts/lib/Option';
 import * as RE from 'fp-ts/lib/ReaderEither';
 import { map } from 'fp-ts/lib/Array';
+import { Do } from 'fp-ts-contrib/lib/Do';
 import { isNumber, isString, keyBy, mapValues, groupBy, get } from 'lodash';
 import { Logger } from 'pino';
 import * as typeIs from 'type-is';
@@ -39,10 +42,9 @@ import {
   findContentByMediaTypeOrFirst,
   splitUriParams,
 } from '../validator/validators/body';
-import { sequenceT } from 'fp-ts/lib/Apply';
+import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 
 const eitherRecordSequence = Record.sequence(E.either);
-const eitherSequence = sequenceT(E.either);
 
 const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockHttpConfig>['mock'] = ({
   resource,
@@ -141,42 +143,47 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   });
 }
 
-function handleInputValidation(input: IPrismInput<IHttpRequest>, resource: IHttpOperation) {
-  const securityValidation = input.validations.find(validation => validation.code === 401);
+export function createInvalidInputResponse(
+  failedValidations: NonEmptyArray<IPrismDiagnostic>,
+  responses: IHttpOperationResponse[]
+) {
+  const securityValidation = failedValidations.find(validation => validation.code === 401);
 
   return pipe(
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
     R.chain(() =>
       pipe(
-        helpers.negotiateOptionsForInvalidRequest(resource.responses, securityValidation ? ['401'] : ['422', '400']),
+        helpers.negotiateOptionsForInvalidRequest(responses, securityValidation ? ['401'] : ['422', '400']),
         RE.mapLeft(() =>
           securityValidation
-            ? ProblemJsonError.fromTemplate(
-                UNAUTHORIZED,
-                '',
-                securityValidation.tags && securityValidation.tags.length
-                  ? {
-                      headers: { 'WWW-Authenticate': securityValidation.tags.join(',') },
-                    }
-                  : undefined
-              )
-            : ProblemJsonError.fromTemplate(
-                UNPROCESSABLE_ENTITY,
-                'Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
-                {
-                  validation: input.validations.map(detail => ({
-                    location: detail.path,
-                    severity: DiagnosticSeverity[detail.severity],
-                    code: detail.code,
-                    message: detail.message,
-                  })),
-                }
-              )
+            ? createUnauthorisedResponse(securityValidation.tags)
+            : createUnprocessableEntityResponse(failedValidations)
         )
       )
     )
   );
 }
+
+export const createUnauthorisedResponse = (tags?: string[]) =>
+  ProblemJsonError.fromTemplate(
+    UNAUTHORIZED,
+    'Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you.',
+    tags && tags.length ? { headers: { 'WWW-Authenticate': tags.join(',') } } : undefined
+  );
+
+export const createUnprocessableEntityResponse = (validations: NonEmptyArray<IPrismDiagnostic>) =>
+  ProblemJsonError.fromTemplate(
+    UNPROCESSABLE_ENTITY,
+    'Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.',
+    {
+      validation: validations.map(detail => ({
+        location: detail.path,
+        severity: DiagnosticSeverity[detail.severity],
+        code: detail.code,
+        message: detail.message,
+      })),
+    }
+  );
 
 function negotiateResponse(
   mockConfig: IHttpOperationConfig,
@@ -188,8 +195,8 @@ function negotiateResponse(
     validation => validation.severity
   );
 
-  if (errors) {
-    return handleInputValidation(input, resource);
+  if (errors && A.isNonEmpty(input.validations)) {
+    return createInvalidInputResponse(input.validations, resource.responses);
   } else {
     return pipe(
       withLogger(logger => {
@@ -209,31 +216,28 @@ function assembleResponse(
   payloadGenerator: PayloadGenerator
 ): R.Reader<Logger, E.Either<Error, IHttpResponse>> {
   return logger =>
-    pipe(
-      result,
-      E.chain(negotiationResult =>
-        pipe(
-          eitherSequence(
-            computeBody(negotiationResult, payloadGenerator),
-            computeMockedHeaders(negotiationResult.headers || [], payloadGenerator)
-          ),
-          E.map(([mockedBody, mockedHeaders]) => {
-            const response: IHttpResponse = {
-              statusCode: parseInt(negotiationResult.code),
-              headers: {
-                ...mockedHeaders,
-                ...(negotiationResult.mediaType && { 'Content-type': negotiationResult.mediaType }),
-              },
-              body: mockedBody,
-            };
+    Do(E.either)
+      .bind('negotiationResult', result)
+      .sequenceSL(({ negotiationResult }) => ({
+        mockedBody: computeBody(negotiationResult, payloadGenerator),
+        mockedHeaders: computeMockedHeaders(negotiationResult.headers || [], payloadGenerator),
+      }))
+      .return(negotiationResult => {
+        const response: IHttpResponse = {
+          statusCode: parseInt(negotiationResult.negotiationResult.code),
+          headers: {
+            ...negotiationResult.mockedHeaders,
+            ...(negotiationResult.negotiationResult.mediaType && {
+              'Content-type': negotiationResult.negotiationResult.mediaType,
+            }),
+          },
+          body: negotiationResult.mockedBody,
+        };
 
-            logger.success(`Responding with the requested status code ${response.statusCode}`);
+        logger.success(`Responding with the requested status code ${response.statusCode}`);
 
-            return response;
-          })
-        )
-      )
-    );
+        return response;
+      });
 }
 
 function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is INodeExample {

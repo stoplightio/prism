@@ -277,7 +277,7 @@ const helpers = {
   },
 
   findResponse(
-    httpResponses: NonEmptyArray<IHttpOperationResponse>,
+    httpResponses: IHttpOperationResponse[],
     statusCodes: NonEmptyArray<string>
   ): R.Reader<Logger, O.Option<IHttpOperationResponse>> {
     const [first, ...others] = statusCodes;
@@ -319,7 +319,7 @@ const helpers = {
   },
 
   negotiateOptionsForInvalidRequest(
-    httpResponses: NonEmptyArray<IHttpOperationResponse>,
+    httpResponses: IHttpOperationResponse[],
     statusCodes: NonEmptyArray<string>
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(

@@ -50,9 +50,9 @@ paths:
                 type: array
                 items:
                   "$ref": "#/components/schemas/Pet"
-                example:
-                - name: a_name
-                  photoUrls: []
+              examples:
+                a_name:
+                  value: { name: 'clark' }
         '401':
           description: Authorization information is missing or invalid.
     post:

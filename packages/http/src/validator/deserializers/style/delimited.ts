@@ -8,7 +8,7 @@ export class DelimitedStyleDeserializer implements IHttpQueryParamStyleDeseriali
     private readonly styleName:
       | HttpParamStyles.PipeDelimited
       | HttpParamStyles.SpaceDelimited
-      | HttpParamStyles.CommaDelimited,
+      | HttpParamStyles.CommaDelimited
   ) {}
   public supports(style: HttpParamStyles) {
     return style === this.styleName;

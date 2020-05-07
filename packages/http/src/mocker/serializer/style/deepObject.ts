@@ -1,4 +1,6 @@
-export function serializeWithDeepObjectStyle(name: string, value: any) {
+import { Dictionary } from '@stoplight/types';
+
+export function serializeWithDeepObjectStyle(name: string, value: string | string[] | Dictionary<unknown>) {
   return serialize(name, [], value);
 }
 

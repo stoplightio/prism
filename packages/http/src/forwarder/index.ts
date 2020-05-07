@@ -1,7 +1,8 @@
-import { IPrismComponents } from '@stoplight/prism-core';
+import { IPrismComponents, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import fetch from 'node-fetch';
 import { pipe } from 'fp-ts/lib/pipeable';
+import * as NEA from 'fp-ts/lib/NonEmptyArray';
 import * as E from 'fp-ts/lib/Either';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
@@ -12,15 +13,26 @@ import { Logger } from 'pino';
 import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
 import { parseResponse } from '../utils/parseResponse';
 import { hopByHopHeaders } from './resources';
+import { createUnauthorisedResponse, createUnprocessableEntityResponse } from '../mocker';
 
 const { version: prismVersion } = require('../../package.json');
 
 const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>['forward'] = (
-  input: IHttpRequest,
+  { data: input, validations }: IPrismInput<IHttpRequest>,
   baseUrl: string
 ): RTE.ReaderTaskEither<Logger, Error, IHttpResponse> => logger =>
   pipe(
-    TE.fromEither(serializeBody(input.body)),
+    NEA.fromArray(validations),
+    TE.fromOption(() => undefined),
+    TE.map(failedValidations => {
+      const securityValidation = failedValidations.find(validation => validation.code === 401);
+
+      return securityValidation
+        ? createUnauthorisedResponse(securityValidation.tags)
+        : createUnprocessableEntityResponse(failedValidations);
+    }),
+    TE.swap,
+    TE.chain(() => TE.fromEither(serializeBody(input.body))),
     TE.chain(body =>
       TE.tryCatch(async () => {
         const partialUrl = parse(baseUrl);
@@ -35,7 +47,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
         return fetch(url, {
           body,
           method: input.method,
-          headers: defaults(omit(input.headers, ['host', 'accept']), {
+          headers: defaults(omit(input.headers, ['host']), {
             accept: 'application/json, text/plain, */*',
             'user-agent': `Prism/${prismVersion}`,
           }),

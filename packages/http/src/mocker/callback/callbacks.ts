@@ -4,7 +4,8 @@ import { IHttpRequest, IHttpResponse } from '../../types';
 import fetch from 'node-fetch';
 import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
-import { map, reduce } from 'fp-ts/lib/Array';
+import * as A from 'fp-ts/lib/Array';
+import { Do } from 'fp-ts-contrib/lib/Do';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
 import { head } from 'fp-ts/lib/Array';
@@ -14,6 +15,9 @@ import { validateOutput } from '../../validator';
 import { parseResponse } from '../../utils/parseResponse';
 import { violationLogger } from '../../utils/logger';
 import { Logger } from 'pino';
+
+const traverseOption = A.array.traverse(O.option);
+const DoOption = Do(O.option);
 
 export function runCallback({
   callback,
@@ -42,7 +46,7 @@ export function runCallback({
         return pipe(
           validateOutput({ resource: callback, element }),
           E.mapLeft(violations => {
-            pipe(violations, map(logViolation));
+            pipe(violations, A.map(logViolation));
           }),
           TE.fromEither
         );
@@ -76,15 +80,12 @@ function assembleBody(request?: IHttpOperationRequest): O.Option<{ body: string;
     O.fromNullable(request),
     O.mapNullable(request => request.body),
     O.mapNullable(body => body.contents),
-    O.chain(head),
-    O.chain(param =>
-      pipe(
-        param,
-        generateHttpParam,
-        O.map(body => ({ body, mediaType: param.mediaType }))
-      )
+    O.chain(contents =>
+      DoOption.bind('content', head(contents))
+        .bindL('body', ({ content }) => generateHttpParam(content))
+        .done()
     ),
-    O.chain(({ body, mediaType }) =>
+    O.chain(({ body, content: { mediaType } }) =>
       pipe(
         E.stringifyJSON(body, () => undefined),
         E.map(body => ({ body, mediaType })),
@@ -98,19 +99,9 @@ function assembleHeaders(request?: IHttpOperationRequest, bodyMediaType?: string
   return pipe(
     O.fromNullable(request),
     O.mapNullable(request => request.headers),
-    O.map(params =>
-      pipe(
-        params,
-        reduce({}, (headers, param) =>
-          pipe(
-            param,
-            generateHttpParam,
-            O.fold(
-              () => headers,
-              value => ({ ...headers, [param.name]: value })
-            )
-          )
-        )
+    O.chain(params =>
+      traverseOption(params, param =>
+        DoOption.bind('value', generateHttpParam(param)).return(({ value }) => [param.name, value])
       )
     ),
     O.reduce(

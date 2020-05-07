@@ -15,9 +15,7 @@ function checkHeader(authorizationHeader: string) {
 }
 
 function isBasicToken(token: string) {
-  const tokenParts = Buffer.from(token, 'base64')
-    .toString()
-    .split(':');
+  const tokenParts = Buffer.from(token, 'base64').toString().split(':');
 
   return tokenParts.length === 2;
 }

@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-core",
-  "version": "3.3.1",
+  "version": "3.3.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -16,8 +16,9 @@
     "node": ">=8"
   },
   "dependencies": {
+    "fp-ts": "^2.5.3",
     "lodash": "^4.17.15",
-    "pino": "^5.13.2",
+    "pino": "^6.2.1",
     "tslib": "^1.10.0"
   },
   "publishConfig": {

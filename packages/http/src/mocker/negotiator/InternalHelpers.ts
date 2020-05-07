@@ -49,7 +49,7 @@ export function findDefaultContentType(
 
 const byResponseCode = ord.contramap<number, IHttpOperationResponse>(ordNumber, response => parseInt(response.code));
 
-export function findLowest2xx(httpResponses: NonEmptyArray<IHttpOperationResponse>): Option<IHttpOperationResponse> {
+export function findLowest2xx(httpResponses: IHttpOperationResponse[]): Option<IHttpOperationResponse> {
   const generic2xxResponse = () =>
     pipe(
       findResponseByStatusCode(httpResponses, '2XX'),
@@ -67,7 +67,7 @@ export function findLowest2xx(httpResponses: NonEmptyArray<IHttpOperationRespons
 }
 
 export function findResponseByStatusCode(
-  responses: NonEmptyArray<IHttpOperationResponse>,
+  responses: IHttpOperationResponse[],
   statusCode: string
 ): Option<IHttpOperationResponse> {
   return pipe(
@@ -77,7 +77,7 @@ export function findResponseByStatusCode(
 }
 
 export function createResponseFromDefault(
-  responses: NonEmptyArray<IHttpOperationResponse>,
+  responses: IHttpOperationResponse[],
   statusCode: string
 ): Option<IHttpOperationResponse> {
   return pipe(

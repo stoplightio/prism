@@ -18,5 +18,12 @@ export const createInstance = (
 ) =>
   factory<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>(
     defaultConfig,
-    defaults(components, { route, validateInput, validateOutput, validateSecurity, mock, forward })
+    defaults(components, {
+      route,
+      validateInput,
+      validateOutput,
+      validateSecurity,
+      mock,
+      forward,
+    })
   );

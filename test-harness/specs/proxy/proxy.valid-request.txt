@@ -1,0 +1,23 @@
+====test====
+Sending a valid request through the proxy server returns correctly gets forwarded
+====spec====
+swagger: "2.0"
+paths:
+  /status/201:
+    get:
+      parameters:
+        - name: X-Company-Auth
+          in: header
+          required: true
+          type: string
+      produces:
+        - text/html
+      responses:
+        201:
+          description: OK
+====server====
+proxy -p 4010 ${document} http://httpbin --errors
+====command====
+curl -i http://localhost:4010/status/201 -H "X-Company-Auth: 10"
+====expect====
+HTTP/1.1 201 Created

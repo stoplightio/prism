@@ -13,28 +13,27 @@ import {
   IHttpQueryParam,
 } from '@stoplight/types';
 import * as E from 'fp-ts/lib/Either';
+import * as A from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { get, identity } from 'lodash';
-// @ts-ignore
+import { Do } from 'fp-ts-contrib/lib/Do';
+import { get, identity, fromPairs } from 'lodash';
 import { URI } from 'uri-template-lite';
 import { ValuesTransformer } from './colorizer';
+import { sequenceS } from 'fp-ts/lib/Apply';
+
+const traverseEither = A.array.traverse(E.either);
+const sequenceSEither = sequenceS(E.either);
+const DoEither = Do(E.either);
 
 export function createExamplePath(
   operation: IHttpOperation,
   transformValues: ValuesTransformer = identity
 ): E.Either<Error, string> {
-  return pipe(
-    generateTemplateAndValuesForPathParams(operation),
-    E.chain(({ template: pathTemplate, values: pathValues }) =>
-      pipe(
-        generateTemplateAndValuesForQueryParams(pathTemplate, operation),
-        E.map(({ template: queryTemplate, values: queryValues }) => {
-          return { template: queryTemplate, values: { ...pathValues, ...queryValues } };
-        })
-      )
-    ),
-    E.map(({ template, values }) => URI.expand(template, transformValues(values)))
-  );
+  return DoEither.bind('pathData', generateTemplateAndValuesForPathParams(operation))
+    .bindL('queryData', ({ pathData }) => generateTemplateAndValuesForQueryParams(pathData.template, operation))
+    .return(({ pathData, queryData }) =>
+      URI.expand(queryData.template, transformValues({ ...pathData.values, ...queryData.values }))
+    );
 }
 
 function generateParamValue(spec: IHttpParam): E.Either<Error, unknown> {
@@ -44,7 +43,15 @@ function generateParamValue(spec: IHttpParam): E.Either<Error, unknown> {
     E.chain(value => {
       switch (spec.style) {
         case HttpParamStyles.DeepObject:
-          return E.right(serializeWithDeepObjectStyle(spec.name, value));
+          return pipe(
+            value,
+            E.fromPredicate(
+              (value: unknown): value is string | Dictionary<unknown, string> =>
+                typeof value === 'string' || typeof value === 'object',
+              () => new Error('Expected string parameter')
+            ),
+            E.map(value => serializeWithDeepObjectStyle(spec.name, value))
+          );
 
         case HttpParamStyles.PipeDelimited:
           return pipe(
@@ -73,37 +80,25 @@ function generateParamValue(spec: IHttpParam): E.Either<Error, unknown> {
   );
 }
 
-function generateParamValues(specs: IHttpParam[]) {
-  return specs.reduce(
-    (valuesOrError: E.Either<Error, Dictionary<unknown, string>>, spec) =>
+function generateParamValues(specs: IHttpParam[]): E.Either<Error, Dictionary<unknown>> {
+  return pipe(
+    traverseEither(specs, spec =>
       pipe(
-        valuesOrError,
-        E.chain(values =>
-          pipe(
-            generateParamValue(spec),
-            E.map(value => ({
-              ...values,
-              [spec.name]: value,
-            }))
-          )
-        )
-      ),
-    E.right({})
+        generateParamValue(spec),
+        E.map(value => [spec.name, value])
+      )
+    ),
+    E.map(fromPairs)
   );
 }
 
 function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
   const specs = get(operation, 'request.path', []);
 
-  return pipe(
-    generateParamValues(specs),
-    E.chain(values =>
-      pipe(
-        createPathUriTemplate(operation.path, specs),
-        E.map(template => ({ template, values }))
-      )
-    )
-  );
+  return sequenceSEither({
+    values: generateParamValues(specs),
+    template: createPathUriTemplate(operation.path, specs),
+  });
 }
 
 function generateTemplateAndValuesForQueryParams(template: string, operation: IHttpOperation) {
@@ -117,21 +112,17 @@ function generateTemplateAndValuesForQueryParams(template: string, operation: IH
 
 function createPathUriTemplate(inputPath: string, specs: IHttpPathParam[]): E.Either<Error, string> {
   // defaults for query: style=Simple exploded=false
-  return specs
-    .filter(spec => spec.required !== false)
-    .reduce(
-      (pathOrError: E.Either<Error, string>, spec) =>
+  return pipe(
+    traverseEither(
+      specs.filter(spec => spec.required !== false),
+      spec =>
         pipe(
-          pathOrError,
-          E.chain(path =>
-            pipe(
-              createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
-              E.map(template => path.replace(`{${spec.name}}`, template))
-            )
-          )
-        ),
-      E.right(inputPath)
-    );
+          createParamUriTemplate(spec.name, spec.style || HttpParamStyles.Simple, spec.explode || false),
+          E.map(param => ({ param, name: spec.name }))
+        )
+    ),
+    E.map(values => values.reduce((acc, current) => acc.replace(`{${current.name}}`, current.param), inputPath))
+  );
 }
 
 function createParamUriTemplate(name: string, style: HttpParamStyles, explode: boolean) {

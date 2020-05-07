@@ -16,7 +16,7 @@ import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
-import { merge } from 'lodash';
+import { merge } from 'lodash/fp';
 import { pipe } from 'fp-ts/lib/pipeable';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
@@ -30,10 +30,10 @@ function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValue
   return params;
 }
 
-function addressInfoToString(address: AddressInfo | string | null) {
-  if (!address) return '';
-  const a = address as AddressInfo;
-  return `http://${a.address}:${a.port}`;
+function addressInfoToString(addressInfo: AddressInfo | string | null) {
+  if (!addressInfo) return '';
+  if (typeof addressInfo === 'string') return addressInfo;
+  return `http://${addressInfo.address}:${addressInfo.port}`;
 }
 
 function parseRequestBody(request: IncomingMessage) {
@@ -220,7 +220,13 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     },
 
     listen: (port: number, ...args: any[]) =>
-      new Promise(resolve => server.listen(port, ...args, () => resolve(addressInfoToString(server.address())))),
+      new Promise((resolve, reject) => {
+        server.once('error', e => reject(e.message));
+        server.listen(port, ...args, (err: unknown) => {
+          if (err) return reject(err);
+          return resolve(addressInfoToString(server.address()));
+        });
+      }),
   };
 };
 

@@ -30,9 +30,7 @@ async function checkUserAgent(
   headers = {},
   oasBaseUrl: string
 ) {
-  const nockResult = nock(oasBaseUrl)
-    .get('/pet')
-    .reply(200);
+  const nockResult = nock(oasBaseUrl).get('/pet').reply(200);
 
   await prism.request(
     {
@@ -143,9 +141,7 @@ describe('Http Client .request', () => {
       const serverReply = 'hello world';
 
       beforeEach(() => {
-        nock(baseUrl)
-          .get('/x-bet')
-          .reply(200, serverReply);
+        nock(baseUrl).get('/x-bet').reply(200, serverReply);
       });
 
       afterEach(() => nock.cleanAll());
@@ -373,9 +369,7 @@ describe('proxy server', () => {
   const baseUrl = 'https://petstore.swagger.io:7777/v2';
 
   beforeAll(() =>
-    nock(baseUrl)
-      .get('/pets')
-      .reply(200, '<html><h1>Hello</h1>', { 'content-type': 'application/html' })
+    nock(baseUrl).get('/pets').reply(200, '<html><h1>Hello</h1>', { 'content-type': 'application/html' })
   );
 
   afterAll(() => nock.cleanAll());

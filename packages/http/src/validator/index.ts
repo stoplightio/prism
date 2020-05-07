@@ -14,7 +14,6 @@ import * as typeIs from 'type-is';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
 import { validateSecurity } from './validators/security';
-// @ts-ignore
 import { URI } from 'uri-template-lite';
 
 import { IHttpRequest, IHttpResponse } from '../types';
@@ -81,7 +80,7 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
   );
 };
 
-const findResponseByStatus = (responses: NonEmptyArray<IHttpOperationResponse>, statusCode: number) =>
+const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: number) =>
   pipe(
     findOperationResponse(responses, statusCode),
     E.fromOption<IPrismDiagnostic>(() => ({

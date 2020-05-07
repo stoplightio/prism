@@ -1,4 +1,4 @@
-import { HttpParamStyles } from '@stoplight/types';
+import { HttpParamStyles, Dictionary } from '@stoplight/types';
 import { IHttpNameValues, JSONSchema } from '../../../types';
 import { IHttpQueryParamStyleDeserializer } from '../types';
 
@@ -12,15 +12,13 @@ export class DeepObjectStyleDeserializer implements IHttpQueryParamStyleDeserial
       return name + path.map(el => `[${el}]`).join('');
     }
 
-    function constructArray(currentPath: string[], items: any): object[] {
-      const path = resolve(currentPath)
-        .replace(/\[/g, '\\[')
-        .replace(/\]/g, '\\]');
+    function constructArray(currentPath: string[], items: unknown): object[] {
+      const path = resolve(currentPath).replace(/\[/g, '\\[').replace(/\]/g, '\\]');
 
       const regexp = new RegExp(`^${path}\\[([0-9]+)\\]`);
 
       const indexes = Object.keys(parameters).reduce((list, k) => {
-        const matches = k.match(regexp);
+        const matches = regexp.exec(k);
 
         if (!matches) {
           return list;
@@ -32,10 +30,10 @@ export class DeepObjectStyleDeserializer implements IHttpQueryParamStyleDeserial
       return Object.keys(indexes).map(i => construct([...currentPath, String(i)], items));
     }
 
-    function constructObject(currentPath: string[], props: any): object {
+    function constructObject(currentPath: string[], props: Dictionary<unknown>): object {
       return Object.keys(props).reduce(
         (result, k) => ({ ...result, [k]: construct([...currentPath, k], props[k]) }),
-        {},
+        {}
       );
     }
 
