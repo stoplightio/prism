@@ -1,4 +1,4 @@
-import { getHttpOperationsFromSpec } from '@stoplight/prism-cli/src/operations';
+import { getHttpOperationsFromSpec } from '../../operations';
 
 describe('getHttpOperationsFromSpec()', () => {
   describe('ref resolving fails', () => {
