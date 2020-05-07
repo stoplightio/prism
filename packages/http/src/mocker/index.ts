@@ -20,7 +20,7 @@ import { map } from 'fp-ts/lib/Array';
 import { Do } from 'fp-ts-contrib/lib/Do';
 import { isNumber, isString, keyBy, mapValues, groupBy, get } from 'lodash';
 import { Logger } from 'pino';
-import * as typeIs from 'type-is';
+import { is } from 'type-is';
 import {
   ContentExample,
   IHttpOperationConfig,
@@ -112,7 +112,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   const mediaType = caseless(request.headers || {}).get('content-type');
   if (!mediaType) return request;
 
-  if (!typeIs.is(mediaType, ['application/x-www-form-urlencoded'])) return request;
+  if (!is(mediaType, ['application/x-www-form-urlencoded'])) return request;
 
   const specs = pipe(
     O.fromNullable(resource.request),

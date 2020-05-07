@@ -10,7 +10,7 @@ import * as caseless from 'caseless';
 import { findFirst, isNonEmpty } from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
-import * as typeIs from 'type-is';
+import { is } from 'type-is';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange } from 'lodash';
 import { validateSecurity } from './validators/security';
@@ -95,7 +95,7 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
 const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
     contents,
-    findFirst(c => !!typeIs.is(mediaType, [c.mediaType])),
+    findFirst(c => !!is(mediaType, [c.mediaType])),
     E.fromOption<IPrismDiagnostic>(() => ({
       message: `The received media type "${mediaType || ''}" does not match the one${
         contents.length > 1 ? 's' : ''
