@@ -17,7 +17,7 @@
     "test": "jest",
     "release": "lerna version",
     "prerelease:canary": "yarn build",
-    "release:canary": "lerna publish premajor --force-publish=* --no-push --no-git-tag-version --dist-tag canary",
+    "release:canary": "lerna publish 4.0.0 --canary --force-publish=* --no-push --no-git-tag-version --dist-tag canary",
     "prebuild.binary": "yarn build",
     "build.binary": "npx pkg --output ./cli-binaries/prism-cli ./packages/cli/",
     "test.harness": "jest -c ./jest.harness.config.js"

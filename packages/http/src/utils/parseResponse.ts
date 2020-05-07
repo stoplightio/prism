@@ -1,4 +1,4 @@
-import { Response } from 'node-fetch';
+import type { Response } from 'node-fetch';
 import { is as typeIs } from 'type-is';
 import * as E from 'fp-ts/lib/Either';
 import * as TE from 'fp-ts/lib/TaskEither';

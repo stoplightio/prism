@@ -16,6 +16,7 @@
     "node": ">=8"
   },
   "dependencies": {
+    "@stoplight/json": "^3.7.1",
     "@stoplight/prism-core": "^3.3.4",
     "@stoplight/types": "^11.6.0",
     "@stoplight/yaml": "^3.0.2",
@@ -29,6 +30,7 @@
     "fp-ts-contrib": "^0.1.15",
     "json-schema-faker": "0.5.0-rc23",
     "lodash": "^4.17.15",
+    "node-fetch": "^2.6.0",
     "openapi-sampler": "^1.0.0-beta.15",
     "pino": "^6.2.1",
     "tslib": "^1.10.0",

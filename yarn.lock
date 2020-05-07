@@ -1443,7 +1443,7 @@
     tslib "^1.10.0"
     urijs "~1.19.1"
 
-"@stoplight/json@^3.1.2", "@stoplight/json@^3.5.1":
+"@stoplight/json@^3.1.2", "@stoplight/json@^3.5.1", "@stoplight/json@^3.7.1":
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.7.1.tgz#3855478ed3e0baaee6a7627948957ce537e481ad"
   integrity sha512-5VUVZxO7Jg+yoyEPa+ymD+fz5Pij96Nv3ei8FpzkzJwZLqY0ycAe8pBTz1mMf9QDUB+7HZZnCrWGCqGtDLYZZA==
