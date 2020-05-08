@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Changed
+
+- **BREAKING**: The `getHttpOperationsFromSpec` and `getHttpOperationsFromResource` have been moved from the HTTP Package to the CLI package. If you're using Prism programmatically, this might require some code changes on your side [#1009](https://github.com/stoplightio/prism/pull/1009)
+- **BREAKING**: The `createClientFromOperations` is now exported as `export function` instead of exporting an object. If you're using Prism programmatically, this might require some code changes on your side [#1009](https://github.com/stoplightio/prism/pull/1009)
+
 # 3.3.4 (2020-05-04)
 
 ## Fixed
