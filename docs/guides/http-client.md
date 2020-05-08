@@ -20,12 +20,12 @@ const client = createClientFromOperations(
 );
 ```
 
-To create the required operations array you can use two utilities function defined in the `@stoplight/prism-cli` package:
+To create the required operations array you can use two utility functions defined in the `@stoplight/prism-cli` package:
 
 ### Create from file or HTTP resource
 
 ```ts
-const { getHttpOperationsFromSpec, getHttpOperationsFromResource } = require('@stoplight/prism-cli/dist/operations')
+const { getHttpOperationsFromSpec, getHttpOperationsFromResource } = require('@stoplight/prism-cli/dist/operations');
 
 const operations = await getHttpOperationsFromResource('examples/petstore.oas2.yaml');
 
@@ -40,7 +40,6 @@ paths:
 `;
 
 const operations = await getHttpOperationsFromSpec(descriptionDoc);
-
 ```
 
 ---
