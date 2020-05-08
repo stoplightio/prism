@@ -1,6 +1,7 @@
 import { IHttpContent, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 // @ts-ignore
 import * as accepts from 'accepts';
+import { is } from 'type-is';
 import { filter, findFirst, head, sort } from 'fp-ts/lib/Array';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { alt, map, Option } from 'fp-ts/lib/Option';
@@ -26,11 +27,13 @@ export function findBestHttpContentByMediaType(
   response: PickRequired<IHttpOperationResponse, 'contents'>,
   mediaType: string[]
 ): Option<IMediaTypeContent> {
-  const bestType = accepts({
-    headers: {
-      accept: mediaType.join(','),
-    },
-  }).type(response.contents.map(c => c.mediaType));
+  const responseMt = response.contents.map(c => c.mediaType);
+  const accept = mediaType
+    .map(mt => is(mt, responseMt))
+    .filter((t): t is string => typeof t === 'string')
+    .join(',');
+
+  const bestType = accepts({ headers: { accept } }).type(response.contents.map(c => c.mediaType));
 
   return pipe(
     response.contents,
