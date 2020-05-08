@@ -17,7 +17,7 @@ interface IClientConfig extends IHttpConfig {
   baseUrl?: string;
 }
 
-function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IClientConfig): PrismHttp {
+export function createClientFromOperations(resources: IHttpOperation[], defaultConfig: IClientConfig): PrismHttp {
   const obj = createInstance(defaultConfig, { logger });
 
   type headersFromRequest = Required<Pick<IHttpRequest, 'headers'>>;
@@ -166,5 +166,3 @@ export type PrismHttp = {
   patch: IRequestFunctionWithMethodWithBody;
   trace: IRequestFunctionWithMethod;
 };
-
-export { createClientFromOperations };
