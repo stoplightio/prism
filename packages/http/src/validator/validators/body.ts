@@ -9,7 +9,7 @@ import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
-import { is } from 'type-is';
+import { is as typeIs } from 'type-is';
 import * as NonEmptyArray from 'fp-ts/lib/NonEmptyArray';
 
 export function deserializeFormBody(
@@ -58,7 +58,7 @@ export function decodeUriEntities(target: Dictionary<string>) {
 export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: string) {
   return pipe(
     specs,
-    Array.findFirst(spec => !!is(mediaType, [spec.mediaType])),
+    Array.findFirst(spec => !!typeIs(mediaType, [spec.mediaType])),
     O.alt(() => Array.head(specs)),
     O.map(content => ({ mediaType, content }))
   );
@@ -105,7 +105,7 @@ export class HttpBodyValidator implements IHttpValidator<any, IMediaTypeContent>
         ({ content, mediaType: mt, schema }) =>
           pipe(
             mt,
-            O.fromPredicate(mediaType => !!is(mediaType, ['application/x-www-form-urlencoded'])),
+            O.fromPredicate(mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded'])),
             O.fold(
               () =>
                 pipe(

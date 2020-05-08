@@ -1,13 +1,13 @@
 import { Dictionary } from '@stoplight/types/dist';
 import * as xmlDiff from 'diff-js-xml';
 import * as parser from 'fast-xml-parser';
-import { is } from 'type-is';
+import { is as typeIs } from 'type-is';
 
 type Result = { body: string; headers: Dictionary<string> };
 
 export const xmlValidator = {
   test: (contentType: string, content: string) => {
-    const doesContentTypeMatch = !!is(contentType, [
+    const doesContentTypeMatch = !!typeIs(contentType, [
       'application/xml',
       'application/*+xml',
       'text/xml',

@@ -1,19 +1,19 @@
 import { j2xParser } from 'fast-xml-parser';
-import { is } from 'type-is';
+import { is as typeIs } from 'type-is';
 
 const xmlSerializer = new j2xParser({});
 
 const serializers = [
   {
-    test: (value: string) => !!is(value, ['application/json', 'application/*+json']),
+    test: (value: string) => !!typeIs(value, ['application/json', 'application/*+json']),
     serializer: JSON.stringify,
   },
   {
-    test: (value: string) => !!is(value, ['application/xml', 'application/*+xml']),
+    test: (value: string) => !!typeIs(value, ['application/xml', 'application/*+xml']),
     serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse({ xml: data })),
   },
   {
-    test: (value: string) => !!is(value, ['text/*']),
+    test: (value: string) => !!typeIs(value, ['text/*']),
     serializer: (data: unknown) => {
       if (['string', 'undefined'].includes(typeof data)) {
         return data;
