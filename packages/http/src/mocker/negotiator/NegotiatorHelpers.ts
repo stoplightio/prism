@@ -1,12 +1,13 @@
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent, IHttpHeaderParam } from '@stoplight/types';
 import * as E from 'fp-ts/lib/Either';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { findIndex } from 'fp-ts/lib/Array';
+import { NonEmptyArray, fromArray } from 'fp-ts/lib/NonEmptyArray';
+import { isNonEmpty } from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
-import { pipe } from 'fp-ts/lib/pipeable';
 import * as R from 'fp-ts/lib/Reader';
 import * as RE from 'fp-ts/lib/ReaderEither';
-import { get, tail } from 'lodash';
+import { pipe } from 'fp-ts/lib/pipeable';
+import { tail } from 'lodash';
+import { set } from 'lodash/fp';
 import { Logger } from 'pino';
 import withLogger from '../../withLogger';
 import { NOT_ACCEPTABLE, NOT_FOUND, NO_SUCCESS_RESPONSE_DEFINED } from '../errors';
@@ -26,12 +27,8 @@ import { ProblemJsonError } from '../../types';
 
 const outputNoContentFoundMessage = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
-const findEmptyResponse = (response: IHttpOperationResponse, headers: IHttpHeaderParam[], mediaTypes: string[]) =>
-  pipe(
-    mediaTypes,
-    findIndex(ct => ct.includes('*/*')),
-    O.map(() => ({ code: response.code, headers }))
-  );
+const createEmptyResponse = (code: string, headers: IHttpHeaderParam[], mediaType: string) =>
+  O.some({ code, headers: set('content-type', mediaType)(headers) });
 
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
@@ -155,7 +152,7 @@ const helpers = {
         });
       }
 
-      if (mediaTypes) {
+      if (mediaTypes && isNonEmpty(mediaTypes)) {
         // a user provided mediaType
         const httpContent = hasContents(response) ? findBestHttpContentByMediaType(response, mediaTypes) : O.none;
 
@@ -164,7 +161,7 @@ const helpers = {
           O.fold(
             () =>
               pipe(
-                findEmptyResponse(response, headers || [], mediaTypes),
+                createEmptyResponse(response.code, headers || [], mediaTypes[0]),
                 O.map(payloadlessResponse => {
                   logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
 
@@ -354,10 +351,10 @@ const helpers = {
                 });
               } else {
                 return pipe(
-                  findEmptyResponse(
-                    response,
-                    response.headers || [],
-                    get(contentWithExamples, 'mediaType', get(responseWithSchema, 'schema')) || ['*/*']
+                  O.fromNullable(response.contents),
+                  O.chain(fromArray),
+                  O.chain(contents =>
+                    createEmptyResponse(response.code, response.headers || [], contents[0].mediaType)
                   ),
                   E.fromOption(() => {
                     logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
