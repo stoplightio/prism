@@ -13,7 +13,7 @@ import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
 import { is as typeIs } from 'type-is';
 import { pipe } from 'fp-ts/lib/pipeable';
-import { inRange, isEqual } from 'lodash';
+import { inRange, isMatch } from 'lodash';
 import { validateSecurity } from './validators/security';
 import { URI } from 'uri-template-lite';
 
@@ -104,7 +104,7 @@ const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType
           const parsedSelectedContentMediaType = contentType.parse(c.mediaType);
           return (
             !!typeIs(parsedMediaType.type, [parsedSelectedContentMediaType.type]) &&
-            isEqual(parsedMediaType.parameters, parsedSelectedContentMediaType.parameters)
+            isMatch(parsedMediaType.parameters, parsedSelectedContentMediaType.parameters)
           );
         })
       )
