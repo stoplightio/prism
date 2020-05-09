@@ -96,11 +96,11 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
 const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
     O.fromNullable(mediaType),
-    O.chain(() =>
+    O.map(mediaType => contentType.parse(mediaType)),
+    O.chain(parsedMediaType =>
       pipe(
         contents,
         findFirst(c => {
-          const parsedMediaType = contentType.parse(mediaType);
           const parsedSelectedContentMediaType = contentType.parse(c.mediaType);
           return (
             !!typeIs(parsedMediaType.type, [parsedSelectedContentMediaType.type]) &&
