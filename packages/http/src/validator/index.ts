@@ -95,16 +95,20 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
 
 const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
-    contents,
-    findFirst(c => {
-      const parsedMediaType = contentType.parse(mediaType);
-      const parsedSelectedContentMediaType = contentType.parse(c.mediaType);
-
-      return (
-        !!typeIs(parsedMediaType.type, [parsedSelectedContentMediaType.type]) &&
-        isEqual(parsedMediaType.parameters, parsedSelectedContentMediaType.parameters)
-      );
-    }),
+    O.fromNullable(mediaType),
+    O.chain(() =>
+      pipe(
+        contents,
+        findFirst(c => {
+          const parsedMediaType = contentType.parse(mediaType);
+          const parsedSelectedContentMediaType = contentType.parse(c.mediaType);
+          return (
+            !!typeIs(parsedMediaType.type, [parsedSelectedContentMediaType.type]) &&
+            isEqual(parsedMediaType.parameters, parsedSelectedContentMediaType.parameters)
+          );
+        })
+      )
+    ),
     E.fromOption<IPrismDiagnostic>(() => ({
       message: `The received media type "${mediaType || ''}" does not match the one${
         contents.length > 1 ? 's' : ''
