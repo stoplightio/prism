@@ -23,7 +23,7 @@ describe('http mocker', () => {
         assertRight(response, result => expect(result).toMatchSnapshot());
       });
 
-      test.only('and that content type does not exist should return a 406 error', () => {
+      test('and that content type does not exist should return a 406 error', () => {
         const mockResult = mock({
           resource: httpOperations[0],
           input: httpRequests[0],

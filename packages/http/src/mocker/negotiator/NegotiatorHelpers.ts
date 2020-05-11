@@ -1,13 +1,12 @@
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent, IHttpHeaderParam } from '@stoplight/types';
 import * as E from 'fp-ts/lib/Either';
 import { NonEmptyArray, fromArray } from 'fp-ts/lib/NonEmptyArray';
-import { isNonEmpty } from 'fp-ts/lib/Array';
+import { isNonEmpty, findIndex } from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Reader';
 import * as RE from 'fp-ts/lib/ReaderEither';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { tail } from 'lodash';
-import { set } from 'lodash/fp';
 import { Logger } from 'pino';
 import withLogger from '../../withLogger';
 import { NOT_ACCEPTABLE, NOT_FOUND, NO_SUCCESS_RESPONSE_DEFINED } from '../errors';
@@ -27,8 +26,12 @@ import { ProblemJsonError } from '../../types';
 
 const outputNoContentFoundMessage = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
-const createEmptyResponse = (code: string, headers: IHttpHeaderParam[], mediaType: string) =>
-  O.some({ code, headers: set('content-type', mediaType)(headers) });
+const createEmptyResponse = (code: string, headers: IHttpHeaderParam[], mediaTypes: string[]) =>
+  pipe(
+    mediaTypes,
+    findIndex(ct => ct.includes('*/*')),
+    O.map(() => ({ code, headers }))
+  );
 
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
@@ -156,42 +159,31 @@ const helpers = {
         return pipe(
           O.fromNullable(response.contents),
           O.chain(contents => findBestHttpContentByMediaType(contents, mediaTypes)),
-          O.fold(
-            () =>
-              pipe(
-                createEmptyResponse(response.code, headers || [], mediaTypes[0]),
-                O.map(payloadlessResponse => {
-                  logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
+          E.fromOption(() => {
+            logger.warn(outputNoContentFoundMessage(mediaTypes));
 
-                  return payloadlessResponse;
-                }),
-                E.fromOption<Error>(() => {
-                  logger.warn(outputNoContentFoundMessage(mediaTypes));
-
-                  return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
-                })
+            return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
+          }),
+          E.chain(content => {
+            logger.success(`Found a compatible content for ${mediaTypes}`);
+            // a httpContent for a provided mediaType exists
+            return pipe(
+              helpers.negotiateByPartialOptionsAndHttpContent(
+                {
+                  code,
+                  dynamic,
+                  exampleKey,
+                },
+                content
               ),
-            content => {
-              logger.success(`Found a compatible content for ${mediaTypes}`);
-              // a httpContent for a provided mediaType exists
-              return pipe(
-                helpers.negotiateByPartialOptionsAndHttpContent(
-                  {
-                    code,
-                    dynamic,
-                    exampleKey,
-                  },
-                  content
-                ),
-                E.map(contentNegotiationResult => ({
-                  headers: headers || [],
-                  ...contentNegotiationResult,
-                  mediaType:
-                    contentNegotiationResult.mediaType === '*/*' ? 'text/plain' : contentNegotiationResult.mediaType,
-                }))
-              );
-            }
-          )
+              E.map(contentNegotiationResult => ({
+                headers: headers || [],
+                ...contentNegotiationResult,
+                mediaType:
+                  contentNegotiationResult.mediaType === '*/*' ? 'text/plain' : contentNegotiationResult.mediaType,
+              }))
+            );
+          })
         );
       }
       // user did not provide mediaType
@@ -352,7 +344,11 @@ const helpers = {
                   O.fromNullable(response.contents),
                   O.chain(fromArray),
                   O.chain(contents =>
-                    createEmptyResponse(response.code, response.headers || [], contents[0].mediaType)
+                    createEmptyResponse(
+                      response.code,
+                      response.headers || [],
+                      contents.map(c => c.mediaType)
+                    )
                   ),
                   E.fromOption(() => {
                     logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);

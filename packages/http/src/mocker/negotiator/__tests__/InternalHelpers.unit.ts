@@ -10,7 +10,7 @@ describe('InternalHelpers', () => {
       };
 
       it('should respect the q parameter', () => {
-        const possibleResponse = findBestHttpContentByMediaType(avaiableResponses, [
+        const possibleResponse = findBestHttpContentByMediaType(avaiableResponses.contents, [
           'application/json;q=0.8',
           'application/xml;q=1',
         ]);
