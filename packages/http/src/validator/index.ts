@@ -96,7 +96,7 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
     E.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(error => [error])
   );
 
-const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
+export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
     DoOption.bind('parsedMediaType', pipe(O.fromNullable(mediaType), O.map(contentType.parse)))
       .doL(({ parsedMediaType }) =>
