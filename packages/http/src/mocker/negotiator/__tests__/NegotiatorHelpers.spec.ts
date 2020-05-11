@@ -560,7 +560,7 @@ describe('NegotiatorHelpers', () => {
           };
 
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
-            { ...httpOperation, responses: [{ code: '200', contents: [{ mediaType: 'text/plain ' }] }] },
+            httpOperation,
             desiredOptions,
             httpResponseSchema
           )(logger);
@@ -602,7 +602,7 @@ describe('NegotiatorHelpers', () => {
           };
 
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
-            { ...httpOperation, responses: [{ code: '200', contents: [{ mediaType: 'text/plain ' }] }] },
+            httpOperation,
             desiredOptions,
             httpResponseSchema
           )(logger);
