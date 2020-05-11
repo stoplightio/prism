@@ -1,7 +1,7 @@
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent, IHttpHeaderParam } from '@stoplight/types';
 import * as E from 'fp-ts/lib/Either';
 import { NonEmptyArray, fromArray } from 'fp-ts/lib/NonEmptyArray';
-import { isNonEmpty, findIndex } from 'fp-ts/lib/Array';
+import { isNonEmpty } from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Reader';
 import * as RE from 'fp-ts/lib/ReaderEither';
@@ -26,12 +26,7 @@ import { ProblemJsonError } from '../../types';
 
 const outputNoContentFoundMessage = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
-const createEmptyResponse = (code: string, headers: IHttpHeaderParam[], mediaTypes: string[]) =>
-  pipe(
-    mediaTypes,
-    findIndex(ct => ct.includes('*/*')),
-    O.map(() => ({ code, headers }))
-  );
+const createEmptyResponse = (code: string, headers: IHttpHeaderParam[]): IHttpNegotiationResult => ({ code, headers });
 
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
@@ -343,13 +338,7 @@ const helpers = {
                 return pipe(
                   O.fromNullable(response.contents),
                   O.chain(fromArray),
-                  O.chain(contents =>
-                    createEmptyResponse(
-                      response.code,
-                      response.headers || [],
-                      contents.map(c => c.mediaType)
-                    )
-                  ),
+                  O.map(() => createEmptyResponse(response.code, response.headers || [])),
                   E.fromOption(() => {
                     logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
 
