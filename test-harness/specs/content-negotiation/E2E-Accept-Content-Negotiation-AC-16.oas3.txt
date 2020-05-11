@@ -1,0 +1,31 @@
+====test====
+When I send a request (with no Accept header) to an operation
+And this operation defines some responses
+Then I should get back the first response defined for that operation
+And this response should have 200 status code
+====spec====
+openapi: 3.0.0
+paths:
+  /get:
+    get:
+      responses:
+        '200':
+          description: Created
+          content:
+            application/vnd.archa.api+json:
+              schema:
+                required:
+                  - value
+                properties:
+                  value:
+                    type: string
+                    example: "hello"
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://127.0.0.1:4010/get -H 'Accept: application/vnd.archa.api+json; version=1'
+====expect====
+HTTP/1.1 200 OK
+content-type: application/vnd.archa.api+json
+
+{"value":"hello"}
