@@ -96,7 +96,7 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
 const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
     O.fromNullable(mediaType),
-    O.map(mediaType => contentType.parse(mediaType)),
+    O.map(contentType.parse),
     O.chain(parsedMediaType =>
       pipe(
         contents,

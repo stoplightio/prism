@@ -98,7 +98,7 @@ const helpers = {
     const findHttpContent = hasContents(response)
       ? pipe(
           findDefaultContentType(response),
-          O.alt(() => findBestHttpContentByMediaType(response, ['application/json', '*/*']))
+          O.alt(() => findBestHttpContentByMediaType(response.contents, ['application/json', '*/*']))
         )
       : O.none;
 
@@ -153,11 +153,9 @@ const helpers = {
       }
 
       if (mediaTypes && isNonEmpty(mediaTypes)) {
-        // a user provided mediaType
-        const httpContent = hasContents(response) ? findBestHttpContentByMediaType(response, mediaTypes) : O.none;
-
         return pipe(
-          httpContent,
+          O.fromNullable(response.contents),
+          O.chain(contents => findBestHttpContentByMediaType(contents, mediaTypes)),
           O.fold(
             () =>
               pipe(

@@ -23,17 +23,17 @@ export function hasContents(v: IHttpOperationResponse): v is PickRequired<IHttpO
 }
 
 export function findBestHttpContentByMediaType(
-  response: PickRequired<IHttpOperationResponse, 'contents'>,
+  contents: IMediaTypeContent[],
   mediaType: string[]
 ): Option<IMediaTypeContent> {
   const bestType = accepts({
     headers: {
       accept: mediaType.join(','),
     },
-  }).type(response.contents.map(c => c.mediaType));
+  }).type(contents.map(c => c.mediaType));
 
   return pipe(
-    response.contents,
+    contents,
     findFirst(content => content.mediaType === bestType)
   );
 }
