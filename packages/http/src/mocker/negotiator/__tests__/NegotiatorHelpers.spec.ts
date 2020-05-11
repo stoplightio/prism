@@ -322,7 +322,11 @@ describe('NegotiatorHelpers', () => {
       const actualOperationConfig = helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger);
 
       expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledTimes(1);
-      expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledWith(httpOperation, desiredOptions, fakeResponse);
+      expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledWith(
+        httpOperation.method,
+        desiredOptions,
+        fakeResponse
+      );
       expect(negotiateOptionsForDefaultCodeMock).not.toHaveBeenCalled();
       assertRight(actualOperationConfig, operationConfig => {
         expect(operationConfig).toEqual(fakeOperationConfig);
@@ -348,7 +352,11 @@ describe('NegotiatorHelpers', () => {
       const actualOperationConfig = helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger);
 
       expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledTimes(1);
-      expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledWith(httpOperation, desiredOptions, fakeResponse);
+      expect(negotiateOptionsBySpecificResponseMock).toHaveBeenCalledWith(
+        httpOperation.method,
+        desiredOptions,
+        fakeResponse
+      );
       expect(negotiateOptionsForDefaultCodeMock).toHaveBeenCalledTimes(1);
       expect(negotiateOptionsForDefaultCodeMock).toHaveBeenCalledWith(httpOperation, desiredOptions);
       assertRight(actualOperationConfig, operationConfig => {
