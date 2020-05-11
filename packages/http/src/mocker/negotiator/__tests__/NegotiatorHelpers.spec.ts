@@ -61,7 +61,7 @@ describe('NegotiatorHelpers', () => {
   describe('negotiateOptionsForInvalidRequest()', () => {
     describe('and 422 response exists', () => {
       const actualCode = '422';
-      const actualMediaType = chance.string();
+      const actualMediaType = `${chance.string()}/${chance.string()}`;
       const actualExampleKey = chance.string();
 
       test('and has static examples defined should return the first static example', () => {
@@ -190,7 +190,7 @@ describe('NegotiatorHelpers', () => {
               headers: [],
               contents: [
                 {
-                  mediaType: chance.string(),
+                  mediaType: `${chance.string()}/${chance.string()}`,
                   examples: [
                     { key: chance.string(), value: '', externalValue: '' },
                     { key: chance.string(), value: '', externalValue: '' },
@@ -214,7 +214,7 @@ describe('NegotiatorHelpers', () => {
               headers: [],
               contents: [
                 {
-                  mediaType: chance.string(),
+                  mediaType: `${chance.string()}/${chance.string()}`,
                   examples: [
                     { key: chance.string(), value: '', externalValue: '' },
                     { key: chance.string(), value: '', externalValue: '' },
@@ -578,7 +578,7 @@ describe('NegotiatorHelpers', () => {
 
         it('should throw an error', () => {
           const desiredOptions: NegotiationOptions = {
-            mediaTypes: [chance.string()],
+            mediaTypes: [`${chance.string()}/${chance.string()}`],
             dynamic: chance.bool(),
             exampleKey: chance.string(),
           };
@@ -803,7 +803,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
       };
 
       const httpContent: IMediaTypeContent = {
-        mediaType: chance.string(),
+        mediaType: `${chance.string()}/${chance.string()}`,
         examples: [bodyExample],
         encodings: [],
       };
@@ -829,7 +829,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: chance.bool(),
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: chance.string(),
+        mediaType: `${chance.string()}/${chance.string()}`,
         examples: [],
         encodings: [],
       };
@@ -848,7 +848,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: true,
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: chance.string(),
+        mediaType: `${chance.string()}/${chance.string()}`,
         examples: [],
         schema: { type: 'string' },
         encodings: [],
@@ -871,7 +871,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: true,
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: chance.string(),
+        mediaType: `${chance.string()}/${chance.string()}`,
         examples: [],
         encodings: [],
       };
@@ -898,7 +898,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         externalValue: '',
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: chance.string(),
+        mediaType: `${chance.string()}/${chance.string()}`,
         examples: [
           bodyExample,
           {
@@ -928,7 +928,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         code: '200',
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: chance.string(),
+        mediaType: `${chance.string()}/${chance.string()}`,
         examples: [],
         schema: { type: 'string' },
         encodings: [],
@@ -952,7 +952,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
       };
 
       const httpContent: IMediaTypeContent = {
-        mediaType: chance.string(),
+        mediaType: `${chance.string()}/${chance.string()}`,
         examples: [],
         encodings: [],
       };
