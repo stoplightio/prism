@@ -9,10 +9,11 @@ import {
 import { Chance } from 'chance';
 import * as E from 'fp-ts/lib/Either';
 import { left, right } from 'fp-ts/lib/ReaderEither';
-import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
+import { assertRight, assertLeft, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { findBestHttpContentByMediaType } from '../InternalHelpers';
 
 const chance = new Chance();
 const chanceOptions: Partial<Chance.StringOptions> = { length: 8, casing: 'lower', alpha: true, numeric: false };
@@ -747,6 +748,15 @@ describe('NegotiatorHelpers', () => {
           expect(result).toEqual(expectedResponse);
         });
       });
+    });
+  });
+
+  describe('findBestHttpContentByMediaType()', () => {
+    describe('when used in a mixed parameter situation', () => {
+      it('should return an unparametrised version', () =>
+        assertSome(
+          findBestHttpContentByMediaType([{ mediaType: 'application/json; version=1' }], ['application/json'])
+        ));
     });
   });
 
