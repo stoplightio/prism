@@ -160,7 +160,7 @@ const helpers = {
         O.chain(fromArray),
         O.fold(
           () => {
-            logger.trace('No mediaType provided. Fallbacking to the default media type (application/json)');
+            logger.debug('No mediaType provided. Fallbacking to the default media type (application/json)');
             return helpers.negotiateDefaultMediaType(
               {
                 code,
@@ -291,19 +291,19 @@ const helpers = {
             pipe(
               previous,
               O.alt(() => {
-                logger.trace(`Unable to find a ${statusCodes[index]} response definition`);
+                logger.debug(`Unable to find a ${statusCodes[index]} response definition`);
                 return findResponseByStatusCode(httpResponses, current);
               })
             ),
           pipe(findResponseByStatusCode(httpResponses, first))
         ),
         O.alt(() => {
-          logger.trace(`Unable to find a ${tail(statusCodes)} response definition`);
+          logger.debug(`Unable to find a ${tail(statusCodes)} response definition`);
           return pipe(
             createResponseFromDefault(httpResponses, first),
             O.fold(
               () => {
-                logger.trace("Unable to find a 'default' response definition");
+                logger.debug("Unable to find a 'default' response definition");
                 return O.none;
               },
               response => {
@@ -343,7 +343,7 @@ const helpers = {
                 headers: response.headers || [],
               });
             } else {
-              logger.trace(`Unable to find a content with an example defined for the response ${response.code}`);
+              logger.debug(`Unable to find a content with an example defined for the response ${response.code}`);
               // find first response with a schema
               const responseWithSchema = response.contents && response.contents.find(content => !!content.schema);
               if (responseWithSchema) {
@@ -358,7 +358,7 @@ const helpers = {
                 return pipe(
                   createEmptyResponse(response.code, response.headers || [], ['*/*']),
                   E.fromOption(() => {
-                    logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
+                    logger.debug(`Unable to find a content with a schema defined for the response ${response.code}`);
 
                     return new Error(`Neither schema nor example defined for ${response.code} response.`);
                   })
