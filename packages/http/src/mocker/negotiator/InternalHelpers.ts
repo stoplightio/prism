@@ -37,6 +37,7 @@ export function findBestHttpContentByMediaType(
     O.fromPredicate((bestType): bestType is string => !!bestType),
     O.chain(bestType => findFirst<IMediaTypeContent>(content => content.mediaType === bestType)(contents)),
     O.alt(() =>
+      // Since media type parameters are not standardised (apart from the quality value), we're going to try again ignoring them all.
       pipe(
         mediaTypes
           .map(mt => contentType.parse(mt))
