@@ -88,16 +88,64 @@ The application will wait for a debugger to be attached and break on the first l
 
 #### What is this `fp-ts` all about?
 
-`fp-ts` is the library containing functions and data structures that help Prism lean toward a functional style. It might be annoying to step into its functions; fortunately according to your IDE, you might be able to skip the code. In case you're using Visual Studio Code, you can use the `skipFiles` section of your `launch.json` file:
+`fp-ts` is the library containing functions and data structures that help Prism lean toward a functional style. It might be annoying to step into its functions; fortunately according to your IDE, you might be able to skip the code. In case you're using Visual Studio Code, you can use the `skipFiles` section of your `launch.json` file. Here's what we currently use in development:
 
 ```json
 {
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "inputs": [
+    {
+      "id": "oasFile",
+      "description": "OAS file to mock/proxy",
+      "default": "../../examples/petstore.oas3.yaml",
+      "type": "promptString"
+    },
+    {
+      "id": "origin",
+      "description": "Proxy destination",
+      "default": "https://httpbin.org",
+      "type": "promptString"
+    },
+    {
+      "id": "testFile",
+      "description": "Test file",
+      "type": "promptString"
+    }
+  ],
   "configurations": [
     {
       "type": "node",
-      "request": "attach",
-      "name": "Launch Program",
-      "skipFiles": ["node_modules/fp-ts/*.js"]
+      "request": "launch",
+      "name": "Mock file",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["node_modules/fp-ts/*.js"],
+      "program": "${workspaceRoot}/packages/cli/src/index.ts",
+      "args": ["mock", "${input:oasFile}"],
+      "cwd": "${workspaceRoot}/packages/cli",
+      "runtimeArgs": ["-r", "ts-node/register/transpile-only", "-r", "tsconfig-paths/register"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Proxy file",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["node_modules/fp-ts/*.js"],
+      "program": "${workspaceRoot}/packages/cli/src/index.ts",
+      "args": ["proxy", "${input:oasFile}", "${input:origin}"],
+      "cwd": "${workspaceRoot}/packages/cli",
+      "runtimeArgs": ["-r", "ts-node/register/transpile-only", "-r", "tsconfig-paths/register"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run test file",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["node_modules/fp-ts/*.js"],
+      "program": "${workspaceRoot}/node_modules/.bin/jest",
+      "args": ["${input:testFile}", "--runInBand"]
     }
   ]
 }
