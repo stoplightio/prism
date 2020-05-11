@@ -154,31 +154,32 @@ const helpers = {
         return pipe(
           O.fromNullable(response.contents),
           O.chain(contents => findBestHttpContentByMediaType(contents, mediaTypes)),
-          E.fromOption(() => {
-            logger.warn(outputNoContentFoundMessage(mediaTypes));
-
-            return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
-          }),
-          E.chain(content => {
-            logger.success(`Found a compatible content for ${mediaTypes}`);
-            // a httpContent for a provided mediaType exists
-            return pipe(
-              helpers.negotiateByPartialOptionsAndHttpContent(
-                {
-                  code,
-                  dynamic,
-                  exampleKey,
-                },
-                content
-              ),
-              E.map(contentNegotiationResult => ({
-                headers: headers || [],
-                ...contentNegotiationResult,
-                mediaType:
-                  contentNegotiationResult.mediaType === '*/*' ? 'text/plain' : contentNegotiationResult.mediaType,
-              }))
-            );
-          })
+          O.fold(
+            () => {
+              logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
+              return E.right(createEmptyResponse(response.code, headers || []));
+            },
+            content => {
+              logger.success(`Found a compatible content for ${mediaTypes}`);
+              // a httpContent for a provided mediaType exists
+              return pipe(
+                helpers.negotiateByPartialOptionsAndHttpContent(
+                  {
+                    code,
+                    dynamic,
+                    exampleKey,
+                  },
+                  content
+                ),
+                E.map(contentNegotiationResult => ({
+                  headers: headers || [],
+                  ...contentNegotiationResult,
+                  mediaType:
+                    contentNegotiationResult.mediaType === '*/*' ? 'text/plain' : contentNegotiationResult.mediaType,
+                }))
+              );
+            }
+          )
         );
       }
       // user did not provide mediaType
