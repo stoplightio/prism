@@ -471,7 +471,7 @@ describe('NegotiatorHelpers', () => {
         jest.spyOn(helpers, 'negotiateDefaultMediaType');
 
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
-          httpOperation,
+          httpOperation.method,
           desiredOptions,
           httpResponseSchema
         )(logger);
@@ -511,7 +511,7 @@ describe('NegotiatorHelpers', () => {
           };
 
           const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
-            httpOperation,
+            httpOperation.method,
             desiredOptions,
             httpResponseSchema
           )(logger);
@@ -538,7 +538,7 @@ describe('NegotiatorHelpers', () => {
           };
 
           const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
-            httpOperation,
+            httpOperation.method,
             desiredOptions,
             httpResponseSchema
           )(logger);
@@ -560,7 +560,7 @@ describe('NegotiatorHelpers', () => {
           };
 
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
-            httpOperation,
+            httpOperation.method,
             desiredOptions,
             httpResponseSchema
           )(logger);
@@ -576,7 +576,7 @@ describe('NegotiatorHelpers', () => {
           };
 
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
-            httpOperation,
+            httpOperation.method,
             desiredOptions,
             httpResponseSchema
           )(logger);
@@ -602,7 +602,7 @@ describe('NegotiatorHelpers', () => {
           };
 
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
-            httpOperation,
+            httpOperation.method,
             desiredOptions,
             httpResponseSchema
           )(logger);
@@ -636,7 +636,7 @@ describe('NegotiatorHelpers', () => {
         jest.spyOn(helpers, 'negotiateDefaultMediaType').mockReturnValue(E.right(fakeOperationConfig));
 
         const actualOperationConfig = helpers.negotiateOptionsBySpecificResponse(
-          httpOperation,
+          httpOperation.method,
           desiredOptions,
           httpResponseSchema
         )(logger);

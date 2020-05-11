@@ -138,7 +138,7 @@ const helpers = {
   },
 
   negotiateOptionsBySpecificResponse(
-    httpOperation: Pick<IHttpOperation, 'method'>,
+    requestMethod: string,
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
@@ -146,7 +146,7 @@ const helpers = {
     const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
     return logger => {
-      if (httpOperation.method === 'head') {
+      if (requestMethod === 'head') {
         logger.info(`Responding with an empty body to a HEAD request.`);
 
         return E.right({
@@ -218,7 +218,7 @@ const helpers = {
       findLowest2xx(httpOperation.responses),
       RE.fromOption(() => ProblemJsonError.fromTemplate(NO_SUCCESS_RESPONSE_DEFINED)),
       RE.chain(lowest2xxResponse =>
-        helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, lowest2xxResponse)
+        helpers.negotiateOptionsBySpecificResponse(httpOperation.method, desiredOptions, lowest2xxResponse)
       )
     );
   },
@@ -247,7 +247,7 @@ const helpers = {
           ),
           RE.chain(response =>
             pipe(
-              helpers.negotiateOptionsBySpecificResponse(httpOperation, desiredOptions, response),
+              helpers.negotiateOptionsBySpecificResponse(httpOperation.method, desiredOptions, response),
               RE.orElse(() =>
                 pipe(
                   helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions),
