@@ -1,6 +1,7 @@
 import { IPrismOutput } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import { defaults } from 'lodash';
+import { omitBy, isUndefined } from 'lodash/fp';
 import { parse as parseQueryString } from 'querystring';
 import { parse as parseUrl } from 'url';
 import { createInstance } from '.';
@@ -37,7 +38,7 @@ export function createClientFromOperations(resources: IHttpOperation[], defaultC
       const httpUrl: IHttpUrl = {
         baseUrl: parsedUrl.host ? `${parsedUrl.protocol}//${parsedUrl.host}` : mergedConf.baseUrl,
         path: parsedUrl.pathname,
-        query: parseQueryString(parsedUrl.query || ''),
+        query: stripUndefinedValues(parseQueryString(parsedUrl.query || '')),
       };
 
       return pipe(
@@ -166,3 +167,5 @@ export type PrismHttp = {
   patch: IRequestFunctionWithMethodWithBody;
   trace: IRequestFunctionWithMethod;
 };
+
+const stripUndefinedValues = omitBy(isUndefined);
