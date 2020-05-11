@@ -1,6 +1,6 @@
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent, IHttpHeaderParam } from '@stoplight/types';
 import * as E from 'fp-ts/lib/Either';
-import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
+import { NonEmptyArray, fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { isNonEmpty, findIndex } from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Reader';
@@ -155,57 +155,63 @@ const helpers = {
         });
       }
 
-      if (mediaTypes && isNonEmpty(mediaTypes)) {
-        return pipe(
-          O.fromNullable(response.contents),
-          O.chain(contents => findBestHttpContentByMediaType(contents, mediaTypes)),
-          O.fold(
-            () =>
-              pipe(
-                createEmptyResponse(response.code, headers || [], mediaTypes),
-                O.map(payloadlessResponse => {
-                  logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
-                  return payloadlessResponse;
-                }),
-                E.fromOption<Error>(() => {
-                  logger.warn(outputNoContentFoundMessage(mediaTypes));
-                  return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
-                })
-              ),
-            content => {
-              logger.success(`Found a compatible content for ${mediaTypes}`);
-              // a httpContent for a provided mediaType exists
-              return pipe(
-                helpers.negotiateByPartialOptionsAndHttpContent(
-                  {
-                    code,
-                    dynamic,
-                    exampleKey,
-                  },
-                  content
-                ),
-                E.map(contentNegotiationResult => ({
-                  headers: headers || [],
-                  ...contentNegotiationResult,
-                  mediaType:
-                    contentNegotiationResult.mediaType === '*/*' ? 'text/plain' : contentNegotiationResult.mediaType,
-                }))
-              );
-            }
-          )
-        );
-      }
-      // user did not provide mediaType
-      // OR
-      // a httpContent for a provided mediaType does not exist
-      logger.trace('No mediaType provided. Fallbacking to the default media type (application/json)');
-      return helpers.negotiateDefaultMediaType(
-        {
-          code,
-          dynamic,
-          exampleKey,
-        },
-        response
+      return pipe(
+        O.fromNullable(mediaTypes),
+        O.chain(fromArray),
+        O.fold(
+          () => {
+            logger.trace('No mediaType provided. Fallbacking to the default media type (application/json)');
+            return helpers.negotiateDefaultMediaType(
+              {
+                code,
+                dynamic,
+                exampleKey,
+              },
+              response
+            );
+          },
+          mediaTypes =>
+            pipe(
+              O.fromNullable(response.contents),
+              O.chain(contents => findBestHttpContentByMediaType(contents, mediaTypes)),
+              O.fold(
+                () =>
+                  pipe(
+                    createEmptyResponse(response.code, headers || [], mediaTypes),
+                    O.map(payloadlessResponse => {
+                      logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
+                      return payloadlessResponse;
+                    }),
+                    E.fromOption<Error>(() => {
+                      logger.warn(outputNoContentFoundMessage(mediaTypes));
+                      return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
+                    })
+                  ),
+                content => {
+                  logger.success(`Found a compatible content for ${mediaTypes}`);
+                  // a httpContent for a provided mediaType exists
+                  return pipe(
+                    helpers.negotiateByPartialOptionsAndHttpContent(
+                      {
+                        code,
+                        dynamic,
+                        exampleKey,
+                      },
+                      content
+                    ),
+                    E.map(contentNegotiationResult => ({
+                      headers: headers || [],
+                      ...contentNegotiationResult,
+                      mediaType:
+                        contentNegotiationResult.mediaType === '*/*'
+                          ? 'text/plain'
+                          : contentNegotiationResult.mediaType,
+                    }))
+                  );
+                }
+              )
+            )
+        )
       );
     };
   },
