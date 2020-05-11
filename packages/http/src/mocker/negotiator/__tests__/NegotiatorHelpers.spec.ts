@@ -752,11 +752,19 @@ describe('NegotiatorHelpers', () => {
   });
 
   describe('findBestHttpContentByMediaType()', () => {
-    describe('when used in a mixed parameter situation', () => {
-      it('should return an unparametrised version', () =>
+    describe('when avaiable content types have a parameter', () => {
+      it('should return an unparametrised version', () => {
         assertSome(
           findBestHttpContentByMediaType([{ mediaType: 'application/json; version=1' }], ['application/json'])
-        ));
+        );
+      });
+    });
+    describe('when requested content type has a parameter', () => {
+      it('should return an unparametrised version', () => {
+        assertSome(
+          findBestHttpContentByMediaType([{ mediaType: 'application/json' }], ['application/json; version=1'])
+        );
+      });
     });
   });
 
