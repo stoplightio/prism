@@ -133,7 +133,7 @@ const helpers = {
   },
 
   negotiateOptionsBySpecificResponse(
-    httpOperation: IHttpOperation,
+    httpOperation: Pick<IHttpOperation, 'method'>,
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
@@ -335,16 +335,7 @@ const helpers = {
                   headers: response.headers || [],
                 });
               } else {
-                return pipe(
-                  O.fromNullable(response.contents),
-                  O.chain(fromArray),
-                  O.map(() => createEmptyResponse(response.code, response.headers || [])),
-                  E.fromOption(() => {
-                    logger.trace(`Unable to find a content with a schema defined for the response ${response.code}`);
-
-                    return new Error(`Neither schema nor example defined for ${response.code} response.`);
-                  })
-                );
+                return E.right(createEmptyResponse(response.code, response.headers || []));
               }
             }
           })
