@@ -290,7 +290,7 @@ describe('validateMediaType()', () => {
       mediaType: 'application/vnd.archa.api+json',
     };
 
-    describe('and the requeste media type matches, but has parameter', () => {
+    describe('and the request media type matches, but has parameter', () => {
       it('should pass the validation', () => {
         const result = validator.validateMediaType([content], 'application/vnd.archa.api+json; version=1');
         assertRight(result);
