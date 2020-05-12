@@ -42,7 +42,7 @@ export function findBestHttpContentByMediaType(
       pipe(
         mediaTypes
           .map(mt => contentType.parse(mt))
-          .filter(mt => Object.keys(mt.parameters).filter(k => k !== 'q').length > 0)
+          .filter(({ parameters }) => Object.keys(parameters).some(k => k !== 'q'))
           .map(({ type, parameters }) => ({ type, parameters: pick(parameters, 'q') }))
           .map(mt => contentType.format(mt)),
         fromArray,
