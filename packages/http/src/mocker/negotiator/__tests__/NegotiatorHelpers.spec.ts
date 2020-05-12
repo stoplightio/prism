@@ -14,7 +14,6 @@ import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
 import { findBestHttpContentByMediaType } from '../InternalHelpers';
-import * as contentType from 'content-type';
 
 const chance = new Chance();
 const chanceOptions: Partial<Chance.StringOptions> = { length: 8, casing: 'lower', alpha: true, numeric: false };
@@ -748,48 +747,6 @@ describe('NegotiatorHelpers', () => {
         assertRight(negotiationResult, result => {
           expect(result).toEqual(expectedResponse);
         });
-      });
-    });
-  });
-
-  describe('findBestHttpContentByMediaType()', () => {
-    describe('when available content types has a non standard parameter', () => {
-      it('should return an unparametrised version', () => {
-        assertSome(
-          findBestHttpContentByMediaType([{ mediaType: 'application/json; version=1' }], ['application/json'])
-        );
-      });
-    });
-
-    describe('when available content types has the Q and a non standard parameter', () => {
-      it('should return an unparametrised version', () => {
-        assertSome(
-          findBestHttpContentByMediaType([{ mediaType: 'application/json; version=1; q=0.6' }], ['application/json'])
-        );
-      });
-
-      describe('multiple media types available', () => {
-        it('will still give preference with the q parameter', () => {
-          assertSome(
-            findBestHttpContentByMediaType(
-              [
-                { mediaType: 'application/json; version=1; q=0.6' },
-                { mediaType: 'application/json; version=1; q=1' },
-                { mediaType: 'application/vnd+json; version=1; q=0.5' },
-              ],
-              ['application/json']
-            ),
-            mt => expect(mt).toHaveProperty('mediaType', 'application/json; version=1; q=1')
-          );
-        });
-      });
-    });
-
-    describe('when requested content type has a parameter', () => {
-      it('should return an unparametrised version', () => {
-        assertSome(
-          findBestHttpContentByMediaType([{ mediaType: 'application/json' }], ['application/json; version=1'])
-        );
       });
     });
   });
