@@ -4,13 +4,13 @@ import { findBestHttpContentByMediaType } from '../InternalHelpers';
 describe('InternalHelpers', () => {
   describe('findBestHttpContentByMediaType', () => {
     describe('with multiple content types for a response', () => {
-      const avaiableResponses = {
+      const availableResponses = {
         code: '200',
         contents: [{ mediaType: 'application/xml' }, { mediaType: 'application/json' }],
       };
 
       it('should respect the q parameter', () => {
-        const possibleResponse = findBestHttpContentByMediaType(avaiableResponses.contents, [
+        const possibleResponse = findBestHttpContentByMediaType(availableResponses.contents, [
           'application/json;q=0.8',
           'application/xml;q=1',
         ]);
