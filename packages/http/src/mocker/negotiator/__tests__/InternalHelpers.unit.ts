@@ -39,11 +39,11 @@ describe('InternalHelpers', () => {
           assertSome(
             findBestHttpContentByMediaType(
               [
-                { mediaType: 'application/json; version=1; q=0.6' },
                 { mediaType: 'application/json; version=1; q=1' },
+                { mediaType: 'application/xml; version=1; q=0.6' },
                 { mediaType: 'application/vnd+json; version=1; q=0.5' },
               ],
-              ['application/json']
+              ['application/json', 'application/xml']
             ),
             mt => expect(mt).toHaveProperty('mediaType', 'application/json; version=1; q=1')
           );
