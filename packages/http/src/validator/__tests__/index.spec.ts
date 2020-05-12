@@ -291,9 +291,10 @@ describe('validateMediaType()', () => {
     };
 
     describe('and the requeste media type matches, but has parameter', () => {
-      const result = validator.validateMediaType([content], 'application/vnd.archa.api+json; version=1');
-
-      it('should pass the validation', () => assertRight(result));
+      it('should pass the validation', () => {
+        const result = validator.validateMediaType([content], 'application/vnd.archa.api+json; version=1');
+        assertRight(result);
+      });
     });
   });
 });
