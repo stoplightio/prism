@@ -4,6 +4,7 @@ import * as accepts from 'accepts';
 import * as contentType from 'content-type';
 import * as O from 'fp-ts/lib/Option';
 import { filter, findFirst, head, sort } from 'fp-ts/lib/Array';
+import { pick } from 'lodash';
 import { NonEmptyArray, fromArray } from 'fp-ts/lib/NonEmptyArray';
 import { alt, map, Option } from 'fp-ts/lib/Option';
 import { ord, ordNumber } from 'fp-ts/lib/Ord';
@@ -37,12 +38,13 @@ export function findBestHttpContentByMediaType(
     O.fromPredicate((bestType): bestType is string => !!bestType),
     O.chain(bestType => findFirst<IMediaTypeContent>(content => content.mediaType === bestType)(contents)),
     O.alt(() =>
-      // Since media type parameters are not standardised (apart from the quality value), we're going to try again ignoring them all.
+      // Since media type parameters are not standardised (apart from the quality value), we're going to try again ignoring them all but q.
       pipe(
         mediaTypes
           .map(mt => contentType.parse(mt))
           .filter(mt => Object.keys(mt.parameters).length > 0)
-          .map(mt => mt.type),
+          .map(({ type, parameters }) => ({ type, parameters: pick(parameters, 'q') }))
+          .map(mt => contentType.format(mt)),
         fromArray,
         O.chain(mediaTypesWithNoParameters => findBestHttpContentByMediaType(contents, mediaTypesWithNoParameters))
       )
