@@ -531,7 +531,7 @@ describe('NegotiatorHelpers', () => {
           assertRight(actualOperationConfig, config => expect(config).toHaveProperty('mediaType', 'application/xml'));
         });
 
-        it('should negotiatiate the only content that is really avaiable', () => {
+        it('should negotiatiate the only content that is really available', () => {
           const desiredOptions: NegotiationOptions = {
             mediaTypes: ['application/idonotexist', 'application/json'],
             dynamic: false,
@@ -677,7 +677,7 @@ describe('NegotiatorHelpers', () => {
         ['*/*', 'application/xml'],
         ['*/*', 'application/json'],
         ['application/json', 'application/xml'],
-      ])('should return %s even when %s is avaiable', (defaultMediaType, alternateMediaType) => {
+      ])('should return %s even when %s is available', (defaultMediaType, alternateMediaType) => {
         const code = chance.string();
         const partialOptions = {
           code,
@@ -753,7 +753,7 @@ describe('NegotiatorHelpers', () => {
   });
 
   describe('findBestHttpContentByMediaType()', () => {
-    describe('when avaiable content types has a non standard parameter', () => {
+    describe('when available content types has a non standard parameter', () => {
       it('should return an unparametrised version', () => {
         assertSome(
           findBestHttpContentByMediaType([{ mediaType: 'application/json; version=1' }], ['application/json'])
@@ -761,14 +761,14 @@ describe('NegotiatorHelpers', () => {
       });
     });
 
-    describe('when avaiable content types has the Q and a non standard parameter', () => {
+    describe('when available content types has the Q and a non standard parameter', () => {
       it('should return an unparametrised version', () => {
         assertSome(
           findBestHttpContentByMediaType([{ mediaType: 'application/json; version=1; q=0.6' }], ['application/json'])
         );
       });
 
-      describe('multiple media types avaiable', () => {
+      describe('multiple media types available', () => {
         it('will still give preference with the q parameter', () => {
           assertSome(
             findBestHttpContentByMediaType(
