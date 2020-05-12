@@ -14,7 +14,7 @@ Catching problems early on while you're still just tweaking the API descriptions
 Just like HTTP messages, there are two halfs to mocking: requests and responses.
 
 - [Response Generation](#Response-Generation)
-- [Request Validation](#Request Validation)
+- [Request Validation](#Request-Validation)
 
 ## Response Generation
 
