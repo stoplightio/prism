@@ -285,7 +285,7 @@ describe('HttpValidator', () => {
 });
 
 describe('validateMediaType()', () => {
-  describe('when avaiable content type does not have parameters', () => {
+  describe('when available content type does not have parameters', () => {
     const content: IMediaTypeContent = {
       mediaType: 'application/vnd.archa.api+json',
     };
