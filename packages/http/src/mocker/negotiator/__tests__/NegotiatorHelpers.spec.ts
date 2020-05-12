@@ -773,8 +773,8 @@ describe('NegotiatorHelpers', () => {
           assertSome(
             findBestHttpContentByMediaType(
               [
-                { mediaType: 'application/json; version=1; q=1' },
                 { mediaType: 'application/json; version=1; q=0.6' },
+                { mediaType: 'application/json; version=1; q=1' },
                 { mediaType: 'application/vnd+json; version=1; q=0.5' },
               ],
               ['application/json']
