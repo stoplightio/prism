@@ -558,7 +558,7 @@ describe('NegotiatorHelpers', () => {
         });
       });
 
-      describe.only('the response exists, but there is no httpContent', () => {
+      describe('the response exists, but there is no httpContent', () => {
         const httpResponseSchema: IHttpOperationResponse = {
           code: '200',
           contents: [],
@@ -759,6 +759,7 @@ describe('NegotiatorHelpers', () => {
         );
       });
     });
+
     describe('when requested content type has a parameter', () => {
       it('should return an unparametrised version', () => {
         assertSome(
