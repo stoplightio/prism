@@ -1462,20 +1462,20 @@
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
 
-"@stoplight/yaml-ast-parser@0.0.45":
-  version "0.0.45"
-  resolved "https://registry.yarnpkg.com/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.45.tgz#672c0a1511d581843be5a9c55899ca95a30dcadb"
-  integrity sha512-0MTEvgp3XMdeMUSTCGiNECuC+YlLbzytDEIOJVDHrrmzVZpIR3gGnHI6mmPI4P7saPxUiHxFF2uuoTuCNlKjrw==
+"@stoplight/yaml-ast-parser@0.0.47":
+  version "0.0.47"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.47.tgz#4836760c32092fa015dbcf5da7c0ff90cb7e4443"
+  integrity sha512-UVy6l5Nb0NvoWjP7t05HrWFdu1oc7WY0eWa1BNPEb5/aL+EBQwNKA/36PLOe8L62oGS0s7EcEgTyxmcmVjb9/Q==
 
-"@stoplight/yaml@^3.0.2":
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-3.8.1.tgz#2a2accdb8b3b6df5c3f1ba93086ca9deb99be0e4"
-  integrity sha512-wbhcgo7dTjwjjwFziC/SAcQlwPucYhYq6vjzyOjj8zeOVnnmoa7hzU1i9Kj31473FG/re7xtt6j3LWu2VnYbxg==
+"@stoplight/yaml@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-4.0.1.tgz#637d42dcd5d9c7e4a87b341ba0b174dea3a29b41"
+  integrity sha512-ojVVXER+kjIa9fMxAhR7a2CtiPHItcXRl6kyVNaqG9IYtHVWvGCG7zxrxVgKqSfxowpxRyRBP8kekjOJqX1GXA==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.1"
-    "@stoplight/types" "^11.1.1"
-    "@stoplight/yaml-ast-parser" "0.0.45"
-    lodash "^4.17.15"
+    "@stoplight/types" "^11.6.0"
+    "@stoplight/yaml-ast-parser" "0.0.47"
+    tslib "^1.12.0"
 
 "@types/babel__core@^7.1.7":
   version "7.1.7"
@@ -8862,10 +8862,10 @@ tsconfig-paths@^3.8.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0:
-  version "1.11.2"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.2.tgz#9c79d83272c9a7aaf166f73915c9667ecdde3cc9"
-  integrity sha512-tTSkux6IGPnUGUd1XAZHcpu85MOkIl5zX49pO+jfsie3eP0B6pyhOlLXm3cAC6T7s+euSDDUUV+Acop5WmtkVg==
+tslib@^1.10.0, tslib@^1.12.0, tslib@^1.8.1, tslib@^1.9.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
+  integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
 
 tsutils@^3.17.1:
   version "3.17.1"

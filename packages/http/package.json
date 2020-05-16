@@ -19,7 +19,7 @@
     "@stoplight/json": "^3.7.1",
     "@stoplight/prism-core": "^3.3.4",
     "@stoplight/types": "^11.6.0",
-    "@stoplight/yaml": "^3.0.2",
+    "@stoplight/yaml": "^4.0.1",
     "abstract-logging": "^2.0.0",
     "accepts": "^1.3.7",
     "ajv": "^6.10.2",
