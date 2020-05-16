@@ -4411,6 +4411,11 @@ handlebars@^4.4.0:
   optionalDependencies:
     uglify-js "^3.1.4"
 
+handler-agent@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/handler-agent/-/handler-agent-0.1.1.tgz#f720eb3150cb62880ebf336274e5202a77a78768"
+  integrity sha512-RdMTjkqRquAaH8bYpQ5ImBrzgoJPf8OAvtPeo+Z5hngSJNaXwCmB6EhIWC+rFsHdCXytKjKny8p3bnCWmux65Q==
+
 har-schema@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/har-schema/-/har-schema-2.0.0.tgz#a94c2224ebcac04782a0d9035521f24735b7ec92"
@@ -6211,9 +6216,11 @@ merge2@^1.2.3:
   integrity sha512-2j4DAdlBOkiSZIsaXk4mTE3sRS02yBHAtfy127xRV3bQUFqXkjHCHLW6Scv7DwNRbIWNHH8zpnz9zMaKXIdvYw==
 
 micri@^4.1.0:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/micri/-/micri-4.1.2.tgz#3d4cbfd8f8add33c961c566c844f8a743c7e0757"
-  integrity sha512-iPuXJfvhkNfrpEFAp5vhmPvYOlyjmY+7ITEF1Wb+UAtYPMWvXvqG8/N3WbLh8wAq/uOKd5myAMKWpxbqPrtZxg==
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/micri/-/micri-4.2.0.tgz#6b3b7ecdb653f811b23c56759970863c8a593524"
+  integrity sha512-POPW4qHL3fm8a0w0BelZmGVEGpjSF9STtheOswn5zbqGZ6RQKVQQEGk0vXyhUi9O21Om/dqJKa4PTPDNlVhnYg==
+  dependencies:
+    handler-agent "0.1.1"
 
 micromatch@4.x, micromatch@^4.0.2:
   version "4.0.2"
