@@ -1526,9 +1526,9 @@
   integrity sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==
 
 "@types/chance@^1.0.6":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@types/chance/-/chance-1.0.10.tgz#09461c19963a8961c3935d71cef245d5d48ce16c"
-  integrity sha512-929ISFKdeE72r6VuorB5BMjuwQ+t5rx3MLsHq5i+dCM4aJVGb+EJ+mUmaEcqENzoLZuH3xkNpklBip4guQAYiA==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/chance/-/chance-1.1.0.tgz#7d8e6bd0506344d94c042f692d59d20f8eb7d66d"
+  integrity sha512-j/9aaLU6JaaN2iFiSZgvD+G0nju1Fi2/f2WM+WwS+8+cpTdzFhXFH3+SHZgfjgum6wNW80sfcawUx+Rx7tH26w==
 
 "@types/color-name@^1.1.1":
   version "1.1.1"
