@@ -3783,9 +3783,9 @@ fast-safe-stringify@^2.0.7:
   integrity sha512-Utm6CdzT+6xsDk2m8S6uL8VHxNwI6Jub+e9NYTcAms28T84pTa25GJQV9j0CY0N1rM8hK4x6grpF2BQf+2qwVA==
 
 fast-xml-parser@^3.12.20, fast-xml-parser@^3.16.0:
-  version "3.16.0"
-  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.16.0.tgz#d905e7e6b28fc4648cabebcb074363867fb56ee2"
-  integrity sha512-U+bpScacfgnfNfIKlWHDu4u6rtOaCyxhblOLJ8sZPkhsjgGqdZmVPBhdOyvdMGCDt8CsAv+cssOP3NzQptNt2w==
+  version "3.17.0"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.17.0.tgz#f09885713c3134f7f2cc3db50d1f0b01368a0e09"
+  integrity sha512-QIjz8L4oQWklSGDrg0RHninntbUxAvS17MS8/NSbn3dL0Hi4KfAh9GtFRdIW8cqkgUl+cgdcKEnjo9ZtrgtUKQ==
 
 fb-watchman@^2.0.0:
   version "2.0.0"
