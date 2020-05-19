@@ -145,11 +145,8 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
 };
 
 function getPathParams(path: string, template: string, realParams: IHttpPathParam[]) {
-  // replace "-" in template path params
-  const cleanedTemplate = template
-    .split('/')
-    .map(part => (part.startsWith('{') ? part.replace(/-/g, '') : part))
-    .join('/');
+  // replace "-" in template path and query params
+  const cleanedTemplate = template.replace(/(?<=\{.*)(?=.*\})(-)/g, '');
 
   const pathParams = new URI.Template(cleanedTemplate).match(path);
 

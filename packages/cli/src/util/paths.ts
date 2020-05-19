@@ -31,9 +31,18 @@ export function createExamplePath(
 ): E.Either<Error, string> {
   return DoEither.bind('pathData', generateTemplateAndValuesForPathParams(operation))
     .bindL('queryData', ({ pathData }) => generateTemplateAndValuesForQueryParams(pathData.template, operation))
-    .return(({ pathData, queryData }) =>
-      URI.expand(queryData.template, transformValues({ ...pathData.values, ...queryData.values }))
-    );
+    .return(({ pathData, queryData }) => {
+      // replace "-" in template path and query params
+      const cleanedTemplate = queryData.template.replace(/(?<=\{.*)(?=.*\})(-)/g, '');
+      const realValues = transformValues({ ...pathData.values, ...queryData.values });
+      const cleanedValues = {};
+      for (const realValue in realValues) {
+        const cleanedValue = realValue.replace(/-/g, '');
+        cleanedValues[cleanedValue] = realValues[realValue];
+      }
+
+      return URI.expand(cleanedTemplate, cleanedValues);
+    });
 }
 
 function generateParamValue(spec: IHttpParam): E.Either<Error, unknown> {
