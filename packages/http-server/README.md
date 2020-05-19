@@ -32,18 +32,7 @@ async function createPrismServer(){
   };
 }
 
-describe("Contract Test", () => {
-  let prismServer;
+const server = await createPrismServer();
 
-  beforeEach(async () => {
-    prismServer = await createPrismServer();
-    console.log("server is listening!");
-  });
-
-  // Run your test
-
-  afterEach(() => {
-    prismServer.close();
-  });
-});
+server.close();
 ```
