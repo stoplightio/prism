@@ -4,16 +4,35 @@
 
 Usage:
 
-```js
-import { createServer } from '@stoplight/prism-http-server';
+```javascript
+const { createServer } = require("@stoplight/prism-http-server");
+const { getHttpOperationsFromResource } = require("@stoplight/prism-http");
+const { createLogger } = require("@stoplight/prism-core");
 
-const operations = await getHttpOperationsFromResource('./api.oas2.json');
-const server = createServer({
-  operations,
-  { logger: createLoggerInstance() }
-});
+async function createPrismServer(){
+  const operations = await getHttpOperationsFromResource("YOUR-URL");
 
-server.listen(3000).then(() => {
-  console.log('server is listening!');
-});
+  const server = createServer(operations, {
+    components: {
+      logger: createLogger("TestLogger")
+    },
+    cors: true,
+    config: {
+      checkSecurity: true,
+      validateRequest: true,
+      validateResponse: true,
+      mock: { dynamic: false },
+      errors: false
+    }
+  });
+  await server.listen(4010);
+
+  return {
+    close: server.close.bind(server)
+  };
+}
+
+const server = await createPrismServer();
+
+server.close();
 ```
