@@ -5,6 +5,7 @@ import {
   IHttpOperationResponse,
   IMediaTypeContent,
   IHttpOperationRequestBody,
+  IHttpPathParam,
 } from '@stoplight/types';
 import * as caseless from 'caseless';
 import * as contentType from 'content-type';
@@ -76,7 +77,7 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
           request.headers ? headersValidator.validate(element.headers || {}, request.headers) : E.right(undefined),
           request.query ? queryValidator.validate(element.url.query || {}, request.query) : E.right(undefined),
           request.path
-            ? pathValidator.validate(getPathParams(element.url.path, resource.path), request.path)
+            ? pathValidator.validate(getPathParams(element.url.path, resource.path, request.path), request.path)
             : E.right(undefined)
         )
     ),
@@ -143,8 +144,24 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
   );
 };
 
-function getPathParams(path: string, template: string) {
-  return new URI.Template(template).match(path);
+function getPathParams(path: string, template: string, realParams: IHttpPathParam[]) {
+  // replace "-" in template path params
+  const cleanedTemplate = template
+    .split('/')
+    .map(part => (part.startsWith('{') ? part.replace(/-/g, '') : part))
+    .join('/');
+
+  const pathParams = new URI.Template(cleanedTemplate).match(path);
+
+  // get pathParams back into real format (i.e put "-" back)
+  const finalPathParams = {};
+  for (const realParam of realParams) {
+    const cleanedName = realParam.name.replace(/-/g, '');
+    if (pathParams[cleanedName]) {
+      finalPathParams[realParam.name] = pathParams[cleanedName];
+    }
+  }
+  return finalPathParams;
 }
 
 export { validateInput, validateOutput, validateSecurity };
