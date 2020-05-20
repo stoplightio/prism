@@ -41,7 +41,17 @@ export function createExamplePath(
         cleanedValues[cleanedValue] = realValues[realValue];
       }
 
-      return URI.expand(cleanedTemplate, cleanedValues);
+      const cleanedExpandedPath = URI.expand(cleanedTemplate, cleanedValues);
+
+      // replace cleaned values with real values
+      // i.e put "-"" back in
+      let finalExpandedPath = cleanedExpandedPath;
+      for (const realValue in realValues) {
+        const cleanedValue = realValue.replace(/-/g, '');
+        finalExpandedPath = cleanedExpandedPath.replace(cleanedValue, realValue);
+      }
+
+      return finalExpandedPath;
     });
 }
 
