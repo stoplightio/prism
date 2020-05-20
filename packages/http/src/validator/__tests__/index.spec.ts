@@ -135,6 +135,35 @@ describe('HttpValidator', () => {
         });
       });
     });
+
+    describe('path validation in enabled', () => {
+      describe('request is set', () => {
+        describe('request.path is set and has hyphens in path params', () => {
+          it('calls the path validator', () => {
+            validator.validateInput({
+              resource: {
+                method: 'get',
+                path: '/a-path/{a-id}/b/{b-id}',
+                id: '1',
+                request: {
+                  path: [
+                    { name: 'a-id', style: HttpParamStyles.Simple },
+                    { name: 'b-id', style: HttpParamStyles.Matrix },
+                  ],
+                },
+                responses: [{ code: '200' }],
+              },
+              element: { method: 'get', url: { path: '/a-path/1/b/;b=2' } },
+            });
+
+            expect(validator.pathValidator.validate).toHaveBeenCalledWith({ 'a-id': '1', 'b-id': ';b=2' }, [
+              { name: 'a-id', style: HttpParamStyles.Simple },
+              { name: 'b-id', style: HttpParamStyles.Matrix },
+            ]);
+          });
+        });
+      });
+    });
   });
 
   describe('validateOutput()', () => {
