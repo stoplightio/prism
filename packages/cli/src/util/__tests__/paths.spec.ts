@@ -45,7 +45,7 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it.only('generates label style with hyphens', () => {
+    it('generates label style with hyphens', () => {
       assertRight(
         createExamplePath({
           id: '123',
@@ -73,7 +73,7 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it.only('generates matrix style with hyphens', () => {
+    it('generates matrix style with hyphens', () => {
       assertRight(
         createExamplePath({
           id: '123',
