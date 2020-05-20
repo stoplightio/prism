@@ -17,6 +17,21 @@ describe('createExamplePath()', () => {
       );
     });
 
+    it('generates simple style with hyphens', () => {
+      assertRight(
+        createExamplePath({
+          id: '123',
+          path: '/path-path/{p-id}',
+          method: 'get',
+          request: {
+            path: [{ name: 'p-id', style: HttpParamStyles.Simple, examples: [{ key: 'foo', value: 'test' }] }],
+          },
+          responses: [{ code: '200' }],
+        }),
+        r => expect(r).toEqual('/path-path/test')
+      );
+    });
+
     it('generates label style', () => {
       assertRight(
         createExamplePath({
@@ -30,6 +45,21 @@ describe('createExamplePath()', () => {
       );
     });
 
+    it.only('generates label style with hyphens', () => {
+      assertRight(
+        createExamplePath({
+          id: '123',
+          path: '/path-path/{p-id}',
+          method: 'get',
+          request: {
+            path: [{ name: 'p-id', style: HttpParamStyles.Label, examples: [{ key: 'foo', value: 'test' }] }],
+          },
+          responses: [{ code: '200' }],
+        }),
+        r => expect(r).toEqual('/path-path/.test')
+      );
+    });
+
     it('generates matrix style', () => {
       assertRight(
         createExamplePath({
@@ -40,6 +70,22 @@ describe('createExamplePath()', () => {
           responses: [{ code: '200' }],
         }),
         r => expect(r).toEqual('/path/;p=test')
+      );
+    });
+
+    it.only('generates matrix style with hyphens', () => {
+      assertRight(
+        createExamplePath({
+          id: '123',
+          path: '/path-path/{p-id}',
+          method: 'get',
+          request: {
+            path: [{ name: 'p-id', style: HttpParamStyles.Matrix, examples: [{ key: 'foo', value: 'test' }] }],
+          },
+          responses: [{ code: '200' }],
+        }),
+        // should remove the hyphen from the path parameter but not other parts of path
+        r => expect(r).toEqual('/path-path/;pid=test')
       );
     });
   });
