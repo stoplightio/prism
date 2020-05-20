@@ -77,14 +77,14 @@ describe('createExamplePath()', () => {
       assertRight(
         createExamplePath({
           id: '123',
-          path: '/path-path/{p-id}',
+          path: '/path-path/{p-a}',
           method: 'get',
           request: {
-            path: [{ name: 'p-id', style: HttpParamStyles.Matrix, examples: [{ key: 'foo', value: 'test' }] }],
+            path: [{ name: 'p-a', style: HttpParamStyles.Matrix, examples: [{ key: 'foo', value: 'test' }] }],
           },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path-path/;p-id=test')
+        r => expect(r).toEqual('/path-path/;p-a=test')
       );
     });
   });
@@ -110,11 +110,11 @@ describe('createExamplePath()', () => {
           path: '/path-path',
           method: 'get',
           request: {
-            query: [{ name: 'p-id', style: HttpParamStyles.Form, examples: [{ key: 'foo', value: 'test' }] }],
+            query: [{ name: 'p-a', style: HttpParamStyles.Form, examples: [{ key: 'foo', value: 'test' }] }],
           },
           responses: [{ code: '200' }],
         }),
-        r => expect(r).toEqual('/path-path?p-id=test')
+        r => expect(r).toEqual('/path-path?p-a=test')
       );
     });
 
