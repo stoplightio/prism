@@ -3,6 +3,7 @@ Sending a GET request with no Accept header specified returns
 the first example - content in application/xml.
 ====spec====
 swagger: '2.0'
+info:
   version: 1.0.0
 paths:
   "/pet/{petId}":
