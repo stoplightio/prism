@@ -30,6 +30,9 @@
     "urijs": "^1.19.1",
     "yargs": "^15.0.1"
   },
+  "devDependencies": {
+    "@types/urijs": "^1.19.8"
+  },
   "engines": {
     "node": ">=8.0.0"
   },

@@ -43,7 +43,7 @@ export function createExamplePath(
       }
 
       const cleanedExpandedPath = URI.expand(cleanedTemplate, cleanedValues);
-      const uri = new URIJS(cleanedExpandedPath);
+      const uri = new URIJS(cleanedExpandedPath).escapeQuerySpace(false);
 
       // add real path param names back
       // only need to do for matrix style since that's only style names remain in paths
