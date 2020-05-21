@@ -5,24 +5,17 @@ import {
 } from '@stoplight/http-spec';
 import { dereference } from 'json-schema-ref-parser';
 import { IHttpOperation } from '@stoplight/types';
-import fetch from 'node-fetch';
-import * as fs from 'fs';
 import { get } from 'lodash';
 import type { Spec } from 'swagger-schema-official';
 import type { OpenAPIObject } from 'openapi3-ts';
 import type { CollectionDefinition } from 'postman-collection';
 
-export async function getHttpOperationsFromResource(file: string): Promise<IHttpOperation[]> {
-  const isRemote = /^https?:\/\//i.test(file);
-  const fileContent = await (isRemote
-    ? fetch(file).then(d => d.text())
-    : fs.promises.readFile(file, { encoding: 'utf8' }));
-
-  return getHttpOperationsFromSpec(fileContent);
+export async function getHttpOperationsFromResource(specFilePathOrObject: string | object): Promise<IHttpOperation[]> {
+  return getHttpOperationsFromSpec(specFilePathOrObject);
 }
 
-export async function getHttpOperationsFromSpec(specContent: string): Promise<IHttpOperation[]> {
-  const result = await dereference(specContent);
+export async function getHttpOperationsFromSpec(specFilePathOrObject: string | object): Promise<IHttpOperation[]> {
+  const result = await dereference(specFilePathOrObject);
 
   const transformOperations = detectTransformOperationsFn(result);
   if (!transformOperations) throw new Error('Unsupported document format');
