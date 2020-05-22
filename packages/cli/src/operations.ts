@@ -17,16 +17,11 @@ export async function getHttpOperationsFromResource(specFilePathOrObject: string
 export async function getHttpOperationsFromSpec(specFilePathOrObject: string | object): Promise<IHttpOperation[]> {
   const result = await dereference(specFilePathOrObject);
 
-  const transformOperations = detectTransformOperationsFn(result);
-  if (!transformOperations) throw new Error('Unsupported document format');
+  if (isOpenAPI2(result)) return transformOas2Operations(result);
+  if (isOpenAPI3(result)) return transformOas3Operations(result);
+  if (isPostmanCollection(result)) return transformPostmanCollectionOperations(result);
 
-  return transformOperations(result as any);
-}
-
-function detectTransformOperationsFn(parsedContent: unknown) {
-  if (isOpenAPI2(parsedContent)) return transformOas2Operations;
-  if (isOpenAPI3(parsedContent)) return transformOas3Operations;
-  if (isPostmanCollection(parsedContent)) return transformPostmanCollectionOperations;
+  throw new Error('Unsupported document format');
 }
 
 function isOpenAPI2(document: unknown): document is Spec {
