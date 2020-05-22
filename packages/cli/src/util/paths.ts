@@ -16,7 +16,7 @@ import * as E from 'fp-ts/lib/Either';
 import * as A from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Do } from 'fp-ts-contrib/lib/Do';
-import { get, identity, fromPairs } from 'lodash';
+import { get, identity, fromPairs, mapKeys, mapValues, invert } from 'lodash';
 import { URI } from 'uri-template-lite';
 import { ValuesTransformer } from './colorizer';
 import { sequenceS } from 'fp-ts/lib/Apply';
@@ -53,13 +53,13 @@ export function createExamplePath(
         uri.path(uri.path().replace(new RegExp(`;${cleanedPathParam}`, 'g'), `;${realPathParam}`));
       }
 
-      // add real query param names back
-      for (const realQueryParam in queryData.values) {
-        const cleanedQueryParam = realQueryParam.replace(/-/g, '');
-        uri.query(uri.query().replace(new RegExp(cleanedQueryParam, 'g'), realQueryParam));
-      }
+      const hyphenlessParamsMap = invert(mapValues(queryData.values, (_value, key) => key.replace(/-/g, '')));
 
-      return uri.normalize().toString();
+      // add real query param names back
+      // @ts-ignore https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44994
+      uri.query(data => mapKeys(data, (_value, key) => hyphenlessParamsMap[key]));
+
+      return uri.normalizePath().normalizeQuery().toString();
     });
 }
 
