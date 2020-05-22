@@ -57,7 +57,7 @@ export function createExamplePath(
 
       // add real query param names back
       // @ts-ignore https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44994
-      uri.query(data => mapKeys(data, (_value, key) => hyphenlessParamsMap[key]));
+      uri.query(data => mapKeys(data, (_value, key) => hyphenlessParamsMap[key] || key));
 
       return uri.normalizePath().normalizeQuery().toString();
     });
