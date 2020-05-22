@@ -5,6 +5,7 @@ import {
   IHttpOperationResponse,
   IMediaTypeContent,
   IHttpOperationRequestBody,
+  Dictionary,
 } from '@stoplight/types';
 import * as caseless from 'caseless';
 import * as contentType from 'content-type';
@@ -150,7 +151,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
   );
 };
 
-function getPathParams(path: string, template: string, specParamNames: string[]) {
+function getPathParams(path: string, template: string, specParamNames: string[]): Dictionary<string> {
   // replace "-" in template path and query params
   const cleanedTemplate = template.replace(/(?<=\{.*)(?=.*\})(-)/g, '');
 
