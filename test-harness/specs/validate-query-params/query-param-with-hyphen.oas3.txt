@@ -1,0 +1,31 @@
+====test====
+When I send a request to an operation
+And the operation has a required query param with a hyphen in it
+And in the request I sent that query param is present
+Then I should get a 200 response back
+And the payload of the response should be in application/json content-type
+====spec====
+openapi: 3.0.2
+paths:
+  /pet:
+    get:
+      parameters:
+        - in: query
+          name: pet-id
+          required: true
+          type: number
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              example: "ok"
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X GET http://127.0.0.1:4010/pet?pet-id=1
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+"ok"
