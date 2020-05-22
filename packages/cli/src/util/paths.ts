@@ -59,7 +59,7 @@ export function createExamplePath(
         uri.query(uri.query().replace(new RegExp(cleanedQueryParam, 'g'), realQueryParam));
       }
 
-      return uri.normalize().valueOf();
+      return uri.normalize().toString();
     });
 }
 
