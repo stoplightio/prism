@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## Fixed
 
 - Since the media type parameters are not standardised (apart from the quality one), the negotiator will discard them during the matching process or simply treat them as strings/numbers without trying to guess anything more [#1159](https://github.com/stoplightio/prism/pull/1159)
+- Prism is now handling correctly hypens on both Path parameters and Query Parameters [#1189](https://github.com/stoplightio/prism/pull/1189), [#1992](https://github.com/stoplightio/prism/pull/1992)
 
 ## Changed
 
