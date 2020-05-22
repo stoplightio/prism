@@ -91,3 +91,6 @@ Connection: keep-alive
 - The curl command is performed
 - The outputs get converted using `http-string-parser`, a veeery old package transforming curl output to a consumable format
 - Gavel is used to validate the request — it will automagically ignore headers that can change and consider only the "fundamental" one such as content negotiation ones and stuff around.
+
+## Troubleshooting Harness Tests
+- `Async callback was not invoked within the 5000ms timeout specified by jest.setTimeout.Timeout` --> most likely the binary is crashing, failing to start Prism. The best way to troubleshoot is to copy the openapi content from your harness test into a separate OpenAPI file, and try mocking that file with the CLI directly. That will give you more information as to why Prism failed to start.
