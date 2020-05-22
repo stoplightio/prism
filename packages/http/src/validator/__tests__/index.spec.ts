@@ -153,10 +153,10 @@ describe('HttpValidator', () => {
                 },
                 responses: [{ code: '200' }],
               },
-              element: { method: 'get', url: { path: '/a-path/1/b/;b=2' } },
+              element: { method: 'get', url: { path: '/a-path/1/b/;b-id=2' } },
             });
 
-            expect(validator.pathValidator.validate).toHaveBeenCalledWith({ 'a-id': '1', 'b-id': ';b=2' }, [
+            expect(validator.pathValidator.validate).toHaveBeenCalledWith({ 'a-id': '1', 'b-id': ';b-id=2' }, [
               { name: 'a-id', style: HttpParamStyles.Simple },
               { name: 'b-id', style: HttpParamStyles.Matrix },
             ]);
