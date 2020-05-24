@@ -2,7 +2,7 @@ import { IPrismHttpServer } from '@stoplight/prism-http-server/src/types';
 import * as chokidar from 'chokidar';
 import * as os from 'os';
 import { CreateMockServerOptions } from './createServer';
-import { getHttpOperationsFromResource } from '../operations';
+import { getHttpOperationsFromSpec } from '../operations';
 
 export type CreatePrism = (options: CreateMockServerOptions) => Promise<IPrismHttpServer | void>;
 
@@ -21,7 +21,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
       watcher.on('change', () => {
         server.logger.info('Restarting Prism...');
 
-        getHttpOperationsFromResource(options.document)
+        getHttpOperationsFromSpec(options.document)
           .then(operations => {
             if (operations.length === 0) {
               server.logger.info(

@@ -5,16 +5,16 @@
 Usage:
 
 ```javascript
-const { createServer } = require("@stoplight/prism-http-server");
-const { getHttpOperationsFromResource } = require("@stoplight/prism-http");
-const { createLogger } = require("@stoplight/prism-core");
+const { createServer } = require('@stoplight/prism-http-server');
+const { getHttpOperationsFromSpec } = require('@stoplight/prism-http');
+const { createLogger } = require('@stoplight/prism-core');
 
-async function createPrismServer(){
-  const operations = await getHttpOperationsFromResource("YOUR-URL");
+async function createPrismServer() {
+  const operations = await getHttpOperationsFromSpec('YOUR-URL');
 
   const server = createServer(operations, {
     components: {
-      logger: createLogger("TestLogger")
+      logger: createLogger('TestLogger'),
     },
     cors: true,
     config: {
@@ -22,13 +22,13 @@ async function createPrismServer(){
       validateRequest: true,
       validateResponse: true,
       mock: { dynamic: false },
-      errors: false
-    }
+      errors: false,
+    },
   });
   await server.listen(4010);
 
   return {
-    close: server.close.bind(server)
+    close: server.close.bind(server),
   };
 }
 

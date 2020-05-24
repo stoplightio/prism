@@ -4,7 +4,7 @@ import { Scope as NockScope } from 'nock';
 import * as nock from 'nock';
 import { basename, resolve } from 'path';
 import { createInstance, IHttpProxyConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
-import { getHttpOperationsFromResource } from '@stoplight/prism-cli/src/operations';
+import { getHttpOperationsFromSpec } from '@stoplight/prism-cli/src/operations';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
 import { assertResolvesRight, assertResolvesLeft } from '@stoplight/prism-core/src/__tests__/utils';
@@ -60,7 +60,7 @@ describe('Http Client .request', () => {
         { validateRequest: true, checkSecurity: true, validateResponse: true, mock: { dynamic: false }, errors: false },
         { logger }
       );
-      resources = await getHttpOperationsFromResource(specPath);
+      resources = await getHttpOperationsFromSpec(specPath);
     });
 
     describe('baseUrl not set', () => {
@@ -222,7 +222,7 @@ describe('Http Client .request', () => {
         { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false }, errors: false },
         { logger }
       );
-      resources = await getHttpOperationsFromResource(noRefsPetstoreMinimalOas2Path);
+      resources = await getHttpOperationsFromSpec(noRefsPetstoreMinimalOas2Path);
     });
 
     describe('path is invalid', () => {
@@ -337,7 +337,7 @@ describe('Http Client .request', () => {
   });
 
   it('loads spec provided in yaml', () => {
-    return expect(getHttpOperationsFromResource(petStoreOas2Path)).resolves.toHaveLength(3);
+    return expect(getHttpOperationsFromSpec(petStoreOas2Path)).resolves.toHaveLength(3);
   });
 
   it('returns stringified static example when one defined in spec', async () => {
@@ -345,7 +345,7 @@ describe('Http Client .request', () => {
       { mock: { dynamic: false }, checkSecurity: true, validateRequest: true, validateResponse: true, errors: false },
       { logger }
     );
-    resources = await getHttpOperationsFromResource(staticExamplesOas2Path);
+    resources = await getHttpOperationsFromSpec(staticExamplesOas2Path);
 
     return assertResolvesRight(
       prism.request(
@@ -388,7 +388,7 @@ describe('proxy server', () => {
         { logger }
       );
 
-      const resources = await getHttpOperationsFromResource(petStoreOas2Path);
+      const resources = await getHttpOperationsFromSpec(petStoreOas2Path);
       return assertResolvesRight(prism.request({ method: 'get', url: { path: '/pets' } }, resources), response => {
         expect(response.output.statusCode).toBe(200);
         expect(response.output.body).toBe('<html><h1>Hello</h1>');

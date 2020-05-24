@@ -25,9 +25,9 @@ To create the required operations array you can use two utility functions define
 ### Create from file or HTTP resource
 
 ```ts
-const { getHttpOperationsFromSpec, getHttpOperationsFromResource } = require('@stoplight/prism-cli/dist/operations');
+const { getHttpOperationsFromSpec } = require('@stoplight/prism-cli/dist/operations');
 
-const operations = await getHttpOperationsFromResource('examples/petstore.oas2.yaml');
+const operations = await getHttpOperationsFromSpec('examples/petstore.oas2.yaml');
 
 const descriptionDoc = `
 openapi: 3.0.2

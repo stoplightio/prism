@@ -13,7 +13,7 @@ import { LOG_COLOR_MAP } from '../const/options';
 import { createExamplePath } from './paths';
 import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer';
 import { CreatePrism } from './runner';
-import { getHttpOperationsFromResource } from '../operations';
+import { getHttpOperationsFromSpec } from '../operations';
 
 signale.config({ displayTimestamp: true });
 
@@ -63,7 +63,7 @@ const createSingleProcessPrism: CreatePrism = options => {
 };
 
 async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
-  const operations = await getHttpOperationsFromResource(options.document);
+  const operations = await getHttpOperationsFromSpec(options.document);
 
   if (operations.length === 0) {
     throw new Error('No operations found in the current file.');

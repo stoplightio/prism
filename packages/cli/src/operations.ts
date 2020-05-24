@@ -10,10 +10,6 @@ import type { Spec } from 'swagger-schema-official';
 import type { OpenAPIObject } from 'openapi3-ts';
 import type { CollectionDefinition } from 'postman-collection';
 
-export async function getHttpOperationsFromResource(specFilePathOrObject: string | object): Promise<IHttpOperation[]> {
-  return getHttpOperationsFromSpec(specFilePathOrObject);
-}
-
 export async function getHttpOperationsFromSpec(specFilePathOrObject: string | object): Promise<IHttpOperation[]> {
   const result = await dereference(specFilePathOrObject);
 

@@ -11,7 +11,7 @@ jest.mock('../../util/createServer', () => ({
   createSingleProcessPrism: jest.fn().mockResolvedValue([]),
 }));
 
-jest.spyOn(operationUtils, 'getHttpOperationsFromResource').mockResolvedValue([]);
+jest.spyOn(operationUtils, 'getHttpOperationsFromSpec').mockResolvedValue([]);
 
 describe.each<{ 0: string; 1: string; 2: unknown }>([
   ['mock', '', { dynamic: false }],
