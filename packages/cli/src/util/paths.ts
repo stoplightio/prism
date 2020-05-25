@@ -55,7 +55,6 @@ export function createExamplePath(
 
       // add real query param names back
       const hyphenlessParamsMap = invert(mapValues(queryData.values, (_value, key) => key.replace(/-/g, '')));
-      // @ts-ignore https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44994
       uri.query(data => mapKeys(data, (_value, key) => hyphenlessParamsMap[key] || key));
 
       return uri.normalizePath().normalizeQuery().toString();
