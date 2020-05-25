@@ -1406,9 +1406,9 @@
     type-detect "4.0.8"
 
 "@stoplight/http-spec@^2.12.0":
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.12.0.tgz#6477ad72bfc109d1903d20c9759b3d27d4e95e64"
-  integrity sha512-5nfQTvJPfbSkieWWwY0Qbe3C6VeO83T4mALs7m7gNb8C/gf2Jtm5yZDoVibzATCRWiok2Kvix+urlLY8JGzV0w==
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.13.0.tgz#7dceef319134d46b35def1d4f38ccaf07d1dddc7"
+  integrity sha512-/0AnXq5w3xp07erPeolgrfCPbzW8DzfxiaYbvFmUMDxsRSm/Tp2lZgpqmHufxqWRPHMCDKowDOgVDcg+d0AxwA==
   dependencies:
     "@openapi-contrib/openapi-schema-to-json-schema" "^3.0"
     "@stoplight/json" "^3.5.1"
@@ -1701,15 +1701,10 @@
   resolved "https://registry.yarnpkg.com/@types/uri-template-lite/-/uri-template-lite-19.12.0.tgz#e89a9567f50a53eb176fc36cd10b1a449244eb09"
   integrity sha512-r+K7e+5uksy7YCAY0s7Tg6apVqw/w5eAC0eDUmy/IRVGJnLj/MuAc4lg/Ly5lLRCRqnLgZcwFu6EDHOSso7WFQ==
 
-"@types/urijs@^1.19.8":
+"@types/urijs@^1.19.8", "@types/urijs@~1.19.7":
   version "1.19.8"
   resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.8.tgz#a66b2fd8b1d3cf3ef5bae7ca093b7d1b50e48c0a"
   integrity sha512-SVQd2Qq0oL+b8VtJbQyv0cMIdU7fbRDcg2JIpcBvv+GUayJ3c5Ll1K+iivZl6ifcI6NbYcwjqDjljDFSiSGOeA==
-
-"@types/urijs@~1.19.7":
-  version "1.19.7"
-  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.7.tgz#94dae48b40300135db8cc3796b12252850383193"
-  integrity sha512-0YN0GGB2Xab5cuHerBQw/NvWUnkdVfDNdBjXtTr+2AE1c9t29HVvV+IkXwp+fwqN8/05U/XjaQ7pk+jP41ypqA==
 
 "@types/yargs-parser@*":
   version "13.1.0"
