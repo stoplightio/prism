@@ -14,6 +14,8 @@ For example, given an API description document you can spin up a mock HTTP serve
 
 ## Installation
 
+Prism requires NodeJS >= 12 to properly work.
+
 ```bash
 npm install -g @stoplight/prism-cli
 
