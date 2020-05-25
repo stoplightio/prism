@@ -13,7 +13,8 @@ paths:
         - in: path
           name: b-id
           required: true
-          type: number
+          schema:
+            type: number
       responses:
         200:
           content:

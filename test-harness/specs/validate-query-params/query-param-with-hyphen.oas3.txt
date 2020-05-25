@@ -13,7 +13,8 @@ paths:
         - in: query
           name: pet-id
           required: true
-          type: number
+          schema:
+            type: number
       responses:
         200:
           description: ok
