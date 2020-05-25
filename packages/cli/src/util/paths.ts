@@ -54,10 +54,16 @@ export function createExamplePath(
       }
 
       // add real query param names back
-      const hyphenlessParamsMap = invert(mapValues(queryData.values, (_value, key) => key.replace(/-/g, '')));
-      uri.query(data => mapKeys(data, (_value, key) => hyphenlessParamsMap[key] || key));
+      const hyphenlessParamsMap = pipe(
+        mapValues(queryData.values, (_value, key) => key.replace(/-/g, '')),
+        invert
+      );
 
-      return uri.normalizePath().normalizeQuery().toString();
+      return uri
+        .query(data => mapKeys(data, (_value, key) => hyphenlessParamsMap[key] || key))
+        .normalizePath()
+        .normalizeQuery()
+        .toString();
     });
 }
 
