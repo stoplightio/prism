@@ -16,7 +16,8 @@ import * as E from 'fp-ts/lib/Either';
 import * as A from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Do } from 'fp-ts-contrib/lib/Do';
-import { get, identity, fromPairs, mapKeys, mapValues, invert } from 'lodash';
+import { get, identity, fromPairs, mapKeys, invert, flow } from 'lodash';
+import { mapValues } from 'lodash/fp';
 import { URI } from 'uri-template-lite';
 import { ValuesTransformer } from './colorizer';
 import { sequenceS } from 'fp-ts/lib/Apply';
@@ -25,6 +26,12 @@ import * as URIJS from 'urijs';
 const traverseEither = A.array.traverse(E.either);
 const sequenceSEither = sequenceS(E.either);
 const DoEither = Do(E.either);
+//@ts-ignore https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44877
+const mapValuesWithKey = mapValues.convert({ cap: false });
+const createHyphenlessParamsMap = flow(
+  mapValuesWithKey((_value: string, key: string) => key.replace(/-/g, '')),
+  invert
+);
 
 export function createExamplePath(
   operation: IHttpOperation,
@@ -54,10 +61,7 @@ export function createExamplePath(
       }
 
       // add real query param names back
-      const hyphenlessParamsMap = pipe(
-        mapValues(queryData.values, (_value, key) => key.replace(/-/g, '')),
-        invert
-      );
+      const hyphenlessParamsMap = createHyphenlessParamsMap(queryData.values);
 
       return uri
         .query(data => mapKeys(data, (_value, key) => hyphenlessParamsMap[key] || key))
