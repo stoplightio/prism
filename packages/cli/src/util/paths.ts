@@ -17,21 +17,13 @@ import * as A from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { Do } from 'fp-ts-contrib/lib/Do';
 import { get, identity, fromPairs, mapKeys, invert, flow } from 'lodash';
-import { mapValues } from 'lodash/fp';
 import { URI } from 'uri-template-lite';
 import { ValuesTransformer } from './colorizer';
 import { sequenceS } from 'fp-ts/lib/Apply';
-import * as URIJS from 'urijs';
 
 const traverseEither = A.array.traverse(E.either);
 const sequenceSEither = sequenceS(E.either);
 const DoEither = Do(E.either);
-//@ts-ignore https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44877
-const mapValuesWithKey = mapValues.convert({ cap: false });
-const createHyphenlessParamsMap = flow(
-  mapValuesWithKey((_value: string, key: string) => key.replace(/-/g, '')),
-  invert
-);
 
 export function createExamplePath(
   operation: IHttpOperation,
@@ -39,36 +31,9 @@ export function createExamplePath(
 ): E.Either<Error, string> {
   return DoEither.bind('pathData', generateTemplateAndValuesForPathParams(operation))
     .bindL('queryData', ({ pathData }) => generateTemplateAndValuesForQueryParams(pathData.template, operation))
-    .return(({ pathData, queryData }) => {
-      // replace "-" in template path and query params
-      const cleanedTemplate = queryData.template.replace(/(?<=\{.*)(?=.*\})(-)/g, '');
-      const realValues = transformValues({ ...pathData.values, ...queryData.values });
-      const cleanedValues = {};
-      for (const realValue in realValues) {
-        const cleanedValue = realValue.replace(/-/g, '');
-        cleanedValues[cleanedValue] = realValues[realValue];
-      }
-
-      const cleanedExpandedPath = URI.expand(cleanedTemplate, cleanedValues);
-      const uri = new URIJS(cleanedExpandedPath).escapeQuerySpace(false);
-
-      // add real path param names back
-      // only need to do for matrix style since that's only style names remain in paths
-      for (const realPathParam in pathData.values) {
-        const cleanedPathParam = realPathParam.replace(/-/g, '');
-        // matrix will have ; in front of it
-        uri.path(uri.path().replace(new RegExp(`;${cleanedPathParam}`, 'g'), `;${realPathParam}`));
-      }
-
-      // add real query param names back
-      const hyphenlessParamsMap = createHyphenlessParamsMap(queryData.values);
-
-      return uri
-        .query(data => mapKeys(data, (_value, key) => hyphenlessParamsMap[key] || key))
-        .normalizePath()
-        .normalizeQuery()
-        .toString();
-    });
+    .return(({ pathData, queryData }) =>
+      URI.expand(queryData.template, transformValues({ ...pathData.values, ...queryData.values }))
+    );
 }
 
 function generateParamValue(spec: IHttpParam): E.Either<Error, unknown> {
