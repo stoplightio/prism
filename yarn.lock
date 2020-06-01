@@ -1425,13 +1425,13 @@
     urijs "~1.19.2"
 
 "@stoplight/json@^3.5.1", "@stoplight/json@^3.7.1":
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.7.2.tgz#442e478898878b90890cc5bb2a4afadce0fb551a"
-  integrity sha512-3ftujoItELdXdlm2URDEe/JCcFKddVzukUTjSAv5tegxWnwUBWYc7P8v4XUQ/ayfwRhIlIw7sl2Wsc/nBmYamQ==
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.7.3.tgz#a1f42f013dd2808eb3e6394e6df3b7c98e4efde5"
+  integrity sha512-tbAc97VeNiUF9P6RthbH+YWopCQmyPMlTETJJTaMesppHH8MZl3b5dMZlKAz6gWCAzYaPtYwxKl6PMszEWPzvQ==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.1"
-    "@stoplight/types" "^11.4.0"
-    jsonc-parser "~2.2.0"
+    "@stoplight/types" "^11.6.0"
+    jsonc-parser "~2.2.1"
     lodash "^4.17.15"
     safe-stable-stringify "^1.1"
 
@@ -1440,7 +1440,7 @@
   resolved "https://registry.yarnpkg.com/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.1.tgz#01ece81ba5dda199ca3dc5ec7464691efa5d5b76"
   integrity sha512-kDcBIKwzAXZTkgzaiPXH2I0JXavBkOb3jFzYNFS5cBuvZS3s/K+knpk2wLVt0n8XrnRQsSffzN6XG9HqUhfq6Q==
 
-"@stoplight/types@^11.4.0", "@stoplight/types@^11.4.1", "@stoplight/types@^11.5.0", "@stoplight/types@^11.6.0":
+"@stoplight/types@^11.4.1", "@stoplight/types@^11.5.0", "@stoplight/types@^11.6.0":
   version "11.6.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.6.0.tgz#c4507f564ea4be719f66ae2fd2bb83f4719c2210"
   integrity sha512-J2wOl6FlN4IeY99MZTbgLVbIqrE9eVcHIvWmSEFzxfnbHCh4reXcGkvxlQ7I/pTKScd5/F/HJKSYnNXRjCnM2A==
@@ -5694,10 +5694,10 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
-jsonc-parser@~2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/jsonc-parser/-/jsonc-parser-2.2.0.tgz#f206f87f9d49d644b7502052c04e82dd6392e9ef"
-  integrity sha512-4fLQxW1j/5fWj6p78vAlAafoCKtuBm6ghv+Ij5W2DrDx0qE+ZdEl2c6Ko1mgJNF5ftX1iEWQQ4Ap7+3GlhjkOA==
+jsonc-parser@~2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/jsonc-parser/-/jsonc-parser-2.2.1.tgz#db73cd59d78cce28723199466b2a03d1be1df2bc"
+  integrity sha512-o6/yDBYccGvTz1+QFevz6l6OBZ2+fMVu2JZ9CIhzsYRX4mjaK5IyX9eldUdCmga16zlgQxyrj5pt9kzuj2C02w==
 
 jsonfile@^4.0.0:
   version "4.0.0"
