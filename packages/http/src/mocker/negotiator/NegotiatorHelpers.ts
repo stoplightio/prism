@@ -1,7 +1,7 @@
 import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent, IHttpHeaderParam } from '@stoplight/types';
 import * as E from 'fp-ts/lib/Either';
 import { NonEmptyArray, fromArray } from 'fp-ts/lib/NonEmptyArray';
-import { isNonEmpty, findIndex } from 'fp-ts/lib/Array';
+import { findIndex } from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 import * as R from 'fp-ts/lib/Reader';
 import * as RE from 'fp-ts/lib/ReaderEither';

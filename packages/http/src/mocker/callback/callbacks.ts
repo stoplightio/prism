@@ -7,7 +7,7 @@ import * as O from 'fp-ts/lib/Option';
 import * as A from 'fp-ts/lib/Array';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
-import { doOption, traverseOption } from '../../combinators'
+import { doOption, traverseOption } from '../../combinators';
 import { head } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { generate as generateHttpParam } from '../generator/HttpParamGenerator';
@@ -78,7 +78,8 @@ function assembleBody(request?: IHttpOperationRequest): O.Option<{ body: string;
     O.mapNullable(request => request.body),
     O.mapNullable(body => body.contents),
     O.chain(contents =>
-      doOption.bind('content', head(contents))
+      doOption
+        .bind('content', head(contents))
         .bindL('body', ({ content }) => generateHttpParam(content))
         .done()
     ),
