@@ -2,12 +2,12 @@ import { IHttpCallbackOperation, IHttpOperationRequest, Dictionary } from '@stop
 import { resolveRuntimeExpressions } from '../../utils/runtimeExpression';
 import { IHttpRequest, IHttpResponse } from '../../types';
 import fetch from 'node-fetch';
-import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
+import * as O from 'fp-ts/lib/Option';
 import * as A from 'fp-ts/lib/Array';
-import { Do } from 'fp-ts-contrib/lib/Do';
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as RTE from 'fp-ts/lib/ReaderTaskEither';
+import { doOption, traverseOption } from '../../combinators'
 import { head } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { generate as generateHttpParam } from '../generator/HttpParamGenerator';
@@ -15,9 +15,6 @@ import { validateOutput } from '../../validator';
 import { parseResponse } from '../../utils/parseResponse';
 import { violationLogger } from '../../utils/logger';
 import { Logger } from 'pino';
-
-const traverseOption = A.array.traverse(O.option);
-const DoOption = Do(O.option);
 
 export function runCallback({
   callback,
@@ -81,7 +78,7 @@ function assembleBody(request?: IHttpOperationRequest): O.Option<{ body: string;
     O.mapNullable(request => request.body),
     O.mapNullable(body => body.contents),
     O.chain(contents =>
-      DoOption.bind('content', head(contents))
+      doOption.bind('content', head(contents))
         .bindL('body', ({ content }) => generateHttpParam(content))
         .done()
     ),
@@ -101,7 +98,7 @@ function assembleHeaders(request?: IHttpOperationRequest, bodyMediaType?: string
     O.mapNullable(request => request.headers),
     O.chain(params =>
       traverseOption(params, param =>
-        DoOption.bind('value', generateHttpParam(param)).return(({ value }) => [param.name, value])
+        doOption.bind('value', generateHttpParam(param)).return(({ value }) => [param.name, value])
       )
     ),
     O.reduce(

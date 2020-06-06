@@ -1,12 +1,10 @@
 import { IHttpRequest, IHttpResponse } from '../types';
 import * as O from 'fp-ts/lib/Option';
-import { Do } from 'fp-ts-contrib/lib/Do';
+import { doOption } from '../combinators';
 import { lookup } from 'fp-ts/lib/Array';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { get as _get } from 'lodash';
 import { pointerToPath } from '@stoplight/json';
-
-const DoOption = Do(O.option);
 
 export function resolveRuntimeExpressions(input: string, request: IHttpRequest, response: IHttpResponse) {
   // replace runtime expression placeholders (eg. {$method}) with the resolved values
@@ -75,7 +73,7 @@ export function resolveRuntimeExpression(
 
   function tryRequestQuery() {
     return pipe(
-      DoOption.do(isPart(1, 'query'))
+      doOption.do(isPart(1, 'query'))
         .bind('query', O.fromNullable(request.url.query))
         .bind('part', lookup(2, parts))
         .done(),
@@ -112,7 +110,7 @@ export function resolveRuntimeExpression(
 
   function readBody(body: unknown) {
     return pipe(
-      DoOption.bind('body', O.fromNullable(body))
+      doOption.bind('body', O.fromNullable(body))
         .bind(
           'path',
           pipe(

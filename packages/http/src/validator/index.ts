@@ -12,7 +12,7 @@ import * as contentType from 'content-type';
 import { findFirst, isNonEmpty } from 'fp-ts/lib/Array';
 import * as O from 'fp-ts/lib/Option';
 import * as E from 'fp-ts/lib/Either';
-import { Do } from 'fp-ts-contrib/lib/Do';
+import { doOption, sequenceValidation, sequenceOption } from '../combinators';
 import { is as typeIs } from 'type-is';
 import { pipe } from 'fp-ts/lib/pipeable';
 import { inRange, isMatch } from 'lodash';
@@ -28,10 +28,7 @@ import {
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
 import { NonEmptyArray } from 'fp-ts/lib/NonEmptyArray';
-import { sequenceValidation, sequenceOption } from './validators/utils';
 import { HttpPathValidator } from './validators/path';
-
-const DoOption = Do(O.option);
 
 export const bodyValidator = new HttpBodyValidator('body');
 export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
@@ -99,7 +96,7 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
 
 export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
-    DoOption.bind('parsedMediaType', pipe(O.fromNullable(mediaType), O.map(contentType.parse)))
+    doOption.bind('parsedMediaType', pipe(O.fromNullable(mediaType), O.map(contentType.parse)))
       .doL(({ parsedMediaType }) =>
         pipe(
           contents,
@@ -116,7 +113,7 @@ export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, me
     E.fromOption<IPrismDiagnostic>(() => ({
       message: `The received media type "${mediaType || ''}" does not match the one${
         contents.length > 1 ? 's' : ''
-      } specified in the current response: ${contents.map(c => c.mediaType).join(', ')}`,
+        } specified in the current response: ${contents.map(c => c.mediaType).join(', ')}`,
       severity: DiagnosticSeverity.Error,
     })),
     E.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
