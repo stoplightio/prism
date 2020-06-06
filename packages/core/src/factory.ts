@@ -64,16 +64,16 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
   ): TE.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
     const produceOutput = isProxyConfig(config)
       ? components.forward(
-          { validations: config.errors ? validations : [], data },
-          config.upstream.href
-        )(components.logger.child({ name: 'PROXY' }))
+        { validations: config.errors ? validations : [], data },
+        config.upstream.href
+      )(components.logger.child({ name: 'PROXY' }))
       : TE.fromEither(
-          components.mock({
-            resource,
-            input: { data, validations },
-            config: config.mock,
-          })(components.logger.child({ name: 'NEGOTIATOR' }))
-        );
+        components.mock({
+          resource,
+          input: { data, validations },
+          config: config.mock,
+        })(components.logger.child({ name: 'NEGOTIATOR' }))
+      );
 
     return pipe(
       produceOutput,
@@ -107,9 +107,9 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
               TE.map(({ output, resource, validations: inputValidations }) => {
                 const outputValidations = config.validateResponse
                   ? pipe(
-                      E.swap(components.validateOutput({ resource, element: output })),
-                      E.getOrElse<Output, IPrismDiagnostic[]>(() => [])
-                    )
+                    E.swap(components.validateOutput({ resource, element: output })),
+                    E.getOrElse<Output, IPrismDiagnostic[]>(() => [])
+                  )
                   : [];
 
                 return {

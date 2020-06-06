@@ -96,7 +96,8 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
 
 export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
-    doOption.bind('parsedMediaType', pipe(O.fromNullable(mediaType), O.map(contentType.parse)))
+    doOption
+      .bind('parsedMediaType', pipe(O.fromNullable(mediaType), O.map(contentType.parse)))
       .doL(({ parsedMediaType }) =>
         pipe(
           contents,
@@ -113,7 +114,7 @@ export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, me
     E.fromOption<IPrismDiagnostic>(() => ({
       message: `The received media type "${mediaType || ''}" does not match the one${
         contents.length > 1 ? 's' : ''
-        } specified in the current response: ${contents.map(c => c.mediaType).join(', ')}`,
+      } specified in the current response: ${contents.map(c => c.mediaType).join(', ')}`,
       severity: DiagnosticSeverity.Error,
     })),
     E.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])

@@ -73,7 +73,8 @@ export function resolveRuntimeExpression(
 
   function tryRequestQuery() {
     return pipe(
-      doOption.do(isPart(1, 'query'))
+      doOption
+        .do(isPart(1, 'query'))
         .bind('query', O.fromNullable(request.url.query))
         .bind('part', lookup(2, parts))
         .done(),
@@ -110,7 +111,8 @@ export function resolveRuntimeExpression(
 
   function readBody(body: unknown) {
     return pipe(
-      doOption.bind('body', O.fromNullable(body))
+      doOption
+        .bind('body', O.fromNullable(body))
         .bind(
           'path',
           pipe(
