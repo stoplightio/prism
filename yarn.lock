@@ -1255,25 +1255,25 @@
     type-detect "4.0.8"
 
 "@stoplight/http-spec@^2.12.0":
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.13.0.tgz#7dceef319134d46b35def1d4f38ccaf07d1dddc7"
-  integrity sha512-/0AnXq5w3xp07erPeolgrfCPbzW8DzfxiaYbvFmUMDxsRSm/Tp2lZgpqmHufxqWRPHMCDKowDOgVDcg+d0AxwA==
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.14.0.tgz#c44ad6314d21c4380832dcb4c56b47c839904ffb"
+  integrity sha512-7smVUZdLLW/jTh9PmJsghB/gE+/mtLMPc8ZllueWg0VJoKesolZGeUUVe3vvT4b+aV0uZoXfrO4AQt3z9bPcZA==
   dependencies:
     "@openapi-contrib/openapi-schema-to-json-schema" "^3.0"
-    "@stoplight/json" "^3.5.1"
-    "@stoplight/types" "^11.5.0"
+    "@stoplight/json" "^3.7.3"
+    "@stoplight/types" "^11.6.0"
     "@types/swagger-schema-official" "~2.0.21"
     "@types/to-json-schema" "^0.2.0"
     "@types/type-is" "^1.6.3"
-    "@types/urijs" "~1.19.7"
+    "@types/urijs" "~1.19.9"
     json-schema-generator "^2.0.6"
     lodash "^4.17.15"
-    openapi3-ts "~1.3.0"
-    postman-collection "^3.6.0"
+    openapi3-ts "~1.4.0"
+    postman-collection "^3.6.2"
     type-is "^1.6.18"
     urijs "~1.19.2"
 
-"@stoplight/json@^3.5.1", "@stoplight/json@^3.7.1":
+"@stoplight/json@^3.7.1", "@stoplight/json@^3.7.3":
   version "3.7.3"
   resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.7.3.tgz#a1f42f013dd2808eb3e6394e6df3b7c98e4efde5"
   integrity sha512-tbAc97VeNiUF9P6RthbH+YWopCQmyPMlTETJJTaMesppHH8MZl3b5dMZlKAz6gWCAzYaPtYwxKl6PMszEWPzvQ==
@@ -1289,7 +1289,7 @@
   resolved "https://registry.yarnpkg.com/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.1.tgz#01ece81ba5dda199ca3dc5ec7464691efa5d5b76"
   integrity sha512-kDcBIKwzAXZTkgzaiPXH2I0JXavBkOb3jFzYNFS5cBuvZS3s/K+knpk2wLVt0n8XrnRQsSffzN6XG9HqUhfq6Q==
 
-"@stoplight/types@^11.4.1", "@stoplight/types@^11.5.0", "@stoplight/types@^11.6.0":
+"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0":
   version "11.6.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.6.0.tgz#c4507f564ea4be719f66ae2fd2bb83f4719c2210"
   integrity sha512-J2wOl6FlN4IeY99MZTbgLVbIqrE9eVcHIvWmSEFzxfnbHCh4reXcGkvxlQ7I/pTKScd5/F/HJKSYnNXRjCnM2A==
@@ -1550,7 +1550,7 @@
   resolved "https://registry.yarnpkg.com/@types/uri-template-lite/-/uri-template-lite-19.12.0.tgz#e89a9567f50a53eb176fc36cd10b1a449244eb09"
   integrity sha512-r+K7e+5uksy7YCAY0s7Tg6apVqw/w5eAC0eDUmy/IRVGJnLj/MuAc4lg/Ly5lLRCRqnLgZcwFu6EDHOSso7WFQ==
 
-"@types/urijs@^1.19.9", "@types/urijs@~1.19.7":
+"@types/urijs@^1.19.9", "@types/urijs@~1.19.9":
   version "1.19.9"
   resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.9.tgz#cedccc8e69677080cc8bb2e9ec50c6dd6093429e"
   integrity sha512-/tiJyrc0GPcsReHzgC0SXwOmoPjLqYe01W7dLYB0yasQXMbcRee+ZIk+g8MIQhoBS8fPoBQO3Y93+aeBrI93Ug==
@@ -5911,10 +5911,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-marked@0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.8.0.tgz#ec5c0c9b93878dc52dd54be8d0e524097bd81a99"
-  integrity sha512-MyUe+T/Pw4TZufHkzAfDj6HarCBWia2y27/bhuYkTaiUnfDYFnCP3KUN+9oM7Wi6JA2rymtVYbQu3spE0GCmxQ==
+marked@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-1.1.0.tgz#62504ad4d11550c942935ccc5e39d64e5a4c4e50"
+  integrity sha512-EkE7RW6KcXfMHy2PA7Jg0YJE1l8UPEZE8k45tylzmZM30/r1M1MUXWQfJlrSbsTeh7m/XTwHbWUENvAJZpp1YA==
 
 math-random@^1.0.1:
   version "1.0.4"
@@ -6046,6 +6046,11 @@ mime-db@1.43.0:
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.43.0.tgz#0a12e0502650e473d735535050e7c8f4eb4fae58"
   integrity sha512-+5dsGEEovYbT8UY9yD7eE4XTc4UwJ1jBYlgaQQF38ENsKR3wj/8q8RFZrF9WIZpB2V1ArTVFUva8sAul1NzRzQ==
 
+mime-db@1.44.0:
+  version "1.44.0"
+  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.44.0.tgz#fa11c5eb0aca1334b4233cb4d52f10c5a6272f92"
+  integrity sha512-/NOTfLrsPBVeH7YtFPgsVWveuL+4SjjYxaQ1xtM1KMFj7HdxlBlxeyNLzhyJVx7r4rZGJAZ/6lkKCitSc/Nmpg==
+
 mime-format@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/mime-format/-/mime-format-2.0.0.tgz#e29f8891e284d78270246f0050d6834bdbbe1332"
@@ -6053,7 +6058,14 @@ mime-format@2.0.0:
   dependencies:
     charset "^1.0.0"
 
-mime-types@2.1.26, mime-types@^2.1.12, mime-types@~2.1.19, mime-types@~2.1.24:
+mime-types@2.1.27:
+  version "2.1.27"
+  resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.27.tgz#47949f98e279ea53119f5722e0f34e529bec009f"
+  integrity sha512-JIhqnCasI9yD+SsmkquHBxTSEuZdQX5BuQnS2Vc7puQQQ+8yiP5AY5uWhpdv4YL4VM5c6iliiYWPgJ/nJQLp7w==
+  dependencies:
+    mime-db "1.44.0"
+
+mime-types@^2.1.12, mime-types@~2.1.19, mime-types@~2.1.24:
   version "2.1.26"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.26.tgz#9c921fc09b7e149a65dfdc0da4d20997200b0a06"
   integrity sha512-01paPWYgLrkqAyrlDorC1uDwl2p3qZT7yl806vW7DvDoxwXi46jsjFbg+WdwotBIk6/MbEhO/dh5aZ5sNj/dWQ==
@@ -6554,10 +6566,10 @@ openapi-sampler@^1.0.0-beta.15:
   dependencies:
     json-pointer "^0.6.0"
 
-openapi3-ts@~1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/openapi3-ts/-/openapi3-ts-1.3.0.tgz#a6b4a6dda1d037cb826f3230426ce5243c75edb3"
-  integrity sha512-Xk3hsB0PzB4dzr/r/FdmK+VfQbZH7lQQ2iipMS1/1eoz1wUvh5R7rmOakYvw0bQJJE6PYrOLx8UHsYmzgTr+YQ==
+openapi3-ts@~1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/openapi3-ts/-/openapi3-ts-1.4.0.tgz#679d5a24be0efc36f5de4fc2c4b8513663e16f65"
+  integrity sha512-8DmE2oKayvSkIR3XSZ4+pRliBsx19bSNeIzkTPswY8r4wvjX86bMxsORdqwAwMxE8PefOcSAT2auvi/0TZe9yA==
 
 opencollective-postinstall@^2.0.2:
   version "2.0.2"
@@ -6998,10 +7010,10 @@ postcss@^7.0.5:
     source-map "^0.6.1"
     supports-color "^6.1.0"
 
-postman-collection@^3.5.5, postman-collection@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/postman-collection/-/postman-collection-3.6.0.tgz#e739e80dce1d78cb6b44d1c942895d6aa0c5c9b7"
-  integrity sha512-B+oAJb0ILsXBj7fJzFmFaZBghLnqwBUetHi7xUjDWzJ668gKdW5sNEBmC/Sojzo7dLgIZjVMnsCnmYtorJv0Kg==
+postman-collection@^3.6.0, postman-collection@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/postman-collection/-/postman-collection-3.6.2.tgz#f9dd610022135b4e8778c7d3e6bd0c3a3718e7d8"
+  integrity sha512-daouhC0qe9ThF0EgIgWSJQxEj1fLctRREnWpSC+Tg2Sel/9keEho9zyWET5dYHPisPZcxGCqS3Q+BN/WQO+SAg==
   dependencies:
     escape-html "1.0.3"
     faker "4.1.0"
@@ -7010,20 +7022,20 @@ postman-collection@^3.5.5, postman-collection@^3.6.0:
     iconv-lite "0.5.1"
     liquid-json "0.3.1"
     lodash "4.17.15"
-    marked "0.8.0"
+    marked "1.1.0"
     mime-format "2.0.0"
-    mime-types "2.1.26"
-    postman-url-encoder "2.0.0"
+    mime-types "2.1.27"
+    postman-url-encoder "2.1.1"
     sanitize-html "1.20.1"
-    semver "7.1.3"
+    semver "7.3.2"
     uuid "3.4.0"
 
-postman-url-encoder@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/postman-url-encoder/-/postman-url-encoder-2.0.0.tgz#ca0430f7a10e879665225bd8b9c8c4c7cd0aa914"
-  integrity sha512-0In7oCszae5bFTc9WsC9YlfVtp7X1TzVvy6Rp7fO1J0/aMdB5kN1b6lZ1b/v2ZMBlQkT42xiVnm5p0rl8eFZzg==
+postman-url-encoder@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/postman-url-encoder/-/postman-url-encoder-2.1.1.tgz#5ca7354c4cfd5df02fe1f604e0fcc0323adbfa0c"
+  integrity sha512-WxXvA3pWupcboNylMpBRO3U3aUmPP6kIftN9GtNOEoXiHWx5vuCHTSw1+eQDj4vHWe4UuwJYN3K0BLAqTsXi8w==
   dependencies:
-    postman-collection "^3.5.5"
+    postman-collection "^3.6.0"
     punycode "^2.1.1"
 
 prelude-ls@~1.1.2:
@@ -7708,12 +7720,7 @@ semver@6.x, semver@^6.0.0, semver@^6.1.2, semver@^6.2.0, semver@^6.3.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
 
-semver@7.1.3:
-  version "7.1.3"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.1.3.tgz#e4345ce73071c53f336445cfc19efb1c311df2a6"
-  integrity sha512-ekM0zfiA9SCBlsKa2X1hxyxiI4L3B6EbVJkkdgQXnSEEaHlGdvyodMruTiulSRWMMB4NeIuYNMC9rTKTz97GxA==
-
-semver@^7.3.2:
+semver@7.3.2, semver@^7.3.2:
   version "7.3.2"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.2.tgz#604962b052b81ed0786aae84389ffba70ffd3938"
   integrity sha512-OrOb32TeeambH6UrhtShmF7CRDqhL6/5XpPNp2DuRH6+9QLw/orhp72j87v8Qa1ScDkvrrBNpZcDejAirJmfXQ==
