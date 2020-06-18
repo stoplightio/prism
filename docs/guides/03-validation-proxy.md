@@ -10,7 +10,7 @@ Let's look at some of these use-cases.
 
 ### Assisting API Consumer Integration
 
-In the [design-first workflow](https://www.apisyouwonthate.com/blog/api-design-first-vs-code-first/), mocking gives your team something to use before the API exists. Then, when enough feedback has come in and the API developers have decided to start coding the API, the hope is that the real API matches the mock API. If it matches perfectly, the existing development work done by the API consumers during the feedback stage means that integrating the real API should involve little to no work. Sadly, subtle differences often go unnoticed, with properties changing slightly, or being removed completely. 
+In the [design-first workflow](https://stoplight.io/blog/api-design-first-vs-code-first/), mocking gives your team something to use before the API exists. Then, when enough feedback has come in and the API developers have decided to start coding the API, the hope is that the real API matches the mock API. If it matches perfectly, the existing development work done by the API consumers during the feedback stage means that integrating the real API should involve little to no work. Sadly, subtle differences often go unnoticed, with properties changing slightly, or being removed completely. 
 
 As of Prism v3.2, API consumers can funnel their development traffic through Prism running as proxy, and then relay that traffic to the API-in-progress. It will report any mistakes it notices along the way, either with the requests you're sending or the responses coming back from the server.
 
@@ -29,16 +29,15 @@ Teams with existing end-to-end test-suites can drop Prism into this testing envi
 
 ```bash
 prism proxy reference/api-a/openapi.yaml api-a-test.example.com --errors -p 5000
-prism proxy reference/api-a/openapi.yaml api-b-test.example.com --errors -p 5001
-prism proxy reference/api-a/openapi.yaml api-c-test.example.com --errors -p 5002
+prism proxy reference/api-b/openapi.yaml api-b-test.example.com --errors -p 5001
+prism proxy reference/api-c/openapi.yaml api-c-test.example.com --errors -p 5002
 ```
 
 This adds contract testing to an existing test suite for very little work, regardless of the language your APIs are written in, without any changes required to the codebases.
 
 ### Live Contract Testing
 
-Now you can use Prism to test traffic against the API description. This could be done in development as we've mentioned, but it could also be placed in staging, QA, or some sort of pre-production environment. Probably keep it out of production, because even though Prism is quick like a fox, introducing _anything_ to the criticl path of your API is probably not what you want.
+Now you can use Prism to test traffic against the API description. This could be done in development as we've mentioned, but it could also be placed in staging, QA, or some sort of pre-production environment. Probably keep it out of production, because even though Prism is quick like a fox, introducing _anything_ to the critical path of your API is probably not what you want.
 
 <!-- theme:info -->
 > Future versions of Prism will include ways to sniff existing traffic, without requests being made directly to it. sniffing nginx logs, or piping other forms of traffic through. [Get in touch with ideas](https://github.com/stoplightio/prism/issues/955).
-
