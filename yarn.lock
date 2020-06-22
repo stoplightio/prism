@@ -1274,9 +1274,9 @@
     urijs "~1.19.2"
 
 "@stoplight/json@^3.7.1", "@stoplight/json@^3.7.3":
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.7.3.tgz#a1f42f013dd2808eb3e6394e6df3b7c98e4efde5"
-  integrity sha512-tbAc97VeNiUF9P6RthbH+YWopCQmyPMlTETJJTaMesppHH8MZl3b5dMZlKAz6gWCAzYaPtYwxKl6PMszEWPzvQ==
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.7.4.tgz#ad07536aaef3f5c2bdf8e994d048357ed2dcb1be"
+  integrity sha512-0afJAvp+6t1uHI7uvYa0DQdeH967dtYTCsOOM5ficwPNscPe24k7CDDMNsRNF6N8hP6zwx/lRg75Os4Ng/6seA==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.1"
     "@stoplight/types" "^11.6.0"
