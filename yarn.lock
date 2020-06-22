@@ -1254,10 +1254,10 @@
   dependencies:
     type-detect "4.0.8"
 
-"@stoplight/http-spec@^2.12.0":
-  version "2.14.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-2.14.0.tgz#c44ad6314d21c4380832dcb4c56b47c839904ffb"
-  integrity sha512-7smVUZdLLW/jTh9PmJsghB/gE+/mtLMPc8ZllueWg0VJoKesolZGeUUVe3vvT4b+aV0uZoXfrO4AQt3z9bPcZA==
+"@stoplight/http-spec@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.0.2.tgz#28a3b03930b158d98b54a067dddb75ac4e671ce4"
+  integrity sha512-zpb2tZkTjeYYmFP71v6YiK6xsNhQknsF4PTmTe00DrHDLMJERTiLqkBPv33sDk3fTwrx9Qej+gcuvqDWoxWdQA==
   dependencies:
     "@openapi-contrib/openapi-schema-to-json-schema" "^3.0"
     "@stoplight/json" "^3.7.3"
