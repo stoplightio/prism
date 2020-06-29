@@ -1303,12 +1303,12 @@
   integrity sha512-sV+51I7WYnLJnKPn2EMWgS4EUfoP4iWEbrWwbXsj0MZCB/xOK8j6+C9fntIdOM50kpx45ZLC3s6kwKivWuqvyg==
 
 "@stoplight/yaml@^4.0.1":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-4.0.2.tgz#1ec7bd6c7fd9cde9a30d14dbbb767e1954d8569d"
-  integrity sha512-a8/KdPlTOzWx0lfbamkpdhvN3C9CyXxQgEAi6uuWFVcgPm2tEt9Yg87fJpIUP38GfxRom7b0STR61PXIdJ2QzA==
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-4.2.0.tgz#215d4423a675eacb69cad2458acd889c2a55da73"
+  integrity sha512-d6fLHd7aOfVfcSSAbicQ4tLlWZ8RetD+emrU6rbEMVHweVf2O6ibpTXW0qDZeSEDEtk5i5oa0npWcrATm/PtLQ==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.1"
-    "@stoplight/types" "^11.6.0"
+    "@stoplight/types" "^11.8.0"
     "@stoplight/yaml-ast-parser" "0.0.48"
     tslib "^1.12.0"
 
