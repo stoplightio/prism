@@ -3774,9 +3774,9 @@ format-util@^1.0.3:
   integrity sha1-Ay3KShFiYqEsQ/TD7IVmQWxbLZU=
 
 fp-ts-contrib@^0.1.15:
-  version "0.1.16"
-  resolved "https://registry.yarnpkg.com/fp-ts-contrib/-/fp-ts-contrib-0.1.16.tgz#dc430628aa6694196e54f0f8c531127fb5c61d0b"
-  integrity sha512-DXBROKVMnQoT22AOZnsMlJEz8FjIX0dWWMB3snPif4NB48XEZxc/dxwj17DtSbhORux0+NhSeumPQDS6FkIrzA==
+  version "0.1.17"
+  resolved "https://registry.yarnpkg.com/fp-ts-contrib/-/fp-ts-contrib-0.1.17.tgz#208ff83b2b457c61f458016e324ff95a5671c0c1"
+  integrity sha512-UBQ7AdGp0GktLkIn3e6npVIfLm1ZM+racizgVqL88j6HBLBoBjRtVjIxRIS6YbNypuP94ngaZpy2SEib9lnZ9A==
 
 fp-ts@^2.5.3:
   version "2.6.7"
