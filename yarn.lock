@@ -1290,9 +1290,9 @@
   integrity sha512-kDcBIKwzAXZTkgzaiPXH2I0JXavBkOb3jFzYNFS5cBuvZS3s/K+knpk2wLVt0n8XrnRQsSffzN6XG9HqUhfq6Q==
 
 "@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0":
-  version "11.6.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.6.0.tgz#c4507f564ea4be719f66ae2fd2bb83f4719c2210"
-  integrity sha512-J2wOl6FlN4IeY99MZTbgLVbIqrE9eVcHIvWmSEFzxfnbHCh4reXcGkvxlQ7I/pTKScd5/F/HJKSYnNXRjCnM2A==
+  version "11.8.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.8.0.tgz#5fba735d730bd50754ed587e86854a8becbf90bb"
+  integrity sha512-JSCLtuy9Buf89rRV9AmnK452mUqen3cpZgx0eOQdv+ayDuy8uuezU6hcsC93cfQ9E3OOpWs91El4sTrjZkv9IQ==
   dependencies:
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
