@@ -1,0 +1,32 @@
+====test====
+When I send a request to an operation
+And the operation has a query param specified in mixed between lowercase and uppercase
+And in the request I sent that param is present in a different casing
+It should still pass the validation
+====spec====
+swagger: '2.0'
+produces:
+  - application/json
+paths:
+  "/v1/test":
+    get:
+      parameters:
+      - collectionFormat: csv
+        in: query
+        items:
+          format: uuid
+          type: string
+        name: filter[somethingId]
+        required: false
+        type: array
+      responses:
+        '200':
+          description: OK
+          examples:
+            error: false
+====server====
+mock -p 4010 ${document}
+====command====
+curl -sIXGET http://127.0.0.1:4010/v1/test?somethingid=04fc0172-1943-4c38-8e0f-36935e05b8dd
+====expect====
+HTTP/1.1 200 OK
