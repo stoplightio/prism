@@ -48,7 +48,7 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
                   // the validators a bit
                   // @ts-ignore
                   mapKeys(target, (_value, key) => key.toLowerCase()),
-                  schema.properties && (schema.properties[el.name] as JSONSchema4),
+                  schema.properties && (schema.properties[el.name.toLowerCase()] as JSONSchema4),
                   el.explode || false
                 );
 
@@ -73,10 +73,10 @@ function createJsonSchemaFromParams(params: NEA.NonEmptyArray<IHttpParam>): JSON
     type: 'object',
     properties: pickBy(
       mapValues(
-        keyBy(params, p => p.name),
+        keyBy(params, p => p.name.toLocaleLowerCase()),
         'schema'
       )
     ) as JSONSchema4,
-    required: compact(params.map(m => (m.required ? m.name : undefined))),
+    required: compact(params.map(m => (m.required ? m.name.toLowerCase() : undefined))),
   };
 }
