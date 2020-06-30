@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Fixed
+
+- Prism is not returning an error anymore when trying to construct a schema for HTTP headers and querystring with mixed cases property names [#1268](https://github.com/stoplightio/prism/pull/1268)
+
 ## Changed
 
 - **BREAKING**: The `getHttpOperationsFromSpec` has been moved from the HTTP Package to the CLI package. If you're using Prism programmatically, this might require some code changes on your side. `getHttpOperationsFromResource` has been removed. [#1009](https://github.com/stoplightio/prism/pull/1009), [#1192](https://github.com/stoplightio/prism/pull/1192)
