@@ -74,11 +74,11 @@ function createJsonSchemaFromParams(params: IHttpParam[]): O.Option<JSONSchema> 
       type: 'object',
       properties: pickBy(
         mapValues(
-          keyBy(params, p => p.name.toLowerCase()),
+          keyBy(params, p => p.name),
           'schema'
         )
       ) as JSONSchema4,
-      required: compact(params.map(m => (m.required ? m.name.toLowerCase() : undefined))),
+      required: compact(params.map(m => (m.required ? m.name : undefined))),
     }))
   );
 }
