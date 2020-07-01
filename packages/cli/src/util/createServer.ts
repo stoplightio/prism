@@ -63,44 +63,48 @@ const createSingleProcessPrism: CreatePrism = options => {
 };
 
 async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: Logger) {
-  const operations = await getHttpOperationsFromSpec(options.document);
+  try {
+    const operations = await getHttpOperationsFromSpec(options.document);
 
-  if (operations.length === 0) {
-    throw new Error('No operations found in the current file.');
+    if (operations.length === 0) {
+      throw new Error('No operations found in the current file.');
+    }
+
+    const shared: Omit<IHttpConfig, 'mock'> = {
+      validateRequest: true,
+      validateResponse: true,
+      checkSecurity: true,
+      errors: false,
+    };
+
+    const config: IHttpProxyConfig | IHttpConfig = isProxyServerOptions(options)
+      ? { ...shared, mock: false, upstream: options.upstream, errors: options.errors }
+      : { ...shared, mock: { dynamic: options.dynamic }, errors: options.errors };
+
+    const server = createHttpServer(operations, {
+      cors: options.cors,
+      config,
+      components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
+    });
+
+    const address = await server.listen(options.port, options.host);
+
+    operations.forEach(resource => {
+      const path = pipe(
+        createExamplePath(resource, attachTagsToParamsValues),
+        E.getOrElse(() => resource.path)
+      );
+
+      logInstance.info(
+        `${resource.method.toUpperCase().padEnd(10)} ${address}${transformPathParamsValues(path, chalk.bold.cyan)}`
+      );
+    });
+    logInstance.start(`Prism is listening on ${address}`);
+
+    return server;
+  } catch (e) {
+    logInstance.error(e.message);
   }
-
-  const shared: Omit<IHttpConfig, 'mock'> = {
-    validateRequest: true,
-    validateResponse: true,
-    checkSecurity: true,
-    errors: false,
-  };
-
-  const config: IHttpProxyConfig | IHttpConfig = isProxyServerOptions(options)
-    ? { ...shared, mock: false, upstream: options.upstream, errors: options.errors }
-    : { ...shared, mock: { dynamic: options.dynamic }, errors: options.errors };
-
-  const server = createHttpServer(operations, {
-    cors: options.cors,
-    config,
-    components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
-  });
-
-  const address = await server.listen(options.port, options.host);
-
-  operations.forEach(resource => {
-    const path = pipe(
-      createExamplePath(resource, attachTagsToParamsValues),
-      E.getOrElse(() => resource.path)
-    );
-
-    logInstance.info(
-      `${resource.method.toUpperCase().padEnd(10)} ${address}${transformPathParamsValues(path, chalk.bold.cyan)}`
-    );
-  });
-  logInstance.start(`Prism is listening on ${address}`);
-
-  return server;
 }
 
 function pipeOutputToSignale(stream: Readable) {
