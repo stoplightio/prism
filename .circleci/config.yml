@@ -83,6 +83,9 @@ jobs:
           command: yarn build
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
+          name: Publish on the beta tag
+          command: yarn lerna publish $(npx semver --preid beta -i prerelease $(npm show @stoplight/prism-cli@beta version)) --no-push --no-git-tag-version --dist-tag beta -y
+      - run:
           name: Publish
           command: yarn lerna publish from-git --create-release=github --yes
       - run:
