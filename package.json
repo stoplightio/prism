@@ -17,7 +17,7 @@
     "test": "jest",
     "release": "lerna version",
     "prerelease:beta": "yarn build",
-    "release:beta": "lerna publish --preid beta --force-publish=* --no-push --no-git-tag-version --dist-tag beta",
+    "release:beta": "lerna publish $(npx semver --preid beta -i prerelease $(npm show @stoplight/prism-cli@beta version)) --force-publish=* --no-push --no-git-tag-version --dist-tag beta",
     "prebuild.binary": "yarn build",
     "build.binary": "npx pkg --output ./cli-binaries/prism-cli ./packages/cli/",
     "test.harness": "jest -c ./jest.harness.config.js"
