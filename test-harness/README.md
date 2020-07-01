@@ -7,7 +7,8 @@
 
 ## Running the suite
 
-Run `yarn test.harness` from your terminal
+- Add a line to your `/etc/hosts` to map the httpbin hostname to the current remote service ip: `echo $(dig +short httpbin.org | head -n 1) httpbin >> /etc/host`
+- Run `yarn test.harness` from your terminal
 
 ### Running a selected tests
 
@@ -93,4 +94,5 @@ Connection: keep-alive
 - Gavel is used to validate the request — it will automagically ignore headers that can change and consider only the "fundamental" one such as content negotiation ones and stuff around.
 
 ## Troubleshooting Harness Tests
+
 - `Async callback was not invoked within the 5000ms timeout specified by jest.setTimeout.Timeout` --> most likely the binary is crashing, failing to start Prism. The best way to troubleshoot is to copy the openapi content from your harness test into a separate OpenAPI file, and try mocking that file with the CLI directly. That will give you more information as to why Prism failed to start.
