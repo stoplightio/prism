@@ -32,8 +32,8 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
 
     return pipe(
       NEA.fromArray(specs),
-      O.map(spec => {
-        const schema = createJsonSchemaFromParams(spec);
+      O.map(specs => {
+        const schema = createJsonSchemaFromParams(specs);
         const parameterValues = pickBy(
           mapValues(
             keyBy(specs, s => s.name.toLowerCase()),
