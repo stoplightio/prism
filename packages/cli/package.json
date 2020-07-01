@@ -7,11 +7,11 @@
   },
   "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
-    "@stoplight/http-spec": "^3.0.2",
+    "@stoplight/http-spec": "^3.0.3",
     "@stoplight/prism-core": "^3.3.4",
     "@stoplight/prism-http": "^3.3.4",
     "@stoplight/prism-http-server": "^3.3.4",
-    "@stoplight/types": "^11.6.0",
+    "@stoplight/types": "^11.9.0",
     "chalk": "^4.0.0",
     "chokidar": "^3.2.1",
     "fp-ts": "^2.5.3",
