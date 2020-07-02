@@ -7,8 +7,7 @@
 
 ## Running the suite
 
-- Add a line to your `/etc/hosts` to map the httpbin hostname to the current remote service ip: `echo $(dig +short httpbin.org | head -n 1) httpbin >> /etc/host`
-- Run `yarn test.harness` from your terminal
+Run `yarn test.harness` from your terminal
 
 ### Running a selected tests
 
