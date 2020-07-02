@@ -90,6 +90,10 @@ curl -v http://127.0.0.1:4010/pets/123 -H "Prefer: dynamic=false"
 
 > **Remember:** you can combine `code`, `example` and `dynamic` parameters. By default, when the `code` parameter is not given, Prism will always try to fetch an example using the `exampleKey` from the 200 HTTP responses **only**. You'll need to use the `code` parameter alongside the `example` one for any specific example using a different HTTP status code than 200.
 
+#### Circular references
+
+Even though Prism is technically able to internally handle circular references, the CLI will refuse to mock the provided document in case any circular reference is detected. This is essentially because serialising a circular reference is difficult and very dependant on the content type.
+
 ## Proxy
 
 This command creates an HTTP server that will proxy all the requests to the specified upstream server. Prism will analyze the request coming in and the response coming back from the upstream server and report the discrepancies with what's declared in the provided OpenAPI document.
