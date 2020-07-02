@@ -16,7 +16,7 @@ paths:
         201:
           description: OK
 ====server====
-proxy -p 4010 ${document} http://httpbin --errors
+proxy -p 4010 ${document} http://httpbin.org --errors
 ====command====
 curl -i http://localhost:4010/status/201
 ====expect====

@@ -25,7 +25,7 @@ paths:
                 type: number
                 default: 0
 ====server====
-proxy -p 4010 ${document} http://httpbin --errors
+proxy -p 4010 ${document} http://httpbin.org --errors
 ====command====
 curl -i http://localhost:4010/json
 ====expect====

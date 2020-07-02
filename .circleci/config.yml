@@ -7,7 +7,7 @@ executors:
     docker:
       - image: circleci/node:12
       - image: kennethreitz/httpbin
-        name: httpbin
+        name: httpbin.org
   macos:
     macos:
       xcode: 10.2.1
@@ -56,7 +56,7 @@ jobs:
                 command: brew install pipenv
                 environment:
                   HOMEBREW_NO_AUTO_UPDATE: 1
-            - run: sudo bash -c 'echo "0.0.0.0 httpbin" >> /etc/hosts'
+            - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
             - run: git clone https://github.com/postmanlabs/httpbin httpbin
             - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv lock -r) && pip3 install --no-cache-dir ./
             - run:
