@@ -9,7 +9,7 @@ import type { OpenAPIObject } from 'openapi3-ts';
 import type { CollectionDefinition } from 'postman-collection';
 
 export async function getHttpOperationsFromSpec(specFilePathOrObject: string | object): Promise<IHttpOperation[]> {
-  const result = await dereference(specFilePathOrObject);
+  const result = await dereference(specFilePathOrObject, { dereference: { circular: false } });
 
   if (isOpenAPI2(result)) return transformOas2Operations(result);
   if (isOpenAPI3(result)) return transformOas3Operations(result);

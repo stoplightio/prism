@@ -43,7 +43,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
             }
           })
           .catch(() => {
-            server.logger.info('Something went terribly wrong, trying to start Prism with the original document.');
+            server.logger.warn('Something went terribly wrong, trying to start Prism with the original document.');
 
             return server
               .close()
