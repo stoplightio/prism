@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## Fixed
 
 - Prism is not returning an error anymore when trying to construct a schema for HTTP headers and query string with mixed cases property names [#1268](https://github.com/stoplightio/prism/pull/1268)
-- Prism will now refuse to start in case it will detect circular refenreces. [#1270](https://github.com/stoplightio/prism/pull/1270)
+- Prism will now refuse to start in case it will detect circular references. [#1270](https://github.com/stoplightio/prism/pull/1270)
 
 ## Changed
 
