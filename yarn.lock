@@ -1274,12 +1274,12 @@
     urijs "~1.19.2"
 
 "@stoplight/json@^3.7.1", "@stoplight/json@^3.7.3":
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.8.0.tgz#a7a5f6863b090177105fde8583eacf547c933e23"
-  integrity sha512-TATbG+MCXstGeUrMQQL6/S34JvJCK0LuLFA7jbBxYJDrkymELWtbB0S76OSjkvyd15qSX0xIkhTOwpe8BjSeQQ==
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.8.2.tgz#ac498ebb99c9f30ab3bf4a81cbe866d7a1e4c6fe"
+  integrity sha512-ry13SbmiDXzlzNFaGdFdRfx4wacLM0KUaKI10/swkj9wnKQwx69wBZUi8Rc49MkMeplpJWwyNHsgoP58hgxOGw==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.1"
-    "@stoplight/types" "^11.8.0"
+    "@stoplight/types" "^11.9.0"
     jsonc-parser "~2.2.1"
     lodash "^4.17.15"
     safe-stable-stringify "^1.1"
@@ -1289,7 +1289,7 @@
   resolved "https://registry.yarnpkg.com/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.1.tgz#01ece81ba5dda199ca3dc5ec7464691efa5d5b76"
   integrity sha512-kDcBIKwzAXZTkgzaiPXH2I0JXavBkOb3jFzYNFS5cBuvZS3s/K+knpk2wLVt0n8XrnRQsSffzN6XG9HqUhfq6Q==
 
-"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.8.0":
+"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.8.0", "@stoplight/types@^11.9.0":
   version "11.9.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.9.0.tgz#ced7de2dd53439d2409a3cb390bf7d5b76382ac6"
   integrity sha512-4bzPpWZobt0e+d0OtALCJyl1HGzKo6ur21qxnId9dTl8v3yeD+5HJKZ2h1mv7e94debH5QDtimMU80V6jbXM8Q==
