@@ -10,13 +10,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Fixed
 
-- Prism is not returning an error anymore when trying to construct a schema for HTTP headers and query string with mixed cases property names [#1268](https://github.com/stoplightio/prism/pull/1268)
 - Prism will now refuse to start in case it will detect circular references. [#1270](https://github.com/stoplightio/prism/pull/1270)
 
 ## Changed
 
 - **BREAKING**: The `getHttpOperationsFromSpec` has been moved from the HTTP Package to the CLI package. If you're using Prism programmatically, this might require some code changes on your side. `getHttpOperationsFromResource` has been removed. [#1009](https://github.com/stoplightio/prism/pull/1009), [#1192](https://github.com/stoplightio/prism/pull/1192)
 - **BREAKING**: The `createClientFromOperations` is now exported as `export function` instead of exporting an object. If you're using Prism programmatically, this might require some code changes on your side [#1009](https://github.com/stoplightio/prism/pull/1009)
+
+# 3.3.6 (2020-07-08)
+
+## Fixed
+
+- Prism is not returning an error anymore when trying to construct a schema for HTTP headers and query string with mixed cases property names [#1268](https://github.com/stoplightio/prism/pull/1268)
 
 # 3.3.5 (2020-05-26)
 
