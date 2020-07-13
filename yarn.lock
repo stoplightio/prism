@@ -1298,7 +1298,7 @@
   resolved "https://registry.yarnpkg.com/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.1.tgz#01ece81ba5dda199ca3dc5ec7464691efa5d5b76"
   integrity sha512-kDcBIKwzAXZTkgzaiPXH2I0JXavBkOb3jFzYNFS5cBuvZS3s/K+knpk2wLVt0n8XrnRQsSffzN6XG9HqUhfq6Q==
 
-"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.8.0", "@stoplight/types@^11.9.0":
+"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.9.0":
   version "11.9.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.9.0.tgz#ced7de2dd53439d2409a3cb390bf7d5b76382ac6"
   integrity sha512-4bzPpWZobt0e+d0OtALCJyl1HGzKo6ur21qxnId9dTl8v3yeD+5HJKZ2h1mv7e94debH5QDtimMU80V6jbXM8Q==
@@ -1426,9 +1426,9 @@
     "@types/istanbul-lib-report" "*"
 
 "@types/jest@^26.0.0":
-  version "26.0.3"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.3.tgz#79534e0e94857171c0edc596db0ebe7cb7863251"
-  integrity sha512-v89ga1clpVL/Y1+YI0eIu1VMW+KU7Xl8PhylVtDKVWaSUHBHYPLXMQGBdrpHewaKoTvlXkksbYqPgz8b4cmRZg==
+  version "26.0.4"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.4.tgz#d2e513e85aca16992816f192582b5e67b0b15efb"
+  integrity sha512-4fQNItvelbNA9+sFgU+fhJo8ZFF+AS4Egk3GWwCW2jFtViukXbnztccafAdLhzE/0EiCogljtQQXP8aQ9J7sFg==
   dependencies:
     jest-diff "^25.2.1"
     pretty-format "^25.2.1"
