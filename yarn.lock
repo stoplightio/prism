@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@apidevtools/json-schema-ref-parser@9.0.1":
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/@apidevtools/json-schema-ref-parser/-/json-schema-ref-parser-9.0.1.tgz#c0ed0bd21a7397d2d7a83b69565268f2d78f2d7a"
-  integrity sha512-Qsdz0W0dyK84BuBh5KZATWXOtVDXIF2EeNRzpyWblPUeAmnIokwWcwrpAm5pTPMjuWoIQt9C67X3Af1OlL6oSw==
+"@apidevtools/json-schema-ref-parser@9.0.3":
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/@apidevtools/json-schema-ref-parser/-/json-schema-ref-parser-9.0.3.tgz#4ec58992c8f15778cc59baf7a872c8ad6294fed5"
+  integrity sha512-SWaTn0CZ7iUUbe2WuqIUkoXhTcMYyavL5vKqp61ehOi8XWl52MSdo80+RytnC10VjpKmHJlRzhgLc6QopKOehg==
   dependencies:
     "@jsdevtools/ono" "^7.1.2"
     call-me-maybe "^1.0.1"
@@ -1298,7 +1298,7 @@
   resolved "https://registry.yarnpkg.com/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.1.tgz#01ece81ba5dda199ca3dc5ec7464691efa5d5b76"
   integrity sha512-kDcBIKwzAXZTkgzaiPXH2I0JXavBkOb3jFzYNFS5cBuvZS3s/K+knpk2wLVt0n8XrnRQsSffzN6XG9HqUhfq6Q==
 
-"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.8.0", "@stoplight/types@^11.9.0":
+"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.9.0":
   version "11.9.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.9.0.tgz#ced7de2dd53439d2409a3cb390bf7d5b76382ac6"
   integrity sha512-4bzPpWZobt0e+d0OtALCJyl1HGzKo6ur21qxnId9dTl8v3yeD+5HJKZ2h1mv7e94debH5QDtimMU80V6jbXM8Q==
@@ -5468,11 +5468,11 @@ json-schema-ref-parser@^6.1.0:
     ono "^4.0.11"
 
 json-schema-ref-parser@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/json-schema-ref-parser/-/json-schema-ref-parser-9.0.1.tgz#3c1fd01c159e3e6016190284752dcda93f8ea5b0"
-  integrity sha512-KLrCjRjW5hMXxsX4osVBWpwixXL9NtICfpyNNS0eHguN5mP/I4UatI7i7PFS8jU94b1NHF4EbirACdCn0RFPBA==
+  version "9.0.3"
+  resolved "https://registry.yarnpkg.com/json-schema-ref-parser/-/json-schema-ref-parser-9.0.3.tgz#5e6c1286786bfe225a0c5050851ad8a7a487adb0"
+  integrity sha512-0lU+iAXh31kbxQda663QfxR018YoFoaF7XqCgDTKXPrw6fpBx6Bcy8ykm+B/N0hVpmHzBjgkIZNZ0TW1q/aIeg==
   dependencies:
-    "@apidevtools/json-schema-ref-parser" "9.0.1"
+    "@apidevtools/json-schema-ref-parser" "9.0.3"
 
 json-schema-traverse@^0.4.1:
   version "0.4.1"
