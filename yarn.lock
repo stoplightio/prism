@@ -1264,9 +1264,9 @@
     type-detect "4.0.8"
 
 "@stoplight/http-spec@^3.0.2":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.1.0.tgz#5fe0bf4a8bb3e13276c6aeac1e89f042ae82734d"
-  integrity sha512-TcgiX8GDEEt2eZzS3+kpGFdT4F2yVVLNr7UkK3FXRhKQ1y+afZXO+rR+00WzpkTYeE9ctnr6nxoSEccoRNZ3tA==
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.1.1.tgz#692579ac9e397433dbda334b557e9a14af3ab46d"
+  integrity sha512-IH3srSAiV5CODs0BALqdewxpx+gI8QyE7axPzsurdtq1IomWhRw3fkS8Lyj0cGApnhPldo0TkdhiGjEop8VL5Q==
   dependencies:
     "@openapi-contrib/openapi-schema-to-json-schema" "^3.0.2"
     "@stoplight/json" "^3.8.1"
@@ -1298,7 +1298,7 @@
   resolved "https://registry.yarnpkg.com/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.1.tgz#01ece81ba5dda199ca3dc5ec7464691efa5d5b76"
   integrity sha512-kDcBIKwzAXZTkgzaiPXH2I0JXavBkOb3jFzYNFS5cBuvZS3s/K+knpk2wLVt0n8XrnRQsSffzN6XG9HqUhfq6Q==
 
-"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.8.0", "@stoplight/types@^11.9.0":
+"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.9.0":
   version "11.9.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.9.0.tgz#ced7de2dd53439d2409a3cb390bf7d5b76382ac6"
   integrity sha512-4bzPpWZobt0e+d0OtALCJyl1HGzKo6ur21qxnId9dTl8v3yeD+5HJKZ2h1mv7e94debH5QDtimMU80V6jbXM8Q==
