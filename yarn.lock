@@ -1298,7 +1298,7 @@
   resolved "https://registry.yarnpkg.com/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.1.tgz#01ece81ba5dda199ca3dc5ec7464691efa5d5b76"
   integrity sha512-kDcBIKwzAXZTkgzaiPXH2I0JXavBkOb3jFzYNFS5cBuvZS3s/K+knpk2wLVt0n8XrnRQsSffzN6XG9HqUhfq6Q==
 
-"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.8.0", "@stoplight/types@^11.9.0":
+"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.9.0":
   version "11.9.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.9.0.tgz#ced7de2dd53439d2409a3cb390bf7d5b76382ac6"
   integrity sha512-4bzPpWZobt0e+d0OtALCJyl1HGzKo6ur21qxnId9dTl8v3yeD+5HJKZ2h1mv7e94debH5QDtimMU80V6jbXM8Q==
@@ -3805,9 +3805,9 @@ fp-ts-contrib@^0.1.15:
   integrity sha512-UBQ7AdGp0GktLkIn3e6npVIfLm1ZM+racizgVqL88j6HBLBoBjRtVjIxRIS6YbNypuP94ngaZpy2SEib9lnZ9A==
 
 fp-ts@^2.5.3:
-  version "2.6.7"
-  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.6.7.tgz#a86f904b86c93cd63300e6d40005e4caa57ccb6b"
-  integrity sha512-Uklx0kKrjwbYb142tbQZqWVHhvNzxZwJhr+gkIbwPt/exV0n8/dHDkAmB05vNKNnJMwoJr7i6pM3XW0bicrE7Q==
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.7.0.tgz#41de65a846715ca4df6889b91c6b3aa953165198"
+  integrity sha512-J7EIg4MEVuOm1vZspQDVYRD/CTsQECQk01cP5VEBvQ5LnSSjp6sckun1m1eUPSuvtMIlGgm9NqqOxE0+QyntWQ==
 
 fragment-cache@^0.2.1:
   version "0.2.1"
