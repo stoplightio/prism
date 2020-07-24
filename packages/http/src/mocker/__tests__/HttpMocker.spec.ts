@@ -60,6 +60,18 @@ describe('mocker', () => {
             },
           ],
         },
+        {
+          code: '201',
+          headers: [],
+          contents: [
+            {
+              mediaType: 'application/json',
+              schema: {
+                $ref: '#/responses/0/contents/0/schema',
+              },
+            },
+          ],
+        },
       ],
     };
 
@@ -565,6 +577,18 @@ describe('mocker', () => {
             });
           });
         });
+      });
+    });
+
+    describe('when response schema has an inline $ref', () => {
+      it('returns static example', () => {
+        const mockResult = mock({
+          config: { dynamic: false, code: '201' },
+          resource: mockResource,
+          input: mockInput,
+        })(logger);
+
+        assertRight(mockResult, result => expect(result).toMatchSnapshot());
       });
     });
   });

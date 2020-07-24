@@ -29,6 +29,7 @@ import {
   IMockHttpConfig,
   PayloadGenerator,
   ProblemJsonError,
+  JSONSchema,
 } from '../types';
 import withLogger from '../withLogger';
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './errors';
@@ -51,7 +52,9 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockH
   input,
   config,
 }) => {
-  const payloadGenerator: PayloadGenerator = config.dynamic ? generate : generateStatic;
+  const payloadGenerator: PayloadGenerator = config.dynamic
+    ? generate
+    : (schema: JSONSchema) => generateStatic(schema, resource);
 
   return pipe(
     withLogger(logger => {

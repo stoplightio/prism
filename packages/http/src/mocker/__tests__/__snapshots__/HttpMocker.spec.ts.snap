@@ -10,6 +10,19 @@ Object {
 }
 `;
 
+exports[`mocker mock() when response scheam has inline $ref returns static example 1`] = `
+Object {
+  "body": Object {
+    "name": "string",
+    "surname": "user@example.com",
+  },
+  "headers": Object {
+    "Content-type": "application/json",
+  },
+  "statusCode": 201,
+}
+`;
+
 exports[`mocker mock() with valid negotiator response returns static example 1`] = `
 Object {
   "body": "hello",
