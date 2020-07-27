@@ -1256,9 +1256,9 @@
     type-detect "4.0.8"
 
 "@stoplight/http-spec@^3.0.2":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.1.1.tgz#692579ac9e397433dbda334b557e9a14af3ab46d"
-  integrity sha512-IH3srSAiV5CODs0BALqdewxpx+gI8QyE7axPzsurdtq1IomWhRw3fkS8Lyj0cGApnhPldo0TkdhiGjEop8VL5Q==
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.1.2.tgz#4cc09ae6e77f6a4d6ec3145c14081684680702b4"
+  integrity sha512-pXHuaqT+jkqJY6n26OQjvGMOj0oJNVkrtluxvZRcJHTE4xnGtnf8KfvwHsAT1VipSg/fXCABwxRe8bIdlg/NBg==
   dependencies:
     "@openapi-contrib/openapi-schema-to-json-schema" "^3.0.2"
     "@stoplight/json" "^3.8.1"
