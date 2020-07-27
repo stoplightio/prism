@@ -25,6 +25,6 @@ export function generate(source: JSONSchema): Either<Error, unknown> {
   return tryCatch(() => jsf.generate(cloneDeep(source)), toError);
 }
 
-export function generateStatic(source: JSONSchema, document?: unknown): Either<Error, unknown> {
+export function generateStatic(document: unknown, source: JSONSchema): Either<Error, unknown> {
   return tryCatch(() => sampler.sample(source, {}, document), toError);
 }

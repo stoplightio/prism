@@ -10,7 +10,7 @@ Object {
 }
 `;
 
-exports[`mocker mock() when response scheam has inline $ref returns static example 1`] = `
+exports[`mocker mock() when response schema has an inline $ref returns static example 1`] = `
 Object {
   "body": Object {
     "name": "string",
