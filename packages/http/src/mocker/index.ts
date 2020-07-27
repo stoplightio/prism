@@ -18,7 +18,7 @@ import * as O from 'fp-ts/lib/Option';
 import * as RE from 'fp-ts/lib/ReaderEither';
 import { map } from 'fp-ts/lib/Array';
 import { Do } from 'fp-ts-contrib/lib/Do';
-import { isNumber, isString, keyBy, mapValues, groupBy, get } from 'lodash';
+import { isNumber, isString, keyBy, mapValues, groupBy, get, partial } from 'lodash';
 import { Logger } from 'pino';
 import { is } from 'type-is';
 import {
@@ -29,6 +29,7 @@ import {
   IMockHttpConfig,
   PayloadGenerator,
   ProblemJsonError,
+  JSONSchema,
 } from '../types';
 import withLogger from '../withLogger';
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY } from './errors';
@@ -51,7 +52,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IMockH
   input,
   config,
 }) => {
-  const payloadGenerator: PayloadGenerator = config.dynamic ? generate : generateStatic;
+  const payloadGenerator: PayloadGenerator = config.dynamic ? generate : partial(generateStatic, resource);
 
   return pipe(
     withLogger(logger => {
