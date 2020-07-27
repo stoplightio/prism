@@ -26,7 +26,7 @@ describe('mocker', () => {
         name: { type: 'string' },
         surname: { type: 'string', format: 'email' },
       },
-      required: ['name', 'email'],
+      required: ['name', 'surname'],
     };
 
     const mockResource: IHttpOperation = {
@@ -588,7 +588,10 @@ describe('mocker', () => {
           input: mockInput,
         })(logger);
 
-        assertRight(mockResult, result => expect(result).toMatchSnapshot());
+        assertRight(mockResult, result => {
+          expect(result.body).toHaveProperty('name');
+          expect(result.body).toHaveProperty('surname');
+        });
       });
     });
   });
