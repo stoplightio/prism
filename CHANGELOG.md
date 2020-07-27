@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## Fixed
 
 - Prism will now refuse to start in case it will detect circular references. [#1270](https://github.com/stoplightio/prism/pull/1270)
-- Prism's Proxy feature will stop proactively requesting Compressed responses, following what is really in the OAS document [#1309](https://github.com/stoplightio/prism/pull/1309)
+- Prism's Proxy feature will stop proactively requesting Compressed responses, following what is really in the OAS document [#1309](https://github.com/stoplightio/prism/pull/1309),[#1319](https://github.com/stoplightio/prism/pull/1319)
 
 ## Changed
 

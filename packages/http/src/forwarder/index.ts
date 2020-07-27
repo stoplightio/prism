@@ -45,10 +45,10 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
         logger.info(`Forwarding "${input.method}" request to ${url}...`);
 
         return fetch(url, {
-          compress: false,
           body,
           method: input.method,
           headers: defaults(omit(input.headers, ['host']), {
+            'accept-encoding': '*',
             accept: 'application/json, text/plain, */*',
             'user-agent': `Prism/${prismVersion}`,
           }),
