@@ -1483,9 +1483,9 @@
     "@types/sonic-boom" "*"
 
 "@types/postman-collection@^3.5.0":
-  version "3.5.3"
-  resolved "https://registry.yarnpkg.com/@types/postman-collection/-/postman-collection-3.5.3.tgz#0da86c20baa88c313db17ecd120bbd571b4e8b27"
-  integrity sha512-6JiuPKuakwA7YEucOWoTblPtCOAHD4Y42u79fvBPDPtFahMgfHb8T1Q1+CmMxwKykcuKmFOmAMQhYwL9kaHSfw==
+  version "3.5.4"
+  resolved "https://registry.yarnpkg.com/@types/postman-collection/-/postman-collection-3.5.4.tgz#f35281c50b95db71a687ab9ad89f559d9a2ee5d6"
+  integrity sha512-z6D5Nnp0vwzsHzov+e05GCMVMVAc8y0coUVtB6cYhHaFyWWFNtw0XpzYO35B1sGqnc4Q1QcKk/S1ltzykPdihA==
   dependencies:
     "@types/node" "*"
 
