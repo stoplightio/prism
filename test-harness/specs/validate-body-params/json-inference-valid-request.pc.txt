@@ -1,0 +1,85 @@
+====test====
+When two examples of the same request were supplied to Prism
+and there is a difference between request bodies
+Prism can handle both request payloads correctly
+====spec====
+{
+  "info": {
+    "name": "Test"
+  },
+  "item": [
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3f",
+      "request": {
+        "url": {
+          "path": ["path"]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"to\": \"344455434\",\"type\": \"image\",\"recipient_type\": \"individual\",\"image\": {\"caption\":\"Quo Vadis\",\"id\":\"2bd2826a-c9ed-431d-beb6-f0eed5c24382\"}}"
+        },
+        "method": "POST"
+      },
+      "response": [
+        {
+          "code": 200,
+          "description": "OK",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "ok"
+        }
+      ]
+    },
+    {
+      "id": "3b4f5a70-2a8f-46ba-a04b-a6f80621ad3e",
+      "request": {
+        "url": {
+          "path": ["path"]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"to\":\"342334535335\",\"type\":\"text\",\"recipient_type\":\"individual\",\"text\": {\"body\":\"Welcome\"}}"
+        },
+        "method": "POST"
+      },
+      "response": [
+        {
+          "code": 200,
+          "description": "OK",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "ok"
+        }
+      ]
+    }
+  ]
+}
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/json" --data '{"to":"123","type":"image","recipient_type":"individual","image":{"caption":"Caption","id":"123"}}'
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+ok
