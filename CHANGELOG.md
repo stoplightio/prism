@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Changed
 
+- Prism is now able to take in consideration all the responses defined for a request (typical in Postman Collection) and respond in a more appropriate way [#1310](https://github.com/stoplightio/prism/pull/1310)
+
 - **BREAKING**: The `getHttpOperationsFromSpec` has been moved from the HTTP Package to the CLI package. If you're using Prism programmatically, this might require some code changes on your side. `getHttpOperationsFromResource` has been removed. [#1009](https://github.com/stoplightio/prism/pull/1009), [#1192](https://github.com/stoplightio/prism/pull/1192)
 - **BREAKING**: The `createClientFromOperations` is now exported as `export function` instead of exporting an object. If you're using Prism programmatically, this might require some code changes on your side [#1009](https://github.com/stoplightio/prism/pull/1009)
 
