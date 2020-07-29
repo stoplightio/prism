@@ -48,6 +48,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           body,
           method: input.method,
           headers: defaults(omit(input.headers, ['host']), {
+            'accept-encoding': '*',
             accept: 'application/json, text/plain, */*',
             'user-agent': `Prism/${prismVersion}`,
           }),
