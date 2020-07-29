@@ -77,9 +77,9 @@ Prism can reject the request which is not compatible with any of example bodies
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: application/json" --data '{"to":"123","type":"image","recipient_type":"individual"}}'
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/json" --data '{"to":"123","type":"image","recipient_type":"individual"}'
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
-content-type: text/plain
+content-type: application/problem+json
 
 {"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request body payload","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body"],"severity":"Error","code":"required","message":"should have required property 'image'"},{"location":["body"],"severity":"Error","code":"required","message":"should have required property 'text'"},{"location":["body"],"severity":"Error","code":"anyOf","message":"should match some schema in anyOf"}]}
