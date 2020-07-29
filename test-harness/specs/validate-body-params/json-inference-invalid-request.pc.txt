@@ -1,5 +1,5 @@
 ====test====
-When two examples of the same request were supplied to Prism
+When two examples of the same request are specified in a Postman Collection
 and there is a difference between request bodies
 Prism can reject the request which is not compatible with any of example bodies
 ====spec====
