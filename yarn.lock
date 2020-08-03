@@ -100,7 +100,7 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.7.5", "@babel/parser@^7.8.4", "@babel/parser@^7.8.6":
+"@babel/parser@^7.1.0", "@babel/parser@^7.8.4", "@babel/parser@^7.8.6":
   version "7.9.6"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.9.6.tgz#3b1bbb30dabe600cd72db58720998376ff653bc7"
   integrity sha512-AoeIEJn8vt+d/6+PXDRPaksYhnlbMIiejioBZvvMQsOjW/JYK6k/0dKnvvP3EhK5GfMBWDPtrxRtegWdAcdq9Q==
@@ -182,7 +182,7 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@babel/template@^7.3.3", "@babel/template@^7.7.4", "@babel/template@^7.8.3":
+"@babel/template@^7.3.3", "@babel/template@^7.8.3":
   version "7.8.6"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.8.6.tgz#86b22af15f828dfb086474f964dcc3e39c43ce2b"
   integrity sha512-zbMsPMy/v0PWFZEhQJ66bqjhH+z0JgMoBWuikXybgG3Gkd/3t5oQ1Rw2WQhnSrsOmsKXnZOx15tkC4qON/+JPg==
@@ -191,7 +191,7 @@
     "@babel/parser" "^7.8.6"
     "@babel/types" "^7.8.6"
 
-"@babel/traverse@^7.1.0", "@babel/traverse@^7.7.4", "@babel/traverse@^7.8.4":
+"@babel/traverse@^7.1.0", "@babel/traverse@^7.8.4":
   version "7.8.4"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.8.4.tgz#f0845822365f9d5b0e312ed3959d3f827f869e3c"
   integrity sha512-NGLJPZwnVEyBPLI+bl9y9aSnxMhsKz42so7ApAv9D+b4vAFPpY013FTS9LdKxcABoIYFU52HcYga1pPlx454mg==
@@ -5461,10 +5461,10 @@ json-promise@^1.1.8:
   dependencies:
     bluebird "*"
 
-json-schema-faker@0.5.0-rcv.26:
-  version "0.5.0-rcv.26"
-  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rcv.26.tgz#fbbf9f2b8a9a2d122b879f28cac9fba2cb4271de"
-  integrity sha512-qAXp8ZO1h79mPV4NnN5QtmojDKA2KrAb/SYIB61DUW2EJH94tGJNJdz2wnq8MMOXknSkCh2/lgU3NK0lgMn9fg==
+json-schema-faker@0.5.0-rcv.25:
+  version "0.5.0-rcv.25"
+  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rcv.25.tgz#f41baebcfba49707399aa6cd51fc68c5f8b50019"
+  integrity sha512-AteaChLfxoiPtJaA+SrbcMgF7n7aIPWzezKTBJBuU+72ghLXdj+D3xfpP6ZTZ1X1O/C4aipBPom6+hqADj7Okw==
   dependencies:
     json-schema-ref-parser "^6.1.0"
     jsonpath-plus "^2.0.0"
@@ -6087,11 +6087,6 @@ micromatch@jonschlinkert/micromatch#2.2.0:
     object.omit "^1.1.0"
     parse-glob "^3.0.1"
     regex-cache "^0.4.2"
-
-mime-db@1.43.0:
-  version "1.43.0"
-  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.43.0.tgz#0a12e0502650e473d735535050e7c8f4eb4fae58"
-  integrity sha512-+5dsGEEovYbT8UY9yD7eE4XTc4UwJ1jBYlgaQQF38ENsKR3wj/8q8RFZrF9WIZpB2V1ArTVFUva8sAul1NzRzQ==
 
 mime-db@1.44.0:
   version "1.44.0"
