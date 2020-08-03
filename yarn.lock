@@ -1487,10 +1487,10 @@
     "@types/pino-std-serializers" "*"
     "@types/sonic-boom" "*"
 
-"@types/postman-collection@^3.5.0":
-  version "3.5.4"
-  resolved "https://registry.yarnpkg.com/@types/postman-collection/-/postman-collection-3.5.4.tgz#f35281c50b95db71a687ab9ad89f559d9a2ee5d6"
-  integrity sha512-z6D5Nnp0vwzsHzov+e05GCMVMVAc8y0coUVtB6cYhHaFyWWFNtw0XpzYO35B1sGqnc4Q1QcKk/S1ltzykPdihA==
+"@types/postman-collection@^3.5.5":
+  version "3.5.5"
+  resolved "https://registry.yarnpkg.com/@types/postman-collection/-/postman-collection-3.5.5.tgz#10de977e4b82c063bd3517f8da83489f41e8a83d"
+  integrity sha512-KRhFHbpqueQxTKRmt/QOuiAKXUgjEDSYNZCna2oBmf+gcp8Jqj4SRfBqgylfxbAzSPqrPDdSs3D/62oqK+HGAA==
   dependencies:
     "@types/node" "*"
 
