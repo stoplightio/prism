@@ -61,14 +61,7 @@ describe('JSONSchema generator', () => {
       it('will have a string property matching uuid regex', () => {
         assertRight(generate(schema), instance => {
           const id = get(instance, 'id');
-          expect(uuidRegExp.test(id)).toBeTruthy();
-        });
-      });
-
-      it('will not be presented in the form of UUID as a URN', () => {
-        assertRight(generate(schema), instance => {
-          const id = get(instance, 'id');
-          expect(uuidRegExp.test(id)).not.toContainEqual('urn:uuid');
+          expect(id).toMatch(uuidRegExp);
         });
       });
     });
@@ -87,8 +80,8 @@ describe('JSONSchema generator', () => {
           expect(instance).toHaveProperty('ip');
           const ip = get(instance, 'ip');
 
-          expect(ipRegExp.test(ip)).toBeTruthy();
-          expect(emailRegExp.test(ip)).toBeFalsy();
+          expect(ip).toMatch(ipRegExp);
+          expect(ip).not.toMatch(emailRegExp);
         });
       });
     });
