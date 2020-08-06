@@ -41,7 +41,7 @@ reverse_proxy /app_2/* prism_2:4010
 ```
 
 This configuration will allow access to the first Prism instance on `localhost:8080/app_1` and the second instance on `localhost:8080/app_2` endpoint.
-Also, please mind that the provided `nginx.conf` only serves illustrative purposes and hence should not be considered complete nor production-ready.
+Also, please mind that the provided `Caddyfile` only serves illustrative purposes and hence should not be considered complete nor production-ready.
 
 ## Running the cluster
 
@@ -50,7 +50,7 @@ Let's first place the aforementioned files under the same directory - here `pris
 ```
 prism-multi-example
 ├── docker-compose.yaml
-└── nginx.conf
+└── Caddyfile
 ```
 
 With the files in place, you can run (from under `prism-multi-example/`): `docker-compose up`.
@@ -58,7 +58,7 @@ After a second, you should be set up with two Prism instances serving different 
 
 ## Testing the cluster
 
-If you used `nginx.conf` configuration provided in this document, you should now have two endpoints available:
+If you used `Caddyfile` configuration provided in this document, you should now have two endpoints available:
 
 ```
 1. http://localhost:8080/app_1
@@ -87,7 +87,7 @@ prism_3:
     https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
 ```
 
-To make the new node accessible from the proxy, please also adjust `nginx.conf`:
+To make the new node accessible from the proxy, please also adjust `Caddyfile`:
 
 ```
 reverse_proxy /app_3/* prism_3:4010

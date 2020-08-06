@@ -31,7 +31,7 @@ If you are adding a new runtime dependency, add it to the relevant `package.json
 
 ### Testing
 
-Prism has an extensive test suite. To run it, just use the regular `test` script
+Prism has an extensive test suite. To run it, use the regular `test` script
 
 ```bash
 yarn test
