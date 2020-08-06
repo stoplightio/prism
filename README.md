@@ -89,6 +89,6 @@ Check these projects out!
 [http]: https://www.npmjs.com/package/@stoplight/prism-http
 [http-server]: https://www.npmjs.com/package/@stoplight/prism-http-server
 [cli]: https://www.npmjs.com/package/@stoplight/prism-cli
-[cli-docs]: ./docs/cli.md
+[cli-docs]: ./docs/getting-started/03-cli.md
 [2.x]: https://github.com/stoplightio/prism/tree/2.x
 [http-docs]: packages/http/README.md
