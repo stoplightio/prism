@@ -19,7 +19,7 @@
     "fp-ts": "^2.8.1",
     "lodash": "^4.17.15",
     "pino": "^6.5.0",
-    "tslib": "^2.0.0"
+    "tslib": "^2.0.1"
   },
   "publishConfig": {
     "access": "public"
