@@ -13,7 +13,7 @@
     "@stoplight/prism-http-server": "^3.3.4",
     "@stoplight/types": "^11.6.0",
     "chalk": "^4.0.0",
-    "chokidar": "^3.2.1",
+    "chokidar": "^3.4.2",
     "fp-ts": "^2.8.1",
     "fp-ts-contrib": "^0.1.15",
     "json-schema-ref-parser": "^9.0.1",
