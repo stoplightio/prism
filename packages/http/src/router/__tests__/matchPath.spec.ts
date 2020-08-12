@@ -7,26 +7,6 @@ import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/uti
 const chance = new Chance();
 
 describe('matchPath()', () => {
-  test('request path must start with a slash or throw error', () => {
-    const requestPath = randomPath({ leadingSlash: true });
-    const operationPath = randomPath({ leadingSlash: false });
-    assertLeft(matchPath(requestPath, operationPath), e =>
-      expect(e.message).toBe(
-        `Given request path '${requestPath}' the operation path '${operationPath}' must start with a slash.`
-      )
-    );
-  });
-
-  test('operation path must start with a slash or throw error', () => {
-    const requestPath = randomPath({ leadingSlash: true });
-    const operationPath = randomPath({ leadingSlash: false });
-    assertLeft(matchPath(requestPath, operationPath), e =>
-      expect(e.message).toBe(
-        `Given request path '${requestPath}' the operation path '${operationPath}' must start with a slash.`
-      )
-    );
-  });
-
   test('root path should match another root path', () => {
     const path = '/';
     assertRight(matchPath(path, path), e => expect(e).toEqual(MatchType.CONCRETE));

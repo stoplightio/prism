@@ -11,11 +11,6 @@ function getTemplateParamName(pathFragment: string) {
 }
 
 export function matchPath(requestPath: string, operationPath: string): E.Either<Error, MatchType> {
-  if (!operationPath.startsWith('/')) {
-    return E.left(
-      new Error(`Given request path '${requestPath}' the operation path '${operationPath}' must start with a slash.`)
-    );
-  }
   const operationPathFragments = fragmentarize(operationPath);
   const requestPathFragments = fragmentarize(requestPath);
 
