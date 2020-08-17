@@ -26,7 +26,7 @@
     "fp-ts": "^2.8.1",
     "io-ts": "^2.2.1",
     "io-ts-types": "^0.5.9",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "micri": "^4.1.0",
     "node-fetch": "^2.6.0",
     "parse-prefer-header": "1.0.0",

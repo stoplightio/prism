@@ -17,7 +17,7 @@
     "fp-ts": "^2.8.1",
     "fp-ts-contrib": "^0.1.15",
     "json-schema-ref-parser": "^9.0.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "node-fetch": "^2.6.0",
     "pino": "^6.5.0",
     "signale": "^1.4.0",
