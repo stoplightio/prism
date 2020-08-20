@@ -11,7 +11,6 @@ version: '3'
 services:
   proxy:
     image: caddy
-    command
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
     ports:
@@ -34,7 +33,7 @@ services:
 And the corresponding `Caddyfile` file:
 
 ```
-localhost
+http://localhost
 
 reverse_proxy /app_1/* prism_1:4010
 reverse_proxy /app_2/* prism_2:4010
