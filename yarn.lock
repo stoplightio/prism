@@ -5487,13 +5487,13 @@ json-promise@^1.1.8:
   dependencies:
     bluebird "*"
 
-json-schema-faker@0.5.0-rcv.27:
-  version "0.5.0-rcv.27"
-  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rcv.27.tgz#6b0dee337210ad27119725cb0dc611dec5e0e5e3"
-  integrity sha512-RDk2VWkOF/s8Y0at3CnGwMNMAhdG+wG5aS3AJVN/9DAjBRJvI8vB2cYG7jJH6eMlQ4PXfGPbTtWKj45Lzf0Owg==
+json-schema-faker@0.5.0-rcv.28:
+  version "0.5.0-rcv.28"
+  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rcv.28.tgz#f8b903ed3f43c75f5058b63176a0a9ef8dba1139"
+  integrity sha512-EWdL1bUEZWFzsL/FRoeLL6aVg03U+JL8WEo/GtRTAuMZDrRnPWOV8jAZ7YLETqX2/IyLjIJlczTuyu2YH+cSpg==
   dependencies:
     json-schema-ref-parser "^6.1.0"
-    jsonpath-plus "^2.0.0"
+    jsonpath-plus "^3.0.0"
     randexp "^0.5.3"
 
 json-schema-generator@^2.0.6:
@@ -5574,10 +5574,10 @@ jsonparse@^1.2.0:
   resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
   integrity sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=
 
-jsonpath-plus@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/jsonpath-plus/-/jsonpath-plus-2.0.0.tgz#3ebf30b79e2262d69826084ba03c406a9de440a0"
-  integrity sha512-ksXaz9+3SIZ5BMxgr7MQueYcR515VRZPuoDhIymUd1JcF6BnVaYJS7k4NJni4EHhvJaOIGGiPqT8+ifsGp6mBw==
+jsonpath-plus@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/jsonpath-plus/-/jsonpath-plus-3.0.0.tgz#194ab4792a5e9b4ed27bf442188c8eb7e697a04b"
+  integrity sha512-WQwgWEBgn+SJU1tlDa/GiY5/ngRpa9yrSj8n4BYPHcwoxTDaMEaYCHMOn42hIHHDd3CrUoRr3+HpsK0hCKoxzA==
 
 jsprim@^1.2.2:
   version "1.4.1"
