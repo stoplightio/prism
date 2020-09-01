@@ -28,7 +28,7 @@
     "@types/faker": "^4.1.5",
     "@types/jest": "^26.0.12",
     "@types/json-schema": "^7.0.6",
-    "@types/lodash": "^4.14.160",
+    "@types/lodash": "^4.14.161",
     "@types/node": "^13.1.1",
     "@types/node-fetch": "2.5.7",
     "@types/openapi-sampler": "^1.0.0",
