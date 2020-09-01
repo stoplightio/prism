@@ -29,7 +29,7 @@
     "faker": "^4.1.0",
     "fp-ts": "^2.8.2",
     "fp-ts-contrib": "^0.1.18",
-    "json-schema-faker": "0.5.0-rcv.28",
+    "json-schema-faker": "0.5.0-rcv.29",
     "lodash": "^4.17.20",
     "node-fetch": "^2.6.0",
     "openapi-sampler": "^1.0.0-beta.15",
