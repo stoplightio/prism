@@ -61,7 +61,7 @@ describe('JSONSchema generator', () => {
       it('will have a string property matching uuid regex', () => {
         assertRight(generate(schema), instance => {
           const id = get(instance, 'id');
-          expect(uuidRegExp.test(id)).toBeTruthy();
+          expect(id).toMatch(uuidRegExp);
         });
       });
 
