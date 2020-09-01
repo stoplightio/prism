@@ -34,7 +34,7 @@ Read more about this in our [mocking guide](../guides/01-mocking.md).
 ## Validation Proxy
 
 Mocking helps when there is no real API, and helps API consumers feel confident they're 
-building applications that will work with the API properly. THen, when the API has been built, 
+building applications that will work with the API properly. Then, when the API has been built, 
 Prism can continue to help by proxying requests to the real server and reporting if anything is different. 
 
 Running Prism on the [CLI](./03-cli.md) with `prism proxy openapi.yml http://api.example.com/` 
