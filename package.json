@@ -39,7 +39,7 @@
     "@types/split2": "^2.1.6",
     "@types/type-is": "^1.6.3",
     "@types/uri-template-lite": "^19.12.0",
-    "@types/urijs": "^1.19.10",
+    "@types/urijs": "^1.19.11",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^3.10.0",
     "abstract-logging": "^2.0.0",
