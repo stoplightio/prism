@@ -59,16 +59,14 @@ After a second, you should be set up with two Prism instances serving different 
 
 If you used `Caddyfile` configuration provided in this document, you should now have two endpoints available:
 
-```
-1. http://localhost:8080/app_1
-2. http://localhost:8080/app_2
-```
+1. `http://localhost:8080/app_1`
+2. `http://localhost:8080/app_2`
 
 You can now try these out by issuing:
 
-```
-1. curl localhost:8080/app_1/pets
-2. curl localhost:8080/app_2/pets
+```bash
+curl http://localhost:8080/app_1/pets
+curl http://localhost:8080/app_2/pets
 ```
 
 At this point, the responses should be given back without issues.
