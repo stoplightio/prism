@@ -45,7 +45,7 @@
     "abstract-logging": "^2.0.0",
     "chance": "^1.1.7",
     "diff-js-xml": "^1.0.5",
-    "eslint": "^7.7.0",
+    "eslint": "^7.8.0",
     "eslint-config-prettier": "^6.4.0",
     "eslint-plugin-prettier": "^3.1.1",
     "fast-xml-parser": "^3.16.0",
