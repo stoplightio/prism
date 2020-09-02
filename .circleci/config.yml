@@ -13,7 +13,7 @@ executors:
       xcode: 10.2.1
 
 orbs:
-  stoplight: stoplight/cli@0.0.2
+  stoplight: stoplight/cli@0.0.3
 jobs:
   build:
     executor: docker-node
