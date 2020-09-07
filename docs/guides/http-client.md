@@ -2,33 +2,29 @@
 
 Prism includes a fully-featured HTTP Client that you can use to seamlessly perform requests to both a real server and a mocked document. The client is modeled after Axios so it may feel familiar.
 
-### Create From Manual HTTP Operations
+### Create Client from File
 
-```ts
-const createClientFromOperations = require('@stoplight/prism-http/dist/client');
-
-const client = createClientFromOperations(
-  [
-    {
-      method: 'get',
-      path: '/hello',
-      id: 'n1',
-      responses: [{ code: '200' }],
-    },
-  ],
-  { mock: true, validateRequest: true, validateResponse: true }
-);
-```
-
-To create the required operations array you can use two utility functions defined in the `@stoplight/prism-cli` package:
-
-### Create from file or HTTP resource
+Use the `getHttpOperationsFromSpec` method defined in the `@stoplight/prism-cli` package to create the required operations array from an OpenAPI spec:
 
 ```ts
 const { getHttpOperationsFromSpec } = require('@stoplight/prism-cli/dist/operations');
+const { createClientFromOperations } = require('@stoplight/prism-http/dist/client');
+const { URL } = require('url');
 
 const operations = await getHttpOperationsFromSpec('examples/petstore.oas2.yaml');
+const client = createClientFromOperations(operations, {
+  mock: false,
+  validateRequest: true,
+  validateResponse: true,
+  checkSecurity: false,
+  errors: true,
+  upstream: new URL('https://api.example.com'),
+});
+```
 
+The `getHttpOperationsFromSpec` method also receives the spec as a string:
+
+```ts
 const descriptionDoc = `
 openapi: 3.0.2
 paths:
@@ -40,6 +36,34 @@ paths:
 `;
 
 const operations = await getHttpOperationsFromSpec(descriptionDoc);
+
+...
+```
+
+### Create Client from Manual HTTP Operations
+
+```ts
+const createClientFromOperations = require('@stoplight/prism-http/dist/client');
+const { URL } = require('url');
+
+const client = createClientFromOperations(
+  [
+    {
+      method: 'get',
+      path: '/hello',
+      id: 'n1',
+      responses: [{ code: '200' }],
+    },
+  ],
+  {
+    mock: false,
+    validateRequest: true,
+    validateResponse: true,
+    checkSecurity: false,
+    errors: true,
+    upstream: new URL('https://api.example.com'),
+  }
+);
 ```
 
 ---
