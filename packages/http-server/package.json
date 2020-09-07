@@ -28,7 +28,7 @@
     "io-ts-types": "^0.5.10",
     "lodash": "^4.17.20",
     "micri": "^4.2.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "parse-prefer-header": "1.0.0",
     "tslib": "^2.0.1",
     "type-is": "^1.6.18"
