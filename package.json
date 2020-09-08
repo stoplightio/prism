@@ -52,7 +52,7 @@
     "gavel": "^9.1.5",
     "glob-fs": "^0.1.7",
     "http-string-parser": "^0.0.6",
-    "husky": "^4.2.3",
+    "husky": "^4.3.0",
     "jest": "^26.4.2",
     "lerna": "^3.17.0",
     "lint-staged": "^10.3.0",
