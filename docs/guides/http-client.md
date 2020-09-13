@@ -5,7 +5,7 @@ Prism includes a fully-featured HTTP Client that you can use to seamlessly perfo
 ### Create From Manual HTTP Operations
 
 ```ts
-const createClientFromOperations = require('@stoplight/prism-http/dist/client');
+const {createClientFromOperations} = require('@stoplight/prism-http/dist/client');
 
 const client = createClientFromOperations(
   [
