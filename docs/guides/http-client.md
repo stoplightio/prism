@@ -81,7 +81,8 @@ The response object has all the information you need, including the used configu
 2. You can override the configuration object on the request level if you prefer
 
 ```ts
-client.request('https://google.it', { method: 'get' }, { validateResponse: false }).then(console.log);
+const config = { validateResponse: false };
+client.request('https://google.it', { method: 'get' }, config).then(console.log);
 ```
 
 This disables response validation _only for the current request_
