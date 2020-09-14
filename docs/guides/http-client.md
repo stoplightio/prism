@@ -1,6 +1,6 @@
 # Prism Client
 
-Prism includes a fully-featured HTTP Client that you can use to seamlessly perform requests to both a real server and a mocked document. The client is modeled after Axios so it may feel familiar.
+Prism includes a HTTP Client that you can use to request data to both a real server or a mocked document. The client is modeled after Axios so it may feel familiar.
 
 ### Create Client from File
 
@@ -110,4 +110,11 @@ client.get('/users/10', { validateRequest: false }).then(response => console.log
 
 ```ts
 client.get('/users/10', { baseUrl: 'https://api.stoplight.io/' }).then(response => console.log(response));
+```
+
+4. You can also change the mock options for the current request, or set the flag to false to indicate that you want to proxy to an uptream server:
+
+```ts
+client.request('https://google.it', { method: 'get' }, { mock: { dynamic: true } }).then(response => console.log(response));
+client.request('https://google.it', { method: 'get' }, { mock: false, upstream: new URL('https://api.example.com') ).then(response => console.log(response));
 ```
