@@ -73,7 +73,7 @@ Once you've got a client instance:
 1. You can perform the request using the generic method:
 
 ```ts
-client.request('https://google.it', { method: 'get' }).then(response => console.log(response));
+client.request('https://google.it', { method: 'get' }).then(console.log);
 ```
 
 The response object has all the information you need, including the used configuration object.
@@ -81,9 +81,7 @@ The response object has all the information you need, including the used configu
 2. You can override the configuration object on the request level if you prefer
 
 ```ts
-client
-  .request('https://google.it', { method: 'get' }, { validateResponse: false })
-  .then(response => console.log(response));
+client.request('https://google.it', { method: 'get' }, { validateResponse: false }).then(console.log);
 ```
 
 This disables response validation _only for the current request_
@@ -91,30 +89,30 @@ This disables response validation _only for the current request_
 3. You can do the same thing using the shortcut methods
 
 ```ts
-client.get('https://google.it', { mock: false }).then(response => console.log(response));
+client.get('https://google.it', { mock: false }).then(console.log);
 ```
 
 For the shortcut methods (since the only mandatory option is intrinsic in the function name) the option parameter can be omitted
 
 ```ts
-client.get('https://google.it', { validateRequest: false }).then(response => console.log(response));
+client.get('https://google.it', { validateRequest: false }).then(console.log);
 ```
 
 You can also use relative links when doing requests. In such case you won't be able to use the proxy and the server validation will be disabled:
 
 ```ts
-client.get('/users/10', { validateRequest: false }).then(response => console.log(response));
+client.get('/users/10', { validateRequest: false }).then(console.log);
 ```
 
 …or you can also set the base path in the options object:
 
 ```ts
-client.get('/users/10', { baseUrl: 'https://api.stoplight.io/' }).then(response => console.log(response));
+client.get('/users/10', { baseUrl: 'https://api.stoplight.io/' }).then(console.log);
 ```
 
 4. You can also change the mock options for the current request, or set the flag to false to indicate that you want to proxy to an uptream server:
 
 ```ts
-client.request('https://google.it', { method: 'get' }, { mock: { dynamic: true } }).then(response => console.log(response));
-client.request('https://google.it', { method: 'get' }, { mock: false, upstream: new URL('https://api.example.com') ).then(response => console.log(response));
+client.request('https://google.it', { method: 'get' }, { mock: { dynamic: true } }).then(console.log);
+client.request('https://google.it', { method: 'get' }, { mock: false, upstream: new URL('https://api.example.com') ).then(console.log);
 ```
