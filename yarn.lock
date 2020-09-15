@@ -6687,10 +6687,10 @@ ono@^4.0.11:
   dependencies:
     format-util "^1.0.3"
 
-openapi-sampler@^1.0.0-beta.15:
-  version "1.0.0-beta.16"
-  resolved "https://registry.yarnpkg.com/openapi-sampler/-/openapi-sampler-1.0.0-beta.16.tgz#7813524d5b88d222efb772ceb5a809075d6d9174"
-  integrity sha512-05+GvwMagTY7GxoDQoWJfmAUFlxfebciiEzqKmu4iq6+MqBEn62AMUkn0CTxyKhnUGIaR2KXjTeslxIeJwVIOw==
+openapi-sampler@^1.0.0-beta.17:
+  version "1.0.0-beta.17"
+  resolved "https://registry.yarnpkg.com/openapi-sampler/-/openapi-sampler-1.0.0-beta.17.tgz#45814ed929d8b5af1b71e5d545a0134c70346daa"
+  integrity sha512-xYGPaPaEQFFAGQVrRpunkb8loNfL1rq4fJ+q7NH+LVBsrHKGUicD2f5Rzw6fWcRwwcOvnKD/aik9guiNWq2kpA==
   dependencies:
     json-pointer "^0.6.0"
 
