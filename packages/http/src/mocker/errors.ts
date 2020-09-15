@@ -1,4 +1,4 @@
-import { ProblemJson } from '../types';
+import type { ProblemJson } from '../types';
 
 export const UNPROCESSABLE_ENTITY: Omit<ProblemJson, 'detail'> = {
   type: 'UNPROCESSABLE_ENTITY',
