@@ -3897,11 +3897,6 @@ format-util@^1.0.3:
   resolved "https://registry.yarnpkg.com/format-util/-/format-util-1.0.3.tgz#032dca4a116262a12c43f4c3ec8566416c5b2d95"
   integrity sha1-Ay3KShFiYqEsQ/TD7IVmQWxbLZU=
 
-fp-ts-contrib@^0.1.19:
-  version "0.1.19"
-  resolved "https://registry.yarnpkg.com/fp-ts-contrib/-/fp-ts-contrib-0.1.19.tgz#5154f2f277373d54e5b4da6d7ca6751aaa8cfc74"
-  integrity sha512-u0dZbkh0gLrtiIV/spcwU7D8uoVAUCD7+Z5xSmDGHVKrw6G7jOQh6MlC0IrHXqiu1+J51ui/oFrKOEj9jA99LQ==
-
 fp-ts@^2.8.2:
   version "2.8.2"
   resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.8.2.tgz#7948dea1ceef32e487d7f7f47bd2d3c4fcccfc0d"
