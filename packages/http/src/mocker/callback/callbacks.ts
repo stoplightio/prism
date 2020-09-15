@@ -37,15 +37,14 @@ export function runCallback({
       TE.mapLeft(error =>
         logger.error({ name: 'CALLBACK' }, `${callback.callbackName}: Request failed: ${error.message}`)
       ),
-      TE.chain(element => {
+      TE.chainEitherK(element => {
         logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Request finished`);
 
         return pipe(
           validateOutput({ resource: callback, element }),
           E.mapLeft(violations => {
             pipe(violations, A.map(logViolation));
-          }),
-          TE.fromEither
+          })
         );
       })
     );
