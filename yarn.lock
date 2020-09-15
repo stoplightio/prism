@@ -1290,13 +1290,12 @@
     once "^1.4.0"
     universal-user-agent "^4.0.0"
 
-"@openapi-contrib/openapi-schema-to-json-schema@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@openapi-contrib/openapi-schema-to-json-schema/-/openapi-schema-to-json-schema-3.0.2.tgz#b0c63a03ed4982bef4e641d970149084793f0d70"
-  integrity sha512-YkZN916VmQpb0FUY7o37QhPS4gWW/N/v8QmNOO4g+cXQVXcxnX3aIrK06WjyOfy7O58X8trl1Z99YZymspyJUA==
+"@openapi-contrib/openapi-schema-to-json-schema@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@openapi-contrib/openapi-schema-to-json-schema/-/openapi-schema-to-json-schema-3.0.4.tgz#a0e29445b9cd76331c473ab820e97b28ae828ebc"
+  integrity sha512-+1RBoJ+xjX8mIXxisTJVlN/r6DOh4kyszw3cLBSAxwKP7Ui42DjlxWgR2PnWxOOWtRCnQurRzlsvL1ce5FUrWg==
   dependencies:
     fast-deep-equal "^3.1.3"
-    lodash.clonedeep "^4.5.0"
 
 "@sinonjs/commons@^1.7.0":
   version "1.7.1"
@@ -1312,12 +1311,12 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stoplight/http-spec@^3.2.2":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.2.2.tgz#9099c1b3e4e560764f7a8b5e0231efb8da0b179d"
-  integrity sha512-hSRp51O74TcqUJMOiiiaal8QS5ct6StJFKHaxCTXNTNrfnDt3YrtRv9Zmf3AYpVNDkJIoqkFM0Bu8Sysfg5N4w==
+"@stoplight/http-spec@^3.2.3":
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.2.3.tgz#7a987d6e5289d20770540ec6e770a57c8974d089"
+  integrity sha512-vajkzF3I9ukGR6KACMYrAQd1PB766BzsUWPo4NRVkauM9tT5yTasH7uSRJUt+poejhgtElxnta3wa86lWZcAMw==
   dependencies:
-    "@openapi-contrib/openapi-schema-to-json-schema" "^3.0.2"
+    "@openapi-contrib/openapi-schema-to-json-schema" "^3.0.4"
     "@stoplight/json" "^3.8.1"
     "@stoplight/types" "^11.9.0"
     "@types/swagger-schema-official" "~2.0.21"
