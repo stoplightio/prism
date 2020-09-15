@@ -1,4 +1,4 @@
-import { IDiagnostic } from '@stoplight/types';
+import { IDiagnostic, Dictionary } from '@stoplight/types';
 import { Either } from 'fp-ts/Either';
 import { ReaderEither } from 'fp-ts/ReaderEither';
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither';
@@ -32,7 +32,7 @@ export type IPrismProxyConfig = IPrismBaseConfig & {
 
 export type IPrismConfig = IPrismMockConfig | IPrismProxyConfig;
 
-export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfig> = {
+export type IPrismComponents<Resource, Input, Output, MockConfig extends object> = {
   route: (opts: { resources: Resource[]; input: Input }) => Either<Error, Resource>;
   validateInput: ValidatorFn<Resource, Input>;
   validateSecurity: ValidatorFn<Resource, Input>;
@@ -41,7 +41,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   mock: (opts: {
     resource: Resource;
     input: IPrismInput<Input>;
-    config: Config['mock'];
+    config: MockConfig;
   }) => ReaderEither<Logger, Error, Output>;
   logger: Logger;
 };
