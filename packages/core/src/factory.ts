@@ -1,7 +1,8 @@
 import * as E from 'fp-ts/Either';
 import * as A from 'fp-ts/Array';
-import { compact } from 'lodash';
 import * as TE from 'fp-ts/TaskEither';
+import * as IOE from 'fp-ts/IOEither';
+import { compact } from 'lodash';
 import { pipe } from 'fp-ts/pipeable';
 import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig, IPrismOutput } from './types';
@@ -62,18 +63,28 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     config: Config,
     validations: IPrismDiagnostic[]
   ): TE.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
-    const mockCall = components.mock({
-      resource,
-      input: { data, validations },
-      config: config.mock,
-    });
+    const mockCall: IOE.IOEither<Error, Output> = () =>
+      components.mock({
+        resource,
+        input: { data, validations },
+        config: config.mock,
+      })(components.logger.child({ name: 'NEGOTIATOR' }));
 
     const produceOutput = isProxyConfig(config)
-      ? components.forward(
-          { validations: config.errors ? validations : [], data },
-          config.upstream.href
-        )(components.logger.child({ name: 'PROXY' }))
-      : TE.fromEither(mockCall(components.logger.child({ name: 'NEGOTIATOR' })));
+      ? pipe(
+          components.forward(
+            { validations: config.errors ? validations : [], data },
+            config.upstream.href
+          )(components.logger.child({ name: 'PROXY' })),
+          TE.orElse(error => {
+            if (error['status'] === 501) {
+              components.logger.info('Fallback to mocking the call…');
+              return TE.fromIOEither(mockCall);
+            }
+            return TE.left(error);
+          })
+        )
+      : TE.fromIOEither(mockCall);
 
     return pipe(
       produceOutput,
