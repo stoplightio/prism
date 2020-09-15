@@ -25,7 +25,7 @@
     "tslib": "^2.0.1",
     "uri-template-lite": "^20.5.0",
     "urijs": "^1.19.1",
-    "yargs": "^15.0.1"
+    "yargs": "^16.0.3"
   },
   "engines": {
     "node": ">=12"
