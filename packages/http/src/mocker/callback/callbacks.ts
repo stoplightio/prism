@@ -89,20 +89,18 @@ const assembleHeaders = (request?: IHttpOperationRequest, bodyMediaType?: string
   pipe(
     O.fromNullable(request?.headers),
     O.chain(params =>
-      pipe(
-        traverseOption(params, param =>
-          pipe(
-            generateHttpParam(param),
-            O.map(value => [param.name, value])
-          )
-        ),
-        O.reduce(
-          pipe(
-            O.fromNullable(bodyMediaType),
-            O.map(mediaType => ({ 'content-type': mediaType }))
-          ),
-          (mediaTypeHeader, headers) => ({ ...headers, ...mediaTypeHeader })
+      traverseOption(params, param =>
+        pipe(
+          generateHttpParam(param),
+          O.map(value => [param.name, value])
         )
       )
+    ),
+    O.reduce(
+      pipe(
+        O.fromNullable(bodyMediaType),
+        O.map(mediaType => ({ 'content-type': mediaType }))
+      ),
+      (mediaTypeHeader, headers) => ({ ...headers, ...mediaTypeHeader })
     )
   );
