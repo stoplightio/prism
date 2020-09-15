@@ -14,6 +14,8 @@ import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
 import { parseResponse } from '../utils/parseResponse';
 import { hopByHopHeaders } from './resources';
 import { createUnauthorisedResponse, createUnprocessableEntityResponse } from '../mocker';
+import { ProblemJsonError } from '../types';
+import { UPSTREAM_NOT_IMPLEMENTED } from './errors';
 
 const { version: prismVersion } = require('../../package.json'); // eslint-disable-line
 
@@ -55,6 +57,15 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
         });
       }, E.toError)
     ),
+    TE.chainFirst(response => {
+      if (response.status === 501) {
+        logger.warn('The upstream has returned 501…');
+        return TE.left(ProblemJsonError.fromTemplate(UPSTREAM_NOT_IMPLEMENTED));
+      }
+
+      logger.info(`The upstream server has returned ${response.status}`);
+      return TE.right(undefined);
+    }),
     TE.chain(parseResponse),
     TE.map(stripHopByHopHeaders)
   );
