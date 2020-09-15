@@ -32,7 +32,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
         : createUnprocessableEntityResponse(failedValidations);
     }),
     TE.swap,
-    TE.chain(() => TE.fromEither(serializeBody(input.body))),
+    TE.chainEitherK(() => serializeBody(input.body)),
     TE.chain(body =>
       TE.tryCatch(async () => {
         const partialUrl = parse(baseUrl);

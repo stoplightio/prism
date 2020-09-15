@@ -12,7 +12,7 @@ import * as contentType from 'content-type';
 import { findFirst, isNonEmpty } from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
 import * as E from 'fp-ts/Either';
-import { doOption, sequenceValidation, sequenceOption } from '../combinators';
+import { sequenceValidation, sequenceOption } from '../combinators';
 import { is as typeIs } from 'type-is';
 import { pipe } from 'fp-ts/pipeable';
 import { inRange, isMatch } from 'lodash';
@@ -96,21 +96,20 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
 
 export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
-    doOption
-      .bind('parsedMediaType', pipe(O.fromNullable(mediaType), O.map(contentType.parse)))
-      .doL(({ parsedMediaType }) =>
-        pipe(
-          contents,
-          findFirst(c => {
-            const parsedSelectedContentMediaType = contentType.parse(c.mediaType);
-            return (
-              !!typeIs(parsedMediaType.type, [parsedSelectedContentMediaType.type]) &&
-              isMatch(parsedMediaType.parameters, parsedSelectedContentMediaType.parameters)
-            );
-          })
-        )
+    O.fromNullable(mediaType),
+    O.map(contentType.parse),
+    O.chain(parsedMediaType =>
+      pipe(
+        contents,
+        findFirst(c => {
+          const parsedSelectedContentMediaType = contentType.parse(c.mediaType);
+          return (
+            !!typeIs(parsedMediaType.type, [parsedSelectedContentMediaType.type]) &&
+            isMatch(parsedMediaType.parameters, parsedSelectedContentMediaType.parameters)
+          );
+        })
       )
-      .done(),
+    ),
     E.fromOption<IPrismDiagnostic>(() => ({
       message: `The received media type "${mediaType || ''}" does not match the one${
         contents.length > 1 ? 's' : ''
