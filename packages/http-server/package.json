@@ -25,7 +25,7 @@
     "fast-xml-parser": "^3.12.20",
     "fp-ts": "^2.8.2",
     "io-ts": "^2.2.10",
-    "io-ts-types": "^0.5.10",
+    "io-ts-types": "^0.5.11",
     "lodash": "^4.17.20",
     "micri": "^4.2.1",
     "node-fetch": "^2.6.1",

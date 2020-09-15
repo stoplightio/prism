@@ -4638,10 +4638,10 @@ inquirer@^6.2.0:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
-io-ts-types@^0.5.10:
-  version "0.5.10"
-  resolved "https://registry.yarnpkg.com/io-ts-types/-/io-ts-types-0.5.10.tgz#54d2400c81de2a1bc97151b07faabc9ddd3ebb07"
-  integrity sha512-QVkgEsW03wTSgZ/PCZyan0boHmkPWExQob4nZ3pOxX/YQ9iWXLGPHMqYxSV0OpE/ulJA01owqTvsvFv+SfmiGg==
+io-ts-types@^0.5.11:
+  version "0.5.11"
+  resolved "https://registry.yarnpkg.com/io-ts-types/-/io-ts-types-0.5.11.tgz#475e8680bfacee05f450c64f3b0b89f4a790dd58"
+  integrity sha512-BqWYAvcSOxnKWIAYAcqF6nS+zhWRb6W+oezF2FzFt8+5a6b8PHNXmbOiV3MwRDY1G6FIctMo71QtIrExLT7LCQ==
 
 io-ts@^2.2.10:
   version "2.2.10"
