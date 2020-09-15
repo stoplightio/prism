@@ -1,8 +1,8 @@
 # Prism Client
 
-Prism includes a fully-featured HTTP Client that you can use to seamlessly perform requests to both a real server and a mocked document. The client is modeled after Axios so it may feel familiar.
+Prism includes a HTTP Client that you can use to request data to both a real server or a mocked document. The client is modeled after Axios so it may feel familiar.
 
-### Create Client from File
+## Create Client from File
 
 Use the `getHttpOperationsFromSpec` method defined in the `@stoplight/prism-cli` package to create the required operations array from an OpenAPI spec:
 
@@ -40,7 +40,7 @@ const operations = await getHttpOperationsFromSpec(descriptionDoc);
 ...
 ```
 
-### Create Client from Manual HTTP Operations
+## Create Client from Manual HTTP Operations
 
 ```ts
 const { createClientFromOperations } = require('@stoplight/prism-http/dist/client');
@@ -68,46 +68,54 @@ const client = createClientFromOperations(
 
 ---
 
+## Example usages
+
 Once you've got a client instance:
 
-1. You can perform the request using the generic method:
+### Request using the generic method:
 
 ```ts
-client.request('https://google.it', { method: 'get' }).then(response => console.log(response));
+client.request('https://google.it', { method: 'get' }).then(console.log);
 ```
 
 The response object has all the information you need, including the used configuration object.
 
-2. You can override the configuration object on the request level if you prefer
+### Override the configuration object on the request level
 
 ```ts
-client
-  .request('https://google.it', { method: 'get' }, { validateResponse: false })
-  .then(response => console.log(response));
+const config = { validateResponse: false };
+client.request('https://google.it', { method: 'get' }, config).then(console.log);
 ```
 
 This disables response validation _only for the current request_
 
-3. You can do the same thing using the shortcut methods
+You can do the same thing using the shortcut methods
 
 ```ts
-client.get('https://google.it', { mock: false }).then(response => console.log(response));
+client.get('https://google.it', { mock: false }).then(console.log);
 ```
 
 For the shortcut methods (since the only mandatory option is intrinsic in the function name) the option parameter can be omitted
 
 ```ts
-client.get('https://google.it', { validateRequest: false }).then(response => console.log(response));
+client.get('https://google.it', { validateRequest: false }).then(console.log);
 ```
 
 You can also use relative links when doing requests. In such case you won't be able to use the proxy and the server validation will be disabled:
 
 ```ts
-client.get('/users/10', { validateRequest: false }).then(response => console.log(response));
+client.get('/users/10', { validateRequest: false }).then(console.log);
 ```
 
 …or you can also set the base path in the options object:
 
 ```ts
-client.get('/users/10', { baseUrl: 'https://api.stoplight.io/' }).then(response => console.log(response));
+client.get('/users/10', { baseUrl: 'https://api.stoplight.io/' }).then(console.log);
+```
+
+### Set mocking options
+
+```ts
+client.request('https://google.it', { method: 'get' }, { mock: { dynamic: true } }).then(console.log);
+client.request('https://google.it', { method: 'get' }, { mock: false, upstream: new URL('https://api.example.com') ).then(console.log);
 ```
