@@ -13,7 +13,7 @@ import {
   IHttpQueryParam,
 } from '@stoplight/types';
 import * as E from 'fp-ts/Either';
-import { doEither, sequenceSEither, traverseEither } from '../combinators';
+import { sequenceSEither, traverseEither } from '../combinators';
 import { pipe } from 'fp-ts/pipeable';
 import { identity, fromPairs } from 'lodash';
 import { URI } from 'uri-template-lite';
@@ -23,12 +23,14 @@ export function createExamplePath(
   operation: IHttpOperation,
   transformValues: ValuesTransformer = identity
 ): E.Either<Error, string> {
-  return doEither
-    .bind('pathData', generateTemplateAndValuesForPathParams(operation))
-    .bindL('queryData', ({ pathData }) => generateTemplateAndValuesForQueryParams(pathData.template, operation))
-    .return(({ pathData, queryData }) =>
+  return pipe(
+    generateTemplateAndValuesForPathParams(operation),
+    E.bindTo('pathData'),
+    E.bind('queryData', ({ pathData }) => generateTemplateAndValuesForQueryParams(pathData.template, operation)),
+    E.map(({ pathData, queryData }) =>
       URI.expand(queryData.template, transformValues({ ...pathData.values, ...queryData.values }))
-    );
+    )
+  );
 }
 
 function generateParamValue(spec: IHttpParam): E.Either<Error, unknown> {
