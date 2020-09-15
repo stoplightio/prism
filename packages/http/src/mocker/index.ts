@@ -25,6 +25,7 @@ import {
   IHttpOperationConfig,
   IHttpRequest,
   IHttpResponse,
+  IHttpMockConfig,
   PayloadGenerator,
   ProblemJsonError,
 } from '../types';
@@ -45,7 +46,7 @@ import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 const eitherRecordSequence = Record.sequence(E.either);
 const eitherSequence = sequenceT(E.either);
 
-const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpOperationConfig>['mock'] = ({
+const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpMockConfig>['mock'] = ({
   resource,
   input,
   config,

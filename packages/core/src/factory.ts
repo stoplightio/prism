@@ -67,7 +67,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       components.mock({
         resource,
         input: { data, validations },
-        config: config || {},
+        config: config.mock || {},
       })(components.logger.child({ name: 'NEGOTIATOR' }));
 
     const produceOutput = isProxyConfig(config)
