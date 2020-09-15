@@ -7,7 +7,7 @@ import * as O from 'fp-ts/Option';
 import * as A from 'fp-ts/Array';
 import * as TE from 'fp-ts/TaskEither';
 import * as RTE from 'fp-ts/ReaderTaskEither';
-import { doOption, traverseOption } from '../../combinators';
+import { traverseOption } from '../../combinators';
 import { head } from 'fp-ts/Array';
 import { pipe } from 'fp-ts/pipeable';
 import { generate as generateHttpParam } from '../generator/HttpParamGenerator';
@@ -39,7 +39,6 @@ export function runCallback({
       ),
       TE.chainEitherK(element => {
         logger.info({ name: 'CALLBACK' }, `${callback.callbackName}: Request finished`);
-
         return pipe(
           validateOutput({ resource: callback, element }),
           E.mapLeft(violations => {
@@ -64,8 +63,8 @@ function assembleRequest({
   return {
     url: resolveRuntimeExpressions(resource.path, request, response),
     requestData: {
-      headers: O.toUndefined(assembleHeaders(resource.request, bodyAndMediaType && bodyAndMediaType.mediaType)),
-      body: bodyAndMediaType && bodyAndMediaType.body,
+      headers: O.toUndefined(assembleHeaders(resource.request, bodyAndMediaType?.mediaType)),
+      body: bodyAndMediaType?.body,
       method: resource.method,
     },
   };
@@ -73,15 +72,9 @@ function assembleRequest({
 
 function assembleBody(request?: IHttpOperationRequest): O.Option<{ body: string; mediaType: string }> {
   return pipe(
-    O.fromNullable(request),
-    O.mapNullable(request => request.body),
-    O.mapNullable(body => body.contents),
-    O.chain(contents =>
-      doOption
-        .bind('content', head(contents))
-        .bindL('body', ({ content }) => generateHttpParam(content))
-        .done()
-    ),
+    O.fromNullable(request?.body?.contents),
+    O.bind('content', contents => head(contents)),
+    O.bind('body', ({ content }) => generateHttpParam(content)),
     O.chain(({ body, content: { mediaType } }) =>
       pipe(
         E.stringifyJSON(body, () => undefined),
@@ -92,21 +85,25 @@ function assembleBody(request?: IHttpOperationRequest): O.Option<{ body: string;
   );
 }
 
-function assembleHeaders(request?: IHttpOperationRequest, bodyMediaType?: string): O.Option<Dictionary<string>> {
-  return pipe(
-    O.fromNullable(request),
-    O.mapNullable(request => request.headers),
+const assembleHeaders = (request?: IHttpOperationRequest, bodyMediaType?: string): O.Option<Dictionary<string>> =>
+  pipe(
+    O.fromNullable(request?.headers),
     O.chain(params =>
-      traverseOption(params, param =>
-        doOption.bind('value', generateHttpParam(param)).return(({ value }) => [param.name, value])
-      )
-    ),
-    O.reduce(
       pipe(
-        O.fromNullable(bodyMediaType),
-        O.map(mediaType => ({ 'content-type': mediaType }))
-      ),
-      (mediaTypeHeader, headers) => ({ ...headers, ...mediaTypeHeader })
+        traverseOption(params, param =>
+          pipe(
+            generateHttpParam(param),
+            O.bindTo('value'),
+            O.map(({ value }) => [param.name, value])
+          )
+        ),
+        O.reduce(
+          pipe(
+            O.fromNullable(bodyMediaType),
+            O.map(mediaType => ({ 'content-type': mediaType }))
+          ),
+          (mediaTypeHeader, headers) => ({ ...headers, ...mediaTypeHeader })
+        )
+      )
     )
   );
-}
