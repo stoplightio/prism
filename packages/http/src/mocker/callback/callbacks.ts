@@ -93,8 +93,7 @@ const assembleHeaders = (request?: IHttpOperationRequest, bodyMediaType?: string
         traverseOption(params, param =>
           pipe(
             generateHttpParam(param),
-            O.bindTo('value'),
-            O.map(({ value }) => [param.name, value])
+            O.map(value => [param.name, value])
           )
         ),
         O.reduce(
