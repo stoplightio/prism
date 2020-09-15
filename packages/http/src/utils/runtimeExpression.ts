@@ -1,6 +1,5 @@
 import { IHttpRequest, IHttpResponse } from '../types';
 import * as O from 'fp-ts/Option';
-import { doOption } from '../combinators';
 import { lookup } from 'fp-ts/Array';
 import { pipe } from 'fp-ts/pipeable';
 import { get as _get } from 'lodash';
@@ -73,11 +72,9 @@ export function resolveRuntimeExpression(
 
   function tryRequestQuery() {
     return pipe(
-      doOption
-        .do(isPart(1, 'query'))
-        .bind('query', O.fromNullable(request.url.query))
-        .bind('part', lookup(2, parts))
-        .done(),
+      isPart(1, 'query'),
+      O.bind('query', _ => O.fromNullable(request.url.query)),
+      O.bind('part', _ => lookup(2, parts)),
       O.chain(({ part, query }) => O.fromNullable(query[part]))
     );
   }
@@ -111,16 +108,14 @@ export function resolveRuntimeExpression(
 
   function readBody(body: unknown) {
     return pipe(
-      doOption
-        .bind('body', O.fromNullable(body))
-        .bind(
-          'path',
-          pipe(
-            lookup(2, parts),
-            O.chain(part => O.tryCatch(() => pointerToPath('#' + part)))
-          )
+      O.fromNullable(body),
+      O.bindTo('body'),
+      O.bind('path', _ =>
+        pipe(
+          lookup(2, parts),
+          O.chain(part => O.tryCatch(() => pointerToPath('#' + part)))
         )
-        .done(),
+      ),
       O.chain(({ body, path }) => O.fromNullable(_get(body, path)))
     );
   }
