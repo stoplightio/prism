@@ -13,11 +13,10 @@ import * as E from 'fp-ts/Either';
 import * as Record from 'fp-ts/Record';
 import { pipe } from 'fp-ts/pipeable';
 import * as A from 'fp-ts/Array';
+import { sequenceT } from 'fp-ts/Apply';
 import * as R from 'fp-ts/Reader';
 import * as O from 'fp-ts/Option';
 import * as RE from 'fp-ts/ReaderEither';
-import { map } from 'fp-ts/Array';
-import { Do } from 'fp-ts-contrib/lib/Do';
 import { isNumber, isString, keyBy, mapValues, groupBy, get, partial } from 'lodash';
 import { Logger } from 'pino';
 import { is } from 'type-is';
@@ -45,6 +44,7 @@ import {
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 
 const eitherRecordSequence = Record.sequence(E.either);
+const eitherSequence = sequenceT(E.either);
 
 const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpMockConfig>['mock'] = ({
   resource,
@@ -95,7 +95,7 @@ function runCallbacks({
       O.map(callbacks =>
         pipe(
           callbacks,
-          map(callback =>
+          A.map(callback =>
             runCallback({ callback, request: parseBodyIfUrlEncoded(request, resource), response })(logger)()
           )
         )
@@ -211,34 +211,36 @@ function negotiateResponse(
   }
 }
 
-function assembleResponse(
+const assembleResponse = (
   result: E.Either<Error, IHttpNegotiationResult>,
   payloadGenerator: PayloadGenerator
-): R.Reader<Logger, E.Either<Error, IHttpResponse>> {
-  return logger =>
-    Do(E.either)
-      .bind('negotiationResult', result)
-      .sequenceSL(({ negotiationResult }) => ({
-        mockedBody: computeBody(negotiationResult, payloadGenerator),
-        mockedHeaders: computeMockedHeaders(negotiationResult.headers || [], payloadGenerator),
-      }))
-      .return(negotiationResult => {
-        const response: IHttpResponse = {
-          statusCode: parseInt(negotiationResult.negotiationResult.code),
-          headers: {
-            ...negotiationResult.mockedHeaders,
-            ...(negotiationResult.negotiationResult.mediaType && {
-              'Content-type': negotiationResult.negotiationResult.mediaType,
-            }),
-          },
-          body: negotiationResult.mockedBody,
-        };
+): R.Reader<Logger, E.Either<Error, IHttpResponse>> => logger =>
+  pipe(
+    result,
+    E.bindTo('negotiationResult'),
+    E.bind('mockedData', ({ negotiationResult }) =>
+      eitherSequence(
+        computeBody(negotiationResult, payloadGenerator),
+        computeMockedHeaders(negotiationResult.headers || [], payloadGenerator)
+      )
+    ),
+    E.map(({ mockedData: [mockedBody, mockedHeaders], negotiationResult }) => {
+      const response: IHttpResponse = {
+        statusCode: parseInt(negotiationResult.code),
+        headers: {
+          ...mockedHeaders,
+          ...(negotiationResult.mediaType && {
+            'Content-type': negotiationResult.mediaType,
+          }),
+        },
+        body: mockedBody,
+      };
 
-        logger.success(`Responding with the requested status code ${response.statusCode}`);
+      logger.success(`Responding with the requested status code ${response.statusCode}`);
 
-        return response;
-      });
-}
+      return response;
+    })
+  );
 
 function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is INodeExample {
   return !!nodeExample && 'value' in nodeExample;
