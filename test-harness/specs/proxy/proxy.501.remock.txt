@@ -1,0 +1,19 @@
+====test====
+When proxyin a request and the upstream server returns 501
+Prism will retry by mocking the same operation returning the defined status code
+====spec====
+swagger: "2.0"
+paths:
+  /status/501:
+    get:
+      produces:
+        - text/plain
+      responses:
+        201:
+          description: OK
+====server====
+proxy -p 4010 ${document} http://httpbin.org
+====command====
+curl -i http://localhost:4010/status/501
+====expect====
+HTTP/1.1 201 Created
