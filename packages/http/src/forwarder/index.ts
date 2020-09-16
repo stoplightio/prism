@@ -59,11 +59,11 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
     ),
     TE.chainFirst(response => {
       if (response.status === 501) {
-        logger.warn('The upstream has returned 501…');
+        logger.warn(`Upstream call to ${input.url.path} has returned 501`);
         return TE.left(ProblemJsonError.fromTemplate(UPSTREAM_NOT_IMPLEMENTED));
       }
 
-      logger.info(`The upstream server has returned ${response.status}`);
+      logger.info(`The upstream call to ${input.url.path} has returned ${response.status}`);
       return TE.right(undefined);
     }),
     TE.chain(parseResponse),
