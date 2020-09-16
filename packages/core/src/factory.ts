@@ -70,12 +70,12 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         config: config.mock || {},
       })(components.logger.child({ name: 'NEGOTIATOR' }));
 
+    const forwardCall = (config: IPrismProxyConfig) =>
+      components.forward({ validations: config.errors ? validations : [], data }, config.upstream.href);
+
     const produceOutput = isProxyConfig(config)
       ? pipe(
-          components.forward(
-            { validations: config.errors ? validations : [], data },
-            config.upstream.href
-          )(components.logger.child({ name: 'PROXY' })),
+          forwardCall(config)(components.logger.child({ name: 'PROXY' })),
           TE.orElse(error => {
             if (error['status'] === 501) {
               components.logger.info('Fallback to mocking the call…');

@@ -9,7 +9,7 @@ import {
 } from '@stoplight/types';
 import * as caseless from 'caseless';
 import * as contentType from 'content-type';
-import { findFirst, isNonEmpty } from 'fp-ts/Array';
+import * as A from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
 import * as E from 'fp-ts/Either';
 import { sequenceValidation, sequenceOption } from '../combinators';
@@ -101,7 +101,7 @@ export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, me
     O.chain(parsedMediaType =>
       pipe(
         contents,
-        findFirst(c => {
+        A.findFirst(c => {
           const parsedSelectedContentMediaType = contentType.parse(c.mediaType);
           return (
             !!typeIs(parsedMediaType.type, [parsedSelectedContentMediaType.type]) &&
@@ -127,7 +127,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
       sequenceValidation(
         pipe(
           O.fromNullable(response.contents),
-          O.chain(contents => pipe(contents, O.fromPredicate(isNonEmpty))),
+          O.chain(contents => pipe(contents, O.fromPredicate(A.isNonEmpty))),
           O.fold(
             () => E.right<NonEmptyArray<IPrismDiagnostic>, unknown>(undefined),
             contents => validateMediaType(contents, mediaType)

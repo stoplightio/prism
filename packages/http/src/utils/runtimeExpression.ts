@@ -73,8 +73,8 @@ export function resolveRuntimeExpression(
   function tryRequestQuery() {
     return pipe(
       isPart(1, 'query'),
-      O.bind('query', _ => O.fromNullable(request.url.query)),
-      O.bind('part', _ => lookup(2, parts)),
+      O.bind('query', () => O.fromNullable(request.url.query)),
+      O.bind('part', () => lookup(2, parts)),
       O.chain(({ part, query }) => O.fromNullable(query[part]))
     );
   }
@@ -110,7 +110,7 @@ export function resolveRuntimeExpression(
     return pipe(
       O.fromNullable(body),
       O.bindTo('body'),
-      O.bind('path', _ =>
+      O.bind('path', () =>
         pipe(
           lookup(2, parts),
           O.chain(part => O.tryCatch(() => pointerToPath('#' + part)))
