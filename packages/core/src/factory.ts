@@ -68,11 +68,11 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       config: config.mock,
     });
 
+    const forwardCall = (config: IPrismProxyConfig) =>
+      components.forward({ validations: config.errors ? validations : [], data }, config.upstream.href);
+
     const produceOutput = isProxyConfig(config)
-      ? components.forward(
-          { validations: config.errors ? validations : [], data },
-          config.upstream.href
-        )(components.logger.child({ name: 'PROXY' }))
+      ? forwardCall(config)(components.logger.child({ name: 'PROXY' }))
       : TE.fromEither(mockCall(components.logger.child({ name: 'NEGOTIATOR' })));
 
     return pipe(
