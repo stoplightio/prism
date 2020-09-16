@@ -1,0 +1,19 @@
+====test====
+When mocking a request that returns 501
+Prism will return 501 and nothing else (matter…) happens.
+====spec====
+swagger: "2.0"
+paths:
+  /status/501:
+    get:
+      produces:
+        - text/plain
+      responses:
+        501:
+          description: OK
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/status/501 -H "Prefer: code=501"
+====expect====
+HTTP/1.1 501 Not Implemented
