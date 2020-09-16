@@ -35,7 +35,7 @@ prism proxy reference/api-c/openapi.yaml api-c-test.example.com --errors -p 5002
 
 This adds contract testing to an existing test suite for very little work, regardless of the language your APIs are written in, without any changes required to the codebases.
 
-### Mock when not able to proxy
+### Unimplemented Operations will be Mocked
 
 In case the upstream server responds with the `501` status code, Prism will try to mock the call using the provided OpenAPI document.
 
