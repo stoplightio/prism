@@ -77,7 +77,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       ? pipe(
           forwardCall(config)(components.logger.child({ name: 'PROXY' })),
           TE.orElse(error => {
-            if (error['status'] === 501) {
+            if (error.name === 'https://stoplight.io/prism/errors#UPSTREAM_NOT_IMPLEMENTED') {
               components.logger.info('Fallback to mocking the call…');
               return TE.fromIOEither(mockCall);
             }
