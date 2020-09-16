@@ -110,7 +110,7 @@ export function resolveRuntimeExpression(
     return pipe(
       O.fromNullable(body),
       O.bindTo('body'),
-      O.bind('path', _ =>
+      O.bind('path', () =>
         pipe(
           lookup(2, parts),
           O.chain(part => O.tryCatch(() => pointerToPath('#' + part)))
