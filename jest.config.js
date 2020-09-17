@@ -1,14 +1,13 @@
 const { pathsToModuleNameMapper } = require('ts-jest/utils');
-const path = require('path')
-const { mapValues } = require('lodash')
 const { compilerOptions } = require('./packages/tsconfig.test');
 
+const moduleNameMapper = pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/packages/' });
+
 const projectDefault = {
-  moduleNameMapper: mapValues(pathsToModuleNameMapper(compilerOptions.paths), v => path.resolve(path.join('packages', v))),
+  moduleNameMapper,
   testEnvironment: 'node',
-  transform: {
-    '^.+\\.(ts)$': 'ts-jest',
-  }
+  transform: { '^.+\\.(ts)$': 'ts-jest' },
+  modulePathIgnorePatterns: ['dist']
 };
 
 module.exports = {
