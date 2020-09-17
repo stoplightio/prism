@@ -1,7 +1,5 @@
 import { IHttpNameValues, JSONSchema } from '../../../types';
 
-// Pipe, Space, Comma
-
 export default function createDeserializeFn(separator: string) {
   function deserializeImplodeArray(value: string | string[]) {
     return Array.isArray(value) ? value : [value];
