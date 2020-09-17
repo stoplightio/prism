@@ -20,6 +20,7 @@ import { merge } from 'lodash/fp';
 import { pipe } from 'fp-ts/pipeable';
 import * as TE from 'fp-ts/TaskEither';
 import * as E from 'fp-ts/Either';
+import * as IOE from 'fp-ts/IOEither';
 
 function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValues {
   const params = {};
@@ -90,7 +91,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     pipe(
       TE.fromEither(requestConfig),
       TE.chain(requestConfig => prism.request(input, operations, requestConfig)),
-      TE.chain(response => {
+      TE.chainIOEitherK(response => {
         const { output } = response;
 
         const inputValidationErrors = response.validations.input.map(createErrorObjectWithPrefix('request'));
@@ -105,7 +106,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           );
 
           if (opts.config.errors && errorViolations.length > 0) {
-            return TE.left(
+            return IOE.left(
               ProblemJsonError.fromTemplate(
                 VIOLATIONS,
                 'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
@@ -126,7 +127,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           }
         });
 
-        return TE.fromIOEither(() =>
+        return IOE.fromEither(
           E.tryCatch(() => {
             if (output.headers) Object.entries(output.headers).forEach(([name, value]) => reply.setHeader(name, value));
 
