@@ -11,14 +11,6 @@ describe('DelimitedStyleDeserializer', () => {
         expect(delimitedStyleDeserializer.supports(HttpParamStyles.PipeDelimited)).toBe(true);
       });
     });
-
-    describe('style is not supported', () => {
-      it('returns false', () => {
-        // Force compile to pass for purpose of test.
-        // @ts-ignore
-        expect(delimitedStyleDeserializer.supports('invalid')).toBe(false);
-      });
-    });
   });
 
   describe('deserialize()', () => {

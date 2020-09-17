@@ -12,14 +12,6 @@ describe('SimpleStyleDeserializer', () => {
         expect(simpleStyleDeserializer.supports(HttpParamStyles.Simple)).toBe(true);
       });
     });
-
-    describe('style is not supported', () => {
-      it('returns false', () => {
-        // Force compile to succeed
-        // @ts-ignore
-        expect(simpleStyleDeserializer.supports('invalid')).toBe(false);
-      });
-    });
   });
 
   describe('deserialize()', () => {

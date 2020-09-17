@@ -33,7 +33,7 @@ describe('HttpParamGenerator', () => {
   });
 
   describe('improveSchema()', () => {
-    describe.each<'number' | 'integer'>(['number', 'integer'])('when feed with a %s', type => {
+    describe.each(['number', 'integer'] as const)('when feed with a %s', type => {
       const improvedSchema = improveSchema({ type });
 
       it('should have a minimum and a maximum', () => {

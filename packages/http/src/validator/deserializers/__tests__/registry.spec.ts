@@ -31,12 +31,4 @@ describe('HttpParamDeserializerRegistry', () => {
       expect(mockDeserializer.deserialize).toHaveBeenCalled();
     });
   });
-
-  describe('deserializer for given style does not exists', () => {
-    it('returns undefined', () => {
-      spyOn(mockDeserializer, 'supports').and.returnValue(false);
-      // @ts-ignore
-      expect(httpParamDeserializerRegistry.get('style')).toBeUndefined();
-    });
-  });
 });

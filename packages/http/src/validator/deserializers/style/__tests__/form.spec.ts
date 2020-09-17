@@ -12,13 +12,6 @@ describe('FormStyleDeserializer', () => {
         expect(formStyleDeserializer.supports(HttpParamStyles.Form)).toBe(true);
       });
     });
-
-    describe('style is not supported', () => {
-      it('returns false', () => {
-        // @ts-ignore
-        expect(formStyleDeserializer.supports('invalid')).toBe(false);
-      });
-    });
   });
 
   describe('deserialize()', () => {
