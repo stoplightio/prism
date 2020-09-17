@@ -4,13 +4,13 @@ import * as Array from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/pipeable';
+import * as NonEmptyArray from 'fp-ts/NonEmptyArray';
 import { get } from 'lodash';
+import { is as typeIs } from 'type-is';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
-import { is as typeIs } from 'type-is';
-import * as NonEmptyArray from 'fp-ts/NonEmptyArray';
 
 export function deserializeFormBody(
   schema: JSONSchema,
@@ -28,11 +28,11 @@ export function deserializeFormBody(
       const encoding = encodings.find(enc => enc.property === property);
 
       if (encoding && encoding.style) {
-        const deserializer = body.get(encoding.style);
-        if (deserializer && schema.properties) {
-          const propertySchema = schema.properties[property];
-          deserialized[property] = deserializer.deserialize(property, decodedUriParams, propertySchema as JSONSchema);
-        }
+        const deserializer = body[encoding.style];
+        const propertySchema = schema.properties?.[property];
+
+        if (propertySchema && typeof propertySchema !== 'boolean')
+          deserialized[property] = deserializer(property, decodedUriParams, propertySchema);
       }
 
       return deserialized;

@@ -1,4 +1,4 @@
-import { DiagnosticSeverity, HttpParamStyles, IHttpParam } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles, IHttpParam, Dictionary } from '@stoplight/types';
 import { compact, keyBy, mapKeys, mapValues, pickBy, upperFirst } from 'lodash';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
@@ -6,14 +6,14 @@ import * as NEA from 'fp-ts/NonEmptyArray';
 import { pipe } from 'fp-ts/pipeable';
 import { JSONSchema4 } from 'json-schema';
 import { JSONSchema } from '../../';
-import { IHttpParamDeserializerRegistry } from '../deserializers/types';
+import { deserializeFn } from '../deserializers/types';
 import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 
 export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttpParam> {
   constructor(
-    private _registry: IHttpParamDeserializerRegistry<Target>,
+    private _registry: Dictionary<deserializeFn<Target>>,
     private _prefix: string,
     private _style: HttpParamStyles
   ) {}
@@ -39,9 +39,9 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
             keyBy(specs, s => s.name.toLowerCase()),
             el => {
               const resolvedStyle = el.style || style;
-              const deserializer = registry.get(resolvedStyle);
+              const deserializer = registry[resolvedStyle];
               if (deserializer)
-                return deserializer.deserialize(
+                return deserializer(
                   el.name.toLowerCase(),
                   // This is bad, but unfortunately for the way the parameter validators are done there's
                   // no better way at them moment. I hope to fix this in a following PR where we will revisit

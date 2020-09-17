@@ -20,20 +20,16 @@ import { validateSecurity } from './validators/security';
 import { URI } from 'uri-template-lite';
 
 import { IHttpRequest, IHttpResponse } from '../types';
-import {
-  header as headerDeserializerRegistry,
-  query as queryDeserializerRegistry,
-  path as pathDeserializerRegistry,
-} from './deserializers';
+import { header, query, path } from './deserializers';
 import { findOperationResponse } from './utils/spec';
 import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 import { HttpPathValidator } from './validators/path';
 
 export const bodyValidator = new HttpBodyValidator('body');
-export const headersValidator = new HttpHeadersValidator(headerDeserializerRegistry, 'header');
-export const queryValidator = new HttpQueryValidator(queryDeserializerRegistry, 'query');
-export const pathValidator = new HttpPathValidator(pathDeserializerRegistry, 'path');
+export const headersValidator = new HttpHeadersValidator(header, 'header');
+export const queryValidator = new HttpQueryValidator(query, 'query');
+export const pathValidator = new HttpPathValidator(path, 'path');
 
 const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unknown) =>
   pipe(
