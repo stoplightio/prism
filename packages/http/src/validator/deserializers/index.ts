@@ -6,7 +6,6 @@ import matrix from './style/matrix';
 import delimited from './style/delimited';
 
 export const header = { simple };
-
 export const query = {
   form,
   spaceDelimited: delimited('%20'),
@@ -14,11 +13,5 @@ export const query = {
   commaDelimited: delimited(','),
   deepObject,
 };
-
-export const path = {
-  simple,
-  label,
-  matrix,
-};
-
+export const path = { simple, label, matrix };
 export const body = query;
