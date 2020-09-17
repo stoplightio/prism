@@ -10,7 +10,6 @@ describe('HttpQueryValidator', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(registry, 'get');
     jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema');
   });
 
@@ -29,21 +28,6 @@ describe('HttpQueryValidator', () => {
 
       describe('query param is present', () => {
         describe('schema is present', () => {
-          describe('deserializer not available', () => {
-            it('omits schema validation', () => {
-              jest.spyOn(registry, 'get').mockReturnValueOnce(undefined);
-              const param: IHttpQueryParam = {
-                name: 'param',
-                style: HttpParamStyles.Form,
-                schema: { type: 'number' },
-              };
-
-              assertRight(httpQueryValidator.validate({ param: 'abc' }, [param]));
-
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
-            });
-          });
-
           describe('deserializer is available', () => {
             describe('query param is valid', () => {
               it('validates positively against schema', () => {

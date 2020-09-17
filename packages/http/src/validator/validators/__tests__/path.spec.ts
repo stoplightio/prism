@@ -10,7 +10,6 @@ describe('HttpPathValidator', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(registry, 'get');
     jest.spyOn(validateAgainstSchemaModule, 'validateAgainstSchema');
   });
 
@@ -37,20 +36,6 @@ describe('HttpPathValidator', () => {
 
       describe('path param is present', () => {
         describe('schema is present', () => {
-          describe('deserializer not available', () => {
-            it('omits schema validation', () => {
-              jest.spyOn(registry, 'get').mockReturnValueOnce(undefined);
-              const param: IHttpPathParam = {
-                name: 'param',
-                style: HttpParamStyles.Simple,
-                schema: { type: 'number' },
-              };
-
-              assertRight(httpPathValidator.validate({ param: 'abc' }, [param]));
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
-            });
-          });
-
           describe('deserializer is available', () => {
             describe('path param is valid', () => {
               it('validates positively against schema', () => {
