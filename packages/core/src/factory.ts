@@ -1,7 +1,6 @@
 import * as E from 'fp-ts/Either';
 import * as A from 'fp-ts/Array';
 import * as TE from 'fp-ts/TaskEither';
-import * as IOE from 'fp-ts/IOEither';
 import { compact } from 'lodash';
 import { pipe } from 'fp-ts/pipeable';
 import { defaults } from 'lodash';
@@ -63,7 +62,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     config: Config,
     validations: IPrismDiagnostic[]
   ): TE.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
-    const mockCall: IOE.IOEither<Error, Output> = () =>
+    const mockCall = () =>
       components.mock({
         resource,
         input: { data, validations },
