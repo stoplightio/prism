@@ -29,6 +29,24 @@ function createResource(method: string, path: string, servers: IServer[]): IHttp
 
 describe('http router', () => {
   describe('route()', () => {
+    test('should not route if the path does not start with /', () => {
+      const method = pickOneHttpMethod();
+      const path = 'hello';
+
+      assertLeft(
+        route({
+          resources: [createResource(method, path, [])],
+          input: {
+            method,
+            url: {
+              baseUrl: 'http://some.url/',
+              path,
+            },
+          },
+        })
+      );
+    });
+
     test('should not match if no server defined', () => {
       const method = pickOneHttpMethod();
       const path = randomPath();
