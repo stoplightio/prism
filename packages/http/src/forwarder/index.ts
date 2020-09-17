@@ -16,6 +16,7 @@ import { hopByHopHeaders } from './resources';
 import { createUnauthorisedResponse, createUnprocessableEntityResponse } from '../mocker';
 import { ProblemJsonError } from '../types';
 import { UPSTREAM_NOT_IMPLEMENTED } from './errors';
+import { Readable } from 'stream';
 
 const { version: prismVersion } = require('../../package.json'); // eslint-disable-line
 
@@ -72,8 +73,8 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
 
 export default forward;
 
-function serializeBody(body: unknown): E.Either<Error, string | undefined> {
-  if (typeof body === 'string') {
+function serializeBody(body: unknown): E.Either<Error, string | Readable | undefined> {
+  if (typeof body === 'string' || body instanceof Readable) {
     return E.right(body);
   }
 

@@ -14,6 +14,7 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { MicriHandler } from 'micri';
 import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
+import { omit } from 'lodash';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
 import { merge } from 'lodash/fp';
@@ -37,7 +38,7 @@ function addressInfoToString(addressInfo: AddressInfo | string | null) {
   return `http://${addressInfo.address}:${addressInfo.port}`;
 }
 
-function parseRequestBody(request: IncomingMessage) {
+function extractRequestBody(request: IncomingMessage): Promise<unknown> {
   // if no body provided then return null instead of empty string
   if (
     request.headers['content-type'] === undefined &&
@@ -47,11 +48,13 @@ function parseRequestBody(request: IncomingMessage) {
     return Promise.resolve(null);
   }
 
+  if (request.headers['content-type'] === 'application/octet-stream') return Promise.resolve(request);
+
   if (typeIs(request, ['application/json', 'application/*+json'])) {
     return json(request);
-  } else {
-    return text(request);
   }
+
+  return text(request);
 }
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
@@ -60,7 +63,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   const handler: MicriHandler = async (request, reply) => {
     const { url, method, headers } = request;
 
-    const body = await parseRequestBody(request);
+    const body = await extractRequestBody(request);
 
     const { searchParams, pathname } = new URL(
       url!, // url can't be empty for HTTP request
@@ -78,7 +81,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       body,
     };
 
-    components.logger.info({ input }, 'Request received');
+    components.logger.info({ input: omit(input, 'body') }, 'Request received');
 
     const requestConfig: E.Either<Error, IHttpConfig> =
       config.mock === false
