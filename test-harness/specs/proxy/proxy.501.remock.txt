@@ -1,5 +1,5 @@
 ====test====
-When proxyin a request and the upstream server returns 501
+When proxying a request and the upstream server returns 501
 Prism will retry by mocking the same operation returning the defined status code
 ====spec====
 swagger: "2.0"
