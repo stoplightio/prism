@@ -1,10 +1,8 @@
-import { Chance } from 'chance';
 import { matchPath } from '../matchPath';
+import * as faker from 'faker';
 import { MatchType } from '../types';
 import { randomPath } from './utils';
 import { assertRight } from '@stoplight/prism-core/src/__tests__/utils';
-
-const chance = new Chance();
 
 describe('matchPath()', () => {
   test('root path should match another root path', () => {
@@ -15,7 +13,7 @@ describe('matchPath()', () => {
   test('any concrete path should match an equal concrete path', () => {
     // e.g. /a/b/c should match /a/b/c
     const path = randomPath({
-      pathFragments: chance.natural({ min: 1, max: 6 }),
+      pathFragments: faker.random.number({ min: 1, max: 6 }),
       includeTemplates: false,
     });
 
@@ -25,14 +23,14 @@ describe('matchPath()', () => {
   test('none request path should match path with less fragments', () => {
     // e.g. /a/b/c should not match /a/b
     // e.g. /a/b/c should not match /{a}/b
-    const trailingSlash = chance.bool();
+    const trailingSlash = faker.random.boolean();
     const requestPath = randomPath({
-      pathFragments: chance.natural({ min: 4, max: 6 }),
+      pathFragments: faker.random.number({ min: 4, max: 6 }),
       includeTemplates: false,
       trailingSlash,
     });
     const operationPath = randomPath({
-      pathFragments: chance.natural({ min: 1, max: 3 }),
+      pathFragments: faker.random.number({ min: 1, max: 3 }),
       trailingSlash,
     });
 
@@ -43,11 +41,11 @@ describe('matchPath()', () => {
     // e.g. /a/b should not match /a/b/c
     // e.g. /a/b/ should not match /a/b/c
     const requestPath = randomPath({
-      pathFragments: chance.natural({ min: 4, max: 6 }),
+      pathFragments: faker.random.number({ min: 4, max: 6 }),
       includeTemplates: false,
     });
     const operationPath = randomPath({
-      pathFragments: chance.natural({ min: 1, max: 3 }),
+      pathFragments: faker.random.number({ min: 1, max: 3 }),
       includeTemplates: false,
     });
 
@@ -80,13 +78,13 @@ describe('matchPath()', () => {
     // e.g. `/a/b` should not match /{x}/{y}/{z}
     // e.g. `/a` should not match /{x}/{y}/{z}
     const requestPath = randomPath({
-      pathFragments: chance.natural({ min: 1, max: 3 }),
+      pathFragments: faker.random.number({ min: 1, max: 3 }),
       includeTemplates: false,
       trailingSlash: false,
     });
 
     const operationPath = randomPath({
-      pathFragments: chance.natural({ min: 4, max: 6 }),
+      pathFragments: faker.random.number({ min: 4, max: 6 }),
       includeTemplates: false,
       trailingSlash: false,
     });

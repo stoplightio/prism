@@ -1,17 +1,16 @@
 import { HttpMethod } from '@stoplight/types';
-import { Chance } from 'chance';
+import * as faker from 'faker/locale/en';
 import { defaults } from 'lodash/fp';
 import { DeepNonNullable } from 'utility-types';
 
-const chance = new Chance();
 const httpMethods: HttpMethod[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
 export function pickOneHttpMethod(): HttpMethod {
-  return chance.pickone(httpMethods);
+  return faker.random.arrayElement(httpMethods);
 }
 
 export function pickSetOfHttpMethods(count = 2): HttpMethod[] {
-  return chance.unique(pickOneHttpMethod, count);
+  return new Array(count).map(() => pickOneHttpMethod());
 }
 
 export function randomArray<T>(itemGenerator: () => T, length = 1): T[] {
@@ -36,7 +35,7 @@ export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions):
   const options = defaults(defaultRandomPathOptions, opts);
 
   const randomPathFragments = randomArray(
-    () => (options.includeTemplates && chance.bool() ? `{${chance.word()}}` : chance.word()),
+    () => (options.includeTemplates && faker.random.boolean() ? `{${faker.random.word()}}` : faker.random.word()),
     options.pathFragments
   );
 
