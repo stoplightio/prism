@@ -6,16 +6,13 @@ import {
   INodeExample,
   INodeExternalExample,
 } from '@stoplight/types';
-import { Chance } from 'chance';
+import * as faker from 'faker/locale/en';
 import * as E from 'fp-ts/Either';
 import { left, right } from 'fp-ts/ReaderEither';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
-
-const chance = new Chance();
-const chanceOptions: Partial<Chance.StringOptions> = { length: 8, casing: 'lower', alpha: true, numeric: false };
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -32,10 +29,10 @@ const assertPayloadlessResponse = (actualResponse: E.Either<Error, IHttpNegotiat
 
 function anHttpOperation(givenHttpOperation?: IHttpOperation) {
   const httpOperation = givenHttpOperation || {
-    method: chance.string(),
-    path: chance.url(),
+    method: faker.random.word(),
+    path: faker.internet.url(),
     responses: [{ code: '300' }],
-    id: chance.string(),
+    id: faker.random.word(),
     request: {},
   };
   return {
@@ -63,8 +60,8 @@ describe('NegotiatorHelpers', () => {
   describe('negotiateOptionsForInvalidRequest()', () => {
     describe('and 422 response exists', () => {
       const actualCode = '422';
-      const actualMediaType = `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`;
-      const actualExampleKey = chance.string();
+      const actualMediaType = faker.system.mimeType();
+      const actualExampleKey = faker.random.word();
 
       test('and has static examples defined should return the first static example', () => {
         httpOperation = anHttpOperation(httpOperation)
@@ -77,7 +74,7 @@ describe('NegotiatorHelpers', () => {
                   mediaType: actualMediaType,
                   examples: [
                     { key: actualExampleKey, value: '', externalValue: '' },
-                    { key: chance.string(), value: '', externalValue: '' },
+                    { key: faker.random.word(), value: '', externalValue: '' },
                   ],
                   encodings: [],
                 },
@@ -124,7 +121,7 @@ describe('NegotiatorHelpers', () => {
                 headers: [],
                 contents: [
                   {
-                    mediaType: actualMediaType + chance.character(),
+                    mediaType: actualMediaType + faker.random.word[0],
                   },
                   {
                     schema: { type: 'string' },
@@ -132,7 +129,7 @@ describe('NegotiatorHelpers', () => {
                   },
                   {
                     schema: { type: 'number' },
-                    mediaType: actualMediaType + chance.character(),
+                    mediaType: actualMediaType + faker.random.word[0],
                   },
                 ],
               },
@@ -192,10 +189,10 @@ describe('NegotiatorHelpers', () => {
               headers: [],
               contents: [
                 {
-                  mediaType: `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`,
+                  mediaType: faker.system.mimeType(),
                   examples: [
-                    { key: chance.string(), value: '', externalValue: '' },
-                    { key: chance.string(), value: '', externalValue: '' },
+                    { key: faker.random.word(), value: '', externalValue: '' },
+                    { key: faker.random.word(), value: '', externalValue: '' },
                   ],
                   encodings: [],
                 },
@@ -216,10 +213,10 @@ describe('NegotiatorHelpers', () => {
               headers: [],
               contents: [
                 {
-                  mediaType: `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`,
+                  mediaType: faker.system.mimeType(),
                   examples: [
-                    { key: chance.string(), value: '', externalValue: '' },
-                    { key: chance.string(), value: '', externalValue: '' },
+                    { key: faker.random.word(), value: '', externalValue: '' },
+                    { key: faker.random.word(), value: '', externalValue: '' },
                   ],
                   encodings: [],
                 },
@@ -305,7 +302,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response defined should try to negotiate by that response', () => {
-      const code = chance.string();
+      const code = faker.random.word();
       const fakeResponse = {
         code,
         contents: [],
@@ -336,7 +333,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response defined should fallback to default code on error', () => {
-      const code = chance.string();
+      const code = faker.random.word();
       const fakeResponse = {
         code,
       };
@@ -367,7 +364,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response not defined should fallback to default code', () => {
-      const code = chance.string();
+      const code = faker.random.word();
       const desiredOptions = { dynamic: false };
       httpOperation = anHttpOperation(httpOperation).instance();
 
@@ -455,9 +452,9 @@ describe('NegotiatorHelpers', () => {
     describe('given forced mediaType', () => {
       it('and httpContent exists should negotiate that contents', () => {
         const desiredOptions = {
-          mediaTypes: [`${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`],
-          dynamic: chance.bool(),
-          exampleKey: chance.string(),
+          mediaTypes: [faker.system.mimeType()],
+          dynamic: faker.random.boolean(),
+          exampleKey: faker.random.word(),
         };
 
         const contents: IMediaTypeContent = {
@@ -580,9 +577,9 @@ describe('NegotiatorHelpers', () => {
 
         it('should throw an error', () => {
           const desiredOptions: NegotiationOptions = {
-            mediaTypes: [`${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`],
-            dynamic: chance.bool(),
-            exampleKey: chance.string(),
+            mediaTypes: [faker.system.mimeType()],
+            dynamic: faker.random.boolean(),
+            exampleKey: faker.random.word(),
           };
 
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
@@ -627,8 +624,8 @@ describe('NegotiatorHelpers', () => {
     describe('given no mediaType', () => {
       it('should negotiate default media type', () => {
         const desiredOptions: NegotiationOptions = {
-          dynamic: chance.bool(),
-          exampleKey: chance.string(),
+          dynamic: faker.random.boolean(),
+          exampleKey: faker.random.word(),
         };
 
         const httpResponseSchema: IHttpOperationResponse = {
@@ -676,11 +673,11 @@ describe('NegotiatorHelpers', () => {
         ['*/*', 'application/json'],
         ['application/json', 'application/xml'],
       ])('should return %s even when %s is available', (defaultMediaType, alternateMediaType) => {
-        const code = chance.string();
+        const code = faker.random.word();
         const partialOptions = {
           code,
-          dynamic: chance.bool(),
-          exampleKey: chance.string(),
+          dynamic: faker.random.boolean(),
+          exampleKey: faker.random.word(),
         };
 
         const contents: IMediaTypeContent[] = [alternateMediaType, defaultMediaType].map(mediaType => ({
@@ -722,7 +719,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     describe('when no default response', () => {
-      const code = chance.string();
+      const code = faker.random.word();
       const partialOptions = { code: '200', dynamic: false };
       const response: IHttpOperationResponse = {
         code,
@@ -751,7 +748,7 @@ describe('NegotiatorHelpers', () => {
   });
 
   describe('when multiple responses', () => {
-    const code = chance.string();
+    const code = faker.random.word();
     const partialOptions = { code: '200', dynamic: false };
 
     describe('and json is among them', () => {
@@ -793,11 +790,11 @@ describe('NegotiatorHelpers', () => {
 describe('negotiateByPartialOptionsAndHttpContent()', () => {
   describe('given exampleKey forced', () => {
     it('and example exists should return that example', () => {
-      const exampleKey = chance.string();
+      const exampleKey = faker.random.word();
       const partialOptions = {
         code: '200',
         exampleKey,
-        dynamic: chance.bool(),
+        dynamic: faker.random.boolean(),
       };
       const bodyExample: INodeExample = {
         key: exampleKey,
@@ -805,7 +802,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
       };
 
       const httpContent: IMediaTypeContent = {
-        mediaType: `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`,
+        mediaType: faker.system.mimeType(),
         examples: [bodyExample],
         encodings: [],
       };
@@ -824,14 +821,14 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
     });
 
     it('and example not exist should throw an error', () => {
-      const exampleKey = chance.string();
+      const exampleKey = faker.random.word();
       const partialOptions = {
         code: '200',
         exampleKey,
-        dynamic: chance.bool(),
+        dynamic: faker.random.boolean(),
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`,
+        mediaType: faker.system.mimeType(),
         examples: [],
         encodings: [],
       };
@@ -850,7 +847,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: true,
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`,
+        mediaType: faker.system.mimeType(),
         examples: [],
         schema: { type: 'string' },
         encodings: [],
@@ -873,7 +870,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: true,
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`,
+        mediaType: faker.system.mimeType(),
         examples: [],
         encodings: [],
       };
@@ -895,16 +892,16 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: false,
       };
       const bodyExample: INodeExample | INodeExternalExample = {
-        key: chance.string(),
+        key: faker.random.word(),
         value: '',
         externalValue: '',
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`,
+        mediaType: faker.system.mimeType(),
         examples: [
           bodyExample,
           {
-            key: chance.string(),
+            key: faker.random.word(),
             value: '',
             externalValue: '',
           },
@@ -930,7 +927,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         code: '200',
       };
       const httpContent: IMediaTypeContent = {
-        mediaType: `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`,
+        mediaType: faker.system.mimeType(),
         examples: [],
         schema: { type: 'string' },
         encodings: [],
@@ -954,7 +951,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
       };
 
       const httpContent: IMediaTypeContent = {
-        mediaType: `${chance.string(chanceOptions)}/${chance.string(chanceOptions)}`,
+        mediaType: faker.system.mimeType(),
         examples: [],
         encodings: [],
       };

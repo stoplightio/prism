@@ -1,21 +1,16 @@
 import { HttpMethod } from '@stoplight/types';
-import { Chance } from 'chance';
+import * as faker from 'faker/locale/en';
 import { defaults } from 'lodash/fp';
 import { DeepNonNullable } from 'utility-types';
 
-const chance = new Chance();
 const httpMethods: HttpMethod[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
 export function pickOneHttpMethod(): HttpMethod {
-  return chance.pickone(httpMethods);
+  return faker.random.arrayElement(httpMethods);
 }
 
 export function pickSetOfHttpMethods(count = 2): HttpMethod[] {
-  return chance.unique(pickOneHttpMethod, count);
-}
-
-export function randomArray<T>(itemGenerator: () => T, length = 1): T[] {
-  return new Array(length).fill(null).map(itemGenerator);
+  return new Array(count).fill(1).map(() => pickOneHttpMethod());
 }
 
 type IRandomPathOptions = {
@@ -35,10 +30,9 @@ const defaultRandomPathOptions: DeepNonNullable<IRandomPathOptions> = {
 export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions): string {
   const options = defaults(defaultRandomPathOptions, opts);
 
-  const randomPathFragments = randomArray(
-    () => (options.includeTemplates && chance.bool() ? `{${chance.word()}}` : chance.word()),
-    options.pathFragments
-  );
+  const randomPathFragments = new Array(options.pathFragments)
+    .fill(0)
+    .map(() => (options.includeTemplates && faker.random.boolean() ? `{${faker.random.word()}}` : faker.random.word()));
 
   const leadingSlash = options.leadingSlash ? '/' : '';
   const trailingSlash = options.trailingSlash ? '/' : '';

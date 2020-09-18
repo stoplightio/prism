@@ -1,6 +1,6 @@
+import * as faker from 'faker/locale/en';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { HttpMethod, IHttpOperation, IServer } from '@stoplight/types';
-import { Chance } from 'chance';
 import { isRight } from 'fp-ts/Either';
 import { ProblemJsonError } from '../../';
 import {
@@ -11,13 +11,11 @@ import {
   NO_SERVER_MATCHED_ERROR,
 } from '../errors';
 import route from '../index';
-import { pickOneHttpMethod, pickSetOfHttpMethods, randomPath } from './utils';
-
-const chance = new Chance();
+import { pickSetOfHttpMethods, pickOneHttpMethod, randomPath } from './utils';
 
 function createResource(method: string, path: string, servers: IServer[]): IHttpOperation {
   return {
-    id: chance.guid(),
+    id: faker.random.uuid(),
     method,
     path,
     responses: [{ code: '200' }],
@@ -86,7 +84,7 @@ describe('http router', () => {
       });
 
       test('given a concrete matching server and unmatched methods should not match', () => {
-        const url = chance.url();
+        const url = faker.internet.url();
         const [resourceMethod, requestMethod] = pickSetOfHttpMethods(2);
 
         assertLeft(
@@ -114,7 +112,7 @@ describe('http router', () => {
         const method = pickOneHttpMethod();
 
         test('given a concrete matching server unmatched path should not match', () => {
-          const url = chance.url();
+          const url = faker.internet.url();
           const path = randomPath({ trailingSlash: false });
 
           assertLeft(
@@ -139,7 +137,7 @@ describe('http router', () => {
         });
 
         test('given a concrete matching server and matched concrete path should match', () => {
-          const url = chance.url();
+          const url = faker.internet.url();
           const path = randomPath({ includeTemplates: false });
           const expectedResource = createResource(method, path, [
             {
@@ -240,7 +238,7 @@ describe('http router', () => {
         });
 
         test('given a concrete matching server and matched templated path should match', () => {
-          const url = chance.url();
+          const url = faker.internet.url();
           const templatedPath = '/a/{b}/c';
           const requestPath = '/a/x/c';
           const expectedResource = createResource(method, templatedPath, [
@@ -265,7 +263,7 @@ describe('http router', () => {
         });
 
         test('given a concrete matching server and unmatched templated path should not match', () => {
-          const url = chance.url();
+          const url = faker.internet.url();
           const templatedPath = '/a/{x}/c';
           const requestPath = '/a/y/b';
           const expectedResource = createResource(method, templatedPath, [
