@@ -10,11 +10,7 @@ export function pickOneHttpMethod(): HttpMethod {
 }
 
 export function pickSetOfHttpMethods(count = 2): HttpMethod[] {
-  return new Array(count).map(() => pickOneHttpMethod());
-}
-
-export function randomArray<T>(itemGenerator: () => T, length = 1): T[] {
-  return new Array(length).fill(null).map(itemGenerator);
+  return new Array(count).fill(1).map(() => pickOneHttpMethod());
 }
 
 type IRandomPathOptions = {
@@ -34,10 +30,9 @@ const defaultRandomPathOptions: DeepNonNullable<IRandomPathOptions> = {
 export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions): string {
   const options = defaults(defaultRandomPathOptions, opts);
 
-  const randomPathFragments = randomArray(
-    () => (options.includeTemplates && faker.random.boolean() ? `{${faker.random.word()}}` : faker.random.word()),
-    options.pathFragments
-  );
+  const randomPathFragments = new Array(options.pathFragments)
+    .fill(0)
+    .map(() => (options.includeTemplates && faker.random.boolean() ? `{${faker.random.word()}}` : faker.random.word()));
 
   const leadingSlash = options.leadingSlash ? '/' : '';
   const trailingSlash = options.trailingSlash ? '/' : '';
