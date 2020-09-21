@@ -20,15 +20,9 @@ import { validateSecurity } from './validators/security';
 import { URI } from 'uri-template-lite';
 
 import { IHttpRequest, IHttpResponse } from '../types';
-import { header, query, path } from './deserializers';
 import { findOperationResponse } from './utils/spec';
-import { validateBody, HttpHeadersValidator, HttpQueryValidator } from './validators';
+import { validateBody, validateHeaders, validateQuery, validatePath } from './validators';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
-import { HttpPathValidator } from './validators/path';
-
-export const headersValidator = new HttpHeadersValidator(header);
-export const queryValidator = new HttpQueryValidator(query);
-export const pathValidator = new HttpPathValidator(path);
 
 const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unknown) =>
   pipe(
@@ -66,11 +60,9 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
       request =>
         sequenceValidation(
           request.body ? mightValidateBody(request.body, body, mediaType) : E.right(undefined),
-          request.headers ? headersValidator.validate(element.headers || {}, request.headers) : E.right(undefined),
-          request.query ? queryValidator.validate(element.url.query || {}, request.query) : E.right(undefined),
-          request.path
-            ? pathValidator.validate(getPathParams(element.url.path, resource.path), request.path)
-            : E.right(undefined)
+          request.headers ? validateHeaders(element.headers || {}, request.headers) : E.right(undefined),
+          request.query ? validateQuery(element.url.query || {}, request.query) : E.right(undefined),
+          request.path ? validatePath(getPathParams(element.url.path, resource.path), request.path) : E.right(undefined)
         )
     ),
     E.map(() => element)
@@ -89,7 +81,7 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
     E.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(error => [error])
   );
 
-export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
+const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
     O.fromNullable(mediaType),
     O.map(contentType.parse),
@@ -129,7 +121,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
           )
         ),
         validateBody(element.body, response.contents || [], mediaType),
-        headersValidator.validate(element.headers || {}, response.headers || [])
+        validateHeaders(element.headers || {}, response.headers || [])
       )
     ),
     E.map(() => element)
@@ -140,4 +132,4 @@ function getPathParams(path: string, template: string): Dictionary<string> {
   return new URI.Template(template).match(path);
 }
 
-export { validateInput, validateOutput, validateSecurity };
+export { validateInput, validateOutput, validateSecurity, validateMediaType };
