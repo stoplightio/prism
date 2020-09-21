@@ -1,14 +1,10 @@
-import { HttpParamStyles, IHttpHeaderParam, Dictionary } from '@stoplight/types';
+import { HttpParamStyles, IHttpHeaderParam } from '@stoplight/types';
 import { IHttpNameValue } from '../../types';
-import { deserializeFn } from '../deserializers/types';
+import type { header } from '../deserializers';
 import { HttpParamsValidator } from './params';
 
 export class HttpHeadersValidator extends HttpParamsValidator<IHttpNameValue> {
-  constructor(
-    registry: Dictionary<deserializeFn<IHttpNameValue>>,
-    prefix: string,
-    style: HttpParamStyles = HttpParamStyles.Simple
-  ) {
+  constructor(registry: typeof header, prefix: string, style: HttpParamStyles = HttpParamStyles.Simple) {
     super(registry, prefix, style);
   }
 
