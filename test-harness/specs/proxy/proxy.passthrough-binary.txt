@@ -1,0 +1,20 @@
+====test====
+Sending a request with a binary content should be allowed
+====spec====
+swagger: "2.0"
+paths:
+  /anything:
+    post:
+      produces:
+        - application/json
+      consumes:
+        - application/octet-stream
+      responses:
+        200:
+          description: OK
+====server====
+proxy -p 4010 ${document} http://httpbin.org
+====command====
+curl -i http://localhost:4010/anything -H "Content-Type: application/octet-stream" --data-binary @package.json
+====expect====
+HTTP/1.1 200 OK
