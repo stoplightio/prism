@@ -1,13 +1,13 @@
 import { fromNullable, getOrElse, map } from 'fp-ts/Option';
 import { pipe } from 'fp-ts/pipeable';
-import { get } from 'lodash';
+import { get, escapeRegExp } from 'lodash';
 import { IHttpRequest } from '../../../../types';
 import { when } from './utils';
 
 export const apiKeyInCookie = (input: Pick<IHttpRequest, 'headers' | 'url'>, name: string) => {
   const isApiKeyInCookie = pipe(
     fromNullable(input.headers?.['cookie']),
-    map(cookie => new RegExp(`${name}=.+`).test(cookie)),
+    map(cookie => new RegExp(`${escapeRegExp(name)}=.+`).test(cookie)),
     getOrElse(() => false)
   );
 
