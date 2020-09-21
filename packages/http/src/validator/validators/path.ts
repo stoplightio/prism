@@ -1,13 +1,7 @@
-import { HttpParamStyles, IHttpPathParam, Dictionary } from '@stoplight/types';
+import { HttpParamStyles, IHttpPathParam } from '@stoplight/types';
 import { IHttpNameValue } from '../../types';
-import type { path } from '../deserializers';
-import { HttpParamsValidator } from './params';
+import { validate as validateParams } from './params';
+import { path } from '../deserializers';
 
-export class HttpPathValidator extends HttpParamsValidator<IHttpNameValue> {
-  constructor(registry: typeof path) {
-    super(registry, 'path', HttpParamStyles.Simple);
-  }
-  public validate(target: IHttpNameValue, specs: IHttpPathParam[]) {
-    return super.validate(target, specs);
-  }
-}
+export const validate = (target: IHttpNameValue, specs: IHttpPathParam[]) =>
+  validateParams(target, specs)({ registry: path, prefix: 'path', style: HttpParamStyles.Simple });

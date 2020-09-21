@@ -7,7 +7,3 @@ export type validateFn<Target, Specs> = (
   specs: Specs[],
   mediaType?: string
 ) => Either<NonEmptyArray<IPrismDiagnostic>, Target>;
-
-export interface IHttpValidator<Target, Specs> {
-  validate(target: Target, specs: Specs[], mediaType?: string): Either<NonEmptyArray<IPrismDiagnostic>, Target>;
-}
