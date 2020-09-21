@@ -22,11 +22,10 @@ import { URI } from 'uri-template-lite';
 import { IHttpRequest, IHttpResponse } from '../types';
 import { header, query, path } from './deserializers';
 import { findOperationResponse } from './utils/spec';
-import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './validators';
+import { validateBody, HttpHeadersValidator, HttpQueryValidator } from './validators';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 import { HttpPathValidator } from './validators/path';
 
-export const bodyValidator = new HttpBodyValidator();
 export const headersValidator = new HttpHeadersValidator(header);
 export const queryValidator = new HttpQueryValidator(query);
 export const pathValidator = new HttpPathValidator(path);
@@ -45,11 +44,11 @@ const validateIfBodySpecIsProvided = (body: unknown, mediaType: string, contents
     sequenceOption(O.fromNullable(body), O.fromNullable(contents)),
     O.fold(
       () => E.right(body),
-      ([body, contents]) => bodyValidator.validate(body, contents, mediaType)
+      ([body, contents]) => validateBody(body, contents, mediaType)
     )
   );
 
-const validateBody = (requestBody: IHttpOperationRequestBody, body: unknown, mediaType: string) =>
+const mightValidateBody = (requestBody: IHttpOperationRequestBody, body: unknown, mediaType: string) =>
   pipe(
     checkBodyIsProvided(requestBody, body),
     E.chain(() => validateIfBodySpecIsProvided(body, mediaType, requestBody.contents))
@@ -66,7 +65,7 @@ const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, el
       e => E.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
       request =>
         sequenceValidation(
-          request.body ? validateBody(request.body, body, mediaType) : E.right(undefined),
+          request.body ? mightValidateBody(request.body, body, mediaType) : E.right(undefined),
           request.headers ? headersValidator.validate(element.headers || {}, request.headers) : E.right(undefined),
           request.query ? queryValidator.validate(element.url.query || {}, request.query) : E.right(undefined),
           request.path
@@ -129,7 +128,7 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
             contents => validateMediaType(contents, mediaType)
           )
         ),
-        bodyValidator.validate(element.body, response.contents || [], mediaType),
+        validateBody(element.body, response.contents || [], mediaType),
         headersValidator.validate(element.headers || {}, response.headers || [])
       )
     ),

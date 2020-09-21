@@ -9,8 +9,8 @@ import { get } from 'lodash';
 import { is as typeIs } from 'type-is';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
-import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
+import { validateFn } from './types';
 
 export function deserializeFormBody(
   schema: JSONSchema,
@@ -82,48 +82,46 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
   );
 }
 
-export class HttpBodyValidator implements IHttpValidator<unknown, IMediaTypeContent> {
-  public validate(target: unknown, specs: IMediaTypeContent[], mediaType?: string) {
-    const findContentByMediaType = pipe(
-      O.fromNullable(mediaType),
-      O.bindTo('mediaType'),
-      O.bind('contentResult', ({ mediaType }) => findContentByMediaTypeOrFirst(specs, mediaType)),
-      O.alt(() => O.some({ contentResult: { content: specs[0] || {}, mediaType: 'random' } })),
-      O.bind('schema', ({ contentResult }) => O.fromNullable(contentResult.content.schema)),
-      O.map(({ schema, contentResult: { content, mediaType } }) => ({ schema, mediaType, content }))
-    );
+export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, mediaType) => {
+  const findContentByMediaType = pipe(
+    O.fromNullable(mediaType),
+    O.bindTo('mediaType'),
+    O.bind('contentResult', ({ mediaType }) => findContentByMediaTypeOrFirst(specs, mediaType)),
+    O.alt(() => O.some({ contentResult: { content: specs[0] || {}, mediaType: 'random' } })),
+    O.bind('schema', ({ contentResult }) => O.fromNullable(contentResult.content.schema)),
+    O.map(({ schema, contentResult: { content, mediaType } }) => ({ schema, mediaType, content }))
+  );
 
-    return pipe(
-      findContentByMediaType,
-      O.fold(
-        () => E.right(target),
-        ({ content, mediaType: mt, schema }) =>
-          pipe(
-            mt,
-            O.fromPredicate(mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded'])),
-            O.fold(
-              () =>
-                pipe(
-                  validateAgainstSchema(target, schema, false),
-                  E.fromOption(() => target),
-                  E.swap
+  return pipe(
+    findContentByMediaType,
+    O.fold(
+      () => E.right(target),
+      ({ content, mediaType: mt, schema }) =>
+        pipe(
+          mt,
+          O.fromPredicate(mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded'])),
+          O.fold(
+            () =>
+              pipe(
+                validateAgainstSchema(target, schema, false),
+                E.fromOption(() => target),
+                E.swap
+              ),
+            () =>
+              pipe(
+                target,
+                E.fromPredicate<NEA.NonEmptyArray<IPrismDiagnostic>, unknown, string>(
+                  (target: unknown): target is string => typeof target === 'string',
+                  () => [{ message: 'Target is not a string', code: '422', severity: DiagnosticSeverity.Error }]
                 ),
-              () =>
-                pipe(
-                  target,
-                  E.fromPredicate<NEA.NonEmptyArray<IPrismDiagnostic>, unknown, string>(
-                    (target: unknown): target is string => typeof target === 'string',
-                    () => [{ message: 'Target is not a string', code: '422', severity: DiagnosticSeverity.Error }]
-                  ),
-                  E.chain(target => deserializeAndValidate(content, schema, target))
-                )
-            ),
-            E.mapLeft(diagnostics => applyPrefix('body', diagnostics))
-          )
-      )
-    );
-  }
-}
+                E.chain(target => deserializeAndValidate(content, schema, target))
+              )
+          ),
+          E.mapLeft(diagnostics => applyPrefix('body', diagnostics))
+        )
+    )
+  );
+};
 
 function applyPrefix(
   prefix: string,
