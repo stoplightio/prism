@@ -1,10 +1,10 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, Dictionary, IHttpEncoding, IMediaTypeContent } from '@stoplight/types';
-import * as Array from 'fp-ts/Array';
+import * as A from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
+import * as NEA from 'fp-ts/NonEmptyArray';
 import { pipe } from 'fp-ts/pipeable';
-import * as NonEmptyArray from 'fp-ts/NonEmptyArray';
 import { get } from 'lodash';
 import { is as typeIs } from 'type-is';
 import { JSONSchema } from '../../types';
@@ -23,7 +23,7 @@ export function deserializeFormBody(
 
   return pipe(
     Object.keys(schema.properties),
-    Array.reduce({}, (deserialized, property) => {
+    A.reduce({}, (deserialized, property) => {
       deserialized[property] = decodedUriParams[property];
       const encoding = encodings.find(enc => enc.property === property);
 
@@ -58,8 +58,8 @@ export function decodeUriEntities(target: Dictionary<string>) {
 export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: string) {
   return pipe(
     specs,
-    Array.findFirst(spec => !!typeIs(mediaType, [spec.mediaType])),
-    O.alt(() => Array.head(specs)),
+    A.findFirst(spec => !!typeIs(mediaType, [spec.mediaType])),
+    O.alt(() => A.head(specs)),
     O.map(content => ({ mediaType, content }))
   );
 }
@@ -116,7 +116,7 @@ export class HttpBodyValidator implements IHttpValidator<unknown, IMediaTypeCont
               () =>
                 pipe(
                   target,
-                  E.fromPredicate<NonEmptyArray.NonEmptyArray<IPrismDiagnostic>, unknown, string>(
+                  E.fromPredicate<NEA.NonEmptyArray<IPrismDiagnostic>, unknown, string>(
                     (target: unknown): target is string => typeof target === 'string',
                     () => [{ message: 'Target is not a string', code: '422', severity: DiagnosticSeverity.Error }]
                   ),
@@ -132,21 +132,21 @@ export class HttpBodyValidator implements IHttpValidator<unknown, IMediaTypeCont
 
 function applyPrefix(
   prefix: string,
-  diagnostics: NonEmptyArray.NonEmptyArray<IPrismDiagnostic>
-): NonEmptyArray.NonEmptyArray<IPrismDiagnostic> {
+  diagnostics: NEA.NonEmptyArray<IPrismDiagnostic>
+): NEA.NonEmptyArray<IPrismDiagnostic> {
   return pipe(
     diagnostics,
-    NonEmptyArray.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }))
+    NEA.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }))
   );
 }
 
 function validateAgainstReservedCharacters(
   encodedUriParams: Dictionary<string>,
   encodings: IHttpEncoding[]
-): E.Either<NonEmptyArray.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
+): E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
   return pipe(
     encodings,
-    Array.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
+    A.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
       const allowReserved = get(encoding, 'allowReserved', false);
       const property = encoding.property;
       const value = encodedUriParams[property];
@@ -161,6 +161,6 @@ function validateAgainstReservedCharacters(
 
       return diagnostics;
     }),
-    diagnostics => (Array.isNonEmpty(diagnostics) ? E.left(diagnostics) : E.right(encodedUriParams))
+    diagnostics => (A.isNonEmpty(diagnostics) ? E.left(diagnostics) : E.right(encodedUriParams))
   );
 }
