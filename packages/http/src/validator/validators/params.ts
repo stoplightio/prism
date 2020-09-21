@@ -6,10 +6,10 @@ import * as NEA from 'fp-ts/NonEmptyArray';
 import { pipe } from 'fp-ts/pipeable';
 import { JSONSchema4 } from 'json-schema';
 import { JSONSchema } from '../../';
-import { deserializeFn } from '../deserializers/types';
-import { IHttpValidator } from './types';
 import { validateAgainstSchema } from './utils';
-import { IPrismDiagnostic } from '@stoplight/prism-core';
+import type { deserializeFn } from '../deserializers/types';
+import type { IHttpValidator } from './types';
+import type { IPrismDiagnostic } from '@stoplight/prism-core';
 
 export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttpParam> {
   constructor(
