@@ -83,8 +83,6 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
 }
 
 export class HttpBodyValidator implements IHttpValidator<unknown, IMediaTypeContent> {
-  constructor(private prefix: string) {}
-
   public validate(target: unknown, specs: IMediaTypeContent[], mediaType?: string) {
     const findContentByMediaType = pipe(
       O.fromNullable(mediaType),
@@ -120,7 +118,7 @@ export class HttpBodyValidator implements IHttpValidator<unknown, IMediaTypeCont
                   E.chain(target => deserializeAndValidate(content, schema, target))
                 )
             ),
-            E.mapLeft(diagnostics => applyPrefix(this.prefix, diagnostics))
+            E.mapLeft(diagnostics => applyPrefix('body', diagnostics))
           )
       )
     );

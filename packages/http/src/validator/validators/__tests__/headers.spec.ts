@@ -6,7 +6,7 @@ import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/uti
 import * as O from 'fp-ts/Option';
 
 describe('HttpHeadersValidator', () => {
-  const httpHeadersValidator = new HttpHeadersValidator(header, 'header');
+  const httpHeadersValidator = new HttpHeadersValidator(header);
 
   beforeEach(() => {
     jest.clearAllMocks();

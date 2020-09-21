@@ -1,4 +1,4 @@
-import { HttpParamStyles, IHttpPathParam } from '@stoplight/types';
+import { HttpParamStyles } from '@stoplight/types';
 import { path as registry } from '../../deserializers';
 import { HttpPathValidator } from '../path';
 import * as validateAgainstSchemaModule from '../utils';
@@ -6,7 +6,7 @@ import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/uti
 import * as O from 'fp-ts/Option';
 
 describe('HttpPathValidator', () => {
-  const httpPathValidator = new HttpPathValidator(registry, 'path');
+  const httpPathValidator = new HttpPathValidator(registry);
 
   beforeEach(() => {
     jest.clearAllMocks();

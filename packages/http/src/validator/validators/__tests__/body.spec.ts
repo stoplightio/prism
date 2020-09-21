@@ -4,7 +4,7 @@ import { HttpBodyValidator, findContentByMediaTypeOrFirst } from '../body';
 import { assertRight, assertLeft, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('HttpBodyValidator', () => {
-  const httpBodyValidator = new HttpBodyValidator('body');
+  const httpBodyValidator = new HttpBodyValidator();
 
   describe('validate()', () => {
     describe('content specs are missing', () => {

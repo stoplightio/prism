@@ -26,10 +26,10 @@ import { HttpBodyValidator, HttpHeadersValidator, HttpQueryValidator } from './v
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 import { HttpPathValidator } from './validators/path';
 
-export const bodyValidator = new HttpBodyValidator('body');
-export const headersValidator = new HttpHeadersValidator(header, 'header');
-export const queryValidator = new HttpQueryValidator(query, 'query');
-export const pathValidator = new HttpPathValidator(path, 'path');
+export const bodyValidator = new HttpBodyValidator();
+export const headersValidator = new HttpHeadersValidator(header);
+export const queryValidator = new HttpQueryValidator(query);
+export const pathValidator = new HttpPathValidator(path);
 
 const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unknown) =>
   pipe(

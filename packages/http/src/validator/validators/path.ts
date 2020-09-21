@@ -4,8 +4,8 @@ import type { path } from '../deserializers';
 import { HttpParamsValidator } from './params';
 
 export class HttpPathValidator extends HttpParamsValidator<IHttpNameValue> {
-  constructor(registry: typeof path, prefix: string) {
-    super(registry, prefix, HttpParamStyles.Simple);
+  constructor(registry: typeof path) {
+    super(registry, 'path', HttpParamStyles.Simple);
   }
   public validate(target: IHttpNameValue, specs: IHttpPathParam[]) {
     return super.validate(target, specs);

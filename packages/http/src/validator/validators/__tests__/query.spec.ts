@@ -1,4 +1,4 @@
-import { HttpParamStyles, IHttpQueryParam, DiagnosticSeverity } from '@stoplight/types';
+import { HttpParamStyles, DiagnosticSeverity } from '@stoplight/types';
 import { query as registry } from '../../deserializers';
 import { HttpQueryValidator } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
@@ -6,7 +6,7 @@ import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/uti
 import * as O from 'fp-ts/Option';
 
 describe('HttpQueryValidator', () => {
-  const httpQueryValidator = new HttpQueryValidator(registry, 'query');
+  const httpQueryValidator = new HttpQueryValidator(registry);
 
   beforeEach(() => {
     jest.clearAllMocks();
