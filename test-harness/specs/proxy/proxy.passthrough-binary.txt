@@ -3,7 +3,7 @@ Sending a request with a binary content should be allowed
 ====spec====
 swagger: "2.0"
 paths:
-  /anything:
+  /status/200:
     post:
       produces:
         - application/json
@@ -15,6 +15,6 @@ paths:
 ====server====
 proxy -p 4010 ${document} http://httpbin.org
 ====command====
-curl -i http://localhost:4010/anything -H "Content-Type: application/octet-stream" --data-binary @package.json
-====expect====
+curl -i http://localhost:4010/status/200 -H "Content-Type: application/octet-stream" -H "Expect:" --data-binary @package.json
+====expect-loose====
 HTTP/1.1 200 OK
