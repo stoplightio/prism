@@ -13,7 +13,7 @@ import type { IPrismDiagnostic } from '@stoplight/prism-core';
 
 export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttpParam> {
   constructor(
-    private _registry: Dictionary<deserializeFn<Target>, HttpParamStyles>,
+    private _registry: Dictionary<deserializeFn<Target>>,
     private _prefix: string,
     private _style: HttpParamStyles
   ) {}
@@ -40,16 +40,19 @@ export class HttpParamsValidator<Target> implements IHttpValidator<Target, IHttp
             el => {
               const resolvedStyle = el.style || style;
               const deserializer = registry[resolvedStyle];
-              return deserializer(
-                el.name.toLowerCase(),
-                // This is bad, but unfortunately for the way the parameter validators are done there's
-                // no better way at them moment. I hope to fix this in a following PR where we will revisit
-                // the validators a bit
-                // @ts-ignore
-                mapKeys(target, (_value, key) => key.toLowerCase()),
-                schema.properties && (schema.properties[el.name.toLowerCase()] as JSONSchema4),
-                el.explode || false
-              );
+              if (deserializer)
+                return deserializer(
+                  el.name.toLowerCase(),
+                  // This is bad, but unfortunately for the way the parameter validators are done there's
+                  // no better way at them moment. I hope to fix this in a following PR where we will revisit
+                  // the validators a bit
+                  // @ts-ignore
+                  mapKeys(target, (_value, key) => key.toLowerCase()),
+                  schema.properties && (schema.properties[el.name.toLowerCase()] as JSONSchema4),
+                  el.explode || false
+                );
+
+              return undefined;
             }
           )
         );
