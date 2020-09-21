@@ -5,10 +5,8 @@ import { IHttpRequest } from '../../../../types';
 import { when } from './utils';
 
 export const apiKeyInCookie = (input: Pick<IHttpRequest, 'headers' | 'url'>, name: string) => {
-  const probablyCookie = get(input, ['headers', 'cookie']);
-
   const isApiKeyInCookie = pipe(
-    fromNullable(probablyCookie),
+    fromNullable(input.headers?.['cookie']),
     map(cookie => new RegExp(`${name}=.+`).test(cookie)),
     getOrElse(() => false)
   );
