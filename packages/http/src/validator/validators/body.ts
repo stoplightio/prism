@@ -88,14 +88,11 @@ export class HttpBodyValidator implements IHttpValidator<unknown, IMediaTypeCont
   public validate(target: unknown, specs: IMediaTypeContent[], mediaType?: string) {
     const findContentByMediaType = pipe(
       O.fromNullable(mediaType),
-      O.chain(mt => findContentByMediaTypeOrFirst(specs, mt)),
-      O.alt(() => O.some({ content: specs[0] || {}, mediaType: 'random' })),
-      O.chain(({ mediaType, content }) =>
-        pipe(
-          O.fromNullable(content.schema),
-          O.map(schema => ({ schema, mediaType, content }))
-        )
-      )
+      O.bindTo('mediaType'),
+      O.bind('contentResult', ({ mediaType }) => findContentByMediaTypeOrFirst(specs, mediaType)),
+      O.alt(() => O.some({ contentResult: { content: specs[0] || {}, mediaType: 'random' } })),
+      O.bind('schema', ({ contentResult }) => O.fromNullable(contentResult.content.schema)),
+      O.map(({ schema, contentResult: { content, mediaType } }) => ({ schema, mediaType, content }))
     );
 
     return pipe(
