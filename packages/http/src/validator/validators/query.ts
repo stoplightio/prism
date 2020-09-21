@@ -1,4 +1,4 @@
-import { HttpParamStyles, IHttpQueryParam, Dictionary } from '@stoplight/types';
+import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
 import { IHttpNameValues } from '../../types';
 import type { query } from '../deserializers';
 import { HttpParamsValidator } from './params';
