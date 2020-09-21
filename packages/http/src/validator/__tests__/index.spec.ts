@@ -39,8 +39,8 @@ const mockError: IPrismDiagnostic = {
 describe('HttpValidator', () => {
   describe('validator.validateInput()', () => {
     beforeAll(() => {
-      jest.spyOn(validators, 'validateBody').mockReturnValue(E.left([mockError]));
       jest.spyOn(validators, 'validateQuery').mockReturnValue(E.left([mockError]));
+      jest.spyOn(validators, 'validateBody').mockReturnValue(E.left([mockError]));
       jest.spyOn(validators, 'validateHeaders').mockReturnValue(E.left([mockError]));
       jest.spyOn(validators, 'validatePath').mockReturnValue(E.left([mockError]));
     });

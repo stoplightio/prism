@@ -1,4 +1,8 @@
-export { validate as validateBody } from './body';
-export { validate as validateHeaders } from './headers';
-export { validate as validateQuery } from './query';
-export { validate as validatePath } from './path';
+import { validate as validateBody } from './body';
+import { validate as validateHeaders } from './headers';
+import { validate as validateQuery } from './query';
+import { validate as validatePath } from './path';
+
+const obj = { validateQuery, validatePath, validateHeaders, validateBody };
+
+export = obj;
