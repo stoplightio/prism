@@ -3,7 +3,7 @@ import * as createObjectFromKeyValListModule from '../utils';
 
 describe('deserialize()', () => {
   describe('schema type is a primitive', () => {
-    it('return unmodified value', () => {
+    it('returns unmodified value', () => {
       expect(formDeserializer('key', { key: 'val' }, { type: 'string' })).toEqual('val');
     });
   });
