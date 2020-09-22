@@ -14,7 +14,7 @@ export default function createDeserializeFn(separator: string) {
     return value ? value.split(separator) : '';
   }
 
-  return function deserialize(name: string, parameters: IHttpNameValues, schema?: JSONSchema, explode?: boolean) {
+  return function deserialize(name: string, parameters: IHttpNameValues, schema?: JSONSchema, explode = false) {
     const type = schema ? schema.type : undefined;
     const values = parameters[name];
 
