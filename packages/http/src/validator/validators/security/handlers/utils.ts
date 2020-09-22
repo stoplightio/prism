@@ -1,23 +1,25 @@
 import { DiagnosticSeverity } from '@stoplight/types';
-import { Either, left, right } from 'fp-ts/Either';
-import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { IHttpRequest } from '../../../../types';
+import * as E from 'fp-ts/Either';
+import { pipe } from 'fp-ts/pipeable';
+import { identity } from 'fp-ts/function';
+import type { IPrismDiagnostic } from '@stoplight/prism-core';
+import type { IHttpRequest } from '../../../../types';
 
 export type ValidateSecurityFn = (
   input: Pick<IHttpRequest, 'headers' | 'url'>,
   name: string
-) => Either<IPrismDiagnostic, unknown>;
+) => E.Either<IPrismDiagnostic, unknown>;
 
 export function genRespForScheme(
   isSchemeProper: boolean,
   isCredsGiven: boolean,
   msg: string
-): Either<IPrismDiagnostic, unknown> {
+): E.Either<IPrismDiagnostic, unknown> {
   if (isSchemeProper) {
     return when(isCredsGiven, undefined);
   }
 
-  return left(genUnauthorisedErr(msg));
+  return E.left(genUnauthorisedErr(msg));
 }
 
 export const genUnauthorisedErr = (msg?: string): IPrismDiagnostic => ({
@@ -31,6 +33,9 @@ export function isScheme(shouldBeScheme: string, authScheme: string) {
   return authScheme.toLowerCase() === shouldBeScheme;
 }
 
-export function when(condition: boolean, errorMessage?: string): Either<IPrismDiagnostic, boolean> {
-  return condition ? right(true) : left(genUnauthorisedErr(errorMessage));
+export function when(condition: boolean, errorMessage?: string): E.Either<IPrismDiagnostic, boolean> {
+  return pipe(
+    condition,
+    E.fromPredicate(identity, () => genUnauthorisedErr(errorMessage))
+  );
 }
