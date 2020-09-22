@@ -10,17 +10,16 @@ export type ValidateSecurityFn = (
   name: string
 ) => E.Either<IPrismDiagnostic, unknown>;
 
-export function genRespForScheme(
+export const genRespForScheme = (
   isSchemeProper: boolean,
   isCredsGiven: boolean,
   msg: string
-): E.Either<IPrismDiagnostic, unknown> {
-  if (isSchemeProper) {
-    return when(isCredsGiven, undefined);
-  }
-
-  return E.left(genUnauthorisedErr(msg));
-}
+): E.Either<IPrismDiagnostic, unknown> =>
+  pipe(
+    isSchemeProper,
+    E.fromPredicate(identity, () => genUnauthorisedErr(msg)),
+    E.chain(() => when(isCredsGiven, undefined))
+  );
 
 export const genUnauthorisedErr = (msg?: string): IPrismDiagnostic => ({
   severity: DiagnosticSeverity.Error,
@@ -33,9 +32,8 @@ export function isScheme(shouldBeScheme: string, authScheme: string) {
   return authScheme.toLowerCase() === shouldBeScheme;
 }
 
-export function when(condition: boolean, errorMessage?: string): E.Either<IPrismDiagnostic, boolean> {
-  return pipe(
+export const when = (condition: boolean, errorMessage?: string): E.Either<IPrismDiagnostic, boolean> =>
+  pipe(
     condition,
     E.fromPredicate(identity, () => genUnauthorisedErr(errorMessage))
   );
-}
