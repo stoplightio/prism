@@ -2,7 +2,7 @@ import label from '../label';
 import * as createObjectFromKeyValListModule from '../utils';
 
 describe('deserialize()', () => {
-  describe('value does not begins with a dot', () => {
+  describe('value does not begin with a dot', () => {
     it('throws exception', () => {
       expect(() => label('name', { name: 'bad' }, { type: 'string' })).toThrowError(
         'Label serialization style requires parameter to be prefixed with "."'
