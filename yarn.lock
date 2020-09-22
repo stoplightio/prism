@@ -1538,10 +1538,10 @@
   resolved "https://registry.yarnpkg.com/@types/pino-std-serializers/-/pino-std-serializers-2.4.0.tgz#8cad99175cb79c2448f7455a2d32fb3fde29579c"
   integrity sha512-eAdu+NW1IkCdmp85SnhyKha+OOREQMT9lXaoICQxa7bhSauRiLzu3WSNt9Mf2piuJvWeXF/G0hGWHr63xNpIRA==
 
-"@types/pino@^6.0.0":
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-6.3.0.tgz#a4ad317278eca19becbc87f5ceafebb99d486604"
-  integrity sha512-AuZ32IbQlzW3XY9jA9X8iXkhMTtloKWHz1Ze23ClPx7L8ES69BNGfH308LsU2tHnDCLLCFoZvMn8+1njBx2EKg==
+"@types/pino@^6.3.1":
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/@types/pino/-/pino-6.3.1.tgz#25484d852d21e6e1d599688e48a2779b195c3479"
+  integrity sha512-WvGSuUcry1LKLSgQBAccZNUr5G1N/7b+1FU6W3KTWvkF39q5LSYoI6wu8F56emR8LhkvWAURygXW8T6GVPfZHA==
   dependencies:
     "@types/node" "*"
     "@types/pino-std-serializers" "*"
