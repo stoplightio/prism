@@ -61,6 +61,7 @@ export const validateParams = <Target>(
     }),
     O.chain(({ parameterValues, schema }) => validateAgainstSchema(parameterValues, schema, true, prefix)),
     O.map(schemaDiagnostic => NEA.concat(schemaDiagnostic, deprecatedWarnings)),
+    O.alt(() => NEA.fromArray(deprecatedWarnings)),
     E.fromOption(() => target),
     E.swap
   );
