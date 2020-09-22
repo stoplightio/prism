@@ -1,10 +1,10 @@
-import deepObject from '../deepObject';
+import { deserializeDeepObject } from '../deepObject';
 
 describe('deserialize()', () => {
   describe('schema type is an object', () => {
     it('converts params to object properly', () => {
       expect(
-        deepObject(
+        deserializeDeepObject(
           'key',
           {
             'key[a]': 'str',
@@ -54,7 +54,7 @@ describe('deserialize()', () => {
 
     describe('no properties are defined', () => {
       it('return empty object', () => {
-        expect(deepObject('key', {}, { type: 'object' })).toEqual({});
+        expect(deserializeDeepObject('key', {}, { type: 'object' })).toEqual({});
       });
     });
   });

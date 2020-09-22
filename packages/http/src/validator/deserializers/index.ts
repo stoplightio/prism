@@ -1,9 +1,9 @@
-import simple from './style/simple';
-import form from './style/form';
-import deepObject from './style/deepObject';
-import label from './style/label';
-import matrix from './style/matrix';
-import delimited from './style/delimited';
+import { deserializeSimple as simple } from './style/simple';
+import { deserializeForm as form } from './style/form';
+import { deserializeDeepObject as deepObject } from './style/deepObject';
+import { deserializeLabel as label } from './style/label';
+import { deserializeMatrixStyle as matrix } from './style/matrix';
+import { createDelimitedDeserializer as delimited } from './style/delimited';
 
 export const header = { simple };
 export const query = {

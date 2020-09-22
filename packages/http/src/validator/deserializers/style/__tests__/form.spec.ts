@@ -1,10 +1,10 @@
-import formDeserializer from '../form';
+import { deserializeForm } from '../form';
 import * as createObjectFromKeyValListModule from '../utils';
 
 describe('deserialize()', () => {
   describe('schema type is a primitive', () => {
     it('returns unmodified value', () => {
-      expect(formDeserializer('key', { key: 'val' }, { type: 'string' })).toEqual('val');
+      expect(deserializeForm('key', { key: 'val' }, { type: 'string' })).toEqual('val');
     });
   });
 
@@ -12,13 +12,13 @@ describe('deserialize()', () => {
     describe('explode is set', () => {
       describe('query param is an array', () => {
         it('returns unmodified value', () => {
-          expect(formDeserializer('key', { key: ['val1', 'val2'] }, { type: 'array' }, true)).toEqual(['val1', 'val2']);
+          expect(deserializeForm('key', { key: ['val1', 'val2'] }, { type: 'array' }, true)).toEqual(['val1', 'val2']);
         });
       });
 
       describe('query param is a value', () => {
         it('returns single-value array', () => {
-          expect(formDeserializer('key', { key: 'val' }, { type: 'array' }, true)).toEqual(['val']);
+          expect(deserializeForm('key', { key: 'val' }, { type: 'array' }, true)).toEqual(['val']);
         });
       });
     });
@@ -26,7 +26,7 @@ describe('deserialize()', () => {
     describe('explode is not set', () => {
       describe('query param is an array', () => {
         it('splits last query param value', () => {
-          expect(formDeserializer('key', { key: ['a,b,c', 'd,e,f'] }, { type: 'array' }, false)).toEqual([
+          expect(deserializeForm('key', { key: ['a,b,c', 'd,e,f'] }, { type: 'array' }, false)).toEqual([
             'd',
             'e',
             'f',
@@ -36,7 +36,7 @@ describe('deserialize()', () => {
 
       describe('query param is a value', () => {
         it('splits query param value', () => {
-          expect(formDeserializer('key', { key: 'a,b,c' }, { type: 'array' }, false)).toEqual(['a', 'b', 'c']);
+          expect(deserializeForm('key', { key: 'a,b,c' }, { type: 'array' }, false)).toEqual(['a', 'b', 'c']);
         });
       });
     });
@@ -46,13 +46,13 @@ describe('deserialize()', () => {
     describe('explode is set', () => {
       it('returns object', () => {
         expect(
-          formDeserializer('a', { a: 'b', c: 'd' }, { type: 'object', properties: { a: { type: 'string' } } }, true)
+          deserializeForm('a', { a: 'b', c: 'd' }, { type: 'object', properties: { a: { type: 'string' } } }, true)
         ).toEqual({ a: 'b' });
       });
 
       describe('schema properties are missing', () => {
         it('returns empty object', () => {
-          expect(formDeserializer('-', {}, { type: 'object' }, true)).toBeUndefined();
+          expect(deserializeForm('-', {}, { type: 'object' }, true)).toBeUndefined();
         });
       });
     });
@@ -65,7 +65,7 @@ describe('deserialize()', () => {
             return { a: 'b', c: 'd' };
           });
 
-          expect(formDeserializer('key', { key: ['e,f,g,h', 'a,b,c,d'] }, { type: 'object' }, false)).toEqual({
+          expect(deserializeForm('key', { key: ['e,f,g,h', 'a,b,c,d'] }, { type: 'object' }, false)).toEqual({
             a: 'b',
             c: 'd',
           });
@@ -81,7 +81,7 @@ describe('deserialize()', () => {
             return { a: 'b', c: 'd' };
           });
 
-          expect(formDeserializer('key', { key: 'a,b,c,d' }, { type: 'object' }, false)).toEqual({
+          expect(deserializeForm('key', { key: 'a,b,c,d' }, { type: 'object' }, false)).toEqual({
             a: 'b',
             c: 'd',
           });

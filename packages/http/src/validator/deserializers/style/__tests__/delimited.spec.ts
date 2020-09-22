@@ -1,6 +1,6 @@
-import delimitedFn from '../delimited';
+import { createDelimitedDeserializer } from '../delimited';
 
-const delimitedStyleDeserializer = delimitedFn('|');
+const delimitedStyleDeserializer = createDelimitedDeserializer('|');
 
 describe('deserialize()', () => {
   describe('schema type is not array', () => {
