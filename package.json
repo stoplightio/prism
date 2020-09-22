@@ -61,7 +61,7 @@
     "prettier": "^2.1.2",
     "split2": "^3.2.2",
     "tmp": "^0.2.0",
-    "ts-jest": "^26.3.0",
+    "ts-jest": "^26.4.0",
     "ts-node": "^9.0.0",
     "ts-transform-import-path-rewrite": "^0.2.1",
     "tsconfig-paths": "^3.8.0",
