@@ -2,7 +2,7 @@ import matrix from '../matrix';
 import * as createObjectFromKeyValListModule from '../utils';
 
 describe('deserialize()', () => {
-  describe('value does not begins with a semicolon', () => {
+  describe('value does not begin with a semicolon', () => {
     it('throws exception', () => {
       expect(() => matrix('name', { name: 'bad' }, { type: 'string' })).toThrowError(
         'Matrix serialization style requires parameter to be prefixed with ";"'
