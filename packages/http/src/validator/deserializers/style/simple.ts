@@ -1,7 +1,7 @@
 import { IHttpNameValue, JSONSchema } from '../../../types';
 import { createObjectFromKeyValList } from './utils';
 
-export default function deserialize(
+export function deserializeSimpleStyle(
   name: string,
   parameters: IHttpNameValue,
   schema?: JSONSchema,

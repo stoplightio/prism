@@ -1,10 +1,10 @@
-import label from '../label';
+import { deserializeLabelStyle } from '../label';
 import * as createObjectFromKeyValListModule from '../utils';
 
 describe('deserialize()', () => {
-  describe('value does not begins with a dot', () => {
+  describe('value does not begin with a dot', () => {
     it('throws exception', () => {
-      expect(() => label('name', { name: 'bad' }, { type: 'string' })).toThrowError(
+      expect(() => deserializeLabelStyle('name', { name: 'bad' }, { type: 'string' })).toThrowError(
         'Label serialization style requires parameter to be prefixed with "."'
       );
     });
@@ -12,7 +12,7 @@ describe('deserialize()', () => {
 
   describe('type is a primitive', () => {
     it('returns unmodified value', () => {
-      expect(label('name', { name: '.value' }, { type: 'string' }, false)).toEqual('value');
+      expect(deserializeLabelStyle('name', { name: '.value' }, { type: 'string' }, false)).toEqual('value');
     });
   });
 
@@ -20,13 +20,13 @@ describe('deserialize()', () => {
     describe('explode is not set', () => {
       describe('no value provided', () => {
         it('returns empty array', () => {
-          expect(label('name', { name: '.' }, { type: 'array' }, false)).toEqual([]);
+          expect(deserializeLabelStyle('name', { name: '.' }, { type: 'array' }, false)).toEqual([]);
         });
       });
 
       describe('comma separated list provided', () => {
         it('returns exploded array', () => {
-          expect(label('name', { name: '.a,b,c' }, { type: 'array' }, false)).toEqual(['a', 'b', 'c']);
+          expect(deserializeLabelStyle('name', { name: '.a,b,c' }, { type: 'array' }, false)).toEqual(['a', 'b', 'c']);
         });
       });
     });
@@ -34,13 +34,13 @@ describe('deserialize()', () => {
     describe('explode is set', () => {
       describe('no value provided', () => {
         it('returns empty array', () => {
-          expect(label('name', { name: '.' }, { type: 'array' }, true)).toEqual([]);
+          expect(deserializeLabelStyle('name', { name: '.' }, { type: 'array' }, true)).toEqual([]);
         });
       });
 
       describe('comma separated list provided', () => {
         it('returns exploded array', () => {
-          expect(label('name', { name: '.a.b.c' }, { type: 'array' }, true)).toEqual(['a', 'b', 'c']);
+          expect(deserializeLabelStyle('name', { name: '.a.b.c' }, { type: 'array' }, true)).toEqual(['a', 'b', 'c']);
         });
       });
     });
@@ -53,7 +53,7 @@ describe('deserialize()', () => {
           expect(list).toEqual(['a', 'b', 'c', 'd']);
           return { a: 'b', c: 'd' };
         });
-        expect(label('name', { name: '.a,b,c,d' }, { type: 'object' }, false)).toEqual({
+        expect(deserializeLabelStyle('name', { name: '.a,b,c,d' }, { type: 'object' }, false)).toEqual({
           a: 'b',
           c: 'd',
         });
@@ -63,7 +63,7 @@ describe('deserialize()', () => {
 
     describe('explode is set', () => {
       it('splits by comma and equality sign and returns object', () => {
-        expect(label('name', { name: '.a=b,c=d' }, { type: 'object' }, true)).toEqual({
+        expect(deserializeLabelStyle('name', { name: '.a=b,c=d' }, { type: 'object' }, true)).toEqual({
           a: 'b',
           c: 'd',
         });

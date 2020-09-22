@@ -3,7 +3,7 @@ import { Dictionary } from '@stoplight/types';
 import { IHttpNameValue, JSONSchema } from '../../../types';
 import { createObjectFromKeyValList } from './utils';
 
-export default function deserialize(
+export function deserializeMatrixStyle(
   name: string,
   parameters: IHttpNameValue,
   schema?: JSONSchema,

@@ -1,7 +1,7 @@
 import { Dictionary } from '@stoplight/types';
 import { IHttpNameValues, JSONSchema } from '../../../types';
 
-export default function deserialize(name: string, parameters: IHttpNameValues, schema?: JSONSchema) {
+export function deserializeDeepObjectStyle(name: string, parameters: IHttpNameValues, schema?: JSONSchema) {
   function resolve(path: string[]) {
     return name + path.map(el => `[${el}]`).join('');
   }
