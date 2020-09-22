@@ -31,6 +31,6 @@ export function isScheme(shouldBeScheme: string, authScheme: string) {
   return authScheme.toLowerCase() === shouldBeScheme;
 }
 
-export function when(condition: boolean, errorMessage?: string): Either<IPrismDiagnostic, unknown> {
+export function when(condition: boolean, errorMessage?: string): Either<IPrismDiagnostic, boolean> {
   return condition ? right(true) : left(genUnauthorisedErr(errorMessage));
 }
