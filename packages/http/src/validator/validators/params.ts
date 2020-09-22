@@ -12,7 +12,7 @@ import type { deserializeFn } from '../deserializers/types';
 import type { IPrismDiagnostic } from '@stoplight/prism-core';
 
 export type Deps<Target> = {
-  registry: Dictionary<deserializeFn<Target>>;
+  deserializers: Dictionary<deserializeFn<Target>>;
   prefix: string;
   style: HttpParamStyles;
 };
@@ -20,7 +20,7 @@ export type Deps<Target> = {
 export const validate = <Target>(
   target: Target,
   specs: IHttpParam[]
-): RE.ReaderEither<Deps<Target>, NEA.NonEmptyArray<IPrismDiagnostic>, Target> => ({ registry, prefix, style }) => {
+): RE.ReaderEither<Deps<Target>, NEA.NonEmptyArray<IPrismDiagnostic>, Target> => ({ deserializers, prefix, style }) => {
   const deprecatedWarnings = specs
     .filter(spec => spec.deprecated && target[spec.name])
     .map<IPrismDiagnostic>(spec => ({
@@ -39,17 +39,17 @@ export const validate = <Target>(
           keyBy(specs, s => s.name.toLowerCase()),
           el => {
             const resolvedStyle = el.style || style;
-            const deserializer = registry[resolvedStyle];
-            if (deserializer)
-              return deserializer(
-                el.name.toLowerCase(),
-                // @ts-ignore
-                mapKeys(target, (_value: unknown, key: string) => key.toLowerCase()),
-                schema.properties && (schema.properties[el.name.toLowerCase()] as JSONSchema4),
-                el.explode || false
-              );
+            const deserializer = deserializers[resolvedStyle];
 
-            return undefined;
+            return deserializer
+              ? deserializer(
+                  el.name.toLowerCase(),
+                  // @ts-ignore
+                  mapKeys(target, (_value: unknown, key: string) => key.toLowerCase()),
+                  schema.properties && (schema.properties[el.name.toLowerCase()] as JSONSchema4),
+                  el.explode || false
+                )
+              : undefined;
           }
         )
       );

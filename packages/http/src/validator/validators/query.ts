@@ -4,4 +4,4 @@ import { validate as validateParams } from './params';
 import { query } from '../deserializers';
 
 export const validate = (target: IHttpNameValues, specs: IHttpQueryParam[]) =>
-  validateParams(target, specs)({ registry: query, prefix: 'query', style: HttpParamStyles.Form });
+  validateParams(target, specs)({ deserializers: query, prefix: 'query', style: HttpParamStyles.Form });

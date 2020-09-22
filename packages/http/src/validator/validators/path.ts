@@ -4,4 +4,4 @@ import { validate as validateParams } from './params';
 import { path } from '../deserializers';
 
 export const validate = (target: IHttpNameValue, specs: IHttpPathParam[]) =>
-  validateParams(target, specs)({ registry: path, prefix: 'path', style: HttpParamStyles.Simple });
+  validateParams(target, specs)({ deserializers: path, prefix: 'path', style: HttpParamStyles.Simple });
