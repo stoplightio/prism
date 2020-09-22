@@ -14,13 +14,17 @@ import type { IPrismDiagnostic } from '@stoplight/prism-core';
 export type Deps<Target> = {
   deserializers: Dictionary<deserializeFn<Target>>;
   prefix: string;
-  style: HttpParamStyles;
+  defaultStyle: HttpParamStyles;
 };
 
 export const validate = <Target>(
   target: Target,
   specs: IHttpParam[]
-): RE.ReaderEither<Deps<Target>, NEA.NonEmptyArray<IPrismDiagnostic>, Target> => ({ deserializers, prefix, style }) => {
+): RE.ReaderEither<Deps<Target>, NEA.NonEmptyArray<IPrismDiagnostic>, Target> => ({
+  deserializers,
+  prefix,
+  defaultStyle,
+}) => {
   const deprecatedWarnings = specs
     .filter(spec => spec.deprecated && target[spec.name])
     .map<IPrismDiagnostic>(spec => ({
@@ -38,7 +42,7 @@ export const validate = <Target>(
         mapValues(
           keyBy(specs, s => s.name.toLowerCase()),
           el => {
-            const resolvedStyle = el.style || style;
+            const resolvedStyle = el.style || defaultStyle;
             const deserializer = deserializers[resolvedStyle];
 
             return deserializer
