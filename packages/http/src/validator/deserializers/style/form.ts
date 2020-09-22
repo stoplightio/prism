@@ -1,7 +1,7 @@
 import { IHttpNameValues, JSONSchema } from '../../../types';
 import { createObjectFromKeyValList } from './utils';
 
-export function deserializeForm(name: string, parameters: IHttpNameValues, schema?: JSONSchema, explode = true) {
+export function deserializeFormStyle(name: string, parameters: IHttpNameValues, schema?: JSONSchema, explode = true) {
   const type = schema ? schema.type : undefined;
   const values = parameters[name];
 

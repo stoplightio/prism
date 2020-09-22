@@ -1,7 +1,7 @@
 import { IHttpNameValue, JSONSchema } from '../../../types';
 import { createObjectFromKeyValList } from './utils';
 
-export function deserializeLabel(
+export function deserializeLabelStyle(
   name: string,
   parameters: IHttpNameValue,
   schema?: JSONSchema,

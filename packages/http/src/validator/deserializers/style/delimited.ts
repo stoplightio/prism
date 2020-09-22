@@ -1,6 +1,6 @@
 import { IHttpNameValues, JSONSchema } from '../../../types';
 
-export function createDelimitedDeserializer(separator: string) {
+export function createDelimitedDeserializerStyle(separator: string) {
   function deserializeImplodeArray(value: string | string[]) {
     return Array.isArray(value) ? value : [value];
   }
