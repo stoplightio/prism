@@ -43,11 +43,8 @@ export const validate = <Target>(
             if (deserializer)
               return deserializer(
                 el.name.toLowerCase(),
-                // This is bad, but unfortunately for the way the parameter validators are done there's
-                // no better way at them moment. I hope to fix this in a following PR where we will revisit
-                // the validators a bit
                 // @ts-ignore
-                mapKeys(target, (_value, key) => key.toLowerCase()),
+                mapKeys(target, (_value: unknown, key: string) => key.toLowerCase()),
                 schema.properties && (schema.properties[el.name.toLowerCase()] as JSONSchema4),
                 el.explode || false
               );
