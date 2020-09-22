@@ -17,7 +17,7 @@ export type Deps<Target> = {
   defaultStyle: HttpParamStyles;
 };
 
-export const validate = <Target>(
+export const validateParams = <Target>(
   target: Target,
   specs: IHttpParam[]
 ): RE.ReaderEither<Deps<Target>, NEA.NonEmptyArray<IPrismDiagnostic>, Target> => ({

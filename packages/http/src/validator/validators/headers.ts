@@ -1,6 +1,6 @@
 import { HttpParamStyles, IHttpPathParam } from '@stoplight/types';
 import { IHttpNameValue } from '../../types';
-import { validate as validateParams } from './params';
+import { validateParams } from './params';
 import { header } from '../deserializers';
 
 export const validate = (target: IHttpNameValue, specs: IHttpPathParam[]) =>
