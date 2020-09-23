@@ -16,8 +16,8 @@ import { sequenceValidation, sequenceOption } from '../combinators';
 import { is as typeIs } from 'type-is';
 import { pipe } from 'fp-ts/pipeable';
 import { inRange, isMatch } from 'lodash';
-import { validateSecurity } from './validators/security';
 import { URI } from 'uri-template-lite';
+export { validateSecurity } from './validators/security';
 
 import { IHttpRequest, IHttpResponse } from '../types';
 import { findOperationResponse } from './utils/spec';
@@ -48,7 +48,7 @@ const tryValidateBody = (requestBody: IHttpOperationRequestBody, body: unknown, 
     E.chain(() => validateIfBodySpecIsProvided(body, mediaType, requestBody.contents))
   );
 
-const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
+export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
   const { request } = resource;
   const { body } = element;
@@ -81,7 +81,7 @@ const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: n
     E.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(error => [error])
   );
 
-const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
+export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType: string) =>
   pipe(
     O.fromNullable(mediaType),
     O.map(contentType.parse),
@@ -106,7 +106,7 @@ const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, mediaType
     E.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
   );
 
-const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
+export const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
   return pipe(
     findResponseByStatus(resource.responses, element.statusCode),
@@ -131,5 +131,3 @@ const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, 
 function getPathParams(path: string, template: string): Dictionary<string> {
   return new URI.Template(template).match(path);
 }
-
-export { validateInput, validateOutput, validateSecurity, validateMediaType };
