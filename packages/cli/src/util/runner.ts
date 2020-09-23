@@ -1,4 +1,4 @@
-import { IPrismHttpServer } from '@stoplight/prism-http-server/src/types';
+import type { IPrismHttpServer } from '@stoplight/prism-http-server/src/types';
 import * as chokidar from 'chokidar';
 import * as os from 'os';
 import { CreateMockServerOptions } from './createServer';

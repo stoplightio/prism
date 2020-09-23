@@ -2,7 +2,8 @@ import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation, HttpParamStyles, IMediaTypeContent } from '@stoplight/types';
 import * as E from 'fp-ts/Either';
 import { IHttpRequest } from '../../types';
-import * as validator from '../index';
+import * as validators from '../validators';
+import * as validator from '../';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 const validate = (
@@ -38,10 +39,10 @@ const mockError: IPrismDiagnostic = {
 describe('HttpValidator', () => {
   describe('validator.validateInput()', () => {
     beforeAll(() => {
-      jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(E.left([mockError]));
-      jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(E.left([mockError]));
-      jest.spyOn(validator.queryValidator, 'validate').mockReturnValue(E.left([mockError]));
-      jest.spyOn(validator.pathValidator, 'validate').mockReturnValue(E.left([mockError]));
+      jest.spyOn(validators, 'validateQuery').mockReturnValue(E.left([mockError]));
+      jest.spyOn(validators, 'validateBody').mockReturnValue(E.left([mockError]));
+      jest.spyOn(validators, 'validateHeaders').mockReturnValue(E.left([mockError]));
+      jest.spyOn(validators, 'validatePath').mockReturnValue(E.left([mockError]));
     });
 
     afterAll(() => jest.restoreAllMocks());
@@ -127,7 +128,7 @@ describe('HttpValidator', () => {
               element: { method: 'get', url: { path: '/a/1/b/;b=2' } },
             });
 
-            expect(validator.pathValidator.validate).toHaveBeenCalledWith({ a: '1', b: ';b=2' }, [
+            expect(validators.validatePath).toHaveBeenCalledWith({ a: '1', b: ';b=2' }, [
               { name: 'a', style: HttpParamStyles.Simple },
               { name: 'b', style: HttpParamStyles.Matrix },
             ]);
@@ -156,7 +157,7 @@ describe('HttpValidator', () => {
               element: { method: 'get', url: { path: '/a-path/1/b/;b-id=2' } },
             });
 
-            expect(validator.pathValidator.validate).toHaveBeenCalledWith({ 'a-id': '1', 'b-id': ';b-id=2' }, [
+            expect(validators.validatePath).toHaveBeenCalledWith({ 'a-id': '1', 'b-id': ';b-id=2' }, [
               { name: 'a-id', style: HttpParamStyles.Simple },
               { name: 'b-id', style: HttpParamStyles.Matrix },
             ]);
@@ -169,9 +170,9 @@ describe('HttpValidator', () => {
   describe('validateOutput()', () => {
     describe('output is set', () => {
       beforeAll(() => {
-        jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(E.left([mockError]));
-        jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(E.left([mockError]));
-        jest.spyOn(validator.queryValidator, 'validate').mockReturnValue(E.left([mockError]));
+        jest.spyOn(validators, 'validateBody').mockReturnValue(E.left([mockError]));
+        jest.spyOn(validators, 'validateQuery').mockReturnValue(E.left([mockError]));
+        jest.spyOn(validators, 'validateHeaders').mockReturnValue(E.left([mockError]));
       });
 
       afterAll(() => jest.restoreAllMocks());
@@ -192,8 +193,8 @@ describe('HttpValidator', () => {
             error => expect(error).toHaveLength(2)
           );
 
-          expect(validator.bodyValidator.validate).toHaveBeenCalledWith(undefined, [], undefined);
-          expect(validator.headersValidator.validate).toHaveBeenCalled();
+          expect(validators.validateBody).toHaveBeenCalledWith(undefined, [], undefined);
+          expect(validators.validateHeaders).toHaveBeenCalled();
         });
       });
 
@@ -218,8 +219,8 @@ describe('HttpValidator', () => {
 
     describe('cannot match status code with responses', () => {
       beforeEach(() => {
-        jest.spyOn(validator.bodyValidator, 'validate').mockReturnValue(E.right({}));
-        jest.spyOn(validator.headersValidator, 'validate').mockReturnValue(E.right({}));
+        jest.spyOn(validators, 'validateBody').mockReturnValue(E.right({}));
+        jest.spyOn(validators, 'validateHeaders').mockReturnValue(E.right({}));
       });
 
       afterEach(() => jest.clearAllMocks());

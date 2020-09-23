@@ -1,62 +1,60 @@
-import { Dictionary, HttpParamStyles } from '@stoplight/types';
+import { Dictionary } from '@stoplight/types';
 
 import { IHttpNameValue, JSONSchema } from '../../../types';
-import { IHttpHeaderParamStyleDeserializer } from '../types';
 import { createObjectFromKeyValList } from './utils';
 
-export class MatrixStyleDeserializer implements IHttpHeaderParamStyleDeserializer {
-  public supports(style: HttpParamStyles) {
-    return style === HttpParamStyles.Matrix;
+export function deserializeMatrixStyle(
+  name: string,
+  parameters: IHttpNameValue,
+  schema?: JSONSchema,
+  explode = false
+): unknown {
+  const type = schema ? schema.type : 'undefined';
+
+  if (!parameters[name].startsWith(';')) {
+    throw new Error('Matrix serialization style requires parameter to be prefixed with ";"');
   }
 
-  public deserialize(name: string, parameters: IHttpNameValue, schema?: JSONSchema, explode = false): unknown {
-    const type = schema ? schema.type : 'undefined';
+  const value = parameters[name].substr(1);
 
-    if (!parameters[name].startsWith(';')) {
-      throw new Error('Matrix serialization style requires parameter to be prefixed with ";"');
-    }
+  if (type === 'array') {
+    return explode ? deserializeImplodeArray(name, value) : deserializeArray(name, value);
+  } else if (type === 'object') {
+    return explode ? deserializeImplodeObject(value) : deserializeObject(name, value);
+  } else {
+    return deserializePrimitive(name, value);
+  }
+}
 
-    const value = parameters[name].substr(1);
-
-    if (type === 'array') {
-      return explode ? this.deserializeImplodeArray(name, value) : this.deserializeArray(name, value);
-    } else if (type === 'object') {
-      return explode ? this.deserializeImplodeObject(value) : this.deserializeObject(name, value);
-    } else {
-      return this.deserializePrimitive(name, value);
-    }
+function deserializePrimitive(name: string, value: string) {
+  const prefix = name + '=';
+  if (!value.startsWith(prefix)) {
+    throw new Error('Matrix serialization style requires parameter to be prefixed with name');
   }
 
-  private deserializePrimitive(name: string, value: string) {
-    const prefix = name + '=';
-    if (!value.startsWith(prefix)) {
-      throw new Error('Matrix serialization style requires parameter to be prefixed with name');
-    }
+  return value.substr(prefix.length);
+}
 
-    return value.substr(prefix.length);
+function deserializeArray(name: string, value: string) {
+  const raw = deserializePrimitive(name, value);
+  return raw === '' ? [] : raw.split(',');
+}
+
+function deserializeImplodeArray(name: string, value: string) {
+  if (value === '') {
+    return [];
   }
 
-  private deserializeArray(name: string, value: string) {
-    const raw = this.deserializePrimitive(name, value);
-    return raw === '' ? [] : raw.split(',');
-  }
+  return value.split(';').map(part => deserializePrimitive(name, part));
+}
 
-  private deserializeImplodeArray(name: string, value: string) {
-    if (value === '') {
-      return [];
-    }
+function deserializeImplodeObject(value: string) {
+  return value.split(';').reduce((result: Dictionary<string>, pair) => {
+    const [k, v] = pair.split('=');
+    return { ...result, [k]: v };
+  }, {});
+}
 
-    return value.split(';').map(part => this.deserializePrimitive(name, part));
-  }
-
-  private deserializeImplodeObject(value: string) {
-    return value.split(';').reduce((result: Dictionary<string>, pair) => {
-      const [k, v] = pair.split('=');
-      return { ...result, [k]: v };
-    }, {});
-  }
-
-  private deserializeObject(name: string, value: string) {
-    return createObjectFromKeyValList(this.deserializePrimitive(name, value).split(','));
-  }
+function deserializeObject(name: string, value: string) {
+  return createObjectFromKeyValList(deserializePrimitive(name, value).split(','));
 }

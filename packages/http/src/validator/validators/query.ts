@@ -1,17 +1,7 @@
 import { HttpParamStyles, IHttpQueryParam } from '@stoplight/types';
-import { IHttpNameValues } from '../../types';
-import { IHttpParamDeserializerRegistry } from '../deserializers/types';
-import { HttpParamsValidator } from './params';
+import type { IHttpNameValues } from '../../types';
+import { validateParams } from './params';
+import { query } from '../deserializers';
 
-export class HttpQueryValidator extends HttpParamsValidator<IHttpNameValues> {
-  constructor(
-    registry: IHttpParamDeserializerRegistry<IHttpNameValues>,
-    prefix: string,
-    style: HttpParamStyles = HttpParamStyles.Form
-  ) {
-    super(registry, prefix, style);
-  }
-  public validate(target: IHttpNameValues, specs: IHttpQueryParam[]) {
-    return super.validate(target, specs);
-  }
-}
+export const validate = (target: IHttpNameValues, specs: IHttpQueryParam[]) =>
+  validateParams(target, specs)({ deserializers: query, prefix: 'query', defaultStyle: HttpParamStyles.Form });

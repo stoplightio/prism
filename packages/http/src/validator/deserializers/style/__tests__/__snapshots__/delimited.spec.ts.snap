@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`DelimitedStyleDeserializer deserialize() schema type is not array throws exception 1`] = `"Space/pipe/comma.. delimited style is only applicable to array parameter"`;

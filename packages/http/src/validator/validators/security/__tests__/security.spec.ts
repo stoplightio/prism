@@ -9,7 +9,7 @@ const baseRequest: IHttpRequest = {
 };
 
 describe('validateSecurity', () => {
-  const token = new Buffer('test:test').toString('base64');
+  const token = Buffer.from('test:test').toString('base64');
 
   it('passes the validation', () => {
     assertRight(validateSecurity({ element: baseRequest, resource: { security: [[]] } }));
