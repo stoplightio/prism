@@ -71,7 +71,7 @@ Calling the same URL with the `Prefer` header `example=dog` `http://127.0.0.1:40
 
 ```json
 {
-  "id": 2,
+  "id": 1,
   "name": "Spot",
   "photoUrls": ["https://images.dog.ceo/breeds/kelpie/n02105412_893.jpg"]
 }
