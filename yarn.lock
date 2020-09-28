@@ -1803,10 +1803,10 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
-ajv-oai@^1.0.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/ajv-oai/-/ajv-oai-1.2.0.tgz#93ba0d3c64edf55e575c9d9f52fe494251c5b6d0"
-  integrity sha512-BQ2HL/ZfiMm68Xdy7dkS49Vnnq+gSsxfOugJB4TA8Kmu4Ie9ZIa4K4VQYbcHxyW4ccg6l9VB57PjRA2RPh1elw==
+ajv-oai@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/ajv-oai/-/ajv-oai-1.2.1.tgz#6d253fde782cf809ace2d9d0b1b07a53905dcdaa"
+  integrity sha512-gj7dnSdLyjWKid3uQI16u5wQNpkyqivjtCuvI4BWezeOzYTj5YHt4otH9GOBCaXY3FEbzQeWsp6C2qc18+BXDA==
   dependencies:
     decimal.js "^10.2.0"
 
