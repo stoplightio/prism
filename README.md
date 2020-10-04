@@ -28,7 +28,7 @@ For more installation options, see our [installation documentation](./docs/getti
 
 ## Documentation
 
-You can find [Prism documentation on Stoplight.io](https://stoplight.io/p/docs/gh/stoplightio/prism).
+You can find [Prism documentation on Stoplight.io](https://meta.stoplight.io/docs/prism).
 
 - [Getting Started](./docs/getting-started/01-installation.md)
 - [Guides](./docs/guides/01-mocking.md)
