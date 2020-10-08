@@ -1,23 +1,21 @@
 import { IHttpOperationConfig, IHttpRequest, ProblemJsonError, UNPROCESSABLE_ENTITY } from '@stoplight/prism-http';
 import { pipe } from 'fp-ts/pipeable';
 import * as E from 'fp-ts/Either';
-import * as t from 'io-ts';
-import { failure } from 'io-ts/lib/PathReporter';
-import { BooleanFromString } from 'io-ts-types/lib/BooleanFromString';
+import * as D from 'io-ts/Decoder';
 //@ts-ignore
 import * as parsePreferHeader from 'parse-prefer-header';
 
-const PreferencesDecoder = t.union([
-  t.undefined,
-  t.partial(
-    {
-      code: t.string,
-      dynamic: t.string.pipe(BooleanFromString),
-      example: t.string,
-    },
-    'Preferences'
-  ),
-]);
+const BooleanFromString = D.parse<string, boolean>(v =>
+  v === 'true' ? D.success(true) : v === 'false' ? D.success(false) : D.failure(v, 'Unable to parse to boolean')
+);
+
+const PreferencesDecoder = pipe(
+  D.partial({
+    code: D.string,
+    dynamic: pipe(D.string, BooleanFromString),
+    example: D.string,
+  })
+);
 
 type RequestPreferences = Partial<Omit<IHttpOperationConfig, 'mediaType'>>;
 
@@ -30,7 +28,7 @@ export const getHttpConfigFromRequest = (req: IHttpRequest): E.Either<Error, Req
   return pipe(
     PreferencesDecoder.decode(preferences),
     E.bimap(
-      err => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, failure(err).join('; ')),
+      err => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, D.draw(err)),
       parsed => ({ code: parsed?.code, exampleKey: parsed?.example, dynamic: parsed?.dynamic })
     )
   );
