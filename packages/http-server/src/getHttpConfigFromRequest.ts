@@ -10,11 +10,13 @@ const BooleanFromString = D.parse<string, boolean>(v =>
 );
 
 const PreferencesDecoder = pipe(
-  D.partial({
-    code: D.string,
-    dynamic: pipe(D.string, BooleanFromString),
-    example: D.string,
-  })
+  D.nullable(
+    D.partial({
+      code: D.string,
+      dynamic: pipe(D.string, BooleanFromString),
+      example: D.string,
+    })
+  )
 );
 
 type RequestPreferences = Partial<Omit<IHttpOperationConfig, 'mediaType'>>;
