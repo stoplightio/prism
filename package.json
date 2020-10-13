@@ -44,7 +44,7 @@
     "@types/uri-template-lite": "^19.12.0",
     "@types/urijs": "^1.19.12",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^4.4.0",
+    "@typescript-eslint/parser": "^4.4.1",
     "abstract-logging": "^2.0.0",
     "diff-js-xml": "^1.0.5",
     "eslint": "^7.10.0",
