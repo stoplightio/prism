@@ -30,7 +30,7 @@
     "micri": "^4.2.1",
     "node-fetch": "^2.6.1",
     "parse-prefer-header": "1.0.0",
-    "tslib": "^2.0.1",
+    "tslib": "^2.0.3",
     "type-is": "^1.6.18"
   }
 }
