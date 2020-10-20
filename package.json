@@ -57,7 +57,7 @@
     "husky": "^4.3.0",
     "jest": "^26.6.0",
     "lerna": "^3.17.0",
-    "lint-staged": "^10.4.0",
+    "lint-staged": "^10.4.2",
     "lodash": "^4.17.20",
     "nock": "^13.0.4",
     "node-fetch": "^2.6.1",
