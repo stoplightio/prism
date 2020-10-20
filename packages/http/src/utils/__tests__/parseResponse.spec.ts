@@ -78,7 +78,7 @@ describe('parseResponseHeaders()', () => {
     expect(parseResponseHeaders({ h1: ['a b'], h2: ['c'], h3: ['a', 'b'] })).toEqual({
       h1: 'a b',
       h2: 'c',
-      h3: 'a b',
+      h3: 'a,b',
     }));
 });
 

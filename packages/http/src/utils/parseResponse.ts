@@ -19,7 +19,7 @@ export const parseResponseBody = (
   );
 
 export const parseResponseHeaders = (headers: Dictionary<string[]>): Dictionary<string> =>
-  mapValues(headers, hValue => hValue.join(' '));
+  mapValues(headers, hValue => hValue.join(','));
 
 export const parseResponse = (
   response: Pick<Response, 'headers' | 'json' | 'text' | 'status'>
