@@ -19,7 +19,7 @@ module.exports = {
       testMatch: ['<rootDir>/packages/http-server/src/**/__tests__/*.*.ts'],
       globals: {
         'ts-jest': {
-          tsConfig: '<rootDir>/packages/tsconfig.test.json',
+          tsconfig: '<rootDir>/packages/tsconfig.test.json',
         },
       },
     },
@@ -29,7 +29,7 @@ module.exports = {
       testMatch: ['<rootDir>/packages/http/src/**/__tests__/*.*.ts'],
       globals: {
         'ts-jest': {
-          tsConfig: '<rootDir>/packages/tsconfig.test.json',
+          tsconfig: '<rootDir>/packages/tsconfig.test.json',
         },
       },
     },
@@ -39,7 +39,7 @@ module.exports = {
       testMatch: ['<rootDir>/packages/core/src/**/__tests__/*.*.ts'],
       globals: {
         'ts-jest': {
-          tsConfig: '<rootDir>/packages/tsconfig.test.json',
+          tsconfig: '<rootDir>/packages/tsconfig.test.json',
         },
       },
     },
@@ -49,7 +49,7 @@ module.exports = {
       testMatch: ['<rootDir>/packages/cli/src/**/__tests__/*.*.ts'],
       globals: {
         'ts-jest': {
-          tsConfig: '<rootDir>/packages/tsconfig.test.json',
+          tsconfig: '<rootDir>/packages/tsconfig.test.json',
         },
       },
     },
