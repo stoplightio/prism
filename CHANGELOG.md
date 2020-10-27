@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+## Fixed
+
+- Multiple HTTP Headers coming from a proxied response are now [correctly aggreagated using a `,`](https://tools.ietf.org/html/rfc2616#section-4.2) instead of a space. [#1489](https://github.com/stoplightio/prism/pull/1489)
+
 # 4.1.0 (2020-09-25)
 
 ## Changed
