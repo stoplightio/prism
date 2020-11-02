@@ -4627,10 +4627,10 @@ io-ts-types@^0.5.11:
   resolved "https://registry.yarnpkg.com/io-ts-types/-/io-ts-types-0.5.11.tgz#475e8680bfacee05f450c64f3b0b89f4a790dd58"
   integrity sha512-BqWYAvcSOxnKWIAYAcqF6nS+zhWRb6W+oezF2FzFt8+5a6b8PHNXmbOiV3MwRDY1G6FIctMo71QtIrExLT7LCQ==
 
-io-ts@^2.2.11:
-  version "2.2.11"
-  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.11.tgz#968a02f57b740fd422c8f9cf7ee99187854636f9"
-  integrity sha512-lGxyPvZNhmo1U1Hy0ovjRtXljG6F59R3bZErK9XjiIQPlt4nuzbDNSwvalXvS7Z8iSZhx2S5GpNz5tVhpnDf6w==
+io-ts@^2.2.12:
+  version "2.2.12"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.12.tgz#b840f2da4c2a6c8a4d8ab48122914672bfb22bab"
+  integrity sha512-pZh43E3xs1RUmv3voC58Mbb6Ihjo3UdDU6WWi578Zpe2BxVue1SlSQCioSymZxk9HoXa370nSfFzp5LrLA2F8g==
 
 ip-regex@^2.1.0:
   version "2.1.0"
