@@ -8626,12 +8626,12 @@ ts-node@^9.0.0:
     source-map-support "^0.5.17"
     yn "3.1.1"
 
-ts-transform-import-path-rewrite@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/ts-transform-import-path-rewrite/-/ts-transform-import-path-rewrite-0.2.1.tgz#ca38fd47731bd8e8ef6175eccd5058ab44ed5713"
-  integrity sha512-9MJ66a4cSbQLLsY3ZGBXjsFbjm3B/bJ9Or08sDChiN1BQGDFBJGopjtp648rCixlvePovDY5lQRZcoWpJDN4Ww==
+ts-transform-import-path-rewrite@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/ts-transform-import-path-rewrite/-/ts-transform-import-path-rewrite-0.3.0.tgz#447e95e63e64de43f2ecf9322364f0392f6a60d6"
+  integrity sha512-CIv9MFRi1hnlUYK9x4OknNa+uskRt/g/yf1GGFZMOK2s6PMoBKuzFF9aPPiNGLOY7g0GbnYGdIFPsmZtDpnfZQ==
   dependencies:
-    typescript "3"
+    typescript "4"
 
 tsconfig-paths@^3.8.0:
   version "3.9.0"
@@ -8743,7 +8743,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@3, typescript@4.0.5, typescript@^4.0.5:
+typescript@4, typescript@4.0.5, typescript@^4.0.5:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.5.tgz#ae9dddfd1069f1cb5beb3ef3b2170dd7c1332389"
   integrity sha512-ywmr/VrTVCmNTJ6iV2LwIrfG1P+lv6luD8sUJs+2eI9NLGigaN+nUQc13iHqisq7bra9lnmUSYqbJvegraBOPQ==
