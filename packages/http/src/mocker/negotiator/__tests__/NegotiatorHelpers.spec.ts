@@ -437,14 +437,12 @@ describe('NegotiatorHelpers', () => {
       });
     });
 
-    it('given no 2xx response should throw exception', () => {
+    it('given no 2xx response should return the first response', () => {
       const desiredOptions = { dynamic: false };
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse');
 
       const negotiationResult = helpers.negotiateOptionsForUnspecifiedCode(httpOperation, desiredOptions)(logger);
-      assertLeft(negotiationResult, e => {
-        expect(e.name).toBe('https://stoplight.io/prism/errors#NO_SUCCESS_RESPONSE_DEFINED');
-      });
+      assertRight(negotiationResult, res => expect(res.code).toBe('300'));
     });
   });
 
