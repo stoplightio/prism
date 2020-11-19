@@ -73,22 +73,11 @@ const helpers = {
       const example = findBestExample(httpContent);
       if (example) {
         // if example exists, return
-        return E.right({
-          code,
-          mediaType,
-          bodyExample: example,
-        });
+        return E.right({ code, mediaType, bodyExample: example });
       } else if (httpContent.schema) {
-        return E.right({
-          code,
-          mediaType,
-          schema: httpContent.schema,
-        });
+        return E.right({ code, mediaType, schema: httpContent.schema });
       } else {
-        return E.right({
-          code,
-          mediaType,
-        });
+        return E.right({ code, mediaType });
       }
     }
   },
