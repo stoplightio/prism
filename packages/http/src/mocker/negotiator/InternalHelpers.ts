@@ -6,7 +6,6 @@ import * as O from 'fp-ts/Option';
 import { filter, findFirst, head, sort } from 'fp-ts/Array';
 import { pick } from 'lodash';
 import { NonEmptyArray, fromArray } from 'fp-ts/NonEmptyArray';
-import { alt, map, Option } from 'fp-ts/Option';
 import { ord, ordNumber } from 'fp-ts/Ord';
 import { pipe } from 'fp-ts/pipeable';
 import { ContentExample, PickRequired } from '../../';
@@ -28,7 +27,7 @@ export function hasContents(v: IHttpOperationResponse): v is PickRequired<IHttpO
 export function findBestHttpContentByMediaType(
   contents: IMediaTypeContent[],
   mediaTypes: string[]
-): Option<IMediaTypeContent> {
+): O.Option<IMediaTypeContent> {
   const bestType: string | false = accepts({ headers: { accept: mediaTypes.join(',') } }).type(
     contents.map(c => c.mediaType)
   );
@@ -54,7 +53,7 @@ export function findBestHttpContentByMediaType(
 
 export function findDefaultContentType(
   response: PickRequired<IHttpOperationResponse, 'contents'>
-): Option<IMediaTypeContent> {
+): O.Option<IMediaTypeContent> {
   return pipe(
     response.contents,
     findFirst(content => content.mediaType === '*/*')
@@ -63,11 +62,11 @@ export function findDefaultContentType(
 
 const byResponseCode = ord.contramap<number, IHttpOperationResponse>(ordNumber, response => parseInt(response.code));
 
-export function findLowest2xx(httpResponses: IHttpOperationResponse[]): Option<IHttpOperationResponse> {
+export function findLowest2xx(httpResponses: IHttpOperationResponse[]): O.Option<IHttpOperationResponse> {
   const generic2xxResponse = () =>
     pipe(
       findResponseByStatusCode(httpResponses, '2XX'),
-      alt(() => createResponseFromDefault(httpResponses, '200'))
+      O.alt(() => createResponseFromDefault(httpResponses, '200'))
     );
 
   const first2xxResponse = pipe(
@@ -77,13 +76,13 @@ export function findLowest2xx(httpResponses: IHttpOperationResponse[]): Option<I
     head
   );
 
-  return pipe(first2xxResponse, alt(generic2xxResponse));
+  return pipe(first2xxResponse, O.alt(generic2xxResponse));
 }
 
 export function findResponseByStatusCode(
   responses: IHttpOperationResponse[],
   statusCode: string
-): Option<IHttpOperationResponse> {
+): O.Option<IHttpOperationResponse> {
   return pipe(
     responses,
     findFirst(response => response.code.toLowerCase() === statusCode.toLowerCase())
@@ -93,11 +92,11 @@ export function findResponseByStatusCode(
 export function createResponseFromDefault(
   responses: IHttpOperationResponse[],
   statusCode: string
-): Option<IHttpOperationResponse> {
+): O.Option<IHttpOperationResponse> {
   return pipe(
     responses,
     findFirst(response => response.code === 'default'),
-    map(response => Object.assign({}, response, { code: statusCode }))
+    O.map(response => Object.assign({}, response, { code: statusCode }))
   );
 }
 
