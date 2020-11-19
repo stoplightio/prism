@@ -208,7 +208,7 @@ const helpers = {
     };
   },
 
-  negotiateOptionsForDefaultCode(
+  negotiateOptionsForUnspecifiedCode(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
@@ -246,7 +246,7 @@ const helpers = {
               helpers.negotiateOptionsBySpecificResponse(httpOperation.method, desiredOptions, response),
               RE.orElse(() =>
                 pipe(
-                  helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions),
+                  helpers.negotiateOptionsForUnspecifiedCode(httpOperation, desiredOptions),
                   RE.mapLeft(error => new Error(`${error}. We tried default response, but we got ${error}`))
                 )
               )
@@ -265,7 +265,7 @@ const helpers = {
     if (code) {
       return helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code);
     }
-    return helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions);
+    return helpers.negotiateOptionsForUnspecifiedCode(httpOperation, desiredOptions);
   },
 
   findResponse(
