@@ -18,6 +18,7 @@ Object {
       "message": "should match format \\"date-time\\"",
       "path": Array [
         "header",
+        "['x-todos-publish']",
       ],
       "severity": 0,
     },
@@ -56,6 +57,7 @@ Object {
       "message": "should match format \\"date-time\\"",
       "path": Array [
         "header",
+        "['x-todos-publish']",
       ],
       "severity": 0,
     },
