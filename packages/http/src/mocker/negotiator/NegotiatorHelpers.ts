@@ -223,9 +223,7 @@ const helpers = {
     return pipe(
       findLowest2xx(httpOperation.responses),
       RE.fromOption(() => ProblemJsonError.fromTemplate(NO_SUCCESS_RESPONSE_DEFINED)),
-      RE.chain(lowest2xxResponse =>
-        helpers.negotiateOptionsBySpecificResponse(httpOperation.method, desiredOptions, lowest2xxResponse)
-      )
+      RE.chain(response => helpers.negotiateOptionsBySpecificResponse(httpOperation.method, desiredOptions, response))
     );
   },
 
