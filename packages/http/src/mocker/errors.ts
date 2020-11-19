@@ -18,9 +18,9 @@ export const NOT_FOUND: Omit<ProblemJson, 'detail'> = {
   status: 404,
 };
 
-export const NO_SUCCESS_RESPONSE_DEFINED: Omit<ProblemJson, 'detail'> = {
-  type: 'NO_SUCCESS_RESPONSE_DEFINED',
-  title: 'No response in the range 200-299 defined',
+export const NO_RESPONSE_DEFINED: Omit<ProblemJson, 'detail'> = {
+  type: 'NO_RESPONSE_RESPONSE_DEFINED',
+  title: 'No response defined for the selected operation',
   status: 500,
 };
 

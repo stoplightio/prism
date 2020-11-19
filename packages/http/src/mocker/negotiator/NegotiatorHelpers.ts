@@ -9,7 +9,7 @@ import { pipe } from 'fp-ts/pipeable';
 import { tail } from 'lodash';
 import { Logger } from 'pino';
 import withLogger from '../../withLogger';
-import { NOT_ACCEPTABLE, NOT_FOUND, NO_SUCCESS_RESPONSE_DEFINED } from '../errors';
+import { NOT_ACCEPTABLE, NOT_FOUND, NO_RESPONSE_DEFINED } from '../errors';
 import {
   contentHasExamples,
   createResponseFromDefault,
@@ -216,7 +216,7 @@ const helpers = {
     return pipe(
       findLowest2xx(httpOperation.responses),
       O.alt(() => findFirstResponse(httpOperation.responses)),
-      RE.fromOption(() => ProblemJsonError.fromTemplate(NO_SUCCESS_RESPONSE_DEFINED)),
+      RE.fromOption(() => ProblemJsonError.fromTemplate(NO_RESPONSE_DEFINED)),
       RE.chain(response => helpers.negotiateOptionsBySpecificResponse(httpOperation.method, desiredOptions, response))
     );
   },

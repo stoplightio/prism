@@ -224,11 +224,11 @@ paths:
 
 `curl -X POST http://localhost:4010/ -A 'Accept: text/plain'`
 
-### NO_SUCCESS_RESPONSE_DEFINED
+### NO_RESPONSE_DEFINED
 
-**Message: No response in the range 200-299 defined**
+**Message: No response defined for the selected operation**
 **Returned Status Code: `500`**
-**Explanation:** This error occurs when the current request has matched a corresponding HTTP Operation and has passed all the validations, but there's no successful response (200-299) that could be returned.
+**Explanation:** This error occurs when the current request has matched a corresponding HTTP Operation and has passed all the validations, but there's no response that could be returned.
 
 ##### Example
 
