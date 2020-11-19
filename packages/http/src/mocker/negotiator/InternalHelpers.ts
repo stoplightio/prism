@@ -20,10 +20,6 @@ export function findExampleByKey(httpContent: IHttpContent, exampleKey: string) 
   return httpContent.examples && httpContent.examples.find(example => example.key === exampleKey);
 }
 
-export function hasContents(v: IHttpOperationResponse): v is PickRequired<IHttpOperationResponse, 'contents'> {
-  return !!v.contents;
-}
-
 export function findBestHttpContentByMediaType(
   contents: IMediaTypeContent[],
   mediaTypes: string[]
@@ -51,11 +47,9 @@ export function findBestHttpContentByMediaType(
   );
 }
 
-export function findDefaultContentType(
-  response: PickRequired<IHttpOperationResponse, 'contents'>
-): O.Option<IMediaTypeContent> {
+export function findDefaultContentType(contents: IMediaTypeContent[]): O.Option<IMediaTypeContent> {
   return pipe(
-    response.contents,
+    contents,
     findFirst(content => content.mediaType === '*/*')
   );
 }

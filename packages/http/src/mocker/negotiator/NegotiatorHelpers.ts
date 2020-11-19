@@ -19,7 +19,6 @@ import {
   findExampleByKey,
   findLowest2xx,
   findResponseByStatusCode,
-  hasContents,
 } from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
 import { ProblemJsonError } from '../../types';
@@ -87,12 +86,16 @@ const helpers = {
     response: IHttpOperationResponse
   ): E.Either<Error, IHttpNegotiationResult> {
     const { code, dynamic, exampleKey } = partialOptions;
-    const findHttpContent = hasContents(response)
-      ? pipe(
-          findDefaultContentType(response),
-          O.alt(() => findBestHttpContentByMediaType(response.contents, ['application/json', '*/*']))
+
+    const findHttpContent = pipe(
+      O.fromNullable(response.contents),
+      O.chain(contents =>
+        pipe(
+          findDefaultContentType(contents),
+          O.alt(() => findBestHttpContentByMediaType(contents, ['application/json', '*/*']))
         )
-      : O.none;
+      )
+    );
 
     return pipe(
       findHttpContent,
