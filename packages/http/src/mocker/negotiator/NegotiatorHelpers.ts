@@ -17,6 +17,7 @@ import {
   findBestHttpContentByMediaType,
   findDefaultContentType,
   findExampleByKey,
+  findFirstResponse,
   findLowest2xx,
   findResponseByStatusCode,
 } from './InternalHelpers';
@@ -214,6 +215,7 @@ const helpers = {
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
       findLowest2xx(httpOperation.responses),
+      O.alt(() => findFirstResponse(httpOperation.responses)),
       RE.fromOption(() => ProblemJsonError.fromTemplate(NO_SUCCESS_RESPONSE_DEFINED)),
       RE.chain(response => helpers.negotiateOptionsBySpecificResponse(httpOperation.method, desiredOptions, response))
     );

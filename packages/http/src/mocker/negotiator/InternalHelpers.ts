@@ -73,6 +73,10 @@ export function findLowest2xx(httpResponses: IHttpOperationResponse[]): O.Option
   return pipe(first2xxResponse, O.alt(generic2xxResponse));
 }
 
+export function findFirstResponse(httpResponses: IHttpOperationResponse[]): O.Option<IHttpOperationResponse> {
+  return pipe(httpResponses, head);
+}
+
 export function findResponseByStatusCode(
   responses: IHttpOperationResponse[],
   statusCode: string
