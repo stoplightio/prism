@@ -3,6 +3,7 @@ import * as convertAjvErrorsModule from '../utils';
 import { convertAjvErrors, validateAgainstSchema } from '../utils';
 import { ErrorObject } from 'ajv';
 import { assertSome, assertNone } from '@stoplight/prism-core/src/__tests__/utils';
+import { JSONSchema } from '@stoplight/prism-http';
 
 describe('convertAjvErrors()', () => {
   const errorObjectFixture: ErrorObject = {
@@ -77,6 +78,50 @@ describe('validateAgainstSchema()', () => {
         DiagnosticSeverity.Error,
         'pfx'
       );
+    });
+
+    it('properly returns array based paths when meaningful', () => {
+      const numberSchema = {
+        type: 'number',
+      };
+
+      const rootArraySchema = {
+        type: 'array',
+        items: {
+          type: 'object',
+          required: ['id'],
+          properties: {
+            id: numberSchema,
+            status: {
+              type: 'string',
+              enum: ['TODO', 'IN_PROGRESS', 'CANCELLED', 'DONE'],
+            },
+          },
+        },
+      };
+
+      const nestedArraySchema = {
+        type: 'object',
+        properties: {
+          data: rootArraySchema,
+        },
+      };
+
+      assertSome(validateAgainstSchema('test', numberSchema as JSONSchema, true, 'pfx'), error => {
+        expect(error).toEqual([expect.objectContaining({ path: ['pfx'] })]);
+      });
+
+      const arr = [{ id: 11 }, { nope: false }];
+
+      assertSome(validateAgainstSchema(arr, rootArraySchema as JSONSchema, true, 'pfx'), error => {
+        expect(error).toEqual([expect.objectContaining({ path: ['pfx', '[1]'] })]);
+      });
+
+      const obj = { data: arr };
+
+      assertSome(validateAgainstSchema(obj, nestedArraySchema as JSONSchema, true, 'pfx'), error => {
+        expect(error).toEqual([expect.objectContaining({ path: ['pfx', 'data[1]'] })]);
+      });
     });
   });
 
