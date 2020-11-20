@@ -24,7 +24,7 @@
     "@stoplight/types": "^11.6.0",
     "fast-xml-parser": "^3.12.20",
     "fp-ts": "^2.8.6",
-    "io-ts": "^2.2.12",
+    "io-ts": "^2.2.13",
     "lodash": "^4.17.20",
     "micri": "^4.2.1",
     "node-fetch": "^2.6.1",
