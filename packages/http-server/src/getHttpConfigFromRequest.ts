@@ -1,7 +1,7 @@
 import { IHttpOperationConfig, IHttpRequest, ProblemJsonError, UNPROCESSABLE_ENTITY } from '@stoplight/prism-http';
 import { pipe } from 'fp-ts/pipeable';
 import * as E from 'fp-ts/Either';
-import * as D from 'io-ts/Decoder';
+import * as D from 'io-ts/lib/Decoder';
 //@ts-ignore
 import * as parsePreferHeader from 'parse-prefer-header';
 
