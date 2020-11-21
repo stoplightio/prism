@@ -21,7 +21,7 @@ import {
   findResponseByStatusCode,
 } from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
-import { ProblemJsonError } from '../../types';
+import { JSONSchema, ProblemJsonError } from '../../types';
 
 const outputNoContentFoundMessage = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
@@ -32,11 +32,13 @@ const createEmptyResponse = (code: string, headers: IHttpHeaderParam[], mediaTyp
     O.map(() => ({ code, headers }))
   );
 
+type BodyNegotiationResult = Omit<IHttpNegotiationResult, 'headers'>;
+
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
     { code, exampleKey, dynamic }: NegotiatePartialOptions,
     httpContent: IMediaTypeContent
-  ): E.Either<Error, Omit<IHttpNegotiationResult, 'headers'>> {
+  ): E.Either<Error, BodyNegotiationResult> {
     const { mediaType } = httpContent;
 
     if (exampleKey) {
@@ -66,10 +68,10 @@ const helpers = {
           O.alt(() =>
             pipe(
               O.fromNullable(httpContent.schema),
-              O.map(schema => ({ schema, code, mediaType }))
+              O.map<JSONSchema, BodyNegotiationResult>(schema => ({ schema, code, mediaType }))
             )
           ),
-          O.getOrElse(() => ({ code, mediaType }))
+          O.getOrElse<BodyNegotiationResult>(() => ({ code, mediaType }))
         )
       );
     }
