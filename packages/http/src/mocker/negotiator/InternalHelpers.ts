@@ -12,12 +12,12 @@ import { ContentExample } from '../../';
 
 export type IWithExampleMediaContent = IMediaTypeContent & { examples: NonEmptyArray<ContentExample> };
 
-export function findBestExample(httpContent: IHttpContent) {
-  return httpContent.examples && httpContent.examples[0];
+export function findFirstExample(httpContent: IHttpContent) {
+  return pipe(O.fromNullable(httpContent.examples), O.chain(fromArray), O.chain(head));
 }
 
 export function findExampleByKey(httpContent: IHttpContent, exampleKey: string) {
-  return httpContent.examples && httpContent.examples.find(example => example.key === exampleKey);
+  return pipe(O.fromNullable(httpContent.examples), O.chain(findFirst(example => example.key === exampleKey)));
 }
 
 export function findBestHttpContentByMediaType(
