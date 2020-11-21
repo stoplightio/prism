@@ -13,7 +13,7 @@ import { NOT_ACCEPTABLE, NOT_FOUND, NO_SUCCESS_RESPONSE_DEFINED } from '../error
 import {
   contentHasExamples,
   createResponseFromDefault,
-  findBestExample,
+  findFirstExample,
   findBestHttpContentByMediaType,
   findDefaultContentType,
   findExampleByKey,
@@ -40,55 +40,38 @@ const helpers = {
     const { mediaType } = httpContent;
 
     if (exampleKey) {
-      // the user provided exampleKey - highest priority
-      const example = findExampleByKey(httpContent, exampleKey);
-      if (example) {
-        // example exists, return
-        return E.right({
-          code,
-          mediaType,
-          bodyExample: example,
-        });
-      } else {
-        return E.left(
+      return pipe(
+        findExampleByKey(httpContent, exampleKey),
+        E.fromOption(() =>
           ProblemJsonError.fromTemplate(
             NOT_FOUND,
             `Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`
           )
-        );
-      }
+        ),
+        E.map(bodyExample => ({ code, mediaType, bodyExample }))
+      );
     } else if (dynamic === true) {
-      if (httpContent.schema) {
-        return E.right({
-          code,
-          mediaType,
-          schema: httpContent.schema,
-        });
-      } else {
-        return E.left(new Error(`Tried to force a dynamic response for: ${mediaType} but schema is not defined.`));
-      }
+      return pipe(
+        httpContent.schema,
+        E.fromNullable(new Error(`Tried to force a dynamic response for: ${mediaType} but schema is not defined.`)),
+        E.map(schema => ({ code, mediaType, schema }))
+      );
     } else {
       // try to find a static example first
-      const example = findBestExample(httpContent);
-      if (example) {
-        // if example exists, return
-        return E.right({
-          code,
-          mediaType,
-          bodyExample: example,
-        });
-      } else if (httpContent.schema) {
-        return E.right({
-          code,
-          mediaType,
-          schema: httpContent.schema,
-        });
-      } else {
-        return E.right({
-          code,
-          mediaType,
-        });
-      }
+
+      return E.right(
+        pipe(
+          findFirstExample(httpContent),
+          O.map(bodyExample => ({ code, mediaType, bodyExample })),
+          O.alt(() =>
+            pipe(
+              O.fromNullable(httpContent.schema),
+              O.map(schema => ({ schema, code, mediaType }))
+            )
+          ),
+          O.getOrElse(() => ({ code, mediaType }))
+        )
+      );
     }
   },
 
