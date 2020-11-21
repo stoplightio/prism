@@ -129,17 +129,14 @@ const helpers = {
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
-    const { code, headers } = response;
+    const { code, headers = [] } = response;
     const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
     return logger => {
       if (requestMethod === 'head') {
         logger.info(`Responding with an empty body to a HEAD request.`);
 
-        return E.right({
-          code: response.code,
-          headers: response.headers || [],
-        });
+        return E.right({ code: response.code, headers });
       }
 
       return pipe(
@@ -164,7 +161,7 @@ const helpers = {
               O.fold(
                 () =>
                   pipe(
-                    createEmptyResponse(response.code, headers || [], mediaTypes),
+                    createEmptyResponse(response.code, headers, mediaTypes),
                     O.map(payloadlessResponse => {
                       logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
                       return payloadlessResponse;
@@ -187,7 +184,7 @@ const helpers = {
                       content
                     ),
                     E.map(contentNegotiationResult => ({
-                      headers: headers || [],
+                      headers,
                       ...contentNegotiationResult,
                       mediaType:
                         contentNegotiationResult.mediaType === '*/*'
