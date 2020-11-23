@@ -240,12 +240,12 @@ describe('NegotiatorHelpers', () => {
   describe('negotiateOptionsForValidRequest()', () => {
     it('given status code enforced should negotiate a specific code', () => {
       const options = {
-        code: '200',
+        code: 200,
         dynamic: false,
       };
 
       const expectedResult = {
-        code: options.code,
+        code: options.code.toString(),
         mediaType: 'application/json',
         headers: [],
       };
@@ -302,15 +302,15 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response defined should try to negotiate by that response', () => {
-      const code = faker.random.word();
+      const code = faker.random.number();
       const fakeResponse = {
-        code,
+        code: code.toString(),
         contents: [],
         headers: [],
       };
       const desiredOptions = { dynamic: false };
       const fakeOperationConfig: IHttpNegotiationResult = {
-        code,
+        code: code.toString(),
         headers: [],
         mediaType: '',
       };
@@ -333,13 +333,13 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response defined should fallback to default code on error', () => {
-      const code = faker.random.word();
+      const code = faker.random.number();
       const fakeResponse = {
-        code,
+        code: code.toString(),
       };
       const desiredOptions = { dynamic: false };
       const fakeOperationConfig: IHttpNegotiationResult = {
-        code,
+        code: code.toString(),
         mediaType: '',
         headers: [],
       };
@@ -364,7 +364,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response not defined should fallback to default code', () => {
-      const code = faker.random.word();
+      const code = faker.random.number();
       const desiredOptions = { dynamic: false };
       httpOperation = anHttpOperation(httpOperation).instance();
 

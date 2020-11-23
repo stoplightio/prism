@@ -6,11 +6,15 @@ import * as D from 'io-ts/lib/Decoder';
 import * as parsePreferHeader from 'parse-prefer-header';
 
 const BooleanFromString = D.parse<string, boolean>(s =>
-  s === 'true' ? D.success(true) : s === 'false' ? D.success(false) : D.failure(s, 'Not a boolean')
+  s === 'true' ? D.success(true) : s === 'false' ? D.success(false) : D.failure(s, 'a boolean')
+);
+
+const IntegerFromString = D.parse<string, number>(s =>
+  !isNaN(parseInt(s)) ? D.success(parseInt(s)) : D.failure(s, 'a number')
 );
 
 const PreferencesDecoder = D.partial({
-  code: D.string,
+  code: pipe(D.string, IntegerFromString),
   dynamic: pipe(D.string, BooleanFromString),
   example: D.string,
 });

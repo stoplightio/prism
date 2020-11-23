@@ -583,7 +583,7 @@ describe('mocker', () => {
     describe('when response schema has an inline $ref', () => {
       it('returns static example', () => {
         const mockResult = mock({
-          config: { dynamic: false, code: '201' },
+          config: { dynamic: false, code: 201 },
           resource: mockResource,
           input: mockInput,
         })(logger);

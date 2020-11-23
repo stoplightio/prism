@@ -224,7 +224,7 @@ const helpers = {
       findLowest2xx(httpOperation.responses),
       RE.fromOption(() => ProblemJsonError.fromTemplate(NO_SUCCESS_RESPONSE_DEFINED)),
       RE.chain(lowest2xxResponse =>
-        helpers.negotiateOptionsBySpecificResponse(httpOperation.method, desiredOptions, lowest2xxResponse)
+      helpers.negotiateOptionsBySpecificResponse(httpOperation.method, desiredOptions, lowest2xxResponse)
       )
     );
   },
@@ -232,16 +232,16 @@ const helpers = {
   negotiateOptionsBySpecificCode(
     httpOperation: IHttpOperation,
     desiredOptions: NegotiationOptions,
-    code: string
+    code: number
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     // find response by provided status code
     return pipe(
       withLogger(logger =>
         pipe(
-          findResponseByStatusCode(httpOperation.responses, code),
+          findResponseByStatusCode(httpOperation.responses, code.toString()),
           O.alt(() => {
             logger.info(`Unable to find a ${code} response definition`);
-            return createResponseFromDefault(httpOperation.responses, code);
+            return createResponseFromDefault(httpOperation.responses, code.toString());
           })
         )
       ),

@@ -44,7 +44,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             dynamic: false,
-            code: '201',
+            code: 201,
             exampleKey: 'second',
             mediaTypes: ['application/xml'],
           },
@@ -61,7 +61,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             dynamic: false,
-            code: '201',
+            code: 201,
             mediaTypes: ['application/xml'],
           },
         })(logger);
@@ -106,7 +106,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             dynamic: false,
-            code: '201',
+            code: 201,
           },
         })(logger);
 
@@ -119,7 +119,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             dynamic: false,
-            code: '205',
+            code: 205,
           },
         })(logger);
 
@@ -132,7 +132,7 @@ describe('http mocker', () => {
           input: httpRequests[0],
           config: {
             dynamic: false,
-            code: '201',
+            code: 201,
             exampleKey: 'second',
           },
         })(logger);

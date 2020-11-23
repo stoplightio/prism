@@ -30,7 +30,7 @@ describe('getHttpConfigFromRequest()', () => {
             method: 'get',
             url: { path: '/', query: { __code: '202' } },
           }),
-          parsed => expect(parsed).toHaveProperty('code', '202')
+          parsed => expect(parsed).toHaveProperty('code', 202)
         );
       });
 
@@ -63,7 +63,7 @@ describe('getHttpConfigFromRequest()', () => {
             url: { path: '/' },
             headers: { prefer: 'code=202' },
           }),
-          parsed => expect(parsed).toHaveProperty('code', '202')
+          parsed => expect(parsed).toHaveProperty('code', 202)
         );
       });
 
