@@ -44,8 +44,8 @@ export function improveSchema(schema: JSONSchema): JSONSchema {
 function pickStaticExample(examples: O.Option<Array<INodeExample | INodeExternalExample>>): O.Option<unknown> {
   return pipe(
     examples,
-    O.mapNullable(exs => exs[Math.floor(Math.random() * exs.length)]),
-    O.mapNullable(example => (example as INodeExample).value)
+    O.chainNullableK(exs => exs[Math.floor(Math.random() * exs.length)]),
+    O.chainNullableK(example => (example as INodeExample).value)
   );
 }
 

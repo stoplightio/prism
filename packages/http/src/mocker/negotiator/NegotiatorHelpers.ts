@@ -13,16 +13,16 @@ import { NOT_ACCEPTABLE, NOT_FOUND, NO_RESPONSE_DEFINED } from '../errors';
 import {
   contentHasExamples,
   createResponseFromDefault,
-  findBestExample,
+  findFirstExample,
   findBestHttpContentByMediaType,
   findDefaultContentType,
   findExampleByKey,
-  findFirstResponse,
   findLowest2xx,
   findResponseByStatusCode,
+  findFirstResponse,
 } from './InternalHelpers';
 import { IHttpNegotiationResult, NegotiatePartialOptions, NegotiationOptions } from './types';
-import { ProblemJsonError } from '../../types';
+import { JSONSchema, ProblemJsonError } from '../../types';
 
 const outputNoContentFoundMessage = (contentTypes: string[]) => `Unable to find content for ${contentTypes}`;
 
@@ -33,52 +33,46 @@ const createEmptyResponse = (code: string, headers: IHttpHeaderParam[], mediaTyp
     O.map(() => ({ code, headers }))
   );
 
+type BodyNegotiationResult = Omit<IHttpNegotiationResult, 'headers'>;
+
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
     { code, exampleKey, dynamic }: NegotiatePartialOptions,
     httpContent: IMediaTypeContent
-  ): E.Either<Error, Omit<IHttpNegotiationResult, 'headers'>> {
+  ): E.Either<Error, BodyNegotiationResult> {
     const { mediaType } = httpContent;
 
     if (exampleKey) {
-      // the user provided exampleKey - highest priority
-      const example = findExampleByKey(httpContent, exampleKey);
-      if (example) {
-        // example exists, return
-        return E.right({
-          code,
-          mediaType,
-          bodyExample: example,
-        });
-      } else {
-        return E.left(
+      return pipe(
+        findExampleByKey(httpContent, exampleKey),
+        E.fromOption(() =>
           ProblemJsonError.fromTemplate(
             NOT_FOUND,
             `Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`
           )
-        );
-      }
+        ),
+        E.map(bodyExample => ({ code, mediaType, bodyExample }))
+      );
     } else if (dynamic === true) {
-      if (httpContent.schema) {
-        return E.right({
-          code,
-          mediaType,
-          schema: httpContent.schema,
-        });
-      } else {
-        return E.left(new Error(`Tried to force a dynamic response for: ${mediaType} but schema is not defined.`));
-      }
+      return pipe(
+        httpContent.schema,
+        E.fromNullable(new Error(`Tried to force a dynamic response for: ${mediaType} but schema is not defined.`)),
+        E.map(schema => ({ code, mediaType, schema }))
+      );
     } else {
-      // try to find a static example first
-      const example = findBestExample(httpContent);
-      if (example) {
-        // if example exists, return
-        return E.right({ code, mediaType, bodyExample: example });
-      } else if (httpContent.schema) {
-        return E.right({ code, mediaType, schema: httpContent.schema });
-      } else {
-        return E.right({ code, mediaType });
-      }
+      return E.right(
+        pipe(
+          findFirstExample(httpContent),
+          O.map(bodyExample => ({ code, mediaType, bodyExample })),
+          O.alt(() =>
+            pipe(
+              O.fromNullable(httpContent.schema),
+              O.map<JSONSchema, BodyNegotiationResult>(schema => ({ schema, code, mediaType }))
+            )
+          ),
+          O.getOrElse<BodyNegotiationResult>(() => ({ code, mediaType }))
+        )
+      );
     }
   },
 
@@ -87,6 +81,7 @@ const helpers = {
     response: IHttpOperationResponse
   ): E.Either<Error, IHttpNegotiationResult> {
     const { code, dynamic, exampleKey } = partialOptions;
+    const { headers = [] } = response;
 
     const findHttpContent = pipe(
       O.fromNullable(response.contents),
@@ -109,22 +104,12 @@ const helpers = {
               value: undefined,
               key: 'default',
             },
-            headers: response.headers || [],
+            headers,
           }),
         content =>
           pipe(
-            helpers.negotiateByPartialOptionsAndHttpContent(
-              {
-                code,
-                dynamic,
-                exampleKey,
-              },
-              content
-            ),
-            E.map(contentNegotiationResult => ({
-              headers: response.headers || [],
-              ...contentNegotiationResult,
-            }))
+            helpers.negotiateByPartialOptionsAndHttpContent({ code, dynamic, exampleKey }, content),
+            E.map(contentNegotiationResult => ({ headers, ...contentNegotiationResult }))
           )
       )
     );
@@ -135,17 +120,14 @@ const helpers = {
     desiredOptions: NegotiationOptions,
     response: IHttpOperationResponse
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
-    const { code, headers } = response;
+    const { code, headers = [] } = response;
     const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
     return logger => {
       if (requestMethod === 'head') {
         logger.info(`Responding with an empty body to a HEAD request.`);
 
-        return E.right({
-          code: response.code,
-          headers: response.headers || [],
-        });
+        return E.right({ code: response.code, headers });
       }
 
       return pipe(
@@ -170,7 +152,7 @@ const helpers = {
               O.fold(
                 () =>
                   pipe(
-                    createEmptyResponse(response.code, headers || [], mediaTypes),
+                    createEmptyResponse(response.code, headers, mediaTypes),
                     O.map(payloadlessResponse => {
                       logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
                       return payloadlessResponse;
@@ -193,7 +175,7 @@ const helpers = {
                       content
                     ),
                     E.map(contentNegotiationResult => ({
-                      headers: headers || [],
+                      headers,
                       ...contentNegotiationResult,
                       mediaType:
                         contentNegotiationResult.mediaType === '*/*'

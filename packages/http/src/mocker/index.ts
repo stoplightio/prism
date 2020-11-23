@@ -116,8 +116,8 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
 
   const specs = pipe(
     O.fromNullable(resource.request),
-    O.mapNullable(request => request.body),
-    O.mapNullable(body => body.contents),
+    O.chainNullableK(request => request.body),
+    O.chainNullableK(body => body.contents),
     O.getOrElse(() => [] as IMediaTypeContent[])
   );
 
@@ -216,8 +216,8 @@ const assembleResponse = (
   payloadGenerator: PayloadGenerator
 ): R.Reader<Logger, E.Either<Error, IHttpResponse>> => logger =>
   pipe(
-    result,
-    E.bindTo('negotiationResult'),
+    E.Do,
+    E.bind('negotiationResult', () => result),
     E.bind('mockedData', ({ negotiationResult }) =>
       eitherSequence(
         computeBody(negotiationResult, payloadGenerator),

@@ -84,8 +84,8 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
 
 export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, mediaType) => {
   const findContentByMediaType = pipe(
-    O.fromNullable(mediaType),
-    O.bindTo('mediaType'),
+    O.Do,
+    O.bind('mediaType', () => O.fromNullable(mediaType)),
     O.bind('contentResult', ({ mediaType }) => findContentByMediaTypeOrFirst(specs, mediaType)),
     O.alt(() => O.some({ contentResult: { content: specs[0] || {}, mediaType: 'random' } })),
     O.bind('schema', ({ contentResult }) => O.fromNullable(contentResult.content.schema)),

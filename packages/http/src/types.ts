@@ -93,5 +93,4 @@ export type ContentExample = INodeExample | INodeExternalExample;
 export type PayloadGenerator = (f: JSONSchema) => Either<Error, unknown>;
 
 export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
-
 export type JSONSchema = JSONSchema4 | JSONSchema6 | JSONSchema7;

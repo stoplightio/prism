@@ -64,7 +64,7 @@ export function resolveRuntimeExpression(
       O.chain(part =>
         pipe(
           O.fromNullable(request.headers),
-          O.mapNullable(headers => headers[part])
+          O.chainNullableK(headers => headers[part])
         )
       )
     );
@@ -93,7 +93,7 @@ export function resolveRuntimeExpression(
       O.chain(part =>
         pipe(
           O.fromNullable(response.headers),
-          O.mapNullable(headers => headers[part])
+          O.chainNullableK(headers => headers[part])
         )
       )
     );
@@ -108,8 +108,8 @@ export function resolveRuntimeExpression(
 
   function readBody(body: unknown) {
     return pipe(
-      O.fromNullable(body),
-      O.bindTo('body'),
+      O.Do,
+      O.bind('body', () => O.fromNullable(body)),
       O.bind('path', () =>
         pipe(
           lookup(2, parts),
