@@ -250,14 +250,14 @@ describe('NegotiatorHelpers', () => {
         headers: [],
       };
 
-      const negotiateOptionsForDefaultCodeSpy = jest.spyOn(helpers, 'negotiateOptionsForDefaultCode');
+      const negotiateOptionsForUnspecifiedCodeSpy = jest.spyOn(helpers, 'negotiateOptionsForUnspecifiedCode');
       const negotiateOptionsBySpecificCodeSpy = jest
         .spyOn(helpers, 'negotiateOptionsBySpecificCode')
         .mockReturnValue(right(expectedResult));
 
       const actualResult = helpers.negotiateOptionsForValidRequest(httpOperation, options)(logger);
 
-      expect(negotiateOptionsForDefaultCodeSpy).not.toHaveBeenCalled();
+      expect(negotiateOptionsForUnspecifiedCodeSpy).not.toHaveBeenCalled();
       expect(negotiateOptionsBySpecificCodeSpy).toHaveBeenCalledTimes(1);
 
       assertRight(actualResult, result => expect(result).toEqual(expectedResult));
@@ -272,8 +272,8 @@ describe('NegotiatorHelpers', () => {
         headers: [],
       };
 
-      const negotiateOptionsForDefaultCodeSpy = jest
-        .spyOn(helpers, 'negotiateOptionsForDefaultCode')
+      const negotiateOptionsForUnspecifiedCodeSpy = jest
+        .spyOn(helpers, 'negotiateOptionsForUnspecifiedCode')
         .mockReturnValue(right(expectedResult));
 
       const negotiateOptionsBySpecificCodeSpy = jest.spyOn(helpers, 'negotiateOptionsBySpecificCode');
@@ -281,7 +281,7 @@ describe('NegotiatorHelpers', () => {
       const actualResult = helpers.negotiateOptionsForValidRequest(httpOperation, options)(logger);
 
       expect(negotiateOptionsBySpecificCodeSpy).not.toHaveBeenCalled();
-      expect(negotiateOptionsForDefaultCodeSpy).toHaveBeenCalledTimes(1);
+      expect(negotiateOptionsForUnspecifiedCodeSpy).toHaveBeenCalledTimes(1);
 
       assertRight(actualResult, result => expect(result).toEqual(expectedResult));
     });
@@ -289,16 +289,16 @@ describe('NegotiatorHelpers', () => {
 
   describe('negotiateOptionsBySpecificCode()', () => {
     let negotiateOptionsBySpecificResponseMock: jest.SpyInstance;
-    let negotiateOptionsForDefaultCodeMock: jest.SpyInstance;
+    let negotiateOptionsForUnspecifiedCodeMock: jest.SpyInstance;
 
     beforeEach(() => {
       negotiateOptionsBySpecificResponseMock = jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse');
-      negotiateOptionsForDefaultCodeMock = jest.spyOn(helpers, 'negotiateOptionsForDefaultCode');
+      negotiateOptionsForUnspecifiedCodeMock = jest.spyOn(helpers, 'negotiateOptionsForUnspecifiedCode');
     });
 
     afterEach(() => {
       negotiateOptionsBySpecificResponseMock.mockClear();
-      negotiateOptionsForDefaultCodeMock.mockClear();
+      negotiateOptionsForUnspecifiedCodeMock.mockClear();
     });
 
     it('given response defined should try to negotiate by that response', () => {
@@ -326,7 +326,7 @@ describe('NegotiatorHelpers', () => {
         desiredOptions,
         fakeResponse
       );
-      expect(negotiateOptionsForDefaultCodeMock).not.toHaveBeenCalled();
+      expect(negotiateOptionsForUnspecifiedCodeMock).not.toHaveBeenCalled();
       assertRight(actualOperationConfig, operationConfig => {
         expect(operationConfig).toEqual(fakeOperationConfig);
       });
@@ -345,7 +345,7 @@ describe('NegotiatorHelpers', () => {
       };
 
       negotiateOptionsBySpecificResponseMock.mockReturnValue(left(new Error('Hey')));
-      negotiateOptionsForDefaultCodeMock.mockReturnValue(right(fakeOperationConfig));
+      negotiateOptionsForUnspecifiedCodeMock.mockReturnValue(right(fakeOperationConfig));
       httpOperation = anHttpOperation(httpOperation).withResponses([fakeResponse]).instance();
 
       const actualOperationConfig = helpers.negotiateOptionsBySpecificCode(httpOperation, desiredOptions, code)(logger);
@@ -356,8 +356,8 @@ describe('NegotiatorHelpers', () => {
         desiredOptions,
         fakeResponse
       );
-      expect(negotiateOptionsForDefaultCodeMock).toHaveBeenCalledTimes(1);
-      expect(negotiateOptionsForDefaultCodeMock).toHaveBeenCalledWith(httpOperation, desiredOptions);
+      expect(negotiateOptionsForUnspecifiedCodeMock).toHaveBeenCalledTimes(1);
+      expect(negotiateOptionsForUnspecifiedCodeMock).toHaveBeenCalledWith(httpOperation, desiredOptions);
       assertRight(actualOperationConfig, operationConfig => {
         expect(operationConfig).toEqual(fakeOperationConfig);
       });
@@ -374,7 +374,7 @@ describe('NegotiatorHelpers', () => {
     });
   });
 
-  describe('negotiateOptionsForDefaultCode()', () => {
+  describe('negotiateOptionsForUnspecifiedCode()', () => {
     it('given only a generic 2XX response should negotiate that one', () => {
       const desiredOptions = { dynamic: false };
       const response = {
@@ -390,7 +390,7 @@ describe('NegotiatorHelpers', () => {
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse').mockReturnValue(right(fakeOperationConfig));
       httpOperation = anHttpOperation(httpOperation).withResponses([response]).instance();
 
-      const actualOperationConfig = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions)(logger);
+      const actualOperationConfig = helpers.negotiateOptionsForUnspecifiedCode(httpOperation, desiredOptions)(logger);
 
       expect(helpers.negotiateOptionsBySpecificResponse).toHaveBeenCalledTimes(1);
       assertRight(actualOperationConfig, operationConfig => {
@@ -429,7 +429,7 @@ describe('NegotiatorHelpers', () => {
         ])
         .instance();
 
-      const actualOperationConfig = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions)(logger);
+      const actualOperationConfig = helpers.negotiateOptionsForUnspecifiedCode(httpOperation, desiredOptions)(logger);
 
       expect(helpers.negotiateOptionsBySpecificResponse).toHaveBeenCalledTimes(1);
       assertRight(actualOperationConfig, operationConfig => {
@@ -437,14 +437,12 @@ describe('NegotiatorHelpers', () => {
       });
     });
 
-    it('given no 2xx response should throw exception', () => {
+    it('given no 2xx response should return the first response', () => {
       const desiredOptions = { dynamic: false };
       jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse');
 
-      const negotiationResult = helpers.negotiateOptionsForDefaultCode(httpOperation, desiredOptions)(logger);
-      assertLeft(negotiationResult, e => {
-        expect(e.name).toBe('https://stoplight.io/prism/errors#NO_SUCCESS_RESPONSE_DEFINED');
-      });
+      const negotiationResult = helpers.negotiateOptionsForUnspecifiedCode(httpOperation, desiredOptions)(logger);
+      assertRight(negotiationResult, res => expect(res.code).toBe('300'));
     });
   });
 

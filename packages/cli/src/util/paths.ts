@@ -24,8 +24,8 @@ export function createExamplePath(
   transformValues: ValuesTransformer = identity
 ): E.Either<Error, string> {
   return pipe(
-    generateTemplateAndValuesForPathParams(operation),
-    E.bindTo('pathData'),
+    E.Do,
+    E.bind('pathData', () => generateTemplateAndValuesForPathParams(operation)),
     E.bind('queryData', ({ pathData }) => generateTemplateAndValuesForQueryParams(pathData.template, operation)),
     E.map(({ pathData, queryData }) =>
       URI.expand(queryData.template, transformValues({ ...pathData.values, ...queryData.values }))

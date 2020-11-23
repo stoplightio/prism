@@ -108,8 +108,8 @@ export function resolveRuntimeExpression(
 
   function readBody(body: unknown) {
     return pipe(
-      O.fromNullable(body),
-      O.bindTo('body'),
+      O.Do,
+      O.bind('body', () => O.fromNullable(body)),
       O.bind('path', () =>
         pipe(
           lookup(2, parts),

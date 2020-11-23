@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Multiple HTTP Headers coming from a proxied response are now [correctly aggreagated using a `,`](https://tools.ietf.org/html/rfc2616#section-4.2) instead of a space. [#1489](https://github.com/stoplightio/prism/pull/1489)
 - Improved the returned path for Problem JSON payloads [#1530](https://github.com/stoplightio/prism/pull/1530)
+- Prism will now consider the first response in the document in case of the absence of a 2XX response, instead of requiring at least a successful response. [#1531](https://github.com/stoplightio/prism/pull/1531)
 
 # 4.1.0 (2020-09-25)
 

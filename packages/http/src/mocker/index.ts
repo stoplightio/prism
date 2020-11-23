@@ -216,8 +216,8 @@ const assembleResponse = (
   payloadGenerator: PayloadGenerator
 ): R.Reader<Logger, E.Either<Error, IHttpResponse>> => logger =>
   pipe(
-    result,
-    E.bindTo('negotiationResult'),
+    E.Do,
+    E.bind('negotiationResult', () => result),
     E.bind('mockedData', ({ negotiationResult }) =>
       eitherSequence(
         computeBody(negotiationResult, payloadGenerator),

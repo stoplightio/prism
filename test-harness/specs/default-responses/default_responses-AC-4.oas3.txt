@@ -2,8 +2,7 @@
 When I send a request to an operation
 And this operation has no response with a matching status code
 And this operation does not have default or a 2XX response defined
-Then I should get back a response with 500 status code
-And the response's payload should describe the error
+Then I should get back the first response in the document
 ====spec====
 openapi: 3.0.2
 paths:
@@ -17,7 +16,4 @@ mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos
 ====expect====
-HTTP/1.1 500 Internal Server Error
-content-type: application/problem+json
-
-{"type":"https://stoplight.io/prism/errors#NO_SUCCESS_RESPONSE_DEFINED","title":"No response in the range 200-299 defined","status":500,"detail":""}
+HTTP/1.1 405 Method Not Allowed
