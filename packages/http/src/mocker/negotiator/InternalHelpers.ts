@@ -3,21 +3,21 @@ import { IHttpContent, IHttpOperationResponse, IMediaTypeContent } from '@stopli
 import * as accepts from 'accepts';
 import * as contentType from 'content-type';
 import * as O from 'fp-ts/Option';
-import { filter, findFirst, head, sort } from 'fp-ts/Array';
+import * as A from 'fp-ts/Array';
 import { pick } from 'lodash';
-import { NonEmptyArray, fromArray } from 'fp-ts/NonEmptyArray';
+import * as NEA from 'fp-ts/NonEmptyArray';
 import { ord, ordNumber } from 'fp-ts/Ord';
 import { pipe } from 'fp-ts/pipeable';
 import { ContentExample } from '../../';
 
-export type IWithExampleMediaContent = IMediaTypeContent & { examples: NonEmptyArray<ContentExample> };
+export type IWithExampleMediaContent = IMediaTypeContent & { examples: NEA.NonEmptyArray<ContentExample> };
 
 export function findFirstExample(httpContent: IHttpContent) {
-  return pipe(O.fromNullable(httpContent.examples), O.chain(fromArray), O.chain(head));
+  return pipe(O.fromNullable(httpContent.examples), O.chain(NEA.fromArray), O.chain(A.head));
 }
 
 export function findExampleByKey(httpContent: IHttpContent, exampleKey: string) {
-  return pipe(O.fromNullable(httpContent.examples), O.chain(findFirst(example => example.key === exampleKey)));
+  return pipe(O.fromNullable(httpContent.examples), O.chain(A.findFirst(({ key }) => key === exampleKey)));
 }
 
 export function findBestHttpContentByMediaType(
@@ -31,7 +31,7 @@ export function findBestHttpContentByMediaType(
   return pipe(
     bestType,
     O.fromPredicate((bestType): bestType is string => !!bestType),
-    O.chain(bestType => findFirst<IMediaTypeContent>(content => content.mediaType === bestType)(contents)),
+    O.chain(bestType => A.findFirst<IMediaTypeContent>(content => content.mediaType === bestType)(contents)),
     O.alt(() =>
       // Since media type parameters are not standardised (apart from the quality value), we're going to try again ignoring them all but q.
       pipe(
@@ -40,7 +40,7 @@ export function findBestHttpContentByMediaType(
           .filter(({ parameters }) => Object.keys(parameters).some(k => k !== 'q'))
           .map(({ type, parameters }) => ({ type, parameters: pick(parameters, 'q') }))
           .map(mt => contentType.format(mt)),
-        fromArray,
+        NEA.fromArray,
         O.chain(mediaTypesWithNoParameters => findBestHttpContentByMediaType(contents, mediaTypesWithNoParameters))
       )
     )
@@ -50,7 +50,7 @@ export function findBestHttpContentByMediaType(
 export function findDefaultContentType(contents: IMediaTypeContent[]): O.Option<IMediaTypeContent> {
   return pipe(
     contents,
-    findFirst(content => content.mediaType === '*/*')
+    A.findFirst(content => content.mediaType === '*/*')
   );
 }
 
@@ -65,9 +65,9 @@ export function findLowest2xx(httpResponses: IHttpOperationResponse[]): O.Option
 
   const first2xxResponse = pipe(
     httpResponses,
-    filter(response => /2\d\d/.test(response.code)),
-    sort(byResponseCode),
-    head
+    A.filter(response => /2\d\d/.test(response.code)),
+    A.sort(byResponseCode),
+    A.head
   );
 
   return pipe(first2xxResponse, O.alt(generic2xxResponse));
@@ -79,7 +79,7 @@ export function findResponseByStatusCode(
 ): O.Option<IHttpOperationResponse> {
   return pipe(
     responses,
-    findFirst(response => response.code.toLowerCase() === statusCode.toLowerCase())
+    A.findFirst(response => response.code.toLowerCase() === statusCode.toLowerCase())
   );
 }
 
@@ -89,7 +89,7 @@ export function createResponseFromDefault(
 ): O.Option<IHttpOperationResponse> {
   return pipe(
     responses,
-    findFirst(response => response.code === 'default'),
+    A.findFirst(response => response.code === 'default'),
     O.map(response => Object.assign({}, response, { code: statusCode }))
   );
 }
