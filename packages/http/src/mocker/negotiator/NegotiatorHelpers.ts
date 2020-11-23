@@ -82,6 +82,8 @@ const helpers = {
     response: IHttpOperationResponse
   ): E.Either<Error, IHttpNegotiationResult> {
     const { code, dynamic, exampleKey } = partialOptions;
+    const { headers = [] } = response;
+
     const findHttpContent = pipe(
       O.fromNullable(response.contents),
       O.chain(contents =>
@@ -103,22 +105,12 @@ const helpers = {
               value: undefined,
               key: 'default',
             },
-            headers: response.headers || [],
+            headers,
           }),
         content =>
           pipe(
-            helpers.negotiateByPartialOptionsAndHttpContent(
-              {
-                code,
-                dynamic,
-                exampleKey,
-              },
-              content
-            ),
-            E.map(contentNegotiationResult => ({
-              headers: response.headers || [],
-              ...contentNegotiationResult,
-            }))
+            helpers.negotiateByPartialOptionsAndHttpContent({ code, dynamic, exampleKey }, content),
+            E.map(contentNegotiationResult => ({ headers, ...contentNegotiationResult }))
           )
       )
     );
