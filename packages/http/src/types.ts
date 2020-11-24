@@ -64,10 +64,15 @@ export class ProblemJsonError extends Error {
     );
   }
 
-  public static fromPlainError(
+  public static toProblemJson(
     error: Error & { detail?: string; status?: number; additional?: Dictionary<unknown> }
-  ): ProblemJsonError {
-    return new ProblemJsonError(error.name, error.message, error.status || 500, error.detail || '', error.additional);
+  ): ProblemJson {
+    return {
+      type: error.name,
+      title: error.message,
+      status: error.status || 500,
+      detail: error.detail || '',
+    };
   }
 
   constructor(

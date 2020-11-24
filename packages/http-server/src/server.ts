@@ -140,13 +140,13 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         );
       }),
       TE.mapLeft((e: Error & { status?: number; additional?: { headers?: Dictionary<string> } }) => {
-        if (!reply.finished) {
+        if (!reply.writableEnded) {
           reply.setHeader('content-type', 'application/problem+json');
 
           if (e.additional && e.additional.headers)
             Object.entries(e.additional.headers).forEach(([name, value]) => reply.setHeader(name, value));
 
-          send(reply, e.status || 500, JSON.stringify(ProblemJsonError.fromPlainError(e)));
+          send(reply, e.status || 500, JSON.stringify(ProblemJsonError.toProblemJson(e)));
         } else {
           reply.end();
         }
