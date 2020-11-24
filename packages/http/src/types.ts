@@ -68,10 +68,11 @@ export class ProblemJsonError extends Error {
     error: Error & { detail?: string; status?: number; additional?: Dictionary<unknown> }
   ): ProblemJson {
     return {
-      type: error.name,
+      type: error.name && error.name !== 'Error' ? error.name : 'https://stoplight.io/prism/errors#UNKNOWN',
       title: error.message,
       status: error.status || 500,
       detail: error.detail || '',
+      ...error.additional,
     };
   }
 
