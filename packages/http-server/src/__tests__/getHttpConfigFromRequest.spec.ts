@@ -28,7 +28,6 @@ describe('getHttpConfigFromRequest()', () => {
       test('validates code is a number', () => {
         return assertLeft(
           getHttpConfigFromRequest({
-            method: 'get',
             url: { path: '/', query: { __code: 'default' } },
           }),
           error => expect(error.name).toEqual('https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY')
@@ -58,7 +57,6 @@ describe('getHttpConfigFromRequest()', () => {
       test('validates code is a number', () => {
         return assertLeft(
           getHttpConfigFromRequest({
-            method: 'get',
             url: { path: '/' },
             headers: { prefer: 'code=default' },
           }),
