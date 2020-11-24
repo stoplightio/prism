@@ -19,7 +19,7 @@ type RequestPreferences = Partial<Omit<IHttpOperationConfig, 'mediaType'>>;
 
 export const getHttpConfigFromRequest = (
   req: Pick<IHttpRequest, 'headers' | 'url'>
-): E.Either<Error, RequestPreferences> => {
+): E.Either<ProblemJsonError, RequestPreferences> => {
   const preferences: unknown =
     req.headers && req.headers['prefer']
       ? parsePreferHeader(req.headers['prefer'])
