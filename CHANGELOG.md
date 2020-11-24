@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Improved the returned path for Problem JSON payloads [#1530](https://github.com/stoplightio/prism/pull/1530)
 - Prism will now consider the first response in the document in case of the absence of a 2XX response, instead of requiring at least a successful response. [#1531](https://github.com/stoplightio/prism/pull/1531)
 
+## Changed
+- Prism will now validate that the requested code (either through prefer code header or __code query param) is a number. [#1542](https://github.com/stoplightio/prism/pull/1542)
+
 # 4.1.0 (2020-09-25)
 
 ## Changed
