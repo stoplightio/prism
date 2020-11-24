@@ -212,10 +212,10 @@ const helpers = {
     return pipe(
       withLogger(logger =>
         pipe(
-          findResponseByStatusCode(httpOperation.responses, code.toString()),
+          findResponseByStatusCode(httpOperation.responses, code),
           O.alt(() => {
             logger.info(`Unable to find a ${code} response definition`);
-            return createResponseFromDefault(httpOperation.responses, code.toString());
+            return createResponseFromDefault(httpOperation.responses, code);
           })
         )
       ),
@@ -254,7 +254,7 @@ const helpers = {
 
   findResponse(
     httpResponses: IHttpOperationResponse[],
-    statusCodes: NonEmptyArray<string>
+    statusCodes: NonEmptyArray<number>
   ): R.Reader<Logger, O.Option<IHttpOperationResponse>> {
     const [first, ...others] = statusCodes;
 
@@ -296,7 +296,7 @@ const helpers = {
 
   negotiateOptionsForInvalidRequest(
     httpResponses: IHttpOperationResponse[],
-    statusCodes: NonEmptyArray<string>
+    statusCodes: NonEmptyArray<number>
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     return pipe(
       helpers.findResponse(httpResponses, statusCodes),

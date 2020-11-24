@@ -153,7 +153,7 @@ export function createInvalidInputResponse(
     withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
     R.chain(() =>
       pipe(
-        helpers.negotiateOptionsForInvalidRequest(responses, securityValidation ? ['401'] : ['422', '400']),
+        helpers.negotiateOptionsForInvalidRequest(responses, securityValidation ? [401] : [422, 400]),
         RE.mapLeft(() =>
           securityValidation
             ? createUnauthorisedResponse(securityValidation.tags)
