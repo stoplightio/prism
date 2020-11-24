@@ -22,7 +22,9 @@ const PreferencesDecoder = D.partial({
 
 type RequestPreferences = Partial<Omit<IHttpOperationConfig, 'mediaType'>>;
 
-export const getHttpConfigFromRequest = (req: IHttpRequest): E.Either<Error, RequestPreferences> => {
+export const getHttpConfigFromRequest = (
+  req: Pick<IHttpRequest, 'headers' | 'url'>
+): E.Either<ProblemJsonError, RequestPreferences> => {
   const preferences: unknown =
     req.headers && req.headers['prefer']
       ? parsePreferHeader(req.headers['prefer'])
