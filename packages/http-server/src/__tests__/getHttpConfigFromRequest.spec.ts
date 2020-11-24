@@ -21,7 +21,7 @@ describe('getHttpConfigFromRequest()', () => {
 
       test('extracts code', () => {
         return assertRight(getHttpConfigFromRequest({ url: { path: '/', query: { __code: '202' } } }), parsed =>
-          expect(parsed).toHaveProperty('code', '202')
+          expect(parsed).toHaveProperty('code', 202)
         );
       });
 
@@ -41,7 +41,7 @@ describe('getHttpConfigFromRequest()', () => {
     describe('headers', () => {
       test('extracts code', () => {
         return assertRight(getHttpConfigFromRequest({ url: { path: '/' }, headers: { prefer: 'code=202' } }), parsed =>
-          expect(parsed).toHaveProperty('code', '202')
+          expect(parsed).toHaveProperty('code', 202)
         );
       });
 
