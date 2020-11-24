@@ -130,7 +130,7 @@ This class of errors is returned when Prism is validating the request/response a
 
 ### UNPROCESSABLE_ENTITY
 
-**Message: Invalid request body payload**
+**Message: Invalid request**
 **Returned Status Code: `422`**
 **Explanation:** This error occurs when the current request has not passed the validation rules specified in the current OpenAPI file _and_ the current resource is missing an error message (`422`, `400`, `default`). Note that this is an error _genered_ by Prism.
 
