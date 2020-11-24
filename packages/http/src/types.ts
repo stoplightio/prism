@@ -55,27 +55,19 @@ export class ProblemJsonError extends Error {
     detail?: string,
     additional?: Dictionary<unknown>
   ): ProblemJsonError {
-    const error = new ProblemJsonError(
+    return new ProblemJsonError(
       `https://stoplight.io/prism/errors#${template.type}`,
       template.title,
       template.status,
       detail || '',
       additional
     );
-
-    return error;
   }
 
   public static fromPlainError(
     error: Error & { detail?: string; status?: number; additional?: Dictionary<unknown> }
-  ): ProblemJson {
-    return {
-      type: error.name && error.name !== 'Error' ? error.name : 'https://stoplight.io/prism/errors#UNKNOWN',
-      title: error.message,
-      status: error.status || 500,
-      detail: error.detail || '',
-      ...error.additional,
-    };
+  ): ProblemJsonError {
+    return new ProblemJsonError(error.name, error.message, error.status || 500, error.detail || '', error.additional);
   }
 
   constructor(
