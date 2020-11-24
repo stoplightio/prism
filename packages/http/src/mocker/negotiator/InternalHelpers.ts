@@ -57,12 +57,6 @@ export function findDefaultContentType(contents: IMediaTypeContent[]): O.Option<
 const byResponseCode = ord.contramap<number, IHttpOperationResponse>(ordNumber, response => parseInt(response.code));
 
 export function findLowest2xx(httpResponses: IHttpOperationResponse[]): O.Option<IHttpOperationResponse> {
-  const generic2xxResponse = () =>
-    pipe(
-      findResponseByStatusCode(httpResponses, '2XX'),
-      O.alt(() => createResponseFromDefault(httpResponses, '200'))
-    );
-
   const first2xxResponse = pipe(
     httpResponses,
     A.filter(response => /2\d\d/.test(response.code)),
@@ -70,7 +64,10 @@ export function findLowest2xx(httpResponses: IHttpOperationResponse[]): O.Option
     A.head
   );
 
-  return pipe(first2xxResponse, O.alt(generic2xxResponse));
+  return pipe(
+    first2xxResponse,
+    O.alt(() => createResponseFromDefault(httpResponses, 200))
+  );
 }
 
 export function findFirstResponse(httpResponses: IHttpOperationResponse[]): O.Option<IHttpOperationResponse> {
@@ -79,17 +76,17 @@ export function findFirstResponse(httpResponses: IHttpOperationResponse[]): O.Op
 
 export function findResponseByStatusCode(
   responses: IHttpOperationResponse[],
-  statusCode: string
+  statusCode: number
 ): O.Option<IHttpOperationResponse> {
   return pipe(
     responses,
-    A.findFirst(response => response.code.toLowerCase() === statusCode.toLowerCase())
+    A.findFirst(response => response.code.toLowerCase() === String(statusCode))
   );
 }
 
 export function createResponseFromDefault(
   responses: IHttpOperationResponse[],
-  statusCode: string
+  statusCode: number
 ): O.Option<IHttpOperationResponse> {
   return pipe(
     responses,
