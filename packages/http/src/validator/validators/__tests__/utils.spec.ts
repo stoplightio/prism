@@ -167,11 +167,11 @@ describe('validateAgainstSchema()', () => {
         expect(error).toEqual([
           expect.objectContaining({
             path: ['pfx', '[1]'],
-            message: 'should NOT have additional properties',
+            message: "should NOT have additional properties; found 'nope'",
           }),
           expect.objectContaining({
             path: ['pfx', '[1]'],
-            message: 'should NOT have additional properties',
+            message: "should NOT have additional properties; found 'neither'",
           }),
         ]);
       });

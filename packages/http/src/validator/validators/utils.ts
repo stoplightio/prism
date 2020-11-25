@@ -15,13 +15,15 @@ export const convertAjvErrors = (errors: NonEmptyArray<ErrorObject>, severity: D
     errors,
     map<ErrorObject, IPrismDiagnostic>(error => {
       const allowedParameters = 'allowedValues' in error.params ? `: ${error.params.allowedValues.join(', ')}` : '';
+      const detectedAdditionalProperties =
+        'additionalProperty' in error.params ? `; found '${error.params.additionalProperty}'` : '';
       const errorPath = error.dataPath.split('.').filter(segment => segment !== '');
       const path = prefix ? [prefix, ...errorPath] : errorPath;
 
       return {
         path,
         code: error.keyword || '',
-        message: `${error.message || ''}${allowedParameters}`,
+        message: `${error.message || ''}${allowedParameters}${detectedAdditionalProperties}`,
         severity,
       };
     })
