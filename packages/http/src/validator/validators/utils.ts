@@ -15,11 +15,7 @@ export const convertAjvErrors = (errors: NonEmptyArray<ErrorObject>, severity: D
     errors,
     map<ErrorObject, IPrismDiagnostic>(error => {
       const allowedParameters = 'allowedValues' in error.params ? `: ${error.params.allowedValues.join(', ')}` : '';
-      const errorPath = error.dataPath.includes('.')
-        ? error.dataPath.split('.').slice(1)
-        : error.dataPath.length > 0
-        ? [error.dataPath]
-        : [];
+      const errorPath = error.dataPath.split('.').filter(segment => segment !== '');
       const path = prefix ? [prefix, ...errorPath] : errorPath;
 
       return {

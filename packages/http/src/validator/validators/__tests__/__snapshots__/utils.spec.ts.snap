@@ -6,6 +6,7 @@ Array [
     "code": "required",
     "message": "c is required",
     "path": Array [
+      "a",
       "b",
     ],
     "severity": 0,
@@ -19,6 +20,7 @@ Array [
     "code": "",
     "message": "c is required",
     "path": Array [
+      "a",
       "b",
     ],
     "severity": 0,

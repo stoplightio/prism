@@ -90,6 +90,7 @@ describe('validateAgainstSchema()', () => {
         items: {
           type: 'object',
           required: ['id'],
+          additionalProperties: false,
           properties: {
             id: numberSchema,
             status: {
@@ -107,11 +108,18 @@ describe('validateAgainstSchema()', () => {
         },
       };
 
+      const evenMoreNestedArraySchema = {
+        type: 'object',
+        properties: {
+          value: nestedArraySchema,
+        },
+      };
+
       assertSome(validateAgainstSchema('test', numberSchema as JSONSchema, true, 'pfx'), error => {
         expect(error).toEqual([expect.objectContaining({ path: ['pfx'], message: 'should be number' })]);
       });
 
-      const arr = [{ id: 11 }, { nope: false }];
+      const arr = [{ id: 11 }, { status: 'TODO' }];
 
       assertSome(validateAgainstSchema(arr, rootArraySchema as JSONSchema, true, 'pfx'), error => {
         expect(error).toEqual([
@@ -124,6 +132,47 @@ describe('validateAgainstSchema()', () => {
       assertSome(validateAgainstSchema(obj, nestedArraySchema as JSONSchema, true, 'pfx'), error => {
         expect(error).toEqual([
           expect.objectContaining({ path: ['pfx', 'data[1]'], message: "should have required property 'id'" }),
+        ]);
+      });
+
+      const obj2 = { value: { data: arr } };
+
+      assertSome(validateAgainstSchema(obj2, evenMoreNestedArraySchema as JSONSchema, true, 'pfx'), error => {
+        expect(error).toEqual([
+          expect.objectContaining({ path: ['pfx', 'value', 'data[1]'], message: "should have required property 'id'" }),
+        ]);
+      });
+
+      const arr2 = [{ id: [false] }];
+
+      assertSome(validateAgainstSchema(arr2, rootArraySchema as JSONSchema, true, 'pfx'), error => {
+        expect(error).toEqual([expect.objectContaining({ path: ['pfx', '[0]', 'id'], message: 'should be number' })]);
+      });
+
+      const arr3 = [{ id: 11 }, { status: 'TODONT' }];
+
+      assertSome(validateAgainstSchema(arr3, rootArraySchema as JSONSchema, true, 'pfx'), error => {
+        expect(error).toEqual([
+          expect.objectContaining({ path: ['pfx', '[1]'], message: "should have required property 'id'" }),
+          expect.objectContaining({
+            path: ['pfx', '[1]', 'status'],
+            message: 'should be equal to one of the allowed values: TODO, IN_PROGRESS, CANCELLED, DONE',
+          }),
+        ]);
+      });
+
+      const arr4 = [{ id: 11 }, { id: 12, nope: false, neither: true }];
+
+      assertSome(validateAgainstSchema(arr4, rootArraySchema as JSONSchema, true, 'pfx'), error => {
+        expect(error).toEqual([
+          expect.objectContaining({
+            path: ['pfx', '[1]'],
+            message: 'should NOT have additional properties',
+          }),
+          expect.objectContaining({
+            path: ['pfx', '[1]'],
+            message: 'should NOT have additional properties',
+          }),
         ]);
       });
     });
