@@ -108,19 +108,23 @@ describe('validateAgainstSchema()', () => {
       };
 
       assertSome(validateAgainstSchema('test', numberSchema as JSONSchema, true, 'pfx'), error => {
-        expect(error).toEqual([expect.objectContaining({ path: ['pfx'] })]);
+        expect(error).toEqual([expect.objectContaining({ path: ['pfx'], message: 'should be number' })]);
       });
 
       const arr = [{ id: 11 }, { nope: false }];
 
       assertSome(validateAgainstSchema(arr, rootArraySchema as JSONSchema, true, 'pfx'), error => {
-        expect(error).toEqual([expect.objectContaining({ path: ['pfx', '[1]'] })]);
+        expect(error).toEqual([
+          expect.objectContaining({ path: ['pfx', '[1]'], message: "should have required property 'id'" }),
+        ]);
       });
 
       const obj = { data: arr };
 
       assertSome(validateAgainstSchema(obj, nestedArraySchema as JSONSchema, true, 'pfx'), error => {
-        expect(error).toEqual([expect.objectContaining({ path: ['pfx', 'data[1]'] })]);
+        expect(error).toEqual([
+          expect.objectContaining({ path: ['pfx', 'data[1]'], message: "should have required property 'id'" }),
+        ]);
       });
     });
   });
