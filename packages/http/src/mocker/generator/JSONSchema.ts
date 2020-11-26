@@ -15,8 +15,6 @@ jsf.option({
   optionalsProbability: 1,
   fixedProbabilities: true,
   ignoreMissingRefs: true,
-  maxItems: 20,
-  maxLength: 100,
 });
 
 export function generate(source: JSONSchema): Either<Error, unknown> {
