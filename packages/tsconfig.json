@@ -10,6 +10,7 @@
     "strict": true,
     "target": "es2018",
     "noEmitHelpers": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "skipLibCheck": true
   }
 }

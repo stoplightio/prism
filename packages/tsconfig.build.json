@@ -2,6 +2,7 @@
   "exclude": ["**/__tests__"],
   "include": [],
   "extends": "./tsconfig.json",
+  "skipLibCheck": false,
   "references": [
     {
       "path": "./core/tsconfig.build.json"
