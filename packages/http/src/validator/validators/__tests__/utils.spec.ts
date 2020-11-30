@@ -3,7 +3,7 @@ import * as convertAjvErrorsModule from '../utils';
 import { convertAjvErrors, validateAgainstSchema } from '../utils';
 import { ErrorObject } from 'ajv';
 import { assertSome, assertNone } from '@stoplight/prism-core/src/__tests__/utils';
-import { JSONSchema } from '@stoplight/prism-http';
+import { JSONSchema } from '../../../';
 
 describe('convertAjvErrors()', () => {
   const errorObjectFixture: ErrorObject = {
