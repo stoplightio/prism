@@ -28,7 +28,7 @@
     "content-type": "^1.0.4",
     "faker": "^4.1.0",
     "fp-ts": "^2.9.0",
-    "json-schema-faker": "0.5.0-rcv.30",
+    "json-schema-faker": "0.5.0-rcv.31",
     "lodash": "^4.17.20",
     "node-fetch": "^2.6.1",
     "openapi-sampler": "^1.0.0-beta.18",
