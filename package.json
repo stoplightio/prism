@@ -46,7 +46,7 @@
     "diff-js-xml": "^1.0.5",
     "eslint": "^7.15.0",
     "eslint-config-prettier": "^7.0.0",
-    "eslint-plugin-prettier": "^3.2.0",
+    "eslint-plugin-prettier": "^3.3.0",
     "fast-xml-parser": "^3.17.5",
     "gavel": "^9.1.5",
     "glob-fs": "^0.1.7",
