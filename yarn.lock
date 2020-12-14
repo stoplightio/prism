@@ -7053,10 +7053,10 @@ pino-std-serializers@^2.4.2:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-2.4.2.tgz#cb5e3e58c358b26f88969d7e619ae54bdfcc1ae1"
   integrity sha512-WaL504dO8eGs+vrK+j4BuQQq6GLKeCCcHaMB2ItygzVURcL1CycwNEUHTD/lHFHs/NL5qAz2UKrjYWXKSf4aMQ==
 
-pino@^6.7.0:
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-6.7.0.tgz#d5d96b7004fed78816b5694fda3eab02b5ca6d23"
-  integrity sha512-vPXJ4P9rWCwzlTJt+f0Ni4THc3DWyt8iDDCO4edQ8narTu6hnpzdXu8FqeSJCGndl1W6lfbYQUQihUO54y66Lw==
+pino@^6.8.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-6.8.0.tgz#d242f9936f2e65217fde75c0af5d5d8b4d3d3fde"
+  integrity sha512-nxq+6Jr7m0cMjYFBoTRw3bco14omZ/SQCheAHz9GVwdkbUrzKhgT+gSI/ql2Mnsca0QQKgpB/ACWhjxE4JsX3Q==
   dependencies:
     fast-redact "^3.0.0"
     fast-safe-stringify "^2.0.7"
