@@ -4,7 +4,7 @@ import * as A from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
 import * as NEA from 'fp-ts/NonEmptyArray';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { get } from 'lodash';
 import { is as typeIs } from 'type-is';
 import { JSONSchema } from '../../types';

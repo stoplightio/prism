@@ -1,6 +1,6 @@
 import * as O from 'fp-ts/Option';
 import { noop } from 'lodash';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 

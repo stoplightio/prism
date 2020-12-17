@@ -1,6 +1,6 @@
 import { IHttpContent, IHttpParam, INodeExample, INodeExternalExample } from '@stoplight/types';
 import * as O from 'fp-ts/Option';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { JSONSchema } from '../../types';
 import { generate as generateDynamicExample } from './JSONSchema';
 

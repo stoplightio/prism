@@ -14,7 +14,7 @@ import {
 } from '@stoplight/types';
 import * as E from 'fp-ts/Either';
 import { sequenceSEither, traverseEither } from '../combinators';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { identity, fromPairs } from 'lodash';
 import { URI } from 'uri-template-lite';
 import { ValuesTransformer } from './colorizer';

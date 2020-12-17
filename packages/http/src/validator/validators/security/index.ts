@@ -1,7 +1,7 @@
 import { IHttpOperation, HttpSecurityScheme } from '@stoplight/types';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { flatten } from 'lodash';
 import { set } from 'lodash/fp';
 import { findSecurityHandler } from './handlers';

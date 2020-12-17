@@ -1,5 +1,5 @@
 import { fromNullable, getOrElse, map } from 'fp-ts/Option';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { get, escapeRegExp } from 'lodash';
 import { IHttpRequest } from '../../../../types';
 import { when } from './utils';

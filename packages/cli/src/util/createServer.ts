@@ -4,7 +4,7 @@ import { createServer as createHttpServer } from '@stoplight/prism-http-server';
 import * as chalk from 'chalk';
 import * as cluster from 'cluster';
 import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { LogDescriptor, Logger, LoggerOptions } from 'pino';
 import * as signale from 'signale';
 import * as split from 'split2';

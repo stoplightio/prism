@@ -1,6 +1,6 @@
 import { DiagnosticSeverity } from '@stoplight/types';
 import * as E from 'fp-ts/Either';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { identity } from 'fp-ts/function';
 import type { IPrismDiagnostic } from '@stoplight/prism-core';
 import type { IHttpRequest } from '../../../../types';

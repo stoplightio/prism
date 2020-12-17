@@ -1,7 +1,7 @@
 import { IPrismComponents, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import fetch from 'node-fetch';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import * as NEA from 'fp-ts/NonEmptyArray';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';

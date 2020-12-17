@@ -2,7 +2,7 @@ import * as E from 'fp-ts/Either';
 import * as A from 'fp-ts/Array';
 import * as TE from 'fp-ts/TaskEither';
 import { compact } from 'lodash';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig, IPrismOutput } from './types';
 import { getSemigroup, NonEmptyArray } from 'fp-ts/NonEmptyArray';

@@ -7,7 +7,7 @@ import * as A from 'fp-ts/Array';
 import { pick } from 'lodash';
 import * as NEA from 'fp-ts/NonEmptyArray';
 import { ord, ordNumber } from 'fp-ts/Ord';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { ContentExample } from '../../';
 
 export type IWithExampleMediaContent = IMediaTypeContent & { examples: NEA.NonEmptyArray<ContentExample> };

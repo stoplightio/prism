@@ -5,7 +5,7 @@ import { findIndex } from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
 import * as R from 'fp-ts/Reader';
 import * as RE from 'fp-ts/ReaderEither';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { tail } from 'lodash';
 import { Logger } from 'pino';
 import withLogger from '../../withLogger';

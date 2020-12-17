@@ -7,7 +7,7 @@ import { createInstance } from '.';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { fold } from 'fp-ts/TaskEither';
 import * as Task from 'fp-ts/Task';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import * as pino from 'pino';
 
 const logger = pino();

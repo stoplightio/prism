@@ -1,7 +1,7 @@
 import { IHttpRequest, IHttpResponse } from '../types';
 import * as O from 'fp-ts/Option';
 import { lookup } from 'fp-ts/Array';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { get as _get } from 'lodash';
 import { pointerToPath } from '@stoplight/json';
 

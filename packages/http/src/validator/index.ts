@@ -14,7 +14,7 @@ import * as O from 'fp-ts/Option';
 import * as E from 'fp-ts/Either';
 import { sequenceValidation, sequenceOption } from '../combinators';
 import { is as typeIs } from 'type-is';
-import { pipe } from 'fp-ts/pipeable';
+import { pipe } from 'fp-ts/function';
 import { inRange, isMatch } from 'lodash';
 import { URI } from 'uri-template-lite';
 export { validateSecurity } from './validators/security';
