@@ -8843,10 +8843,10 @@ uri-template-lite@^20.5.0:
   resolved "https://registry.yarnpkg.com/uri-template-lite/-/uri-template-lite-20.5.0.tgz#6904cb90006d3c4d93423d1e37bde76260d6b8b3"
   integrity sha512-RL6Pnz0DO4XH9WZhZTX6u0SP6afNM9z+u7lXYHO+RkVGzpNcgKc1Y2tcAX/KVIEi2ctfzf+iLcofkwKoYiGH4Q==
 
-urijs@^1.19.1, urijs@~1.19.2:
-  version "1.19.2"
-  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.2.tgz#f9be09f00c4c5134b7cb3cf475c1dd394526265a"
-  integrity sha512-s/UIq9ap4JPZ7H1EB5ULo/aOUbWqfDi7FKzMC2Nz+0Si8GiT1rIEaprt8hy3Vy2Ex2aJPpOQv4P4DuOZ+K1c6w==
+urijs@^1.19.3, urijs@~1.19.2:
+  version "1.19.3"
+  resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.19.3.tgz#f8d601ae3e68c2126ea45894eb18a93cc6afa561"
+  integrity sha512-Kuh0CMvOiSbq6aDlcuhUobc4q/uHx3NsKTAU9s5VxTgK8jlkauPhr6LtoxHqP+W8p/CV+xprjLb9vwN2YQxtXQ==
 
 urix@^0.1.0:
   version "0.1.0"
