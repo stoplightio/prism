@@ -23,7 +23,7 @@
     "split2": "^3.2.2",
     "tslib": "^2.0.3",
     "uri-template-lite": "^20.5.0",
-    "urijs": "^1.19.3",
+    "urijs": "^1.19.4",
     "yargs": "^16.2.0"
   },
   "engines": {
