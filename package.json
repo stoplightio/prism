@@ -44,7 +44,7 @@
     "@typescript-eslint/parser": "^4.11.1",
     "abstract-logging": "^2.0.1",
     "diff-js-xml": "^1.0.5",
-    "eslint": "^7.16.0",
+    "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-prettier": "^3.3.0",
     "fast-xml-parser": "^3.17.6",
