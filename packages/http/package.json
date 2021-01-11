@@ -33,7 +33,7 @@
     "node-fetch": "^2.6.1",
     "openapi-sampler": "^1.0.0-beta.18",
     "pino": "^6.10.0",
-    "tslib": "^2.0.3",
+    "tslib": "^2.1.0",
     "type-is": "^1.6.18",
     "uri-template-lite": "^20.5.0"
   },
