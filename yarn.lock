@@ -7050,20 +7050,20 @@ pinkie@^2.0.0:
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha1-clVrgM+g1IqXToDnckjoDtT3+HA=
 
-pino-std-serializers@^2.4.2:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-2.4.2.tgz#cb5e3e58c358b26f88969d7e619ae54bdfcc1ae1"
-  integrity sha512-WaL504dO8eGs+vrK+j4BuQQq6GLKeCCcHaMB2ItygzVURcL1CycwNEUHTD/lHFHs/NL5qAz2UKrjYWXKSf4aMQ==
+pino-std-serializers@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-3.1.0.tgz#fe62d339aeef359d9d7bdf61f4e4b2d7be8c73d4"
+  integrity sha512-Fk1pxhX6tuW4ozRDFw5Mz/IHQV5wXYXZwjG/gOpTNPCbYEMeNW9VnKAEu1428CwAQVupFruOr1vkC/ufmcwedA==
 
-pino@^6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-6.9.0.tgz#adaa57b52b8ccd8efc3499dd6e7e00ee72884354"
-  integrity sha512-9RrRJsKOsgj50oGoR/y4EEVyUjMb/eRu8y4hjwPqM6q214xsxSxY/IKB+aEEv0slqNd4U0RVRfivKfy83UxgUQ==
+pino@^6.10.0:
+  version "6.10.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-6.10.0.tgz#0dc4c701aef9e6f1ab276c7c1fbfcbebeba720db"
+  integrity sha512-ZFGE/Wq930gFb1h0RI6S/QOfkyzNj94Xubwlyo4XpxNUgrG1C0iEqnlooG5Fymx6yrUUtEJ8j/u8NCGwgwTXaQ==
   dependencies:
     fast-redact "^3.0.0"
     fast-safe-stringify "^2.0.7"
     flatstr "^1.0.12"
-    pino-std-serializers "^2.4.2"
+    pino-std-serializers "^3.1.0"
     quick-format-unescaped "^4.0.1"
     sonic-boom "^1.0.2"
 
