@@ -1605,10 +1605,10 @@
   resolved "https://registry.yarnpkg.com/@types/uri-template-lite/-/uri-template-lite-19.12.0.tgz#e89a9567f50a53eb176fc36cd10b1a449244eb09"
   integrity sha512-r+K7e+5uksy7YCAY0s7Tg6apVqw/w5eAC0eDUmy/IRVGJnLj/MuAc4lg/Ly5lLRCRqnLgZcwFu6EDHOSso7WFQ==
 
-"@types/urijs@^1.19.13", "@types/urijs@~1.19.9":
-  version "1.19.13"
-  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.13.tgz#0bd025b65df8ee5f038bbf6f1cb2e95160b49a56"
-  integrity sha512-Wg/E8Q+ylkR6JElTwOcjG7kM99/iJz28E9RKr8syOxssRs3gWchsziUkb+Nr254aUBWHY0QiScGAfIx4lKI3/g==
+"@types/urijs@^1.19.14", "@types/urijs@~1.19.9":
+  version "1.19.14"
+  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.14.tgz#1c714cfbc23eb9e3f840dd02b7e8284ab85f1a6b"
+  integrity sha512-Ds9OMd4xZqI2zZtoOicASAi0SvFPyNPgkfgPrPeUTQwcJOX1w6Mwkpq8ClI4ZP11nsEI6akvKqRDV+epA8yzRw==
 
 "@types/yargs-parser@*":
   version "13.1.0"
