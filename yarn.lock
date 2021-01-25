@@ -1327,10 +1327,10 @@
     type-is "^1.6.18"
     urijs "~1.19.2"
 
-"@stoplight/json@^3.10.0", "@stoplight/json@^3.8.1":
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.10.0.tgz#bd1af55081e1a47e0d01552d2a7e756931f46a4b"
-  integrity sha512-Xb1kVQ0t5eqRDF24Y0a2A1o/CEaHjLeVehkBmphqEBkUo6X9L4z5oOUYBMzlAoR/ejhjVgWLzrDBxNOuzBFVDA==
+"@stoplight/json@^3.10.2", "@stoplight/json@^3.8.1":
+  version "3.10.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.10.2.tgz#a17463c7576602971edbf6f11d3eaed80db262bb"
+  integrity sha512-mUf4t2bOBZjVa8KdEI4+EqX/8zXJLfGKv/cj++giLbCkYNGjBgJnmPSDNOOBgJHpocdVml0hK8ZuLADqWVVB2Q==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.1"
     "@stoplight/types" "^11.9.0"

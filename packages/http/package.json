@@ -16,7 +16,7 @@
     "node": ">=12"
   },
   "dependencies": {
-    "@stoplight/json": "^3.10.0",
+    "@stoplight/json": "^3.10.2",
     "@stoplight/prism-core": "^4.1.2",
     "@stoplight/types": "^11.6.0",
     "@stoplight/yaml": "^4.0.1",
