@@ -132,7 +132,7 @@ This class of errors is returned when Prism is validating the request/response a
 
 **Message: Invalid request**
 **Returned Status Code: `422`**
-**Explanation:** This error occurs when the current request has not passed the validation rules specified in the current OpenAPI file _and_ the current resource is missing an error message (`422`, `400`, `default`). Note that this is an error _genered_ by Prism.
+**Explanation:** This error occurs when the current request has not passed the validation rules specified in the current OpenAPI file _and_ the current resource is missing an error message (`422`, `400`, `default`). Note that this is an error _generated_ by Prism.
 
 The `detail` field contains further information on the error (whether it's on the body, the headers or the query string).
 
