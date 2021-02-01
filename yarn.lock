@@ -1419,10 +1419,10 @@
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
   integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
 
-"@types/faker@^4.1.5":
-  version "4.1.12"
-  resolved "https://registry.yarnpkg.com/@types/faker/-/faker-4.1.12.tgz#065d37343677df1aa757c622650bd14666c42602"
-  integrity sha512-0MEyzJrLLs1WaOCx9ULK6FzdCSj2EuxdSP9kvuxxdBEGujZYUOZ4vkPXdgu3dhyg/pOdn7VCatelYX7k0YShlA==
+"@types/faker@^5.1.6":
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/@types/faker/-/faker-5.1.6.tgz#f029aaebfc2d7931a3d729c0888c15f0187d2453"
+  integrity sha512-D+gfFWR/YCvlrYL8lgNZO1jKgIUW+cfhxsgMOqUMYwCI+tl0htD7vCCXp/oJsIxJpxuI7zqmo3gpVQBkFCM4iA==
 
 "@types/glob@^7.1.1":
   version "7.1.1"
