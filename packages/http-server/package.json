@@ -23,7 +23,7 @@
     "@stoplight/prism-http": "^4.1.2",
     "@stoplight/types": "^11.6.0",
     "fast-xml-parser": "^3.17.6",
-    "fp-ts": "^2.9.3",
+    "fp-ts": "^2.9.5",
     "io-ts": "^2.2.13",
     "lodash": "^4.17.20",
     "micri": "^4.3.0",
