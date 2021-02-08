@@ -1308,10 +1308,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stoplight/http-spec@^3.2.3":
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.2.3.tgz#7a987d6e5289d20770540ec6e770a57c8974d089"
-  integrity sha512-vajkzF3I9ukGR6KACMYrAQd1PB766BzsUWPo4NRVkauM9tT5yTasH7uSRJUt+poejhgtElxnta3wa86lWZcAMw==
+"@stoplight/http-spec@^3.2.4":
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.2.4.tgz#bfd99b77591d726ab2bd659659d56b0ca73ac5d3"
+  integrity sha512-a91QeJVoCdic7AJ8h879vhNzqFl2G+gDwej3oA4KMims/eDLaDbPrkaJ/QksRhvnw2EmZ/lJ43ykvoSa1M2Erg==
   dependencies:
     "@openapi-contrib/openapi-schema-to-json-schema" "^3.0.4"
     "@stoplight/json" "^3.8.1"
