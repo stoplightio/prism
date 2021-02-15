@@ -1308,13 +1308,13 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stoplight/http-spec@^3.2.4":
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.2.4.tgz#bfd99b77591d726ab2bd659659d56b0ca73ac5d3"
-  integrity sha512-a91QeJVoCdic7AJ8h879vhNzqFl2G+gDwej3oA4KMims/eDLaDbPrkaJ/QksRhvnw2EmZ/lJ43ykvoSa1M2Erg==
+"@stoplight/http-spec@^3.2.5":
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.2.5.tgz#6f085042d560f5cc6514af0b37633fee965018bb"
+  integrity sha512-97RQv0Q5kJkA56WFDG8xbfAcus/fTkS8gENCv4AzoZlReAChKR3/CqHt+FIyzSVgsWPZ9n0HRreg2KdWoIsxjQ==
   dependencies:
     "@openapi-contrib/openapi-schema-to-json-schema" "^3.0.4"
-    "@stoplight/json" "^3.8.1"
+    "@stoplight/json" "^3.10.2"
     "@stoplight/types" "^11.9.0"
     "@types/swagger-schema-official" "~2.0.21"
     "@types/to-json-schema" "^0.2.0"
@@ -1327,7 +1327,7 @@
     type-is "^1.6.18"
     urijs "~1.19.2"
 
-"@stoplight/json@^3.10.2", "@stoplight/json@^3.8.1":
+"@stoplight/json@^3.10.2":
   version "3.10.2"
   resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.10.2.tgz#a17463c7576602971edbf6f11d3eaed80db262bb"
   integrity sha512-mUf4t2bOBZjVa8KdEI4+EqX/8zXJLfGKv/cj++giLbCkYNGjBgJnmPSDNOOBgJHpocdVml0hK8ZuLADqWVVB2Q==
