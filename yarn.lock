@@ -1305,10 +1305,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stoplight/http-spec@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.3.0.tgz#eddfbcf74cd140ad10b28960cedb37493fa39439"
-  integrity sha512-4FuZ/VarJAwHZdVIVNhGQ1Po675V/Iheu8CL/WQhlis4wojHfv4mnZvAYUJtL1txGJL+g2dG+NSkFKXAHztN9w==
+"@stoplight/http-spec@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.3.1.tgz#8e0f6362427b90eca838801f420183ed3000fc6e"
+  integrity sha512-0QzVmPvu5LEwHheqk0QiGUQt2+3XhPCdSWXimsqYY0XJcVRRCAF8b2J3jrmeslN2D5R9W1sWj7REL1KGTiAMXg==
   dependencies:
     "@stoplight/json" "^3.10.2"
     "@stoplight/types" "^11.9.0"
