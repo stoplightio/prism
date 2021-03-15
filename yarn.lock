@@ -3966,10 +3966,10 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
-gavel@^9.1.5:
-  version "9.1.5"
-  resolved "https://registry.yarnpkg.com/gavel/-/gavel-9.1.5.tgz#0f8bdf666a32665efb8a1b3aa1699895d3687a28"
-  integrity sha512-psmdVmlNPbYuwwjGksIB4SOe2OfB+EMnnoywRPfeSDoY/zK7krBQUIy5tuz2ig2/hRnyB12xZyzMm8cP4cHwtw==
+gavel@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/gavel/-/gavel-10.0.1.tgz#c33ae823f61ad33c8dad741e73dcc6e175dcea3c"
+  integrity sha512-aS4qGIQV9ci/oG6cfExxmwusOXhMNEd4MNidvDdJXW3N6B1DkFRK+d2wTFQCGDq6c1k4dvidDJmh+KIK6V5ESQ==
   dependencies:
     ajv "6.12.3"
     caseless "0.12.0"
