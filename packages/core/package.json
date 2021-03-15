@@ -18,7 +18,7 @@
   "dependencies": {
     "fp-ts": "^2.9.5",
     "lodash": "^4.17.21",
-    "pino": "^6.11.1",
+    "pino": "^6.11.2",
     "tslib": "^2.1.0"
   },
   "publishConfig": {

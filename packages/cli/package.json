@@ -18,7 +18,7 @@
     "json-schema-ref-parser": "^9.0.7",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
-    "pino": "^6.11.1",
+    "pino": "^6.11.2",
     "signale": "^1.4.0",
     "split2": "^3.2.2",
     "tslib": "^2.1.0",
