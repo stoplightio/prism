@@ -5535,10 +5535,10 @@ json-promise@^1.1.8:
   dependencies:
     bluebird "*"
 
-json-schema-faker@0.5.0-rcv.32:
-  version "0.5.0-rcv.32"
-  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rcv.32.tgz#8c15732fceb331ad4f14e2864d98f6555e949802"
-  integrity sha512-buGuuOhzxrf9FWGFybiGNiflGODIC5doU0r23+3MAOyjMR9/KsKolHANSbQnM4N+mmw/dbv9byT3oKZ1wp8v2A==
+json-schema-faker@0.5.0-rcv.34:
+  version "0.5.0-rcv.34"
+  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rcv.34.tgz#65dc143464ffad79147112caf11951c29f592173"
+  integrity sha512-Q68XN31eg8rtDNZQpW7f3BrOJxdpBFdPRTmvbn3rex0fI7hrQJGyoqEKb2lb5UiUS+sblOwgKq4aPtdzwHph9Q==
   dependencies:
     json-schema-ref-parser "^6.1.0"
     jsonpath-plus "^3.0.0"
