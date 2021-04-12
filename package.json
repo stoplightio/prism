@@ -30,7 +30,7 @@
     "@types/json-schema-faker": "^0.5.1",
     "@types/lodash": "^4.14.168",
     "@types/node": "^13.1.1",
-    "@types/node-fetch": "2.5.9",
+    "@types/node-fetch": "2.5.10",
     "@types/openapi-sampler": "^1.0.0",
     "@types/pino": "^6.3.6",
     "@types/postman-collection": "^3.5.5",
