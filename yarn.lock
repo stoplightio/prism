@@ -1305,20 +1305,20 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stoplight/http-spec@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.3.1.tgz#8e0f6362427b90eca838801f420183ed3000fc6e"
-  integrity sha512-0QzVmPvu5LEwHheqk0QiGUQt2+3XhPCdSWXimsqYY0XJcVRRCAF8b2J3jrmeslN2D5R9W1sWj7REL1KGTiAMXg==
+"@stoplight/http-spec@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-3.4.0.tgz#88ab5ae0ff4985119697de5a1413bd9b1d672ab6"
+  integrity sha512-BC2dXnjrKK5DuRicjLzhWrWg/wWrEwh9RFV+uMnjEC8lJAPby11HDndEWRZh/cOJqg8YvB4HpA2+oAyE4XADJg==
   dependencies:
     "@stoplight/json" "^3.10.2"
-    "@stoplight/types" "^11.9.0"
+    "@stoplight/types" "^11.10.0"
     "@types/swagger-schema-official" "~2.0.21"
     "@types/to-json-schema" "^0.2.0"
     "@types/type-is" "^1.6.3"
     "@types/urijs" "~1.19.9"
     json-schema-generator "^2.0.6"
     lodash "^4.17.15"
-    openapi3-ts "~1.4.0"
+    openapi3-ts "^2.0.1"
     postman-collection "^3.6.2"
     type-is "^1.6.18"
     urijs "~1.19.2"
@@ -1339,10 +1339,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/ordered-object-literal/-/ordered-object-literal-1.0.1.tgz#01ece81ba5dda199ca3dc5ec7464691efa5d5b76"
   integrity sha512-kDcBIKwzAXZTkgzaiPXH2I0JXavBkOb3jFzYNFS5cBuvZS3s/K+knpk2wLVt0n8XrnRQsSffzN6XG9HqUhfq6Q==
 
-"@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.9.0":
-  version "11.9.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.9.0.tgz#ced7de2dd53439d2409a3cb390bf7d5b76382ac6"
-  integrity sha512-4bzPpWZobt0e+d0OtALCJyl1HGzKo6ur21qxnId9dTl8v3yeD+5HJKZ2h1mv7e94debH5QDtimMU80V6jbXM8Q==
+"@stoplight/types@^11.10.0", "@stoplight/types@^11.4.1", "@stoplight/types@^11.6.0", "@stoplight/types@^11.9.0":
+  version "11.10.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-11.10.0.tgz#60bbee770526f4de9cd1c613c7ab84c4e4674126"
+  integrity sha512-ffHD9i4UHS8Gsg7Ar8pKjI9B4kq7MRekE7tCROFGcFDzQhfRx9T92AduoLAtP/010XNYq23yDKpLBRPIEk8+xg==
   dependencies:
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
@@ -6693,10 +6693,12 @@ openapi-sampler@^1.0.0-beta.18:
   dependencies:
     json-pointer "^0.6.0"
 
-openapi3-ts@~1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/openapi3-ts/-/openapi3-ts-1.4.0.tgz#679d5a24be0efc36f5de4fc2c4b8513663e16f65"
-  integrity sha512-8DmE2oKayvSkIR3XSZ4+pRliBsx19bSNeIzkTPswY8r4wvjX86bMxsORdqwAwMxE8PefOcSAT2auvi/0TZe9yA==
+openapi3-ts@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/openapi3-ts/-/openapi3-ts-2.0.1.tgz#b270aecea09e924f1886bc02a72608fca5a98d85"
+  integrity sha512-v6X3iwddhi276siej96jHGIqTx3wzVfMTmpGJEQDt7GPI7pI6sywItURLzpEci21SBRpPN/aOWSF5mVfFVNmcg==
+  dependencies:
+    yaml "^1.10.0"
 
 opencollective-postinstall@^2.0.2:
   version "2.0.2"
