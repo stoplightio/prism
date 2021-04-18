@@ -7,8 +7,14 @@ import type { ErrorObject } from 'ajv';
 import { JSONSchema } from '../../';
 import * as AjvOAI from 'ajv-oai';
 
-const ajv = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto' });
-const ajvNoCoerce = new AjvOAI({ allErrors: true, messages: true, schemaId: 'auto', coerceTypes: false });
+const ajv = new AjvOAI({ allErrors: true, nullable: true, messages: true, schemaId: 'auto' });
+const ajvNoCoerce = new AjvOAI({
+  allErrors: true,
+  nullable: true,
+  messages: true,
+  schemaId: 'auto',
+  coerceTypes: false,
+});
 
 export const convertAjvErrors = (errors: NonEmptyArray<ErrorObject>, severity: DiagnosticSeverity, prefix?: string) =>
   pipe(
