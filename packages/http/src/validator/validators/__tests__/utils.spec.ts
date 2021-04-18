@@ -7,7 +7,7 @@ import type { JSONSchema7 } from 'json-schema';
 
 describe('convertAjvErrors()', () => {
   const errorObjectFixture: ErrorObject = {
-    dataPath: 'a.b',
+    instancePath: '/a/b',
     keyword: 'required',
     message: 'c is required',
     schemaPath: '..',
@@ -68,9 +68,9 @@ describe('validateAgainstSchema()', () => {
       expect(convertAjvErrorsModule.convertAjvErrors).toHaveBeenCalledWith(
         [
           {
-            dataPath: '',
+            instancePath: '',
             keyword: 'type',
-            message: 'should be number',
+            message: 'must be number',
             params: { type: 'number' },
             schemaPath: '#/type',
           },
@@ -116,14 +116,14 @@ describe('validateAgainstSchema()', () => {
       };
 
       assertSome(validateAgainstSchema('test', numberSchema, true, 'pfx'), error => {
-        expect(error).toEqual([expect.objectContaining({ path: ['pfx'], message: 'should be number' })]);
+        expect(error).toEqual([expect.objectContaining({ path: ['pfx'], message: 'must be number' })]);
       });
 
       const arr = [{ id: 11 }, { status: 'TODO' }];
 
       assertSome(validateAgainstSchema(arr, rootArraySchema, true, 'pfx'), error => {
         expect(error).toEqual([
-          expect.objectContaining({ path: ['pfx', '[1]'], message: "should have required property 'id'" }),
+          expect.objectContaining({ path: ['pfx', '1'], message: "must have required property 'id'" }),
         ]);
       });
 
@@ -131,7 +131,7 @@ describe('validateAgainstSchema()', () => {
 
       assertSome(validateAgainstSchema(obj, nestedArraySchema, true, 'pfx'), error => {
         expect(error).toEqual([
-          expect.objectContaining({ path: ['pfx', 'data[1]'], message: "should have required property 'id'" }),
+          expect.objectContaining({ path: ['pfx', 'data', '1'], message: "must have required property 'id'" }),
         ]);
       });
 
@@ -139,24 +139,27 @@ describe('validateAgainstSchema()', () => {
 
       assertSome(validateAgainstSchema(obj2, evenMoreNestedArraySchema, true, 'pfx'), error => {
         expect(error).toEqual([
-          expect.objectContaining({ path: ['pfx', 'value', 'data[1]'], message: "should have required property 'id'" }),
+          expect.objectContaining({
+            path: ['pfx', 'value', 'data', '1'],
+            message: "must have required property 'id'",
+          }),
         ]);
       });
 
       const arr2 = [{ id: [false] }];
 
       assertSome(validateAgainstSchema(arr2, rootArraySchema, true, 'pfx'), error => {
-        expect(error).toEqual([expect.objectContaining({ path: ['pfx', '[0]', 'id'], message: 'should be number' })]);
+        expect(error).toEqual([expect.objectContaining({ path: ['pfx', '0', 'id'], message: 'must be number' })]);
       });
 
       const arr3 = [{ id: 11 }, { status: 'TODONT' }];
 
       assertSome(validateAgainstSchema(arr3, rootArraySchema, true, 'pfx'), error => {
         expect(error).toEqual([
-          expect.objectContaining({ path: ['pfx', '[1]'], message: "should have required property 'id'" }),
+          expect.objectContaining({ path: ['pfx', '1'], message: "must have required property 'id'" }),
           expect.objectContaining({
-            path: ['pfx', '[1]', 'status'],
-            message: 'should be equal to one of the allowed values: TODO, IN_PROGRESS, CANCELLED, DONE',
+            path: ['pfx', '1', 'status'],
+            message: 'must be equal to one of the allowed values: TODO, IN_PROGRESS, CANCELLED, DONE',
           }),
         ]);
       });
@@ -166,12 +169,12 @@ describe('validateAgainstSchema()', () => {
       assertSome(validateAgainstSchema(arr4, rootArraySchema, true, 'pfx'), error => {
         expect(error).toEqual([
           expect.objectContaining({
-            path: ['pfx', '[1]'],
-            message: "should NOT have additional properties; found 'nope'",
+            path: ['pfx', '1'],
+            message: "must NOT have additional properties; found 'nope'",
           }),
           expect.objectContaining({
-            path: ['pfx', '[1]'],
-            message: "should NOT have additional properties; found 'neither'",
+            path: ['pfx', '1'],
+            message: "must NOT have additional properties; found 'neither'",
           }),
         ]);
       });
@@ -190,7 +193,7 @@ describe('validateAgainstSchema()', () => {
     it('will return error for convertible values', () => {
       assertSome(
         validateAgainstSchema({ test: 10 }, { type: 'object', properties: { test: { type: 'string' } } }, false),
-        error => expect(error).toContainEqual(expect.objectContaining({ message: 'should be string' }))
+        error => expect(error).toContainEqual(expect.objectContaining({ message: 'must be string' }))
       );
     });
   });

@@ -76,5 +76,39 @@ describe('HttpParamGenerator', () => {
         });
       });
     });
+
+    describe('when feed with array', () => {
+      describe('a tuple and no format and no enum', () => {
+        const improvedSchema = improveSchema({
+          type: 'array',
+          items: [
+            {
+              type: 'object',
+              properties: { a: { type: 'string' } },
+            },
+            {
+              type: 'object',
+              properties: { b: { type: 'string' } },
+            },
+          ],
+        });
+
+        it('will recursively improve the schema', () => {
+          expect(improvedSchema).toStrictEqual({
+            type: 'array',
+            items: [
+              {
+                type: 'object',
+                properties: { a: { type: 'string', 'x-faker': 'lorem.word' } },
+              },
+              {
+                type: 'object',
+                properties: { b: { type: 'string', 'x-faker': 'lorem.word' } },
+              },
+            ],
+          });
+        });
+      });
+    });
   });
 });

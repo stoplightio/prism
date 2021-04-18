@@ -53,7 +53,7 @@ describe('body params validation', () => {
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -72,12 +72,11 @@ describe('body params validation', () => {
                     properties: {
                       id: {
                         type: 'integer',
-                        format: 'int64',
                         minimum: -9223372036854776000,
                         maximum: 9223372036854776000,
                       },
                     },
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -105,7 +104,7 @@ describe('body params validation', () => {
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -125,12 +124,11 @@ describe('body params validation', () => {
                     properties: {
                       id: {
                         type: 'integer',
-                        format: 'int64',
                         minimum: -9223372036854776000,
                         maximum: 9223372036854776000,
                       },
                     },
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -158,7 +156,7 @@ describe('body params validation', () => {
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -178,7 +176,6 @@ describe('body params validation', () => {
                     properties: {
                       id: {
                         type: 'integer',
-                        format: 'int64',
                         minimum: -9223372036854776000,
                         maximum: 9223372036854776000,
                       },
@@ -187,7 +184,7 @@ describe('body params validation', () => {
                         enum: ['placed', 'approved', 'delivered'],
                       },
                     },
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -215,7 +212,7 @@ describe('body params validation', () => {
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -234,13 +231,12 @@ describe('body params validation', () => {
                     properties: {
                       id: {
                         type: 'integer',
-                        format: 'int64',
                         minimum: -9223372036854776000,
                         maximum: 9223372036854776000,
                       },
                     },
                     required: ['id'],
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -273,7 +269,7 @@ describe('body params validation', () => {
               {
                 code: 'type',
                 location: ['body', 'id'],
-                message: 'should be integer',
+                message: 'must be integer',
                 severity: 'Error',
               },
             ],
@@ -293,7 +289,7 @@ describe('body params validation', () => {
 
           expect(response.status).toBe(422);
           return expect(response.json()).resolves.toMatchObject({
-            validation: [{ code: 'required', message: "should have required property 'id'", severity: 'Error' }],
+            validation: [{ code: 'required', message: "must have required property 'id'", severity: 'Error' }],
           });
         });
       });
@@ -334,7 +330,7 @@ describe('body params validation', () => {
                 {
                   code: 'type',
                   location: ['body', 'id'],
-                  message: 'should be integer',
+                  message: 'must be integer',
                   severity: 'Error',
                 },
               ],
@@ -356,7 +352,7 @@ describe('body params validation', () => {
                 {
                   code: 'enum',
                   location: ['body', 'status'],
-                  message: 'should be equal to one of the allowed values: placed, approved, delivered',
+                  message: 'must be equal to one of the allowed values: placed, approved, delivered',
                   severity: 'Error',
                 },
               ],
@@ -383,7 +379,7 @@ describe('body params validation', () => {
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -409,7 +405,7 @@ describe('body params validation', () => {
                       },
                     },
                     required: ['id', 'status'],
-                    $schema: 'http://json-schema.org/draft-04/schema#',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
                   encodings: [],
@@ -443,13 +439,13 @@ describe('body params validation', () => {
               location: ['body'],
               severity: 'Error',
               code: 'required',
-              message: "should have required property 'id'",
+              message: "must have required property 'id'",
             },
             {
               location: ['body'],
               severity: 'Error',
               code: 'required',
-              message: "should have required property 'status'",
+              message: "must have required property 'status'",
             },
           ],
         });
@@ -475,13 +471,13 @@ describe('body params validation', () => {
               location: ['body', 'id'],
               severity: 'Error',
               code: 'type',
-              message: 'should be integer',
+              message: 'must be integer',
             },
             {
               location: ['body', 'status'],
               severity: 'Error',
               code: 'enum',
-              message: 'should be equal to one of the allowed values: open, close',
+              message: 'must be equal to one of the allowed values: open, close',
             },
           ],
         });

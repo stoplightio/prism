@@ -31,6 +31,6 @@ proxy -p 4010 ${document} http://httpbin.org
 curl -i http://localhost:4010/json
 ====expect====
 HTTP/1.1 200 OK
-sl-violations: [{"location":["response","body"],"severity":"Error","code":"required","message":"should have required property 'title'"},{"location":["response","body"],"severity":"Error","code":"required","message":"should have required property 'description'"}]
+sl-violations: [{"location":["response","body"],"severity":"Error","code":"required","message":"must have required property 'title'"},{"location":["response","body"],"severity":"Error","code":"required","message":"must have required property 'description'"}]
 
-{"slideshow":{"author":"Yours Truly","date":"date of publication","slides":[{"title":"Wake up to WonderWidgets!","type":"all"},{"items":["Why <em>WonderWidgets</em> are great","Who <em>buys</em> WonderWidgets"],"title":"Overview","type":"all"}],"title":"Sample Slide Show"},"priority":0}
+{"slideshow":{"author":"Yours Truly","date":"date of publication","slides":[{"title":"Wake up to WonderWidgets!","type":"all"},{"items":["Why <em>WonderWidgets</em> are great","Who <em>buys</em> WonderWidgets"],"title":"Overview","type":"all"}],"title":"Sample Slide Show"}}

@@ -3,8 +3,9 @@ import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
 import * as jsf from 'json-schema-faker';
-import * as sampler from 'openapi-sampler';
+import * as sampler from '@stoplight/json-schema-sampler';
 import { Either, tryCatch, toError } from 'fp-ts/Either';
+import { IHttpOperation } from '@stoplight/types';
 
 jsf.extend('faker', () => faker);
 
@@ -23,6 +24,6 @@ export function generate(source: JSONSchema): Either<Error, unknown> {
   return tryCatch(() => jsf.generate(cloneDeep(source)), toError);
 }
 
-export function generateStatic(resource: unknown, source: JSONSchema): Either<Error, unknown> {
+export function generateStatic(resource: IHttpOperation, source: JSONSchema): Either<Error, unknown> {
   return tryCatch(() => sampler.sample(source, {}, resource), toError);
 }

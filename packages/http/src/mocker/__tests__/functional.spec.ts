@@ -1,4 +1,4 @@
-import * as Ajv from 'ajv';
+import Ajv from 'ajv';
 
 import { createLogger } from '@stoplight/prism-core';
 import { httpOperations, httpRequests } from '../../__tests__/fixtures';

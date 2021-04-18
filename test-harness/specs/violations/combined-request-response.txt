@@ -25,7 +25,7 @@ mock -p 4010 ${document} --errors
 curl -i "http://localhost:4010/test?productId=10"
 ====expect====
 HTTP/1.1 500 Internal Server Error
-sl-violations: [{"location":["response","body"],"severity":"Error","code":"type","message":"should be object"},{"location":["request","query","productId"],"severity":"Warning","code":"deprecated","message":"Query param productId is deprecated"}]
+sl-violations: [{"location":["response","body"],"severity":"Error","code":"type","message":"must be object"},{"location":["request","query","productId"],"severity":"Warning","code":"deprecated","message":"Query param productId is deprecated"}]
 content-type: application/problem+json
 
-{"type":"https://stoplight.io/prism/errors#VIOLATIONS","title":"Request/Response not valid","status":500,"detail":"Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.","validation":[{"location":["response","body"],"severity":"Error","code":"type","message":"should be object"}]}
+{"type":"https://stoplight.io/prism/errors#VIOLATIONS","title":"Request/Response not valid","status":500,"detail":"Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.","validation":[{"location":["response","body"],"severity":"Error","code":"type","message":"must be object"}]}

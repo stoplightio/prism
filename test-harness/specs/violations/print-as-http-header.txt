@@ -22,6 +22,6 @@ mock -p 4010 ${document}
 curl -i http://localhost:4010/path
 ====expect====
 HTTP/1.1 200 OK
-sl-violations: [{"location":["response","body"],"severity":"Error","code":"type","message":"should be object"}]
+sl-violations: [{"location":["response","body"],"severity":"Error","code":"type","message":"must be object"}]
 
 123

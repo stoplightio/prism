@@ -6,7 +6,7 @@ Object {
   "left": Array [
     Object {
       "code": "type",
-      "message": "should be boolean",
+      "message": "must be boolean",
       "path": Array [
         "body",
         "completed",
@@ -15,16 +15,16 @@ Object {
     },
     Object {
       "code": "format",
-      "message": "should match format \\"date-time\\"",
+      "message": "must match format \\"date-time\\"",
       "path": Array [
         "header",
-        "['x-todos-publish']",
+        "x-todos-publish",
       ],
       "severity": 0,
     },
     Object {
       "code": "pattern",
-      "message": "should match pattern \\"^(yes|no)$\\"",
+      "message": "must match pattern \\"^(yes|no)$\\"",
       "path": Array [
         "query",
         "overwrite",
@@ -45,7 +45,7 @@ Object {
     },
     Object {
       "code": "type",
-      "message": "should be boolean",
+      "message": "must be boolean",
       "path": Array [
         "body",
         "completed",
@@ -54,10 +54,10 @@ Object {
     },
     Object {
       "code": "format",
-      "message": "should match format \\"date-time\\"",
+      "message": "must match format \\"date-time\\"",
       "path": Array [
         "header",
-        "['x-todos-publish']",
+        "x-todos-publish",
       ],
       "severity": 0,
     },

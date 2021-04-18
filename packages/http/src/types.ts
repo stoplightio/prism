@@ -1,7 +1,7 @@
 import { IPrism, IPrismComponents, IPrismProxyConfig, IPrismMockConfig } from '@stoplight/prism-core';
 import { Overwrite } from 'utility-types';
 import { Dictionary, HttpMethod, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
-import { JSONSchema4, JSONSchema6, JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 import { Either } from 'fp-ts/Either';
 
 export type PrismHttpInstance = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
@@ -91,4 +91,4 @@ export type ContentExample = INodeExample | INodeExternalExample;
 export type PayloadGenerator = (f: JSONSchema) => Either<Error, unknown>;
 
 export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
-export type JSONSchema = JSONSchema4 | JSONSchema6 | JSONSchema7;
+export type JSONSchema = JSONSchema7;

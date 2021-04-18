@@ -16,7 +16,7 @@ describe('validate()', () => {
           assertLeft(validate({}, [{ name: 'aHeader', style: HttpParamStyles.Simple, required: true }]), error =>
             expect(error).toContainEqual({
               code: 'required',
-              message: "should have required property 'aheader'",
+              message: "must have required property 'aheader'",
               path: ['header'],
               severity: 0,
             })

@@ -527,8 +527,8 @@ describe('mocker', () => {
                 },
               });
 
-              it('should be set to null', () =>
-                assertRight(eitherResponse, response => expect(response.body).toHaveProperty('age', null)));
+              it('should be set to number', () =>
+                assertRight(eitherResponse, response => expect(response.body).toHaveProperty('age', 0)));
             });
 
             describe('and is not nullable', () => {

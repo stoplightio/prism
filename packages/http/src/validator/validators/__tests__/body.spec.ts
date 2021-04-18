@@ -33,24 +33,9 @@ describe('validate()', () => {
           [{ mediaType: 'application/json', schema: mockSchema, examples: [], encodings: [] }],
           'application/json'
         ),
-        error => expect(error).toContainEqual(expect.objectContaining({ code: 'type', message: 'should be number' }))
+        error => expect(error).toContainEqual(expect.objectContaining({ code: 'type', message: 'must be number' }))
       );
     });
-  });
-
-  it('supports nullables', () => {
-    const mockSchema: JSONSchema = {
-      type: 'object',
-      properties: { id: { type: 'integer', nullable: true } },
-      required: ['id'],
-    };
-    assertRight(
-      validate(
-        { id: null },
-        [{ mediaType: 'application/json', schema: mockSchema, examples: [], encodings: [] }],
-        'application/json'
-      )
-    );
   });
 
   describe('body is form-urlencoded with deep object style', () => {
@@ -115,7 +100,7 @@ describe('validate()', () => {
           expect(error).toContainEqual(
             expect.objectContaining({
               code: 'required',
-              message: "should have required property 'aa'",
+              message: "must have required property 'aa'",
             })
           )
       );

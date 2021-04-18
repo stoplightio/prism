@@ -21,11 +21,13 @@ export function improveSchema(schema: JSONSchema): JSONSchema {
     newSchema['x-faker'] = 'lorem.word';
   } else if (newSchema.type === 'object' && newSchema.properties) {
     newSchema.properties = Object.entries(newSchema.properties).reduce((r, [k, v]) => {
-      r[k] = improveSchema(v);
+      r[k] = typeof v === 'boolean' ? v : improveSchema(v);
       return r;
     }, {});
   } else if (newSchema.type === 'array' && typeof newSchema.items === 'object') {
-    newSchema.items = improveSchema(newSchema.items);
+    newSchema.items = Array.isArray(newSchema.items)
+      ? newSchema.items.map(subSchema => (typeof subSchema === 'boolean' ? subSchema : improveSchema(subSchema)))
+      : improveSchema(newSchema.items);
   }
 
   return newSchema;

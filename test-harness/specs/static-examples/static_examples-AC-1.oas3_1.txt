@@ -1,0 +1,43 @@
+====test====
+When prism is started with no dynamic flag,
+responses should be built with examples from the spec.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        200:
+          description: Get Todo Items
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    examples:
+                      - Work
+                      - Rest
+                  description:
+                    type: string
+                  email:
+                    type: string
+                    format: idn-email
+                  age:
+                    type: array
+                    contains:
+                      type: integer
+                      exclusiveMaximum: 50
+                      exclusiveMinimum: 20
+                  priority:
+                    type: number
+                    const: 0
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 200 OK
+
+{"title":"Work","description":"string","email":"пользователь@пример.ру","age":[21],"priority":0}

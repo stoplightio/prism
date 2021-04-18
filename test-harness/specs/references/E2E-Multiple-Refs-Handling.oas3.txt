@@ -1,6 +1,6 @@
 ====test====
-If I have an OAS3 documenr referencing the same model twice
-it shuold return 200 on a regular request and not crash
+If I have an OAS3 document referencing the same model twice
+it should return 200 on a regular request and not crash
 ====spec====
 openapi: 3.0.0
 paths:
@@ -32,4 +32,4 @@ curl -i http://localhost:4010/
 ====expect====
 HTTP/1.1 200 OK
 
-{"first":{"output":null},"second":{"output":null}}
+{"first":{"output":"string"},"second":{"output":"string"}}

@@ -233,8 +233,8 @@ describe.each([[oas2File], [oas3File]])('server %s', file => {
     // according to the schema
 
     const expectedValues = {
-      'x-rate-limit': file === oas3File ? '1000' : expect.stringMatching(/^\d+$/),
-      'x-stats': file === oas3File ? '1500' : expect.stringMatching(/^\d+$/),
+      'x-rate-limit': file === oas3File ? '1000' : expect.stringMatching(/^-?\d+$/),
+      'x-stats': file === oas3File ? '1500' : expect.stringMatching(/^-?\d+$/),
       'x-expires-after': expect.any(String),
       'x-strange-header': 'null',
     };

@@ -1,0 +1,36 @@
+====test====
+Prism shall return output violations as an HTTP Response when ran with the --errors flag
+
+Testing a not enough items in an array case
+====spec====
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+paths:
+  /path:
+    get:
+      summary: Your GET endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    - false
+                    - abc
+              schema:
+                type: array
+                items:
+                  type: string
+                minItems: 2
+                prefixItems:
+                  - type: number
+====server====
+mock -p 4010 ${document} --errors
+====command====
+curl -i http://localhost:4010/path
+====expect====
+HTTP/1.1 500 Internal Server Error
+
+{"type":"https://stoplight.io/prism/errors#VIOLATIONS","title":"Request/Response not valid","status":500,"detail":"Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.","validation":[{"location":["response","body","0"],"severity":"Error","code":"type","message":"must be number"}]}

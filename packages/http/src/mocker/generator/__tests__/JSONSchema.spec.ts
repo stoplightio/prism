@@ -74,7 +74,7 @@ describe('JSONSchema generator', () => {
     });
 
     describe('when used with a schema with a string property and x-faker property', () => {
-      const schema: JSONSchema = {
+      const schema: JSONSchema & any = {
         type: 'object',
         properties: {
           ip: { type: 'string', format: 'ip', 'x-faker': 'internet.ip' },

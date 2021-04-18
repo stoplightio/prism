@@ -17,6 +17,8 @@ paths:
           type: integer
           name: id
           required: true
+          minimum: 100
+          exclusiveMinimum: true
         - in: formData
           type: string
           name: status
@@ -27,9 +29,9 @@ paths:
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "status=ooopsie!"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-form-urlencoded" --data "id=100&status=open"
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 content-type: application/problem+json
 
-{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body"],"severity":"Error","code":"required","message":"should have required property 'id'"},{"location":["body","status"],"severity":"Error","code":"enum","message":"should be equal to one of the allowed values: open, close"}]}
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","id"],"severity":"Error","code":"exclusiveMinimum","message":"must be > 100"}]}

@@ -4,17 +4,47 @@ import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import { NonEmptyArray, fromArray, map } from 'fp-ts/NonEmptyArray';
 import type { ErrorObject } from 'ajv';
-import { JSONSchema } from '../../';
-import * as AjvOAI from 'ajv-oai';
+import Ajv from 'ajv';
+import type AjvCore from 'ajv/dist/core';
+import Ajv2019 from 'ajv/dist/2019';
+import Ajv2020 from 'ajv/dist/2020';
+import addFormats from 'ajv-formats';
+import type { JSONSchema } from '../../';
 
-const ajv = new AjvOAI({ allErrors: true, nullable: true, messages: true, schemaId: 'auto' });
-const ajvNoCoerce = new AjvOAI({
-  allErrors: true,
-  nullable: true,
-  messages: true,
-  schemaId: 'auto',
-  coerceTypes: false,
-});
+function createAjvInstances(Ajv: typeof AjvCore) {
+  const ajv = new Ajv({ allErrors: true, messages: true, coerceTypes: true, strict: false });
+  const ajvNoCoerce = new Ajv({ allErrors: true, messages: true, coerceTypes: false, strict: false });
+
+  addFormats(ajv);
+  addFormats(ajvNoCoerce);
+
+  return {
+    coerce: ajv,
+    noCoerce: ajvNoCoerce,
+  };
+}
+
+const ajvInstances = {
+  default: createAjvInstances(Ajv),
+  draft2019_09: createAjvInstances(Ajv2019),
+  draft2020_12: createAjvInstances(Ajv2020),
+};
+
+const JSON_SCHEMA_DRAFT_2019_09 = /^https?:\/\/json-schema.org\/draft\/2019-09\/schema#?$/;
+const JSON_SCHEMA_DRAFT_2020_12 = /^https?:\/\/json-schema.org\/draft\/2020-12\/schema#?$/;
+
+function assignAjvInstance($schema: string, coerce: boolean): AjvCore {
+  const member = coerce ? 'coerce' : 'noCoerce';
+  let draft: keyof typeof ajvInstances = 'default';
+
+  if (JSON_SCHEMA_DRAFT_2019_09.test($schema)) {
+    draft = 'draft2019_09';
+  } else if (JSON_SCHEMA_DRAFT_2020_12.test($schema)) {
+    draft = 'draft2020_12';
+  }
+
+  return ajvInstances[draft][member];
+}
 
 export const convertAjvErrors = (errors: NonEmptyArray<ErrorObject>, severity: DiagnosticSeverity, prefix?: string) =>
   pipe(
@@ -23,7 +53,7 @@ export const convertAjvErrors = (errors: NonEmptyArray<ErrorObject>, severity: D
       const allowedParameters = 'allowedValues' in error.params ? `: ${error.params.allowedValues.join(', ')}` : '';
       const detectedAdditionalProperties =
         'additionalProperty' in error.params ? `; found '${error.params.additionalProperty}'` : '';
-      const errorPath = error.dataPath.split('.').filter(segment => segment !== '');
+      const errorPath = error.instancePath.split('/').filter(segment => segment !== '');
       const path = prefix ? [prefix, ...errorPath] : errorPath;
 
       return {
@@ -42,7 +72,7 @@ export const validateAgainstSchema = (
   prefix?: string
 ): O.Option<NonEmptyArray<IPrismDiagnostic>> =>
   pipe(
-    O.tryCatch(() => (coerce ? ajv : ajvNoCoerce).compile(schema)),
+    O.tryCatch(() => assignAjvInstance(String(schema.$schema), coerce).compile(schema)),
     O.chainFirst(validateFn => O.tryCatch(() => validateFn(value))),
     O.chain(validateFn => pipe(O.fromNullable(validateFn.errors), O.chain(fromArray))),
     O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))
