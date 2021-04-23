@@ -10,11 +10,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # 4.2.0 (2021-04-23)
 
+## Added
 - Accept OAS 3.1 documents [#1783](https://github.com/stoplightio/prism/pull/1783)
+
+## Fixed
 - Return preferred example when validation fails [#1786](https://github.com/stoplightio/prism/pull/1786)
 
 # 4.1.3 (2021-04-21)
 
+## Fixed
 - Prism is now supporting nullable validations [#1782](https://github.com/stoplightio/prism/pull/1782)
 
 # 4.1.2 (2020-12-01)
