@@ -1300,10 +1300,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stoplight/http-spec@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-4.0.0.tgz#96c560d5ef35c4430fc52696c03c630a11d267ec"
-  integrity sha512-dxv7nzv88pu8tUdIRwMFueRd60MAJbCUSJK9yydeosH+HI0exvTm8PWuMDyjlBZgXAUTikLbk5l6dSqw5v1qdA==
+"@stoplight/http-spec@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-4.0.1.tgz#a6ae05ae4e75ec1f4b9816192dca4aaa80f7215a"
+  integrity sha512-lhWqk4I2Ld8jtp0TH7gfAN9gqafUKXGsar07PxQdQ4ru5b/NFoq2FhV0uefewtwrhFgrjKDa9Z4Fbdx1iBySfw==
   dependencies:
     "@stoplight/json" "^3.10.2"
     "@stoplight/types" "^12.0.0"
