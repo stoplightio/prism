@@ -40,7 +40,7 @@
     "@types/uri-template-lite": "^19.12.0",
     "@types/urijs": "^1.19.15",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^4.21.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "abstract-logging": "^2.0.1",
     "diff-js-xml": "^1.0.5",
     "eslint": "^7.25.0",
