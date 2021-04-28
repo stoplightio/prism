@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-http",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
