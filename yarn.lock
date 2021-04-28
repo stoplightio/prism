@@ -1319,10 +1319,10 @@
     type-is "^1.6.18"
     urijs "~1.19.2"
 
-"@stoplight/json-schema-sampler@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/json-schema-sampler/-/json-schema-sampler-0.1.0.tgz#e0b9be21e454a1002e906dcc750bf3dfa96ed967"
-  integrity sha512-hpn/jnrSs2Tf4/49+2yram81jvy52SDuqzUQWUIzmHzmLCyHDMS7kWqK/PuIu/eAaA28K15W/+0vuTQJcEBZPQ==
+"@stoplight/json-schema-sampler@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/json-schema-sampler/-/json-schema-sampler-0.2.0.tgz#31215818ad0c571852fd201955a21a25bc0b77c2"
+  integrity sha512-FKMyGU8beAQCtNmuMNOxbMWDPJGVqSQqv5ESnId2O9Arzo7jPd3QUB6E95MnEcuKVaIQd2mk+d0+Isi7gJOJcA==
   dependencies:
     "@types/json-schema" "^7.0.7"
     json-pointer "^0.6.1"
