@@ -32,7 +32,7 @@
     "json-schema-faker": "0.5.0-rcv.34",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",
-    "pino": "^6.11.2",
+    "pino": "^6.11.3",
     "tslib": "^2.2.0",
     "type-is": "^1.6.18",
     "uri-template-lite": "^20.5.0"
