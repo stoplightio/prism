@@ -21,7 +21,7 @@
   "dependencies": {
     "@stoplight/prism-core": "^4.2.2",
     "@stoplight/prism-http": "^4.2.2",
-    "@stoplight/types": "^12.0.0",
+    "@stoplight/types": "^12.2.0",
     "fast-xml-parser": "^3.19.0",
     "fp-ts": "^2.10.4",
     "io-ts": "^2.2.16",
