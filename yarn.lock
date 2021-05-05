@@ -1300,13 +1300,13 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@stoplight/http-spec@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-4.0.1.tgz#a6ae05ae4e75ec1f4b9816192dca4aaa80f7215a"
-  integrity sha512-lhWqk4I2Ld8jtp0TH7gfAN9gqafUKXGsar07PxQdQ4ru5b/NFoq2FhV0uefewtwrhFgrjKDa9Z4Fbdx1iBySfw==
+"@stoplight/http-spec@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-4.1.0.tgz#9af81c973fb20462fd292c7e1a0c994a22003a3b"
+  integrity sha512-01cjtYFth5yaiQMB/xnpwithXKpNU5m9p55qnrRQE7jGVn/BYL9CzTBRcOw1iE7xOh0Atylkm63K6lf4EOfskA==
   dependencies:
     "@stoplight/json" "^3.10.2"
-    "@stoplight/types" "^12.0.0"
+    "@stoplight/types" "^12.2.0"
     "@types/swagger-schema-official" "~2.0.21"
     "@types/to-json-schema" "^0.2.0"
     "@types/type-is" "^1.6.3"
@@ -1351,10 +1351,10 @@
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
 
-"@stoplight/types@^12.0.0":
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-12.0.0.tgz#3fc68ffa954e7c0a0e6261a982d5c0cb52d5d969"
-  integrity sha512-BbL0MIbcCwrU4RidcVyMKnRwACnhr7WAEgPH8d6rwhg/j2DegdLadnXCnq8UJXUWW9Apbntgvic3yVGvLtVmxA==
+"@stoplight/types@^12.0.0", "@stoplight/types@^12.2.0":
+  version "12.2.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-12.2.0.tgz#258c9f1bbc6682aa5ca1a4161d5e75979ffe4a3f"
+  integrity sha512-k1VPgSIpP+wLzGJ14lxhwtSyzYG5az+qby7fzYpc2fGWYFe5apmDm26vf/6N4mMQi2UQ7KxgGfNRSjdu6Msslg==
   dependencies:
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
