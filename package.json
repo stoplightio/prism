@@ -20,6 +20,9 @@
     "build.binary": "npx pkg --output ./cli-binaries/prism-cli ./packages/cli/",
     "test.harness": "jest -c ./jest.harness.config.js"
   },
+  "resolutions": {
+    "sanitize-html": "2.3.3"
+  },
   "devDependencies": {
     "@stoplight/types": "^12.2.0",
     "@types/caseless": "^0.12.2",
