@@ -94,9 +94,9 @@ yarn build --clean
 
 ### Releasing
 
-To release new version:
+To release a new version:
 
-- create new branch with updated [semantic version]https://docs.npmjs.com/about-semantic-versioning. For example `feat/4.2.2`
+- create a new branch with an updated [semantic version](https://docs.npmjs.com/about-semantic-versioning). For example `feat/4.2.2`
 - add info to `CHANGELOG.md` with the latest changes
 - run `yarn release` it will create a tag with updated versions
 - push your branch and create a PR
