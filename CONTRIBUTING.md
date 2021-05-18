@@ -92,6 +92,16 @@ Prism is using TypeScript's incremental compiler capability that sometimes does 
 yarn build --clean
 ```
 
+### Releasing
+
+To release new version:
+
+- create new branch with updated [semantic version]https://docs.npmjs.com/about-semantic-versioning. For example `feat/4.2.2`
+- add info to `CHANGELOG.md` with the latest changes
+- run `yarn release` it will create a tag with updated versions
+- push your branch and create a PR
+- after PR approval and merge, a new version will be released
+
 ## Support
 
 For support questions, please use the [Stoplight Community forum](https://community.stoplight.io/c/open-source). If you are unsure if you are experiencing a bug, the [forum](https://community.stoplight.io/c/open-source) is a great place to start.
