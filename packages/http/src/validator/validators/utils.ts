@@ -75,10 +75,16 @@ export const validateAgainstSchema = (
   value: unknown,
   schema: JSONSchema,
   coerce: boolean,
-  prefix?: string
+  prefix?: string,
+  bundle?: unknown
 ): O.Option<NonEmptyArray<IPrismDiagnostic>> =>
   pipe(
-    O.tryCatch(() => assignAjvInstance(String(schema.$schema), coerce).compile(schema)),
+    O.tryCatch(() =>
+      assignAjvInstance(String(schema.$schema), coerce).compile({
+        ...schema,
+        __bundled__: bundle,
+      })
+    ),
     O.chainFirst(validateFn => O.tryCatch(() => validateFn(value))),
     O.chain(validateFn => pipe(O.fromNullable(validateFn.errors), O.chain(fromArray))),
     O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))

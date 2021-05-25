@@ -20,8 +20,8 @@ jsf.option({
   maxLength: 100,
 });
 
-export function generate(source: JSONSchema): Either<Error, unknown> {
-  return tryCatch(() => jsf.generate(cloneDeep(source)), toError);
+export function generate(bundle: unknown, source: JSONSchema): Either<Error, unknown> {
+  return tryCatch(() => jsf.generate({ ...cloneDeep(source), __bundled__: bundle }), toError);
 }
 
 export function generateStatic(resource: IHttpOperation, source: JSONSchema): Either<Error, unknown> {

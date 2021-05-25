@@ -128,10 +128,14 @@ describe('HttpValidator', () => {
               element: { method: 'get', url: { path: '/a/1/b/;b=2' } },
             });
 
-            expect(validators.validatePath).toHaveBeenCalledWith({ a: '1', b: ';b=2' }, [
-              { name: 'a', style: HttpParamStyles.Simple },
-              { name: 'b', style: HttpParamStyles.Matrix },
-            ]);
+            expect(validators.validatePath).toHaveBeenCalledWith(
+              { a: '1', b: ';b=2' },
+              [
+                { name: 'a', style: HttpParamStyles.Simple },
+                { name: 'b', style: HttpParamStyles.Matrix },
+              ],
+              undefined
+            );
           });
         });
       });
@@ -157,10 +161,14 @@ describe('HttpValidator', () => {
               element: { method: 'get', url: { path: '/a-path/1/b/;b-id=2' } },
             });
 
-            expect(validators.validatePath).toHaveBeenCalledWith({ 'a-id': '1', 'b-id': ';b-id=2' }, [
-              { name: 'a-id', style: HttpParamStyles.Simple },
-              { name: 'b-id', style: HttpParamStyles.Matrix },
-            ]);
+            expect(validators.validatePath).toHaveBeenCalledWith(
+              { 'a-id': '1', 'b-id': ';b-id=2' },
+              [
+                { name: 'a-id', style: HttpParamStyles.Simple },
+                { name: 'b-id', style: HttpParamStyles.Matrix },
+              ],
+              undefined
+            );
           });
         });
       });
@@ -193,7 +201,7 @@ describe('HttpValidator', () => {
             error => expect(error).toHaveLength(2)
           );
 
-          expect(validators.validateBody).toHaveBeenCalledWith(undefined, [], undefined);
+          expect(validators.validateBody).toHaveBeenCalledWith(undefined, [], undefined, undefined);
           expect(validators.validateHeaders).toHaveBeenCalled();
         });
       });

@@ -251,6 +251,67 @@ describe('body params validation', () => {
           tags: [],
           security: [],
         },
+        {
+          id: '?http-operation-id?',
+          method: 'post',
+          path: '/json-body-circular-property-required',
+          responses: [
+            {
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            body: {
+              contents: [
+                {
+                  mediaType: 'application/json',
+                  schema: {
+                    $ref: '#/__bundled__/schemas',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+          // @ts-ignore
+          ['__bundled__']: {
+            schemas: {
+              $schema: 'http://json-schema.org/draft-07/schema#',
+              type: 'object',
+              required: ['id'],
+              properties: {
+                id: {
+                  type: 'integer',
+                  minimum: -9223372036854776000,
+                  maximum: 9223372036854776000,
+                },
+                self: {
+                  $ref: '#/__bundled__/schemas',
+                },
+              },
+            },
+          },
+        },
       ]);
     });
 
@@ -290,6 +351,30 @@ describe('body params validation', () => {
           expect(response.status).toBe(422);
           return expect(response.json()).resolves.toMatchObject({
             validation: [{ code: 'required', message: "must have required property 'id'", severity: 'Error' }],
+          });
+        });
+      });
+    });
+
+    describe('operation with circular required property', () => {
+      describe('when property not provided', () => {
+        test('returns 422 & error message', async () => {
+          const response = await makeRequest('/json-body-circular-property-required', {
+            method: 'POST',
+            body: JSON.stringify({ id: 123, self: {} }),
+            headers: { 'content-type': 'application/json' },
+          });
+
+          expect(response.status).toBe(422);
+          return expect(response.json()).resolves.toMatchObject({
+            validation: [
+              {
+                code: 'required',
+                location: ['body', 'self'],
+                message: "must have required property 'id'",
+                severity: 'Error',
+              },
+            ],
           });
         });
       });

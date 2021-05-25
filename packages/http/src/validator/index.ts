@@ -33,19 +33,24 @@ const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unkno
     )
   );
 
-const validateIfBodySpecIsProvided = (body: unknown, mediaType: string, contents?: IMediaTypeContent[]) =>
+const validateIfBodySpecIsProvided = (
+  body: unknown,
+  mediaType: string,
+  contents?: IMediaTypeContent[],
+  bundle?: unknown
+) =>
   pipe(
     sequenceOption(O.fromNullable(body), O.fromNullable(contents)),
     O.fold(
       () => E.right(body),
-      ([body, contents]) => validateBody(body, contents, mediaType)
+      ([body, contents]) => validateBody(body, contents, mediaType, bundle)
     )
   );
 
-const tryValidateBody = (requestBody: IHttpOperationRequestBody, body: unknown, mediaType: string) =>
+const tryValidateBody = (requestBody: IHttpOperationRequestBody, bundle: unknown, body: unknown, mediaType: string) =>
   pipe(
     checkBodyIsProvided(requestBody, body),
-    E.chain(() => validateIfBodySpecIsProvided(body, mediaType, requestBody.contents))
+    E.chain(() => validateIfBodySpecIsProvided(body, mediaType, requestBody.contents, bundle))
   );
 
 export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
@@ -53,16 +58,19 @@ export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resou
   const { request } = resource;
   const { body } = element;
 
+  const bundle = resource['__bundled__'];
   return pipe(
     E.fromNullable(undefined)(request),
     E.fold(
       e => E.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
       request =>
         sequenceValidation(
-          request.body ? tryValidateBody(request.body, body, mediaType) : E.right(undefined),
-          request.headers ? validateHeaders(element.headers || {}, request.headers) : E.right(undefined),
-          request.query ? validateQuery(element.url.query || {}, request.query) : E.right(undefined),
-          request.path ? validatePath(getPathParams(element.url.path, resource.path), request.path) : E.right(undefined)
+          request.body ? tryValidateBody(request.body, bundle, body, mediaType) : E.right(undefined),
+          request.headers ? validateHeaders(element.headers || {}, request.headers, bundle) : E.right(undefined),
+          request.query ? validateQuery(element.url.query || {}, request.query, bundle) : E.right(undefined),
+          request.path
+            ? validatePath(getPathParams(element.url.path, resource.path), request.path, bundle)
+            : E.right(undefined)
         )
     ),
     E.map(() => element)
@@ -108,6 +116,7 @@ export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, me
 
 export const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
+  const bundle = resource['__bundled__'];
   return pipe(
     findResponseByStatus(resource.responses, element.statusCode),
     E.chain(response =>
@@ -120,8 +129,8 @@ export const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ res
             contents => validateMediaType(contents, mediaType)
           )
         ),
-        validateBody(element.body, response.contents || [], mediaType),
-        validateHeaders(element.headers || {}, response.headers || [])
+        validateBody(element.body, response.contents || [], mediaType, bundle),
+        validateHeaders(element.headers || {}, response.headers || [], bundle)
       )
     ),
     E.map(() => element)

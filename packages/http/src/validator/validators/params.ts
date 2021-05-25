@@ -19,7 +19,8 @@ export type Deps<Target> = {
 
 export const validateParams = <Target>(
   target: Target,
-  specs: IHttpParam[]
+  specs: IHttpParam[],
+  bundle?: unknown
 ): RE.ReaderEither<Deps<Target>, NEA.NonEmptyArray<IPrismDiagnostic>, Target> => ({
   deserializers,
   prefix,
@@ -59,7 +60,7 @@ export const validateParams = <Target>(
       );
       return { parameterValues, schema };
     }),
-    O.chain(({ parameterValues, schema }) => validateAgainstSchema(parameterValues, schema, true, prefix)),
+    O.chain(({ parameterValues, schema }) => validateAgainstSchema(parameterValues, schema, true, prefix, bundle)),
     O.map(schemaDiagnostic => NEA.concat(schemaDiagnostic, deprecatedWarnings)),
     O.alt(() => NEA.fromArray(deprecatedWarnings)),
     E.fromOption(() => target),

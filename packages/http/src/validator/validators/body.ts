@@ -64,7 +64,7 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
   );
 }
 
-function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string) {
+function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, bundle?: unknown) {
   const encodings = get(content, 'encodings', []);
   const encodedUriParams = splitUriParams(target);
 
@@ -74,7 +74,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised =>
       pipe(
-        validateAgainstSchema(deserialised, schema, true),
+        validateAgainstSchema(deserialised, schema, true, undefined, bundle),
         E.fromOption(() => deserialised),
         E.swap
       )
@@ -82,7 +82,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
   );
 }
 
-export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, mediaType) => {
+export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, mediaType, bundle) => {
   const findContentByMediaType = pipe(
     O.Do,
     O.bind('mediaType', () => O.fromNullable(mediaType)),
@@ -102,7 +102,7 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
           O.fold(
             () =>
               pipe(
-                validateAgainstSchema(target, schema, false),
+                validateAgainstSchema(target, schema, false, undefined, bundle),
                 E.fromOption(() => target),
                 E.swap
               ),

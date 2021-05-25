@@ -886,6 +886,8 @@ components:
             - available
             - pending
             - sold
+        related:
+          $ref: '#/components/schemas/Pet'
       xml:
         name: Pet
     ApiResponse:

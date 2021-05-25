@@ -5,5 +5,6 @@ import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 export type validateFn<Target, Specs> = (
   target: Target,
   specs: Specs[],
-  mediaType?: string
+  mediaType?: string,
+  bundle?: unknown
 ) => Either<NonEmptyArray<IPrismDiagnostic>, Target>;

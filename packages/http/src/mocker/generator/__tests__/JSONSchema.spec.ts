@@ -19,7 +19,7 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property not matching anything in particular', () => {
-        assertRight(generate(schema), instance => {
+        assertRight(generate({}, schema), instance => {
           expect(instance).toHaveProperty('name');
           const name = get(instance, 'name');
 
@@ -39,7 +39,7 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property matching the email regex', () => {
-        assertRight(generate(schema), instance => {
+        assertRight(generate({}, schema), instance => {
           expect(instance).toHaveProperty('email');
           const email = get(instance, 'email');
 
@@ -59,14 +59,14 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property matching uuid regex', () => {
-        assertRight(generate(schema), instance => {
+        assertRight(generate({}, schema), instance => {
           const id = get(instance, 'id');
           expect(id).toMatch(uuidRegExp);
         });
       });
 
       it('will not be presented in the form of UUID as a URN', () => {
-        assertRight(generate(schema), instance => {
+        assertRight(generate({}, schema), instance => {
           const id = get(instance, 'id');
           expect(uuidRegExp.test(id)).not.toContainEqual('urn:uuid');
         });
@@ -83,7 +83,7 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property matching the ip regex', () => {
-        assertRight(generate(schema), instance => {
+        assertRight(generate({}, schema), instance => {
           expect(instance).toHaveProperty('ip');
           const ip = get(instance, 'ip');
 
@@ -103,7 +103,7 @@ describe('JSONSchema generator', () => {
         },
       };
 
-      it('will return a left', () => assertLeft(generate(schema)));
+      it('will return a left', () => assertLeft(generate({}, schema)));
     });
 
     it('operates on sealed schema objects', () => {
@@ -117,7 +117,7 @@ describe('JSONSchema generator', () => {
 
       Object.defineProperty(schema.properties, 'name', { writable: false });
 
-      return expect(generate(schema)).toBeTruthy();
+      return expect(generate({}, schema)).toBeTruthy();
     });
   });
 });

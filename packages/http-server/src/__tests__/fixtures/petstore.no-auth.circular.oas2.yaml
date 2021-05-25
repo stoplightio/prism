@@ -907,6 +907,8 @@ definitions:
           - available
           - pending
           - sold
+        related:
+          '$ref': '#/definitions/Pet'
     xml:
       name: Pet
   ApiResponse:
