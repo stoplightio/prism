@@ -1342,17 +1342,6 @@
     lodash "^4.17.15"
     safe-stable-stringify "^1.1"
 
-"@stoplight/json@^3.13.6":
-  version "3.13.6"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.13.6.tgz#5e4927734348a0a257c066de7ca3ffe9d8526d6f"
-  integrity sha512-JQNNqp++A4YVCR9mqYuPJQruvu5/XLAJaObR3sD4xT+xwUq8BPP1B/TAjGPS9jP+Fn/nzuFmk7VmYVTSyWClow==
-  dependencies:
-    "@stoplight/ordered-object-literal" "^1.0.1"
-    "@stoplight/types" "^12.2.0"
-    jsonc-parser "~2.2.1"
-    lodash "^4.17.15"
-    safe-stable-stringify "^1.1"
-
 "@stoplight/json@^3.13.7":
   version "3.13.7"
   resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.13.7.tgz#1ebc67988597aad3d8668f9ea596f846ca37c7f9"

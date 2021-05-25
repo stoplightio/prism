@@ -17,7 +17,7 @@
     "test": "jest",
     "release": "lerna version",
     "prebuild.binary": "yarn build",
-    "build.binary": "npx pkg --output ./cli-binaries/prism-cli ./packages/cli/",
+    "build.binary": "npx pkg --output ./cli-binaries/prism-cli --options max_old_space_size=4096 ./packages/cli/",
     "test.harness": "jest -c ./jest.harness.config.js"
   },
   "resolutions": {
