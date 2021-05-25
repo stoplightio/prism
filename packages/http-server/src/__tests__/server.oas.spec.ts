@@ -168,8 +168,6 @@ describe.each([[...oas2File], [...oas3File]])('server %s', file => {
   });
 
   it('will return requested response using the __code property', async () => {
-    // TODO: Figure out why dynamic being enabled on the server returns a 200, instead of a 404.
-    // const response = await makeRequest('/pets/123?__code=404');
     const response = await makeRequest('/pets/123?__code=404&__dynamic=false');
 
     expect(response.status).toBe(404);

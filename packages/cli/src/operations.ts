@@ -19,7 +19,6 @@ export async function getHttpOperationsFromSpec(specFilePathOrObject: string | o
   else throw new Error('Unsupported document format');
 
   operations.forEach((op, i, ops) => {
-    // TODO: should we add a __bundled__ property to stoplight/types for http operations?
     ops[i] = bundleTarget({
       document: {
         ...result,
