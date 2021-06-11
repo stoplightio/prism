@@ -48,9 +48,9 @@ function parseRequestBody(request: IncomingMessage) {
   }
 
   if (typeIs(request, ['application/json', 'application/*+json'])) {
-    return json(request);
+    return json(request, { limit: '10mb' });
   } else {
-    return text(request);
+    return text(request, { limit: '10mb' });
   }
 }
 
