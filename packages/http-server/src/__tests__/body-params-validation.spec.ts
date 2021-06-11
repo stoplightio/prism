@@ -444,6 +444,24 @@ describe('body params validation', () => {
             });
           });
         });
+
+        describe('and size bigger than 10MB', () => {
+          test('returns 422', async () => {
+            const response = await makeRequest('/json-body-required', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: 'A'.repeat(1024 * 1024 * 10 + 1),
+            });
+
+            expect(response.status).toBe(413);
+            return expect(response.json()).resolves.toMatchObject({
+              error: {
+                code: 'request_entity_too_large',
+                message: 'Body exceeded 10mb limit',
+              },
+            });
+          });
+        });
       });
     });
   });
