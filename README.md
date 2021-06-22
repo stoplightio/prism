@@ -1,7 +1,7 @@
 [![Prism - API Mock Servers and Contract Testing](./examples/readme-header.svg)][mocking_landing_page]
 
 [![CircleCI][circle_ci_image]][circle_ci]
-[![NPM Downloads][circle_ci_image]][npm]
+[![NPM Downloads][npm_image]][npm]
 [![Buy us a tree][ecologi_image]][ecologi]
 
 Prism is a set of packages for API mocking and contract testing with **OpenAPI v2** (formerly known as Swagger) and **OpenAPI v3.x**.
