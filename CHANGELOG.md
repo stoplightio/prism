@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 4.2.6 (2021-06-23)
+
+## Changed
+
+- Increase Max Request Size to 10mb by default [#1844](https://github.com/stoplightio/prism/pull/1844)
+
 # 4.2.5 (2021-05-25)
 
 ## Changed
