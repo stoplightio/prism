@@ -1,0 +1,39 @@
+====test====
+When a path has a colon in it, it is selected first
+====spec====
+openapi: 3.0.0
+paths:
+  /test:{rpc}:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: number
+  /test/yes:
+    get:
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
+  /test:
+    get:
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
+
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X GET http://localhost:4010/test:yes
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+0

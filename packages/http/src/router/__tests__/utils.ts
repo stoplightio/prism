@@ -18,6 +18,7 @@ type IRandomPathOptions = {
   includeTemplates?: boolean;
   trailingSlash?: boolean;
   leadingSlash?: boolean;
+  includeColon?: boolean;
 };
 
 const defaultRandomPathOptions: DeepNonNullable<IRandomPathOptions> = {
@@ -25,17 +26,31 @@ const defaultRandomPathOptions: DeepNonNullable<IRandomPathOptions> = {
   includeTemplates: true,
   leadingSlash: true,
   trailingSlash: false,
+  includeColon: false,
 };
 
 export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions): string {
   const options = defaults(defaultRandomPathOptions, opts);
 
+  // prevents trailing slash from being used with a colon
+  if (options.includeColon && (options.trailingSlash || options.pathFragments < 2)) {
+    options.includeColon = false;
+  }
+
   const randomPathFragments = new Array(options.pathFragments)
     .fill(0)
-    .map(() => (options.includeTemplates && faker.random.boolean() ? `{${faker.random.word()}}` : faker.random.word()));
+    .map(() =>
+      options.includeTemplates && faker.datatype.boolean() ? `{${faker.random.word()}}` : faker.random.word()
+    );
 
   const leadingSlash = options.leadingSlash ? '/' : '';
   const trailingSlash = options.trailingSlash ? '/' : '';
 
-  return `${leadingSlash}${randomPathFragments.join('/')}${trailingSlash}`;
+  // pop the last word
+  const lastWord = randomPathFragments.pop();
+
+  // add the popped word with colon or return the standard mapping
+  return options.includeColon
+    ? `${leadingSlash}${randomPathFragments.join('/')}:${lastWord}`
+    : `${leadingSlash}${randomPathFragments.join('/')}/${lastWord}${trailingSlash}`;
 }

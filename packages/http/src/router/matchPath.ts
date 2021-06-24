@@ -5,12 +5,18 @@ function fragmentarize(path: string): string[] {
   return path.split('/').slice(1);
 }
 
+function fragmentarizeWithColon(path: string): string[] {
+  return path.split(/[/:]/).slice(1);
+}
+
 function getTemplateParamName(pathFragment: string) {
   const match = /{(.*)}/.exec(pathFragment);
   return match && match[1];
 }
 
 export function matchPath(requestPath: string, operationPath: string): E.Either<Error, MatchType> {
+  // a/b/c = a/b/c
+
   const operationPathFragments = fragmentarize(operationPath);
   const requestPathFragments = fragmentarize(requestPath);
 
@@ -21,10 +27,20 @@ export function matchPath(requestPath: string, operationPath: string): E.Either<
     return E.right(MatchType.NOMATCH);
   }
 
+  // a/b:c = a/b:c
+  const operationPathColonFragments = fragmentarizeWithColon(operationPath);
+  const requestPathColonFragments = fragmentarizeWithColon(requestPath);
+  if (
+    operationPathColonFragments.length < requestPathColonFragments.length ||
+    operationPathColonFragments.length > requestPathColonFragments.length
+  ) {
+    return E.right(MatchType.NOMATCH);
+  }
+
   const params = [];
-  while (requestPathFragments.length) {
-    const requestPathFragment = requestPathFragments.shift();
-    const operationPathFragment = operationPathFragments.shift();
+  while (requestPathColonFragments.length) {
+    const requestPathFragment = requestPathColonFragments.shift();
+    const operationPathFragment = operationPathColonFragments.shift();
 
     const paramName = getTemplateParamName(operationPathFragment as string);
 
