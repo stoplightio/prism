@@ -1,3 +1,10 @@
+/* 
+  This file contains code copied from the ajv-formats project with a small bug fix.
+  This was done because https://github.com/ajv-validator/ajv-formats/pull/33 does not look like it will be accepted soon, if at all.
+  We needed this to address the regression in date-time validation when we switch from ajv-oai to ajv-formats.
+  Regression initially reported in https://github.com/stoplightio/prism/issues/1830
+*/
+
 import { FormatCompare, FormatDefinition, FormatValidator } from 'ajv/dist/types';
 
 export function fmtDef(
