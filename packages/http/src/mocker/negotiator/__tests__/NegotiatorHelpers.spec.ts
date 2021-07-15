@@ -336,7 +336,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response defined should try to negotiate by that response', () => {
-      const code = faker.random.number();
+      const code = faker.datatype.number();
       const fakeResponse = {
         code: code.toString(),
         contents: [],
@@ -367,7 +367,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response defined should fallback to default code on error', () => {
-      const code = faker.random.number();
+      const code = faker.datatype.number();
       const fakeResponse = {
         code: code.toString(),
       };
@@ -398,7 +398,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response not defined should fallback to default code', () => {
-      const code = faker.random.number();
+      const code = faker.datatype.number();
       const desiredOptions = { dynamic: false };
       httpOperation = anHttpOperation(httpOperation).instance();
 
@@ -485,7 +485,7 @@ describe('NegotiatorHelpers', () => {
       it('and httpContent exists should negotiate that contents', () => {
         const desiredOptions = {
           mediaTypes: [faker.system.mimeType()],
-          dynamic: faker.random.boolean(),
+          dynamic: faker.datatype.boolean(),
           exampleKey: faker.random.word(),
         };
 
@@ -610,7 +610,7 @@ describe('NegotiatorHelpers', () => {
         it('should throw an error', () => {
           const desiredOptions: NegotiationOptions = {
             mediaTypes: [faker.system.mimeType()],
-            dynamic: faker.random.boolean(),
+            dynamic: faker.datatype.boolean(),
             exampleKey: faker.random.word(),
           };
 
@@ -656,7 +656,7 @@ describe('NegotiatorHelpers', () => {
     describe('given no mediaType', () => {
       it('should negotiate default media type', () => {
         const desiredOptions: NegotiationOptions = {
-          dynamic: faker.random.boolean(),
+          dynamic: faker.datatype.boolean(),
           exampleKey: faker.random.word(),
         };
 
@@ -708,7 +708,7 @@ describe('NegotiatorHelpers', () => {
         const code = faker.random.word();
         const partialOptions = {
           code,
-          dynamic: faker.random.boolean(),
+          dynamic: faker.datatype.boolean(),
           exampleKey: faker.random.word(),
         };
 
@@ -826,7 +826,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
       const partialOptions = {
         code: '200',
         exampleKey,
-        dynamic: faker.random.boolean(),
+        dynamic: faker.datatype.boolean(),
       };
       const bodyExample: INodeExample = {
         key: exampleKey,
@@ -857,7 +857,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
       const partialOptions = {
         code: '200',
         exampleKey,
-        dynamic: faker.random.boolean(),
+        dynamic: faker.datatype.boolean(),
       };
       const httpContent: IMediaTypeContent = {
         mediaType: faker.system.mimeType(),

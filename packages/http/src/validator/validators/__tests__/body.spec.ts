@@ -2,24 +2,36 @@ import { HttpParamStyles, IMediaTypeContent } from '@stoplight/types';
 import { JSONSchema } from '../../..';
 import { validate, findContentByMediaTypeOrFirst } from '../body';
 import { assertRight, assertLeft, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
+import { ValidationContext } from '../types';
 
 describe('validate()', () => {
   describe('content specs are missing', () => {
     it('returns no validation errors', () => {
-      assertRight(validate('test', []));
+      assertRight(validate('test', [], ValidationContext.Input));
     });
   });
 
   describe('request media type is not provided', () => {
     it('returns no validation errors', () => {
-      assertRight(validate('test', [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }]));
+      assertRight(
+        validate(
+          'test',
+          [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }],
+          ValidationContext.Input
+        )
+      );
     });
   });
 
   describe('request media type was not found in spec', () => {
     it('returns no validation errors', () => {
       assertRight(
-        validate('test', [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }], 'application/json')
+        validate(
+          'test',
+          [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }],
+          ValidationContext.Input,
+          'application/json'
+        )
       );
     });
   });
@@ -31,6 +43,7 @@ describe('validate()', () => {
         validate(
           'test',
           [{ mediaType: 'application/json', schema: mockSchema, examples: [], encodings: [] }],
+          ValidationContext.Input,
           'application/json'
         ),
         error => expect(error).toContainEqual(expect.objectContaining({ code: 'type', message: 'must be number' }))
@@ -60,6 +73,7 @@ describe('validate()', () => {
               },
             },
           ],
+          ValidationContext.Input,
           'application/x-www-form-urlencoded'
         )
       );
@@ -94,6 +108,7 @@ describe('validate()', () => {
               },
             },
           ],
+          ValidationContext.Input,
           'application/x-www-form-urlencoded'
         ),
         error =>
@@ -104,6 +119,54 @@ describe('validate()', () => {
             })
           )
       );
+    });
+  });
+
+  describe('readOnly writeOnly parameters', () => {
+    const specs: IMediaTypeContent[] = [
+      {
+        mediaType: 'application/json',
+        schema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+            },
+            description: {
+              type: 'string',
+              writeOnly: true,
+            },
+            title: {
+              type: 'string',
+              readOnly: true,
+            },
+          },
+          required: ['name', 'description', 'title'],
+        },
+      },
+    ];
+    it('requires writeOnly params from input', () => {
+      assertLeft(validate({ name: 'Item One' }, specs, ValidationContext.Input, 'application/json'), error => {
+        expect(error[0].message).toEqual("must have required property 'description'");
+      });
+    });
+    it('succeed when writeOnly params are provided', () => {
+      assertRight(
+        validate(
+          { name: 'Item One', description: 'some description' },
+          specs,
+          ValidationContext.Input,
+          'application/json'
+        )
+      );
+    });
+    it('requires readOnly params from output', () => {
+      assertLeft(validate({ name: 'Item One' }, specs, ValidationContext.Output, 'application/json'), error => {
+        expect(error[0].message).toEqual("must have required property 'title'");
+      });
+    });
+    it('succeed when readOnly params are provided', () => {
+      assertRight(validate({ name: 'Item One', title: 'title' }, specs, ValidationContext.Output, 'application/json'));
     });
   });
 });

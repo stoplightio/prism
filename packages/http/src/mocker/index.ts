@@ -43,8 +43,8 @@ import {
 } from '../validator/validators/body';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 
-const eitherRecordSequence = Record.sequence(E.either);
-const eitherSequence = sequenceT(E.either);
+const eitherRecordSequence = Record.sequence(E.Applicative);
+const eitherSequence = sequenceT(E.Apply);
 
 const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpMockConfig>['mock'] = ({
   resource,

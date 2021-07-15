@@ -6,18 +6,19 @@ import { flatten } from 'lodash';
 import { set } from 'lodash/fp';
 import { findSecurityHandler } from './handlers';
 import { NonEmptyArray, getSemigroup } from 'fp-ts/NonEmptyArray';
-import { isNonEmpty, array } from 'fp-ts/Array';
+import { isNonEmpty, sequence } from 'fp-ts/Array';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import { IHttpRequest } from '../../../types';
 
 type HeadersAndUrl = Pick<IHttpRequest, 'headers' | 'url'>;
 
-const EitherValidation = E.getValidation(getSemigroup<IPrismDiagnostic>());
-const eitherSequence = array.sequence(EitherValidation);
+const EitherAltValidation = E.getAltValidation(getSemigroup<IPrismDiagnostic>());
+const EitherApplicativeValidation = E.getApplicativeValidation(getSemigroup<IPrismDiagnostic>());
+const eitherSequence = sequence(EitherApplicativeValidation);
 
 function getValidationResults(securitySchemes: HttpSecurityScheme[][], input: HeadersAndUrl) {
   const [first, ...others] = getAuthenticationArray(securitySchemes, input);
-  return others.reduce((prev, current) => EitherValidation.alt(prev, () => current), first);
+  return others.reduce((prev, current) => EitherAltValidation.alt(prev, () => current), first);
 }
 
 function setErrorTag(authResults: NonEmptyArray<IPrismDiagnostic>) {

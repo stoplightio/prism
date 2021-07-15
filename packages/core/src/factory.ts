@@ -9,7 +9,7 @@ import { getSemigroup, NonEmptyArray } from 'fp-ts/NonEmptyArray';
 import { DiagnosticSeverity } from '@stoplight/types';
 import { identity } from 'fp-ts/function';
 
-const eitherSequence = A.array.sequence(E.getValidation(getSemigroup<IPrismDiagnostic>()));
+const eitherSequence = A.sequence(E.getApplicativeValidation(getSemigroup<IPrismDiagnostic>()));
 
 function isProxyConfig(p: IPrismConfig): p is IPrismProxyConfig {
   return !p.mock;

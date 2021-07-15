@@ -15,7 +15,7 @@ import { matchBaseUrl } from './matchBaseUrl';
 import { matchPath } from './matchPath';
 import { IMatch, MatchType } from './types';
 
-const eitherSequence = A.array.sequence(E.either);
+const eitherSequence = A.sequence(E.Applicative);
 
 const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig>['route'] = ({ resources, input }) => {
   const { path: requestPath, baseUrl: requestBaseUrl } = input.url;

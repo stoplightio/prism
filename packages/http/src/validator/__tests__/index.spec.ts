@@ -5,6 +5,7 @@ import { IHttpRequest } from '../../types';
 import * as validators from '../validators';
 import * as validator from '../';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
+import { ValidationContext } from '../validators/types';
 
 const validate = (
   resourceExtension?: Partial<IHttpOperation>,
@@ -201,7 +202,13 @@ describe('HttpValidator', () => {
             error => expect(error).toHaveLength(2)
           );
 
-          expect(validators.validateBody).toHaveBeenCalledWith(undefined, [], undefined, undefined);
+          expect(validators.validateBody).toHaveBeenCalledWith(
+            undefined,
+            [],
+            ValidationContext.Output,
+            undefined,
+            undefined
+          );
           expect(validators.validateHeaders).toHaveBeenCalled();
         });
       });

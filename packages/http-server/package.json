@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-http-server",
-  "version": "4.2.5",
+  "version": "4.3.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -19,8 +19,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@stoplight/prism-core": "^4.2.5",
-    "@stoplight/prism-http": "^4.2.5",
+    "@stoplight/prism-core": "^4.3.0",
+    "@stoplight/prism-http": "^4.3.0",
     "@stoplight/types": "^12.2.0",
     "fast-xml-parser": "^3.19.0",
     "fp-ts": "^2.10.4",

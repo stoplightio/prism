@@ -1,28 +1,28 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import {
   DiagnosticSeverity,
+  Dictionary,
   IHttpOperation,
+  IHttpOperationRequestBody,
   IHttpOperationResponse,
   IMediaTypeContent,
-  IHttpOperationRequestBody,
-  Dictionary,
 } from '@stoplight/types';
 import * as caseless from 'caseless';
 import * as contentType from 'content-type';
 import * as A from 'fp-ts/Array';
 import * as O from 'fp-ts/Option';
 import * as E from 'fp-ts/Either';
-import { sequenceValidation, sequenceOption } from '../combinators';
+import { sequenceOption, sequenceValidation } from '../combinators';
 import { is as typeIs } from 'type-is';
 import { pipe } from 'fp-ts/function';
 import { inRange, isMatch } from 'lodash';
 import { URI } from 'uri-template-lite';
-export { validateSecurity } from './validators/security';
-
 import { IHttpRequest, IHttpResponse } from '../types';
 import { findOperationResponse } from './utils/spec';
-import { validateBody, validateHeaders, validateQuery, validatePath } from './validators';
+import { validateBody, validateHeaders, validatePath, validateQuery } from './validators';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
+import { ValidationContext } from './validators/types';
+export { validateSecurity } from './validators/security';
 
 const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unknown) =>
   pipe(
@@ -33,7 +33,7 @@ const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unkno
     )
   );
 
-const validateIfBodySpecIsProvided = (
+const validateInputIfBodySpecIsProvided = (
   body: unknown,
   mediaType: string,
   contents?: IMediaTypeContent[],
@@ -43,14 +43,19 @@ const validateIfBodySpecIsProvided = (
     sequenceOption(O.fromNullable(body), O.fromNullable(contents)),
     O.fold(
       () => E.right(body),
-      ([body, contents]) => validateBody(body, contents, mediaType, bundle)
+      ([body, contents]) => validateBody(body, contents, ValidationContext.Input, mediaType, bundle)
     )
   );
 
-const tryValidateBody = (requestBody: IHttpOperationRequestBody, bundle: unknown, body: unknown, mediaType: string) =>
+const tryValidateInputBody = (
+  requestBody: IHttpOperationRequestBody,
+  bundle: unknown,
+  body: unknown,
+  mediaType: string
+) =>
   pipe(
     checkBodyIsProvided(requestBody, body),
-    E.chain(() => validateIfBodySpecIsProvided(body, mediaType, requestBody.contents, bundle))
+    E.chain(() => validateInputIfBodySpecIsProvided(body, mediaType, requestBody.contents, bundle))
   );
 
 export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
@@ -65,7 +70,7 @@ export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resou
       e => E.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
       request =>
         sequenceValidation(
-          request.body ? tryValidateBody(request.body, bundle, body, mediaType) : E.right(undefined),
+          request.body ? tryValidateInputBody(request.body, bundle, body, mediaType) : E.right(undefined),
           request.headers ? validateHeaders(element.headers || {}, request.headers, bundle) : E.right(undefined),
           request.query ? validateQuery(element.url.query || {}, request.query, bundle) : E.right(undefined),
           request.path
@@ -129,7 +134,7 @@ export const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ res
             contents => validateMediaType(contents, mediaType)
           )
         ),
-        validateBody(element.body, response.contents || [], mediaType, bundle),
+        validateBody(element.body, response.contents || [], ValidationContext.Output, mediaType, bundle),
         validateHeaders(element.headers || {}, response.headers || [], bundle)
       )
     ),

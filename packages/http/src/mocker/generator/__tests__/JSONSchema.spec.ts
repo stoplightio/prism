@@ -106,6 +106,25 @@ describe('JSONSchema generator', () => {
       it('will return a left', () => assertLeft(generate({}, schema)));
     });
 
+    describe('when writeOnly properties are provided', () => {
+      const schema: JSONSchema = {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          title: { type: 'string', writeOnly: true },
+        },
+        required: ['id', 'title'],
+      };
+
+      it('removes writeOnly properties', () => {
+        assertRight(generate({}, schema), instance => {
+          expect(instance).toEqual({
+            id: expect.any(String),
+          });
+        });
+      });
+    });
+
     it('operates on sealed schema objects', () => {
       const schema: JSONSchema = {
         type: 'object',

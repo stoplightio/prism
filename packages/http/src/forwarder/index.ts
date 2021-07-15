@@ -6,6 +6,7 @@ import * as NEA from 'fp-ts/NonEmptyArray';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 import * as RTE from 'fp-ts/ReaderTaskEither';
+import * as J from 'fp-ts/Json';
 import { defaults, omit } from 'lodash';
 import { format, parse } from 'url';
 import { posix } from 'path';
@@ -77,7 +78,7 @@ function serializeBody(body: unknown): E.Either<Error, string | undefined> {
     return E.right(body);
   }
 
-  if (body) return E.stringifyJSON(body, E.toError);
+  if (body) return pipe(J.stringify(body), E.mapLeft(E.toError));
 
   return E.right(undefined);
 }

@@ -15,7 +15,7 @@ import { pickSetOfHttpMethods, pickOneHttpMethod, randomPath } from './utils';
 
 function createResource(method: string, path: string, servers: IServer[]): IHttpOperation {
   return {
-    id: faker.random.uuid(),
+    id: faker.datatype.uuid(),
     method,
     path,
     responses: [{ code: '200' }],

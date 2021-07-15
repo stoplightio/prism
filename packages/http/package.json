@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-http",
-  "version": "4.2.5",
+  "version": "4.3.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -18,7 +18,7 @@
   "dependencies": {
     "@stoplight/json": "^3.13.7",
     "@stoplight/json-schema-sampler": "0.2.0",
-    "@stoplight/prism-core": "^4.2.5",
+    "@stoplight/prism-core": "^4.3.0",
     "@stoplight/types": "^12.2.0",
     "@stoplight/yaml": "^4.2.2",
     "abstract-logging": "^2.0.1",

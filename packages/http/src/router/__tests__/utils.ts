@@ -32,7 +32,9 @@ export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions):
 
   const randomPathFragments = new Array(options.pathFragments)
     .fill(0)
-    .map(() => (options.includeTemplates && faker.random.boolean() ? `{${faker.random.word()}}` : faker.random.word()));
+    .map(() =>
+      options.includeTemplates && faker.datatype.boolean() ? `{${faker.random.word()}}` : faker.random.word()
+    );
 
   const leadingSlash = options.leadingSlash ? '/' : '';
   const trailingSlash = options.trailingSlash ? '/' : '';
