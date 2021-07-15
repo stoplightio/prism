@@ -25,6 +25,45 @@ describe('HttpValidator', () => {
         expect(validateInput({ resource: httpOperations[2], element: BAD_INPUT })).toMatchSnapshot();
       });
 
+      it.each(['yesterday', '', '2021-02-18T12:02:16.49Z', '2021-02-18T12:02:16.49'])(
+        'properly validate date-time format ("%s")',
+        (dateValue: string) => {
+          expect(
+            validateInput({
+              resource: {
+                id: '?http-operation-id?',
+                method: 'get',
+                path: '/todos',
+                responses: [
+                  {
+                    code: '200',
+                  },
+                ],
+                request: {
+                  query: [
+                    {
+                      name: 'updated_since',
+                      schema: {
+                        type: 'string',
+                        format: 'date-time',
+                        $schema: 'http://json-schema.org/draft-07/schema#',
+                      },
+                      style: HttpParamStyles.Form,
+                    },
+                  ],
+                  cookie: [],
+                  path: [],
+                },
+              },
+              element: {
+                method: 'get',
+                url: { path: '/todos', query: { updated_since: dateValue } },
+              },
+            })
+          ).toMatchSnapshot();
+        }
+      );
+
       describe('when all required params are provided', () => {
         it('returns no validation errors', () => {
           assertRight(validateInput({ resource: httpOperations[0], element: GOOD_INPUT }));

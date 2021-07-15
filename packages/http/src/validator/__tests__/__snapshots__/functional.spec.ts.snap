@@ -1,5 +1,69 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`HttpValidator validateInput() all validations are turned on properly validate date-time format ("") 1`] = `
+Object {
+  "_tag": "Right",
+  "right": Object {
+    "method": "get",
+    "url": Object {
+      "path": "/todos",
+      "query": Object {
+        "updated_since": "",
+      },
+    },
+  },
+}
+`;
+
+exports[`HttpValidator validateInput() all validations are turned on properly validate date-time format ("2021-02-18T12:02:16.49") 1`] = `
+Object {
+  "_tag": "Left",
+  "left": Array [
+    Object {
+      "code": "format",
+      "message": "must match format \\"date-time\\"",
+      "path": Array [
+        "query",
+        "updated_since",
+      ],
+      "severity": 0,
+    },
+  ],
+}
+`;
+
+exports[`HttpValidator validateInput() all validations are turned on properly validate date-time format ("2021-02-18T12:02:16.49Z") 1`] = `
+Object {
+  "_tag": "Right",
+  "right": Object {
+    "method": "get",
+    "url": Object {
+      "path": "/todos",
+      "query": Object {
+        "updated_since": "2021-02-18T12:02:16.49Z",
+      },
+    },
+  },
+}
+`;
+
+exports[`HttpValidator validateInput() all validations are turned on properly validate date-time format ("yesterday") 1`] = `
+Object {
+  "_tag": "Left",
+  "left": Array [
+    Object {
+      "code": "format",
+      "message": "must match format \\"date-time\\"",
+      "path": Array [
+        "query",
+        "updated_since",
+      ],
+      "severity": 0,
+    },
+  ],
+}
+`;
+
 exports[`HttpValidator validateInput() all validations are turned on returns validation errors for whole request structure 1`] = `
 Object {
   "_tag": "Left",
