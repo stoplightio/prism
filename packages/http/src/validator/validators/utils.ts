@@ -52,7 +52,7 @@ function assignAjvInstance($schema: string, coerce: boolean): AjvCore {
   } else if (JSON_SCHEMA_DRAFT_2020_12.test($schema)) {
     draft = 'draft2020_12';
   }
-  console.log({ draft });
+
   return ajvInstances[draft][member];
 }
 
@@ -83,21 +83,13 @@ export const validateAgainstSchema = (
   bundle?: unknown
 ): O.Option<NonEmptyArray<IPrismDiagnostic>> =>
   pipe(
-    O.tryCatch(() => {
-      console.log({ schema: JSON.stringify(schema, null, 2) });
-      return assignAjvInstance(String(schema.$schema), coerce).compile({
+    O.tryCatch(() =>
+      assignAjvInstance(String(schema.$schema), coerce).compile({
         ...schema,
         __bundled__: bundle,
-      });
-    }),
-    O.chainFirst(validateFn =>
-      O.tryCatch(() => {
-        console.log({ value });
-        validateFn(value);
-        console.log({ errors: validateFn.errors });
-        return validateFn(value);
       })
     ),
+    O.chainFirst(validateFn => O.tryCatch(() => validateFn(value))),
     O.chain(validateFn => pipe(O.fromNullable(validateFn.errors), O.chain(fromArray))),
     O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))
   );
