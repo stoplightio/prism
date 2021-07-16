@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 4.3.1 (2021-07-16)
+
+## Fixed
+
+- Fixed issue with date-time type validation [#1856](https://github.com/stoplightio/prism/pull/1856)
+
 # 4.3.0 (2021-07-08)
 
 ## Changed
