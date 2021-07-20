@@ -6,7 +6,7 @@ Usage:
 
 ```javascript
 const { createServer } = require('@stoplight/prism-http-server');
-const { getHttpOperationsFromSpec } = require('@stoplight/prism-http');
+const { getHttpOperationsFromSpec } = require('@stoplight/prism-cli/dist/operations');
 const { createLogger } = require('@stoplight/prism-core');
 
 async function createPrismServer() {
