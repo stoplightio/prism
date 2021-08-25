@@ -167,4 +167,14 @@ describe('matchPath()', () => {
   test('it does not match if separators are not equal', () => {
     assertRight(matchPath('a:b/c', 'a/b:c'), e => expect(e).toEqual(MatchType.NOMATCH));
   });
+
+  test('it properly processes fragments containing both concrete and templated parts', () => {
+    assertRight(matchPath('/a', '/a.{json}'), e => expect(e).toEqual(MatchType.NOMATCH));
+    assertRight(matchPath('/test.json', '/test.{format}'), e => expect(e).toEqual(MatchType.TEMPLATED));
+    assertRight(matchPath('/test.', '/test.{format}'), e => expect(e).toEqual(MatchType.TEMPLATED));
+    assertRight(matchPath('/nope.json', '/test.{format}'), e => expect(e).toEqual(MatchType.NOMATCH));
+    assertRight(matchPath('/before/test.json.sub/after', '/{prefix}/test.{format}.{extension}/{suffix}'), e =>
+      expect(e).toEqual(MatchType.TEMPLATED)
+    );
+  });
 });

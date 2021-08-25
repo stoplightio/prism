@@ -1,0 +1,29 @@
+====test====
+Properly processes path fragments containing both concrete and templated parts
+====spec====
+openapi: 3.0.0
+paths:
+  /test/fixed.{format}:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              example: "{}"
+  /test/fixed:
+    get:
+      responses:
+        '200':
+          content:
+            text/plain:
+              example: "nope."
+
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X GET http://localhost:4010/test/fixed.json
+====expect====
+HTTP/1.1 200 OK
+content-type: application/json
+
+"{}"

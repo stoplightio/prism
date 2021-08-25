@@ -5,13 +5,17 @@ import { isEqual } from 'lodash';
 const pathSeparatorsRegex = /[/:]/g;
 
 function fragmentize(path: string): string[] {
-  return path.split(pathSeparatorsRegex).slice(1);
+  return path.split(pathSeparatorsRegex).slice(1).map(decodePathFragment);
+}
+
+function isTemplated(pathFragment: string) {
+  return /{(.+)}/.test(pathFragment);
 }
 
 // Attempt to decode path fragment. Decode should not do any harm since it is
 // decoding only URI sequences which are previously created by encodeURIComponent
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent
-function decodePathFragment(pathFragment?: string) {
+function decodePathFragment(pathFragment: string) {
   try {
     return pathFragment && decodeURIComponent(pathFragment);
   } catch (_) {
@@ -19,13 +23,13 @@ function decodePathFragment(pathFragment?: string) {
   }
 }
 
-function getTemplateParamName(pathFragment?: string) {
-  const match = typeof pathFragment === 'string' && /{(.*)}/.exec(pathFragment);
-  return match && match[1];
-}
-
 function isSeparationEqual(path1: string, path2: string): boolean {
   return isEqual(path1.match(pathSeparatorsRegex), path2.match(pathSeparatorsRegex));
+}
+
+function escapeRegExp(string: string) {
+  // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
 export function matchPath(requestPath: string, operationPath: string): E.Either<Error, MatchType> {
@@ -35,24 +39,39 @@ export function matchPath(requestPath: string, operationPath: string): E.Either<
 
   const operationPathFragments = fragmentize(operationPath);
   const requestPathFragments = fragmentize(requestPath);
-  const params = [];
-  while (requestPathFragments.length) {
-    // make sure fragments are decoded before comparing them
-    const requestPathFragment = decodePathFragment(requestPathFragments.shift());
-    const operationPathFragment = decodePathFragment(operationPathFragments.shift());
 
-    const paramName = getTemplateParamName(operationPathFragment);
+  let isTemplatedOperationPath = false;
 
-    if (paramName === null && operationPathFragment !== requestPathFragment) {
+  for (const requestPathFragment of requestPathFragments) {
+    const operationPathFragment = operationPathFragments.shift();
+
+    if (operationPathFragment === undefined) {
+      return E.right(MatchType.NOMATCH);
+    }
+
+    const isTemplatedFragment = isTemplated(operationPathFragment);
+
+    if (!isTemplatedFragment) {
+      if (operationPathFragment === requestPathFragment) {
+        continue;
+      }
+
       // if concrete fragment and fragments are different return false
       return E.right(MatchType.NOMATCH);
-    } else if (paramName !== null) {
-      params.push({
-        name: paramName,
-        value: requestPathFragment,
-      });
     }
+
+    // Convert the operation path fragment into a capturing RegExp
+    // and see if the request path fragment fits it
+    const escaped = escapeRegExp(operationPathFragment);
+    const captureRegExp = escaped.replace(/\\\{[^\\]+\\\}/g, '(.*)');
+
+    const match = new RegExp(captureRegExp).exec(requestPathFragment);
+    if (match == null) {
+      return E.right(MatchType.NOMATCH);
+    }
+
+    isTemplatedOperationPath ||= true;
   }
 
-  return E.right(params.length ? MatchType.TEMPLATED : MatchType.CONCRETE);
+  return E.right(isTemplatedOperationPath ? MatchType.TEMPLATED : MatchType.CONCRETE);
 }
