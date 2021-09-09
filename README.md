@@ -8,7 +8,7 @@ Prism is a set of packages for API mocking and contract testing with **OpenAPI v
 
 - **Mock Servers**: Life-like mock servers from any API Specification Document.
 - **Validation Proxy**: Contract Testing for API Consumers and Developers.
-- **Comprehensive API Specification Support**: OpenAPI 3.0, OpenAPI 2.0 (FKA Swagger) and Postman Collections support.
+- **Comprehensive API Specification Support**: OpenAPI v3.1, OpenAPI v3.0, OpenAPI v2.0 (formerly Swagger) and Postman Collections.
 
 ![Demo of Prism Mock Server being called with curl from the CLI](./examples/prism-cli.svg)
 
@@ -70,9 +70,8 @@ Learn more about [how the validation proxy works](docs/guides/03-validation-prox
 - [x] Content Negotiation
 - [x] Security Validation
 - [x] Validation Proxy
-- [ ] Custom Mocking
-- [ ] Recording / "Learning" mode to create spec files
-- [ ] Data Persistence (allow Prism act like a sandbox)
+- [ ] [Recording/Learning Mode](https://roadmap.stoplight.io/c/66-learning-recording?utm_source=github&utm_medium=prism&utm_campaign=readme) (create OpenAPI from HTTP traffic)
+- [ ] [Data Persistence](https://roadmap.stoplight.io/c/50-persisted-mock-data?utm_source=github&utm_medium=prism&utm_campaign=readme) (allow Prism act like a sandbox)
 
 Submit your ideas for new functionality on the [Stoplight Roadmap](https://roadmap.stoplight.io/?utm_source=github&utm_medium=prism&utm_campaign=readme).
 
