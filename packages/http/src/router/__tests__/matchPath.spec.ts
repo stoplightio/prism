@@ -146,7 +146,7 @@ describe('matchPath()', () => {
   });
 
   // This test will likely never fail because strings are always different
-  test('none path should match templated operation with more path fragments', () => {
+  test('none path should match templated operation with more path fragments (dynamic)', () => {
     // e.g. `/a/b` should not match /{x}/{y}/{z}
     // e.g. `/a` should not match /{x}/{y}/{z}
     const requestPath = randomPath({
@@ -160,6 +160,13 @@ describe('matchPath()', () => {
       includeTemplates: true,
       trailingSlash: false,
     });
+
+    assertRight(matchPath(requestPath, operationPath), e => expect(e).toEqual(MatchType.NOMATCH));
+  });
+
+  test('none path should match templated operation with more path fragments', () => {
+    const requestPath = '/a/b/c';
+    const operationPath = '/{d}/{e}/{f}/{g}';
 
     assertRight(matchPath(requestPath, operationPath), e => expect(e).toEqual(MatchType.NOMATCH));
   });

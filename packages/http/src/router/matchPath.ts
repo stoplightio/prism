@@ -29,6 +29,10 @@ export function matchPath(requestPath: string, operationPath: string): E.Either<
   const operationPathFragments = fragmentize(operationPath);
   const requestPathFragments = fragmentize(requestPath);
 
+  if (operationPathFragments.length != requestPathFragments.length) {
+    return E.right(MatchType.NOMATCH);
+  }
+
   let isTemplatedOperationPath = false;
 
   for (const requestPathFragment of requestPathFragments) {
