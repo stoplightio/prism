@@ -2,6 +2,10 @@ import { MatchType } from './types';
 import * as E from 'fp-ts/Either';
 
 function fragmentize(path: string): string[] {
+  if (path.length === 0 || !path.startsWith('/')) {
+    throw new Error(`Malformed path '${path}'`);
+  }
+
   return path.split('/').slice(1).map(decodePathFragment);
 }
 

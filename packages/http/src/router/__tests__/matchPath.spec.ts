@@ -172,7 +172,7 @@ describe('matchPath()', () => {
   });
 
   test('it does not match if separators are not equal', () => {
-    assertRight(matchPath('a:b/c', 'a/b:c'), e => expect(e).toEqual(MatchType.NOMATCH));
+    assertRight(matchPath('/a:b/c', '/a/b:c'), e => expect(e).toEqual(MatchType.NOMATCH));
   });
 
   test('it accepts columns as part of templated params', () => {
