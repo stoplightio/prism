@@ -168,6 +168,10 @@ describe('matchPath()', () => {
     assertRight(matchPath('a:b/c', 'a/b:c'), e => expect(e).toEqual(MatchType.NOMATCH));
   });
 
+  test('it accepts columns as part of templated params', () => {
+    assertRight(matchPath('/a:b/c', '/{something}/c'), e => expect(e).toEqual(MatchType.TEMPLATED));
+  });
+
   test('it properly processes fragments containing both concrete and templated parts', () => {
     assertRight(matchPath('/a', '/a.{json}'), e => expect(e).toEqual(MatchType.NOMATCH));
     assertRight(matchPath('/test.json', '/test.{format}'), e => expect(e).toEqual(MatchType.TEMPLATED));

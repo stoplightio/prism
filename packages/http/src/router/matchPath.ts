@@ -1,11 +1,8 @@
 import { MatchType } from './types';
 import * as E from 'fp-ts/Either';
-import { isEqual } from 'lodash';
-
-const pathSeparatorsRegex = /[/:]/g;
 
 function fragmentize(path: string): string[] {
-  return path.split(pathSeparatorsRegex).slice(1).map(decodePathFragment);
+  return path.split('/').slice(1).map(decodePathFragment);
 }
 
 function isTemplated(pathFragment: string) {
@@ -23,20 +20,12 @@ function decodePathFragment(pathFragment: string) {
   }
 }
 
-function isSeparationEqual(path1: string, path2: string): boolean {
-  return isEqual(path1.match(pathSeparatorsRegex), path2.match(pathSeparatorsRegex));
-}
-
 function escapeRegExp(string: string) {
   // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
 export function matchPath(requestPath: string, operationPath: string): E.Either<Error, MatchType> {
-  if (!isSeparationEqual(requestPath, operationPath)) {
-    return E.right(MatchType.NOMATCH);
-  }
-
   const operationPathFragments = fragmentize(operationPath);
   const requestPathFragments = fragmentize(requestPath);
 
