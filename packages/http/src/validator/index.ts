@@ -2,7 +2,6 @@ import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
 import {
   DiagnosticSeverity,
   Dictionary,
-  IHttpOperation,
   IHttpOperationRequestBody,
   IHttpOperationResponse,
   IMediaTypeContent,
@@ -17,11 +16,18 @@ import { is as typeIs } from 'type-is';
 import { pipe } from 'fp-ts/function';
 import { inRange, isMatch } from 'lodash';
 import { URI } from 'uri-template-lite';
-import { IHttpRequest, IHttpResponse } from '../types';
+import {
+  IHttpOperationEx,
+  IHttpOperationRequestBodyEx,
+  IHttpRequest,
+  IHttpResponse,
+  IMediaTypeContentEx,
+} from '../types';
 import { findOperationResponse } from './utils/spec';
 import { validateBody, validateHeaders, validatePath, validateQuery } from './validators';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 import { ValidationContext } from './validators/types';
+
 export { validateSecurity } from './validators/security';
 
 const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unknown) =>
@@ -36,7 +42,7 @@ const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unkno
 const validateInputIfBodySpecIsProvided = (
   body: unknown,
   mediaType: string,
-  contents?: IMediaTypeContent[],
+  contents?: IMediaTypeContentEx[],
   bundle?: unknown
 ) =>
   pipe(
@@ -48,7 +54,7 @@ const validateInputIfBodySpecIsProvided = (
   );
 
 const tryValidateInputBody = (
-  requestBody: IHttpOperationRequestBody,
+  requestBody: IHttpOperationRequestBodyEx,
   bundle: unknown,
   body: unknown,
   mediaType: string
@@ -58,7 +64,7 @@ const tryValidateInputBody = (
     E.chain(() => validateInputIfBodySpecIsProvided(body, mediaType, requestBody.contents, bundle))
   );
 
-export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
+export const validateInput: ValidatorFn<IHttpOperationEx, IHttpRequest> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
   const { request } = resource;
   const { body } = element;
@@ -71,10 +77,19 @@ export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resou
       request =>
         sequenceValidation(
           request.body ? tryValidateInputBody(request.body, bundle, body, mediaType) : E.right(undefined),
-          request.headers ? validateHeaders(element.headers || {}, request.headers, bundle) : E.right(undefined),
-          request.query ? validateQuery(element.url.query || {}, request.query, bundle) : E.right(undefined),
+          request.headers
+            ? validateHeaders(element.headers || {}, request.headers, bundle, request.headersValidatingSchema)
+            : E.right(undefined),
+          request.query
+            ? validateQuery(element.url.query || {}, request.query, bundle, request.queryValidatingSchema)
+            : E.right(undefined),
           request.path
-            ? validatePath(getPathParams(element.url.path, resource.path), request.path, bundle)
+            ? validatePath(
+                getPathParams(element.url.path, resource.path),
+                request.path,
+                bundle,
+                request.pathValidatingSchema
+              )
             : E.right(undefined)
         )
     ),
@@ -119,7 +134,7 @@ export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, me
     E.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
   );
 
-export const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ resource, element }) => {
+export const validateOutput: ValidatorFn<IHttpOperationEx, IHttpResponse> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
   const bundle = resource['__bundled__'];
   return pipe(

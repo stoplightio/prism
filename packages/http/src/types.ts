@@ -1,6 +1,16 @@
 import { IPrism, IPrismComponents, IPrismProxyConfig, IPrismMockConfig } from '@stoplight/prism-core';
 import { Overwrite } from 'utility-types';
-import { Dictionary, HttpMethod, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
+import {
+  Dictionary,
+  HttpMethod,
+  IHttpOperation,
+  IHttpOperationRequest,
+  IHttpOperationRequestBody,
+  IHttpOperationResponse,
+  IMediaTypeContent,
+  INodeExample,
+  INodeExternalExample,
+} from '@stoplight/types';
 import type { JSONSchema7 } from 'json-schema';
 import { Either } from 'fp-ts/Either';
 
@@ -92,3 +102,31 @@ export type PayloadGenerator = (f: JSONSchema) => Either<Error, unknown>;
 
 export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 export type JSONSchema = JSONSchema7;
+
+export interface JSONSchemaEx extends JSONSchema {
+  __bundled__: unknown;
+}
+
+export interface IHttpOperationEx extends IHttpOperation {
+  request?: IHttpOperationRequestEx;
+  responses: IHttpOperationResponseEx[];
+}
+
+export interface IHttpOperationRequestEx extends IHttpOperationRequest {
+  pathValidatingSchema?: JSONSchema;
+  queryValidatingSchema?: JSONSchema;
+  headersValidatingSchema?: JSONSchema;
+  body?: IHttpOperationRequestBodyEx;
+}
+
+export interface IHttpOperationRequestBodyEx extends IHttpOperationRequestBody {
+  contents?: IMediaTypeContentEx[];
+}
+
+export interface IHttpOperationResponseEx extends IHttpOperationResponse {
+  contents?: IMediaTypeContentEx[];
+}
+
+export interface IMediaTypeContentEx extends IMediaTypeContent {
+  contentValidatingSchema?: JSONSchema;
+}

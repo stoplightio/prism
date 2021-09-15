@@ -7,7 +7,7 @@ import * as NEA from 'fp-ts/NonEmptyArray';
 import { pipe } from 'fp-ts/function';
 import { get } from 'lodash';
 import { is as typeIs } from 'type-is';
-import { JSONSchema } from '../../types';
+import { IMediaTypeContentEx, JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { validateAgainstSchema } from './utils';
 import { ValidationContext, validateFn } from './types';
@@ -89,29 +89,35 @@ const normalizeSchemaProcessorMap: Record<ValidationContext, (schema: JSONSchema
   [ValidationContext.Output]: stripWriteOnlyProperties,
 };
 
-export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, context, mediaType, bundle) => {
+export const validate: validateFn<unknown, IMediaTypeContentEx> = (target, specs, context, mediaType, bundle) => {
   const findContentByMediaType = pipe(
     O.Do,
     O.bind('mediaType', () => O.fromNullable(mediaType)),
     O.bind('contentResult', ({ mediaType }) => findContentByMediaTypeOrFirst(specs, mediaType)),
     O.alt(() => O.some({ contentResult: { content: specs[0] || {}, mediaType: 'random' } })),
-    O.bind('schema', ({ contentResult }) =>
-      pipe(O.fromNullable(contentResult.content.schema), O.chain(normalizeSchemaProcessorMap[context]))
-    )
+    O.bind('schema', ({ contentResult }) => {
+      if (contentResult.content.contentValidatingSchema !== undefined) {
+        return O.fromNullable(contentResult.content.contentValidatingSchema);
+      }
+      return pipe(O.fromNullable(contentResult.content.schema), O.chain(normalizeSchemaProcessorMap[context]));
+    }),
+    O.bind('shortcut', ({ contentResult }) => {
+      return O.fromNullable(contentResult.content.contentValidatingSchema !== undefined);
+    })
   );
 
   return pipe(
     findContentByMediaType,
     O.fold(
       () => E.right(target),
-      ({ contentResult: { content, mediaType: mt }, schema }) =>
+      ({ contentResult: { content, mediaType: mt }, schema, shortcut }) =>
         pipe(
           mt,
           O.fromPredicate(mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded'])),
           O.fold(
             () =>
               pipe(
-                validateAgainstSchema(target, schema, false, undefined, bundle),
+                validateAgainstSchema(target, schema, false, undefined, bundle, shortcut),
                 E.fromOption(() => target),
                 E.swap
               ),
