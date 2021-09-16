@@ -1,6 +1,6 @@
 import { IHttpCallbackOperation, IHttpOperationRequest, Dictionary } from '@stoplight/types';
 import { resolveRuntimeExpressions } from '../../utils/runtimeExpression';
-import { IHttpRequest, IHttpResponse } from '../../types';
+import { IHttpCallbackOperationEx, IHttpRequest, IHttpResponse } from '../../types';
 import fetch from 'node-fetch';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
@@ -21,7 +21,7 @@ export function runCallback({
   request,
   response,
 }: {
-  callback: IHttpCallbackOperation;
+  callback: IHttpCallbackOperationEx;
   request: IHttpRequest;
   response: IHttpResponse;
 }): RTE.ReaderTaskEither<Logger, void, unknown> {

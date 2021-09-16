@@ -95,36 +95,17 @@ export const validateAgainstSchema = (
   value: unknown,
   schema: JSONSchema,
   coerce: boolean,
-  prefix?: string,
-  bundle?: unknown,
-  shortcut?: boolean
+  prefix?: string
 ): O.Option<NonEmptyArray<IPrismDiagnostic>> => {
-  const myschema = newFunction(shortcut, schema, bundle);
-
   // if (!schemas.includes(myschema)) {
   //   schemas.push(myschema);
   //   console.log('schemas.length', schemas.length);
   // }
 
   return pipe(
-    O.tryCatch(() => assignAjvInstance(String(schema.$schema), coerce).compile(myschema)),
+    O.tryCatch(() => assignAjvInstance(String(schema.$schema), coerce).compile(schema)),
     O.chainFirst(validateFn => O.tryCatch(() => validateFn(value))),
     O.chain(validateFn => pipe(O.fromNullable(validateFn.errors), O.chain(fromArray))),
     O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))
   );
 };
-function newFunction(shortcut: boolean | undefined, schema: JSONSchema, bundle: unknown) {
-  const out = shortcut
-    ? schema
-    : {
-        ...schema,
-        __bundled__: bundle,
-      };
-
-  // if (!shortcut) {
-  //   console.log(out);
-  //   console.log('no shortcut');
-  // }
-
-  return out;
-}

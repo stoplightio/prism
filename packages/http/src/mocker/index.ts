@@ -4,7 +4,6 @@ import {
   IHttpHeaderParam,
   IHttpOperation,
   IHttpOperationResponse,
-  IMediaTypeContent,
   INodeExample,
 } from '@stoplight/types';
 
@@ -24,8 +23,10 @@ import {
   ContentExample,
   IHttpMockConfig,
   IHttpOperationConfig,
+  IHttpOperationEx,
   IHttpRequest,
   IHttpResponse,
+  IMediaTypeContentEx,
   PayloadGenerator,
   ProblemJsonError,
 } from '../types';
@@ -46,7 +47,7 @@ import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 const eitherRecordSequence = Record.sequence(E.Applicative);
 const eitherSequence = sequenceT(E.Apply);
 
-const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpMockConfig>['mock'] = ({
+const mock: IPrismComponents<IHttpOperationEx, IHttpRequest, IHttpResponse, IHttpMockConfig>['mock'] = ({
   resource,
   input,
   config,
@@ -88,7 +89,7 @@ function runCallbacks({
   request,
   response,
 }: {
-  resource: IHttpOperation;
+  resource: IHttpOperationEx;
   request: IHttpRequest;
   response: IHttpResponse;
 }) {
@@ -111,7 +112,7 @@ function runCallbacks({
   This function should not be here at all, but unfortunately due to some limitations of the Monad we're using (Either)
   we cannot carry parsed informations in case of an error — which is what we do need instead.
 */
-function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) {
+function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperationEx) {
   const mediaType = caseless(request.headers || {}).get('content-type');
   if (!mediaType) return request;
 
@@ -121,7 +122,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
     O.fromNullable(resource.request),
     O.chainNullableK(request => request.body),
     O.chainNullableK(body => body.contents),
-    O.getOrElse(() => [] as IMediaTypeContent[])
+    O.getOrElse(() => [] as IMediaTypeContentEx[])
   );
 
   const encodedUriParams = splitUriParams(request.body as string);

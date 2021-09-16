@@ -110,12 +110,13 @@ export interface JSONSchemaEx extends JSONSchema {
 export interface IHttpOperationEx extends IHttpOperation {
   request?: IHttpOperationRequestEx;
   responses: IHttpOperationResponseEx[];
+  callbacks?: IHttpCallbackOperationEx[];
 }
 
 export interface IHttpOperationRequestEx extends IHttpOperationRequest {
-  pathValidatingSchema?: JSONSchema;
-  queryValidatingSchema?: JSONSchema;
-  headersValidatingSchema?: JSONSchema;
+  pathValidatingSchema: JSONSchema;
+  queryValidatingSchema: JSONSchema;
+  headersValidatingSchema: JSONSchema;
   body?: IHttpOperationRequestBodyEx;
 }
 
@@ -128,5 +129,9 @@ export interface IHttpOperationResponseEx extends IHttpOperationResponse {
 }
 
 export interface IMediaTypeContentEx extends IMediaTypeContent {
-  contentValidatingSchema?: JSONSchema;
+  contentValidatingSchema: JSONSchema;
 }
+
+export declare type IHttpCallbackOperationEx = Omit<IHttpOperationEx, 'servers' | 'security' | 'callbacks'> & {
+  callbackName: string;
+};

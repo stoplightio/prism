@@ -1,11 +1,12 @@
 import { IHttpOperationResponse } from '@stoplight/types';
 import { head } from 'fp-ts/Array';
 import { Option } from 'fp-ts/Option';
+import { IHttpOperationResponseEx } from '../../types';
 
 export function findOperationResponse(
-  responseSpecs: IHttpOperationResponse[],
+  responseSpecs: IHttpOperationResponseEx[],
   statusCode: number
-): Option<IHttpOperationResponse> {
+): Option<IHttpOperationResponseEx> {
   const sortedSpecs = responseSpecs
     .filter(
       spec => new RegExp(`^${spec.code.replace(/X/g, '\\d')}$`).test(String(statusCode)) || spec.code === 'default'

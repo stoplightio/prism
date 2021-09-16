@@ -19,6 +19,7 @@ import { URI } from 'uri-template-lite';
 import {
   IHttpOperationEx,
   IHttpOperationRequestBodyEx,
+  IHttpOperationResponseEx,
   IHttpRequest,
   IHttpResponse,
   IMediaTypeContentEx,
@@ -39,29 +40,19 @@ const checkBodyIsProvided = (requestBody: IHttpOperationRequestBody, body: unkno
     )
   );
 
-const validateInputIfBodySpecIsProvided = (
-  body: unknown,
-  mediaType: string,
-  contents?: IMediaTypeContentEx[],
-  bundle?: unknown
-) =>
+const validateInputIfBodySpecIsProvided = (body: unknown, mediaType: string, contents?: IMediaTypeContentEx[]) =>
   pipe(
     sequenceOption(O.fromNullable(body), O.fromNullable(contents)),
     O.fold(
       () => E.right(body),
-      ([body, contents]) => validateBody(body, contents, ValidationContext.Input, mediaType, bundle)
+      ([body, contents]) => validateBody(body, contents, mediaType)
     )
   );
 
-const tryValidateInputBody = (
-  requestBody: IHttpOperationRequestBodyEx,
-  bundle: unknown,
-  body: unknown,
-  mediaType: string
-) =>
+const tryValidateInputBody = (requestBody: IHttpOperationRequestBodyEx, body: unknown, mediaType: string) =>
   pipe(
     checkBodyIsProvided(requestBody, body),
-    E.chain(() => validateInputIfBodySpecIsProvided(body, mediaType, requestBody.contents, bundle))
+    E.chain(() => validateInputIfBodySpecIsProvided(body, mediaType, requestBody.contents))
   );
 
 export const validateInput: ValidatorFn<IHttpOperationEx, IHttpRequest> = ({ resource, element }) => {
@@ -69,27 +60,21 @@ export const validateInput: ValidatorFn<IHttpOperationEx, IHttpRequest> = ({ res
   const { request } = resource;
   const { body } = element;
 
-  const bundle = resource['__bundled__'];
   return pipe(
     E.fromNullable(undefined)(request),
     E.fold(
       e => E.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
       request =>
         sequenceValidation(
-          request.body ? tryValidateInputBody(request.body, bundle, body, mediaType) : E.right(undefined),
+          request.body ? tryValidateInputBody(request.body, body, mediaType) : E.right(undefined),
           request.headers
-            ? validateHeaders(element.headers || {}, request.headers, bundle, request.headersValidatingSchema)
+            ? validateHeaders(element.headers || {}, request.headers, request.headersValidatingSchema)
             : E.right(undefined),
           request.query
-            ? validateQuery(element.url.query || {}, request.query, bundle, request.queryValidatingSchema)
+            ? validateQuery(element.url.query || {}, request.query, request.queryValidatingSchema)
             : E.right(undefined),
           request.path
-            ? validatePath(
-                getPathParams(element.url.path, resource.path),
-                request.path,
-                bundle,
-                request.pathValidatingSchema
-              )
+            ? validatePath(getPathParams(element.url.path, resource.path), request.path, request.pathValidatingSchema)
             : E.right(undefined)
         )
     ),
@@ -97,7 +82,7 @@ export const validateInput: ValidatorFn<IHttpOperationEx, IHttpRequest> = ({ res
   );
 };
 
-const findResponseByStatus = (responses: IHttpOperationResponse[], statusCode: number) =>
+const findResponseByStatus = (responses: IHttpOperationResponseEx[], statusCode: number) =>
   pipe(
     findOperationResponse(responses, statusCode),
     E.fromOption<IPrismDiagnostic>(() => ({
@@ -149,7 +134,7 @@ export const validateOutput: ValidatorFn<IHttpOperationEx, IHttpResponse> = ({ r
             contents => validateMediaType(contents, mediaType)
           )
         ),
-        validateBody(element.body, response.contents || [], ValidationContext.Output, mediaType, bundle),
+        validateBody(element.body, response.contents || [], mediaType, bundle),
         validateHeaders(element.headers || {}, response.headers || [], bundle)
       )
     ),

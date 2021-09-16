@@ -10,9 +10,7 @@ import { is as typeIs } from 'type-is';
 import { IMediaTypeContentEx, JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { validateAgainstSchema } from './utils';
-import { ValidationContext, validateFn } from './types';
-
-import { stripReadOnlyProperties, stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
+import { validateFn } from './types';
 
 export function deserializeFormBody(
   schema: JSONSchema,
@@ -57,7 +55,7 @@ export function decodeUriEntities(target: Dictionary<string>) {
   }, {});
 }
 
-export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: string) {
+export function findContentByMediaTypeOrFirst(specs: IMediaTypeContentEx[], mediaType: string) {
   return pipe(
     specs,
     A.findFirst(spec => !!typeIs(mediaType, [spec.mediaType])),
@@ -66,7 +64,7 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
   );
 }
 
-function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, bundle?: unknown) {
+function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string) {
   const encodings = get(content, 'encodings', []);
   const encodedUriParams = splitUriParams(target);
 
@@ -76,7 +74,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised =>
       pipe(
-        validateAgainstSchema(deserialised, schema, true, undefined, bundle),
+        validateAgainstSchema(deserialised, schema, true),
         E.fromOption(() => deserialised),
         E.swap
       )
@@ -84,25 +82,18 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
   );
 }
 
-const normalizeSchemaProcessorMap: Record<ValidationContext, (schema: JSONSchema) => O.Option<JSONSchema>> = {
-  [ValidationContext.Input]: stripReadOnlyProperties,
-  [ValidationContext.Output]: stripWriteOnlyProperties,
-};
-
-export const validate: validateFn<unknown, IMediaTypeContentEx> = (target, specs, context, mediaType, bundle) => {
+export const validate: validateFn<unknown, IMediaTypeContentEx> = (target, specs, mediaType) => {
   const findContentByMediaType = pipe(
     O.Do,
     O.bind('mediaType', () => O.fromNullable(mediaType)),
     O.bind('contentResult', ({ mediaType }) => findContentByMediaTypeOrFirst(specs, mediaType)),
     O.alt(() => O.some({ contentResult: { content: specs[0] || {}, mediaType: 'random' } })),
     O.bind('schema', ({ contentResult }) => {
-      if (contentResult.content.contentValidatingSchema !== undefined) {
-        return O.fromNullable(contentResult.content.contentValidatingSchema);
+      if (contentResult.content.contentValidatingSchema === undefined) {
+        throw new Error('Missing contentValidatingSchema');
       }
-      return pipe(O.fromNullable(contentResult.content.schema), O.chain(normalizeSchemaProcessorMap[context]));
-    }),
-    O.bind('shortcut', ({ contentResult }) => {
-      return O.fromNullable(contentResult.content.contentValidatingSchema !== undefined);
+
+      return O.fromNullable(contentResult.content.contentValidatingSchema);
     })
   );
 
@@ -110,14 +101,14 @@ export const validate: validateFn<unknown, IMediaTypeContentEx> = (target, specs
     findContentByMediaType,
     O.fold(
       () => E.right(target),
-      ({ contentResult: { content, mediaType: mt }, schema, shortcut }) =>
+      ({ contentResult: { content, mediaType: mt }, schema }) =>
         pipe(
           mt,
           O.fromPredicate(mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded'])),
           O.fold(
             () =>
               pipe(
-                validateAgainstSchema(target, schema, false, undefined, bundle, shortcut),
+                validateAgainstSchema(target, schema, false),
                 E.fromOption(() => target),
                 E.swap
               ),

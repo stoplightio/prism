@@ -10,7 +10,6 @@ export enum ValidationContext {
 export type validateFn<Target, Specs> = (
   target: Target,
   specs: Specs[],
-  context: ValidationContext,
   mediaType?: string,
   bundle?: unknown
 ) => Either<NonEmptyArray<IPrismDiagnostic>, Target>;

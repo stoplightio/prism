@@ -20,8 +20,7 @@ export type Deps<Target> = {
 export const validateParams = <Target>(
   target: Target,
   specs: IHttpParam[],
-  bundle?: unknown,
-  validatingSchema?: JSONSchema
+  validatingSchema: JSONSchema
 ): RE.ReaderEither<Deps<Target>, NEA.NonEmptyArray<IPrismDiagnostic>, Target> => ({
   deserializers,
   prefix,
@@ -39,7 +38,7 @@ export const validateParams = <Target>(
   return pipe(
     NEA.fromArray(specs),
     O.map(specs => {
-      const schema = validatingSchema ?? createJsonSchemaFromParams(specs);
+      const schema = validatingSchema;
       const parameterValues = pickBy(
         mapValues(
           keyBy(specs, s => s.name.toLowerCase()),
@@ -61,9 +60,7 @@ export const validateParams = <Target>(
       );
       return { parameterValues, schema };
     }),
-    O.chain(({ parameterValues, schema }) =>
-      validateAgainstSchema(parameterValues, schema, true, prefix, bundle, validatingSchema !== undefined)
-    ),
+    O.chain(({ parameterValues, schema }) => validateAgainstSchema(parameterValues, schema, true, prefix)),
     O.map(schemaDiagnostic => NEA.concat(schemaDiagnostic, deprecatedWarnings)),
     O.alt(() => NEA.fromArray(deprecatedWarnings)),
     E.fromOption(() => target),
@@ -71,7 +68,7 @@ export const validateParams = <Target>(
   );
 };
 
-function createJsonSchemaFromParams(params: NEA.NonEmptyArray<IHttpParam>): JSONSchema {
+export function createJsonSchemaFromParams(params: NEA.NonEmptyArray<IHttpParam>): JSONSchema {
   return {
     type: 'object',
     properties: pickBy(
