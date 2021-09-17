@@ -126,6 +126,7 @@ export interface IHttpOperationRequestBodyEx extends IHttpOperationRequestBody {
 
 export interface IHttpOperationResponseEx extends IHttpOperationResponse {
   contents?: IMediaTypeContentEx[];
+  headersValidatingSchema: JSONSchema;
 }
 
 export interface IMediaTypeContentEx extends IMediaTypeContent {

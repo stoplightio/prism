@@ -1,9 +1,14 @@
-import { HttpParamStyles } from '@stoplight/types';
-import { path as registry } from '../../deserializers';
-import { validate } from '../path';
+import { HttpParamStyles, IHttpPathParam } from '@stoplight/types';
+import { validate as validatePath } from '../path';
+import { IHttpNameValue } from '../../../types';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import * as O from 'fp-ts/Option';
+import { createJsonSchemaFromParams } from '../params';
+
+const validate = (target: IHttpNameValue, specs: IHttpPathParam[]) => {
+  return validatePath(target, specs, createJsonSchemaFromParams(specs));
+};
 
 describe('validate()', () => {
   beforeEach(() => {

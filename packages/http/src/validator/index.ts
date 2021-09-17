@@ -1,11 +1,5 @@
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
-import {
-  DiagnosticSeverity,
-  Dictionary,
-  IHttpOperationRequestBody,
-  IHttpOperationResponse,
-  IMediaTypeContent,
-} from '@stoplight/types';
+import { DiagnosticSeverity, Dictionary, IHttpOperationRequestBody, IMediaTypeContent } from '@stoplight/types';
 import * as caseless from 'caseless';
 import * as contentType from 'content-type';
 import * as A from 'fp-ts/Array';
@@ -27,7 +21,6 @@ import {
 import { findOperationResponse } from './utils/spec';
 import { validateBody, validateHeaders, validatePath, validateQuery } from './validators';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
-import { ValidationContext } from './validators/types';
 
 export { validateSecurity } from './validators/security';
 
@@ -121,7 +114,6 @@ export const validateMediaType = (contents: NonEmptyArray<IMediaTypeContent>, me
 
 export const validateOutput: ValidatorFn<IHttpOperationEx, IHttpResponse> = ({ resource, element }) => {
   const mediaType = caseless(element.headers || {}).get('content-type');
-  const bundle = resource['__bundled__'];
   return pipe(
     findResponseByStatus(resource.responses, element.statusCode),
     E.chain(response =>
@@ -134,8 +126,8 @@ export const validateOutput: ValidatorFn<IHttpOperationEx, IHttpResponse> = ({ r
             contents => validateMediaType(contents, mediaType)
           )
         ),
-        validateBody(element.body, response.contents || [], mediaType, bundle),
-        validateHeaders(element.headers || {}, response.headers || [], bundle)
+        validateBody(element.body, response.contents || [], mediaType),
+        validateHeaders(element.headers || {}, response.headers || [], response.headersValidatingSchema)
       )
     ),
     E.map(() => element)

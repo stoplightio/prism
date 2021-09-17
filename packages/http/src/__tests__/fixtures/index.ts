@@ -1,9 +1,9 @@
 import { IPrismInput } from '@stoplight/prism-core';
-import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
 
-import { IHttpRequest, IHttpResponse } from '../../types';
+import { IHttpOperationEx, IHttpRequest, IHttpResponse } from '../../types';
 
-export const httpOperations: IHttpOperation[] = [
+export const httpOperations: IHttpOperationEx[] = [
   {
     id: 'todos',
     method: 'get',

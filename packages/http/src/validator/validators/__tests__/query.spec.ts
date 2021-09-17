@@ -1,8 +1,14 @@
-import { HttpParamStyles, DiagnosticSeverity } from '@stoplight/types';
-import { validate } from '../query';
+import { HttpParamStyles, DiagnosticSeverity, IHttpQueryParam } from '@stoplight/types';
+import { validate as validateQuery } from '../query';
+import { IHttpNameValues } from '../../../types';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import * as O from 'fp-ts/Option';
+import { createJsonSchemaFromParams } from '../params';
+
+const validate = (target: IHttpNameValues, specs: IHttpQueryParam[]) => {
+  return validateQuery(target, specs, createJsonSchemaFromParams(specs));
+};
 
 describe('validate()', () => {
   beforeEach(() => {

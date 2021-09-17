@@ -68,7 +68,7 @@ export const validateParams = <Target>(
   );
 };
 
-export function createJsonSchemaFromParams(params: NEA.NonEmptyArray<IHttpParam>): JSONSchema {
+export function createJsonSchemaFromParams(params: IHttpParam[]): JSONSchema {
   return {
     type: 'object',
     properties: pickBy(

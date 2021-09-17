@@ -1,10 +1,15 @@
-import * as NEA from 'fp-ts/NonEmptyArray';
 import { HttpParamStyles, DiagnosticSeverity, IHttpPathParam } from '@stoplight/types';
-import { validate } from '../headers';
+import { validate as validateHeaders } from '../headers';
+import { IHttpNameValue } from '../../../types';
+
 import * as validateAgainstSchemaModule from '../utils';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import * as O from 'fp-ts/Option';
 import { createJsonSchemaFromParams } from '../params';
+
+const validate = (target: IHttpNameValue, specs: IHttpPathParam[]) => {
+  return validateHeaders(target, specs, createJsonSchemaFromParams(specs));
+};
 
 describe('validate()', () => {
   beforeEach(() => {
@@ -15,10 +20,7 @@ describe('validate()', () => {
     describe('header is not present', () => {
       describe('spec defines it as required', () => {
         it('returns validation error', () => {
-          const spec: NEA.NonEmptyArray<IHttpPathParam> = [
-            { name: 'aHeader', style: HttpParamStyles.Simple, required: true },
-          ];
-          assertLeft(validate({}, spec, createJsonSchemaFromParams(spec)), error =>
+          assertLeft(validate({}, [{ name: 'aHeader', style: HttpParamStyles.Simple, required: true }]), error =>
             expect(error).toContainEqual({
               code: 'required',
               message: "must have required property 'aheader'",

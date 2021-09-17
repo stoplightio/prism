@@ -5,7 +5,7 @@ import * as E from 'fp-ts/Either';
 import { flatMap } from 'lodash';
 import mock from '../../mocker';
 import * as JSONSchemaGenerator from '../../mocker/generator/JSONSchema';
-import { IHttpRequest, JSONSchema } from '../../types';
+import { IHttpOperationEx, IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { runCallback } from '../callback/callbacks';
@@ -29,7 +29,7 @@ describe('mocker', () => {
       required: ['name', 'surname'],
     };
 
-    const mockResource: IHttpOperation = {
+    const mockResource: IHttpOperationEx = {
       id: 'id',
       method: 'get',
       path: '/test',
@@ -214,7 +214,7 @@ describe('mocker', () => {
 
       describe('body is url encoded', () => {
         it('runs callback with deserialized body', () => {
-          const callbacksMockResource: IHttpOperation = {
+          const callbacksMockResource: IHttpOperationEx = {
             ...mockResource,
             request: {
               body: {
@@ -462,7 +462,7 @@ describe('mocker', () => {
         });
 
         describe('and the response has not an examples', () => {
-          function createOperationWithSchema(schema: JSONSchema): IHttpOperation {
+          function createOperationWithSchema(schema: JSONSchema): IHttpOperationEx {
             return {
               id: 'id',
               method: 'get',

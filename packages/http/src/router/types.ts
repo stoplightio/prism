@@ -1,9 +1,9 @@
-import { IHttpOperation } from '@stoplight/types';
+import { IHttpOperationEx } from '../types';
 
 export type Nullable<T> = T | null;
 
 export interface IMatch {
-  resource: IHttpOperation;
+  resource: IHttpOperationEx;
   pathMatch: MatchType;
   methodMatch: MatchType;
   serverMatch?: Nullable<MatchType>;

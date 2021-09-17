@@ -3,7 +3,7 @@ import { IHttpOperation, IServer } from '@stoplight/types';
 import * as E from 'fp-ts/Either';
 import * as A from 'fp-ts/Array';
 import { pipe } from 'fp-ts/function';
-import { IHttpConfig, IHttpRequest, ProblemJsonError } from '../types';
+import { IHttpConfig, IHttpOperationEx, IHttpRequest, ProblemJsonError } from '../types';
 import {
   NO_METHOD_MATCHED_ERROR,
   NO_PATH_MATCHED_ERROR,
@@ -15,7 +15,10 @@ import { matchBaseUrl } from './matchBaseUrl';
 import { matchPath } from './matchPath';
 import { IMatch, MatchType } from './types';
 
-const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig>['route'] = ({ resources, input }) => {
+const route: IPrismComponents<IHttpOperationEx, IHttpRequest, unknown, IHttpConfig>['route'] = ({
+  resources,
+  input,
+}) => {
   const { path: requestPath, baseUrl: requestBaseUrl } = input.url;
 
   if (!requestPath.startsWith('/')) {
@@ -38,7 +41,7 @@ const route: IPrismComponents<IHttpOperation, IHttpRequest, unknown, IHttpConfig
             E.chain<
               Error,
               MatchType,
-              { pathMatch: MatchType; methodMatch: MatchType; serverMatch?: MatchType; resource: IHttpOperation }
+              { pathMatch: MatchType; methodMatch: MatchType; serverMatch?: MatchType; resource: IHttpOperationEx }
             >(pathMatch => {
               if (pathMatch === MatchType.NOMATCH)
                 return E.right({
@@ -144,7 +147,7 @@ function matchByMethod(request: IHttpRequest, operation: IHttpOperation): boolea
   return operation.method.toLowerCase() === request.method.toLowerCase();
 }
 
-function disambiguateMatches(matches: IMatch[]): IHttpOperation {
+function disambiguateMatches(matches: IMatch[]): IHttpOperationEx {
   const matchResult =
     // prefer concrete server and concrete path
     matches.find(match => areServerAndPath(match, MatchType.CONCRETE, MatchType.CONCRETE)) ||

@@ -3,13 +3,12 @@ import { transformOas2Operations } from '@stoplight/http-spec/oas2/operation';
 import { transformPostmanCollectionOperations } from '@stoplight/http-spec/postman/operation';
 import { dereference } from 'json-schema-ref-parser';
 import { bundleTarget, decycle } from '@stoplight/json';
-import { IHttpOperation, IHttpParam } from '@stoplight/types';
-import { compact, get, keyBy, mapValues, pickBy } from 'lodash';
+import { IHttpOperation } from '@stoplight/types';
+import { get } from 'lodash';
 
 import type { Spec } from 'swagger-schema-official';
 import type { OpenAPIObject } from 'openapi3-ts';
 import type { CollectionDefinition } from 'postman-collection';
-import { JSONSchema4 } from 'json-schema';
 import { isSome } from 'fp-ts/lib/Option';
 import {
   stripReadOnlyProperties,
@@ -17,6 +16,7 @@ import {
   IHttpOperationEx,
   JSONSchema,
   JSONSchemaEx,
+  createJsonSchemaFromParams,
 } from '@stoplight/prism-http';
 
 const bundle = (schema: JSONSchema, bundle?: unknown): JSONSchemaEx => {
@@ -58,6 +58,7 @@ export async function getHttpOperationsFromSpec(specFilePathOrObject: string | o
           opEx['__bundled__']
         );
       }
+
       if (opEx.request.body !== undefined) {
         opEx.request.body.contents?.forEach(mtc => {
           mtc.contentValidatingSchema = {};
@@ -69,7 +70,13 @@ export async function getHttpOperationsFromSpec(specFilePathOrObject: string | o
           }
         });
       }
+
       opEx.responses.forEach(res => {
+        res.headersValidatingSchema = {};
+        if (res.headers !== undefined) {
+          res.headersValidatingSchema = bundle(createJsonSchemaFromParams(res.headers), opEx['__bundled__']);
+        }
+
         res.contents?.forEach(mtc => {
           mtc.contentValidatingSchema = {};
           if (mtc.schema !== undefined) {
