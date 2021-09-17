@@ -1,5 +1,5 @@
 import { assertNone, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
-import { enrichAllResponsesWithPreGeneratedValidationSchema } from 'http/src/operations';
+import { enrichAllResponsesWithPreGeneratedValidationSchema } from '@stoplight/prism-http/src/operations';
 import { findOperationResponse } from '../spec';
 
 describe('findOperationResponse()', () => {

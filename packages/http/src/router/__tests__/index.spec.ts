@@ -1,6 +1,6 @@
 import * as faker from 'faker/locale/en';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
-import { HttpMethod, IHttpOperation, IServer } from '@stoplight/types';
+import { HttpMethod, IServer } from '@stoplight/types';
 import { isRight } from 'fp-ts/Either';
 import { IHttpOperationEx, ProblemJsonError } from '../../';
 import {
@@ -12,7 +12,7 @@ import {
 } from '../errors';
 import route from '../index';
 import { pickSetOfHttpMethods, pickOneHttpMethod, randomPath } from './utils';
-import { enrichOperationWithPreGeneratedValidationSchema } from 'http/src/operations';
+import { enrichOperationWithPreGeneratedValidationSchema } from '@stoplight/prism-http/src/operations';
 
 function createResource(method: string, path: string, servers: IServer[]): IHttpOperationEx {
   return enrichOperationWithPreGeneratedValidationSchema({

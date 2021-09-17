@@ -9,7 +9,7 @@ import { IHttpOperationEx, IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { runCallback } from '../callback/callbacks';
-import { enrichWithPreGeneratedValidationSchema } from 'http/src';
+import { enrichOperationWithPreGeneratedValidationSchema } from '@stoplight/prism-http/src/operations';
 
 jest.mock('../callback/callbacks', () => ({
   runCallback: jest.fn(() => () => () => undefined),
@@ -96,7 +96,7 @@ describe('mocker', () => {
       ],
     };
 
-    const mockResource = enrichWithPreGeneratedValidationSchema(mockResourceBase);
+    const mockResource = enrichOperationWithPreGeneratedValidationSchema(mockResourceBase);
     const mockInput: IPrismInput<IHttpRequest> = {
       validations: [],
       data: {
@@ -187,7 +187,7 @@ describe('mocker', () => {
           ],
         };
 
-        const callbacksMockResource = enrichWithPreGeneratedValidationSchema(callbacksMockResourceBase);
+        const callbacksMockResource = enrichOperationWithPreGeneratedValidationSchema(callbacksMockResourceBase);
 
         jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
           right({
@@ -248,7 +248,7 @@ describe('mocker', () => {
             ],
           };
 
-          const callbacksMockResource = enrichWithPreGeneratedValidationSchema(callbacksMockResourceBase);
+          const callbacksMockResource = enrichOperationWithPreGeneratedValidationSchema(callbacksMockResourceBase);
 
           jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
             right({
@@ -489,7 +489,7 @@ describe('mocker', () => {
               ],
             };
 
-            return enrichWithPreGeneratedValidationSchema(op);
+            return enrichOperationWithPreGeneratedValidationSchema(op);
           }
 
           function mockResponseWithSchema(schema: JSONSchema) {

@@ -9,7 +9,7 @@ import { get } from 'lodash';
 import type { Spec } from 'swagger-schema-official';
 import type { OpenAPIObject } from 'openapi3-ts';
 import type { CollectionDefinition } from 'postman-collection';
-import { IHttpOperationEx, enrichWithPreGeneratedValidationSchema } from '@stoplight/prism-http';
+import { IHttpOperationEx, enrichAllOperationsWithPreGeneratedValidationSchema } from '@stoplight/prism-http';
 
 export async function getHttpOperationsFromSpec(specFilePathOrObject: string | object): Promise<IHttpOperationEx[]> {
   const result = decycle(await dereference(specFilePathOrObject));
@@ -20,7 +20,7 @@ export async function getHttpOperationsFromSpec(specFilePathOrObject: string | o
   else if (isPostmanCollection(result)) operations = transformPostmanCollectionOperations(result);
   else throw new Error('Unsupported document format');
 
-  enrichWithPreGeneratedValidationSchema(operations);
+  enrichAllOperationsWithPreGeneratedValidationSchema(operations);
 
   operations.forEach((op, i, ops) => {
     ops[i] = bundleTarget({

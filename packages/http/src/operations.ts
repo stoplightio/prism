@@ -1,7 +1,13 @@
-import { IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
+import { IHttpCallbackOperation, IHttpOperation, IHttpOperationResponse, IMediaTypeContent } from '@stoplight/types';
 import { isSome } from 'fp-ts/lib/Option';
 import { createJsonSchemaFromParams, IMediaTypeContentEx, stripReadOnlyProperties, stripWriteOnlyProperties } from '.';
-import { IHttpOperationEx, IHttpOperationResponseEx, JSONSchema, JSONSchemaEx } from './types';
+import {
+  IHttpCallbackOperationEx,
+  IHttpOperationEx,
+  IHttpOperationResponseEx,
+  JSONSchema,
+  JSONSchemaEx,
+} from './types';
 import { ValidationContext } from './validator/validators/types';
 
 const EMPTY_SCHEMA: JSONSchema = {};

@@ -2,7 +2,7 @@ import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
 import { validateInput, validateOutput } from '../index';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
-import { enrichOperationWithPreGeneratedValidationSchema } from 'http/src';
+import { enrichOperationWithPreGeneratedValidationSchema } from '@stoplight/prism-http/src/operations';
 
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
   body: { name: 'Shopping', completed: 'yes' },

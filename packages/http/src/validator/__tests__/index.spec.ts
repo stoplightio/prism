@@ -6,7 +6,7 @@ import * as validators from '../validators';
 import * as validator from '../';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import { ValidationContext } from '../validators/types';
-import { enrichOperationWithPreGeneratedValidationSchema } from 'http/src';
+import { enrichOperationWithPreGeneratedValidationSchema } from '@stoplight/prism-http/src/operations';
 
 const validate = (
   resourceExtension?: Partial<IHttpOperation>,

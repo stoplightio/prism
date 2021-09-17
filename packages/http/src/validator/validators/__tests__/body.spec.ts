@@ -3,7 +3,7 @@ import { IMediaTypeContentEx, JSONSchema } from '../../..';
 import { validate, findContentByMediaTypeOrFirst } from '../body';
 import { assertRight, assertLeft, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { ValidationContext } from '../types';
-import { enrichAllMediaTypeContentsWithPreGeneratedValidationSchema } from 'http/src/operations';
+import { enrichAllMediaTypeContentsWithPreGeneratedValidationSchema } from '@stoplight/prism-http/src/operations';
 
 const DUMMY_VALIDATIONG_SCHEMA: JSONSchema = {};
 
