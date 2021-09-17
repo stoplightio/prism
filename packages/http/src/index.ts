@@ -12,7 +12,7 @@ export * from './mocker/serializer/style';
 export { generate as generateHttpParam } from './mocker/generator/HttpParamGenerator';
 export { stripReadOnlyProperties, stripWriteOnlyProperties } from './utils/filterRequiredProperties';
 export { createJsonSchemaFromParams } from './validator/validators/params';
-export { enrichWithPreGeneratedValidationSchema } from './operations';
+export { enrichAllWithPreGeneratedValidationSchema, enrichWithPreGeneratedValidationSchema } from './operations';
 import { IHttpConfig, IHttpResponse, IHttpRequest, PickRequired, PrismHttpComponents, IHttpProxyConfig } from './types';
 
 export const createInstance = (

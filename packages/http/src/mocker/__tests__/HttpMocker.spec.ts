@@ -9,6 +9,7 @@ import { IHttpOperationEx, IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { runCallback } from '../callback/callbacks';
+import { enrichWithPreGeneratedValidationSchema } from 'http/src';
 
 jest.mock('../callback/callbacks', () => ({
   runCallback: jest.fn(() => () => () => undefined),
@@ -29,7 +30,7 @@ describe('mocker', () => {
       required: ['name', 'surname'],
     };
 
-    const mockResource: IHttpOperationEx = {
+    const mockResourceBase: IHttpOperation = {
       id: 'id',
       method: 'get',
       path: '/test',
@@ -95,6 +96,7 @@ describe('mocker', () => {
       ],
     };
 
+    const mockResource = enrichWithPreGeneratedValidationSchema(mockResourceBase);
     const mockInput: IPrismInput<IHttpRequest> = {
       validations: [],
       data: {
@@ -165,7 +167,7 @@ describe('mocker', () => {
       });
 
       it('runs defined callbacks', () => {
-        const callbacksMockResource: IHttpOperation = {
+        const callbacksMockResourceBase: IHttpOperation = {
           ...mockResource,
           callbacks: [
             {
@@ -184,6 +186,9 @@ describe('mocker', () => {
             },
           ],
         };
+
+        const callbacksMockResource = enrichWithPreGeneratedValidationSchema(callbacksMockResourceBase);
+
         jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
           right({
             code: '202',
@@ -214,7 +219,7 @@ describe('mocker', () => {
 
       describe('body is url encoded', () => {
         it('runs callback with deserialized body', () => {
-          const callbacksMockResource: IHttpOperationEx = {
+          const callbacksMockResourceBase: IHttpOperation = {
             ...mockResource,
             request: {
               body: {
@@ -242,6 +247,8 @@ describe('mocker', () => {
               },
             ],
           };
+
+          const callbacksMockResource = enrichWithPreGeneratedValidationSchema(callbacksMockResourceBase);
 
           jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
             right({
@@ -463,7 +470,7 @@ describe('mocker', () => {
 
         describe('and the response has not an examples', () => {
           function createOperationWithSchema(schema: JSONSchema): IHttpOperationEx {
-            return {
+            const op = {
               id: 'id',
               method: 'get',
               path: '/test',
@@ -481,6 +488,8 @@ describe('mocker', () => {
                 },
               ],
             };
+
+            return enrichWithPreGeneratedValidationSchema(op);
           }
 
           function mockResponseWithSchema(schema: JSONSchema) {

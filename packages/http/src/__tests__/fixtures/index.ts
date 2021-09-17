@@ -1,6 +1,6 @@
 import { IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
-import { enrichWithPreGeneratedValidationSchema } from '@stoplight/prism-http/src/operations';
+import { enrichAllWithPreGeneratedValidationSchema } from '@stoplight/prism-http/src/operations';
 
 import { IHttpRequest, IHttpResponse } from '../../types';
 
@@ -305,7 +305,7 @@ const httpOperationsBase: IHttpOperation[] = [
   },
 ];
 
-export const httpOperations = enrichWithPreGeneratedValidationSchema(httpOperationsBase);
+export const httpOperations = enrichAllWithPreGeneratedValidationSchema(httpOperationsBase);
 export const httpOperationsByRef = {
   deprecated: httpOperations[3],
 };
