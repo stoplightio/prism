@@ -2,6 +2,7 @@ import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
 import { validateInput, validateOutput } from '../index';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
+import { enrichOperationWithPreGeneratedValidationSchema } from 'http/src';
 
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
   body: { name: 'Shopping', completed: 'yes' },
@@ -30,7 +31,7 @@ describe('HttpValidator', () => {
         (dateValue: string) => {
           expect(
             validateInput({
-              resource: {
+              resource: enrichOperationWithPreGeneratedValidationSchema({
                 id: '?http-operation-id?',
                 method: 'get',
                 path: '/todos',
@@ -54,7 +55,7 @@ describe('HttpValidator', () => {
                   cookie: [],
                   path: [],
                 },
-              },
+              }),
               element: {
                 method: 'get',
                 url: { path: '/todos', query: { updated_since: dateValue } },
@@ -72,7 +73,7 @@ describe('HttpValidator', () => {
     });
 
     describe('deprecated keyword validation', () => {
-      const resource: IHttpOperation = {
+      const resourceBase: IHttpOperation = {
         id: 'abc',
         method: 'get',
         path: '/test',
@@ -91,6 +92,8 @@ describe('HttpValidator', () => {
           ],
         },
       };
+
+      const resource = enrichOperationWithPreGeneratedValidationSchema(resourceBase);
 
       it('returns warnings', () => {
         assertLeft(
@@ -138,7 +141,7 @@ describe('HttpValidator', () => {
       it('is case insensitive', () => {
         assertRight(
           validateInput({
-            resource: {
+            resource: enrichOperationWithPreGeneratedValidationSchema({
               method: 'GET',
               path: '/hey',
               responses: [
@@ -159,7 +162,7 @@ describe('HttpValidator', () => {
                   },
                 ],
               },
-            },
+            }),
             element: {
               method: 'get',
               url: {
