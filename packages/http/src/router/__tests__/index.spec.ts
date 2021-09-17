@@ -2,7 +2,7 @@ import * as faker from 'faker/locale/en';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { HttpMethod, IHttpOperation, IServer } from '@stoplight/types';
 import { isRight } from 'fp-ts/Either';
-import { ProblemJsonError } from '../../';
+import { IHttpOperationEx, ProblemJsonError } from '../../';
 import {
   NO_METHOD_MATCHED_ERROR,
   NO_PATH_MATCHED_ERROR,
@@ -12,9 +12,10 @@ import {
 } from '../errors';
 import route from '../index';
 import { pickSetOfHttpMethods, pickOneHttpMethod, randomPath } from './utils';
+import { enrichOperationWithPreGeneratedValidationSchema } from 'http/src/operations';
 
-function createResource(method: string, path: string, servers: IServer[]): IHttpOperation {
-  return {
+function createResource(method: string, path: string, servers: IServer[]): IHttpOperationEx {
+  return enrichOperationWithPreGeneratedValidationSchema({
     id: faker.datatype.uuid(),
     method,
     path,
@@ -22,7 +23,7 @@ function createResource(method: string, path: string, servers: IServer[]): IHttp
     servers,
     security: [],
     request: { path: [], query: [], cookie: [], headers: [] },
-  };
+  });
 }
 
 describe('http router', () => {

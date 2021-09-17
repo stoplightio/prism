@@ -1,7 +1,7 @@
-import { IHttpOperation } from '@stoplight/types';
+import { IHttpOperation, IHttpOperationResponse } from '@stoplight/types';
 import { isSome } from 'fp-ts/lib/Option';
 import { createJsonSchemaFromParams, stripReadOnlyProperties, stripWriteOnlyProperties } from '.';
-import { IHttpOperationEx, JSONSchema, JSONSchemaEx } from './types';
+import { IHttpOperationEx, IHttpOperationResponseEx, JSONSchema, JSONSchemaEx } from './types';
 
 const EMPTY_SCHEMA: JSONSchema = {};
 
@@ -12,7 +12,33 @@ const bundle = (schema: JSONSchema, bundle?: unknown): JSONSchemaEx => {
   };
 };
 
-export const enrichWithPreGeneratedValidationSchema = (op: IHttpOperation): IHttpOperationEx => {
+export const enrichAllResponsesWithPreGeneratedValidationSchema = (
+  responses: IHttpOperationResponse[],
+  bundled?: unknown
+): IHttpOperationResponseEx[] => {
+  responses.forEach(res => {
+    const resEx = res as IHttpOperationResponseEx;
+
+    resEx.headersValidatingSchema = EMPTY_SCHEMA;
+    if (resEx.headers !== undefined) {
+      resEx.headersValidatingSchema = bundle(createJsonSchemaFromParams(resEx.headers), bundled);
+    }
+
+    resEx.contents?.forEach(mtc => {
+      mtc.contentValidatingSchema = EMPTY_SCHEMA;
+      if (mtc.schema !== undefined) {
+        const newLocal = stripWriteOnlyProperties(mtc.schema);
+        if (isSome(newLocal)) {
+          mtc.contentValidatingSchema = bundle(newLocal.value, bundled);
+        }
+      }
+    });
+  });
+
+  return responses as IHttpOperationResponseEx[];
+};
+
+export const enrichOperationWithPreGeneratedValidationSchema = (op: IHttpOperation): IHttpOperationEx => {
   const opEx = op as IHttpOperationEx;
   if (opEx.request !== undefined) {
     opEx.request.headersValidatingSchema = EMPTY_SCHEMA;
@@ -46,28 +72,15 @@ export const enrichWithPreGeneratedValidationSchema = (op: IHttpOperation): IHtt
     }
   }
 
-  opEx.responses.forEach(res => {
-    res.headersValidatingSchema = EMPTY_SCHEMA;
-    if (res.headers !== undefined) {
-      res.headersValidatingSchema = bundle(createJsonSchemaFromParams(res.headers), opEx['__bundled__']);
-    }
-
-    res.contents?.forEach(mtc => {
-      mtc.contentValidatingSchema = EMPTY_SCHEMA;
-      if (mtc.schema !== undefined) {
-        const newLocal = stripWriteOnlyProperties(mtc.schema);
-        if (isSome(newLocal)) {
-          mtc.contentValidatingSchema = bundle(newLocal.value, opEx['__bundled__']);
-        }
-      }
-    });
-  });
+  enrichAllResponsesWithPreGeneratedValidationSchema(opEx.responses, opEx['__bundled__']);
 
   return opEx;
 };
 
-export const enrichAllWithPreGeneratedValidationSchema = (operations: IHttpOperation[]): IHttpOperationEx[] => {
-  operations.forEach(op => enrichWithPreGeneratedValidationSchema(op));
+export const enrichAllOperationsWithPreGeneratedValidationSchema = (
+  operations: IHttpOperation[]
+): IHttpOperationEx[] => {
+  operations.forEach(op => enrichOperationWithPreGeneratedValidationSchema(op));
 
   return operations as IHttpOperationEx[];
 };
