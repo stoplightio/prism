@@ -1,10 +1,9 @@
 import { appendFileSync, readFileSync, writeFileSync } from 'fs';
 import { isLeft } from 'fp-ts/lib/Either';
 
-import route from '../../../router';
-import { validateInput, validateOutput } from '../..';
-import { getHttpOperationsFromSpec } from '../../../../../cli/src/operations';
-import { IHttpRequest, IHttpResponse } from '../../../types';
+import route from 'http/src/router';
+import { validateInput, validateOutput } from 'http/src/validator';
+import { getHttpOperationsFromSpec } from 'cli/src/operations';
 
 const myglobal = {
   gc: () => {
