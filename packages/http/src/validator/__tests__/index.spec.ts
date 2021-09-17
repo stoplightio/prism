@@ -1,11 +1,12 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation, HttpParamStyles, IMediaTypeContent } from '@stoplight/types';
 import * as E from 'fp-ts/Either';
-import { IHttpOperationEx, IHttpRequest } from '../../types';
+import { IHttpRequest } from '../../types';
 import * as validators from '../validators';
 import * as validator from '../';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import { ValidationContext } from '../validators/types';
+import { enrichOperationWithPreGeneratedValidationSchema } from 'http/src';
 
 const validate = (
   resourceExtension?: Partial<IHttpOperation>,
@@ -13,15 +14,17 @@ const validate = (
   length = 3
 ) => () => {
   const validationResult = validator.validateInput({
-    resource: Object.assign<IHttpOperationEx, unknown>(
-      {
-        method: 'get',
-        path: '/',
-        id: '1',
-        request: {},
-        responses: [{ code: '200' }],
-      },
-      resourceExtension
+    resource: enrichOperationWithPreGeneratedValidationSchema(
+      Object.assign<IHttpOperation, unknown>(
+        {
+          method: 'get',
+          path: '/',
+          id: '1',
+          request: {},
+          responses: [{ code: '200' }],
+        },
+        resourceExtension
+      )
     ),
     element: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
   });
@@ -114,7 +117,7 @@ describe('HttpValidator', () => {
         describe('request.path is set', () => {
           it('calls the path validator', () => {
             validator.validateInput({
-              resource: {
+              resource: enrichOperationWithPreGeneratedValidationSchema({
                 method: 'get',
                 path: '/a/{a}/b/{b}',
                 id: '1',
@@ -125,7 +128,7 @@ describe('HttpValidator', () => {
                   ],
                 },
                 responses: [{ code: '200' }],
-              },
+              }),
               element: { method: 'get', url: { path: '/a/1/b/;b=2' } },
             });
 
@@ -147,7 +150,7 @@ describe('HttpValidator', () => {
         describe('request.path is set and has hyphens in path params', () => {
           it('calls the path validator', () => {
             validator.validateInput({
-              resource: {
+              resource: enrichOperationWithPreGeneratedValidationSchema({
                 method: 'get',
                 path: '/a-path/{a-id}/b/{b-id}',
                 id: '1',
@@ -158,7 +161,7 @@ describe('HttpValidator', () => {
                   ],
                 },
                 responses: [{ code: '200' }],
-              },
+              }),
               element: { method: 'get', url: { path: '/a-path/1/b/;b-id=2' } },
             });
 
@@ -190,13 +193,13 @@ describe('HttpValidator', () => {
         it('validates the body and headers, but not the media type', () => {
           assertLeft(
             validator.validateOutput({
-              resource: {
+              resource: enrichOperationWithPreGeneratedValidationSchema({
                 method: 'get',
                 path: '/',
                 id: '1',
                 request: {},
                 responses: [{ code: '200' }],
-              },
+              }),
               element: { statusCode: 200 },
             }),
             error => expect(error).toHaveLength(2)
@@ -217,13 +220,13 @@ describe('HttpValidator', () => {
         it('should validate the media type as well', () => {
           assertLeft(
             validator.validateOutput({
-              resource: {
+              resource: enrichOperationWithPreGeneratedValidationSchema({
                 method: 'get',
                 path: '/',
                 id: '1',
                 request: {},
                 responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
-              },
+              }),
               element: { statusCode: 200, headers: { 'content-type': 'text/plain' } },
             }),
             e => expect(e).toHaveLength(3)
@@ -240,13 +243,15 @@ describe('HttpValidator', () => {
 
       afterEach(() => jest.clearAllMocks());
 
-      const resource: IHttpOperation = {
+      const resourceBase: IHttpOperation = {
         method: 'get',
         path: '/',
         id: '1',
         request: {},
         responses: [{ code: '200' }],
       };
+
+      const resource = enrichOperationWithPreGeneratedValidationSchema(resourceBase);
 
       describe('when the desidered response is between 200 and 300', () => {
         it('returns an error', () => {
@@ -276,7 +281,7 @@ describe('HttpValidator', () => {
     });
 
     describe('returned response media type', () => {
-      const resource: IHttpOperation = {
+      const resourceBase: IHttpOperation = {
         method: 'get',
         path: '/',
         id: '1',
@@ -295,6 +300,8 @@ describe('HttpValidator', () => {
           },
         ],
       };
+
+      const resource = enrichOperationWithPreGeneratedValidationSchema(resourceBase);
 
       describe('when the response has a content type not declared in the spec', () => {
         it('returns an error', () => {
