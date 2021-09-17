@@ -1,9 +1,10 @@
 import { IPrismInput } from '@stoplight/prism-core';
-import { DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
+import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
+import { enrichWithPreGeneratedValidationSchema } from '@stoplight/prism-http/src/operations';
 
-import { IHttpOperationEx, IHttpRequest, IHttpResponse } from '../../types';
+import { IHttpRequest, IHttpResponse } from '../../types';
 
-export const httpOperations: IHttpOperationEx[] = [
+const httpOperationsBase: IHttpOperation[] = [
   {
     id: 'todos',
     method: 'get',
@@ -304,6 +305,7 @@ export const httpOperations: IHttpOperationEx[] = [
   },
 ];
 
+export const httpOperations = enrichWithPreGeneratedValidationSchema(httpOperationsBase);
 export const httpOperationsByRef = {
   deprecated: httpOperations[3],
 };
