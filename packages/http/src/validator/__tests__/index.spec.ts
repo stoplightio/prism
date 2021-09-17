@@ -135,7 +135,6 @@ describe('HttpValidator', () => {
                 { name: 'a', style: HttpParamStyles.Simple },
                 { name: 'b', style: HttpParamStyles.Matrix },
               ],
-              undefined,
               undefined
             );
           });
@@ -169,7 +168,6 @@ describe('HttpValidator', () => {
                 { name: 'a-id', style: HttpParamStyles.Simple },
                 { name: 'b-id', style: HttpParamStyles.Matrix },
               ],
-              undefined,
               undefined
             );
           });
