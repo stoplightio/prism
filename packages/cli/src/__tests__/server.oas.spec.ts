@@ -1,11 +1,11 @@
 import { createLogger } from '@stoplight/prism-core';
-import { getHttpOperationsFromSpec } from '@stoplight/prism-cli/src/operations';
+import { getHttpOperationsFromSpec } from '../operations';
 import { IHttpConfig } from '@stoplight/prism-http';
 import { resolve } from 'path';
 import { merge } from 'lodash';
 import fetch, { RequestInit } from 'node-fetch';
-import { createServer } from '../';
-import { ThenArg } from '../types';
+import { createServer } from '@stoplight/prism-http-server';
+import { ThenArg } from '@stoplight/prism-http-server/src/types';
 
 const logger = createLogger('TEST', { enabled: false });
 

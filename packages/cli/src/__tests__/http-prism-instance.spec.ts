@@ -3,10 +3,10 @@ import { IHttpOperation } from '@stoplight/types';
 import { Scope as NockScope } from 'nock';
 import * as nock from 'nock';
 import { basename, resolve } from 'path';
-import { createInstance, IHttpProxyConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
-import { getHttpOperationsFromSpec } from '../../../cli/src/operations';
-import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
-import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
+import { createInstance, IHttpProxyConfig, IHttpRequest, IHttpResponse, ProblemJsonError } from '@stoplight/prism-http';
+import { getHttpOperationsFromSpec } from '../operations';
+import { UNPROCESSABLE_ENTITY } from '@stoplight/prism-http/src/mocker/errors';
+import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '@stoplight/prism-http/src/router/errors';
 import { assertResolvesRight, assertResolvesLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 const logger = createLogger('TEST', { enabled: false });
