@@ -26,6 +26,8 @@ const bundle = (schema: JSONSchema, bundle?: unknown): JSONSchemaEx => {
   };
 };
 
+const EMPTY_SCHEMA: JSONSchema = {};
+
 export async function getHttpOperationsFromSpec(specFilePathOrObject: string | object): Promise<IHttpOperationEx[]> {
   const result = decycle(await dereference(specFilePathOrObject));
 
@@ -38,7 +40,7 @@ export async function getHttpOperationsFromSpec(specFilePathOrObject: string | o
   operations.forEach((op, i, ops) => {
     const opEx = op as IHttpOperationEx;
     if (opEx.request !== undefined) {
-      opEx.request.headersValidatingSchema = {};
+      opEx.request.headersValidatingSchema = EMPTY_SCHEMA;
       if (opEx.request.headers !== undefined) {
         opEx.request.headersValidatingSchema = bundle(
           createJsonSchemaFromParams(opEx.request.headers),
@@ -46,12 +48,12 @@ export async function getHttpOperationsFromSpec(specFilePathOrObject: string | o
         );
       }
 
-      opEx.request.pathValidatingSchema = {};
+      opEx.request.pathValidatingSchema = EMPTY_SCHEMA;
       if (opEx.request.path !== undefined) {
         opEx.request.pathValidatingSchema = bundle(createJsonSchemaFromParams(opEx.request.path), opEx['__bundled__']);
       }
 
-      opEx.request.queryValidatingSchema = {};
+      opEx.request.queryValidatingSchema = EMPTY_SCHEMA;
       if (opEx.request.query !== undefined) {
         opEx.request.queryValidatingSchema = bundle(
           createJsonSchemaFromParams(opEx.request.query),
@@ -61,7 +63,7 @@ export async function getHttpOperationsFromSpec(specFilePathOrObject: string | o
 
       if (opEx.request.body !== undefined) {
         opEx.request.body.contents?.forEach(mtc => {
-          mtc.contentValidatingSchema = {};
+          mtc.contentValidatingSchema = EMPTY_SCHEMA;
           if (mtc.schema !== undefined) {
             const newLocal = stripReadOnlyProperties(mtc.schema);
             if (isSome(newLocal)) {
@@ -72,13 +74,13 @@ export async function getHttpOperationsFromSpec(specFilePathOrObject: string | o
       }
 
       opEx.responses.forEach(res => {
-        res.headersValidatingSchema = {};
+        res.headersValidatingSchema = EMPTY_SCHEMA;
         if (res.headers !== undefined) {
           res.headersValidatingSchema = bundle(createJsonSchemaFromParams(res.headers), opEx['__bundled__']);
         }
 
         res.contents?.forEach(mtc => {
-          mtc.contentValidatingSchema = {};
+          mtc.contentValidatingSchema = EMPTY_SCHEMA;
           if (mtc.schema !== undefined) {
             const newLocal = stripWriteOnlyProperties(mtc.schema);
             if (isSome(newLocal)) {

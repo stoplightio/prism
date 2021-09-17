@@ -13,6 +13,8 @@ describe('createJsonSchemaFromParams', () => {
 
   it('empty use case', () => {
     const specs: IHttpPathParam[] = [];
+    // TODO: Once all the tests are fixed and passing, see if we
+    // couldn't just return an empty object "{}"
     expect(createJsonSchemaFromParams(specs)).toEqual({
       required: [],
       type: 'object',
