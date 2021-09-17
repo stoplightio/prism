@@ -1,7 +1,7 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity, IHttpOperation, HttpParamStyles, IMediaTypeContent } from '@stoplight/types';
 import * as E from 'fp-ts/Either';
-import { IHttpRequest } from '../../types';
+import { IHttpOperationEx, IHttpRequest } from '../../types';
 import * as validators from '../validators';
 import * as validator from '../';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
@@ -13,7 +13,7 @@ const validate = (
   length = 3
 ) => () => {
   const validationResult = validator.validateInput({
-    resource: Object.assign<IHttpOperation, unknown>(
+    resource: Object.assign<IHttpOperationEx, unknown>(
       {
         method: 'get',
         path: '/',
