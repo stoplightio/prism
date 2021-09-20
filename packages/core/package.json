@@ -16,10 +16,10 @@
     "node": ">=12"
   },
   "dependencies": {
-    "fp-ts": "^2.10.4",
+    "fp-ts": "^2.11.2",
     "lodash": "^4.17.21",
-    "pino": "^6.11.3",
-    "tslib": "^2.2.0"
+    "pino": "^6.13.2",
+    "tslib": "^2.3.1"
   },
   "publishConfig": {
     "access": "public"
