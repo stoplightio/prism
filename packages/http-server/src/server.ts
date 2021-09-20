@@ -5,8 +5,9 @@ import {
   ProblemJsonError,
   VIOLATIONS,
   IHttpConfig,
+  IHttpOperationEx,
 } from '@stoplight/prism-http';
-import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
+import { DiagnosticSeverity, HttpMethod, Dictionary } from '@stoplight/types';
 import { IncomingMessage, ServerResponse, IncomingHttpHeaders } from 'http';
 import { AddressInfo } from 'net';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
@@ -54,7 +55,7 @@ function parseRequestBody(request: IncomingMessage) {
   }
 }
 
-export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
+export const createServer = (operations: IHttpOperationEx[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
   const handler: MicriHandler = async (request, reply) => {

@@ -1,12 +1,12 @@
 import { createLogger } from '@stoplight/prism-core';
-import { IHttpOperation } from '@stoplight/types';
+import { enrichAllOperationsWithPreGeneratedValidationSchema, IHttpOperationEx } from '@stoplight/prism-http';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { ThenArg } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
 
-async function instantiatePrism(operations: IHttpOperation[]) {
+async function instantiatePrism(operations: IHttpOperationEx[]) {
   const server = createServer(operations, {
     components: { logger },
     cors: true,
@@ -39,280 +39,282 @@ describe('body params validation', () => {
 
   describe('http operation with body param', () => {
     beforeEach(async () => {
-      server = await instantiatePrism([
-        {
-          id: '?http-operation-id?',
-          method: 'post',
-          path: '/json-body-no-request-content-type',
-          responses: [
-            {
-              code: '200',
-              headers: [],
-              contents: [
-                {
-                  mediaType: 'text/plain',
-                  schema: {
-                    type: 'string',
-                    $schema: 'http://json-schema.org/draft-07/schema#',
-                  },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
-            },
-          ],
-          servers: [],
-          request: {
-            body: {
-              contents: [
-                {
-                  mediaType: '',
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'integer',
-                        minimum: -9223372036854776000,
-                        maximum: 9223372036854776000,
-                      },
+      server = await instantiatePrism(
+        enrichAllOperationsWithPreGeneratedValidationSchema([
+          {
+            id: '?http-operation-id?',
+            method: 'post',
+            path: '/json-body-no-request-content-type',
+            responses: [
+              {
+                code: '200',
+                headers: [],
+                contents: [
+                  {
+                    mediaType: 'text/plain',
+                    schema: {
+                      type: 'string',
+                      $schema: 'http://json-schema.org/draft-07/schema#',
                     },
-                    $schema: 'http://json-schema.org/draft-07/schema#',
+                    examples: [],
+                    encodings: [],
                   },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
-            },
-            headers: [],
-            query: [],
-            cookie: [],
-            path: [],
-          },
-          tags: [],
-          security: [],
-        },
-        {
-          id: '?http-operation-id?',
-          method: 'post',
-          path: '/json-body-optional',
-          responses: [
-            {
-              code: '200',
-              headers: [],
-              contents: [
-                {
-                  mediaType: 'text/plain',
-                  schema: {
-                    type: 'string',
-                    $schema: 'http://json-schema.org/draft-07/schema#',
-                  },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
-            },
-          ],
-          servers: [],
-          request: {
-            body: {
-              required: false,
-              contents: [
-                {
-                  mediaType: 'application/json',
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'integer',
-                        minimum: -9223372036854776000,
-                        maximum: 9223372036854776000,
+                ],
+              },
+            ],
+            servers: [],
+            request: {
+              body: {
+                contents: [
+                  {
+                    mediaType: '',
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'integer',
+                          minimum: -9223372036854776000,
+                          maximum: 9223372036854776000,
+                        },
                       },
+                      $schema: 'http://json-schema.org/draft-07/schema#',
                     },
-                    $schema: 'http://json-schema.org/draft-07/schema#',
+                    examples: [],
+                    encodings: [],
                   },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
-            },
-            headers: [],
-            query: [],
-            cookie: [],
-            path: [],
-          },
-          tags: [],
-          security: [],
-        },
-        {
-          id: '?http-operation-id?',
-          method: 'post',
-          path: '/json-body-required',
-          responses: [
-            {
-              code: '200',
+                ],
+              },
               headers: [],
-              contents: [
-                {
-                  mediaType: 'text/plain',
-                  schema: {
-                    type: 'string',
-                    $schema: 'http://json-schema.org/draft-07/schema#',
-                  },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
+              query: [],
+              cookie: [],
+              path: [],
             },
-          ],
-          servers: [],
-          request: {
-            body: {
-              required: true,
-              contents: [
-                {
-                  mediaType: 'application/json',
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'integer',
-                        minimum: -9223372036854776000,
-                        maximum: 9223372036854776000,
-                      },
-                      status: {
-                        type: 'string',
-                        enum: ['placed', 'approved', 'delivered'],
-                      },
+            tags: [],
+            security: [],
+          },
+          {
+            id: '?http-operation-id?',
+            method: 'post',
+            path: '/json-body-optional',
+            responses: [
+              {
+                code: '200',
+                headers: [],
+                contents: [
+                  {
+                    mediaType: 'text/plain',
+                    schema: {
+                      type: 'string',
+                      $schema: 'http://json-schema.org/draft-07/schema#',
                     },
-                    $schema: 'http://json-schema.org/draft-07/schema#',
+                    examples: [],
+                    encodings: [],
                   },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
-            },
-            headers: [],
-            query: [],
-            cookie: [],
-            path: [],
-          },
-          tags: [],
-          security: [],
-        },
-        {
-          id: '?http-operation-id?',
-          method: 'post',
-          path: '/json-body-property-required',
-          responses: [
-            {
-              code: '200',
-              headers: [],
-              contents: [
-                {
-                  mediaType: 'text/plain',
-                  schema: {
-                    type: 'string',
-                    $schema: 'http://json-schema.org/draft-07/schema#',
-                  },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
-            },
-          ],
-          servers: [],
-          request: {
-            body: {
-              contents: [
-                {
-                  mediaType: 'application/json',
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'integer',
-                        minimum: -9223372036854776000,
-                        maximum: 9223372036854776000,
+                ],
+              },
+            ],
+            servers: [],
+            request: {
+              body: {
+                required: false,
+                contents: [
+                  {
+                    mediaType: 'application/json',
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'integer',
+                          minimum: -9223372036854776000,
+                          maximum: 9223372036854776000,
+                        },
                       },
+                      $schema: 'http://json-schema.org/draft-07/schema#',
                     },
-                    required: ['id'],
-                    $schema: 'http://json-schema.org/draft-07/schema#',
+                    examples: [],
+                    encodings: [],
                   },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
-            },
-            headers: [],
-            query: [],
-            cookie: [],
-            path: [],
-          },
-          tags: [],
-          security: [],
-        },
-        {
-          id: '?http-operation-id?',
-          method: 'post',
-          path: '/json-body-circular-property-required',
-          responses: [
-            {
-              code: '200',
+                ],
+              },
               headers: [],
-              contents: [
-                {
-                  mediaType: 'text/plain',
-                  schema: {
-                    type: 'string',
-                    $schema: 'http://json-schema.org/draft-07/schema#',
-                  },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
+              query: [],
+              cookie: [],
+              path: [],
             },
-          ],
-          servers: [],
-          request: {
-            body: {
-              contents: [
-                {
-                  mediaType: 'application/json',
-                  schema: {
+            tags: [],
+            security: [],
+          },
+          {
+            id: '?http-operation-id?',
+            method: 'post',
+            path: '/json-body-required',
+            responses: [
+              {
+                code: '200',
+                headers: [],
+                contents: [
+                  {
+                    mediaType: 'text/plain',
+                    schema: {
+                      type: 'string',
+                      $schema: 'http://json-schema.org/draft-07/schema#',
+                    },
+                    examples: [],
+                    encodings: [],
+                  },
+                ],
+              },
+            ],
+            servers: [],
+            request: {
+              body: {
+                required: true,
+                contents: [
+                  {
+                    mediaType: 'application/json',
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'integer',
+                          minimum: -9223372036854776000,
+                          maximum: 9223372036854776000,
+                        },
+                        status: {
+                          type: 'string',
+                          enum: ['placed', 'approved', 'delivered'],
+                        },
+                      },
+                      $schema: 'http://json-schema.org/draft-07/schema#',
+                    },
+                    examples: [],
+                    encodings: [],
+                  },
+                ],
+              },
+              headers: [],
+              query: [],
+              cookie: [],
+              path: [],
+            },
+            tags: [],
+            security: [],
+          },
+          {
+            id: '?http-operation-id?',
+            method: 'post',
+            path: '/json-body-property-required',
+            responses: [
+              {
+                code: '200',
+                headers: [],
+                contents: [
+                  {
+                    mediaType: 'text/plain',
+                    schema: {
+                      type: 'string',
+                      $schema: 'http://json-schema.org/draft-07/schema#',
+                    },
+                    examples: [],
+                    encodings: [],
+                  },
+                ],
+              },
+            ],
+            servers: [],
+            request: {
+              body: {
+                contents: [
+                  {
+                    mediaType: 'application/json',
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'integer',
+                          minimum: -9223372036854776000,
+                          maximum: 9223372036854776000,
+                        },
+                      },
+                      required: ['id'],
+                      $schema: 'http://json-schema.org/draft-07/schema#',
+                    },
+                    examples: [],
+                    encodings: [],
+                  },
+                ],
+              },
+              headers: [],
+              query: [],
+              cookie: [],
+              path: [],
+            },
+            tags: [],
+            security: [],
+          },
+          {
+            id: '?http-operation-id?',
+            method: 'post',
+            path: '/json-body-circular-property-required',
+            responses: [
+              {
+                code: '200',
+                headers: [],
+                contents: [
+                  {
+                    mediaType: 'text/plain',
+                    schema: {
+                      type: 'string',
+                      $schema: 'http://json-schema.org/draft-07/schema#',
+                    },
+                    examples: [],
+                    encodings: [],
+                  },
+                ],
+              },
+            ],
+            servers: [],
+            request: {
+              body: {
+                contents: [
+                  {
+                    mediaType: 'application/json',
+                    schema: {
+                      $ref: '#/__bundled__/schemas',
+                    },
+                    examples: [],
+                    encodings: [],
+                  },
+                ],
+              },
+              headers: [],
+              query: [],
+              cookie: [],
+              path: [],
+            },
+            tags: [],
+            security: [],
+            // @ts-ignore
+            ['__bundled__']: {
+              schemas: {
+                $schema: 'http://json-schema.org/draft-07/schema#',
+                type: 'object',
+                required: ['id'],
+                properties: {
+                  id: {
+                    type: 'integer',
+                    minimum: -9223372036854776000,
+                    maximum: 9223372036854776000,
+                  },
+                  self: {
                     $ref: '#/__bundled__/schemas',
                   },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
-            },
-            headers: [],
-            query: [],
-            cookie: [],
-            path: [],
-          },
-          tags: [],
-          security: [],
-          // @ts-ignore
-          ['__bundled__']: {
-            schemas: {
-              $schema: 'http://json-schema.org/draft-07/schema#',
-              type: 'object',
-              required: ['id'],
-              properties: {
-                id: {
-                  type: 'integer',
-                  minimum: -9223372036854776000,
-                  maximum: 9223372036854776000,
-                },
-                self: {
-                  $ref: '#/__bundled__/schemas',
                 },
               },
             },
           },
-        },
-      ]);
+        ])
+      );
     });
 
     describe('operation with no request content type defined', () => {
@@ -468,62 +470,64 @@ describe('body params validation', () => {
 
   describe('http operation with form data param', () => {
     beforeEach(async () => {
-      server = await instantiatePrism([
-        {
-          id: '?http-operation-id?',
-          method: 'post',
-          path: '/path',
-          responses: [
-            {
-              code: '200',
-              headers: [],
-              contents: [
-                {
-                  mediaType: 'text/plain',
-                  schema: {
-                    type: 'string',
-                    $schema: 'http://json-schema.org/draft-07/schema#',
-                  },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
-            },
-          ],
-          servers: [],
-          request: {
-            body: {
-              contents: [
-                {
-                  mediaType: 'application/x-www-form-urlencoded',
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'integer',
-                      },
-                      status: {
-                        type: 'string',
-                        enum: ['open', 'close'],
-                      },
+      server = await instantiatePrism(
+        enrichAllOperationsWithPreGeneratedValidationSchema([
+          {
+            id: '?http-operation-id?',
+            method: 'post',
+            path: '/path',
+            responses: [
+              {
+                code: '200',
+                headers: [],
+                contents: [
+                  {
+                    mediaType: 'text/plain',
+                    schema: {
+                      type: 'string',
+                      $schema: 'http://json-schema.org/draft-07/schema#',
                     },
-                    required: ['id', 'status'],
-                    $schema: 'http://json-schema.org/draft-07/schema#',
+                    examples: [],
+                    encodings: [],
                   },
-                  examples: [],
-                  encodings: [],
-                },
-              ],
+                ],
+              },
+            ],
+            servers: [],
+            request: {
+              body: {
+                contents: [
+                  {
+                    mediaType: 'application/x-www-form-urlencoded',
+                    schema: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'integer',
+                        },
+                        status: {
+                          type: 'string',
+                          enum: ['open', 'close'],
+                        },
+                      },
+                      required: ['id', 'status'],
+                      $schema: 'http://json-schema.org/draft-07/schema#',
+                    },
+                    examples: [],
+                    encodings: [],
+                  },
+                ],
+              },
+              headers: [],
+              query: [],
+              cookie: [],
+              path: [],
             },
-            headers: [],
-            query: [],
-            cookie: [],
-            path: [],
+            tags: [],
+            security: [],
           },
-          tags: [],
-          security: [],
-        },
-      ]);
+        ])
+      );
     });
 
     describe('required parameter not in body', () => {
