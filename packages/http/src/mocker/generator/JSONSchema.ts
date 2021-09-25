@@ -21,6 +21,7 @@ jsf.option({
   ignoreMissingRefs: true,
   maxItems: 20,
   maxLength: 100,
+  resolveJsonPath: true,
 });
 
 export function generate(bundle: unknown, source: JSONSchema): Either<Error, unknown> {
