@@ -32,7 +32,7 @@ async function instantiatePrism(specPath: string, configOverride?: Partial<IHttp
         validateResponse: true,
         errors: false,
         mock: { dynamic: false },
-        companyProxy: undefined,
+        upstreamProxy: undefined,
       },
       configOverride
     ),

@@ -31,7 +31,7 @@ const proxyCommand: CommandModule = {
           boolean: true,
           default: true,
         },
-        'company-proxy': {
+        'upstream-proxy': {
           description:
             'If an http proxy is required to reach upstream, formatted as "{protocol}://[{user}[:{password}]@]{host}[:{port}]". eg "http://myUser:myPassword@proxy.example.com:1234"',
           string: true,
@@ -50,7 +50,7 @@ const proxyCommand: CommandModule = {
       'upstream',
       'errors',
       'validateRequest',
-      'companyProxy'
+      'upstreamProxy'
     );
 
     const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;

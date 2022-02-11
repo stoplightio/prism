@@ -63,7 +63,7 @@ describe('Http Client .request', () => {
           validateResponse: true,
           mock: { dynamic: false },
           errors: false,
-          companyProxy: undefined,
+          upstreamProxy: undefined,
         },
         { logger }
       );
@@ -164,7 +164,7 @@ describe('Http Client .request', () => {
           validateResponse: true,
           errors,
           upstream: new URL(baseUrl),
-          companyProxy: undefined,
+          upstreamProxy: undefined,
         };
 
         describe('path is not valid', () => {
@@ -195,7 +195,7 @@ describe('Http Client .request', () => {
           validateResponse: true,
           errors: false,
           upstream: new URL(baseUrl),
-          companyProxy: undefined,
+          upstreamProxy: undefined,
         };
 
         describe('when the defaults are used', () => {
@@ -234,7 +234,7 @@ describe('Http Client .request', () => {
           validateResponse: true,
           mock: { dynamic: false },
           errors: false,
-          companyProxy: undefined,
+          upstreamProxy: undefined,
         },
         { logger }
       );
@@ -364,7 +364,7 @@ describe('Http Client .request', () => {
         validateRequest: true,
         validateResponse: true,
         errors: false,
-        companyProxy: undefined,
+        upstreamProxy: undefined,
       },
       { logger }
     );
@@ -407,7 +407,7 @@ describe('proxy server', () => {
           validateResponse: true,
           upstream: new URL(baseUrl),
           errors: false,
-          companyProxy: undefined,
+          upstreamProxy: undefined,
         },
         { logger }
       );

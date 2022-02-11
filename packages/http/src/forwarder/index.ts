@@ -25,7 +25,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
   (
     { data: input, validations }: IPrismInput<IHttpRequest>,
     baseUrl: string,
-    companyProxy: IHttpConfig['companyProxy'],
+    upstreamProxy: IHttpConfig['upstreamProxy'],
     resource
   ): RTE.ReaderTaskEither<Logger, Error, IHttpResponse> =>
   logger =>
@@ -51,7 +51,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           });
 
           logger.info(`Forwarding "${input.method}" request to ${url}...`);
-          const proxyAgent = companyProxy ? new ProxyAgent(companyProxy) : undefined;
+          const proxyAgent = upstreamProxy ? new ProxyAgent(upstreamProxy) : undefined;
 
           return fetch(url, {
             agent: proxyAgent,

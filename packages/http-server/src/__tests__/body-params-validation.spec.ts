@@ -16,7 +16,7 @@ async function instantiatePrism(operations: IHttpOperation[]) {
       validateResponse: true,
       mock: { dynamic: false },
       errors: false,
-      companyProxy: undefined,
+      upstreamProxy: undefined,
     },
   });
 
