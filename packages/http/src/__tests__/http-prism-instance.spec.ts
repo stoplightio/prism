@@ -57,7 +57,14 @@ describe('Http Client .request', () => {
   `('given spec $specName', ({ specPath }) => {
     beforeAll(async () => {
       prism = createInstance(
-        { validateRequest: true, checkSecurity: true, validateResponse: true, mock: { dynamic: false }, errors: false },
+        {
+          validateRequest: true,
+          checkSecurity: true,
+          validateResponse: true,
+          mock: { dynamic: false },
+          errors: false,
+          companyProxy: undefined,
+        },
         { logger }
       );
       resources = await getHttpOperationsFromSpec(specPath);
@@ -157,6 +164,7 @@ describe('Http Client .request', () => {
           validateResponse: true,
           errors,
           upstream: new URL(baseUrl),
+          companyProxy: undefined,
         };
 
         describe('path is not valid', () => {
@@ -187,6 +195,7 @@ describe('Http Client .request', () => {
           validateResponse: true,
           errors: false,
           upstream: new URL(baseUrl),
+          companyProxy: undefined,
         };
 
         describe('when the defaults are used', () => {
@@ -219,7 +228,14 @@ describe('Http Client .request', () => {
   describe('given no-refs-petstore-minimal.oas2.json', () => {
     beforeAll(async () => {
       prism = createInstance(
-        { checkSecurity: true, validateRequest: true, validateResponse: true, mock: { dynamic: false }, errors: false },
+        {
+          checkSecurity: true,
+          validateRequest: true,
+          validateResponse: true,
+          mock: { dynamic: false },
+          errors: false,
+          companyProxy: undefined,
+        },
         { logger }
       );
       resources = await getHttpOperationsFromSpec(noRefsPetstoreMinimalOas2Path);
@@ -342,7 +358,14 @@ describe('Http Client .request', () => {
 
   it('returns stringified static example when one defined in spec', async () => {
     prism = createInstance(
-      { mock: { dynamic: false }, checkSecurity: true, validateRequest: true, validateResponse: true, errors: false },
+      {
+        mock: { dynamic: false },
+        checkSecurity: true,
+        validateRequest: true,
+        validateResponse: true,
+        errors: false,
+        companyProxy: undefined,
+      },
       { logger }
     );
     resources = await getHttpOperationsFromSpec(staticExamplesOas2Path);
@@ -384,6 +407,7 @@ describe('proxy server', () => {
           validateResponse: true,
           upstream: new URL(baseUrl),
           errors: false,
+          companyProxy: undefined,
         },
         { logger }
       );

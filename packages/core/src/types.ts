@@ -19,6 +19,7 @@ type IPrismBaseConfig = {
   validateRequest: boolean;
   validateResponse: boolean;
   errors: boolean;
+  companyProxy: string | undefined;
 };
 
 export type IPrismMockConfig = IPrismBaseConfig & {
@@ -37,7 +38,12 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
   validateInput: ValidatorFn<Resource, Input>;
   validateSecurity: ValidatorFn<Resource, Input>;
   validateOutput: ValidatorFn<Resource, Output>;
-  forward: (input: IPrismInput<Input>, baseUrl: string, resource?: Resource) => ReaderTaskEither<Logger, Error, Output>;
+  forward: (
+    input: IPrismInput<Input>,
+    baseUrl: string,
+    companyProxy: Config['companyProxy'],
+    resource?: Resource
+  ) => ReaderTaskEither<Logger, Error, Output>;
   mock: (opts: {
     resource: Resource;
     input: IPrismInput<Input>;

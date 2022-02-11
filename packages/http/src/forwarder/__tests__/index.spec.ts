@@ -39,7 +39,8 @@ describe('forward', () => {
               url: { path: '/test' },
             },
           },
-          'http://example.com'
+          'http://example.com',
+          undefined
         )(logger),
         () => {
           expect(fetch).toHaveBeenCalledWith(
@@ -70,7 +71,8 @@ describe('forward', () => {
               url: { path: '/test' },
             },
           },
-          'http://example.com'
+          'http://example.com',
+          undefined
         )(logger)
       );
     });
@@ -94,7 +96,8 @@ describe('forward', () => {
               url: { path: '/test' },
             },
           },
-          'http://example.com'
+          'http://example.com',
+          undefined
         )(logger),
         () => {
           expect(fetch).toHaveBeenCalledWith(
@@ -115,7 +118,11 @@ describe('forward', () => {
       });
 
       return assertResolvesRight(
-        forward({ validations: [], data: { method: 'get', url: { path: '/test' } } }, 'http://example.com')(logger),
+        forward(
+          { validations: [], data: { method: 'get', url: { path: '/test' } } },
+          'http://example.com',
+          undefined
+        )(logger),
         r =>
           hopByHopHeaders.forEach(hopHeader => {
             expect(r.headers?.[hopHeader]).toBeUndefined();
@@ -135,7 +142,8 @@ describe('forward', () => {
               url: { path: '/test' },
             },
           },
-          'http://example.com'
+          'http://example.com',
+          undefined
         )(logger),
         e => expect(e).toHaveProperty('status', 422)
       ));
@@ -157,6 +165,7 @@ describe('forward', () => {
             },
           },
           'http://example.com',
+          undefined,
           {
             deprecated: true,
             method: 'post',
@@ -182,6 +191,7 @@ describe('forward', () => {
             },
           },
           'http://example.com',
+          undefined,
           {
             deprecated: true,
             method: 'post',

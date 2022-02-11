@@ -24,6 +24,7 @@ describe('Checks if memory leaks', () => {
       mock: {
         dynamic: false,
       },
+      companyProxy: undefined,
       logger,
     });
 
