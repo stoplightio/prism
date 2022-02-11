@@ -162,3 +162,7 @@ curl -v -X POST http://localhost:4010/pet/ -d '{"name"": "Skip", "species": 100}
 When running in development mode (which happens when the `NODE_ENV` environment variable is not set to `production`) or the `-m` flag is set to false, both the HTTP Server and the CLI (which is responsible of parsing and showing the received logs on the screen) will run within the same process.
 
 Processing logs slows down Prism significantly. If you're planning to use the CLI in production (for example in a Docker Container) we recommend to run the CLI with the `-m` flag or set the `NODE_ENV` variable to `production`. In this way, the CLI and the HTTP server will run on two different processes, so that logs processing, parsing and printing does not slow down the http requests processing.
+
+## Running behind a proxy
+
+Your environment may need you to route your upstream requests through a proxy server. In this case append the `--upstream-proxy http://proxy.example.com:3128` option to the command for Prism to use it.

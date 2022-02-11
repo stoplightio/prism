@@ -18,7 +18,8 @@ const client = createClientFromOperations(operations, {
   validateResponse: true,
   checkSecurity: false,
   errors: true,
-  upstream: new URL('https://api.example.com'),
+  upstream: new URL('https://api.example.com'), 
+  upstreamProxy: undefined,
 });
 ```
 
@@ -61,7 +62,8 @@ const client = createClientFromOperations(
     validateResponse: true,
     checkSecurity: false,
     errors: true,
-    upstream: new URL('https://api.example.com'),
+    upstream: new URL('https://api.example.com'), 
+    upstreamProxy: undefined,
   }
 );
 ```
