@@ -68,6 +68,7 @@ jobs:
       - run:
           name: Run Harness
           command: yarn test.harness
+          no_output_timeout: 30m
   publish:
     executor: docker-node
     steps:
