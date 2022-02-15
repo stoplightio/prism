@@ -9,10 +9,10 @@ import * as split2 from 'split2';
 import * as tmp from 'tmp';
 import { parseSpecFile, xmlValidator } from './helpers';
 
-jest.setTimeout(5000);
+jest.setTimeout(15000);
 
 const WAIT_FOR_LINE = 'Prism is listening';
-const WAIT_FOR_LINE_TIMEOUT = 3000;
+const WAIT_FOR_LINE_TIMEOUT = 10000;
 
 describe('harness', () => {
   const files = process.env.TESTS
@@ -89,12 +89,13 @@ describe('harness', () => {
   });
 });
 
-function startPrism(server, filename): Promise<ChildProcess> {
+function startPrism(server: string, filename: string): Promise<ChildProcess> {
+  return new Promise((resolve, reject) => {
   const serverArgs = server.split(/ +/).map(t => t.trim().replace('${document}', filename));
   const prismMockProcessHandle = spawn(path.join(__dirname, '../cli-binaries/prism-cli'), serverArgs);
 
-  return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
+      shutdownPrism(prismMockProcessHandle);
       reject(new Error(`Timeout while waiting for "${WAIT_FOR_LINE}" log line`));
     }, WAIT_FOR_LINE_TIMEOUT);
 
