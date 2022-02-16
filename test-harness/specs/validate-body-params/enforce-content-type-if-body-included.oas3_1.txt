@@ -1,0 +1,26 @@
+====test====
+Given a request body when the spec hasn't specified one
+then return 415
+====spec====
+openapi: '3.1.0'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          content:
+            text/plain:
+              example: ok
+        415:
+          content:
+            text/plain:
+              example: no body allowed
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: text/plain" --data "empty"
+====expect====
+HTTP/1.1 415 Bad Request
+content-type: text/plain
+
+no body allowed

@@ -373,6 +373,37 @@ describe('body params validation', () => {
             },
           },
         },
+        {
+          id: '?http-operation-id?',
+          method: 'get',
+          path: '/empty-body',
+          responses: [
+            {
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+        },
       ]);
     });
 
@@ -452,6 +483,16 @@ describe('body params validation', () => {
           const response = await makeRequest('/json-body-optional', { method: 'POST' });
           expect(response.status).toBe(200);
         });
+
+        describe('and no content is specified', () => {
+          test('returns 200', async () => {
+            const response = await makeRequest('/empty-body', {
+              method: 'GET',
+              headers: { 'content-type': 'application/json' },
+            });
+            expect(response.status).toBe(200);
+          });
+        });
       });
 
       describe('when body with unsupported content-type is used', () => {
@@ -459,6 +500,7 @@ describe('body params validation', () => {
           const response = await makeRequest('/json-body-optional', {
             method: 'POST',
             headers: { 'content-type': 'application/xml' },
+            body: 'some xml',
           });
           expect(response.status).toBe(415);
         });
@@ -472,6 +514,7 @@ describe('body params validation', () => {
           headers: {
             'content-type': 'application/csv',
           },
+          body: 'type,name\nfoo,foobar',
         });
         expect(response.status).toBe(415);
         await expect(response.json()).resolves.toMatchObject({ type: 'foo' });

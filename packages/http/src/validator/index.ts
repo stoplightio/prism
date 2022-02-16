@@ -16,7 +16,7 @@ import { sequenceOption, sequenceValidation } from '../combinators';
 import { pipe } from 'fp-ts/function';
 import { inRange, isMatch } from 'lodash';
 import { URI } from 'uri-template-lite';
-import { IHttpRequest, IHttpResponse } from '../types';
+import { IHttpRequest, IHttpResponse, IHttpNameValue } from '../types';
 import { findOperationResponse } from './utils/spec';
 import { validateBody, validateHeaders, validatePath, validateQuery } from './validators';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
@@ -68,29 +68,50 @@ const tryValidateInputBody = (
   requestBody: IHttpOperationRequestBody,
   bundle: unknown,
   body: unknown,
-  mediaType: string
+  headers: IHttpNameValue
 ) =>
   pipe(
     checkBodyIsProvided(requestBody, body),
     E.chain(() => {
+      const headersNormalized = caseless(headers || {});
+
+      const contentLength = parseInt(headersNormalized.get('content-length')) || 0;
+      if (contentLength === 0) {
+        // generously allow this content type if there isn't a body actually provided
+        return E.right(body);
+      }
+
+      const mediaType = headersNormalized.get('content-type');
       if (isMediaTypeSupportedInContents(mediaType, requestBody.contents)) {
         return E.right(body);
       }
 
-      const supportedContentTypes = (requestBody.contents || []).map(x => x.mediaType);
+      const specRequestBodyContents = requestBody.contents || [];
+      let message: string;
+
+      if (specRequestBodyContents.length === 0) {
+        message = 'No supported content types, but request included a non-empty body';
+      } else {
+        const supportedContentTypes = specRequestBodyContents.map(x => x.mediaType);
+        message = `Supported content types: ${supportedContentTypes.join(',')}`;
+      }
+
       return E.left<NonEmptyArray<IPrismDiagnostic>>([
         {
-          message: `Supported content types: ${supportedContentTypes.join(',')}`,
+          message,
           code: 415,
           severity: DiagnosticSeverity.Error,
         },
       ]);
     }),
-    E.chain(() => validateInputIfBodySpecIsProvided(body, mediaType, requestBody.contents, bundle))
+    E.chain(() => {
+      const mediaType = caseless(headers || {}).get('content-type');
+
+      return validateInputIfBodySpecIsProvided(body, mediaType, requestBody.contents, bundle);
+    })
   );
 
 export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
-  const mediaType = caseless(element.headers || {}).get('content-type');
   const { request } = resource;
   const { body } = element;
 
@@ -101,7 +122,7 @@ export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resou
       e => E.right<NonEmptyArray<IPrismDiagnostic>, unknown>(e),
       request =>
         sequenceValidation(
-          request.body ? tryValidateInputBody(request.body, bundle, body, mediaType) : E.right(undefined),
+          request.body ? tryValidateInputBody(request.body, bundle, body, element.headers || {}) : E.right(undefined),
           request.headers ? validateHeaders(element.headers || {}, request.headers, bundle) : E.right(undefined),
           request.query ? validateQuery(element.url.query || {}, request.query, bundle) : E.right(undefined),
           request.path

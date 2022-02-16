@@ -1,0 +1,22 @@
+====test====
+Given a request declaring a content-type but has no body
+then return 200
+====spec====
+openapi: '3.1.0'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          content:
+            text/plain:
+              example: ok
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: text/plain"
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+ok
