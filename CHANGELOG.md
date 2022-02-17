@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 4.8.0 (2022.02.17)
+
+## Added
+
+- Upstream proxy support [#1986](https://github.com/stoplightio/prism/pull/1986) - thanks @DyspC
+
+## Changed
+
+- Ignore `Content-Type` when validating a request and the body is empty instead of producing a HTTP 415. [#1990](https://github.com/stoplightio/prism/pull/1990)
+
 # 4.7.0 (2022.02.03)
 
 ## Added
