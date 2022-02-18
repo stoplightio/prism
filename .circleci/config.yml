@@ -85,7 +85,7 @@ jobs:
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publish
-          command: yarn lerna publish from-git --create-release=github --yes
+          command: yarn lerna publish from-git --create-release=github --yes --no-verify-access
       - run:
           name: Create CLI binaries
           command: npx pkg --out-path ./cli-binaries ./packages/cli/
@@ -102,10 +102,10 @@ jobs:
       - attach_workspace:
           at: /tmp/
       - run:
-          name: "Download GitHub Release Utility"
+          name: 'Download GitHub Release Utility'
           command: go get github.com/tcnksm/ghr
       - run:
-          name: "Publish Release artifacts on GitHub"
+          name: 'Publish Release artifacts on GitHub'
           command: ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} /tmp/cli-binaries
 workflows:
   version: 2
