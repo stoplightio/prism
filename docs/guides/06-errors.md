@@ -262,21 +262,7 @@ paths:
 
 **Returned Status Code: `415`**
 
-**Explanation:** This error occurs when the current request uses content-type that is not supported by corresponding HTTP Operation. Please note that in case there is no content in the request, but the current request uses any content-type header, then this error occurs too: then the message is "Supported content types: " (i.e. with an empty list).
-
-##### Example
-
-```yaml
-openapi: '3.0.1'
-paths:
-  /:
-    get:
-      responses:
-        300:
-          description: 'Desc'
-```
-
-`curl -X POST http://localhost:4010/ -A 'Accept: text/plain'`
+**Explanation:** This error occurs when the current request uses content-type that is not supported by corresponding HTTP Operation. In the case there is no content in the request, the content-type header is ignored.
 
 ## Unknown error
 
