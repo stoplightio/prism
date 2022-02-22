@@ -262,7 +262,7 @@ paths:
 
 **Returned Status Code: `415`**
 
-**Explanation:** This error occurs when the current request uses content-type that is not supported by corresponding HTTP Operation. In the case there is no content in the request, the content-type header is ignored.
+**Explanation:** This error occurs when the current request specifies a `Content-Type` that is not supported by corresponding HTTP Operation. In the case there is no request body or `Content-Length` is 0, the `Content-Type` header is ignored.
 
 ## Unknown error
 
