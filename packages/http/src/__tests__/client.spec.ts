@@ -43,10 +43,10 @@ describe('User Http Client', () => {
         jest.spyOn(client, 'request');
       });
 
-      afterAll(() => jest.clearAllMocks());
-
       describe('when calling with no options', () => {
         beforeAll(() => client.get('/pet'));
+
+        afterAll(() => jest.clearAllMocks());
 
         test('shall call the mocker with the default options', () =>
           expect(mock.default).toHaveBeenCalledWith({
@@ -61,6 +61,8 @@ describe('User Http Client', () => {
 
       describe('when calling a method with overridden url', () => {
         beforeAll(() => client.get('/pet', { baseUrl: 'https://www.google.it' }));
+
+        afterAll(() => jest.clearAllMocks());
 
         test('should call the mocker with the replaced full url', () => {
           expect(mock.default).toBeCalledWith({
@@ -80,6 +82,8 @@ describe('User Http Client', () => {
 
       describe('when calling a method with a full url', () => {
         beforeAll(() => client.get('https://www.google.it/pet'));
+
+        afterAll(() => jest.clearAllMocks());
 
         test('should call the mocker with the replaced full url', () => {
           expect(mock.default).toBeCalledWith({

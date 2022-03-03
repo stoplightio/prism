@@ -8,7 +8,7 @@ import { DiagnosticSeverity, Dictionary } from '@stoplight/types';
 jest.mock('node-fetch');
 
 function stubFetch({ json = {}, text = '', headers }: { headers: Dictionary<string>; text?: string; json?: unknown }) {
-  ((fetch as unknown) as jest.Mock).mockResolvedValue({
+  (fetch as unknown as jest.Mock).mockResolvedValue({
     headers: { get: (n: string) => headers[n], raw: () => mapValues(headers, (h: string) => h.split(' ')) },
     json: jest.fn().mockResolvedValue(json),
     text: jest.fn().mockResolvedValue(text),

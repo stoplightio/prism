@@ -1,14 +1,14 @@
 import { IPrismComponents, IPrismInput } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import fetch from 'node-fetch';
-import { pipe } from 'fp-ts/function';
+import { constUndefined, pipe } from 'fp-ts/function';
 import * as NEA from 'fp-ts/NonEmptyArray';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 import * as RTE from 'fp-ts/ReaderTaskEither';
 import * as J from 'fp-ts/Json';
 import { defaults, omit } from 'lodash';
-import { format, parse } from 'url';
+import { format } from 'url';
 import { posix } from 'path';
 import { Logger } from 'pino';
 import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
@@ -32,7 +32,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
   logger =>
     pipe(
       NEA.fromArray(validations),
-      TE.fromOption(() => undefined),
+      TE.fromOption(constUndefined),
       TE.map(failedValidations => {
         const securityValidation = failedValidations.find(validation => validation.code === 401);
 
@@ -44,9 +44,11 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
       TE.chainEitherK(() => serializeBody(input.body)),
       TE.chain(body =>
         TE.tryCatch(async () => {
-          const partialUrl = parse(baseUrl);
+          const partialUrl = new URL(baseUrl);
           const url = format({
             ...partialUrl,
+            host: partialUrl.host,
+            protocol: partialUrl.protocol,
             pathname: posix.join(partialUrl.pathname || '', input.url.path),
             query: input.url.query,
           });

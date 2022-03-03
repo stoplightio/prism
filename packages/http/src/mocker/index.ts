@@ -349,7 +349,8 @@ function computeBody(
 ): E.Either<Error, unknown> {
   if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
     return E.right(negotiationResult.bodyExample.value);
-  } else if (negotiationResult.schema) {
+  }
+  if (negotiationResult.schema) {
     return payloadGenerator(negotiationResult.schema);
   }
   return E.right(undefined);

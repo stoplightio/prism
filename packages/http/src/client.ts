@@ -2,11 +2,11 @@ import { IPrismOutput } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 import { defaults } from 'lodash';
 import { parse as parseQueryString } from 'querystring';
-import { parse as parseUrl } from 'url';
 import { createInstance, IHttpNameValues } from '.';
 import { IHttpConfig, IHttpRequest, IHttpResponse, IHttpUrl } from './types';
 import { fold } from 'fp-ts/TaskEither';
 import * as Task from 'fp-ts/Task';
+import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import * as pino from 'pino';
 
@@ -30,16 +30,25 @@ export function createClientFromOperations(resources: IHttpOperation[], defaultC
 
   const client: PrismHttp = {
     request(url, input, config) {
-      const parsedUrl = parseUrl(url);
-
-      if (!parsedUrl.pathname) throw new Error('Path name must always be specified');
+      if (!url) throw new Error('Path name must always be specified');
 
       const mergedConf: IClientConfig = defaults(config, defaultConfig);
+      const baseUrl = pipe(
+        O.tryCatch(() => new URL(url)),
+        O.fold(
+          () => mergedConf.baseUrl,
+          url => url.origin
+        )
+      );
+      const parsedUrl = pipe(
+        O.tryCatch(() => new URL(url)),
+        O.getOrElseW(() => new URL(url, 'https://stoplight.io'))
+      );
 
       const httpUrl: IHttpUrl = {
-        baseUrl: parsedUrl.host ? `${parsedUrl.protocol}//${parsedUrl.host}` : mergedConf.baseUrl,
+        baseUrl,
         path: parsedUrl.pathname,
-        query: parseQueryString(parsedUrl.query || '') as IHttpNameValues,
+        query: parseQueryString(parsedUrl.search.substring(1)) as IHttpNameValues,
       };
 
       return pipe(
