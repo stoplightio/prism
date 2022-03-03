@@ -48,7 +48,7 @@ export function createClientFromOperations(resources: IHttpOperation[], defaultC
       const httpUrl: IHttpUrl = {
         baseUrl,
         path: parsedUrl.pathname,
-        query: parseQueryString(parsedUrl.search.substring(1)) as IHttpNameValues,
+        query: parseQueryString(parsedUrl.search?.substring(1) || '') as IHttpNameValues,
       };
 
       return pipe(
