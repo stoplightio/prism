@@ -45,13 +45,12 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
       TE.chain(body =>
         TE.tryCatch(async () => {
           const partialUrl = new URL(baseUrl);
-          const url = format({
-            ...partialUrl,
-            host: partialUrl.host,
-            protocol: partialUrl.protocol,
-            pathname: posix.join(partialUrl.pathname || '', input.url.path),
-            query: input.url.query,
-          });
+          const url = format(
+            Object.assign(partialUrl, {
+              pathname: posix.join(partialUrl.pathname || '', input.url.path),
+              query: input.url.query,
+            })
+          );
 
           logger.info(`Forwarding "${input.method}" request to ${url}...`);
           let proxyAgent = undefined;
