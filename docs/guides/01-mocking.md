@@ -186,6 +186,28 @@ The more descriptive your description is, the better job Prism can do at creatin
 
 > **Tip:** If your team needs help creating better quality API description documents, take a look at [Spectral](https://stoplight.io/spectral/). You could enforce the use of `example` properties, or similar.
 
+##### Control Generated Fakes for Individual Properties
+
+In the following example there are two properties, each with specific Faker parameters.  [datatype.number](https://fakerjs.dev/api/datatype.html#number) uses named parameters while [helpers.slugify](https://fakerjs.dev/api/helpers.html#slugify) uses positional parameters. 
+
+```yaml
+example:
+  type: object
+  properties:
+    ten-or-eleven:
+      type: number
+      example: 10
+      x-faker:
+        datatype.number:
+          min: 10
+          max: 11
+    slug:
+      type: string
+      example: two-words
+      x-faker:
+        helpers.slugify: [ "two words" ]
+```
+
 ##### Configure JSON Schema Faker
 
 At the top level of your API Specification, create an `x-json-schema-faker`

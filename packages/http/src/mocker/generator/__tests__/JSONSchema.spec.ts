@@ -93,6 +93,53 @@ describe('JSONSchema generator', () => {
       });
     });
 
+    describe('when faker is configured per-property', () => {
+      it('with named parameters', () => {
+        const schema: JSONSchema & any = {
+          type: 'object',
+          properties: {
+            meaning: {
+              type: 'number',
+              'x-faker': {
+                'random.number': {
+                  min: 42,
+                  max: 42,
+                },
+              },
+            },
+          },
+          required: ['meaning'],
+        };
+
+        assertRight(generate({}, schema), instance => {
+          expect(instance).toHaveProperty('meaning');
+          const actual = get(instance, 'meaning');
+          expect(actual).toStrictEqual(42);
+        });
+      });
+
+      it('with positional parameters', () => {
+        const schema: JSONSchema & any = {
+          type: 'object',
+          properties: {
+            slug: {
+              type: 'string',
+              'x-faker': {
+                'helpers.slugify': ['two words'],
+              },
+            },
+          },
+          required: ['slug'],
+        };
+
+        assertRight(generate({}, schema), instance => {
+          expect(instance).toHaveProperty('slug');
+          const actual = get(instance, 'slug');
+          expect(actual).toStrictEqual('two-words');
+        });
+      });
+    });
+
     describe('when used with a schema that is not valid', () => {
       const schema: JSONSchema = {
         type: 'object',
