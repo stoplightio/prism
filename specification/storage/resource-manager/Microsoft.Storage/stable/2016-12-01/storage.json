@@ -1,0 +1,1207 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "StorageManagement",
+    "description": "The Azure Storage Management API.",
+    "version": "2016-12-01",
+    "x-ms-code-generation-settings": {
+      "name": "StorageManagementClient"
+    }
+  },
+  "host": "management.azure.com",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json", "text/json"],
+  "paths": {
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Storage/checkNameAvailability": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_CheckNameAvailability",
+        "description": "Checks that the storage account name is valid and is not already in use.",
+        "parameters": [
+          {
+            "name": "accountName",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageAccountCheckNameAvailabilityParameters"
+            },
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only."
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Operation to check the storage account name availability was successful.",
+            "schema": {
+              "$ref": "#/definitions/CheckNameAvailabilityResult"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}": {
+      "put": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_Create",
+        "description": "Asynchronously creates a new storage account with the specified parameters. If an account is already created and a subsequent create request is issued with different properties, the account properties will be updated. If an account is already created and a subsequent create or update request is issued with the exact same set of properties, the request will succeed.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "name": "accountName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
+            "maxLength": 24,
+            "minLength": 3
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageAccountCreateParameters"
+            },
+            "description": "The parameters to provide for the created account."
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned when the storage account was already created from a previous request with the same properties specified in the request body.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccount"
+            }
+          },
+          "202": {
+            "description": "Accepted -- Create or update request accepted; operation will complete asynchronously."
+          }
+        },
+        "x-ms-long-running-operation": true
+      },
+      "delete": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_Delete",
+        "description": "Deletes a storage account in Microsoft Azure.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "name": "accountName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
+            "maxLength": 24,
+            "minLength": 3
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- storage account deleted successfully."
+          },
+          "204": {
+            "description": "NoContent -- account does not exist in the subscription."
+          }
+        }
+      },
+      "get": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_GetProperties",
+        "description": "Returns the properties for the specified storage account including but not limited to name, SKU name, location, and account status. The ListKeys operation should be used to retrieve storage keys.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "name": "accountName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.  ",
+            "maxLength": 24,
+            "minLength": 3
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- properties retrieved successfully for the storage account.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccount"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_Update",
+        "description": "The update operation can be used to update the SKU, encryption, access tier, or tags for a storage account. It can also be used to map the account to a custom domain. Only one custom domain is supported per storage account; the replacement/change of custom domain is not supported. In order to replace an old custom domain, the old value must be cleared/unregistered before a new value can be set. The update of multiple properties is supported. This call does not change the storage keys for the account. If you want to change the storage account keys, use the regenerate keys operation. The location and name of the storage account cannot be changed after creation.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "name": "accountName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
+            "maxLength": 24,
+            "minLength": 3
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageAccountUpdateParameters"
+            },
+            "description": "The parameters to provide for the updated account."
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- storage account properties updated successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccount"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Storage/storageAccounts": {
+      "get": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_List",
+        "description": "Lists all the storage accounts available under the subscription. Note that storage keys are not returned; use the ListKeys operation for this.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List of storage accounts was retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccountListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts": {
+      "get": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_ListByResourceGroup",
+        "description": "Lists all the storage accounts available under the given resource group. Note that storage keys are not returned; use the ListKeys operation for this.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List of storage accounts in the given resource group retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccountListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/listKeys": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_ListKeys",
+        "description": "Lists the access keys for the specified storage account.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "name": "accountName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
+            "maxLength": 24,
+            "minLength": 3
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- list of keys retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccountListKeysResult"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/regenerateKey": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_RegenerateKey",
+        "description": "Regenerates one of the access keys for the specified storage account.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "name": "accountName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
+            "maxLength": 24,
+            "minLength": 3
+          },
+          {
+            "name": "regenerateKey",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageAccountRegenerateKeyParameters"
+            },
+            "description": "Specifies name of the key which should be regenerated -- key1 or key2."
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- specified key regenerated successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccountListKeysResult"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Storage/usages": {
+      "get": {
+        "tags": ["Usage"],
+        "operationId": "Usage_List",
+        "description": "Gets the current usage count and the limit for the resources under the subscription.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- current usage account and limit retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/UsageListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/ListAccountSas": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_ListAccountSAS",
+        "description": "List SAS credentials of a storage account.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "name": "accountName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.  ",
+            "maxLength": 24,
+            "minLength": 3
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AccountSasParameters"
+            },
+            "description": "The parameters to provide to list SAS credentials for the storage account."
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned the account SAS created for the storage account requested.",
+            "schema": {
+              "$ref": "#/definitions/ListAccountSasResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/ListServiceSas": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_ListServiceSAS",
+        "description": "List service SAS credentials of a specific resource.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "name": "accountName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
+            "maxLength": 24,
+            "minLength": 3
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceSasParameters"
+            },
+            "description": "The parameters to provide to list service SAS credentials."
+          },
+          {
+            "$ref": "#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned the service SAS created for the storage service requested.",
+            "schema": {
+              "$ref": "#/definitions/ListServiceSasResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "StorageAccountCheckNameAvailabilityParameters": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["Microsoft.Storage/storageAccounts"]
+        }
+      },
+      "required": ["name", "type"],
+      "description": "The parameters used to check the availability of the storage account name."
+    },
+    "CheckNameAvailabilityResult": {
+      "properties": {
+        "nameAvailable": {
+          "readOnly": true,
+          "type": "boolean",
+          "description": "Gets a boolean value that indicates whether the name is available for you to use. If true, the name is available. If false, the name has already been taken or is invalid and cannot be used."
+        },
+        "reason": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the reason that a storage account name could not be used. The Reason element is only returned if NameAvailable is false.",
+          "enum": ["AccountNameInvalid", "AlreadyExists"],
+          "x-ms-enum": {
+            "name": "Reason",
+            "modelAsString": false
+          }
+        },
+        "message": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets an error message explaining the Reason value in more detail."
+        }
+      },
+      "description": "The CheckNameAvailability operation response."
+    },
+    "Sku": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Gets or sets the sku name. Required for account creation; optional for update. Note that in older versions, sku name was called accountType.",
+          "enum": ["Standard_LRS", "Standard_GRS", "Standard_RAGRS", "Standard_ZRS", "Premium_LRS"],
+          "x-ms-enum": {
+            "name": "SkuName",
+            "modelAsString": false
+          }
+        },
+        "tier": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the sku tier. This is based on the SKU name.",
+          "enum": ["Standard", "Premium"],
+          "x-ms-enum": {
+            "name": "SkuTier",
+            "modelAsString": false
+          }
+        }
+      },
+      "required": ["name"],
+      "description": "The SKU of the storage account."
+    },
+    "CustomDomain": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Gets or sets the custom domain name assigned to the storage account. Name is the CNAME source."
+        },
+        "useSubDomainName": {
+          "type": "boolean",
+          "description": "Indicates whether indirect CName validation is enabled. Default value is false. This should only be set on updates."
+        }
+      },
+      "required": ["name"],
+      "description": "The custom domain assigned to this storage account. This can be set via Update."
+    },
+    "EncryptionService": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "A boolean indicating whether or not the service encrypts the data as it is stored."
+        },
+        "lastEnabledTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Gets a rough estimate of the date/time when the encryption was last enabled by the user. Only returned when encryption is enabled. There might be some unencrypted blobs which were written after this time, as it is just a rough estimate."
+        }
+      },
+      "description": "A service that allows server-side encryption to be used."
+    },
+    "EncryptionServices": {
+      "properties": {
+        "blob": {
+          "$ref": "#/definitions/EncryptionService",
+          "description": "The encryption function of the blob storage service."
+        },
+        "file": {
+          "$ref": "#/definitions/EncryptionService",
+          "description": "The encryption function of the file storage service."
+        },
+        "table": {
+          "$ref": "#/definitions/EncryptionService",
+          "readOnly": true,
+          "description": "The encryption function of the table storage service."
+        },
+        "queue": {
+          "$ref": "#/definitions/EncryptionService",
+          "readOnly": true,
+          "description": "The encryption function of the queue storage service."
+        }
+      },
+      "description": "A list of services that support encryption."
+    },
+    "Encryption": {
+      "properties": {
+        "services": {
+          "$ref": "#/definitions/EncryptionServices",
+          "description": "List of services which support encryption."
+        },
+        "keySource": {
+          "type": "string",
+          "description": "The encryption keySource (provider). Possible values (case-insensitive):  Microsoft.Storage",
+          "enum": ["Microsoft.Storage"]
+        }
+      },
+      "required": ["keySource"],
+      "description": "The encryption settings on the storage account."
+    },
+    "StorageAccountPropertiesCreateParameters": {
+      "properties": {
+        "customDomain": {
+          "$ref": "#/definitions/CustomDomain",
+          "description": "User domain assigned to the storage account. Name is the CNAME source. Only one custom domain is supported per storage account at this time. To clear the existing custom domain, use an empty string for the custom domain name property."
+        },
+        "encryption": {
+          "$ref": "#/definitions/Encryption",
+          "description": "Provides the encryption settings on the account. If left unspecified the account encryption settings will remain the same. The default setting is unencrypted."
+        },
+        "accessTier": {
+          "type": "string",
+          "description": "Required for storage accounts where kind = BlobStorage. The access tier used for billing.",
+          "enum": ["Hot", "Cool"],
+          "x-ms-enum": {
+            "name": "AccessTier",
+            "modelAsString": false
+          }
+        },
+        "supportsHttpsTrafficOnly": {
+          "type": "boolean",
+          "default": false,
+          "x-ms-client-name": "EnableHttpsTrafficOnly",
+          "description": "Allows https traffic only to storage service if sets to true."
+        }
+      },
+      "description": "The parameters used to create the storage account."
+    },
+    "StorageAccountCreateParameters": {
+      "properties": {
+        "sku": {
+          "$ref": "#/definitions/Sku",
+          "description": "Required. Gets or sets the sku name."
+        },
+        "kind": {
+          "type": "string",
+          "description": "Required. Indicates the type of storage account.",
+          "enum": ["Storage", "BlobStorage"],
+          "x-ms-enum": {
+            "name": "Kind",
+            "modelAsString": false
+          }
+        },
+        "location": {
+          "type": "string",
+          "description": "Required. Gets or sets the location of the resource. This will be one of the supported and registered Azure Geo Regions (e.g. West US, East US, Southeast Asia, etc.). The geo region of a resource cannot be changed once it is created, but if an identical geo region is specified on update, the request will succeed."
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Gets or sets a list of key value pairs that describe the resource. These tags can be used for viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key with a length no greater than 128 characters and a value with a length no greater than 256 characters."
+        },
+        "properties": {
+          "x-ms-client-flatten": true,
+          "$ref": "#/definitions/StorageAccountPropertiesCreateParameters"
+        }
+      },
+      "required": ["sku", "kind", "location"],
+      "description": "The parameters used when creating a storage account."
+    },
+    "Endpoints": {
+      "properties": {
+        "blob": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the blob endpoint."
+        },
+        "queue": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the queue endpoint."
+        },
+        "table": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the table endpoint."
+        },
+        "file": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the file endpoint."
+        }
+      },
+      "description": "The URIs that are used to perform a retrieval of a public blob, queue, or table object."
+    },
+    "StorageAccountProperties": {
+      "properties": {
+        "provisioningState": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the status of the storage account at the time the operation was called.",
+          "enum": ["Creating", "ResolvingDNS", "Succeeded"],
+          "x-ms-enum": {
+            "name": "ProvisioningState",
+            "modelAsString": false
+          }
+        },
+        "primaryEndpoints": {
+          "$ref": "#/definitions/Endpoints",
+          "readOnly": true,
+          "description": "Gets the URLs that are used to perform a retrieval of a public blob, queue, or table object. Note that Standard_ZRS and Premium_LRS accounts only return the blob endpoint."
+        },
+        "primaryLocation": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the location of the primary data center for the storage account."
+        },
+        "statusOfPrimary": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the status indicating whether the primary location of the storage account is available or unavailable.",
+          "enum": ["available", "unavailable"],
+          "x-ms-enum": {
+            "name": "AccountStatus",
+            "modelAsString": false
+          }
+        },
+        "lastGeoFailoverTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Gets the timestamp of the most recent instance of a failover to the secondary location. Only the most recent timestamp is retained. This element is not returned if there has never been a failover instance. Only available if the accountType is Standard_GRS or Standard_RAGRS."
+        },
+        "secondaryLocation": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the location of the geo-replicated secondary for the storage account. Only available if the accountType is Standard_GRS or Standard_RAGRS."
+        },
+        "statusOfSecondary": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the status indicating whether the secondary location of the storage account is available or unavailable. Only available if the SKU name is Standard_GRS or Standard_RAGRS.",
+          "enum": ["available", "unavailable"],
+          "x-ms-enum": {
+            "name": "AccountStatus",
+            "modelAsString": false
+          }
+        },
+        "creationTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Gets the creation date and time of the storage account in UTC."
+        },
+        "customDomain": {
+          "$ref": "#/definitions/CustomDomain",
+          "readOnly": true,
+          "description": "Gets the custom domain the user assigned to this storage account."
+        },
+        "secondaryEndpoints": {
+          "$ref": "#/definitions/Endpoints",
+          "readOnly": true,
+          "description": "Gets the URLs that are used to perform a retrieval of a public blob, queue, or table object from the secondary location of the storage account. Only available if the SKU name is Standard_RAGRS."
+        },
+        "encryption": {
+          "$ref": "#/definitions/Encryption",
+          "readOnly": true,
+          "description": "Gets the encryption settings on the account. If unspecified, the account is unencrypted."
+        },
+        "accessTier": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Required for storage accounts where kind = BlobStorage. The access tier used for billing.",
+          "enum": ["Hot", "Cool"],
+          "x-ms-enum": {
+            "name": "AccessTier",
+            "modelAsString": false
+          }
+        },
+        "supportsHttpsTrafficOnly": {
+          "type": "boolean",
+          "default": false,
+          "x-ms-client-name": "EnableHttpsTrafficOnly",
+          "description": "Allows https traffic only to storage service if sets to true."
+        }
+      },
+      "description": "Properties of the storage account."
+    },
+    "StorageAccount": {
+      "properties": {
+        "sku": {
+          "$ref": "#/definitions/Sku",
+          "readOnly": true,
+          "description": "Gets the SKU."
+        },
+        "kind": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the Kind.",
+          "enum": ["Storage", "BlobStorage"],
+          "x-ms-enum": {
+            "name": "Kind",
+            "modelAsString": false
+          }
+        },
+        "properties": {
+          "x-ms-client-flatten": true,
+          "$ref": "#/definitions/StorageAccountProperties"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/Resource"
+        }
+      ],
+      "description": "The storage account."
+    },
+    "StorageAccountKey": {
+      "properties": {
+        "keyName": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Name of the key."
+        },
+        "value": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Base 64-encoded value of the key."
+        },
+        "permissions": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Permissions for the key -- read-only or full permissions.",
+          "enum": ["Read", "Full"],
+          "x-ms-enum": {
+            "name": "KeyPermission",
+            "modelAsString": false
+          }
+        }
+      },
+      "description": "An access key for the storage account."
+    },
+    "StorageAccountListResult": {
+      "properties": {
+        "value": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StorageAccount"
+          },
+          "description": "Gets the list of storage accounts and their properties."
+        }
+      },
+      "description": "The response from the List Storage Accounts operation."
+    },
+    "StorageAccountListKeysResult": {
+      "properties": {
+        "keys": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StorageAccountKey"
+          },
+          "description": "Gets the list of storage account keys and their properties for the specified storage account."
+        }
+      },
+      "description": "The response from the ListKeys operation."
+    },
+    "StorageAccountRegenerateKeyParameters": {
+      "properties": {
+        "keyName": {
+          "type": "string"
+        }
+      },
+      "required": ["keyName"],
+      "description": "The parameters used to regenerate the storage account key."
+    },
+    "StorageAccountPropertiesUpdateParameters": {
+      "properties": {
+        "customDomain": {
+          "$ref": "#/definitions/CustomDomain",
+          "description": "Custom domain assigned to the storage account by the user. Name is the CNAME source. Only one custom domain is supported per storage account at this time. To clear the existing custom domain, use an empty string for the custom domain name property."
+        },
+        "encryption": {
+          "$ref": "#/definitions/Encryption",
+          "description": "Provides the encryption settings on the account. The default setting is unencrypted."
+        },
+        "accessTier": {
+          "type": "string",
+          "description": "Required for storage accounts where kind = BlobStorage. The access tier used for billing.",
+          "enum": ["Hot", "Cool"],
+          "x-ms-enum": {
+            "name": "AccessTier",
+            "modelAsString": false
+          }
+        },
+        "supportsHttpsTrafficOnly": {
+          "type": "boolean",
+          "default": false,
+          "x-ms-client-name": "EnableHttpsTrafficOnly",
+          "description": "Allows https traffic only to storage service if sets to true."
+        }
+      },
+      "description": "The parameters used when updating a storage account."
+    },
+    "StorageAccountUpdateParameters": {
+      "properties": {
+        "sku": {
+          "$ref": "#/definitions/Sku",
+          "description": "Gets or sets the SKU name. Note that the SKU name cannot be updated to Standard_ZRS or Premium_LRS, nor can accounts of those sku names be updated to any other value."
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Gets or sets a list of key value pairs that describe the resource. These tags can be used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key no greater in length than 128 characters and a value no greater in length than 256 characters."
+        },
+        "properties": {
+          "x-ms-client-flatten": true,
+          "$ref": "#/definitions/StorageAccountPropertiesUpdateParameters"
+        }
+      },
+      "description": "The parameters that can be provided when updating the storage account properties."
+    },
+    "UsageName": {
+      "properties": {
+        "value": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets a string describing the resource name."
+        },
+        "localizedValue": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets a localized string describing the resource name."
+        }
+      },
+      "description": "The usage names that can be used; currently limited to StorageAccount."
+    },
+    "Usage": {
+      "properties": {
+        "unit": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the unit of measurement.",
+          "enum": ["Count", "Bytes", "Seconds", "Percent", "CountsPerSecond", "BytesPerSecond"],
+          "x-ms-enum": {
+            "name": "UsageUnit",
+            "modelAsString": false
+          }
+        },
+        "currentValue": {
+          "readOnly": true,
+          "type": "integer",
+          "format": "int32",
+          "description": "Gets the current count of the allocated resources in the subscription."
+        },
+        "limit": {
+          "readOnly": true,
+          "type": "integer",
+          "format": "int32",
+          "description": "Gets the maximum count of the resources that can be allocated in the subscription."
+        },
+        "name": {
+          "$ref": "#/definitions/UsageName",
+          "readOnly": true,
+          "description": "Gets the name of the type of usage."
+        }
+      },
+      "description": "Describes Storage Resource Usage."
+    },
+    "UsageListResult": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Usage"
+          },
+          "description": "Gets or sets the list of Storage Resource Usages."
+        }
+      },
+      "description": "The response from the List Usages operation."
+    },
+    "Resource": {
+      "properties": {
+        "id": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Resource Id"
+        },
+        "name": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Resource name"
+        },
+        "type": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Resource type"
+        },
+        "location": {
+          "type": "string",
+          "description": "Resource location"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Tags assigned to a resource; can be used for viewing and grouping a resource (across resource groups)."
+        }
+      },
+      "x-ms-azure-resource": true,
+      "description": "Describes a storage resource."
+    },
+    "AccountSasParameters": {
+      "properties": {
+        "signedServices": {
+          "type": "string",
+          "enum": ["b", "q", "t", "f"],
+          "x-ms-client-name": "Services",
+          "description": "The signed services accessible with the account SAS. Possible values include: Blob (b), Queue (q), Table (t), File (f)."
+        },
+        "signedResourceTypes": {
+          "type": "string",
+          "enum": ["s", "c", "o"],
+          "x-ms-client-name": "ResourceTypes",
+          "description": "The signed resource types that are accessible with the account SAS. Service (s): Access to service-level APIs; Container (c): Access to container-level APIs; Object (o): Access to object-level APIs for blobs, queue messages, table entities, and files."
+        },
+        "signedPermission": {
+          "type": "string",
+          "enum": ["r", "d", "w", "l", "a", "c", "u", "p"],
+          "x-ms-client-name": "Permissions",
+          "description": "The signed permissions for the account SAS. Possible values include: Read (r), Write (w), Delete (d), List (l), Add (a), Create (c), Update (u) and Process (p)."
+        },
+        "signedIp": {
+          "type": "string",
+          "x-ms-client-name": "IPAddressOrRange",
+          "description": "An IP address or a range of IP addresses from which to accept requests."
+        },
+        "signedProtocol": {
+          "type": "string",
+          "enum": ["https,http", "https"],
+          "x-ms-enum": {
+            "name": "HttpProtocol",
+            "modelAsString": false
+          },
+          "x-ms-client-name": "Protocols",
+          "description": "The protocol permitted for a request made with the account SAS."
+        },
+        "signedStart": {
+          "type": "string",
+          "format": "date-time",
+          "x-ms-client-name": "SharedAccessStartTime",
+          "description": "The time at which the SAS becomes valid."
+        },
+        "signedExpiry": {
+          "type": "string",
+          "format": "date-time",
+          "x-ms-client-name": "SharedAccessExpiryTime",
+          "description": "The time at which the shared access signature becomes invalid."
+        },
+        "keyToSign": {
+          "type": "string",
+          "description": "The key to sign the account SAS token with."
+        }
+      },
+      "required": ["signedServices", "signedResourceTypes", "signedPermission", "signedExpiry"],
+      "description": "The parameters to list SAS credentials of a storage account."
+    },
+    "ListAccountSasResponse": {
+      "properties": {
+        "accountSasToken": {
+          "readOnly": true,
+          "type": "string",
+          "description": "List SAS credentials of storage account."
+        }
+      },
+      "description": "The List SAS credentials operation response."
+    },
+    "ServiceSasParameters": {
+      "properties": {
+        "canonicalizedResource": {
+          "type": "string",
+          "description": "The canonical path to the signed resource."
+        },
+        "signedResource": {
+          "type": "string",
+          "enum": ["b", "c", "f", "s"],
+          "x-ms-enum": {
+            "name": "signedResource",
+            "modelAsString": true
+          },
+          "x-ms-client-name": "Resource",
+          "description": "The signed services accessible with the service SAS. Possible values include: Blob (b), Container (c), File (f), Share (s)."
+        },
+        "signedPermission": {
+          "type": "string",
+          "enum": ["r", "d", "w", "l", "a", "c", "u", "p"],
+          "x-ms-enum": {
+            "name": "Permissions",
+            "modelAsString": true
+          },
+          "x-ms-client-name": "Permissions",
+          "description": "The signed permissions for the service SAS. Possible values include: Read (r), Write (w), Delete (d), List (l), Add (a), Create (c), Update (u) and Process (p)."
+        },
+        "signedIp": {
+          "type": "string",
+          "x-ms-client-name": "IPAddressOrRange",
+          "description": "An IP address or a range of IP addresses from which to accept requests."
+        },
+        "signedProtocol": {
+          "type": "string",
+          "enum": ["https,http", "https"],
+          "x-ms-enum": {
+            "name": "HttpProtocol",
+            "modelAsString": false
+          },
+          "x-ms-client-name": "Protocols",
+          "description": "The protocol permitted for a request made with the account SAS."
+        },
+        "signedStart": {
+          "type": "string",
+          "format": "date-time",
+          "x-ms-client-name": "SharedAccessStartTime",
+          "description": "The time at which the SAS becomes valid."
+        },
+        "signedExpiry": {
+          "type": "string",
+          "format": "date-time",
+          "x-ms-client-name": "SharedAccessExpiryTime",
+          "description": "The time at which the shared access signature becomes invalid."
+        },
+        "signedIdentifier": {
+          "type": "string",
+          "maxLength": 64,
+          "x-ms-client-name": "Identifier",
+          "description": "A unique value up to 64 characters in length that correlates to an access policy specified for the container, queue, or table."
+        },
+        "startPk": {
+          "type": "string",
+          "x-ms-client-name": "PartitionKeyStart",
+          "description": "The start of partition key."
+        },
+        "endPk": {
+          "type": "string",
+          "x-ms-client-name": "PartitionKeyEnd",
+          "description": "The end of partition key."
+        },
+        "startRk": {
+          "type": "string",
+          "x-ms-client-name": "RowKeyStart",
+          "description": "The start of row key."
+        },
+        "endRk": {
+          "type": "string",
+          "x-ms-client-name": "RowKeyEnd",
+          "description": "The end of row key."
+        },
+        "keyToSign": {
+          "type": "string",
+          "description": "The key to sign the account SAS token with."
+        },
+        "rscc": {
+          "type": "string",
+          "x-ms-client-name": "CacheControl",
+          "description": "The response header override for cache control."
+        },
+        "rscd": {
+          "type": "string",
+          "x-ms-client-name": "ContentDisposition",
+          "description": "The response header override for content disposition."
+        },
+        "rsce": {
+          "type": "string",
+          "x-ms-client-name": "ContentEncoding",
+          "description": "The response header override for content encoding."
+        },
+        "rscl": {
+          "type": "string",
+          "x-ms-client-name": "ContentLanguage",
+          "description": "The response header override for content language."
+        },
+        "rsct": {
+          "type": "string",
+          "x-ms-client-name": "ContentType",
+          "description": "The response header override for content type."
+        }
+      },
+      "required": ["canonicalizedResource", "signedResource"],
+      "description": "The parameters to list service SAS credentials of a specific resource."
+    },
+    "ListServiceSasResponse": {
+      "properties": {
+        "serviceSasToken": {
+          "readOnly": true,
+          "type": "string",
+          "description": "List service SAS credentials of specific resource."
+        }
+      },
+      "description": "The List service SAS credentials operation response."
+    }
+  },
+  "parameters": {
+    "SubscriptionIdParameter": {
+      "name": "subscriptionId",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "Gets subscription credentials which uniquely identify the Microsoft Azure subscription. The subscription ID forms part of the URI for every service call."
+    },
+    "ApiVersionParameter": {
+      "name": "api-version",
+      "in": "query",
+      "required": true,
+      "type": "string",
+      "description": "Client Api Version."
+    },
+    "ResourceGroupName": {
+      "name": "resourceGroupName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the resource group within the user's subscription. The name is case insensitive.",
+      "pattern": "^[-\\w\\._\\(\\)]+$",
+      "minLength": 1,
+      "maxLength": 90,
+      "x-ms-parameter-location": "method"
+    }
+  }
+}

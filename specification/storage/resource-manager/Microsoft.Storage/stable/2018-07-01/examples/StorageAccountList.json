@@ -1,0 +1,184 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "api-version": "2018-07-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "value": [
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res2627/providers/Microsoft.Storage/storageAccounts/sto1125",
+            "kind": "Storage",
+            "location": "eastus2euap",
+            "name": "sto1125",
+            "properties": {
+              "isHnsEnabled": true,
+              "azureFilesAadIntegration": true,
+              "creationTime": "2017-05-24T13:28:53.4540398Z",
+              "primaryEndpoints": {
+                "web": "https://sto1125.web.core.windows.net/",
+                "dfs": "https://sto1125.dfs.core.windows.net/",
+                "blob": "https://sto1125.blob.core.windows.net/",
+                "file": "https://sto1125.file.core.windows.net/",
+                "queue": "https://sto1125.queue.core.windows.net/",
+                "table": "https://sto1125.table.core.windows.net/"
+              },
+              "primaryLocation": "eastus2euap",
+              "provisioningState": "Succeeded",
+              "secondaryLocation": "centraluseuap",
+              "statusOfPrimary": "available",
+              "statusOfSecondary": "available",
+              "supportsHttpsTrafficOnly": false
+            },
+            "sku": {
+              "name": "Standard_GRS",
+              "tier": "Standard"
+            },
+            "tags": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "type": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/testcmk3/providers/Microsoft.Storage/storageAccounts/sto3699",
+            "identity": {
+              "principalId": "356d057d-cba5-44dd-8a30-b2e547bc416b",
+              "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+              "type": "SystemAssigned"
+            },
+            "kind": "Storage",
+            "location": "eastus2euap",
+            "name": "sto3699",
+            "properties": {
+              "creationTime": "2017-05-24T10:06:30.6093014Z",
+              "primaryEndpoints": {
+                "blob": "https://sto3699.blob.core.windows.net/",
+                "file": "https://sto3699.file.core.windows.net/",
+                "queue": "https://sto3699.queue.core.windows.net/",
+                "table": "https://sto3699.table.core.windows.net/"
+              },
+              "primaryLocation": "eastus2euap",
+              "provisioningState": "Succeeded",
+              "secondaryLocation": "centraluseuap",
+              "statusOfPrimary": "available",
+              "statusOfSecondary": "available",
+              "supportsHttpsTrafficOnly": false
+            },
+            "sku": {
+              "name": "Standard_GRS",
+              "tier": "Standard"
+            },
+            "tags": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "type": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/testcmk3/providers/Microsoft.Storage/storageAccounts/sto6637",
+            "identity": {
+              "principalId": "911871cc-ffd1-4fc4-ac11-7a316433ea66",
+              "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+              "type": "SystemAssigned"
+            },
+            "kind": "Storage",
+            "location": "eastus2euap",
+            "name": "sto6637",
+            "properties": {
+              "creationTime": "2017-05-24T10:09:39.5625175Z",
+              "primaryEndpoints": {
+                "blob": "https://sto6637.blob.core.windows.net/",
+                "file": "https://sto6637.file.core.windows.net/",
+                "queue": "https://sto6637.queue.core.windows.net/",
+                "table": "https://sto6637.table.core.windows.net/"
+              },
+              "primaryLocation": "eastus2euap",
+              "provisioningState": "Succeeded",
+              "secondaryLocation": "centraluseuap",
+              "statusOfPrimary": "available",
+              "statusOfSecondary": "available",
+              "supportsHttpsTrafficOnly": false
+            },
+            "sku": {
+              "name": "Standard_GRS",
+              "tier": "Standard"
+            },
+            "tags": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "type": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res8186/providers/Microsoft.Storage/storageAccounts/sto834",
+            "kind": "Storage",
+            "location": "eastus2euap",
+            "name": "sto834",
+            "properties": {
+              "creationTime": "2017-05-24T13:28:20.8686541Z",
+              "primaryEndpoints": {
+                "blob": "https://sto834.blob.core.windows.net/",
+                "file": "https://sto834.file.core.windows.net/",
+                "queue": "https://sto834.queue.core.windows.net/",
+                "table": "https://sto834.table.core.windows.net/"
+              },
+              "primaryLocation": "eastus2euap",
+              "provisioningState": "Succeeded",
+              "secondaryLocation": "centraluseuap",
+              "statusOfPrimary": "available",
+              "statusOfSecondary": "available",
+              "supportsHttpsTrafficOnly": false
+            },
+            "sku": {
+              "name": "Standard_GRS",
+              "tier": "Standard"
+            },
+            "tags": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "type": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/testcmk3/providers/Microsoft.Storage/storageAccounts/sto9174",
+            "identity": {
+              "principalId": "933e3ddf-1802-4a51-9469-18a33b576f88",
+              "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+              "type": "SystemAssigned"
+            },
+            "kind": "Storage",
+            "location": "eastus2euap",
+            "name": "sto9174",
+            "properties": {
+              "creationTime": "2017-05-24T09:46:19.6556989Z",
+              "primaryEndpoints": {
+                "blob": "https://sto9174.blob.core.windows.net/",
+                "file": "https://sto9174.file.core.windows.net/",
+                "queue": "https://sto9174.queue.core.windows.net/",
+                "table": "https://sto9174.table.core.windows.net/"
+              },
+              "primaryLocation": "eastus2euap",
+              "provisioningState": "Succeeded",
+              "secondaryLocation": "centraluseuap",
+              "statusOfPrimary": "available",
+              "statusOfSecondary": "available",
+              "supportsHttpsTrafficOnly": false
+            },
+            "sku": {
+              "name": "Standard_GRS",
+              "tier": "Standard"
+            },
+            "tags": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "type": "Microsoft.Storage/storageAccounts"
+          }
+        ]
+      }
+    }
+  }
+}

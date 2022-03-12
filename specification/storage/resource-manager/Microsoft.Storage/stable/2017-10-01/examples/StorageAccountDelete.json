@@ -1,0 +1,13 @@
+{
+  "parameters": {
+    "subscriptionId": "27de630f-e1ee-42de-8849-90def4986454",
+    "resourceGroupName": "res4228",
+    "accountName": "sto2434",
+    "api-version": "2017-10-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {},
+    "204": {}
+  }
+}

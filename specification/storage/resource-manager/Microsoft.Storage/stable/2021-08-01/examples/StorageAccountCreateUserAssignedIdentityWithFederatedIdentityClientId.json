@@ -1,0 +1,120 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res131918",
+    "accountName": "sto131918",
+    "api-version": "2021-08-01",
+    "parameters": {
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "/subscriptions/{subscription-id}/resourceGroups/res9101/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{managed-identity-name}": {}
+        }
+      },
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "Storage",
+      "location": "eastus",
+      "properties": {
+        "encryption": {
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keyvaultproperties": {
+            "keyvaulturi": "https://myvault8569.vault.azure.net",
+            "keyname": "wrappingKey",
+            "keyversion": ""
+          },
+          "keySource": "Microsoft.Keyvault",
+          "identity": {
+            "userAssignedIdentity": "/subscriptions/{subscription-id}/resourceGroups/res9101/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{managed-identity-name}",
+            "federatedIdentityClientId": "f83c6b1b-4d34-47e4-bb34-9d83df58b540"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "identity": {
+          "userAssignedIdentities": {
+            "/subscriptions/{subscription-id}/resourceGroups/res9101/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{managed-identity-name}": {
+              "principalId": "8d823284-1060-42a5-9ec4-ed3d831e24d7",
+              "clientId": "fbaa6278-1ecc-415c-819f-6e2058d3acb5"
+            }
+          },
+          "type": "UserAssigned"
+        },
+        "sku": {
+          "name": "Standard_LRS",
+          "tier": "Standard"
+        },
+        "kind": "StorageV2",
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res9101/providers/Microsoft.Storage/storageAccounts/sto4445",
+        "name": "sto4445",
+        "type": "Microsoft.Storage/storageAccounts",
+        "location": "eastus",
+        "tags": {},
+        "properties": {
+          "privateEndpointConnections": [],
+          "networkAcls": {
+            "bypass": "AzureServices",
+            "virtualNetworkRules": [],
+            "ipRules": [],
+            "defaultAction": "Allow"
+          },
+          "supportsHttpsTrafficOnly": true,
+          "encryption": {
+            "identity": {
+              "userAssignedIdentity": "/subscriptions/{subscription-id}/resourcegroups/res9101/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{managed-identity-name}",
+              "federatedIdentityClientId": "f83c6b1b-4d34-47e4-bb34-9d83df58b540"
+            },
+            "keyvaultproperties": {
+              "keyvaulturi": "https://myvault8569.vault.azure.net",
+              "keyname": "wrappingKey",
+              "keyversion": "",
+              "currentVersionedKeyIdentifier": "https://myvault8569.vault.azure.net/keys/wrappingKey/0682afdd9c104f4285df20107e956cad",
+              "lastKeyRotationTimestamp": "2019-12-13T20:36:23.7023290Z"
+            },
+            "services": {
+              "file": {
+                "keyType": "Account",
+                "enabled": true,
+                "lastEnabledTime": "2020-12-15T00:43:14.1739587Z"
+              },
+              "blob": {
+                "keyType": "Account",
+                "enabled": true,
+                "lastEnabledTime": "2020-12-15T00:43:14.1739587Z"
+              }
+            },
+            "keySource": "Microsoft.Keyvault"
+          },
+          "accessTier": "Hot",
+          "provisioningState": "Succeeded",
+          "creationTime": "2020-12-15T00:43:14.0839093Z",
+          "primaryEndpoints": {
+            "web": "https://sto4445.web.core.windows.net/",
+            "dfs": "https://sto4445.dfs.core.windows.net/",
+            "blob": "https://sto4445.blob.core.windows.net/",
+            "file": "https://sto4445.file.core.windows.net/",
+            "queue": "https://sto4445.queue.core.windows.net/",
+            "table": "https://sto4445.table.core.windows.net/"
+          },
+          "primaryLocation": "eastus",
+          "statusOfPrimary": "available"
+        }
+      }
+    },
+    "202": {}
+  }
+}

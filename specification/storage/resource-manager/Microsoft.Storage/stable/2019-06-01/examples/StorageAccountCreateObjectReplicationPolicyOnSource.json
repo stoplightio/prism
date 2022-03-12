@@ -1,0 +1,53 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res7687",
+    "accountName": "src1122",
+    "objectReplicationPolicyId": "2a20bb73-5717-4635-985a-5d4cf777438f",
+    "api-version": "2019-06-01",
+    "monitor": "true",
+    "properties": {
+      "properties": {
+        "sourceAccount": "src1122",
+        "destinationAccount": "dst112",
+        "rules": [
+          {
+            "ruleId": "d5d18a48-8801-4554-aeaa-74faf65f5ef9",
+            "sourceContainer": "scont139",
+            "destinationContainer": "dcont139",
+            "filters": {
+              "prefixMatch": ["blobA", "blobB"],
+              "minCreationTime": "2020-02-19T16:05:00Z"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res7687/providers/Microsoft.Storage/storageAccounts/src1122/objectReplicationPolicies/2a20bb73-5717-4635-985a-5d4cf777438f",
+        "name": "2a20bb73-5717-4635-985a-5d4cf777438f",
+        "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+        "properties": {
+          "policyId": "2a20bb73-5717-4635-985a-5d4cf777438f",
+          "enabledTime": "2019-06-08T03:01:55.7168089Z",
+          "sourceAccount": "src1122",
+          "destinationAccount": "dst112",
+          "rules": [
+            {
+              "ruleId": "d5d18a48-8801-4554-aeaa-74faf65f5ef9",
+              "sourceContainer": "sourceContainer1",
+              "destinationContainer": "destContainer1",
+              "filters": {
+                "prefixMatch": ["blobA", "blobB"],
+                "minCreationTime": "2020-02-19T16:05:00Z"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

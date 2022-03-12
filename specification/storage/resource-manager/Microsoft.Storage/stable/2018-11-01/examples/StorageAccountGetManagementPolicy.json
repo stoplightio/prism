@@ -1,0 +1,55 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res6977",
+    "accountName": "sto2527",
+    "managementPolicyName": "default",
+    "api-version": "2018-11-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res7231/providers/Microsoft.Storage/storageAccounts/sto288/managementPolicies/default",
+        "name": "DefaultManagementPolicy",
+        "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+        "properties": {
+          "policy": {
+            "rules": [
+              {
+                "enabled": true,
+                "name": "olcmtest",
+                "type": "Lifecycle",
+                "definition": {
+                  "filters": {
+                    "blobTypes": ["blockBlob"],
+                    "prefixMatch": ["olcmtestcontainer"]
+                  },
+                  "actions": {
+                    "baseBlob": {
+                      "tierToCool": {
+                        "daysAfterModificationGreaterThan": 30
+                      },
+                      "tierToArchive": {
+                        "daysAfterModificationGreaterThan": 90
+                      },
+                      "delete": {
+                        "daysAfterModificationGreaterThan": 1000
+                      }
+                    },
+                    "snapshot": {
+                      "delete": {
+                        "daysAfterCreationGreaterThan": 30
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "lastModifiedTime": "2018-06-08T03:01:55.7168089Z"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "api-version": "2018-02-01",
+    "accountName": {
+      "name": "sto3363",
+      "type": "Microsoft.Storage/storageAccounts"
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "nameAvailable": true
+      }
+    }
+  }
+}

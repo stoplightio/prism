@@ -1,0 +1,1340 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2019-06-01",
+    "title": "StorageManagementClient",
+    "description": "The Azure Storage Management API."
+  },
+  "host": "management.azure.com",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices": {
+      "get": {
+        "tags": ["BlobService"],
+        "operationId": "BlobServices_List",
+        "x-ms-examples": {
+          "ListBlobServices": {
+            "$ref": "./examples/BlobServicesList.json"
+          }
+        },
+        "description": "List blob services of storage account. It returns a collection of one object named default.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List blob services operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/BlobServiceItems"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices/{BlobServicesName}": {
+      "put": {
+        "tags": ["BlobService"],
+        "operationId": "BlobServices_SetServiceProperties",
+        "x-ms-examples": {
+          "PutBlobServices": {
+            "$ref": "./examples/BlobServicesPut.json"
+          },
+          "BlobServicesPutLastAccessTimeBasedTracking": {
+            "$ref": "./examples/BlobServicesPutLastAccessTimeBasedTracking.json"
+          }
+        },
+        "description": "Sets the properties of a storage account’s Blob service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules. ",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/BlobServicesName"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BlobServiceProperties"
+            },
+            "description": "The properties of a storage account’s Blob service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Sets The properties of a storage account’s Blob service successfully.",
+            "schema": {
+              "$ref": "#/definitions/BlobServiceProperties"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["BlobService"],
+        "operationId": "BlobServices_GetServiceProperties",
+        "x-ms-examples": {
+          "GetBlobServices": {
+            "$ref": "./examples/BlobServicesGet.json"
+          }
+        },
+        "description": "Gets the properties of a storage account’s Blob service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/BlobServicesName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned the properties of a storage account’s Blob service.",
+            "schema": {
+              "$ref": "#/definitions/BlobServiceProperties"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices/default/containers": {
+      "get": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_List",
+        "x-ms-examples": {
+          "ListContainers": {
+            "$ref": "./examples/BlobContainersList.json"
+          },
+          "ListDeletedContainers": {
+            "$ref": "./examples/DeletedBlobContainersList.json"
+          }
+        },
+        "description": "Lists all containers and does not support a prefix like data plane. Also SRP today does not return continuation token.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "$maxpagesize",
+            "in": "query",
+            "type": "string",
+            "description": "Optional. Specified maximum number of containers that can be included in the list."
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "type": "string",
+            "description": "Optional. When specified, only container names starting with the filter will be listed."
+          },
+          {
+            "name": "$include",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": ["deleted"],
+            "x-ms-enum": {
+              "name": "ListContainersInclude",
+              "modelAsString": true
+            },
+            "description": "Optional, used to include the properties for soft deleted blob containers."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List Container operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/ListContainerItems"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices/default/containers/{containerName}": {
+      "put": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_Create",
+        "x-ms-examples": {
+          "PutContainers": {
+            "$ref": "./examples/BlobContainersPut.json"
+          },
+          "PutContainerWithDefaultEncryptionScope": {
+            "$ref": "./examples/BlobContainersPutDefaultEncryptionScope.json"
+          }
+        },
+        "description": "Creates a new container under the specified account as described by request body. The container resource includes metadata and properties for that container. It does not include a list of the blobs contained by the container. ",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "name": "blobContainer",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BlobContainer"
+            },
+            "description": "Properties of the blob container to create."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created -- Create Container operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/BlobContainer"
+            }
+          },
+          "200": {
+            "description": "OK -- The Container is already created.",
+            "schema": {
+              "$ref": "#/definitions/BlobContainer"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_Update",
+        "x-ms-examples": {
+          "UpdateContainers": {
+            "$ref": "./examples/BlobContainersPatch.json"
+          }
+        },
+        "description": "Updates container properties as specified in request body. Properties not mentioned in the request will be unchanged. Update fails if the specified container doesn't already exist. ",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "name": "blobContainer",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BlobContainer"
+            },
+            "description": "Properties to update for the blob container."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Update Container operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/BlobContainer",
+              "description": "Properties of the updated blob container."
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_Get",
+        "x-ms-examples": {
+          "GetContainers": {
+            "$ref": "./examples/BlobContainersGet.json"
+          }
+        },
+        "description": "Gets properties of a specified container. ",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Get Container operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/BlobContainer"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_Delete",
+        "x-ms-examples": {
+          "DeleteContainers": {
+            "$ref": "./examples/BlobContainersDelete.json"
+          }
+        },
+        "description": "Deletes specified container under its account.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Delete Container operation completed successfully."
+          },
+          "204": {
+            "description": "No Content -- The Container not exist."
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices/default/containers/{containerName}/setLegalHold": {
+      "post": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_SetLegalHold",
+        "x-ms-examples": {
+          "SetLegalHoldContainers": {
+            "$ref": "./examples/BlobContainersSetLegalHold.json"
+          }
+        },
+        "description": "Sets legal hold tags. Setting the same tag results in an idempotent operation. SetLegalHold follows an append pattern and does not clear out the existing tags that are not specified in the request.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "LegalHold",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LegalHold"
+            },
+            "description": "The LegalHold property that will be set to a blob container."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Set legal hold tags for Container completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/LegalHold"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices/default/containers/{containerName}/clearLegalHold": {
+      "post": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_ClearLegalHold",
+        "x-ms-examples": {
+          "ClearLegalHoldContainers": {
+            "$ref": "./examples/BlobContainersClearLegalHold.json"
+          }
+        },
+        "description": "Clears legal hold tags. Clearing the same or non-existent tag results in an idempotent operation. ClearLegalHold clears out only the specified tags in the request.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "LegalHold",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LegalHold"
+            },
+            "description": "The LegalHold property that will be clear from a blob container."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Clear legal hold tags for Container completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/LegalHold"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices/default/containers/{containerName}/immutabilityPolicies/{immutabilityPolicyName}": {
+      "put": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_CreateOrUpdateImmutabilityPolicy",
+        "x-ms-examples": {
+          "CreateOrUpdateImmutabilityPolicy": {
+            "$ref": "./examples/BlobContainersPutImmutabilityPolicy.json"
+          }
+        },
+        "description": "Creates or updates an unlocked immutability policy. ETag in If-Match is honored if given but not required for this operation.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "#/parameters/ImmutabilityPolicyName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ImmutabilityPolicy"
+            },
+            "description": "The ImmutabilityPolicy Properties that will be created or updated to a blob container."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "description": "The entity state (ETag) version of the immutability policy to update. A value of \"*\" can be used to apply the operation only if the immutability policy already exists. If omitted, this operation will always be applied."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Creates or updates container ImmutabilityPolicy operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/ImmutabilityPolicy"
+            },
+            "headers": {
+              "ETag": {
+                "description": "The ETag HTTP response header. This is an opaque string. You can use it to detect whether the resource has changed between requests. In particular, you can pass the ETag to one of the If-Match or If-None-Match headers.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_GetImmutabilityPolicy",
+        "x-ms-examples": {
+          "GetImmutabilityPolicy": {
+            "$ref": "./examples/BlobContainersGetImmutabilityPolicy.json"
+          }
+        },
+        "description": "Gets the existing immutability policy along with the corresponding ETag in response headers and body.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "#/parameters/ImmutabilityPolicyName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "description": "The entity state (ETag) version of the immutability policy to update. A value of \"*\" can be used to apply the operation only if the immutability policy already exists. If omitted, this operation will always be applied."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Gets container ImmutabilityPolicy operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/ImmutabilityPolicy"
+            },
+            "headers": {
+              "ETag": {
+                "description": "The ETag HTTP response header. This is an opaque string. You can use it to detect whether the resource has changed between requests. In particular, you can pass the ETag to one of the If-Match or If-None-Match headers.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_DeleteImmutabilityPolicy",
+        "x-ms-examples": {
+          "DeleteImmutabilityPolicy": {
+            "$ref": "./examples/BlobContainersDeleteImmutabilityPolicy.json"
+          }
+        },
+        "description": "Aborts an unlocked immutability policy. The response of delete has immutabilityPeriodSinceCreationInDays set to 0. ETag in If-Match is required for this operation. Deleting a locked immutability policy is not allowed, the only way is to delete the container after deleting all expired blobs inside the policy locked container.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "#/parameters/ImmutabilityPolicyName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The entity state (ETag) version of the immutability policy to update. A value of \"*\" can be used to apply the operation only if the immutability policy already exists. If omitted, this operation will always be applied."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Deletes container ImmutabilityPolicy operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/ImmutabilityPolicy"
+            },
+            "headers": {
+              "ETag": {
+                "description": "The ETag HTTP response header. This is an opaque string. You can use it to detect whether the resource has changed between requests. In particular, you can pass the ETag to one of the If-Match or If-None-Match headers.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices/default/containers/{containerName}/immutabilityPolicies/default/lock": {
+      "post": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_LockImmutabilityPolicy",
+        "x-ms-examples": {
+          "LockImmutabilityPolicy": {
+            "$ref": "./examples/BlobContainersLockImmutabilityPolicy.json"
+          }
+        },
+        "description": "Sets the ImmutabilityPolicy to Locked state. The only action allowed on a Locked policy is ExtendImmutabilityPolicy action. ETag in If-Match is required for this operation.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The entity state (ETag) version of the immutability policy to update. A value of \"*\" can be used to apply the operation only if the immutability policy already exists. If omitted, this operation will always be applied."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Locks container ImmutabilityPolicy operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/ImmutabilityPolicy"
+            },
+            "headers": {
+              "ETag": {
+                "description": "The ETag HTTP response header. This is an opaque string. You can use it to detect whether the resource has changed between requests. In particular, you can pass the ETag to one of the If-Match or If-None-Match headers.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices/default/containers/{containerName}/immutabilityPolicies/default/extend": {
+      "post": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_ExtendImmutabilityPolicy",
+        "x-ms-examples": {
+          "ExtendImmutabilityPolicy": {
+            "$ref": "./examples/BlobContainersExtendImmutabilityPolicy.json"
+          }
+        },
+        "description": "Extends the immutabilityPeriodSinceCreationInDays of a locked immutabilityPolicy. The only action allowed on a Locked policy will be this action. ETag in If-Match is required for this operation.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ImmutabilityPolicy"
+            },
+            "description": "The ImmutabilityPolicy Properties that will be extended for a blob container."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "The entity state (ETag) version of the immutability policy to update. A value of \"*\" can be used to apply the operation only if the immutability policy already exists. If omitted, this operation will always be applied."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Extends container ImmutabilityPolicy operation completed successfully..",
+            "schema": {
+              "$ref": "#/definitions/ImmutabilityPolicy"
+            },
+            "headers": {
+              "ETag": {
+                "description": "The ETag HTTP response header. This is an opaque string. You can use it to detect whether the resource has changed between requests. In particular, you can pass the ETag to one of the If-Match or If-None-Match headers.",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/blobServices/default/containers/{containerName}/lease": {
+      "post": {
+        "tags": ["BlobContainers"],
+        "operationId": "BlobContainers_Lease",
+        "x-ms-examples": {
+          "Acquire a lease on a container": {
+            "$ref": "./examples/BlobContainersLease_Acquire.json"
+          },
+          "Break a lease on a container": {
+            "$ref": "./examples/BlobContainersLease_Break.json"
+          }
+        },
+        "description": "The Lease Container operation establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ContainerName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LeaseContainerRequest"
+            },
+            "description": "Lease Container request body."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Lease Container operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/LeaseContainerResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ContainerProperties": {
+      "properties": {
+        "version": {
+          "type": "string",
+          "readOnly": true,
+          "description": "The version of the deleted blob container."
+        },
+        "deleted": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Indicates whether the blob container was deleted."
+        },
+        "deletedTime": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Blob container deletion time."
+        },
+        "remainingRetentionDays": {
+          "type": "integer",
+          "readOnly": true,
+          "description": "Remaining retention days for soft deleted blob container."
+        },
+        "defaultEncryptionScope": {
+          "type": "string",
+          "description": "Default the container to use specified encryption scope for all writes."
+        },
+        "denyEncryptionScopeOverride": {
+          "type": "boolean",
+          "description": "Block override of encryption scope from the container default."
+        },
+        "publicAccess": {
+          "type": "string",
+          "enum": ["Container", "Blob", "None"],
+          "x-ms-enum": {
+            "name": "PublicAccess",
+            "modelAsString": false
+          },
+          "description": "Specifies whether data in the container may be accessed publicly and the level of access."
+        },
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Returns the date and time the container was last modified."
+        },
+        "leaseStatus": {
+          "type": "string",
+          "readOnly": true,
+          "enum": ["Locked", "Unlocked"],
+          "x-ms-enum": {
+            "name": "LeaseStatus",
+            "modelAsString": true
+          },
+          "description": "The lease status of the container."
+        },
+        "leaseState": {
+          "type": "string",
+          "readOnly": true,
+          "enum": ["Available", "Leased", "Expired", "Breaking", "Broken"],
+          "x-ms-enum": {
+            "name": "LeaseState",
+            "modelAsString": true
+          },
+          "description": "Lease state of the container."
+        },
+        "leaseDuration": {
+          "type": "string",
+          "readOnly": true,
+          "enum": ["Infinite", "Fixed"],
+          "x-ms-enum": {
+            "name": "LeaseDuration",
+            "modelAsString": true
+          },
+          "description": "Specifies whether the lease on a container is of infinite or fixed duration, only when the container is leased."
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "A name-value pair to associate with the container as metadata."
+        },
+        "immutabilityPolicy": {
+          "readOnly": true,
+          "$ref": "#/definitions/ImmutabilityPolicyProperties",
+          "x-ms-client-name": "ImmutabilityPolicy",
+          "description": "The ImmutabilityPolicy property of the container."
+        },
+        "legalHold": {
+          "readOnly": true,
+          "$ref": "#/definitions/LegalHoldProperties",
+          "description": "The LegalHold property of the container."
+        },
+        "hasLegalHold": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "The hasLegalHold public property is set to true by SRP if there are at least one existing tag. The hasLegalHold public property is set to false by SRP if all existing legal hold tags are cleared out. There can be a maximum of 1000 blob containers with hasLegalHold=true for a given account."
+        },
+        "hasImmutabilityPolicy": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "The hasImmutabilityPolicy public property is set to true by SRP if ImmutabilityPolicy has been created for this container. The hasImmutabilityPolicy public property is set to false by SRP if ImmutabilityPolicy has not been created for this container."
+        }
+      },
+      "description": "The properties of a container."
+    },
+    "BlobContainer": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/ContainerProperties",
+          "x-ms-client-flatten": true,
+          "x-ms-client-name": "ContainerProperties",
+          "description": "Properties of the blob container."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/AzureEntityResource"
+        }
+      ],
+      "description": "Properties of the blob container, including Id, resource name, resource type, Etag."
+    },
+    "ImmutabilityPolicyProperty": {
+      "properties": {
+        "immutabilityPeriodSinceCreationInDays": {
+          "type": "integer",
+          "description": "The immutability period for the blobs in the container since the policy creation, in days."
+        },
+        "state": {
+          "type": "string",
+          "readOnly": true,
+          "enum": ["Locked", "Unlocked"],
+          "x-ms-enum": {
+            "name": "ImmutabilityPolicyState",
+            "modelAsString": true
+          },
+          "description": "The ImmutabilityPolicy state of a blob container, possible values include: Locked and Unlocked."
+        },
+        "allowProtectedAppendWrites": {
+          "type": "boolean",
+          "description": "This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API"
+        }
+      },
+      "description": "The properties of an ImmutabilityPolicy of a blob container."
+    },
+    "ImmutabilityPolicyProperties": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/ImmutabilityPolicyProperty",
+          "x-ms-client-flatten": true,
+          "description": "The properties of an ImmutabilityPolicy of a blob container."
+        },
+        "etag": {
+          "type": "string",
+          "readOnly": true,
+          "description": "ImmutabilityPolicy Etag."
+        },
+        "updateHistory": {
+          "type": "array",
+          "readOnly": true,
+          "items": {
+            "$ref": "#/definitions/UpdateHistoryProperty"
+          },
+          "description": "The ImmutabilityPolicy update history of the blob container."
+        }
+      },
+      "description": "The properties of an ImmutabilityPolicy of a blob container."
+    },
+    "ImmutabilityPolicy": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/ImmutabilityPolicyProperty",
+          "x-ms-client-flatten": true,
+          "description": "The properties of an ImmutabilityPolicy of a blob container."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/AzureEntityResource"
+        }
+      ],
+      "required": ["properties"],
+      "description": "The ImmutabilityPolicy property of a blob container, including Id, resource name, resource type, Etag."
+    },
+    "UpdateHistoryProperty": {
+      "properties": {
+        "update": {
+          "type": "string",
+          "readOnly": true,
+          "enum": ["put", "lock", "extend"],
+          "x-ms-enum": {
+            "name": "ImmutabilityPolicyUpdateType",
+            "modelAsString": true
+          },
+          "description": "The ImmutabilityPolicy update type of a blob container, possible values include: put, lock and extend."
+        },
+        "immutabilityPeriodSinceCreationInDays": {
+          "type": "integer",
+          "readOnly": true,
+          "description": "The immutability period for the blobs in the container since the policy creation, in days."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Returns the date and time the ImmutabilityPolicy was updated."
+        },
+        "objectIdentifier": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Returns the Object ID of the user who updated the ImmutabilityPolicy."
+        },
+        "tenantId": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Returns the Tenant ID that issued the token for the user who updated the ImmutabilityPolicy."
+        },
+        "upn": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Returns the User Principal Name of the user who updated the ImmutabilityPolicy."
+        }
+      },
+      "description": "An update history of the ImmutabilityPolicy of a blob container."
+    },
+    "LegalHoldProperties": {
+      "properties": {
+        "hasLegalHold": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "The hasLegalHold public property is set to true by SRP if there are at least one existing tag. The hasLegalHold public property is set to false by SRP if all existing legal hold tags are cleared out. There can be a maximum of 1000 blob containers with hasLegalHold=true for a given account."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TagProperty"
+          },
+          "description": "The list of LegalHold tags of a blob container."
+        }
+      },
+      "description": "The LegalHold property of a blob container."
+    },
+    "TagProperty": {
+      "properties": {
+        "tag": {
+          "type": "string",
+          "readOnly": true,
+          "description": "The tag value."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Returns the date and time the tag was added."
+        },
+        "objectIdentifier": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Returns the Object ID of the user who added the tag."
+        },
+        "tenantId": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Returns the Tenant ID that issued the token for the user who added the tag."
+        },
+        "upn": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Returns the User Principal Name of the user who added the tag."
+        }
+      },
+      "description": "A tag of the LegalHold of a blob container."
+    },
+    "LegalHold": {
+      "properties": {
+        "hasLegalHold": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "The hasLegalHold public property is set to true by SRP if there are at least one existing tag. The hasLegalHold public property is set to false by SRP if all existing legal hold tags are cleared out. There can be a maximum of 1000 blob containers with hasLegalHold=true for a given account."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 23,
+            "minLength": 3
+          },
+          "description": "Each tag should be 3 to 23 alphanumeric characters and is normalized to lower case at SRP."
+        }
+      },
+      "required": ["tags"],
+      "description": "The LegalHold property of a blob container."
+    },
+    "ListContainerItem": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/ContainerProperties",
+          "x-ms-client-flatten": true,
+          "description": "The blob container properties be listed out."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/AzureEntityResource"
+        }
+      ],
+      "description": "The blob container properties be listed out."
+    },
+    "ListContainerItems": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListContainerItem"
+          },
+          "description": "List of blobs containers returned.",
+          "readOnly": true
+        },
+        "nextLink": {
+          "type": "string",
+          "description": "Request URL that can be used to query next page of containers. Returned when total number of requested containers exceed maximum page size.",
+          "readOnly": true
+        }
+      },
+      "description": "Response schema. Contains list of blobs returned, and if paging is requested or required, a URL to next page of containers."
+    },
+    "BlobServiceProperties": {
+      "properties": {
+        "properties": {
+          "properties": {
+            "cors": {
+              "$ref": "./common.json#/definitions/CorsRules",
+              "description": "Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service."
+            },
+            "defaultServiceVersion": {
+              "type": "string",
+              "description": "DefaultServiceVersion indicates the default version to use for requests to the Blob service if an incoming request’s version is not specified. Possible values include version 2008-10-27 and all more recent versions."
+            },
+            "deleteRetentionPolicy": {
+              "$ref": "./common.json#/definitions/DeleteRetentionPolicy",
+              "description": "The blob service properties for blob soft delete."
+            },
+            "isVersioningEnabled": {
+              "type": "boolean",
+              "description": "Versioning is enabled if set to true."
+            },
+            "automaticSnapshotPolicyEnabled": {
+              "type": "boolean",
+              "description": "Deprecated in favor of isVersioningEnabled property."
+            },
+            "changeFeed": {
+              "$ref": "#/definitions/ChangeFeed",
+              "description": "The blob service properties for change feed events."
+            },
+            "restorePolicy": {
+              "$ref": "#/definitions/RestorePolicyProperties",
+              "description": "The blob service properties for blob restore policy."
+            },
+            "containerDeleteRetentionPolicy": {
+              "$ref": "./common.json#/definitions/DeleteRetentionPolicy",
+              "description": "The blob service properties for container soft delete."
+            },
+            "lastAccessTimeTrackingPolicy": {
+              "$ref": "#/definitions/LastAccessTimeTrackingPolicy",
+              "description": "The blob service property to configure last access time based tracking policy."
+            }
+          },
+          "x-ms-client-flatten": true,
+          "x-ms-client-name": "BlobServiceProperties",
+          "description": "The properties of a storage account’s Blob service."
+        },
+        "sku": {
+          "$ref": "./common.json#/definitions/Sku",
+          "readOnly": true,
+          "description": "Sku name and tier."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/Resource"
+        }
+      ],
+      "description": "The properties of a storage account’s Blob service."
+    },
+    "BlobServiceItems": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlobServiceProperties"
+          },
+          "description": "List of blob services returned.",
+          "readOnly": true
+        }
+      }
+    },
+    "ChangeFeed": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Indicates whether change feed event logging is enabled for the Blob service."
+        },
+        "retentionInDays": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 146000,
+          "format": "int32",
+          "description": "Indicates the duration of changeFeed retention in days. Minimum value is 1 day and maximum value is 146000 days (400 years). A null value indicates an infinite retention of the change feed."
+        }
+      },
+      "description": "The blob service properties for change feed events."
+    },
+    "RestorePolicyProperties": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Blob restore is enabled if set to true."
+        },
+        "days": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 365,
+          "description": "how long this blob can be restored. It should be great than zero and less than DeleteRetentionPolicy.days."
+        },
+        "lastEnabledTime": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Deprecated in favor of minRestoreTime property."
+        },
+        "minRestoreTime": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Returns the minimum date and time that the restore can be started."
+        }
+      },
+      "required": ["enabled"],
+      "description": "The blob service properties for blob restore policy"
+    },
+    "LastAccessTimeTrackingPolicy": {
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "description": "When set to true last access time based tracking is enabled."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the policy. The valid value is AccessTimeTracking. This field is currently read only",
+          "enum": ["AccessTimeTracking"],
+          "x-ms-enum": {
+            "name": "name",
+            "modelAsString": true
+          }
+        },
+        "trackingGranularityInDays": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The field specifies blob object tracking granularity in days, typically how often the blob object should be tracked.This field is currently read only with value as 1"
+        },
+        "blobType": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of predefined supported blob types. Only blockBlob is the supported value. This field is currently read only"
+        }
+      },
+      "required": ["enable"],
+      "description": "The blob service properties for Last access time based tracking policy."
+    },
+    "LeaseContainerRequest": {
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["Acquire", "Renew", "Change", "Release", "Break"],
+          "description": "Specifies the lease action. Can be one of the available actions."
+        },
+        "leaseId": {
+          "type": "string",
+          "description": "Identifies the lease. Can be specified in any valid GUID string format."
+        },
+        "breakPeriod": {
+          "type": "integer",
+          "description": "Optional. For a break action, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60."
+        },
+        "leaseDuration": {
+          "type": "integer",
+          "description": "Required for acquire. Specifies the duration of the lease, in seconds, or negative one (-1) for a lease that never expires."
+        },
+        "proposedLeaseId": {
+          "type": "string",
+          "description": "Optional for acquire, required for change. Proposed lease ID, in a GUID string format."
+        }
+      },
+      "required": ["action"],
+      "description": "Lease Container request schema."
+    },
+    "LeaseContainerResponse": {
+      "properties": {
+        "leaseId": {
+          "type": "string",
+          "description": "Returned unique lease ID that must be included with any request to delete the container, or to renew, change, or release the lease."
+        },
+        "leaseTimeSeconds": {
+          "type": "string",
+          "description": "Approximate time remaining in the lease period, in seconds."
+        }
+      },
+      "description": "Lease Container response schema."
+    }
+  },
+  "parameters": {
+    "ContainerName": {
+      "name": "containerName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the blob container within the specified storage account. Blob container names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only. Every dash (-) character must be immediately preceded and followed by a letter or number.",
+      "maxLength": 63,
+      "minLength": 3,
+      "x-ms-parameter-location": "method"
+    },
+    "ImmutabilityPolicyName": {
+      "name": "immutabilityPolicyName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the blob container immutabilityPolicy within the specified storage account. ImmutabilityPolicy Name must be 'default'",
+      "enum": ["default"],
+      "x-ms-parameter-location": "method"
+    },
+    "BlobServicesName": {
+      "name": "BlobServicesName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the blob Service within the specified storage account. Blob Service Name must be 'default'",
+      "enum": ["default"],
+      "x-ms-parameter-location": "method"
+    }
+  },
+  "securityDefinitions": {
+    "azure_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/authorize",
+      "flow": "implicit",
+      "description": "Azure Active Directory OAuth2 Flow",
+      "scopes": {
+        "user_impersonation": "impersonate your user account"
+      }
+    }
+  },
+  "security": [
+    {
+      "azure_auth": ["user_impersonation"]
+    }
+  ]
+}

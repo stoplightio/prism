@@ -1,0 +1,90 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res7687",
+    "accountName": "sto9699",
+    "managementPolicyName": "default",
+    "api-version": "2020-08-01-preview",
+    "monitor": "true",
+    "properties": {
+      "properties": {
+        "policy": {
+          "rules": [
+            {
+              "enabled": true,
+              "name": "olcmtest1",
+              "type": "Lifecycle",
+              "definition": {
+                "filters": {
+                  "blobTypes": ["blockBlob", "appendBlob"],
+                  "prefixMatch": ["olcmtestcontainer1"]
+                },
+                "actions": {
+                  "baseBlob": {
+                    "delete": {
+                      "daysAfterModificationGreaterThan": 90
+                    }
+                  },
+                  "snapshot": {
+                    "delete": {
+                      "daysAfterCreationGreaterThan": 90
+                    }
+                  },
+                  "version": {
+                    "delete": {
+                      "daysAfterCreationGreaterThan": 90
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res7231/providers/Microsoft.Storage/storageAccounts/sto288/managementPolicies/default",
+        "name": "DefaultManagementPolicy",
+        "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+        "properties": {
+          "policy": {
+            "rules": [
+              {
+                "enabled": true,
+                "name": "olcmtest1",
+                "type": "Lifecycle",
+                "definition": {
+                  "filters": {
+                    "blobTypes": ["blockBlob", "appendBlob"],
+                    "prefixMatch": ["olcmtestcontainer1"]
+                  },
+                  "actions": {
+                    "baseBlob": {
+                      "delete": {
+                        "daysAfterModificationGreaterThan": 90
+                      }
+                    },
+                    "snapshot": {
+                      "delete": {
+                        "daysAfterCreationGreaterThan": 90
+                      }
+                    },
+                    "version": {
+                      "delete": {
+                        "daysAfterCreationGreaterThan": 90
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "lastModifiedTime": "2018-06-08T02:53:39.0932539Z"
+        }
+      }
+    }
+  }
+}

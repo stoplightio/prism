@@ -1,0 +1,27 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res3376",
+    "accountName": "sto328",
+    "shareName": "share6185",
+    "api-version": "2020-08-01-preview",
+    "monitor": "true",
+    "fileShare": {}
+  },
+  "responses": {
+    "201": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res3376/providers/Microsoft.Storage/storageAccounts/sto328/fileServices/default/shares/share6185",
+        "name": "share6185",
+        "type": "Microsoft.Storage/storageAccounts/fileServices/shares"
+      }
+    },
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res3376/providers/Microsoft.Storage/storageAccounts/sto328/fileServices/default/shares/share6185",
+        "name": "share6185",
+        "type": "Microsoft.Storage/storageAccounts/fileServices/shares"
+      }
+    }
+  }
+}

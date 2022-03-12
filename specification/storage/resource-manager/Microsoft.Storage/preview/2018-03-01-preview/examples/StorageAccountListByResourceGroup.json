@@ -1,0 +1,117 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res4669",
+    "api-version": "2018-03-01-preview"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "value": [
+          {
+            "sku": {
+              "name": "Standard_GRS",
+              "tier": "Standard"
+            },
+            "kind": "Storage",
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res4669/providers/Microsoft.Storage/storageAccounts/sto652",
+            "name": "sto652",
+            "type": "Microsoft.Storage/storageAccounts",
+            "location": "eastus2(stage)",
+            "tags": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "properties": {
+              "isHnsEnabled": true,
+              "networkAcls": {
+                "bypass": "AzureServices",
+                "virtualNetworkRules": [],
+                "ipRules": [],
+                "defaultAction": "Allow"
+              },
+              "supportsHttpsTrafficOnly": false,
+              "encryption": {
+                "services": {
+                  "file": {
+                    "enabled": true,
+                    "lastEnabledTime": "2018-04-13T06:35:32.6334899Z"
+                  },
+                  "blob": {
+                    "enabled": true,
+                    "lastEnabledTime": "2018-04-13T06:35:32.6334899Z"
+                  }
+                },
+                "keySource": "Microsoft.Storage"
+              },
+              "provisioningState": "Succeeded",
+              "creationTime": "2018-04-13T06:35:32.5866198Z",
+              "primaryEndpoints": {
+                "web": "https://sto652.web.core.windows.net/",
+                "dfs": "https://sto652.dfs.core.windows.net/",
+                "blob": "https://sto652.blob.core.windows.net/",
+                "queue": "https://sto652.queue.core.windows.net/",
+                "table": "https://sto652.table.core.windows.net/",
+                "file": "https://sto652.file.core.windows.net/"
+              },
+              "primaryLocation": "eastus2(stage)",
+              "statusOfPrimary": "available",
+              "secondaryLocation": "northcentralus(stage)",
+              "statusOfSecondary": "available"
+            }
+          },
+          {
+            "sku": {
+              "name": "Standard_GRS",
+              "tier": "Standard"
+            },
+            "kind": "Storage",
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res4669/providers/Microsoft.Storage/storageAccounts/sto9937",
+            "name": "sto9937",
+            "type": "Microsoft.Storage/storageAccounts",
+            "location": "eastus2(stage)",
+            "tags": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "properties": {
+              "networkAcls": {
+                "bypass": "AzureServices",
+                "virtualNetworkRules": [],
+                "ipRules": [],
+                "defaultAction": "Allow"
+              },
+              "supportsHttpsTrafficOnly": false,
+              "encryption": {
+                "services": {
+                  "file": {
+                    "enabled": true,
+                    "lastEnabledTime": "2018-04-13T06:35:13.7388977Z"
+                  },
+                  "blob": {
+                    "enabled": true,
+                    "lastEnabledTime": "2018-04-13T06:35:13.7388977Z"
+                  }
+                },
+                "keySource": "Microsoft.Storage"
+              },
+              "provisioningState": "Succeeded",
+              "creationTime": "2018-04-13T06:35:13.6607394Z",
+              "primaryEndpoints": {
+                "web": "https://sto9937.web.core.windows.net/",
+                "blob": "https://sto9937.blob.core.windows.net/",
+                "queue": "https://sto9937.queue.core.windows.net/",
+                "table": "https://sto9937.table.core.windows.net/",
+                "file": "https://sto9937.file.core.windows.net/"
+              },
+              "primaryLocation": "eastus2(stage)",
+              "statusOfPrimary": "available",
+              "secondaryLocation": "northcentralus(stage)",
+              "statusOfSecondary": "available"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

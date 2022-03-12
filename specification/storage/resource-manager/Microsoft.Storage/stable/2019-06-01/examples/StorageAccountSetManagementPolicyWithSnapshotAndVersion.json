@@ -1,0 +1,126 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res7687",
+    "accountName": "sto9699",
+    "managementPolicyName": "default",
+    "api-version": "2019-06-01",
+    "monitor": "true",
+    "properties": {
+      "properties": {
+        "policy": {
+          "rules": [
+            {
+              "enabled": true,
+              "name": "olcmtest1",
+              "type": "Lifecycle",
+              "definition": {
+                "filters": {
+                  "blobTypes": ["blockBlob"],
+                  "prefixMatch": ["olcmtestcontainer1"]
+                },
+                "actions": {
+                  "baseBlob": {
+                    "tierToCool": {
+                      "daysAfterModificationGreaterThan": 30
+                    },
+                    "tierToArchive": {
+                      "daysAfterModificationGreaterThan": 90
+                    },
+                    "delete": {
+                      "daysAfterModificationGreaterThan": 1000
+                    }
+                  },
+                  "snapshot": {
+                    "tierToCool": {
+                      "daysAfterCreationGreaterThan": 30
+                    },
+                    "tierToArchive": {
+                      "daysAfterCreationGreaterThan": 90
+                    },
+                    "delete": {
+                      "daysAfterCreationGreaterThan": 1000
+                    }
+                  },
+                  "version": {
+                    "tierToCool": {
+                      "daysAfterCreationGreaterThan": 30
+                    },
+                    "tierToArchive": {
+                      "daysAfterCreationGreaterThan": 90
+                    },
+                    "delete": {
+                      "daysAfterCreationGreaterThan": 1000
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res7231/providers/Microsoft.Storage/storageAccounts/sto288/managementPolicies/default",
+        "name": "DefaultManagementPolicy",
+        "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+        "properties": {
+          "policy": {
+            "rules": [
+              {
+                "enabled": true,
+                "name": "olcmtest1",
+                "type": "Lifecycle",
+                "definition": {
+                  "filters": {
+                    "blobTypes": ["blockBlob"],
+                    "prefixMatch": ["olcmtestcontainer1"]
+                  },
+                  "actions": {
+                    "baseBlob": {
+                      "tierToCool": {
+                        "daysAfterModificationGreaterThan": 30
+                      },
+                      "tierToArchive": {
+                        "daysAfterModificationGreaterThan": 90
+                      },
+                      "delete": {
+                        "daysAfterModificationGreaterThan": 1000
+                      }
+                    },
+                    "snapshot": {
+                      "tierToCool": {
+                        "daysAfterCreationGreaterThan": 30
+                      },
+                      "tierToArchive": {
+                        "daysAfterCreationGreaterThan": 90
+                      },
+                      "delete": {
+                        "daysAfterCreationGreaterThan": 1000
+                      }
+                    },
+                    "version": {
+                      "tierToCool": {
+                        "daysAfterCreationGreaterThan": 30
+                      },
+                      "tierToArchive": {
+                        "daysAfterCreationGreaterThan": 90
+                      },
+                      "delete": {
+                        "daysAfterCreationGreaterThan": 1000
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "lastModifiedTime": "2018-06-08T02:53:39.0932539Z"
+        }
+      }
+    }
+  }
+}

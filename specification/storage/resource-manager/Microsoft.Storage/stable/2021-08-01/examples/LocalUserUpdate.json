@@ -1,0 +1,34 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res6977",
+    "accountName": "sto2527",
+    "username": "user1",
+    "api-version": "2021-08-01",
+    "properties": {
+      "properties": {
+        "homeDirectory": "homedirectory2",
+        "hasSharedKey": false,
+        "hasSshPassword": false,
+        "hasSshKey": false
+      }
+    },
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res6977/providers/Microsoft.Storage/storageAccounts/sto2527/loalUsers/user1",
+        "name": "user1",
+        "type": "Microsoft.Storage/storageAccounts/localUsers",
+        "properties": {
+          "homeDirectory": "homedirectory2",
+          "sid": "S-1-2-0-3528686663-1788730862-2791910117-1000",
+          "hasSharedKey": false,
+          "hasSshPassword": false,
+          "hasSshKey": false
+        }
+      }
+    }
+  }
+}

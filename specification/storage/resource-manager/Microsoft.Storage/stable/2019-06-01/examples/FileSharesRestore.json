@@ -1,0 +1,17 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res3376",
+    "accountName": "sto328",
+    "shareName": "share1249",
+    "deletedShare": {
+      "deletedShareName": "share1249",
+      "deletedShareVersion": "1234567890"
+    },
+    "api-version": "2019-06-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {}
+  }
+}

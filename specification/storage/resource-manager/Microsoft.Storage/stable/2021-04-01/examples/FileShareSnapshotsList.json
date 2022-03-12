@@ -1,0 +1,39 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res9290",
+    "accountName": "sto1590",
+    "$expand": "snapshots",
+    "api-version": "2020-08-01-preview",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "value": [
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res9290/providers/Microsoft.Storage/storageAccounts/sto1590/fileServices/default/shares/share4052",
+            "name": "share4052",
+            "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+            "etag": "\"0x8D589847DAB5AF9\"",
+            "properties": {
+              "lastModifiedTime": "2020-10-26T05:47:05.0000000Z",
+              "shareQuota": 1024
+            }
+          },
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res9290/providers/Microsoft.Storage/storageAccounts/sto1590/fileServices/default/shares/share4052",
+            "name": "share4052",
+            "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+            "etag": "\"0x8D589847DAB5AF9\"",
+            "properties": {
+              "lastModifiedTime": "2020-10-26T05:47:05.0000000Z",
+              "shareQuota": 1024,
+              "snapshotTime": "2020-10-26T05:48:07.0000000Z"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

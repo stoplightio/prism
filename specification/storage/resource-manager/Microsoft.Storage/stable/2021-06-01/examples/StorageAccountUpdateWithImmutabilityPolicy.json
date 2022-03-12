@@ -1,0 +1,50 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res9407",
+    "accountName": "sto8596",
+    "api-version": "2021-06-01",
+    "monitor": "true",
+    "parameters": {
+      "properties": {
+        "immutableStorageWithVersioning": {
+          "immutabilityPolicy": {
+            "immutabilityPeriodSinceCreationInDays": 15,
+            "allowProtectedAppendWrites": true,
+            "state": "Locked"
+          },
+          "enabled": true
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res9407/providers/Microsoft.Storage/storageAccounts/sto8596",
+        "kind": "Storage",
+        "location": "eastus2(stage)",
+        "name": "sto8596",
+        "properties": {
+          "immutableStorageWithVersioning": {
+            "immutabilityPolicy": {
+              "immutabilityPeriodSinceCreationInDays": 15,
+              "allowProtectedAppendWrites": true,
+              "state": "Locked"
+            },
+            "enabled": true
+          }
+        },
+        "sku": {
+          "name": "Standard_GRS",
+          "tier": "Standard"
+        },
+        "tags": {
+          "key1": "value1",
+          "key2": "value2"
+        },
+        "type": "Microsoft.Storage/storageAccounts"
+      }
+    }
+  }
+}

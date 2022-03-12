@@ -1,0 +1,61 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res9101",
+    "accountName": "sto4445",
+    "api-version": "2019-06-01",
+    "parameters": {
+      "timeToRestore": "2019-04-20T15:30:00.0000000Z",
+      "blobRanges": [
+        {
+          "startRange": "container/blobpath1",
+          "endRange": "container/blobpath2"
+        },
+        {
+          "startRange": "container2/blobpath3",
+          "endRange": ""
+        }
+      ]
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "status": "Complete",
+        "restoreId": "{restore_id}",
+        "parameters": {
+          "timeToRestore": "2019-04-20T15:30:00.0000000Z",
+          "blobRanges": [
+            {
+              "startRange": "container/blobpath1",
+              "endRange": "container/blobpath2"
+            },
+            {
+              "startRange": "container2/blobpath3",
+              "endRange": ""
+            }
+          ]
+        }
+      }
+    },
+    "202": {
+      "body": {
+        "status": "InProgress",
+        "restoreId": "{restore_id}",
+        "parameters": {
+          "timeToRestore": "2019-04-20T15:30:00.0000000Z",
+          "blobRanges": [
+            {
+              "startRange": "container/blobpath1",
+              "endRange": "container/blobpath2"
+            },
+            {
+              "startRange": "container2/blobpath3",
+              "endRange": ""
+            }
+          ]
+        }
+      }
+    }
+  }
+}

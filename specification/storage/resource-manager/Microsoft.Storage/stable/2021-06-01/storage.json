@@ -1,0 +1,4375 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "StorageManagementClient",
+    "description": "The Azure Storage Management API.",
+    "version": "2021-06-01"
+  },
+  "host": "management.azure.com",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/providers/Microsoft.Storage/operations": {
+      "get": {
+        "tags": ["Operations"],
+        "description": "Lists all of the available Storage Rest API operations.",
+        "operationId": "Operations_List",
+        "x-ms-examples": {
+          "OperationsList": {
+            "$ref": "./examples/OperationsList.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK. The request has succeeded.",
+            "schema": {
+              "$ref": "#/definitions/OperationListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Storage/skus": {
+      "get": {
+        "tags": ["Skus"],
+        "operationId": "Skus_List",
+        "description": "Lists the available SKUs supported by Microsoft.Storage for given subscription.",
+        "x-ms-examples": {
+          "SkuList": {
+            "$ref": "./examples/SKUList.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List of storage SKUs in the given subscription retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageSkuListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Storage/checkNameAvailability": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_CheckNameAvailability",
+        "description": "Checks that the storage account name is valid and is not already in use.",
+        "x-ms-examples": {
+          "StorageAccountCheckNameAvailability": {
+            "$ref": "./examples/StorageAccountCheckNameAvailability.json"
+          }
+        },
+        "parameters": [
+          {
+            "name": "accountName",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageAccountCheckNameAvailabilityParameters"
+            },
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Operation to check the storage account name availability was successful.",
+            "schema": {
+              "$ref": "#/definitions/CheckNameAvailabilityResult"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}": {
+      "put": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_Create",
+        "description": "Asynchronously creates a new storage account with the specified parameters. If an account is already created and a subsequent create request is issued with different properties, the account properties will be updated. If an account is already created and a subsequent create or update request is issued with the exact same set of properties, the request will succeed.",
+        "x-ms-examples": {
+          "StorageAccountCreate": {
+            "$ref": "./examples/StorageAccountCreate.json"
+          },
+          "NfsV3AccountCreate": {
+            "$ref": "./examples/NfsV3AccountCreate.json"
+          },
+          "StorageAccountCreateUserAssignedEncryptionIdentityWithCMK": {
+            "$ref": "./examples/StorageAccountCreateUserAssignedEncryptionIdentityWithCMK.json"
+          },
+          "StorageAccountCreateWithImmutabilityPolicy": {
+            "$ref": "./examples/StorageAccountCreateWithImmutabilityPolicy.json"
+          },
+          "StorageAccountCreateDisallowPublicNetworkAccess.": {
+            "$ref": "./examples/StorageAccountCreateDisallowPublicNetworkAccess.json"
+          },
+          "StorageAccountCreateEnablePublicNetworkAccess.": {
+            "$ref": "./examples/StorageAccountCreateEnablePublicNetworkAccess.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageAccountCreateParameters"
+            },
+            "description": "The parameters to provide for the created account."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned when the storage account was already created from a previous request with the same properties specified in the request body.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccount"
+            }
+          },
+          "202": {
+            "description": "Accepted -- Create or update request accepted; operation will complete asynchronously."
+          }
+        },
+        "x-ms-long-running-operation": true
+      },
+      "delete": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_Delete",
+        "description": "Deletes a storage account in Microsoft Azure.",
+        "x-ms-examples": {
+          "StorageAccountDelete": {
+            "$ref": "./examples/StorageAccountDelete.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- storage account deleted successfully."
+          },
+          "204": {
+            "description": "NoContent -- account does not exist in the subscription."
+          }
+        }
+      },
+      "get": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_GetProperties",
+        "description": "Returns the properties for the specified storage account including but not limited to name, SKU name, location, and account status. The ListKeys operation should be used to retrieve storage keys.",
+        "x-ms-examples": {
+          "StorageAccountGetProperties": {
+            "$ref": "./examples/StorageAccountGetProperties.json"
+          },
+          "StorageAccountGetPropertiesCMKEnabled": {
+            "$ref": "./examples/StorageAccountGetPropertiesCMKEnabled.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "$expand",
+            "description": "May be used to expand the properties within account's properties. By default, data is not included when fetching properties. Currently we only support geoReplicationStats and blobRestoreStatus.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": ["geoReplicationStats", "blobRestoreStatus"],
+            "x-ms-enum": {
+              "name": "StorageAccountExpand",
+              "modelAsString": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- properties retrieved successfully for the storage account.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccount"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_Update",
+        "description": "The update operation can be used to update the SKU, encryption, access tier, or tags for a storage account. It can also be used to map the account to a custom domain. Only one custom domain is supported per storage account; the replacement/change of custom domain is not supported. In order to replace an old custom domain, the old value must be cleared/unregistered before a new value can be set. The update of multiple properties is supported. This call does not change the storage keys for the account. If you want to change the storage account keys, use the regenerate keys operation. The location and name of the storage account cannot be changed after creation.",
+        "x-ms-examples": {
+          "StorageAccountUpdate": {
+            "$ref": "./examples/StorageAccountUpdate.json"
+          },
+          "StorageAccountEnableAD": {
+            "$ref": "./examples/StorageAccountEnableAD.json"
+          },
+          "StorageAccountEnableCMK": {
+            "$ref": "./examples/StorageAccountEnableCMK.json"
+          },
+          "StorageAccountUpdateUserAssignedEncryptionIdentityWithCMK": {
+            "$ref": "./examples/StorageAccountUpdateUserAssignedEncryptionIdentityWithCMK.json"
+          },
+          "StorageAccountUpdateDisablePublicNetworkAccess": {
+            "$ref": "./examples/StorageAccountUpdateDisablePublicNetworkAccess.json"
+          },
+          "StorageAccountUpdateWithImmutabilityPolicy": {
+            "$ref": "./examples/StorageAccountUpdateWithImmutabilityPolicy.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageAccountUpdateParameters"
+            },
+            "description": "The parameters to provide for the updated account."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- storage account properties updated successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccount"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Storage/deletedAccounts": {
+      "get": {
+        "tags": ["DeletedAccounts"],
+        "operationId": "DeletedAccounts_List",
+        "description": "Lists deleted accounts under the subscription.",
+        "x-ms-examples": {
+          "DeletedAccountList": {
+            "$ref": "./examples/DeletedAccountList.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List of deleted accounts was retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/DeletedAccountListResult"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Storage/locations/{location}/deletedAccounts/{deletedAccountName}": {
+      "get": {
+        "tags": ["DeletedAccounts"],
+        "operationId": "DeletedAccounts_Get",
+        "description": "Get properties of specified deleted account resource.",
+        "x-ms-examples": {
+          "DeletedAccountGet": {
+            "$ref": "./examples/DeletedAccountGet.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/DeletedAccountName"
+          },
+          {
+            "name": "location",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The location of the deleted storage account."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- properties retrieved and returned successfully for the deleted account.",
+            "schema": {
+              "$ref": "#/definitions/DeletedAccount"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Storage/storageAccounts": {
+      "get": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_List",
+        "description": "Lists all the storage accounts available under the subscription. Note that storage keys are not returned; use the ListKeys operation for this.",
+        "x-ms-examples": {
+          "StorageAccountList": {
+            "$ref": "./examples/StorageAccountList.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List of storage accounts was retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccountListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts": {
+      "get": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_ListByResourceGroup",
+        "description": "Lists all the storage accounts available under the given resource group. Note that storage keys are not returned; use the ListKeys operation for this.",
+        "x-ms-examples": {
+          "StorageAccountListByResourceGroup": {
+            "$ref": "./examples/StorageAccountListByResourceGroup.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List of storage accounts in the given resource group retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccountListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/listKeys": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_ListKeys",
+        "description": "Lists the access keys or Kerberos keys (if active directory enabled) for the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountListKeys": {
+            "$ref": "./examples/StorageAccountListKeys.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "$expand",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": ["kerb"],
+            "x-ms-enum": {
+              "name": "ListKeyExpand"
+            },
+            "description": "Specifies type of the key to be listed. Possible value is kerb."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- list of keys retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccountListKeysResult"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/regenerateKey": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_RegenerateKey",
+        "description": "Regenerates one of the access keys or Kerberos keys for the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountRegenerateKey": {
+            "$ref": "./examples/StorageAccountRegenerateKey.json"
+          },
+          "StorageAccountRegenerateKerbKey": {
+            "$ref": "./examples/StorageAccountRegenerateKerbKey.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "name": "regenerateKey",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageAccountRegenerateKeyParameters"
+            },
+            "description": "Specifies name of the key which should be regenerated -- key1, key2, kerb1, kerb2."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- specified key regenerated successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageAccountListKeysResult"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/providers/Microsoft.Storage/locations/{location}/usages": {
+      "get": {
+        "tags": ["LocationUsage"],
+        "operationId": "Usages_ListByLocation",
+        "description": "Gets the current usage count and the limit for the resources of the location under the subscription.",
+        "x-ms-examples": {
+          "UsageList": {
+            "$ref": "./examples/StorageAccountListLocationUsage.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "location",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The location of the Azure Storage resource."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- current usage count and limit retrieved and returned successfully.",
+            "schema": {
+              "$ref": "#/definitions/UsageListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/ListAccountSas": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_ListAccountSAS",
+        "description": "List SAS credentials of a storage account.",
+        "x-ms-examples": {
+          "StorageAccountListAccountSAS": {
+            "$ref": "./examples/StorageAccountListAccountSAS.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AccountSasParameters"
+            },
+            "description": "The parameters to provide to list SAS credentials for the storage account."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned the account SAS created for the storage account requested.",
+            "schema": {
+              "$ref": "#/definitions/ListAccountSasResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/ListServiceSas": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_ListServiceSAS",
+        "description": "List service SAS credentials of a specific resource.",
+        "x-ms-examples": {
+          "StorageAccountListServiceSAS": {
+            "$ref": "./examples/StorageAccountListServiceSAS.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceSasParameters"
+            },
+            "description": "The parameters to provide to list service SAS credentials."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned the service SAS created for the storage service requested.",
+            "schema": {
+              "$ref": "#/definitions/ListServiceSasResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/failover": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_Failover",
+        "description": "Failover request can be triggered for a storage account in case of availability issues. The failover occurs from the storage account's primary cluster to secondary cluster for RA-GRS accounts. The secondary cluster will become primary after failover.",
+        "x-ms-examples": {
+          "StorageAccountFailover": {
+            "$ref": "./examples/StorageAccountFailover.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Returned when the storage account failover is completed, and the secondary cluster has become primary."
+          },
+          "202": {
+            "description": "Accepted -- Failover request accepted; operation will complete asynchronously."
+          }
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "location"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/hnsonmigration": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_HierarchicalNamespaceMigration",
+        "description": "Live Migration of storage account to enable Hns",
+        "x-ms-examples": {
+          "StorageAccountHierarchicalNamespaceMigration": {
+            "$ref": "./examples/StorageAccountHierarchicalNamespaceMigration.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "requestType",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "Required. Hierarchical namespace migration type can either be a hierarchical namespace validation request 'HnsOnValidationRequest' or a hydration request 'HnsOnHydrationRequest'. The validation request will validate the migration whereas the hydration request will migrate the account."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Returned when the storage account migration to hierarchical namespace is completed."
+          },
+          "202": {
+            "description": "Accepted -- Hierarchical namespace migration request accepted; operation will complete asynchronously."
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "location"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/aborthnsonmigration": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_AbortHierarchicalNamespaceMigration",
+        "description": "Abort live Migration of storage account to enable Hns",
+        "x-ms-examples": {
+          "StorageAccountAbortHierarchicalNamespaceMigration": {
+            "$ref": "./examples/StorageAccountAbortHierarchicalNamespaceMigration.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Returned when the storage account migration to hierarchical namespace is aborted."
+          },
+          "202": {
+            "description": "Accepted -- Abort hierarchical namespace migration request accepted; operation will complete asynchronously."
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "location"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/restoreBlobRanges": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_RestoreBlobRanges",
+        "description": "Restore blobs in the specified blob ranges",
+        "x-ms-examples": {
+          "BlobRangesRestore": {
+            "$ref": "./examples/BlobRangesRestore.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BlobRestoreParameters"
+            },
+            "description": "The parameters to provide for restore blob ranges."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned when blob ranges are restored completely with the same properties specified in the request body.",
+            "schema": {
+              "$ref": "#/definitions/BlobRestoreStatus"
+            }
+          },
+          "202": {
+            "description": "Accepted -- Blob restore request accepted; operation will complete asynchronously.",
+            "schema": {
+              "$ref": "#/definitions/BlobRestoreStatus"
+            }
+          }
+        },
+        "x-ms-long-running-operation": true,
+        "x-ms-long-running-operation-options": {
+          "final-state-via": "location"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/managementPolicies/{managementPolicyName}": {
+      "get": {
+        "tags": ["ManagementPolicies"],
+        "operationId": "ManagementPolicies_Get",
+        "description": "Gets the managementpolicy associated with the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountGetManagementPolicies": {
+            "$ref": "./examples/StorageAccountGetManagementPolicy.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ManagementPolicyName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Get the managementpolicy successfully.",
+            "schema": {
+              "$ref": "#/definitions/ManagementPolicy"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["ManagementPolicies"],
+        "operationId": "ManagementPolicies_CreateOrUpdate",
+        "description": "Sets the managementpolicy to the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountSetManagementPolicies": {
+            "$ref": "./examples/StorageAccountSetManagementPolicy.json"
+          },
+          "StorageAccountSetManagementPolicy_LastAccessTimeBasedBlobActions": {
+            "$ref": "./examples/StorageAccountSetManagementPolicy_LastAccessTimeBasedBlobActions.json"
+          },
+          "StorageAccountSetManagementPolicyWithSnapshotAndVersion": {
+            "$ref": "./examples/StorageAccountSetManagementPolicyWithSnapshotAndVersion.json"
+          },
+          "StorageAccountSetManagementPolicyForBlockAndAppendBlobs": {
+            "$ref": "./examples/StorageAccountSetManagementPolicyForBlockAndAppendBlobs.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ManagementPolicyName"
+          },
+          {
+            "name": "properties",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ManagementPolicy"
+            },
+            "description": "The ManagementPolicy set to a storage account."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Put managementpolicy successfully.",
+            "schema": {
+              "$ref": "#/definitions/ManagementPolicy"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["ManagementPolicies"],
+        "operationId": "ManagementPolicies_Delete",
+        "description": "Deletes the managementpolicy associated with the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountDeleteManagementPolicies": {
+            "$ref": "./examples/StorageAccountDeleteManagementPolicy.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ManagementPolicyName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Delete the managementpolicy successfully."
+          },
+          "204": {
+            "description": "No Content -- The managementpolicy does not exist."
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/inventoryPolicies/{blobInventoryPolicyName}": {
+      "get": {
+        "tags": ["BlobInventoryPolicies"],
+        "operationId": "BlobInventoryPolicies_Get",
+        "description": "Gets the blob inventory policy associated with the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountGetBlobInventoryPolicy": {
+            "$ref": "./examples/StorageAccountGetBlobInventoryPolicy.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/BlobInventoryPolicyName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Get the blob inventory policy successfully.",
+            "schema": {
+              "$ref": "#/definitions/BlobInventoryPolicy"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["BlobInventoryPolicies"],
+        "operationId": "BlobInventoryPolicies_CreateOrUpdate",
+        "description": "Sets the blob inventory policy to the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountSetBlobInventoryPolicy": {
+            "$ref": "./examples/StorageAccountSetBlobInventoryPolicy.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/BlobInventoryPolicyName"
+          },
+          {
+            "name": "properties",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/BlobInventoryPolicy"
+            },
+            "description": "The blob inventory policy set to a storage account."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Put blob inventory policy successfully.",
+            "schema": {
+              "$ref": "#/definitions/BlobInventoryPolicy"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["BlobInventoryPolicies"],
+        "operationId": "BlobInventoryPolicies_Delete",
+        "description": "Deletes the blob inventory policy associated with the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountDeleteBlobInventoryPolicy": {
+            "$ref": "./examples/StorageAccountDeleteBlobInventoryPolicy.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/BlobInventoryPolicyName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Delete the blob inventory policy successfully."
+          },
+          "204": {
+            "description": "No Content -- The blob inventory policy does not exist."
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/inventoryPolicies": {
+      "get": {
+        "tags": ["BlobInventoryPolicies"],
+        "operationId": "BlobInventoryPolicies_List",
+        "description": "Gets the blob inventory policy associated with the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountGetBlobInventoryPolicy": {
+            "$ref": "./examples/StorageAccountListBlobInventoryPolicy.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Get the blob inventory policies successfully.",
+            "schema": {
+              "$ref": "#/definitions/ListBlobInventoryPolicy"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/privateEndpointConnections": {
+      "get": {
+        "tags": ["PrivateEndpointConnections"],
+        "operationId": "PrivateEndpointConnections_List",
+        "description": "List all the private endpoint connections associated with the storage account.",
+        "x-ms-examples": {
+          "StorageAccountListPrivateEndpointConnections": {
+            "$ref": "./examples/StorageAccountListPrivateEndpointConnections.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Successfully retrieved private endpoint connections.",
+            "schema": {
+              "$ref": "./privatelinks.json#/definitions/PrivateEndpointConnectionListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/privateEndpointConnections/{privateEndpointConnectionName}": {
+      "get": {
+        "tags": ["PrivateEndpointConnections"],
+        "operationId": "PrivateEndpointConnections_Get",
+        "description": "Gets the specified private endpoint connection associated with the storage account.",
+        "x-ms-examples": {
+          "StorageAccountGetPrivateEndpointConnection": {
+            "$ref": "./examples/StorageAccountGetPrivateEndpointConnection.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/privatelinks.json#/parameters/PrivateEndpointConnectionName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Get the private endpoint connection properties successfully.",
+            "schema": {
+              "$ref": "./privatelinks.json#/definitions/PrivateEndpointConnection"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["PrivateEndpointConnections"],
+        "operationId": "PrivateEndpointConnections_Put",
+        "description": "Update the state of specified private endpoint connection associated with the storage account.",
+        "x-ms-examples": {
+          "StorageAccountPutPrivateEndpointConnection": {
+            "$ref": "./examples/StorageAccountPutPrivateEndpointConnection.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/privatelinks.json#/parameters/PrivateEndpointConnectionName"
+          },
+          {
+            "name": "properties",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "./privatelinks.json#/definitions/PrivateEndpointConnection"
+            },
+            "description": "The private endpoint connection properties."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Update the private endpoint connection properties successfully.",
+            "schema": {
+              "$ref": "./privatelinks.json#/definitions/PrivateEndpointConnection"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["PrivateEndpointConnections"],
+        "operationId": "PrivateEndpointConnections_Delete",
+        "description": "Deletes the specified private endpoint connection associated with the storage account.",
+        "x-ms-examples": {
+          "StorageAccountDeletePrivateEndpointConnection": {
+            "$ref": "./examples/StorageAccountDeletePrivateEndpointConnection.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/privatelinks.json#/parameters/PrivateEndpointConnectionName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Delete the private endpoint connection successfully."
+          },
+          "204": {
+            "description": "No Content -- The private endpoint connection does not exist."
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/privateLinkResources": {
+      "get": {
+        "tags": ["PrivateLinkResources"],
+        "operationId": "PrivateLinkResources_ListByStorageAccount",
+        "description": "Gets the private link resources that need to be created for a storage account.",
+        "x-ms-examples": {
+          "StorageAccountListPrivateLinkResources": {
+            "$ref": "./examples/StorageAccountListPrivateLinkResources.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved private link resources.",
+            "schema": {
+              "$ref": "./privatelinks.json#/definitions/PrivateLinkResourceListResult"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/objectReplicationPolicies": {
+      "get": {
+        "tags": ["ObjectReplicationPolicies"],
+        "operationId": "ObjectReplicationPolicies_List",
+        "description": "List the object replication policies associated with the storage account.",
+        "x-ms-examples": {
+          "StorageAccountListObjectReplicationPolicies": {
+            "$ref": "./examples/StorageAccountListObjectReplicationPolicies.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List object replication policies successfully.",
+            "schema": {
+              "$ref": "#/definitions/ObjectReplicationPolicies"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": null
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/objectReplicationPolicies/{objectReplicationPolicyId}": {
+      "get": {
+        "tags": ["ObjectReplicationPolicies"],
+        "operationId": "ObjectReplicationPolicies_Get",
+        "description": "Get the object replication policy of the storage account by policy ID.",
+        "x-ms-examples": {
+          "StorageAccountGetObjectReplicationPolicies": {
+            "$ref": "./examples/StorageAccountGetObjectReplicationPolicy.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ObjectReplicationPolicyId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Get the object replication policy successfully.",
+            "schema": {
+              "$ref": "#/definitions/ObjectReplicationPolicy"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["ObjectReplicationPolicies"],
+        "operationId": "ObjectReplicationPolicies_CreateOrUpdate",
+        "description": "Create or update the object replication policy of the storage account.",
+        "x-ms-examples": {
+          "StorageAccountCreateObjectReplicationPolicyOnDestination": {
+            "$ref": "./examples/StorageAccountCreateObjectReplicationPolicyOnDestination.json"
+          },
+          "StorageAccountCreateObjectReplicationPolicyOnSource": {
+            "$ref": "./examples/StorageAccountCreateObjectReplicationPolicyOnSource.json"
+          },
+          "StorageAccountUpdateObjectReplicationPolicyOnDestination": {
+            "$ref": "./examples/StorageAccountUpdateObjectReplicationPolicyOnDestination.json"
+          },
+          "StorageAccountUpdateObjectReplicationPolicyOnSource": {
+            "$ref": "./examples/StorageAccountUpdateObjectReplicationPolicyOnSource.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ObjectReplicationPolicyId"
+          },
+          {
+            "name": "properties",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ObjectReplicationPolicy"
+            },
+            "description": "The object replication policy set to a storage account. A unique policy ID will be created if absent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Put object replication policy successfully.",
+            "schema": {
+              "$ref": "#/definitions/ObjectReplicationPolicy"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["ObjectReplicationPolicies"],
+        "operationId": "ObjectReplicationPolicies_Delete",
+        "description": "Deletes the object replication policy associated with the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountDeleteObjectReplicationPolicies": {
+            "$ref": "./examples/StorageAccountDeleteObjectReplicationPolicy.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/ObjectReplicationPolicyId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Delete the object replication policy successfully."
+          },
+          "204": {
+            "description": "No Content -- The object replication policy does not exist."
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/revokeUserDelegationKeys": {
+      "post": {
+        "tags": ["StorageAccounts"],
+        "operationId": "StorageAccounts_RevokeUserDelegationKeys",
+        "description": "Revoke user delegation keys.",
+        "x-ms-examples": {
+          "StorageAccountRevokeUserDelegationKeys": {
+            "$ref": "./examples/StorageAccountRevokeUserDelegationKeys.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "name": "accountName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
+            "maxLength": 24,
+            "minLength": 3
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- revoke user delegation keys succeeded."
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/encryptionScopes/{encryptionScopeName}": {
+      "put": {
+        "tags": ["EncryptionScopes"],
+        "operationId": "EncryptionScopes_Put",
+        "description": "Synchronously creates or updates an encryption scope under the specified storage account. If an encryption scope is already created and a subsequent request is issued with different properties, the encryption scope properties will be updated per the specified request.",
+        "x-ms-examples": {
+          "StorageAccountPutEncryptionScope": {
+            "$ref": "./examples/StorageAccountPutEncryptionScope.json"
+          },
+          "StorageAccountPutEncryptionScopeWithInfrastructureEncryption": {
+            "$ref": "./examples/StorageAccountPutEncryptionScopeWithInfrastructureEncryption.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/EncryptionScopeName"
+          },
+          {
+            "name": "encryptionScope",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EncryptionScope"
+            },
+            "description": "Encryption scope properties to be used for the create or update."
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created -- Create encryption scope operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/EncryptionScope"
+            }
+          },
+          "200": {
+            "description": "OK -- Update encryption scope operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/EncryptionScope"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["EncryptionScopes"],
+        "operationId": "EncryptionScopes_Patch",
+        "description": "Update encryption scope properties as specified in the request body. Update fails if the specified encryption scope does not already exist.",
+        "x-ms-examples": {
+          "StorageAccountPatchEncryptionScope": {
+            "$ref": "./examples/StorageAccountPatchEncryptionScope.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/EncryptionScopeName"
+          },
+          {
+            "name": "encryptionScope",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EncryptionScope"
+            },
+            "description": "Encryption scope properties to be used for the update."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Update encryption scope operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/EncryptionScope"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["EncryptionScopes"],
+        "operationId": "EncryptionScopes_Get",
+        "description": "Returns the properties for the specified encryption scope.",
+        "x-ms-examples": {
+          "StorageAccountGetEncryptionScope": {
+            "$ref": "./examples/StorageAccountGetEncryptionScope.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/EncryptionScopeName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Get encryption scope operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/EncryptionScope"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/encryptionScopes": {
+      "get": {
+        "tags": ["EncryptionScopes"],
+        "operationId": "EncryptionScopes_List",
+        "description": "Lists all the encryption scopes available under the specified storage account.",
+        "x-ms-examples": {
+          "StorageAccountEncryptionScopeList": {
+            "$ref": "./examples/StorageAccountEncryptionScopeList.json"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List encryption scopes operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/EncryptionScopeListResult"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "OperationListResult": {
+      "description": "Result of the request to list Storage operations. It contains a list of operations and a URL link to get the next set of results.",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Operation"
+          },
+          "description": "List of Storage operations supported by the Storage resource provider."
+        }
+      }
+    },
+    "Operation": {
+      "description": "Storage REST API operation definition.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Operation name: {provider}/{resource}/{operation}",
+          "type": "string"
+        },
+        "display": {
+          "description": "Display metadata associated with the operation.",
+          "properties": {
+            "provider": {
+              "description": "Service provider: Microsoft Storage.",
+              "type": "string"
+            },
+            "resource": {
+              "description": "Resource on which the operation is performed etc.",
+              "type": "string"
+            },
+            "operation": {
+              "description": "Type of operation: get, read, delete, etc.",
+              "type": "string"
+            },
+            "description": {
+              "description": "Description of the operation.",
+              "type": "string"
+            }
+          }
+        },
+        "origin": {
+          "type": "string",
+          "description": "The origin of operations."
+        },
+        "properties": {
+          "description": "Properties of operation, include metric specifications.",
+          "x-ms-client-flatten": true,
+          "x-ms-client-name": "OperationProperties",
+          "$ref": "#/definitions/OperationProperties"
+        }
+      }
+    },
+    "OperationProperties": {
+      "description": "Properties of operation, include metric specifications.",
+      "properties": {
+        "serviceSpecification": {
+          "$ref": "#/definitions/ServiceSpecification",
+          "description": "One property of operation, include metric specifications."
+        }
+      }
+    },
+    "ServiceSpecification": {
+      "description": "One property of operation, include metric specifications.",
+      "properties": {
+        "metricSpecifications": {
+          "description": "Metric specifications of operation.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MetricSpecification"
+          }
+        }
+      }
+    },
+    "MetricSpecification": {
+      "description": "Metric specification of operation.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of metric specification."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of metric specification."
+        },
+        "displayDescription": {
+          "type": "string",
+          "description": "Display description of metric specification."
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit could be Bytes or Count."
+        },
+        "dimensions": {
+          "description": "Dimensions of blobs, including blob type and access tier.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Dimension"
+          }
+        },
+        "aggregationType": {
+          "type": "string",
+          "description": "Aggregation type could be Average."
+        },
+        "fillGapWithZero": {
+          "type": "boolean",
+          "description": "The property to decide fill gap with zero or not."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category this metric specification belong to, could be Capacity."
+        },
+        "resourceIdDimensionNameOverride": {
+          "type": "string",
+          "description": "Account Resource Id."
+        }
+      }
+    },
+    "Dimension": {
+      "description": "Dimension of blobs, possibly be blob type or access tier.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Display name of dimension."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name of dimension."
+        }
+      }
+    },
+    "StorageAccountCheckNameAvailabilityParameters": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The storage account name."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["Microsoft.Storage/storageAccounts"],
+          "x-ms-enum": {
+            "name": "Type",
+            "modelAsString": false
+          },
+          "description": "The type of resource, Microsoft.Storage/storageAccounts"
+        }
+      },
+      "required": ["name", "type"],
+      "description": "The parameters used to check the availability of the storage account name."
+    },
+    "SKUCapability": {
+      "properties": {
+        "name": {
+          "readOnly": true,
+          "type": "string",
+          "description": "The name of capability, The capability information in the specified SKU, including file encryption, network ACLs, change notification, etc."
+        },
+        "value": {
+          "readOnly": true,
+          "type": "string",
+          "description": "A string value to indicate states of given capability. Possibly 'true' or 'false'."
+        }
+      },
+      "description": "The capability information in the specified SKU, including file encryption, network ACLs, change notification, etc."
+    },
+    "Restriction": {
+      "properties": {
+        "type": {
+          "readOnly": true,
+          "type": "string",
+          "description": "The type of restrictions. As of now only possible value for this is location."
+        },
+        "values": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The value of restrictions. If the restriction type is set to location. This would be different locations where the SKU is restricted."
+        },
+        "reasonCode": {
+          "type": "string",
+          "enum": ["QuotaId", "NotAvailableForSubscription"],
+          "x-ms-enum": {
+            "name": "ReasonCode",
+            "modelAsString": true
+          },
+          "description": "The reason for the restriction. As of now this can be \"QuotaId\" or \"NotAvailableForSubscription\". Quota Id is set when the SKU has requiredQuotas parameter as the subscription does not belong to that quota. The \"NotAvailableForSubscription\" is related to capacity at DC."
+        }
+      },
+      "description": "The restriction because of which SKU cannot be used."
+    },
+    "StorageSkuListResult": {
+      "properties": {
+        "value": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SkuInformation"
+          },
+          "description": "Get the list result of storage SKUs and their properties."
+        }
+      },
+      "description": "The response from the List Storage SKUs operation."
+    },
+    "CheckNameAvailabilityResult": {
+      "properties": {
+        "nameAvailable": {
+          "readOnly": true,
+          "type": "boolean",
+          "description": "Gets a boolean value that indicates whether the name is available for you to use. If true, the name is available. If false, the name has already been taken or is invalid and cannot be used."
+        },
+        "reason": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the reason that a storage account name could not be used. The Reason element is only returned if NameAvailable is false.",
+          "enum": ["AccountNameInvalid", "AlreadyExists"],
+          "x-ms-enum": {
+            "name": "Reason",
+            "modelAsString": false
+          }
+        },
+        "message": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets an error message explaining the Reason value in more detail."
+        }
+      },
+      "description": "The CheckNameAvailability operation response."
+    },
+    "SkuInformation": {
+      "properties": {
+        "name": {
+          "$ref": "./common.json#/definitions/SkuName"
+        },
+        "tier": {
+          "$ref": "./common.json#/definitions/Tier"
+        },
+        "resourceType": {
+          "readOnly": true,
+          "type": "string",
+          "description": "The type of the resource, usually it is 'storageAccounts'."
+        },
+        "kind": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Indicates the type of storage account.",
+          "enum": ["Storage", "StorageV2", "BlobStorage", "FileStorage", "BlockBlobStorage"],
+          "x-ms-enum": {
+            "name": "Kind",
+            "modelAsString": true
+          }
+        },
+        "locations": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The set of locations that the SKU is available. This will be supported and registered Azure Geo Regions (e.g. West US, East US, Southeast Asia, etc.)."
+        },
+        "capabilities": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SKUCapability"
+          },
+          "description": "The capability information in the specified SKU, including file encryption, network ACLs, change notification, etc."
+        },
+        "restrictions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Restriction"
+          },
+          "description": "The restrictions because of which SKU cannot be used. This is empty if there are no restrictions."
+        }
+      },
+      "required": ["name"],
+      "description": "Storage SKU and its properties"
+    },
+    "CustomDomain": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Gets or sets the custom domain name assigned to the storage account. Name is the CNAME source."
+        },
+        "useSubDomainName": {
+          "type": "boolean",
+          "description": "Indicates whether indirect CName validation is enabled. Default value is false. This should only be set on updates."
+        }
+      },
+      "required": ["name"],
+      "description": "The custom domain assigned to this storage account. This can be set via Update."
+    },
+    "SasPolicy": {
+      "properties": {
+        "sasExpirationPeriod": {
+          "type": "string",
+          "example": "1.15:59:59",
+          "description": "The SAS expiration period, DD.HH:MM:SS."
+        },
+        "expirationAction": {
+          "type": "string",
+          "enum": ["Log"],
+          "x-ms-enum": {
+            "name": "ExpirationAction",
+            "modelAsString": true
+          },
+          "default": "Log",
+          "description": "The SAS expiration action. Can only be Log."
+        }
+      },
+      "required": ["sasExpirationPeriod", "expirationAction"],
+      "description": "SasPolicy assigned to the storage account."
+    },
+    "KeyPolicy": {
+      "properties": {
+        "keyExpirationPeriodInDays": {
+          "type": "integer",
+          "description": "The key expiration period in days.",
+          "format": "int32"
+        }
+      },
+      "required": ["keyExpirationPeriodInDays"],
+      "description": "KeyPolicy assigned to the storage account."
+    },
+    "KeyCreationTime": {
+      "properties": {
+        "key1": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2021-02-03T05:57:30.917Z"
+        },
+        "key2": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2021-02-03T05:57:30.917Z"
+        }
+      },
+      "description": "Storage account keys creation time."
+    },
+    "EncryptionService": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "A boolean indicating whether or not the service encrypts the data as it is stored."
+        },
+        "lastEnabledTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Gets a rough estimate of the date/time when the encryption was last enabled by the user. Only returned when encryption is enabled. There might be some unencrypted blobs which were written after this time, as it is just a rough estimate."
+        },
+        "keyType": {
+          "type": "string",
+          "description": "Encryption key type to be used for the encryption service. 'Account' key type implies that an account-scoped encryption key will be used. 'Service' key type implies that a default service key is used.",
+          "enum": ["Service", "Account"],
+          "x-ms-enum": {
+            "name": "KeyType",
+            "modelAsString": true
+          },
+          "x-ms-mutability": ["create", "read"]
+        }
+      },
+      "description": "A service that allows server-side encryption to be used."
+    },
+    "EncryptionServices": {
+      "properties": {
+        "blob": {
+          "$ref": "#/definitions/EncryptionService",
+          "description": "The encryption function of the blob storage service."
+        },
+        "file": {
+          "$ref": "#/definitions/EncryptionService",
+          "description": "The encryption function of the file storage service."
+        },
+        "table": {
+          "$ref": "#/definitions/EncryptionService",
+          "description": "The encryption function of the table storage service."
+        },
+        "queue": {
+          "$ref": "#/definitions/EncryptionService",
+          "description": "The encryption function of the queue storage service."
+        }
+      },
+      "description": "A list of services that support encryption."
+    },
+    "KeyVaultProperties": {
+      "description": "Properties of key vault.",
+      "properties": {
+        "keyname": {
+          "type": "string",
+          "description": "The name of KeyVault key.",
+          "x-ms-client-name": "KeyName"
+        },
+        "keyversion": {
+          "type": "string",
+          "description": "The version of KeyVault key.",
+          "x-ms-client-name": "KeyVersion"
+        },
+        "keyvaulturi": {
+          "type": "string",
+          "description": "The Uri of KeyVault.",
+          "x-ms-client-name": "KeyVaultUri"
+        },
+        "currentVersionedKeyIdentifier": {
+          "type": "string",
+          "readOnly": true,
+          "description": "The object identifier of the current versioned Key Vault Key in use.",
+          "x-ms-client-name": "CurrentVersionedKeyIdentifier"
+        },
+        "lastKeyRotationTimestamp": {
+          "type": "string",
+          "readOnly": true,
+          "format": "date-time",
+          "description": "Timestamp of last rotation of the Key Vault Key.",
+          "x-ms-client-name": "LastKeyRotationTimestamp"
+        }
+      }
+    },
+    "Encryption": {
+      "properties": {
+        "services": {
+          "$ref": "#/definitions/EncryptionServices",
+          "description": "List of services which support encryption."
+        },
+        "keySource": {
+          "type": "string",
+          "description": "The encryption keySource (provider). Possible values (case-insensitive):  Microsoft.Storage, Microsoft.Keyvault",
+          "enum": ["Microsoft.Storage", "Microsoft.Keyvault"],
+          "x-ms-enum": {
+            "name": "KeySource",
+            "modelAsString": true
+          },
+          "default": "Microsoft.Storage"
+        },
+        "requireInfrastructureEncryption": {
+          "type": "boolean",
+          "x-ms-client-name": "RequireInfrastructureEncryption",
+          "description": "A boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest."
+        },
+        "keyvaultproperties": {
+          "$ref": "#/definitions/KeyVaultProperties",
+          "x-ms-client-name": "KeyVaultProperties",
+          "description": "Properties provided by key vault."
+        },
+        "identity": {
+          "$ref": "#/definitions/EncryptionIdentity",
+          "x-ms-client-name": "EncryptionIdentity",
+          "description": "The identity to be used with service-side encryption at rest."
+        }
+      },
+      "required": ["keySource"],
+      "description": "The encryption settings on the storage account."
+    },
+    "EncryptionIdentity": {
+      "properties": {
+        "userAssignedIdentity": {
+          "type": "string",
+          "description": "Resource identifier of the UserAssigned identity to be associated with server-side encryption on the storage account.",
+          "x-ms-client-name": "EncryptionUserAssignedIdentity"
+        }
+      },
+      "description": "Encryption identity for the storage account."
+    },
+    "UserAssignedIdentity": {
+      "properties": {
+        "principalId": {
+          "readOnly": true,
+          "type": "string",
+          "description": "The principal ID of the identity."
+        },
+        "clientId": {
+          "readOnly": true,
+          "type": "string",
+          "description": "The client ID of the identity."
+        }
+      },
+      "description": "UserAssignedIdentity for the resource."
+    },
+    "ResourceAccessRule": {
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "description": "Tenant Id"
+        },
+        "resourceId": {
+          "type": "string",
+          "description": "Resource Id"
+        }
+      },
+      "description": "Resource Access Rule."
+    },
+    "VirtualNetworkRule": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "x-ms-client-name": "VirtualNetworkResourceId",
+          "description": "Resource ID of a subnet, for example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}."
+        },
+        "action": {
+          "type": "string",
+          "enum": ["Allow"],
+          "x-ms-enum": {
+            "name": "Action",
+            "modelAsString": false
+          },
+          "default": "Allow",
+          "description": "The action of virtual network rule."
+        },
+        "state": {
+          "type": "string",
+          "enum": ["Provisioning", "Deprovisioning", "Succeeded", "Failed", "NetworkSourceDeleted"],
+          "x-ms-enum": {
+            "name": "State",
+            "modelAsString": true
+          },
+          "description": "Gets the state of virtual network rule."
+        }
+      },
+      "required": ["id"],
+      "description": "Virtual Network rule."
+    },
+    "IPRule": {
+      "properties": {
+        "value": {
+          "type": "string",
+          "x-ms-client-name": "IPAddressOrRange",
+          "description": "Specifies the IP or IP range in CIDR format. Only IPV4 address is allowed."
+        },
+        "action": {
+          "type": "string",
+          "enum": ["Allow"],
+          "x-ms-enum": {
+            "name": "Action",
+            "modelAsString": false
+          },
+          "default": "Allow",
+          "description": "The action of IP ACL rule."
+        }
+      },
+      "required": ["value"],
+      "description": "IP rule with specific IP or IP range in CIDR format."
+    },
+    "NetworkRuleSet": {
+      "properties": {
+        "bypass": {
+          "type": "string",
+          "enum": ["None", "Logging", "Metrics", "AzureServices"],
+          "x-ms-enum": {
+            "name": "Bypass",
+            "modelAsString": true
+          },
+          "x-ms-client-name": "Bypass",
+          "default": "AzureServices",
+          "description": "Specifies whether traffic is bypassed for Logging/Metrics/AzureServices. Possible values are any combination of Logging|Metrics|AzureServices (For example, \"Logging, Metrics\"), or None to bypass none of those traffics."
+        },
+        "resourceAccessRules": {
+          "type": "array",
+          "items": {
+            "description": "Resource Access Rules.",
+            "$ref": "#/definitions/ResourceAccessRule"
+          },
+          "description": "Sets the resource access rules"
+        },
+        "virtualNetworkRules": {
+          "type": "array",
+          "items": {
+            "description": "Virtual Network rule.",
+            "$ref": "#/definitions/VirtualNetworkRule"
+          },
+          "description": "Sets the virtual network rules"
+        },
+        "ipRules": {
+          "type": "array",
+          "items": {
+            "description": "IP rule with specific IP or IP range in CIDR format.",
+            "$ref": "#/definitions/IPRule"
+          },
+          "description": "Sets the IP ACL rules"
+        },
+        "defaultAction": {
+          "type": "string",
+          "enum": ["Allow", "Deny"],
+          "x-ms-enum": {
+            "name": "DefaultAction",
+            "modelAsString": false
+          },
+          "default": "Allow",
+          "description": "Specifies the default action of allow or deny when no other rules match."
+        }
+      },
+      "required": ["defaultAction"],
+      "description": "Network rule set"
+    },
+    "AzureFilesIdentityBasedAuthentication": {
+      "properties": {
+        "directoryServiceOptions": {
+          "type": "string",
+          "description": "Indicates the directory service used.",
+          "enum": ["None", "AADDS", "AD"],
+          "x-ms-enum": {
+            "name": "DirectoryServiceOptions",
+            "modelAsString": true
+          }
+        },
+        "activeDirectoryProperties": {
+          "$ref": "#/definitions/ActiveDirectoryProperties",
+          "description": "Required if choose AD."
+        },
+        "defaultSharePermission": {
+          "type": "string",
+          "description": "Default share permission for users using Kerberos authentication if RBAC role is not assigned.",
+          "enum": [
+            "None",
+            "StorageFileDataSmbShareReader",
+            "StorageFileDataSmbShareContributor",
+            "StorageFileDataSmbShareElevatedContributor"
+          ],
+          "x-ms-enum": {
+            "name": "DefaultSharePermission",
+            "modelAsString": true
+          }
+        }
+      },
+      "required": ["directoryServiceOptions"],
+      "description": "Settings for Azure Files identity based authentication."
+    },
+    "ActiveDirectoryProperties": {
+      "properties": {
+        "domainName": {
+          "type": "string",
+          "description": "Specifies the primary domain that the AD DNS server is authoritative for."
+        },
+        "netBiosDomainName": {
+          "type": "string",
+          "description": "Specifies the NetBIOS domain name."
+        },
+        "forestName": {
+          "type": "string",
+          "description": "Specifies the Active Directory forest to get."
+        },
+        "domainGuid": {
+          "type": "string",
+          "description": "Specifies the domain GUID."
+        },
+        "domainSid": {
+          "type": "string",
+          "description": "Specifies the security identifier (SID)."
+        },
+        "azureStorageSid": {
+          "type": "string",
+          "description": "Specifies the security identifier (SID) for Azure Storage."
+        }
+      },
+      "required": ["domainName", "netBiosDomainName", "forestName", "domainGuid", "domainSid", "azureStorageSid"],
+      "description": "Settings properties for Active Directory (AD)."
+    },
+    "StorageAccountPropertiesCreateParameters": {
+      "properties": {
+        "publicNetworkAccess": {
+          "type": "string",
+          "description": "Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be 'Enabled' or 'Disabled'.",
+          "enum": ["Enabled", "Disabled"],
+          "x-ms-enum": {
+            "name": "PublicNetworkAccess",
+            "modelAsString": true
+          }
+        },
+        "sasPolicy": {
+          "$ref": "#/definitions/SasPolicy",
+          "description": "SasPolicy assigned to the storage account."
+        },
+        "keyPolicy": {
+          "$ref": "#/definitions/KeyPolicy",
+          "description": "KeyPolicy assigned to the storage account."
+        },
+        "customDomain": {
+          "$ref": "#/definitions/CustomDomain",
+          "description": "User domain assigned to the storage account. Name is the CNAME source. Only one custom domain is supported per storage account at this time. To clear the existing custom domain, use an empty string for the custom domain name property."
+        },
+        "encryption": {
+          "$ref": "#/definitions/Encryption",
+          "description": "Not applicable. Azure Storage encryption is enabled for all storage accounts and cannot be disabled."
+        },
+        "networkAcls": {
+          "$ref": "#/definitions/NetworkRuleSet",
+          "x-ms-client-name": "NetworkRuleSet",
+          "description": "Network rule set"
+        },
+        "accessTier": {
+          "type": "string",
+          "description": "Required for storage accounts where kind = BlobStorage. The access tier used for billing.",
+          "enum": ["Hot", "Cool"],
+          "x-ms-enum": {
+            "name": "AccessTier",
+            "modelAsString": false
+          }
+        },
+        "azureFilesIdentityBasedAuthentication": {
+          "$ref": "#/definitions/AzureFilesIdentityBasedAuthentication",
+          "description": "Provides the identity based authentication settings for Azure Files."
+        },
+        "supportsHttpsTrafficOnly": {
+          "type": "boolean",
+          "x-ms-client-name": "EnableHttpsTrafficOnly",
+          "description": "Allows https traffic only to storage service if sets to true. The default value is true since API version 2019-04-01."
+        },
+        "isHnsEnabled": {
+          "type": "boolean",
+          "x-ms-client-name": "IsHnsEnabled",
+          "description": "Account HierarchicalNamespace enabled if sets to true."
+        },
+        "largeFileSharesState": {
+          "type": "string",
+          "enum": ["Disabled", "Enabled"],
+          "x-ms-enum": {
+            "name": "LargeFileSharesState",
+            "modelAsString": true
+          },
+          "description": "Allow large file shares if sets to Enabled. It cannot be disabled once it is enabled."
+        },
+        "routingPreference": {
+          "$ref": "#/definitions/RoutingPreference",
+          "x-ms-client-name": "RoutingPreference",
+          "description": "Maintains information about the network routing choice opted by the user for data transfer"
+        },
+        "allowBlobPublicAccess": {
+          "type": "boolean",
+          "x-ms-client-name": "AllowBlobPublicAccess",
+          "description": "Allow or disallow public access to all blobs or containers in the storage account. The default interpretation is true for this property."
+        },
+        "minimumTlsVersion": {
+          "type": "string",
+          "enum": ["TLS1_0", "TLS1_1", "TLS1_2"],
+          "x-ms-enum": {
+            "name": "MinimumTlsVersion",
+            "modelAsString": true
+          },
+          "description": "Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property."
+        },
+        "allowSharedKeyAccess": {
+          "type": "boolean",
+          "description": "Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true."
+        },
+        "isNfsV3Enabled": {
+          "type": "boolean",
+          "x-ms-client-name": "EnableNfsV3",
+          "description": "NFS 3.0 protocol support enabled if set to true."
+        },
+        "allowCrossTenantReplication": {
+          "type": "boolean",
+          "description": "Allow or disallow cross AAD tenant object replication. The default interpretation is true for this property."
+        },
+        "defaultToOAuthAuthentication": {
+          "type": "boolean",
+          "description": "A boolean flag which indicates whether the default authentication is OAuth or not. The default interpretation is false for this property."
+        },
+        "immutableStorageWithVersioning": {
+          "$ref": "#/definitions/ImmutableStorageAccount",
+          "x-ms-client-name": "ImmutableStorageWithVersioning",
+          "description": "The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the new containers in the account by default."
+        }
+      },
+      "description": "The parameters used to create the storage account."
+    },
+    "Identity": {
+      "properties": {
+        "principalId": {
+          "readOnly": true,
+          "type": "string",
+          "description": "The principal ID of resource identity."
+        },
+        "tenantId": {
+          "readOnly": true,
+          "type": "string",
+          "description": "The tenant ID of resource."
+        },
+        "type": {
+          "type": "string",
+          "description": "The identity type.",
+          "enum": ["None", "SystemAssigned", "UserAssigned", "SystemAssigned,UserAssigned"],
+          "x-ms-enum": {
+            "name": "IdentityType",
+            "modelAsString": true
+          }
+        },
+        "userAssignedIdentities": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/UserAssignedIdentity"
+          },
+          "description": "Gets or sets a list of key value pairs that describe the set of User Assigned identities that will be used with this storage account. The key is the ARM resource identifier of the identity. Only 1 User Assigned identity is permitted here."
+        }
+      },
+      "required": ["type"],
+      "description": "Identity for the resource."
+    },
+    "ExtendedLocationType": {
+      "type": "string",
+      "description": "The type of extendedLocation.",
+      "enum": ["EdgeZone"],
+      "x-ms-enum": {
+        "name": "ExtendedLocationTypes",
+        "modelAsString": true
+      }
+    },
+    "ExtendedLocation": {
+      "description": "The complex type of the extended location.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the extended location."
+        },
+        "type": {
+          "$ref": "#/definitions/ExtendedLocationType",
+          "description": "The type of the extended location."
+        }
+      }
+    },
+    "StorageAccountCreateParameters": {
+      "properties": {
+        "sku": {
+          "$ref": "./common.json#/definitions/Sku",
+          "description": "Required. Gets or sets the SKU name."
+        },
+        "kind": {
+          "type": "string",
+          "description": "Required. Indicates the type of storage account.",
+          "enum": ["Storage", "StorageV2", "BlobStorage", "FileStorage", "BlockBlobStorage"],
+          "x-ms-enum": {
+            "name": "Kind",
+            "modelAsString": true
+          }
+        },
+        "location": {
+          "type": "string",
+          "description": "Required. Gets or sets the location of the resource. This will be one of the supported and registered Azure Geo Regions (e.g. West US, East US, Southeast Asia, etc.). The geo region of a resource cannot be changed once it is created, but if an identical geo region is specified on update, the request will succeed."
+        },
+        "extendedLocation": {
+          "$ref": "#/definitions/ExtendedLocation",
+          "description": "Optional. Set the extended location of the resource. If not set, the storage account will be created in Azure main region. Otherwise it will be created in the specified extended location"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Gets or sets a list of key value pairs that describe the resource. These tags can be used for viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key with a length no greater than 128 characters and a value with a length no greater than 256 characters."
+        },
+        "identity": {
+          "$ref": "#/definitions/Identity",
+          "description": "The identity of the resource."
+        },
+        "properties": {
+          "x-ms-client-flatten": true,
+          "$ref": "#/definitions/StorageAccountPropertiesCreateParameters",
+          "description": "The parameters used to create the storage account."
+        }
+      },
+      "required": ["sku", "kind", "location"],
+      "description": "The parameters used when creating a storage account."
+    },
+    "Endpoints": {
+      "properties": {
+        "blob": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the blob endpoint."
+        },
+        "queue": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the queue endpoint."
+        },
+        "table": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the table endpoint."
+        },
+        "file": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the file endpoint."
+        },
+        "web": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the web endpoint."
+        },
+        "dfs": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the dfs endpoint."
+        },
+        "microsoftEndpoints": {
+          "x-ms-client-flatten": false,
+          "$ref": "#/definitions/StorageAccountMicrosoftEndpoints",
+          "description": "Gets the microsoft routing storage endpoints."
+        },
+        "internetEndpoints": {
+          "x-ms-client-flatten": false,
+          "$ref": "#/definitions/StorageAccountInternetEndpoints",
+          "description": "Gets the internet routing storage endpoints"
+        }
+      },
+      "description": "The URIs that are used to perform a retrieval of a public blob, queue, table, web or dfs object."
+    },
+    "StorageAccountMicrosoftEndpoints": {
+      "properties": {
+        "blob": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the blob endpoint."
+        },
+        "queue": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the queue endpoint."
+        },
+        "table": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the table endpoint."
+        },
+        "file": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the file endpoint."
+        },
+        "web": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the web endpoint."
+        },
+        "dfs": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the dfs endpoint."
+        }
+      },
+      "description": "The URIs that are used to perform a retrieval of a public blob, queue, table, web or dfs object via a microsoft routing endpoint."
+    },
+    "StorageAccountInternetEndpoints": {
+      "properties": {
+        "blob": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the blob endpoint."
+        },
+        "file": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the file endpoint."
+        },
+        "web": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the web endpoint."
+        },
+        "dfs": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the dfs endpoint."
+        }
+      },
+      "description": "The URIs that are used to perform a retrieval of a public blob, file, web or dfs object via a internet routing endpoint."
+    },
+    "GeoReplicationStats": {
+      "properties": {
+        "status": {
+          "readOnly": true,
+          "type": "string",
+          "description": "The status of the secondary location. Possible values are: - Live: Indicates that the secondary location is active and operational. - Bootstrap: Indicates initial synchronization from the primary location to the secondary location is in progress.This typically occurs when replication is first enabled. - Unavailable: Indicates that the secondary location is temporarily unavailable.",
+          "enum": ["Live", "Bootstrap", "Unavailable"],
+          "x-ms-enum": {
+            "name": "GeoReplicationStatus",
+            "modelAsString": true
+          }
+        },
+        "lastSyncTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "All primary writes preceding this UTC date/time value are guaranteed to be available for read operations. Primary writes following this point in time may or may not be available for reads. Element may be default value if value of LastSyncTime is not available, this can happen if secondary is offline or we are in bootstrap."
+        },
+        "canFailover": {
+          "readOnly": true,
+          "type": "boolean",
+          "description": "A boolean flag which indicates whether or not account failover is supported for the account."
+        }
+      },
+      "description": "Statistics related to replication for storage account's Blob, Table, Queue and File services. It is only available when geo-redundant replication is enabled for the storage account."
+    },
+    "RoutingPreference": {
+      "properties": {
+        "routingChoice": {
+          "type": "string",
+          "description": "Routing Choice defines the kind of network routing opted by the user.",
+          "enum": ["MicrosoftRouting", "InternetRouting"],
+          "x-ms-enum": {
+            "name": "RoutingChoice",
+            "modelAsString": true
+          }
+        },
+        "publishMicrosoftEndpoints": {
+          "type": "boolean",
+          "description": "A boolean flag which indicates whether microsoft routing storage endpoints are to be published"
+        },
+        "publishInternetEndpoints": {
+          "type": "boolean",
+          "description": "A boolean flag which indicates whether internet routing storage endpoints are to be published"
+        }
+      },
+      "description": "Routing preference defines the type of network, either microsoft or internet routing to be used to deliver the user data, the default option is microsoft routing"
+    },
+    "ImmutableStorageAccount": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "A boolean flag which enables account-level immutability. All the containers under such an account have object-level immutability enabled by default."
+        },
+        "immutabilityPolicy": {
+          "x-ms-client-flatten": false,
+          "$ref": "#/definitions/AccountImmutabilityPolicyProperties",
+          "description": "Specifies the default account-level immutability policy which is inherited and applied to objects that do not possess an explicit immutability policy at the object level. The object-level immutability policy has higher precedence than the container-level immutability policy, which has a higher precedence than the account-level immutability policy."
+        }
+      },
+      "description": "This property enables and defines account-level immutability. Enabling the feature auto-enables Blob Versioning."
+    },
+    "AccountImmutabilityPolicyProperties": {
+      "type": "object",
+      "properties": {
+        "immutabilityPeriodSinceCreationInDays": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 146000,
+          "format": "int32",
+          "description": "The immutability period for the blobs in the container since the policy creation, in days."
+        },
+        "state": {
+          "type": "string",
+          "description": "The ImmutabilityPolicy state defines the mode of the policy. Disabled state disables the policy, Unlocked state allows increase and decrease of immutability retention time and also allows toggling allowProtectedAppendWrites property, Locked state only allows the increase of the immutability retention time. A policy can only be created in a Disabled or Unlocked state and can be toggled between the two states. Only a policy in an Unlocked state can transition to a Locked state which cannot be reverted.",
+          "enum": ["Unlocked", "Locked", "Disabled"],
+          "x-ms-enum": {
+            "name": "AccountImmutabilityPolicyState",
+            "modelAsString": true
+          }
+        },
+        "allowProtectedAppendWrites": {
+          "type": "boolean",
+          "description": "This property can only be changed for disabled and unlocked time-based retention policies. When enabled, new blocks can be written to an append blob while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted."
+        }
+      },
+      "description": "This defines account-level immutability policy properties."
+    },
+    "BlobRestoreStatus": {
+      "properties": {
+        "status": {
+          "readOnly": true,
+          "type": "string",
+          "description": "The status of blob restore progress. Possible values are: - InProgress: Indicates that blob restore is ongoing. - Complete: Indicates that blob restore has been completed successfully. - Failed: Indicates that blob restore is failed.",
+          "enum": ["InProgress", "Complete", "Failed"],
+          "x-ms-enum": {
+            "name": "BlobRestoreProgressStatus",
+            "modelAsString": true
+          }
+        },
+        "failureReason": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Failure reason when blob restore is failed."
+        },
+        "restoreId": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Id for tracking blob restore request."
+        },
+        "parameters": {
+          "readOnly": true,
+          "$ref": "#/definitions/BlobRestoreParameters",
+          "description": "Blob restore request parameters."
+        }
+      },
+      "description": "Blob restore status."
+    },
+    "DeletedAccountProperties": {
+      "properties": {
+        "storageAccountResourceId": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Full resource id of the original storage account."
+        },
+        "location": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Location of the deleted account."
+        },
+        "restoreReference": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Can be used to attempt recovering this deleted account via PutStorageAccount API."
+        },
+        "creationTime": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Creation time of the deleted account."
+        },
+        "deletionTime": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Deletion time of the deleted account."
+        }
+      },
+      "description": "Attributes of a deleted storage account."
+    },
+    "StorageAccountProperties": {
+      "properties": {
+        "provisioningState": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the status of the storage account at the time the operation was called.",
+          "enum": ["Creating", "ResolvingDNS", "Succeeded"],
+          "x-ms-enum": {
+            "name": "ProvisioningState",
+            "modelAsString": false
+          }
+        },
+        "primaryEndpoints": {
+          "$ref": "#/definitions/Endpoints",
+          "readOnly": true,
+          "description": "Gets the URLs that are used to perform a retrieval of a public blob, queue, or table object. Note that Standard_ZRS and Premium_LRS accounts only return the blob endpoint."
+        },
+        "primaryLocation": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the location of the primary data center for the storage account."
+        },
+        "statusOfPrimary": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the status indicating whether the primary location of the storage account is available or unavailable.",
+          "enum": ["available", "unavailable"],
+          "x-ms-enum": {
+            "name": "AccountStatus",
+            "modelAsString": false
+          }
+        },
+        "lastGeoFailoverTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Gets the timestamp of the most recent instance of a failover to the secondary location. Only the most recent timestamp is retained. This element is not returned if there has never been a failover instance. Only available if the accountType is Standard_GRS or Standard_RAGRS."
+        },
+        "secondaryLocation": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the location of the geo-replicated secondary for the storage account. Only available if the accountType is Standard_GRS or Standard_RAGRS."
+        },
+        "statusOfSecondary": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the status indicating whether the secondary location of the storage account is available or unavailable. Only available if the SKU name is Standard_GRS or Standard_RAGRS.",
+          "enum": ["available", "unavailable"],
+          "x-ms-enum": {
+            "name": "AccountStatus",
+            "modelAsString": false
+          }
+        },
+        "creationTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Gets the creation date and time of the storage account in UTC."
+        },
+        "customDomain": {
+          "$ref": "#/definitions/CustomDomain",
+          "readOnly": true,
+          "description": "Gets the custom domain the user assigned to this storage account."
+        },
+        "sasPolicy": {
+          "$ref": "#/definitions/SasPolicy",
+          "readOnly": true,
+          "description": "SasPolicy assigned to the storage account."
+        },
+        "keyPolicy": {
+          "$ref": "#/definitions/KeyPolicy",
+          "readOnly": true,
+          "description": "KeyPolicy assigned to the storage account."
+        },
+        "keyCreationTime": {
+          "readOnly": true,
+          "$ref": "#/definitions/KeyCreationTime",
+          "description": "Storage account keys creation time."
+        },
+        "secondaryEndpoints": {
+          "$ref": "#/definitions/Endpoints",
+          "readOnly": true,
+          "description": "Gets the URLs that are used to perform a retrieval of a public blob, queue, or table object from the secondary location of the storage account. Only available if the SKU name is Standard_RAGRS."
+        },
+        "encryption": {
+          "$ref": "#/definitions/Encryption",
+          "readOnly": true,
+          "description": "Gets the encryption settings on the account. If unspecified, the account is unencrypted."
+        },
+        "accessTier": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Required for storage accounts where kind = BlobStorage. The access tier used for billing.",
+          "enum": ["Hot", "Cool"],
+          "x-ms-enum": {
+            "name": "AccessTier",
+            "modelAsString": false
+          }
+        },
+        "azureFilesIdentityBasedAuthentication": {
+          "$ref": "#/definitions/AzureFilesIdentityBasedAuthentication",
+          "description": "Provides the identity based authentication settings for Azure Files."
+        },
+        "supportsHttpsTrafficOnly": {
+          "type": "boolean",
+          "x-ms-client-name": "EnableHttpsTrafficOnly",
+          "description": "Allows https traffic only to storage service if sets to true."
+        },
+        "networkAcls": {
+          "$ref": "#/definitions/NetworkRuleSet",
+          "x-ms-client-name": "NetworkRuleSet",
+          "description": "Network rule set",
+          "readOnly": true
+        },
+        "isHnsEnabled": {
+          "type": "boolean",
+          "x-ms-client-name": "IsHnsEnabled",
+          "description": "Account HierarchicalNamespace enabled if sets to true."
+        },
+        "geoReplicationStats": {
+          "$ref": "#/definitions/GeoReplicationStats",
+          "x-ms-client-name": "GeoReplicationStats",
+          "description": "Geo Replication Stats",
+          "readOnly": true
+        },
+        "failoverInProgress": {
+          "type": "boolean",
+          "x-ms-client-name": "FailoverInProgress",
+          "description": "If the failover is in progress, the value will be true, otherwise, it will be null.",
+          "readOnly": true
+        },
+        "largeFileSharesState": {
+          "type": "string",
+          "enum": ["Disabled", "Enabled"],
+          "x-ms-enum": {
+            "name": "LargeFileSharesState",
+            "modelAsString": true
+          },
+          "description": "Allow large file shares if sets to Enabled. It cannot be disabled once it is enabled."
+        },
+        "privateEndpointConnections": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "$ref": "./privatelinks.json#/definitions/PrivateEndpointConnection"
+          },
+          "description": "List of private endpoint connection associated with the specified storage account"
+        },
+        "routingPreference": {
+          "$ref": "#/definitions/RoutingPreference",
+          "x-ms-client-name": "RoutingPreference",
+          "description": "Maintains information about the network routing choice opted by the user for data transfer"
+        },
+        "blobRestoreStatus": {
+          "$ref": "#/definitions/BlobRestoreStatus",
+          "x-ms-client-name": "BlobRestoreStatus",
+          "description": "Blob restore status",
+          "readOnly": true
+        },
+        "allowBlobPublicAccess": {
+          "type": "boolean",
+          "x-ms-client-name": "AllowBlobPublicAccess",
+          "description": "Allow or disallow public access to all blobs or containers in the storage account. The default interpretation is true for this property."
+        },
+        "minimumTlsVersion": {
+          "type": "string",
+          "enum": ["TLS1_0", "TLS1_1", "TLS1_2"],
+          "x-ms-enum": {
+            "name": "MinimumTlsVersion",
+            "modelAsString": true
+          },
+          "description": "Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property."
+        },
+        "allowSharedKeyAccess": {
+          "type": "boolean",
+          "description": "Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true."
+        },
+        "isNfsV3Enabled": {
+          "type": "boolean",
+          "x-ms-client-name": "EnableNfsV3",
+          "description": "NFS 3.0 protocol support enabled if set to true."
+        },
+        "allowCrossTenantReplication": {
+          "type": "boolean",
+          "description": "Allow or disallow cross AAD tenant object replication. The default interpretation is true for this property."
+        },
+        "defaultToOAuthAuthentication": {
+          "type": "boolean",
+          "description": "A boolean flag which indicates whether the default authentication is OAuth or not. The default interpretation is false for this property."
+        },
+        "publicNetworkAccess": {
+          "type": "string",
+          "enum": ["Enabled", "Disabled"],
+          "x-ms-enum": {
+            "name": "PublicNetworkAccess",
+            "modelAsString": true
+          },
+          "description": "Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be 'Enabled' or 'Disabled'."
+        },
+        "immutableStorageWithVersioning": {
+          "$ref": "#/definitions/ImmutableStorageAccount",
+          "x-ms-client-name": "ImmutableStorageWithVersioning",
+          "description": "The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the containers in the account by default."
+        }
+      },
+      "description": "Properties of the storage account."
+    },
+    "DeletedAccount": {
+      "properties": {
+        "properties": {
+          "x-ms-client-flatten": true,
+          "$ref": "#/definitions/DeletedAccountProperties",
+          "description": "Properties of the deleted account."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/ProxyResource"
+        }
+      ],
+      "description": "Deleted storage account"
+    },
+    "StorageAccount": {
+      "properties": {
+        "sku": {
+          "$ref": "./common.json#/definitions/Sku",
+          "readOnly": true,
+          "description": "Gets the SKU."
+        },
+        "kind": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the Kind.",
+          "enum": ["Storage", "StorageV2", "BlobStorage", "FileStorage", "BlockBlobStorage"],
+          "x-ms-enum": {
+            "name": "Kind",
+            "modelAsString": true
+          }
+        },
+        "identity": {
+          "$ref": "#/definitions/Identity",
+          "description": "The identity of the resource."
+        },
+        "extendedLocation": {
+          "$ref": "#/definitions/ExtendedLocation",
+          "description": "The extendedLocation of the resource."
+        },
+        "properties": {
+          "x-ms-client-flatten": true,
+          "$ref": "#/definitions/StorageAccountProperties",
+          "description": "Properties of the storage account."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/TrackedResource"
+        }
+      ],
+      "description": "The storage account."
+    },
+    "StorageAccountKey": {
+      "properties": {
+        "keyName": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Name of the key."
+        },
+        "value": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Base 64-encoded value of the key."
+        },
+        "permissions": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Permissions for the key -- read-only or full permissions.",
+          "enum": ["Read", "Full"],
+          "x-ms-enum": {
+            "name": "KeyPermission",
+            "modelAsString": false
+          }
+        },
+        "creationTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation time of the key, in round trip date format."
+        }
+      },
+      "description": "An access key for the storage account."
+    },
+    "StorageAccountListResult": {
+      "properties": {
+        "value": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StorageAccount"
+          },
+          "description": "Gets the list of storage accounts and their properties."
+        },
+        "nextLink": {
+          "type": "string",
+          "description": "Request URL that can be used to query next page of storage accounts. Returned when total number of requested storage accounts exceed maximum page size.",
+          "readOnly": true
+        }
+      },
+      "description": "The response from the List Storage Accounts operation."
+    },
+    "DeletedAccountListResult": {
+      "properties": {
+        "value": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeletedAccount"
+          },
+          "description": "Gets the list of deleted accounts and their properties."
+        },
+        "nextLink": {
+          "type": "string",
+          "description": "Request URL that can be used to query next page of deleted accounts. Returned when total number of requested deleted accounts exceed maximum page size.",
+          "readOnly": true
+        }
+      },
+      "description": "The response from the List Deleted Accounts operation."
+    },
+    "StorageAccountListKeysResult": {
+      "properties": {
+        "keys": {
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StorageAccountKey"
+          },
+          "description": "Gets the list of storage account keys and their properties for the specified storage account."
+        }
+      },
+      "description": "The response from the ListKeys operation."
+    },
+    "StorageAccountRegenerateKeyParameters": {
+      "properties": {
+        "keyName": {
+          "type": "string",
+          "description": "The name of storage keys that want to be regenerated, possible values are key1, key2, kerb1, kerb2."
+        }
+      },
+      "required": ["keyName"],
+      "description": "The parameters used to regenerate the storage account key."
+    },
+    "StorageAccountPropertiesUpdateParameters": {
+      "properties": {
+        "customDomain": {
+          "$ref": "#/definitions/CustomDomain",
+          "description": "Custom domain assigned to the storage account by the user. Name is the CNAME source. Only one custom domain is supported per storage account at this time. To clear the existing custom domain, use an empty string for the custom domain name property."
+        },
+        "encryption": {
+          "$ref": "#/definitions/Encryption",
+          "description": "Provides the encryption settings on the account. The default setting is unencrypted."
+        },
+        "sasPolicy": {
+          "$ref": "#/definitions/SasPolicy",
+          "description": "SasPolicy assigned to the storage account."
+        },
+        "keyPolicy": {
+          "$ref": "#/definitions/KeyPolicy",
+          "description": "KeyPolicy assigned to the storage account."
+        },
+        "accessTier": {
+          "type": "string",
+          "description": "Required for storage accounts where kind = BlobStorage. The access tier used for billing.",
+          "enum": ["Hot", "Cool"],
+          "x-ms-enum": {
+            "name": "AccessTier",
+            "modelAsString": false
+          }
+        },
+        "azureFilesIdentityBasedAuthentication": {
+          "$ref": "#/definitions/AzureFilesIdentityBasedAuthentication",
+          "description": "Provides the identity based authentication settings for Azure Files."
+        },
+        "supportsHttpsTrafficOnly": {
+          "type": "boolean",
+          "x-ms-client-name": "EnableHttpsTrafficOnly",
+          "description": "Allows https traffic only to storage service if sets to true."
+        },
+        "networkAcls": {
+          "description": "Network rule set",
+          "x-ms-client-name": "NetworkRuleSet",
+          "$ref": "#/definitions/NetworkRuleSet"
+        },
+        "largeFileSharesState": {
+          "type": "string",
+          "enum": ["Disabled", "Enabled"],
+          "x-ms-enum": {
+            "name": "LargeFileSharesState",
+            "modelAsString": true
+          },
+          "description": "Allow large file shares if sets to Enabled. It cannot be disabled once it is enabled."
+        },
+        "routingPreference": {
+          "$ref": "#/definitions/RoutingPreference",
+          "x-ms-client-name": "RoutingPreference",
+          "description": "Maintains information about the network routing choice opted by the user for data transfer"
+        },
+        "allowBlobPublicAccess": {
+          "type": "boolean",
+          "x-ms-client-name": "AllowBlobPublicAccess",
+          "description": "Allow or disallow public access to all blobs or containers in the storage account. The default interpretation is true for this property."
+        },
+        "minimumTlsVersion": {
+          "type": "string",
+          "enum": ["TLS1_0", "TLS1_1", "TLS1_2"],
+          "x-ms-enum": {
+            "name": "MinimumTlsVersion",
+            "modelAsString": true
+          },
+          "description": "Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property."
+        },
+        "allowSharedKeyAccess": {
+          "type": "boolean",
+          "description": "Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true."
+        },
+        "allowCrossTenantReplication": {
+          "type": "boolean",
+          "description": "Allow or disallow cross AAD tenant object replication. The default interpretation is true for this property."
+        },
+        "defaultToOAuthAuthentication": {
+          "type": "boolean",
+          "description": "A boolean flag which indicates whether the default authentication is OAuth or not. The default interpretation is false for this property."
+        },
+        "publicNetworkAccess": {
+          "type": "string",
+          "enum": ["Enabled", "Disabled"],
+          "x-ms-enum": {
+            "name": "PublicNetworkAccess",
+            "modelAsString": true
+          },
+          "description": "Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be 'Enabled' or 'Disabled'."
+        },
+        "immutableStorageWithVersioning": {
+          "$ref": "#/definitions/ImmutableStorageAccount",
+          "x-ms-client-name": "ImmutableStorageWithVersioning",
+          "description": "The property is immutable and can only be set to true at the account creation time. When set to true, it enables object level immutability for all the containers in the account by default."
+        }
+      },
+      "description": "The parameters used when updating a storage account."
+    },
+    "StorageAccountUpdateParameters": {
+      "properties": {
+        "sku": {
+          "$ref": "./common.json#/definitions/Sku",
+          "description": "Gets or sets the SKU name. Note that the SKU name cannot be updated to Standard_ZRS, Premium_LRS or Premium_ZRS, nor can accounts of those SKU names be updated to any other value."
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Gets or sets a list of key value pairs that describe the resource. These tags can be used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key no greater in length than 128 characters and a value no greater in length than 256 characters."
+        },
+        "identity": {
+          "$ref": "#/definitions/Identity",
+          "description": "The identity of the resource."
+        },
+        "properties": {
+          "x-ms-client-flatten": true,
+          "$ref": "#/definitions/StorageAccountPropertiesUpdateParameters",
+          "description": "The parameters used when updating a storage account."
+        },
+        "kind": {
+          "type": "string",
+          "description": "Optional. Indicates the type of storage account. Currently only StorageV2 value supported by server.",
+          "enum": ["Storage", "StorageV2", "BlobStorage", "FileStorage", "BlockBlobStorage"],
+          "x-ms-enum": {
+            "name": "Kind",
+            "modelAsString": true
+          }
+        }
+      },
+      "description": "The parameters that can be provided when updating the storage account properties."
+    },
+    "BlobRestoreParameters": {
+      "properties": {
+        "timeToRestore": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Restore blob to the specified time."
+        },
+        "blobRanges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlobRestoreRange"
+          },
+          "description": "Blob ranges to restore."
+        }
+      },
+      "required": ["timeToRestore", "blobRanges"],
+      "description": "Blob restore parameters"
+    },
+    "BlobRestoreRange": {
+      "properties": {
+        "startRange": {
+          "type": "string",
+          "description": "Blob start range. This is inclusive. Empty means account start."
+        },
+        "endRange": {
+          "type": "string",
+          "description": "Blob end range. This is exclusive. Empty means account end."
+        }
+      },
+      "required": ["startRange", "endRange"],
+      "description": "Blob range"
+    },
+    "UsageName": {
+      "properties": {
+        "value": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets a string describing the resource name."
+        },
+        "localizedValue": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets a localized string describing the resource name."
+        }
+      },
+      "description": "The usage names that can be used; currently limited to StorageAccount."
+    },
+    "Usage": {
+      "properties": {
+        "unit": {
+          "readOnly": true,
+          "type": "string",
+          "description": "Gets the unit of measurement.",
+          "enum": ["Count", "Bytes", "Seconds", "Percent", "CountsPerSecond", "BytesPerSecond"],
+          "x-ms-enum": {
+            "name": "UsageUnit",
+            "modelAsString": false
+          }
+        },
+        "currentValue": {
+          "readOnly": true,
+          "type": "integer",
+          "format": "int32",
+          "description": "Gets the current count of the allocated resources in the subscription."
+        },
+        "limit": {
+          "readOnly": true,
+          "type": "integer",
+          "format": "int32",
+          "description": "Gets the maximum count of the resources that can be allocated in the subscription."
+        },
+        "name": {
+          "$ref": "#/definitions/UsageName",
+          "readOnly": true,
+          "description": "Gets the name of the type of usage."
+        }
+      },
+      "description": "Describes Storage Resource Usage."
+    },
+    "UsageListResult": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Usage"
+          },
+          "description": "Gets or sets the list of Storage Resource Usages."
+        }
+      },
+      "description": "The response from the List Usages operation."
+    },
+    "AccountSasParameters": {
+      "properties": {
+        "signedServices": {
+          "type": "string",
+          "enum": ["b", "q", "t", "f"],
+          "x-ms-enum": {
+            "name": "Services",
+            "modelAsString": true
+          },
+          "x-ms-client-name": "Services",
+          "description": "The signed services accessible with the account SAS. Possible values include: Blob (b), Queue (q), Table (t), File (f)."
+        },
+        "signedResourceTypes": {
+          "type": "string",
+          "enum": ["s", "c", "o"],
+          "x-ms-enum": {
+            "name": "SignedResourceTypes",
+            "modelAsString": true
+          },
+          "x-ms-client-name": "ResourceTypes",
+          "description": "The signed resource types that are accessible with the account SAS. Service (s): Access to service-level APIs; Container (c): Access to container-level APIs; Object (o): Access to object-level APIs for blobs, queue messages, table entities, and files."
+        },
+        "signedPermission": {
+          "type": "string",
+          "enum": ["r", "d", "w", "l", "a", "c", "u", "p"],
+          "x-ms-enum": {
+            "name": "Permissions",
+            "modelAsString": true
+          },
+          "x-ms-client-name": "Permissions",
+          "description": "The signed permissions for the account SAS. Possible values include: Read (r), Write (w), Delete (d), List (l), Add (a), Create (c), Update (u) and Process (p)."
+        },
+        "signedIp": {
+          "type": "string",
+          "x-ms-client-name": "IPAddressOrRange",
+          "description": "An IP address or a range of IP addresses from which to accept requests."
+        },
+        "signedProtocol": {
+          "type": "string",
+          "enum": ["https,http", "https"],
+          "x-ms-enum": {
+            "name": "HttpProtocol",
+            "modelAsString": false
+          },
+          "x-ms-client-name": "Protocols",
+          "description": "The protocol permitted for a request made with the account SAS."
+        },
+        "signedStart": {
+          "type": "string",
+          "format": "date-time",
+          "x-ms-client-name": "SharedAccessStartTime",
+          "description": "The time at which the SAS becomes valid."
+        },
+        "signedExpiry": {
+          "type": "string",
+          "format": "date-time",
+          "x-ms-client-name": "SharedAccessExpiryTime",
+          "description": "The time at which the shared access signature becomes invalid."
+        },
+        "keyToSign": {
+          "type": "string",
+          "description": "The key to sign the account SAS token with."
+        }
+      },
+      "required": ["signedServices", "signedResourceTypes", "signedPermission", "signedExpiry"],
+      "description": "The parameters to list SAS credentials of a storage account."
+    },
+    "ListAccountSasResponse": {
+      "properties": {
+        "accountSasToken": {
+          "readOnly": true,
+          "type": "string",
+          "description": "List SAS credentials of storage account."
+        }
+      },
+      "description": "The List SAS credentials operation response."
+    },
+    "ServiceSasParameters": {
+      "properties": {
+        "canonicalizedResource": {
+          "type": "string",
+          "description": "The canonical path to the signed resource."
+        },
+        "signedResource": {
+          "type": "string",
+          "enum": ["b", "c", "f", "s"],
+          "x-ms-enum": {
+            "name": "signedResource",
+            "modelAsString": true
+          },
+          "x-ms-client-name": "Resource",
+          "description": "The signed services accessible with the service SAS. Possible values include: Blob (b), Container (c), File (f), Share (s)."
+        },
+        "signedPermission": {
+          "type": "string",
+          "enum": ["r", "d", "w", "l", "a", "c", "u", "p"],
+          "x-ms-enum": {
+            "name": "Permissions",
+            "modelAsString": true
+          },
+          "x-ms-client-name": "Permissions",
+          "description": "The signed permissions for the service SAS. Possible values include: Read (r), Write (w), Delete (d), List (l), Add (a), Create (c), Update (u) and Process (p)."
+        },
+        "signedIp": {
+          "type": "string",
+          "x-ms-client-name": "IPAddressOrRange",
+          "description": "An IP address or a range of IP addresses from which to accept requests."
+        },
+        "signedProtocol": {
+          "type": "string",
+          "enum": ["https,http", "https"],
+          "x-ms-enum": {
+            "name": "HttpProtocol",
+            "modelAsString": false
+          },
+          "x-ms-client-name": "Protocols",
+          "description": "The protocol permitted for a request made with the account SAS."
+        },
+        "signedStart": {
+          "type": "string",
+          "format": "date-time",
+          "x-ms-client-name": "SharedAccessStartTime",
+          "description": "The time at which the SAS becomes valid."
+        },
+        "signedExpiry": {
+          "type": "string",
+          "format": "date-time",
+          "x-ms-client-name": "SharedAccessExpiryTime",
+          "description": "The time at which the shared access signature becomes invalid."
+        },
+        "signedIdentifier": {
+          "type": "string",
+          "maxLength": 64,
+          "x-ms-client-name": "Identifier",
+          "description": "A unique value up to 64 characters in length that correlates to an access policy specified for the container, queue, or table."
+        },
+        "startPk": {
+          "type": "string",
+          "x-ms-client-name": "PartitionKeyStart",
+          "description": "The start of partition key."
+        },
+        "endPk": {
+          "type": "string",
+          "x-ms-client-name": "PartitionKeyEnd",
+          "description": "The end of partition key."
+        },
+        "startRk": {
+          "type": "string",
+          "x-ms-client-name": "RowKeyStart",
+          "description": "The start of row key."
+        },
+        "endRk": {
+          "type": "string",
+          "x-ms-client-name": "RowKeyEnd",
+          "description": "The end of row key."
+        },
+        "keyToSign": {
+          "type": "string",
+          "description": "The key to sign the account SAS token with."
+        },
+        "rscc": {
+          "type": "string",
+          "x-ms-client-name": "CacheControl",
+          "description": "The response header override for cache control."
+        },
+        "rscd": {
+          "type": "string",
+          "x-ms-client-name": "ContentDisposition",
+          "description": "The response header override for content disposition."
+        },
+        "rsce": {
+          "type": "string",
+          "x-ms-client-name": "ContentEncoding",
+          "description": "The response header override for content encoding."
+        },
+        "rscl": {
+          "type": "string",
+          "x-ms-client-name": "ContentLanguage",
+          "description": "The response header override for content language."
+        },
+        "rsct": {
+          "type": "string",
+          "x-ms-client-name": "ContentType",
+          "description": "The response header override for content type."
+        }
+      },
+      "required": ["canonicalizedResource"],
+      "description": "The parameters to list service SAS credentials of a specific resource."
+    },
+    "ListServiceSasResponse": {
+      "properties": {
+        "serviceSasToken": {
+          "readOnly": true,
+          "type": "string",
+          "description": "List service SAS credentials of specific resource."
+        }
+      },
+      "description": "The List service SAS credentials operation response."
+    },
+    "ManagementPolicy": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/ManagementPolicyProperties",
+          "x-ms-client-flatten": true,
+          "description": "Returns the Storage Account Data Policies Rules."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/Resource"
+        }
+      ],
+      "description": "The Get Storage Account ManagementPolicies operation response."
+    },
+    "ManagementPolicyProperties": {
+      "properties": {
+        "lastModifiedTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Returns the date and time the ManagementPolicies was last modified."
+        },
+        "policy": {
+          "$ref": "#/definitions/ManagementPolicySchema",
+          "description": "The Storage Account ManagementPolicy, in JSON format. See more details in: https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts."
+        }
+      },
+      "required": ["policy"],
+      "description": "The Storage Account ManagementPolicy properties."
+    },
+    "ManagementPolicySchema": {
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ManagementPolicyRule"
+          },
+          "description": "The Storage Account ManagementPolicies Rules. See more details in: https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts."
+        }
+      },
+      "required": ["rules"],
+      "description": "The Storage Account ManagementPolicies Rules. See more details in: https://docs.microsoft.com/en-us/azure/storage/common/storage-lifecycle-managment-concepts."
+    },
+    "ManagementPolicyRule": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Rule is enabled if set to true."
+        },
+        "name": {
+          "type": "string",
+          "description": "A rule name can contain any combination of alpha numeric characters. Rule name is case-sensitive. It must be unique within a policy."
+        },
+        "type": {
+          "type": "string",
+          "description": "The valid value is Lifecycle",
+          "enum": ["Lifecycle"],
+          "x-ms-enum": {
+            "name": "RuleType",
+            "modelAsString": true
+          }
+        },
+        "definition": {
+          "$ref": "#/definitions/ManagementPolicyDefinition",
+          "description": "An object that defines the Lifecycle rule."
+        }
+      },
+      "required": ["name", "type", "definition"],
+      "description": "An object that wraps the Lifecycle rule. Each rule is uniquely defined by name."
+    },
+    "ManagementPolicyDefinition": {
+      "properties": {
+        "actions": {
+          "$ref": "#/definitions/ManagementPolicyAction",
+          "description": "An object that defines the action set."
+        },
+        "filters": {
+          "$ref": "#/definitions/ManagementPolicyFilter",
+          "description": "An object that defines the filter set."
+        }
+      },
+      "required": ["actions"],
+      "description": "An object that defines the Lifecycle rule. Each definition is made up with a filters set and an actions set."
+    },
+    "ManagementPolicyFilter": {
+      "properties": {
+        "prefixMatch": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of strings for prefixes to be match."
+        },
+        "blobTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of predefined enum values. Currently blockBlob supports all tiering and delete actions. Only delete actions are supported for appendBlob."
+        },
+        "blobIndexMatch": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TagFilter"
+          },
+          "description": "An array of blob index tag based filters, there can be at most 10 tag filters"
+        }
+      },
+      "required": ["blobTypes"],
+      "description": "Filters limit rule actions to a subset of blobs within the storage account. If multiple filters are defined, a logical AND is performed on all filters. "
+    },
+    "TagFilter": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "This is the filter tag name, it can have 1 - 128 characters"
+        },
+        "op": {
+          "type": "string",
+          "description": "This is the comparison operator which is used for object comparison and filtering. Only == (equality operator) is currently supported"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256,
+          "description": "This is the filter tag value field used for tag based filtering, it can have 0 - 256 characters"
+        }
+      },
+      "required": ["name", "op", "value"],
+      "description": "Blob index tag based filtering for blob objects"
+    },
+    "ManagementPolicyAction": {
+      "properties": {
+        "baseBlob": {
+          "$ref": "#/definitions/ManagementPolicyBaseBlob",
+          "description": "The management policy action for base blob"
+        },
+        "snapshot": {
+          "$ref": "#/definitions/ManagementPolicySnapShot",
+          "description": "The management policy action for snapshot"
+        },
+        "version": {
+          "$ref": "#/definitions/ManagementPolicyVersion",
+          "description": "The management policy action for version"
+        }
+      },
+      "description": "Actions are applied to the filtered blobs when the execution condition is met."
+    },
+    "ManagementPolicyBaseBlob": {
+      "properties": {
+        "tierToCool": {
+          "$ref": "#/definitions/DateAfterModification",
+          "description": "The function to tier blobs to cool storage. Support blobs currently at Hot tier"
+        },
+        "tierToArchive": {
+          "$ref": "#/definitions/DateAfterModification",
+          "description": "The function to tier blobs to archive storage. Support blobs currently at Hot or Cool tier"
+        },
+        "delete": {
+          "$ref": "#/definitions/DateAfterModification",
+          "description": "The function to delete the blob"
+        },
+        "enableAutoTierToHotFromCool": {
+          "type": "boolean",
+          "description": "This property enables auto tiering of a blob from cool to hot on a blob access. This property requires tierToCool.daysAfterLastAccessTimeGreaterThan."
+        }
+      },
+      "description": "Management policy action for base blob."
+    },
+    "ManagementPolicySnapShot": {
+      "properties": {
+        "tierToCool": {
+          "$ref": "#/definitions/DateAfterCreation",
+          "description": "The function to tier blob snapshot to cool storage. Support blob snapshot currently at Hot tier"
+        },
+        "tierToArchive": {
+          "$ref": "#/definitions/DateAfterCreation",
+          "description": "The function to tier blob snapshot to archive storage. Support blob snapshot currently at Hot or Cool tier"
+        },
+        "delete": {
+          "$ref": "#/definitions/DateAfterCreation",
+          "description": "The function to delete the blob snapshot"
+        }
+      },
+      "description": "Management policy action for snapshot."
+    },
+    "ManagementPolicyVersion": {
+      "properties": {
+        "tierToCool": {
+          "$ref": "#/definitions/DateAfterCreation",
+          "description": "The function to tier blob version to cool storage. Support blob version currently at Hot tier"
+        },
+        "tierToArchive": {
+          "$ref": "#/definitions/DateAfterCreation",
+          "description": "The function to tier blob version to archive storage. Support blob version currently at Hot or Cool tier"
+        },
+        "delete": {
+          "$ref": "#/definitions/DateAfterCreation",
+          "description": "The function to delete the blob version"
+        }
+      },
+      "description": "Management policy action for blob version."
+    },
+    "DateAfterModification": {
+      "properties": {
+        "daysAfterModificationGreaterThan": {
+          "type": "number",
+          "multipleOf": 1.0,
+          "minimum": 0,
+          "description": "Value indicating the age in days after last modification"
+        },
+        "daysAfterLastAccessTimeGreaterThan": {
+          "type": "number",
+          "multipleOf": 1.0,
+          "minimum": 0,
+          "description": "Value indicating the age in days after last blob access. This property can only be used in conjunction with last access time tracking policy"
+        }
+      },
+      "description": "Object to define the number of days after object last modification Or last access. Properties daysAfterModificationGreaterThan and daysAfterLastAccessTimeGreaterThan are mutually exclusive."
+    },
+    "DateAfterCreation": {
+      "properties": {
+        "daysAfterCreationGreaterThan": {
+          "type": "number",
+          "multipleOf": 1.0,
+          "minimum": 0,
+          "description": "Value indicating the age in days after creation"
+        }
+      },
+      "required": ["daysAfterCreationGreaterThan"],
+      "description": "Object to define the number of days after creation."
+    },
+    "EncryptionScope": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/EncryptionScopeProperties",
+          "x-ms-client-flatten": true,
+          "x-ms-client-name": "EncryptionScopeProperties",
+          "description": "Properties of the encryption scope."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/Resource"
+        }
+      ],
+      "description": "The Encryption Scope resource."
+    },
+    "EncryptionScopeProperties": {
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["Microsoft.Storage", "Microsoft.KeyVault"],
+          "x-ms-enum": {
+            "name": "EncryptionScopeSource",
+            "modelAsString": true
+          },
+          "description": "The provider for the encryption scope. Possible values (case-insensitive):  Microsoft.Storage, Microsoft.KeyVault."
+        },
+        "state": {
+          "type": "string",
+          "enum": ["Enabled", "Disabled"],
+          "x-ms-enum": {
+            "name": "EncryptionScopeState",
+            "modelAsString": true
+          },
+          "description": "The state of the encryption scope. Possible values (case-insensitive):  Enabled, Disabled."
+        },
+        "creationTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Gets the creation date and time of the encryption scope in UTC."
+        },
+        "lastModifiedTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Gets the last modification date and time of the encryption scope in UTC."
+        },
+        "keyVaultProperties": {
+          "$ref": "#/definitions/EncryptionScopeKeyVaultProperties",
+          "description": "The key vault properties for the encryption scope. This is a required field if encryption scope 'source' attribute is set to 'Microsoft.KeyVault'."
+        },
+        "requireInfrastructureEncryption": {
+          "type": "boolean",
+          "description": "A boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest."
+        }
+      },
+      "description": "Properties of the encryption scope."
+    },
+    "EncryptionScopeKeyVaultProperties": {
+      "properties": {
+        "keyUri": {
+          "type": "string",
+          "description": "The object identifier for a key vault key object. When applied, the encryption scope will use the key referenced by the identifier to enable customer-managed key support on this encryption scope."
+        },
+        "currentVersionedKeyIdentifier": {
+          "type": "string",
+          "readOnly": true,
+          "description": "The object identifier of the current versioned Key Vault Key in use."
+        },
+        "lastKeyRotationTimestamp": {
+          "type": "string",
+          "readOnly": true,
+          "format": "date-time",
+          "description": "Timestamp of last rotation of the Key Vault Key."
+        }
+      },
+      "description": "The key vault properties for the encryption scope. This is a required field if encryption scope 'source' attribute is set to 'Microsoft.KeyVault'."
+    },
+    "EncryptionScopeListResult": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EncryptionScope"
+          },
+          "description": "List of encryption scopes requested.",
+          "readOnly": true
+        },
+        "nextLink": {
+          "type": "string",
+          "description": "Request URL that can be used to query next page of encryption scopes. Returned when total number of requested encryption scopes exceeds the maximum page size.",
+          "readOnly": true
+        }
+      },
+      "description": "List of encryption scopes requested, and if paging is required, a URL to the next page of encryption scopes."
+    },
+    "ObjectReplicationPolicies": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ObjectReplicationPolicy"
+          },
+          "description": "The replication policy between two storage accounts."
+        }
+      },
+      "description": "List storage account object replication policies."
+    },
+    "ObjectReplicationPolicy": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/ObjectReplicationPolicyProperties",
+          "x-ms-client-flatten": true,
+          "description": "Returns the Storage Account Object Replication Policy."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/Resource"
+        }
+      ],
+      "description": "The replication policy between two storage accounts. Multiple rules can be defined in one policy."
+    },
+    "ObjectReplicationPolicyProperties": {
+      "properties": {
+        "policyId": {
+          "readOnly": true,
+          "type": "string",
+          "description": "A unique id for object replication policy."
+        },
+        "enabledTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Indicates when the policy is enabled on the source account."
+        },
+        "sourceAccount": {
+          "type": "string",
+          "description": "Required. Source account name. It should be full resource id if allowCrossTenantReplication set to false."
+        },
+        "destinationAccount": {
+          "type": "string",
+          "description": "Required. Destination account name. It should be full resource id if allowCrossTenantReplication set to false."
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ObjectReplicationPolicyRule"
+          },
+          "description": "The storage account object replication rules."
+        }
+      },
+      "required": ["sourceAccount", "destinationAccount"],
+      "description": "The Storage Account ObjectReplicationPolicy properties."
+    },
+    "ObjectReplicationPolicyRule": {
+      "properties": {
+        "ruleId": {
+          "type": "string",
+          "description": "Rule Id is auto-generated for each new rule on destination account. It is required for put policy on source account."
+        },
+        "sourceContainer": {
+          "type": "string",
+          "description": "Required. Source container name."
+        },
+        "destinationContainer": {
+          "type": "string",
+          "description": "Required. Destination container name."
+        },
+        "filters": {
+          "$ref": "#/definitions/ObjectReplicationPolicyFilter",
+          "description": "Optional. An object that defines the filter set."
+        }
+      },
+      "required": ["sourceContainer", "destinationContainer"],
+      "description": "The replication policy rule between two containers."
+    },
+    "ObjectReplicationPolicyFilter": {
+      "properties": {
+        "prefixMatch": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Optional. Filters the results to replicate only blobs whose names begin with the specified prefix."
+        },
+        "minCreationTime": {
+          "type": "string",
+          "description": "Blobs created after the time will be replicated to the destination. It must be in datetime format 'yyyy-MM-ddTHH:mm:ssZ'. Example: 2020-02-19T16:05:00Z"
+        }
+      },
+      "description": "Filters limit replication to a subset of blobs within the storage account. A logical OR is performed on values in the filter. If multiple filters are defined, a logical AND is performed on all filters."
+    },
+    "ListBlobInventoryPolicy": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlobInventoryPolicy"
+          },
+          "description": "List of blob inventory policies.",
+          "readOnly": true
+        }
+      },
+      "description": "List of blob inventory policies returned."
+    },
+    "BlobInventoryPolicy": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/BlobInventoryPolicyProperties",
+          "x-ms-client-flatten": true,
+          "description": "Returns the storage account blob inventory policy rules."
+        },
+        "systemData": {
+          "$ref": "../../../../../common-types/resource-management/v2/types.json#/definitions/systemData"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/Resource"
+        }
+      ],
+      "description": "The storage account blob inventory policy."
+    },
+    "BlobInventoryPolicyProperties": {
+      "properties": {
+        "lastModifiedTime": {
+          "readOnly": true,
+          "type": "string",
+          "format": "date-time",
+          "description": "Returns the last modified date and time of the blob inventory policy."
+        },
+        "policy": {
+          "$ref": "#/definitions/BlobInventoryPolicySchema",
+          "description": "The storage account blob inventory policy object. It is composed of policy rules."
+        }
+      },
+      "required": ["policy"],
+      "description": "The storage account blob inventory policy properties."
+    },
+    "BlobInventoryPolicySchema": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Policy is enabled if set to true."
+        },
+        "type": {
+          "type": "string",
+          "description": "The valid value is Inventory",
+          "enum": ["Inventory"],
+          "x-ms-enum": {
+            "name": "InventoryRuleType",
+            "modelAsString": true
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BlobInventoryPolicyRule"
+          },
+          "description": "The storage account blob inventory policy rules. The rule is applied when it is enabled."
+        }
+      },
+      "required": ["enabled", "type", "rules"],
+      "description": "The storage account blob inventory policy rules."
+    },
+    "BlobInventoryPolicyRule": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Rule is enabled when set to true."
+        },
+        "name": {
+          "type": "string",
+          "description": "A rule name can contain any combination of alpha numeric characters. Rule name is case-sensitive. It must be unique within a policy."
+        },
+        "destination": {
+          "type": "string",
+          "description": "Container name where blob inventory files are stored. Must be pre-created."
+        },
+        "definition": {
+          "$ref": "#/definitions/BlobInventoryPolicyDefinition",
+          "description": "An object that defines the blob inventory policy rule."
+        }
+      },
+      "required": ["name", "enabled", "destination", "definition"],
+      "description": "An object that wraps the blob inventory rule. Each rule is uniquely defined by name."
+    },
+    "BlobInventoryPolicyDefinition": {
+      "properties": {
+        "filters": {
+          "$ref": "#/definitions/BlobInventoryPolicyFilter",
+          "description": "An object that defines the filter set."
+        },
+        "format": {
+          "type": "string",
+          "description": "This is a required field, it specifies the format for the inventory files.",
+          "enum": ["Csv", "Parquet"],
+          "x-ms-enum": {
+            "name": "format",
+            "modelAsString": true
+          }
+        },
+        "schedule": {
+          "type": "string",
+          "description": "This is a required field. This field is used to schedule an inventory formation.",
+          "enum": ["Daily", "Weekly"],
+          "x-ms-enum": {
+            "name": "schedule",
+            "modelAsString": true
+          }
+        },
+        "objectType": {
+          "type": "string",
+          "description": "This is a required field. This field specifies the scope of the inventory created either at the blob or container level.",
+          "enum": ["Blob", "Container"],
+          "x-ms-enum": {
+            "name": "objectType",
+            "modelAsString": true
+          }
+        },
+        "schemaFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "This is a required field. This field specifies the fields and properties of the object to be included in the inventory. The Schema field value 'Name' is always required. The valid values for this field for the 'Blob' definition.objectType include 'Name, Creation-Time, Last-Modified, Content-Length, Content-MD5, BlobType, AccessTier, AccessTierChangeTime, AccessTierInferred, Tags, Expiry-Time, hdi_isfolder, Owner, Group, Permissions, Acl, Snapshot, VersionId, IsCurrentVersion, Metadata, LastAccessTime'. The valid values for 'Container' definition.objectType include 'Name, Last-Modified, Metadata, LeaseStatus, LeaseState, LeaseDuration, PublicAccess, HasImmutabilityPolicy, HasLegalHold'. Schema field values 'Expiry-Time, hdi_isfolder, Owner, Group, Permissions, Acl' are valid only for Hns enabled accounts.'Tags' field is only valid for non Hns accounts"
+        }
+      },
+      "required": ["format", "schedule", "objectType", "schemaFields"],
+      "description": "An object that defines the blob inventory rule."
+    },
+    "BlobInventoryPolicyFilter": {
+      "properties": {
+        "prefixMatch": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of strings for blob prefixes to be matched."
+        },
+        "blobTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of predefined enum values. Valid values include blockBlob, appendBlob, pageBlob. Hns accounts does not support pageBlobs. This field is required when definition.objectType property is set to 'Blob'."
+        },
+        "includeBlobVersions": {
+          "type": "boolean",
+          "description": "Includes blob versions in blob inventory when value is set to true. The definition.schemaFields values 'VersionId and IsCurrentVersion' are required if this property is set to true, else they must be excluded."
+        },
+        "includeSnapshots": {
+          "type": "boolean",
+          "description": "Includes blob snapshots in blob inventory when value is set to true. The definition.schemaFields value 'Snapshot' is required if this property is set to true, else it must be excluded."
+        }
+      },
+      "description": "An object that defines the blob inventory rule filter conditions. For 'Blob' definition.objectType all filter properties are applicable, 'blobTypes' is required and others are optional. For 'Container' definition.objectType only prefixMatch is applicable and is optional."
+    },
+    "ErrorResponseBody": {
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An identifier for the error. Codes are invariant and are intended to be consumed programmatically."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message describing the error, intended to be suitable for display in a user interface."
+        }
+      },
+      "description": "Error response body contract."
+    },
+    "ErrorResponse": {
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/ErrorResponseBody",
+          "description": "Azure Storage Resource Provider error response body."
+        }
+      },
+      "description": "An error response from the storage resource provider."
+    }
+  },
+  "parameters": {
+    "ResourceGroupName": {
+      "name": "resourceGroupName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the resource group within the user's subscription. The name is case insensitive.",
+      "pattern": "^[-\\w\\._\\(\\)]+$",
+      "minLength": 1,
+      "maxLength": 90,
+      "x-ms-parameter-location": "method"
+    },
+    "StorageAccountName": {
+      "name": "accountName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the storage account within the specified resource group. Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
+      "maxLength": 24,
+      "minLength": 3,
+      "x-ms-parameter-location": "method"
+    },
+    "DeletedAccountName": {
+      "name": "deletedAccountName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "Name of the deleted storage account.",
+      "maxLength": 24,
+      "minLength": 3,
+      "x-ms-parameter-location": "method"
+    },
+    "ManagementPolicyName": {
+      "name": "managementPolicyName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the Storage Account Management Policy. It should always be 'default'",
+      "enum": ["default"],
+      "x-ms-enum": {
+        "name": "ManagementPolicyName",
+        "modelAsString": true
+      },
+      "x-ms-parameter-location": "method"
+    },
+    "EncryptionScopeName": {
+      "name": "encryptionScopeName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the encryption scope within the specified storage account. Encryption scope names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only. Every dash (-) character must be immediately preceded and followed by a letter or number.",
+      "maxLength": 63,
+      "minLength": 3,
+      "x-ms-parameter-location": "method"
+    },
+    "ObjectReplicationPolicyId": {
+      "name": "objectReplicationPolicyId",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "For the destination account, provide the value 'default'. Configure the policy on the destination account first. For the source account, provide the value of the policy ID that is returned when you download the policy that was defined on the destination account. The policy is downloaded as a JSON file.",
+      "minLength": 1,
+      "x-ms-parameter-location": "method"
+    },
+    "BlobInventoryPolicyName": {
+      "name": "blobInventoryPolicyName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the storage account blob inventory policy. It should always be 'default'",
+      "enum": ["default"],
+      "x-ms-enum": {
+        "name": "BlobInventoryPolicyName",
+        "modelAsString": true
+      },
+      "x-ms-parameter-location": "method"
+    }
+  },
+  "securityDefinitions": {
+    "azure_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/authorize",
+      "flow": "implicit",
+      "description": "Azure Active Directory OAuth2 Flow",
+      "scopes": {
+        "user_impersonation": "impersonate your user account"
+      }
+    }
+  },
+  "security": [
+    {
+      "azure_auth": ["user_impersonation"]
+    }
+  ]
+}

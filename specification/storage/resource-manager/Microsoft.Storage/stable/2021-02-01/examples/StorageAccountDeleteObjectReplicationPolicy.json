@@ -1,0 +1,14 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res6977",
+    "accountName": "sto2527",
+    "objectReplicationPolicyId": "{objectReplicationPolicy-Id}",
+    "api-version": "2020-08-01-preview",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {},
+    "204": {}
+  }
+}

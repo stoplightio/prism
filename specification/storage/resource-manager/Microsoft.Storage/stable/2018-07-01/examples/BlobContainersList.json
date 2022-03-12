@@ -1,0 +1,45 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res9290",
+    "accountName": "sto1590",
+    "api-version": "2018-07-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "value": [
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res9290/providers/Microsoft.Storage/storageAccounts/sto1590/blobServices/default/containers/container1644",
+            "name": "container1644",
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "etag": "\"0x8D589847D51C7DE\"",
+            "properties": {
+              "publicAccess": "Container",
+              "leaseStatus": "Unlocked",
+              "leaseState": "Available",
+              "lastModifiedTime": "2018-03-14T08:20:47Z",
+              "hasImmutabilityPolicy": false,
+              "hasLegalHold": false
+            }
+          },
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res9290/providers/Microsoft.Storage/storageAccounts/sto1590/blobServices/default/containers/container4052",
+            "name": "container4052",
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "etag": "\"0x8D589847DAB5AF9\"",
+            "properties": {
+              "publicAccess": "None",
+              "leaseStatus": "Unlocked",
+              "leaseState": "Available",
+              "lastModifiedTime": "2018-03-14T08:20:47Z",
+              "hasImmutabilityPolicy": false,
+              "hasLegalHold": false
+            }
+          }
+        ]
+      }
+    }
+  }
+}

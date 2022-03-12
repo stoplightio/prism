@@ -1,0 +1,538 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2021-06-01",
+    "title": "StorageManagementClient",
+    "description": "The Azure Storage Management API."
+  },
+  "host": "management.azure.com",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/queueServices": {
+      "get": {
+        "tags": ["QueueServiceProperties"],
+        "operationId": "QueueServices_List",
+        "x-ms-examples": {
+          "QueueServicesList": {
+            "$ref": "./examples/QueueServicesList.json"
+          }
+        },
+        "description": "List all queue services for the storage account",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned the properties of a storage account’s Queue service.",
+            "schema": {
+              "$ref": "#/definitions/ListQueueServices"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "./file.json#/definitions/CloudError"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/queueServices/{queueServiceName}": {
+      "put": {
+        "tags": ["QueueServiceProperties"],
+        "operationId": "QueueServices_SetServiceProperties",
+        "x-ms-examples": {
+          "QueueServicesPut": {
+            "$ref": "./examples/QueueServicesPut.json"
+          }
+        },
+        "description": "Sets the properties of a storage account’s Queue service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules. ",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/QueueServiceName"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/QueueServiceProperties"
+            },
+            "description": "The properties of a storage account’s Queue service, only properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules can be specified."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Sets The properties of a storage account’s Queue service successfully.",
+            "schema": {
+              "$ref": "#/definitions/QueueServiceProperties"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "./file.json#/definitions/CloudError"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["QueueServiceProperties"],
+        "operationId": "QueueServices_GetServiceProperties",
+        "x-ms-examples": {
+          "QueueServicesGet": {
+            "$ref": "./examples/QueueServicesGet.json"
+          }
+        },
+        "description": "Gets the properties of a storage account’s Queue service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/QueueServiceName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned the properties of a storage account’s Queue service.",
+            "schema": {
+              "$ref": "#/definitions/QueueServiceProperties"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "./file.json#/definitions/CloudError"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/queueServices/default/queues/{queueName}": {
+      "put": {
+        "tags": ["QueueService"],
+        "operationId": "Queue_Create",
+        "x-ms-examples": {
+          "QueueOperationPut": {
+            "$ref": "./examples/QueueOperationPut.json"
+          },
+          "QueueOperationPutWithMetadata": {
+            "$ref": "./examples/QueueOperationPutWithMetadata.json"
+          }
+        },
+        "description": "Creates a new queue with the specified queue name, under the specified account.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/QueueName"
+          },
+          {
+            "name": "queue",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageQueue"
+            },
+            "description": "Queue properties and metadata to be created with"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Creates a queue with the given queue name successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageQueue"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "./file.json#/definitions/CloudError"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["QueueService"],
+        "operationId": "Queue_Update",
+        "x-ms-examples": {
+          "QueueOperationPatch": {
+            "$ref": "./examples/QueueOperationPatch.json"
+          }
+        },
+        "description": "Creates a new queue with the specified queue name, under the specified account.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/QueueName"
+          },
+          {
+            "name": "queue",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StorageQueue"
+            },
+            "description": "Queue properties and metadata to be created with"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Creates a queue with the given queue name successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageQueue"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "./file.json#/definitions/CloudError"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["QueueService"],
+        "operationId": "Queue_Get",
+        "x-ms-examples": {
+          "QueueOperationGet": {
+            "$ref": "./examples/QueueOperationGet.json"
+          }
+        },
+        "description": "Gets the queue with the specified queue name, under the specified account if it exists.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/QueueName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned table with the specified table name successfully.",
+            "schema": {
+              "$ref": "#/definitions/StorageQueue"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "./file.json#/definitions/CloudError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["QueueService"],
+        "operationId": "Queue_Delete",
+        "x-ms-examples": {
+          "QueueOperationDelete": {
+            "$ref": "./examples/QueueOperationDelete.json"
+          }
+        },
+        "description": "Deletes the queue with the specified queue name, under the specified account if it exists.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/QueueName"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content - Successfully deleted the queue with the specified queue name"
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "./file.json#/definitions/CloudError"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/queueServices/default/queues": {
+      "get": {
+        "tags": ["QueueService"],
+        "operationId": "Queue_List",
+        "x-ms-examples": {
+          "QueueOperationList": {
+            "$ref": "./examples/QueueOperationList.json"
+          }
+        },
+        "description": "Gets a list of all the queues under the specified storage account",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "$maxpagesize",
+            "in": "query",
+            "type": "string",
+            "description": "Optional, a maximum number of queues that should be included in a list queue response"
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "type": "string",
+            "description": "Optional, When specified, only the queues with a name starting with the given filter will be listed."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned a list of queues successfully.",
+            "schema": {
+              "$ref": "#/definitions/ListQueueResource"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "./file.json#/definitions/CloudError"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ListQueueServices": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QueueServiceProperties"
+          },
+          "description": "List of queue services returned.",
+          "readOnly": true
+        }
+      }
+    },
+    "QueueServiceProperties": {
+      "properties": {
+        "properties": {
+          "properties": {
+            "cors": {
+              "$ref": "./common.json#/definitions/CorsRules",
+              "description": "Specifies CORS rules for the Queue service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Queue service."
+            }
+          },
+          "x-ms-client-flatten": true,
+          "x-ms-client-name": "QueueServiceProperties",
+          "description": "The properties of a storage account’s Queue service."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/Resource"
+        }
+      ],
+      "description": "The properties of a storage account’s Queue service."
+    },
+    "StorageQueue": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/QueueProperties",
+          "x-ms-client-flatten": true,
+          "x-ms-client-name": "QueueProperties",
+          "description": "Queue resource properties."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/Resource"
+        }
+      ]
+    },
+    "QueueProperties": {
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "A name-value pair that represents queue metadata."
+        },
+        "approximateMessageCount": {
+          "type": "integer",
+          "readOnly": true,
+          "description": "Integer indicating an approximate number of messages in the queue. This number is not lower than the actual number of messages in the queue, but could be higher."
+        }
+      }
+    },
+    "ListQueue": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/ListQueueProperties",
+          "x-ms-client-flatten": true,
+          "x-ms-client-name": "QueueProperties",
+          "description": "List Queue resource properties."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/Resource"
+        }
+      ]
+    },
+    "ListQueueProperties": {
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "A name-value pair that represents queue metadata."
+        }
+      }
+    },
+    "ListQueueResource": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ListQueue"
+          },
+          "description": "List of queues returned.",
+          "readOnly": true
+        },
+        "nextLink": {
+          "type": "string",
+          "description": "Request URL that can be used to list next page of queues",
+          "readOnly": true
+        }
+      },
+      "description": "Response schema. Contains list of queues returned"
+    }
+  },
+  "parameters": {
+    "QueueServiceName": {
+      "name": "queueServiceName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the Queue Service within the specified storage account. Queue Service Name must be 'default'",
+      "enum": ["default"],
+      "x-ms-enum": {
+        "name": "QueueServiceName",
+        "modelAsString": false
+      },
+      "x-ms-parameter-location": "method"
+    },
+    "QueueName": {
+      "name": "queueName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "A queue name must be unique within a storage account and must be between 3 and 63 characters.The name must comprise of lowercase alphanumeric and dash(-) characters only, it should begin and end with an alphanumeric character and it cannot have two consecutive dash(-) characters.",
+      "maxLength": 63,
+      "minLength": 3,
+      "pattern": "^[a-z0-9]([a-z0-9]|(-(?!-))){1,61}[a-z0-9]$",
+      "x-ms-parameter-location": "method"
+    }
+  },
+  "securityDefinitions": {
+    "azure_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/authorize",
+      "flow": "implicit",
+      "description": "Azure Active Directory OAuth2 Flow",
+      "scopes": {
+        "user_impersonation": "impersonate your user account"
+      }
+    }
+  },
+  "security": [
+    {
+      "azure_auth": ["user_impersonation"]
+    }
+  ]
+}

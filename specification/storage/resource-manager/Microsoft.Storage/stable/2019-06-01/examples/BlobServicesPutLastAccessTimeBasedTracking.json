@@ -1,0 +1,37 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res4410",
+    "accountName": "sto8607",
+    "BlobServicesName": "default",
+    "api-version": "2019-06-01",
+    "monitor": "true",
+    "parameters": {
+      "properties": {
+        "lastAccessTimeTrackingPolicy": {
+          "enable": true,
+          "name": "AccessTimeTracking",
+          "trackingGranularityInDays": 1,
+          "blobType": ["blockBlob"]
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res4410/providers/Microsoft.Storage/storageAccounts/sto8607/blobServices/default",
+        "name": "default",
+        "type": "Microsoft.Storage/storageAccounts/blobServices",
+        "properties": {
+          "lastAccessTimeTrackingPolicy": {
+            "enable": true,
+            "name": "AccessTimeTracking",
+            "trackingGranularityInDays": 1,
+            "blobType": ["blockBlob"]
+          }
+        }
+      }
+    }
+  }
+}

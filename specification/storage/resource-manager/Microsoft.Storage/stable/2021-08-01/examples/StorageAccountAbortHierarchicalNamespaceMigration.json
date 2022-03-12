@@ -1,0 +1,12 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res4228",
+    "accountName": "sto2434",
+    "api-version": "2021-06-01"
+  },
+  "responses": {
+    "200": {},
+    "202": {}
+  }
+}

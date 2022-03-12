@@ -1,0 +1,1012 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "2021-06-01",
+    "title": "StorageManagementClient",
+    "description": "The Azure Storage Management API."
+  },
+  "host": "management.azure.com",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/fileServices": {
+      "get": {
+        "tags": ["FileService"],
+        "operationId": "FileServices_List",
+        "x-ms-examples": {
+          "ListFileServices": {
+            "$ref": "./examples/FileServicesList.json"
+          }
+        },
+        "description": "List all file services in storage accounts",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List file services operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/FileServiceItems"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/fileServices/{FileServicesName}": {
+      "put": {
+        "tags": ["FileService"],
+        "operationId": "FileServices_SetServiceProperties",
+        "x-ms-examples": {
+          "PutFileServices": {
+            "$ref": "./examples/FileServicesPut.json"
+          },
+          "PutFileServices_EnableSMBMultichannel": {
+            "$ref": "./examples/FileServicesPut_EnableSMBMultichannel.json"
+          },
+          "PutFileServices_EnableSecureSmbFeatures": {
+            "$ref": "./examples/FileServicesPut_EnableSecureSmbFeatures.json"
+          }
+        },
+        "description": "Sets the properties of file services in storage accounts, including CORS (Cross-Origin Resource Sharing) rules. ",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/FileServicesName"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FileServiceProperties"
+            },
+            "description": "The properties of file services in storage accounts, including CORS (Cross-Origin Resource Sharing) rules."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Sets The properties of a storage account’s File service successfully.",
+            "schema": {
+              "$ref": "#/definitions/FileServiceProperties"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["FileService"],
+        "operationId": "FileServices_GetServiceProperties",
+        "x-ms-examples": {
+          "GetFileServices": {
+            "$ref": "./examples/FileServicesGet.json"
+          }
+        },
+        "description": "Gets the properties of file services in storage accounts, including CORS (Cross-Origin Resource Sharing) rules.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "$ref": "#/parameters/FileServicesName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- returned the properties of a storage account’s File service.",
+            "schema": {
+              "$ref": "#/definitions/FileServiceProperties"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/fileServices/default/shares": {
+      "get": {
+        "tags": ["FileShares"],
+        "operationId": "FileShares_List",
+        "x-ms-examples": {
+          "ListShares": {
+            "$ref": "./examples/FileSharesList.json"
+          },
+          "ListDeletedShares": {
+            "$ref": "./examples/DeletedFileSharesList.json"
+          },
+          "ListShareSnapshots": {
+            "$ref": "./examples/FileShareSnapshotsList.json"
+          }
+        },
+        "description": "Lists all shares.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "$maxpagesize",
+            "in": "query",
+            "type": "string",
+            "description": "Optional. Specified maximum number of shares that can be included in the list."
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "type": "string",
+            "description": "Optional. When specified, only share names starting with the filter will be listed."
+          },
+          {
+            "name": "$expand",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Optional, used to expand the properties within share's properties. Valid values are: deleted, snapshots. Should be passed as a string with delimiter ','"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- List Shares operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/FileShareItems"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        },
+        "x-ms-pageable": {
+          "nextLinkName": "nextLink"
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/fileServices/default/shares/{shareName}": {
+      "put": {
+        "tags": ["FileShares"],
+        "operationId": "FileShares_Create",
+        "x-ms-examples": {
+          "PutShares": {
+            "$ref": "./examples/FileSharesPut.json"
+          },
+          "Create NFS Shares": {
+            "$ref": "./examples/FileSharesPut_NFS.json"
+          },
+          "PutShares with Access Tier": {
+            "$ref": "./examples/FileSharesPut_AccessTier.json"
+          }
+        },
+        "description": "Creates a new share under the specified account as described by request body. The share resource includes metadata and properties for that share. It does not include a list of the files contained by the share. ",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ShareName"
+          },
+          {
+            "name": "fileShare",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FileShare"
+            },
+            "description": "Properties of the file share to create."
+          },
+          {
+            "name": "$expand",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Optional, used to expand the properties within share's properties. Valid values are: snapshots. Should be passed as a string with delimiter ','"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created -- Create Share operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/FileShare"
+            }
+          },
+          "200": {
+            "description": "OK -- The Share is already created.",
+            "schema": {
+              "$ref": "#/definitions/FileShare"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["FileShares"],
+        "operationId": "FileShares_Update",
+        "x-ms-examples": {
+          "UpdateShares": {
+            "$ref": "./examples/FileSharesPatch.json"
+          },
+          "UpdateShareAcls": {
+            "$ref": "./examples/FileShareAclsPatch.json"
+          }
+        },
+        "description": "Updates share properties as specified in request body. Properties not mentioned in the request will not be changed. Update fails if the specified share does not already exist. ",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ShareName"
+          },
+          {
+            "name": "fileShare",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FileShare"
+            },
+            "description": "Properties to update for the file share."
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Update Share operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/FileShare",
+              "description": "Properties of the updated file share."
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["FileShares"],
+        "operationId": "FileShares_Get",
+        "x-ms-examples": {
+          "GetShares": {
+            "$ref": "./examples/FileSharesGet.json"
+          },
+          "GetShareStats": {
+            "$ref": "./examples/FileSharesGet_Stats.json"
+          }
+        },
+        "description": "Gets properties of a specified share.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ShareName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "$expand",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Optional, used to expand the properties within share's properties. Valid values are: stats. Should be passed as a string with delimiter ','."
+          },
+          {
+            "name": "x-ms-snapshot",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "description": "Optional, used to retrieve properties of a snapshot."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Get Share operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/FileShare"
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["FileShares"],
+        "operationId": "FileShares_Delete",
+        "x-ms-examples": {
+          "DeleteShares": {
+            "$ref": "./examples/FileSharesDelete.json"
+          }
+        },
+        "description": "Deletes specified share under its account.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ShareName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "x-ms-snapshot",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "description": "Optional, used to delete a snapshot."
+          },
+          {
+            "name": "$include",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Optional. Valid values are: snapshots, leased-snapshots, none. The default value is snapshots. For 'snapshots', the file share is deleted including all of its file share snapshots. If the file share contains leased-snapshots, the deletion fails. For 'leased-snapshots', the file share is deleted included all of its file share snapshots (leased/unleased). For 'none', the file share is deleted if it has no share snapshots. If the file share contains any snapshots (leased or unleased), the deletion fails."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Delete Share operation completed successfully."
+          },
+          "204": {
+            "description": "No Content -- The Share not exist."
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/fileServices/default/shares/{shareName}/restore": {
+      "post": {
+        "tags": ["FileShares"],
+        "operationId": "FileShares_Restore",
+        "x-ms-examples": {
+          "RestoreShares": {
+            "$ref": "./examples/FileSharesRestore.json"
+          }
+        },
+        "description": "Restore a file share within a valid retention days if share soft delete is enabled",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ShareName"
+          },
+          {
+            "name": "deletedShare",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeletedShare"
+            }
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- The Share is successfully restored."
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/fileServices/default/shares/{shareName}/lease": {
+      "post": {
+        "tags": ["FileShares"],
+        "operationId": "FileShares_Lease",
+        "x-ms-examples": {
+          "Acquire a lease on a share": {
+            "$ref": "./examples/FileSharesLease_Acquire.json"
+          },
+          "Break a lease on a share": {
+            "$ref": "./examples/FileSharesLease_Break.json"
+          }
+        },
+        "description": "The Lease Share operation establishes and manages a lock on a share for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.",
+        "parameters": [
+          {
+            "$ref": "./storage.json#/parameters/ResourceGroupName"
+          },
+          {
+            "$ref": "./storage.json#/parameters/StorageAccountName"
+          },
+          {
+            "$ref": "#/parameters/ShareName"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+          },
+          {
+            "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+          },
+          {
+            "name": "parameters",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LeaseShareRequest"
+            },
+            "description": "Lease Share request body."
+          },
+          {
+            "name": "x-ms-snapshot",
+            "in": "header",
+            "required": false,
+            "type": "string",
+            "description": "Optional. Specify the snapshot time to lease a snapshot."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK -- Lease Share operation completed successfully.",
+            "schema": {
+              "$ref": "#/definitions/LeaseShareResponse"
+            },
+            "headers": {
+              "ETag": {
+                "description": "The ETag HTTP response header. This is an opaque string. You can use it to detect whether the resource has changed between requests. In particular, you can pass the ETag to one of the If-Match or If-None-Match headers.",
+                "type": "string"
+              }
+            }
+          },
+          "default": {
+            "description": "Error response describing why the operation failed.",
+            "schema": {
+              "$ref": "#/definitions/CloudError"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "FileServiceItems": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileServiceProperties"
+          },
+          "description": "List of file services returned.",
+          "readOnly": true
+        }
+      }
+    },
+    "FileServiceProperties": {
+      "properties": {
+        "properties": {
+          "properties": {
+            "cors": {
+              "$ref": "./common.json#/definitions/CorsRules",
+              "description": "Specifies CORS rules for the File service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the File service."
+            },
+            "shareDeleteRetentionPolicy": {
+              "$ref": "./common.json#/definitions/DeleteRetentionPolicy",
+              "description": "The file service properties for share soft delete."
+            },
+            "protocolSettings": {
+              "$ref": "#/definitions/ProtocolSettings",
+              "description": "Protocol settings for file service"
+            }
+          },
+          "x-ms-client-flatten": true,
+          "x-ms-client-name": "FileServiceProperties",
+          "description": "The properties of File services in storage account."
+        },
+        "sku": {
+          "$ref": "./common.json#/definitions/Sku",
+          "readOnly": true,
+          "description": "Sku name and tier."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/Resource"
+        }
+      ],
+      "description": "The properties of File services in storage account."
+    },
+    "ProtocolSettings": {
+      "properties": {
+        "smb": {
+          "$ref": "#/definitions/SmbSetting",
+          "description": "Setting for SMB protocol"
+        }
+      },
+      "description": "Protocol settings for file service"
+    },
+    "SmbSetting": {
+      "properties": {
+        "multichannel": {
+          "$ref": "#/definitions/Multichannel",
+          "description": "Multichannel setting. Applies to Premium FileStorage only."
+        },
+        "versions": {
+          "type": "string",
+          "description": "SMB protocol versions supported by server. Valid values are SMB2.1, SMB3.0, SMB3.1.1. Should be passed as a string with delimiter ';'."
+        },
+        "authenticationMethods": {
+          "type": "string",
+          "description": "SMB authentication methods supported by server. Valid values are NTLMv2, Kerberos. Should be passed as a string with delimiter ';'."
+        },
+        "kerberosTicketEncryption": {
+          "type": "string",
+          "description": "Kerberos ticket encryption supported by server. Valid values are RC4-HMAC, AES-256. Should be passed as a string with delimiter ';'"
+        },
+        "channelEncryption": {
+          "type": "string",
+          "description": "SMB channel encryption supported by server. Valid values are AES-128-CCM, AES-128-GCM, AES-256-GCM. Should be passed as a string with delimiter ';'."
+        }
+      },
+      "description": "Setting for SMB protocol"
+    },
+    "Multichannel": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Indicates whether multichannel is enabled"
+        }
+      },
+      "description": "Multichannel setting. Applies to Premium FileStorage only."
+    },
+    "FileShare": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/FileShareProperties",
+          "x-ms-client-flatten": true,
+          "x-ms-client-name": "FileShareProperties",
+          "description": "Properties of the file share."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/AzureEntityResource"
+        }
+      ],
+      "description": "Properties of the file share, including Id, resource name, resource type, Etag."
+    },
+    "DeletedShare": {
+      "properties": {
+        "deletedShareName": {
+          "type": "string",
+          "description": "Required. Identify the name of the deleted share that will be restored."
+        },
+        "deletedShareVersion": {
+          "type": "string",
+          "description": "Required. Identify the version of the deleted share that will be restored."
+        }
+      },
+      "required": ["deletedShareName", "deletedShareVersion"],
+      "description": "The deleted share to be restored."
+    },
+    "FileShareItem": {
+      "properties": {
+        "properties": {
+          "$ref": "#/definitions/FileShareProperties",
+          "x-ms-client-flatten": true,
+          "description": "The file share properties be listed out."
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/AzureEntityResource"
+        }
+      ],
+      "description": "The file share properties be listed out."
+    },
+    "FileShareItems": {
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileShareItem"
+          },
+          "description": "List of file shares returned.",
+          "readOnly": true
+        },
+        "nextLink": {
+          "type": "string",
+          "description": "Request URL that can be used to query next page of shares. Returned when total number of requested shares exceed maximum page size.",
+          "readOnly": true
+        }
+      },
+      "description": "Response schema. Contains list of shares returned, and if paging is requested or required, a URL to next page of shares."
+    },
+    "FileShareProperties": {
+      "properties": {
+        "lastModifiedTime": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Returns the date and time the share was last modified."
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "A name-value pair to associate with the share as metadata."
+        },
+        "shareQuota": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 102400,
+          "description": "The maximum size of the share, in gigabytes. Must be greater than 0, and less than or equal to 5TB (5120). For Large File Shares, the maximum size is 102400."
+        },
+        "enabledProtocols": {
+          "type": "string",
+          "enum": ["SMB", "NFS"],
+          "x-ms-enum": {
+            "name": "EnabledProtocols",
+            "modelAsString": true
+          },
+          "description": "The authentication protocol that is used for the file share. Can only be specified when creating a share.",
+          "x-ms-mutability": ["create", "read"]
+        },
+        "rootSquash": {
+          "type": "string",
+          "enum": ["NoRootSquash", "RootSquash", "AllSquash"],
+          "x-ms-enum": {
+            "name": "RootSquashType",
+            "modelAsString": true
+          },
+          "description": "The property is for NFS share only. The default is NoRootSquash."
+        },
+        "version": {
+          "type": "string",
+          "readOnly": true,
+          "description": "The version of the share."
+        },
+        "deleted": {
+          "type": "boolean",
+          "readOnly": true,
+          "description": "Indicates whether the share was deleted."
+        },
+        "deletedTime": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "The deleted time if the share was deleted."
+        },
+        "remainingRetentionDays": {
+          "type": "integer",
+          "readOnly": true,
+          "description": "Remaining retention days for share that was soft deleted."
+        },
+        "accessTier": {
+          "type": "string",
+          "enum": ["TransactionOptimized", "Hot", "Cool", "Premium"],
+          "x-ms-enum": {
+            "name": "ShareAccessTier",
+            "modelAsString": true
+          },
+          "description": "Access tier for specific share. GpV2 account can choose between TransactionOptimized (default), Hot, and Cool. FileStorage account can choose Premium."
+        },
+        "accessTierChangeTime": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Indicates the last modification time for share access tier."
+        },
+        "accessTierStatus": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Indicates if there is a pending transition for access tier."
+        },
+        "shareUsageBytes": {
+          "type": "integer",
+          "format": "int64",
+          "readOnly": true,
+          "description": "The approximate size of the data stored on the share. Note that this value may not include all recently created or recently resized files."
+        },
+        "leaseStatus": {
+          "type": "string",
+          "readOnly": true,
+          "enum": ["Locked", "Unlocked"],
+          "x-ms-enum": {
+            "name": "LeaseStatus",
+            "modelAsString": true
+          },
+          "description": "The lease status of the share."
+        },
+        "leaseState": {
+          "type": "string",
+          "readOnly": true,
+          "enum": ["Available", "Leased", "Expired", "Breaking", "Broken"],
+          "x-ms-enum": {
+            "name": "LeaseState",
+            "modelAsString": true
+          },
+          "description": "Lease state of the share."
+        },
+        "leaseDuration": {
+          "type": "string",
+          "readOnly": true,
+          "enum": ["Infinite", "Fixed"],
+          "x-ms-enum": {
+            "name": "LeaseDuration",
+            "modelAsString": true
+          },
+          "description": "Specifies whether the lease on a share is of infinite or fixed duration, only when the share is leased."
+        },
+        "signedIdentifiers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SignedIdentifier"
+          },
+          "description": "List of stored access policies specified on the share."
+        },
+        "snapshotTime": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Creation time of share snapshot returned in the response of list shares with expand param \"snapshots\"."
+        }
+      },
+      "description": "The properties of the file share."
+    },
+    "LeaseShareRequest": {
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["Acquire", "Renew", "Change", "Release", "Break"],
+          "x-ms-enum": {
+            "name": "LeaseShareAction",
+            "modelAsString": true
+          },
+          "description": "Specifies the lease action. Can be one of the available actions."
+        },
+        "leaseId": {
+          "type": "string",
+          "description": "Identifies the lease. Can be specified in any valid GUID string format."
+        },
+        "breakPeriod": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Optional. For a break action, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60."
+        },
+        "leaseDuration": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Required for acquire. Specifies the duration of the lease, in seconds, or negative one (-1) for a lease that never expires."
+        },
+        "proposedLeaseId": {
+          "type": "string",
+          "description": "Optional for acquire, required for change. Proposed lease ID, in a GUID string format."
+        }
+      },
+      "required": ["action"],
+      "description": "Lease Share request schema."
+    },
+    "LeaseShareResponse": {
+      "properties": {
+        "leaseId": {
+          "type": "string",
+          "description": "Returned unique lease ID that must be included with any request to delete the share, or to renew, change, or release the lease."
+        },
+        "leaseTimeSeconds": {
+          "type": "string",
+          "description": "Approximate time remaining in the lease period, in seconds."
+        }
+      },
+      "description": "Lease Share response schema."
+    },
+    "SignedIdentifier": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "An unique identifier of the stored access policy."
+        },
+        "accessPolicy": {
+          "$ref": "#/definitions/AccessPolicy",
+          "description": "Access policy"
+        }
+      }
+    },
+    "AccessPolicy": {
+      "properties": {
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time of the access policy"
+        },
+        "expiryTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Expiry time of the access policy"
+        },
+        "permission": {
+          "type": "string",
+          "description": "List of abbreviated permissions."
+        }
+      }
+    },
+    "CloudError": {
+      "x-ms-external": true,
+      "properties": {
+        "error": {
+          "$ref": "#/definitions/CloudErrorBody"
+        }
+      },
+      "description": "An error response from the Storage service."
+    },
+    "CloudErrorBody": {
+      "x-ms-external": true,
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "An identifier for the error. Codes are invariant and are intended to be consumed programmatically."
+        },
+        "message": {
+          "type": "string",
+          "description": "A message describing the error, intended to be suitable for display in a user interface."
+        },
+        "target": {
+          "type": "string",
+          "description": "The target of the particular error. For example, the name of the property in error."
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CloudErrorBody"
+          },
+          "description": "A list of additional details about the error."
+        }
+      },
+      "description": "An error response from the Storage service."
+    }
+  },
+  "parameters": {
+    "FileServicesName": {
+      "name": "FileServicesName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the file Service within the specified storage account. File Service Name must be \"default\"",
+      "enum": ["default"],
+      "x-ms-enum": {
+        "name": "FileServicesName",
+        "modelAsString": false
+      },
+      "x-ms-parameter-location": "method"
+    },
+    "ShareName": {
+      "name": "shareName",
+      "in": "path",
+      "required": true,
+      "type": "string",
+      "description": "The name of the file share within the specified storage account. File share names must be between 3 and 63 characters in length and use numbers, lower-case letters and dash (-) only. Every dash (-) character must be immediately preceded and followed by a letter or number.",
+      "maxLength": 63,
+      "minLength": 3,
+      "x-ms-parameter-location": "method"
+    }
+  },
+  "securityDefinitions": {
+    "azure_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/authorize",
+      "flow": "implicit",
+      "description": "Azure Active Directory OAuth2 Flow",
+      "scopes": {
+        "user_impersonation": "impersonate your user account"
+      }
+    }
+  },
+  "security": [
+    {
+      "azure_auth": ["user_impersonation"]
+    }
+  ]
+}

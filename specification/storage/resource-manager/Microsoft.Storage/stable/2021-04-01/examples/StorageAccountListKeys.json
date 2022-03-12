@@ -1,0 +1,27 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res418",
+    "accountName": "sto2220",
+    "api-version": "2020-08-01-preview",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "keys": [
+          {
+            "keyName": "key1",
+            "permissions": "Full",
+            "value": "<value>"
+          },
+          {
+            "keyName": "key2",
+            "permissions": "Full",
+            "value": "<value>"
+          }
+        ]
+      }
+    }
+  }
+}

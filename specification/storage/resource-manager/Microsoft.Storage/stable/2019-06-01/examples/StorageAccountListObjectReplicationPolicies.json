@@ -1,0 +1,35 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res6977",
+    "accountName": "sto2527",
+    "api-version": "2019-06-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "value": [
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res6977/providers/Microsoft.Storage/storageAccounts/sto2527/objectReplicationPolicies/c6c23999-fd4e-433a-bcf9-1db69d27cd8a",
+            "name": "c6c23999-fd4e-433a-bcf9-1db69d27cd8a",
+            "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+            "properties": {
+              "sourceAccount": "sto2527",
+              "destinationAccount": "destAccount1"
+            }
+          },
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res9290/providers/Microsoft.Storage/storageAccounts/sto1590/objectReplicationPolicies/141d23dc-8958-4b48-b6e6-5a40bf1af116",
+            "name": "141d23dc-8958-4b48-b6e6-5a40bf1af116",
+            "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+            "properties": {
+              "sourceAccount": "sto2527",
+              "destinationAccount": "destAccount2"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res9101",
+    "accountName": "sto4445",
+    "api-version": "2020-08-01-preview",
+    "parameters": {
+      "sku": {
+        "name": "Standard_GRS"
+      },
+      "kind": "Storage",
+      "location": "eastus",
+      "extendedLocation": {
+        "type": "EdgeZone",
+        "name": "losangeles001"
+      },
+      "properties": {
+        "isHnsEnabled": true,
+        "allowBlobPublicAccess": false,
+        "minimumTlsVersion": "TLS1_2",
+        "allowSharedKeyAccess": true,
+        "routingPreference": {
+          "routingChoice": "MicrosoftRouting",
+          "publishMicrosoftEndpoints": true,
+          "publishInternetEndpoints": true
+        },
+        "encryption": {
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "requireInfrastructureEncryption": false,
+          "keySource": "Microsoft.Storage"
+        }
+      },
+      "tags": {
+        "key1": "value1",
+        "key2": "value2"
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res9101/providers/Microsoft.Storage/storageAccounts/sto4445",
+        "kind": "Storage",
+        "location": "eastus",
+        "name": "sto4445",
+        "extendedLocation": {
+          "type": "EdgeZone",
+          "name": "losangeles001"
+        },
+        "properties": {
+          "isHnsEnabled": true,
+          "allowBlobPublicAccess": false,
+          "minimumTlsVersion": "TLS1_2",
+          "allowSharedKeyAccess": true,
+          "creationTime": "2017-05-24T13:25:33.4863236Z",
+          "primaryEndpoints": {
+            "web": "https://sto4445.web.core.windows.net/",
+            "dfs": "https://sto4445.dfs.core.windows.net/",
+            "blob": "https://sto4445.blob.core.windows.net/",
+            "file": "https://sto4445.file.core.windows.net/",
+            "queue": "https://sto4445.queue.core.windows.net/",
+            "table": "https://sto4445.table.core.windows.net/",
+            "microsoftEndpoints": {
+              "web": "https://sto4445-microsoftrouting.web.core.windows.net/",
+              "dfs": "https://sto4445-microsoftrouting.dfs.core.windows.net/",
+              "blob": "https://sto4445-microsoftrouting.blob.core.windows.net/",
+              "file": "https://sto4445-microsoftrouting.file.core.windows.net/",
+              "queue": "https://sto4445-microsoftrouting.queue.core.windows.net/",
+              "table": "https://sto4445-microsoftrouting.table.core.windows.net/"
+            },
+            "internetEndpoints": {
+              "web": "https://sto4445-internetrouting.web.core.windows.net/",
+              "dfs": "https://sto4445-internetrouting.dfs.core.windows.net/",
+              "blob": "https://sto4445-internetrouting.blob.core.windows.net/",
+              "file": "https://sto4445-internetrouting.file.core.windows.net/"
+            }
+          },
+          "primaryLocation": "eastus2euap",
+          "provisioningState": "Succeeded",
+          "routingPreference": {
+            "routingChoice": "MicrosoftRouting",
+            "publishMicrosoftEndpoints": true,
+            "publishInternetEndpoints": true
+          },
+          "encryption": {
+            "services": {
+              "file": {
+                "keyType": "Account",
+                "enabled": true,
+                "lastEnabledTime": "2019-12-11T20:49:31.7036140Z"
+              },
+              "blob": {
+                "keyType": "Account",
+                "enabled": true,
+                "lastEnabledTime": "2019-12-11T20:49:31.7036140Z"
+              }
+            },
+            "requireInfrastructureEncryption": false,
+            "keySource": "Microsoft.Storage"
+          },
+          "secondaryLocation": "centraluseuap",
+          "statusOfPrimary": "available",
+          "statusOfSecondary": "available",
+          "supportsHttpsTrafficOnly": true
+        },
+        "sku": {
+          "name": "Standard_GRS",
+          "tier": "Standard"
+        },
+        "tags": {
+          "key1": "value1",
+          "key2": "value2"
+        },
+        "type": "Microsoft.Storage/storageAccounts"
+      }
+    },
+    "202": {}
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res3376",
+    "accountName": "sto328",
+    "shareName": "share6185",
+    "api-version": "2021-04-01",
+    "monitor": "true",
+    "fileShare": {
+      "properties": {
+        "signedIdentifiers": [
+          {
+            "id": "MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI",
+            "accessPolicy": {
+              "startTime": "2021-04-01T08:49:37.0000000Z",
+              "expiryTime": "2021-05-01T08:49:37.0000000Z",
+              "permission": "rwd"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res3376/providers/Microsoft.Storage/storageAccounts/sto328/fileServices/default/shares/share6185",
+        "name": "share6185",
+        "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+        "properties": {
+          "signedIdentifiers": [
+            {
+              "id": "MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI",
+              "accessPolicy": {
+                "startTime": "2021-04-01T08:49:37.0000000Z",
+                "expiryTime": "2021-05-01T08:49:37.0000000Z",
+                "permission": "rwd"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
