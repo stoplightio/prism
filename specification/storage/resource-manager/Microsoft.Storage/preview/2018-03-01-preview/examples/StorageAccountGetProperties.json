@@ -1,0 +1,66 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res7902",
+    "accountName": "sto5800",
+    "api-version": "2018-03-01-preview",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "sku": {
+          "name": "Standard_GRS",
+          "tier": "Standard"
+        },
+        "kind": "StorageV2",
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res7902/providers/Microsoft.Storage/storageAccounts/sto5800",
+        "name": "sto5800",
+        "type": "Microsoft.Storage/storageAccounts",
+        "location": "eastus2(stage)",
+        "tags": {
+          "key1": "value1",
+          "key2": "value2"
+        },
+        "properties": {
+          "isHnsEnabled": true,
+          "networkAcls": {
+            "bypass": "AzureServices",
+            "virtualNetworkRules": [],
+            "ipRules": [],
+            "defaultAction": "Allow"
+          },
+          "supportsHttpsTrafficOnly": true,
+          "encryption": {
+            "services": {
+              "file": {
+                "enabled": true,
+                "lastEnabledTime": "2018-04-13T06:40:38.0168941Z"
+              },
+              "blob": {
+                "enabled": true,
+                "lastEnabledTime": "2018-04-13T06:40:38.0168941Z"
+              }
+            },
+            "keySource": "Microsoft.Storage"
+          },
+          "accessTier": "Hot",
+          "provisioningState": "Succeeded",
+          "creationTime": "2018-04-13T06:40:37.9842922Z",
+          "primaryEndpoints": {
+            "web": "https://sto5800.web.core.windows.net/",
+            "dfs": "https://sto5800.dfs.core.windows.net/",
+            "blob": "https://sto5800.blob.core.windows.net/",
+            "queue": "https://sto5800.queue.core.windows.net/",
+            "table": "https://sto5800.table.core.windows.net/",
+            "file": "https://sto5800.file.core.windows.net/"
+          },
+          "primaryLocation": "eastus2(stage)",
+          "statusOfPrimary": "available",
+          "secondaryLocation": "northcentralus(stage)",
+          "statusOfSecondary": "available"
+        }
+      }
+    }
+  }
+}

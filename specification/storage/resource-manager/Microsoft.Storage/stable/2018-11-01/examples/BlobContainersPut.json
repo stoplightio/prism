@@ -1,0 +1,27 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res3376",
+    "accountName": "sto328",
+    "containerName": "container6185",
+    "api-version": "2018-11-01",
+    "monitor": "true",
+    "blobContainer": {}
+  },
+  "responses": {
+    "201": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res3376/providers/Microsoft.Storage/storageAccounts/sto328/blobServices/default/containers/container6185",
+        "name": "container6185",
+        "type": "Microsoft.Storage/storageAccounts/blobServices/containers"
+      }
+    },
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res3376/providers/Microsoft.Storage/storageAccounts/sto328/blobServices/default/containers/container6185",
+        "name": "container6185",
+        "type": "Microsoft.Storage/storageAccounts/blobServices/containers"
+      }
+    }
+  }
+}

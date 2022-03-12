@@ -1,0 +1,15 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res1782",
+    "accountName": "sto7069",
+    "containerName": "container6397",
+    "immutabilityPolicyName": "default",
+    "api-version": "2021-04-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {},
+    "202": {}
+  }
+}

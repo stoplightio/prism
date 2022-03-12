@@ -1,0 +1,112 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "api-version": "2018-03-01-preview",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "value": [
+          {
+            "sku": {
+              "name": "Standard_LRS",
+              "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "id": "/subscriptions/{subscription-id}/resourceGroups/weitest/providers/Microsoft.Storage/storageAccounts/weiwebtest",
+            "name": "weiwebtest",
+            "type": "Microsoft.Storage/storageAccounts",
+            "location": "eastus2(stage)",
+            "tags": {},
+            "properties": {
+              "isHnsEnabled": true,
+              "networkAcls": {
+                "bypass": "AzureServices",
+                "virtualNetworkRules": [],
+                "ipRules": [],
+                "defaultAction": "Allow"
+              },
+              "supportsHttpsTrafficOnly": false,
+              "encryption": {
+                "services": {
+                  "file": {
+                    "enabled": true,
+                    "lastEnabledTime": "2018-04-09T08:07:07.5286091Z"
+                  },
+                  "blob": {
+                    "enabled": true,
+                    "lastEnabledTime": "2018-04-09T08:07:07.5286091Z"
+                  }
+                },
+                "keySource": "Microsoft.Storage"
+              },
+              "accessTier": "Hot",
+              "provisioningState": "Succeeded",
+              "creationTime": "2018-04-09T08:07:07.4348556Z",
+              "primaryEndpoints": {
+                "web": "https://weiwebtest.web.core.windows.net/",
+                "dfs": "https://weiwebtest.dfs.core.windows.net/",
+                "blob": "https://weiwebtest.blob.core.windows.net/",
+                "queue": "https://weiwebtest.queue.core.windows.net/",
+                "table": "https://weiwebtest.table.core.windows.net/",
+                "file": "https://weiwebtest.file.core.windows.net/"
+              },
+              "primaryLocation": "eastus2(stage)",
+              "statusOfPrimary": "available"
+            }
+          },
+          {
+            "sku": {
+              "name": "Standard_GRS",
+              "tier": "Standard"
+            },
+            "kind": "Storage",
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res4940/providers/Microsoft.Storage/storageAccounts/sto7478",
+            "name": "sto7478",
+            "type": "Microsoft.Storage/storageAccounts",
+            "location": "eastus2(stage)",
+            "tags": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "properties": {
+              "networkAcls": {
+                "bypass": "AzureServices",
+                "virtualNetworkRules": [],
+                "ipRules": [],
+                "defaultAction": "Allow"
+              },
+              "supportsHttpsTrafficOnly": false,
+              "encryption": {
+                "services": {
+                  "file": {
+                    "enabled": true,
+                    "lastEnabledTime": "2018-03-23T09:43:18.6145793Z"
+                  },
+                  "blob": {
+                    "enabled": true,
+                    "lastEnabledTime": "2018-03-23T09:43:18.6145793Z"
+                  }
+                },
+                "keySource": "Microsoft.Storage"
+              },
+              "provisioningState": "Succeeded",
+              "creationTime": "2018-03-23T09:43:18.5989502Z",
+              "primaryEndpoints": {
+                "blob": "https://sto7478.blob.core.windows.net/",
+                "queue": "https://sto7478.queue.core.windows.net/",
+                "table": "https://sto7478.table.core.windows.net/",
+                "file": "https://sto7478.file.core.windows.net/"
+              },
+              "primaryLocation": "eastus2(stage)",
+              "statusOfPrimary": "available",
+              "secondaryLocation": "northcentralus(stage)",
+              "statusOfSecondary": "available"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

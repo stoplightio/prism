@@ -1,0 +1,20 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res3376",
+    "accountName": "sto328",
+    "queueName": "queue6185",
+    "api-version": "2020-08-01-preview",
+    "monitor": "true",
+    "queue": {}
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res3376/providers/Microsoft.Storage/storageAccounts/sto328/queueServices/default/queues/queue6185",
+        "name": "queue6185",
+        "type": "Microsoft.Storage/storageAccounts/queueServices/queues"
+      }
+    }
+  }
+}

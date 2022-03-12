@@ -1,0 +1,65 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res6977",
+    "accountName": "sto2527",
+    "username": "user1",
+    "api-version": "2021-08-01",
+    "properties": {
+      "properties": {
+        "permissionScopes": [
+          {
+            "permissions": "rwd",
+            "service": "file",
+            "resourceName": "share1"
+          },
+          {
+            "permissions": "rw",
+            "service": "file",
+            "resourceName": "share2"
+          }
+        ],
+        "homeDirectory": "homedirectory",
+        "hasSshPassword": true,
+        "sshAuthorizedKeys": [
+          {
+            "description": "key name",
+            "key": "ssh-rsa keykeykeykeykey="
+          }
+        ]
+      }
+    },
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res6977/providers/Microsoft.Storage/storageAccounts/sto2527/loalUsers/user1",
+        "name": "user1",
+        "type": "Microsoft.Storage/storageAccounts/localUsers",
+        "properties": {
+          "permissionScopes": [
+            {
+              "permissions": "rwd",
+              "service": "file",
+              "resourceName": "share1"
+            },
+            {
+              "permissions": "rw",
+              "service": "file",
+              "resourceName": "share2"
+            }
+          ],
+          "homeDirectory": "homedirectory",
+          "sshAuthorizedKeys": [
+            {
+              "description": "key name",
+              "key": "ssh-rsa keykeykeykeykey="
+            }
+          ],
+          "sid": "S-1-2-0-125132-153423-36235-1000"
+        }
+      }
+    }
+  }
+}

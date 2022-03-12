@@ -1,0 +1,24 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res3376",
+    "accountName": "sto328",
+    "shareName": "share12",
+    "api-version": "2021-04-01",
+    "monitor": "true",
+    "parameters": {
+      "action": "Break",
+      "leaseId": "8698f513-fa75-44a1-b8eb-30ba336af27d",
+      "breakPeriod": null,
+      "leaseDuration": null,
+      "proposedLeaseId": null
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "leaseTimeSeconds": "0"
+      }
+    }
+  }
+}

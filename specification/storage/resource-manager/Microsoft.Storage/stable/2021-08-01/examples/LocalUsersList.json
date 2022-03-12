@@ -1,0 +1,59 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res6977",
+    "accountName": "sto2527",
+    "api-version": "2021-08-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "value": [
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res6977/providers/Microsoft.Storage/storageAccounts/sto2527/loalUsers/user1",
+            "name": "user1",
+            "type": "Microsoft.Storage/storageAccounts/localUsers",
+            "properties": {
+              "permissionScopes": [
+                {
+                  "permissions": "rwd",
+                  "service": "file",
+                  "resourceName": "share1"
+                },
+                {
+                  "permissions": "rw",
+                  "service": "file",
+                  "resourceName": "share2"
+                }
+              ],
+              "homeDirectory": "homedirectory",
+              "sid": "S-1-2-0-125132-153423-36235-1000",
+              "hasSharedKey": true,
+              "hasSshKey": true,
+              "hasSshPassword": true
+            }
+          },
+          {
+            "id": "/subscriptions/{subscription-id}/resourceGroups/res9290/providers/Microsoft.Storage/storageAccounts/sto1590/loalUsers/user2",
+            "name": "user2",
+            "type": "Microsoft.Storage/storageAccounts/localUsers",
+            "properties": {
+              "permissionScopes": [
+                {
+                  "permissions": "rw",
+                  "service": "blob",
+                  "resourceName": "resourcename"
+                }
+              ],
+              "sid": "S-1-2-0-533672-235636-66334-1001",
+              "hasSharedKey": true,
+              "hasSshKey": false,
+              "hasSshPassword": true
+            }
+          }
+        ]
+      }
+    }
+  }
+}

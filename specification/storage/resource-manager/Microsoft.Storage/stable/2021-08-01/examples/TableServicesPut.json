@@ -1,0 +1,75 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res4410",
+    "accountName": "sto8607",
+    "tableServiceName": "default",
+    "api-version": "2020-08-01-preview",
+    "monitor": "true",
+    "parameters": {
+      "properties": {
+        "cors": {
+          "corsRules": [
+            {
+              "allowedOrigins": ["http://www.contoso.com", "http://www.fabrikam.com"],
+              "allowedMethods": ["GET", "HEAD", "POST", "OPTIONS", "MERGE", "PUT"],
+              "maxAgeInSeconds": 100,
+              "exposedHeaders": ["x-ms-meta-*"],
+              "allowedHeaders": ["x-ms-meta-abc", "x-ms-meta-data*", "x-ms-meta-target*"]
+            },
+            {
+              "allowedOrigins": ["*"],
+              "allowedMethods": ["GET"],
+              "maxAgeInSeconds": 2,
+              "exposedHeaders": ["*"],
+              "allowedHeaders": ["*"]
+            },
+            {
+              "allowedOrigins": ["http://www.abc23.com", "https://www.fabrikam.com/*"],
+              "allowedMethods": ["GET", "PUT"],
+              "maxAgeInSeconds": 2000,
+              "exposedHeaders": ["x-ms-meta-abc", "x-ms-meta-data*", "x-ms-meta-target*"],
+              "allowedHeaders": ["x-ms-meta-12345675754564*"]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res4410/providers/Microsoft.Storage/storageAccounts/sto8607/tableServices/default",
+        "name": "default",
+        "type": "Microsoft.Storage/storageAccounts/tableServices",
+        "properties": {
+          "cors": {
+            "corsRules": [
+              {
+                "allowedOrigins": ["http://www.contoso.com", "http://www.fabrikam.com"],
+                "allowedMethods": ["GET", "HEAD", "POST", "OPTIONS", "MERGE", "PUT"],
+                "maxAgeInSeconds": 100,
+                "exposedHeaders": ["x-ms-meta-*"],
+                "allowedHeaders": ["x-ms-meta-abc", "x-ms-meta-data*", "x-ms-meta-target*"]
+              },
+              {
+                "allowedOrigins": ["*"],
+                "allowedMethods": ["GET"],
+                "maxAgeInSeconds": 2,
+                "exposedHeaders": ["*"],
+                "allowedHeaders": ["*"]
+              },
+              {
+                "allowedOrigins": ["http://www.abc23.com", "https://www.fabrikam.com/*"],
+                "allowedMethods": ["GET", "PUT"],
+                "maxAgeInSeconds": 2000,
+                "exposedHeaders": ["x-ms-meta-abc", "x-ms-meta-data*", "x-ms-meta-target*"],
+                "allowedHeaders": ["x-ms-meta-12345675754564*"]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

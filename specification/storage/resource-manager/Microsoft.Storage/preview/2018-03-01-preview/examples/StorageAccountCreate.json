@@ -1,0 +1,79 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res9101",
+    "accountName": "sto4445",
+    "api-version": "2018-03-01-preview",
+    "parameters": {
+      "sku": {
+        "name": "Standard_GRS"
+      },
+      "kind": "Storage",
+      "location": "eastus2euap",
+      "properties": {
+        "isHnsEnabled": true
+      },
+      "tags": {
+        "key1": "value1",
+        "key2": "value2"
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res9101/providers/Microsoft.Storage/storageAccounts/sto4445",
+        "kind": "Storage",
+        "location": "eastus2euap",
+        "name": "sto4445",
+        "properties": {
+          "isHnsEnabled": true,
+          "networkAcls": {
+            "bypass": "AzureServices",
+            "virtualNetworkRules": [],
+            "ipRules": [],
+            "defaultAction": "Allow"
+          },
+          "encryption": {
+            "services": {
+              "file": {
+                "enabled": true,
+                "lastEnabledTime": "2018-04-13T07:04:49.8562647Z"
+              },
+              "blob": {
+                "enabled": true,
+                "lastEnabledTime": "2018-04-13T07:04:49.8562647Z"
+              }
+            },
+            "keySource": "Microsoft.Storage"
+          },
+          "creationTime": "2018-04-13T07:04:49.6145793Z",
+          "primaryEndpoints": {
+            "web": "https://sto4445.web.core.windows.net/",
+            "dfs": "https://sto4445.dfs.core.windows.net/",
+            "blob": "https://sto4445.blob.core.windows.net/",
+            "file": "https://sto4445.file.core.windows.net/",
+            "queue": "https://sto4445.queue.core.windows.net/",
+            "table": "https://sto4445.table.core.windows.net/"
+          },
+          "primaryLocation": "eastus2euap",
+          "provisioningState": "Succeeded",
+          "secondaryLocation": "centraluseuap",
+          "statusOfPrimary": "available",
+          "statusOfSecondary": "available",
+          "supportsHttpsTrafficOnly": false
+        },
+        "sku": {
+          "name": "Standard_GRS",
+          "tier": "Standard"
+        },
+        "tags": {
+          "key1": "value1",
+          "key2": "value2"
+        },
+        "type": "Microsoft.Storage/storageAccounts"
+      }
+    },
+    "202": {}
+  }
+}

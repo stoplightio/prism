@@ -1,0 +1,14 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res4079",
+    "accountName": "sto4506",
+    "containerName": "container9689",
+    "api-version": "2018-11-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {},
+    "204": {}
+  }
+}

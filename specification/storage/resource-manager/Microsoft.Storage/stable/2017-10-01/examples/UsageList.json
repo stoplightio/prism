@@ -1,0 +1,23 @@
+{
+  "parameters": {
+    "subscriptionId": "27de630f-e1ee-42de-8849-90def4986454",
+    "api-version": "2017-10-01"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "value": [
+          {
+            "unit": "Count",
+            "currentValue": 51,
+            "limit": 250,
+            "name": {
+              "value": "StorageAccounts",
+              "localizedValue": "Storage Accounts"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

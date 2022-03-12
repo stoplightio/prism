@@ -1,0 +1,27 @@
+{
+  "parameters": {
+    "subscriptionId": "27de630f-e1ee-42de-8849-90def4986454",
+    "resourceGroupName": "res418",
+    "accountName": "sto2220",
+    "api-version": "2017-10-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "keys": [
+          {
+            "keyName": "key1",
+            "permissions": "Full",
+            "value": "<value>"
+          },
+          {
+            "keyName": "key2",
+            "permissions": "Full",
+            "value": "<value>"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,473 @@
+{
+  "parameters": {
+    "api-version": "2020-08-01-preview"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "value": [
+          {
+            "name": "Microsoft.Storage/storageAccounts/write",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Accounts",
+              "operation": "Create/Update Storage Account",
+              "description": "Creates a storage account with the specified parameters or update the properties or tags or adds custom domain for the specified storage account."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/delete",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Accounts",
+              "operation": "Delete Storage Account",
+              "description": "Deletes an existing storage account."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/listkeys/action",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Accounts",
+              "operation": "List Storage Account Keys",
+              "description": "Returns the access keys for the specified storage account."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/regeneratekey/action",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Accounts",
+              "operation": "Regenerate Storage Account Keys",
+              "description": "Regenerates the access keys for the specified storage account."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/checknameavailability/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Name Availability",
+              "operation": "Check Name Availability",
+              "description": "Checks that account name is valid and is not in use."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Accounts",
+              "operation": "List/Get Storage Account(s)",
+              "description": "Returns the list of storage accounts or gets the properties for the specified storage account."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/usages/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Usage Metrics",
+              "operation": "Get Subscription Usages",
+              "description": "Returns the limit and the current usage count for resources in the specified subscription"
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/listAccountSas/action",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Account SAS Token",
+              "operation": "Returns Storage Account SAS Token",
+              "description": "Returns the Account SAS token for the specified storage account."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/listServiceSas/action",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Returns the Service SAS token for the specified storage account.",
+              "operation": "Returns Storage Service SAS Token",
+              "description": "Storage Service SAS Token"
+            }
+          },
+          {
+            "name": "Microsoft.Storage/locations/deleteVirtualNetworkOrSubnets/action",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Location",
+              "operation": "Delete virtual network or subnets notifications",
+              "description": "Notifies Microsoft.Storage that virtual network or subnet is being deleted"
+            }
+          },
+          {
+            "name": "Microsoft.Storage/operations/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Operations",
+              "operation": "Poll Asynchronous Operation",
+              "description": "Polls the status of an asynchronous operation."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/register/action",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Resource Provider",
+              "operation": "Registers the Storage Resource Provider",
+              "description": "Registers the subscription for the storage resource provider and enables the creation of storage accounts."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/skus/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Skus",
+              "operation": "List Skus",
+              "description": "Lists the Skus supported by Microsoft.Storage."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/services/diagnosticSettings/write",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Accounts",
+              "operation": "Create/Update Diagnostic Settings",
+              "description": "Create/Update storage account diagnostic settings."
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/providers/Microsoft.Insights/metricDefinitions/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Accounts",
+              "operation": "Get list of Microsoft Storage Metrics definitions",
+              "description": "Get list of Microsoft Storage Metrics definitions."
+            },
+            "origin": "system",
+            "properties": {
+              "serviceSpecification": {
+                "metricSpecifications": [
+                  {
+                    "name": "UsedCapacity",
+                    "displayName": "Used capacity",
+                    "displayDescription": "Account used capacity",
+                    "unit": "Bytes",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity",
+                    "resourceIdDimensionNameOverride": "AccountResourceId"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/providers/Microsoft.Insights/diagnosticSettings/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Accounts",
+              "operation": "Read diagnostic setting",
+              "description": "Gets the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/providers/Microsoft.Insights/diagnosticSettings/write",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Storage Accounts",
+              "operation": "Write diagnostic setting",
+              "description": "Creates or updates the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/blobServices/providers/Microsoft.Insights/metricDefinitions/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Blob service",
+              "operation": "Get list of Microsoft Storage Metrics definitions",
+              "description": "Get list of Microsoft Storage Metrics definitions."
+            },
+            "origin": "system",
+            "properties": {
+              "serviceSpecification": {
+                "metricSpecifications": [
+                  {
+                    "name": "BlobCapacity",
+                    "displayName": "Blob Capacity",
+                    "displayDescription": "The amount of storage used by the storage account’s Blob service in bytes.",
+                    "unit": "Bytes",
+                    "aggregationType": "Average",
+                    "dimensions": [
+                      {
+                        "name": "BlobType",
+                        "displayName": "Blob type"
+                      }
+                    ],
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "BlobCount",
+                    "displayName": "Blob Count",
+                    "displayDescription": "The number of Blob in the storage account’s Blob service.",
+                    "unit": "Count",
+                    "aggregationType": "Average",
+                    "dimensions": [
+                      {
+                        "name": "BlobType",
+                        "displayName": "Blob type"
+                      }
+                    ],
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "ContainerCount",
+                    "displayName": "Blob Container Count",
+                    "displayDescription": "The number of containers in the storage account’s Blob service.",
+                    "unit": "Count",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "BlobProvisionedSize",
+                    "displayName": "Blob Provisioned Size",
+                    "displayDescription": "The amount of storage provisioned in the storage account’s Blob service in bytes.",
+                    "unit": "Bytes",
+                    "aggregationType": "Average",
+                    "dimensions": [
+                      {
+                        "name": "BlobType",
+                        "displayName": "Blob type"
+                      }
+                    ],
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/blobServices/providers/Microsoft.Insights/diagnosticSettings/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Blob service",
+              "operation": "Read diagnostic setting",
+              "description": "Gets the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/blobServices/providers/Microsoft.Insights/diagnosticSettings/write",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Blob service",
+              "operation": "Write diagnostic setting",
+              "description": "Creates or updates the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/tableServices/providers/Microsoft.Insights/metricDefinitions/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Table service",
+              "operation": "Get list of Microsoft Storage Metrics definitions",
+              "description": "Get list of Microsoft Storage Metrics definitions."
+            },
+            "origin": "system",
+            "properties": {
+              "serviceSpecification": {
+                "metricSpecifications": [
+                  {
+                    "name": "TableCapacity",
+                    "displayName": "Table Capacity",
+                    "displayDescription": "The amount of storage used by the storage account’s Table service in bytes.",
+                    "unit": "Bytes",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "TableCount",
+                    "displayName": "Table Count",
+                    "displayDescription": "The number of table in the storage account’s Table service.",
+                    "unit": "Count",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "TableEntityCount",
+                    "displayName": "Table Entity Count",
+                    "displayDescription": "The number of table entities in the storage account’s Table service.",
+                    "unit": "Count",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/tableServices/providers/Microsoft.Insights/diagnosticSettings/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Table service",
+              "operation": "Read diagnostic setting",
+              "description": "Gets the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/tableServices/providers/Microsoft.Insights/diagnosticSettings/write",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Table service",
+              "operation": "Write diagnostic setting",
+              "description": "Creates or updates the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/queueServices/providers/Microsoft.Insights/metricDefinitions/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Queue service",
+              "operation": "Get list of Microsoft Storage Metrics definitions",
+              "description": "Get list of Microsoft Storage Metrics definitions."
+            },
+            "origin": "system",
+            "properties": {
+              "serviceSpecification": {
+                "metricSpecifications": [
+                  {
+                    "name": "QueueCapacity",
+                    "displayName": "Queue Capacity",
+                    "displayDescription": "The amount of storage used by the storage account’s Queue service in bytes.",
+                    "unit": "Bytes",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "QueueCount",
+                    "displayName": "Queue Count",
+                    "displayDescription": "The number of queue in the storage account’s Queue service.",
+                    "unit": "Count",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "QueueMessageCount",
+                    "displayName": "Queue Message Count",
+                    "displayDescription": "The approximate number of queue messages in the storage account’s Queue service.",
+                    "unit": "Count",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/queueServices/providers/Microsoft.Insights/diagnosticSettings/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Queue service",
+              "operation": "Read diagnostic setting",
+              "description": "Gets the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/queueServices/providers/Microsoft.Insights/diagnosticSettings/write",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "Queue service",
+              "operation": "Write diagnostic setting",
+              "description": "Creates or updates the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/fileServices/providers/Microsoft.Insights/metricDefinitions/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "File service",
+              "operation": "Get list of Microsoft Storage Metrics definitions",
+              "description": "Get list of Microsoft Storage Metrics definitions."
+            },
+            "origin": "system",
+            "properties": {
+              "serviceSpecification": {
+                "metricSpecifications": [
+                  {
+                    "name": "FileCapacity",
+                    "displayName": "File Capacity",
+                    "displayDescription": "The amount of storage used by the storage account’s File service in bytes.",
+                    "unit": "Bytes",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "FileProvisionedSize",
+                    "displayName": "File Provisioned Size",
+                    "displayDescription": "The amount of storage provisioned in the storage account’s File service in bytes.",
+                    "unit": "Bytes",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "FileCount",
+                    "displayName": "File Count",
+                    "displayDescription": "The number of file in the storage account’s File service.",
+                    "unit": "Count",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  },
+                  {
+                    "name": "FileShareCount",
+                    "displayName": "File Share Count",
+                    "displayDescription": "The number of file shares in the storage account’s File service.",
+                    "unit": "Count",
+                    "aggregationType": "Average",
+                    "fillGapWithZero": false,
+                    "category": "Capacity"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/fileServices/providers/Microsoft.Insights/diagnosticSettings/read",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "File service",
+              "operation": "Read diagnostic setting",
+              "description": "Gets the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          },
+          {
+            "name": "Microsoft.Storage/storageAccounts/fileServices/providers/Microsoft.Insights/diagnosticSettings/write",
+            "display": {
+              "provider": "Microsoft Storage",
+              "resource": "File service",
+              "operation": "Write diagnostic setting",
+              "description": "Creates or updates the diagnostic setting for the resource."
+            },
+            "origin": "system"
+          }
+        ]
+      }
+    }
+  }
+}

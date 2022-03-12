@@ -1,0 +1,26 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res9871",
+    "accountName": "sto6217",
+    "shareName": "share1634",
+    "$expand": "stats",
+    "api-version": "2020-08-01-preview",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res9871/providers/Microsoft.Storage/storageAccounts/sto6217/fileServices/default/shares/share1634",
+        "name": "share1634",
+        "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+        "etag": "\"0x8D592D74CC20EBA\"",
+        "properties": {
+          "lastModifiedTime": "2019-05-26T05:06:14Z",
+          "shareQuota": 1024,
+          "shareUsageBytes": 652945
+        }
+      }
+    }
+  }
+}

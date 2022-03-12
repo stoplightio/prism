@@ -1,0 +1,41 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res6977",
+    "accountName": "sto2527",
+    "objectReplicationPolicyId": "{objectReplicationPolicy-Id}",
+    "api-version": "2019-06-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res6977/providers/Microsoft.Storage/storageAccounts/sto2527/objectReplicationPolicies/{objectReplicationPolicy-Id}",
+        "name": "{objectReplicationPolicy-Id}",
+        "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+        "properties": {
+          "policyId": "{objectReplicationPolicy-Id}",
+          "enabledTime": "2019-06-08T03:01:55.7168089Z",
+          "sourceAccount": "sto2527",
+          "destinationAccount": "destAccount1",
+          "rules": [
+            {
+              "sourceContainer": "sourceContainer1",
+              "destinationContainer": "destContainer1",
+              "filters": {
+                "prefixMatch": ["blobA", "blobB"]
+              }
+            },
+            {
+              "sourceContainer": "sourceContainer1",
+              "destinationContainer": "destContainer1",
+              "filters": {
+                "prefixMatch": ["blobC", "blobD"]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

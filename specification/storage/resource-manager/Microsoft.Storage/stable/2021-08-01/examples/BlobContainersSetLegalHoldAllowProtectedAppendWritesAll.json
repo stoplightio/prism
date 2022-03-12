@@ -1,0 +1,23 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res4303",
+    "accountName": "sto7280",
+    "containerName": "container8723",
+    "api-version": "2021-06-01",
+    "monitor": "true",
+    "LegalHold": {
+      "tags": ["tag1", "tag2", "tag3"],
+      "allowProtectedAppendWritesAll": true
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "hasLegalHold": true,
+        "tags": ["tag1", "tag2", "tag3"],
+        "allowProtectedAppendWritesAll": true
+      }
+    }
+  }
+}

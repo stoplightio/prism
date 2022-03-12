@@ -1,0 +1,45 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res4410",
+    "accountName": "sto8607",
+    "FileServicesName": "default",
+    "api-version": "2021-02-01",
+    "monitor": "true",
+    "parameters": {
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "versions": "SMB2.1;SMB3.0;SMB3.1.1",
+            "authenticationMethods": "NTLMv2;Kerberos",
+            "kerberosTicketEncryption": "RC4-HMAC;AES-256",
+            "channelEncryption": "AES-128-CCM;AES-128-GCM;AES-256-GCM"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/res4410/providers/Microsoft.Storage/storageAccounts/sto8607/fileServices/default",
+        "name": "default",
+        "type": "Microsoft.Storage/storageAccounts/fileServices",
+        "properties": {
+          "protocolSettings": {
+            "smb": {
+              "versions": "SMB2.1;SMB3.0;SMB3.1.1",
+              "authenticationMethods": "NTLMv2;Kerberos",
+              "kerberosTicketEncryption": "RC4-HMAC;AES-256",
+              "channelEncryption": "AES-128-CCM;AES-128-GCM;AES-256-GCM"
+            }
+          }
+        },
+        "sku": {
+          "name": "Premium_LRS",
+          "tier": "Premium"
+        }
+      }
+    }
+  }
+}

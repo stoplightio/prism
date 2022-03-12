@@ -1,0 +1,30 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res4167",
+    "accountName": "sto3539",
+    "api-version": "2020-08-01-preview",
+    "monitor": "true",
+    "regenerateKey": {
+      "keyName": "key2"
+    }
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "keys": [
+          {
+            "keyName": "key1",
+            "permissions": "Full",
+            "value": "<value>"
+          },
+          {
+            "keyName": "key2",
+            "permissions": "Full",
+            "value": "<value>"
+          }
+        ]
+      }
+    }
+  }
+}

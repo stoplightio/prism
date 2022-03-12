@@ -1,0 +1,14 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "res6977",
+    "accountName": "sto2527",
+    "managementPolicyName": "default",
+    "api-version": "2018-11-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {},
+    "204": {}
+  }
+}

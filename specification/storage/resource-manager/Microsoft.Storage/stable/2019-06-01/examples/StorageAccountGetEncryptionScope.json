@@ -1,0 +1,25 @@
+{
+  "parameters": {
+    "subscriptionId": "{subscription-id}",
+    "resourceGroupName": "resource-group-name",
+    "accountName": "{storage-account-name}",
+    "encryptionScopeName": "{encryption-scope-name}",
+    "api-version": "2019-06-01",
+    "monitor": "true"
+  },
+  "responses": {
+    "200": {
+      "body": {
+        "id": "/subscriptions/{subscription-id}/resourceGroups/resource-group-name/providers/Microsoft.Storage/storageAccounts/{storage-account-name}/encryptionScopes/{encryption-scope-name}",
+        "name": "{encyrption-scope-name}",
+        "type": "Microsoft.Storage/storageAccounts/encryptionScopes",
+        "properties": {
+          "source": "Microsoft.Storage",
+          "state": "Enabled",
+          "creationTime": "2018-10-16T02:42:41.7633306Z",
+          "lastModifiedTime": "2018-10-16T02:42:41.7633306Z"
+        }
+      }
+    }
+  }
+}
