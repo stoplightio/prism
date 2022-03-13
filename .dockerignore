@@ -2,7 +2,6 @@
 **/.github
 **/dist
 **/docs
-**/examples
 **/node_modules
 **/__tests__
 **/test-harness
