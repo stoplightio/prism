@@ -1,4 +1,4 @@
-FROM node:12 as compiler
+FROM node:14 as compiler
 
 WORKDIR /usr/src/prism
 
@@ -8,7 +8,7 @@ COPY packages/ /usr/src/prism/packages/
 RUN yarn && yarn build
 
 ###############################################################
-FROM node:12 as dependencies
+FROM node:14 as dependencies
 
 WORKDIR /usr/src/prism/
 
@@ -34,7 +34,7 @@ RUN if [ $(uname -m) != "aarch64" ]; then curl -sfL https://install.goreleaser.c
 RUN if [ $(uname -m) != "aarch64" ]; then ./bin/node-prune; fi
 
 ###############################################################
-FROM node:12-alpine
+FROM node:14-alpine
 
 WORKDIR /usr/src/prism
 ARG BUILD_TYPE=development
@@ -64,7 +64,7 @@ RUN if [ "$BUILD_TYPE" = "development" ] ; then \
     cd /usr/src/prism/packages/http && yarn link @stoplight/prism-core && yarn link && \
     cd /usr/src/prism/packages/http-server && yarn link @stoplight/prism-core && yarn link @stoplight/prism-http && yarn link && \
     cd /usr/src/prism/packages/cli && yarn link @stoplight/prism-core && yarn link @stoplight/prism-http && yarn link @stoplight/prism-http-server && yarn link ; \
-fi
+    fi
 
 EXPOSE 4010
 
