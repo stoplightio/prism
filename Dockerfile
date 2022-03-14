@@ -57,6 +57,8 @@ COPY --from=dependencies /usr/src/prism/packages/http/node_modules/ /usr/src/pri
 COPY --from=dependencies /usr/src/prism/packages/http-server/node_modules/ /usr/src/prism/packages/http-server/node_modules/
 COPY --from=dependencies /usr/src/prism/packages/cli/node_modules/ /usr/src/prism/packages/cli/node_modules/
 
+COPY specification/ /tmp/specification/
+
 WORKDIR /usr/src/prism/packages/cli/
 
 RUN if [ "$BUILD_TYPE" = "development" ] ; then \
