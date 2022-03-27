@@ -26,7 +26,7 @@ Prism is a set of packages for API mocking and contract testing with **OpenAPI v
 
 ### Installation
 
-_Prism requires NodeJS >= 12 to properly work._
+_Prism requires NodeJS >= 14 to properly work._
 
 ```bash
 npm install -g @stoplight/prism-cli
@@ -50,7 +50,7 @@ Learn more about [how the mock server works](docs/guides/01-mocking.md).
 
 ### Validation Proxy
 
-Prism can help you check for discrepencies between your API implementation and the OpenAPI document that describes, letting you funnel HTTP traffic through it with the `prism proxy` command. 
+Prism can help you check for discrepencies between your API implementation and the OpenAPI document that describes, letting you funnel HTTP traffic through it with the `prism proxy` command.
 
 ```bash
 prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2
@@ -148,4 +148,3 @@ If you would like to thank us for creating Prism, we ask that you [**buy the wor
 [npm]: https://www.npmjs.com/package/@stoplight/prism-cli
 [npm_image]: https://img.shields.io/npm/dw/@stoplight/prism-http?color=blue
 [stoplight_forest]: https://ecologi.com/stoplightinc
-
