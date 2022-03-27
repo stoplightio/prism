@@ -13,7 +13,7 @@
     "/dist"
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "dependencies": {
     "@stoplight/json": "^3.13.7",
