@@ -117,7 +117,7 @@ If you are interested in contributing to Prism itself, check out our [contributi
 Prism is built on top of lots of excellent packages, and here are a few we'd like to say a special thanks to.
 
 - [ajv](https://www.npmjs.com/package/ajv)
-- [faker](https://www.npmjs.com/package/faker)
+- [faker](https://www.npmjs.com/package/@faker-js/faker)
 - [fp-ts](https://www.npmjs.com/package/fp-ts)
 - [gavel](https://www.npmjs.com/package/gavel)
 - [json-schema-faker](https://www.npmjs.com/package/json-schema-faker)
