@@ -26,7 +26,7 @@ Prism is a set of packages for API mocking and contract testing with **OpenAPI v
 
 ### Installation
 
-_Prism requires NodeJS >= 14 to properly work._
+_Prism requires NodeJS >= 16 to properly work._
 
 ```bash
 npm install -g @stoplight/prism-cli

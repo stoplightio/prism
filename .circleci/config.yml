@@ -2,10 +2,10 @@ version: 2.1
 executors:
   docker-node:
     docker:
-      - image: circleci/node:14
+      - image: circleci/node:16
   docker-harness:
     docker:
-      - image: circleci/node:14
+      - image: circleci/node:16
       - image: kennethreitz/httpbin
         name: httpbin.org
   macos:
