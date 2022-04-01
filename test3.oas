@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  title: issue
+  version: '1.0'
+  description: asdf
+  contact:
+    email: ed@stoplight.io
+tags: []
+servers: []
+paths:
+  /200:
+    parameters: []
+    get:
+      description: asdf
+      tags: []
+      summary: example
+      operationId: example
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ten-or-eleven:
+                    type: number
+                    example: 10
+                    x-faker:
+                      datatype.number:
+                        min: 10
+                        max: 11
+                  slug:
+                    type: string
+                    example: two-words
+                    x-faker:
+                      helpers.slugify:
+                        - "two words"
+components:
+  schemas: {}
+  securitySchemes: {}

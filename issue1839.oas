@@ -1,0 +1,16 @@
+openapi: 3.1.0
+paths:
+  /:
+    get:
+      responses:
+        '200':
+          description: OK
+          headers:
+            # DO NOT SPECIFY Access-Control-* HEADERS MANUALLY
+            # PRISM WILL ADD THEM AUTOMATICALLY.
+            Access-Control-Allow-Origin: 
+              schema:
+                type: string
+                example: "*"
+          content:
+            "*/*":

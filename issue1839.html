@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>issue 1839</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div id="response"></div>
+    <script>
+      const responseDiv = document.getElementById('response');
+      const setResponseDivContent = s => responseDiv.innerHTML = s;
+      window.fetch(
+          'http://localhost:4010/', 
+          { credentials: 'same-origin' })
+        .then(response => response.text().then(setResponseDivContent))
+        .catch(setResponseDivContent);
+    </script>
+  </body>
+</html>

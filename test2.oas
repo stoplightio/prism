@@ -1,0 +1,32 @@
+openapi: 3.0.0
+info:
+  title: issue
+  version: ‘1.0’
+  description: asdf
+  contact: {}
+servers: []
+tags: []
+paths:
+  /issue-7414:
+    parameters: []
+    options:
+      description: asdf
+      tags: []
+      summary: issue-7414
+      operationId: options-issue-7414
+      responses:
+        '204':
+          description: No Content
+          headers:
+            X-Whatever:
+              schema:
+                type: string
+                example: asdf
+            Allow:
+              schema:
+                type: string
+                enum:
+                  - POST
+components:
+  schemas: {}
+  securitySchemes: {}

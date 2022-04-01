@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+  title: issue
+  version: ‘1.0’
+# tags: []
+servers: []
+paths:
+  /issue-7414:
+    parameters: []
+    options:
+      summary: issue-7414
+      description: asdf
+      tags: []
+      operationId: options-issue-7414
+      responses:
+        '204':
+          description: No Content
+          headers:
+            Allow:
+              schema:
+                type: string
+                enum:
+                  - POST
+                default: POST
+  # /200:
+  #   parameters: []
+  #   get:
+  #     description: asdf
+  #     tags: []
+  #     summary: issue-7414
+  #     operationId: options-issue-7414.200
+  #     responses:
+  #       '204':
+  #         description: No Content
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 a:
+  #                   type: string
+  #                   default: asdf
+  #         headers:
+  #           X-RateLimit-Limit:
+  #             schema:
+  #               type: integer
+  #             description: Request limit per hour.
+  #           Allow:
+  #             schema:
+  #               type: string
+  #               enum:
+  #                 - POST
+  #               default: POST
+  #               # what about 'example:' ?
+  # /204:
+  #   parameters: []
+  #   options:
+  #     summary: issue-7414
+  #     operationId: options-issue-7414.204
+  #     description: asdf
+  #     tags: []
+  #     responses:
+  #       '204':
+  #         description: asdf
+  #         headers:
+  #           X-RateLimit-Limit:
+  #             schema:
+  #               type: integer
+  #             description: Request limit per hour.
+  #           Allow:
+  #             schema:
+  #               type: string
+  #               enum:
+  #                 - POST
+  #               default: POST
+                # what about 'example:' ?
+components:
+  schemas: {}
+  securitySchemes: {}
