@@ -10,7 +10,7 @@ Let's look at some of these use-cases.
 
 ### Assisting API Consumer Integration
 
-In the [design-first workflow](https://stoplight.io/blog/api-design-first-vs-code-first/), mocking gives your team something to use before the API exists. Then, when enough feedback has come in and the API developers have decided to start coding the API, the hope is that the real API matches the mock API. If it matches perfectly, the existing development work done by the API consumers during the feedback stage means that integrating the real API should involve little to no work. Sadly, subtle differences often go unnoticed, with properties changing slightly, or being removed completely.
+In the [design-first workflow](https://blog.stoplight.io/api-first-api-design-first-or-code-first-which-should-you-choose), mocking gives your team something to use before the API exists. Then, when enough feedback has come in and the API developers have decided to start coding the API, the hope is that the real API matches the mock API. If it matches perfectly, the existing development work done by the API consumers during the feedback stage means that integrating the real API should involve little to no work. Sadly, subtle differences often go unnoticed, with properties changing slightly, or being removed completely.
 
 As of Prism v3.2, API consumers can funnel their development traffic through Prism running as proxy, and then relay that traffic to the API-in-progress. It will report any mistakes it notices along the way, either with the requests you're sending or the responses coming back from the server.
 
