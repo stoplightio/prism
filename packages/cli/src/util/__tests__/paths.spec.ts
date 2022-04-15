@@ -1,6 +1,7 @@
 import { HttpParamStyles } from '@stoplight/types';
 import { createExamplePath } from '../paths';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
+import * as faker from 'faker/locale/en';
 
 describe('createExamplePath()', () => {
   describe('path parameters', () => {
@@ -10,8 +11,17 @@ describe('createExamplePath()', () => {
           id: '123',
           path: '/path/{p}',
           method: 'get',
-          request: { path: [{ name: 'p', style: HttpParamStyles.Simple, examples: [{ key: 'foo', value: 'test' }] }] },
-          responses: [{ code: '200' }],
+          request: {
+            path: [
+              {
+                id: faker.random.word(),
+                name: 'p',
+                style: HttpParamStyles.Simple,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
+          },
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path/test')
       );
@@ -24,9 +34,16 @@ describe('createExamplePath()', () => {
           path: '/path-path/{p-id}',
           method: 'get',
           request: {
-            path: [{ name: 'p-id', style: HttpParamStyles.Simple, examples: [{ key: 'foo', value: 'test' }] }],
+            path: [
+              {
+                id: faker.random.word(),
+                name: 'p-id',
+                style: HttpParamStyles.Simple,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path-path/test')
       );
@@ -38,8 +55,17 @@ describe('createExamplePath()', () => {
           id: '123',
           path: '/path/{p}',
           method: 'get',
-          request: { path: [{ name: 'p', style: HttpParamStyles.Label, examples: [{ key: 'foo', value: 'test' }] }] },
-          responses: [{ code: '200' }],
+          request: {
+            path: [
+              {
+                id: faker.random.word(),
+                name: 'p',
+                style: HttpParamStyles.Label,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
+          },
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path/.test')
       );
@@ -52,9 +78,16 @@ describe('createExamplePath()', () => {
           path: '/path-path/{p-id}',
           method: 'get',
           request: {
-            path: [{ name: 'p-id', style: HttpParamStyles.Label, examples: [{ key: 'foo', value: 'test' }] }],
+            path: [
+              {
+                id: faker.random.word(),
+                name: 'p-id',
+                style: HttpParamStyles.Label,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path-path/.test')
       );
@@ -66,8 +99,17 @@ describe('createExamplePath()', () => {
           id: '123',
           path: '/path/{p}',
           method: 'get',
-          request: { path: [{ name: 'p', style: HttpParamStyles.Matrix, examples: [{ key: 'foo', value: 'test' }] }] },
-          responses: [{ code: '200' }],
+          request: {
+            path: [
+              {
+                id: faker.random.word(),
+                name: 'p',
+                style: HttpParamStyles.Matrix,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
+          },
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path/;p=test')
       );
@@ -80,9 +122,16 @@ describe('createExamplePath()', () => {
           path: '/path-path/{p-a}',
           method: 'get',
           request: {
-            path: [{ name: 'p-a', style: HttpParamStyles.Matrix, examples: [{ key: 'foo', value: 'test' }] }],
+            path: [
+              {
+                id: faker.random.word(),
+                name: 'p-a',
+                style: HttpParamStyles.Matrix,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path-path/;p-a=test')
       );
@@ -96,8 +145,17 @@ describe('createExamplePath()', () => {
           id: '123',
           path: '/path',
           method: 'get',
-          request: { query: [{ name: 'p', style: HttpParamStyles.Form, examples: [{ key: 'foo', value: 'test' }] }] },
-          responses: [{ code: '200' }],
+          request: {
+            query: [
+              {
+                id: faker.random.word(),
+                name: 'p',
+                style: HttpParamStyles.Form,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
+          },
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path?p=test')
       );
@@ -110,9 +168,16 @@ describe('createExamplePath()', () => {
           path: '/path-path',
           method: 'get',
           request: {
-            query: [{ name: 'p-a', style: HttpParamStyles.Form, examples: [{ key: 'foo', value: 'test' }] }],
+            query: [
+              {
+                id: faker.random.word(),
+                name: 'p-a',
+                style: HttpParamStyles.Form,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path-path?p-a=test')
       );
@@ -127,13 +192,14 @@ describe('createExamplePath()', () => {
           request: {
             query: [
               {
+                id: faker.random.word(),
                 name: 'p',
                 style: HttpParamStyles.DeepObject,
-                examples: [{ key: 'foo', value: { a: { aa: 1, ab: 2 } } }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: { a: { aa: 1, ab: 2 } } }],
               },
             ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path?p%5Ba%5D%5Baa%5D=1&p%5Ba%5D%5Bab%5D=2')
       );
@@ -148,13 +214,14 @@ describe('createExamplePath()', () => {
           request: {
             query: [
               {
+                id: faker.random.word(),
                 name: 'p-id',
                 style: HttpParamStyles.DeepObject,
-                examples: [{ key: 'foo', value: { a: { aa: 1, ab: 2 } } }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: { a: { aa: 1, ab: 2 } } }],
               },
             ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path-path?p-id%5Ba%5D%5Baa%5D=1&p-id%5Ba%5D%5Bab%5D=2')
       );
@@ -169,13 +236,14 @@ describe('createExamplePath()', () => {
           request: {
             query: [
               {
+                id: faker.random.word(),
                 name: 'p',
                 style: HttpParamStyles.PipeDelimited,
-                examples: [{ key: 'foo', value: [1, 2, 3] }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: [1, 2, 3] }],
               },
             ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path?p=1%7C2%7C3')
       );
@@ -190,13 +258,14 @@ describe('createExamplePath()', () => {
           request: {
             query: [
               {
+                id: faker.random.word(),
                 name: 'p-id',
                 style: HttpParamStyles.PipeDelimited,
-                examples: [{ key: 'foo', value: [1, 2, 3] }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: [1, 2, 3] }],
               },
             ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path-path?p-id=1%7C2%7C3')
       );
@@ -211,13 +280,14 @@ describe('createExamplePath()', () => {
           request: {
             query: [
               {
+                id: faker.random.word(),
                 name: 'p',
                 style: HttpParamStyles.SpaceDelimited,
-                examples: [{ key: 'foo', value: [1, 2, 3] }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: [1, 2, 3] }],
               },
             ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path?p=1%202%203')
       );
@@ -232,13 +302,14 @@ describe('createExamplePath()', () => {
           request: {
             query: [
               {
+                id: faker.random.word(),
                 name: 'p-id',
                 style: HttpParamStyles.SpaceDelimited,
-                examples: [{ key: 'foo', value: [1, 2, 3] }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: [1, 2, 3] }],
               },
             ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path-path?p-id=1%202%203')
       );
@@ -251,9 +322,16 @@ describe('createExamplePath()', () => {
           path: '/path',
           method: 'get',
           request: {
-            query: [{ name: 'q', style: HttpParamStyles.PipeDelimited, examples: [{ key: 'foo', value: 'test' }] }],
+            query: [
+              {
+                id: faker.random.word(),
+                name: 'q',
+                style: HttpParamStyles.PipeDelimited,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         e => expect(e.message).toEqual('Pipe delimited style is only applicable to array parameter')
       );
@@ -266,9 +344,16 @@ describe('createExamplePath()', () => {
           path: '/path',
           method: 'get',
           request: {
-            query: [{ name: 'q', style: HttpParamStyles.SpaceDelimited, examples: [{ key: 'foo', value: 'test' }] }],
+            query: [
+              {
+                id: faker.random.word(),
+                name: 'q',
+                style: HttpParamStyles.SpaceDelimited,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+              },
+            ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         e => expect(e.message).toEqual('Space delimited style is only applicable to array parameter')
       );
@@ -283,13 +368,14 @@ describe('createExamplePath()', () => {
           request: {
             query: [
               {
+                id: faker.random.word(),
                 name: 'StartTime>',
                 style: HttpParamStyles.Form,
-                examples: [{ key: 'foo', value: '1985-10-25T03:33:00.613Z' }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: '1985-10-25T03:33:00.613Z' }],
               },
             ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r => expect(r).toEqual('/path?StartTime%3E=1985-10-25T03%3A33%3A00.613Z')
       );
@@ -305,36 +391,62 @@ describe('createExamplePath()', () => {
           method: 'get',
           request: {
             path: [
-              { name: 'p1', style: HttpParamStyles.Simple, examples: [{ key: 'foo', value: 'test1' }] },
-              { name: 'p2', style: HttpParamStyles.Label, examples: [{ key: 'foo', value: ['test1', 'test2'] }] },
-              { name: 'p3', style: HttpParamStyles.Matrix, examples: [{ key: 'foo', value: ['test1', 'test2'] }] },
+              {
+                id: faker.random.word(),
+                name: 'p1',
+                style: HttpParamStyles.Simple,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test1' }],
+              },
+              {
+                id: faker.random.word(),
+                name: 'p2',
+                style: HttpParamStyles.Label,
+                examples: [{ id: faker.random.word(), key: 'foo', value: ['test1', 'test2'] }],
+              },
+              {
+                id: faker.random.word(),
+                name: 'p3',
+                style: HttpParamStyles.Matrix,
+                examples: [{ id: faker.random.word(), key: 'foo', value: ['test1', 'test2'] }],
+              },
             ],
             query: [
-              { name: 'q1', style: HttpParamStyles.Form, examples: [{ key: 'foo', value: 'test1' }] },
               {
+                id: faker.random.word(),
+                name: 'q1',
+                style: HttpParamStyles.Form,
+                examples: [{ id: faker.random.word(), key: 'foo', value: 'test1' }],
+              },
+              {
+                id: faker.random.word(),
                 name: 'q2',
                 style: HttpParamStyles.SpaceDelimited,
-                examples: [{ key: 'foo', value: ['test1', 'test2'] }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: ['test1', 'test2'] }],
               },
               {
+                id: faker.random.word(),
                 name: 'q3',
                 style: HttpParamStyles.PipeDelimited,
-                examples: [{ key: 'foo', value: ['test1', 'test2'] }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: ['test1', 'test2'] }],
               },
               {
+                id: faker.random.word(),
                 name: 'q4',
                 style: HttpParamStyles.PipeDelimited,
                 explode: true,
-                examples: [{ key: 'foo', value: ['test1', 'test2'] }],
+                examples: [{ id: faker.random.word(), key: 'foo', value: ['test1', 'test2'] }],
               },
               {
+                id: faker.random.word(),
                 name: 'q5',
                 style: HttpParamStyles.DeepObject,
-                examples: [{ key: 'foo', value: { a: ['test1', 'test2'], b: { ba: 1, bb: 2 } } }],
+                examples: [
+                  { id: faker.random.word(), key: 'foo', value: { a: ['test1', 'test2'], b: { ba: 1, bb: 2 } } },
+                ],
               },
             ],
           },
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         }),
         r =>
           expect(r).toEqual(

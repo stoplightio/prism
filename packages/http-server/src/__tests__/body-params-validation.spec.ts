@@ -3,6 +3,7 @@ import { IHttpOperation } from '@stoplight/types';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { ThenArg } from '../types';
+import * as faker from 'faker/locale/en';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -47,10 +48,12 @@ describe('body params validation', () => {
           path: '/json-body-no-request-content-type',
           responses: [
             {
+              id: faker.random.word(),
               code: '200',
               headers: [],
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
@@ -65,8 +68,10 @@ describe('body params validation', () => {
           servers: [],
           request: {
             body: {
+              id: faker.random.word(),
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: '',
                   schema: {
                     type: 'object',
@@ -98,10 +103,12 @@ describe('body params validation', () => {
           path: '/json-body-optional',
           responses: [
             {
+              id: faker.random.word(),
               code: '200',
               headers: [],
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
@@ -116,9 +123,11 @@ describe('body params validation', () => {
           servers: [],
           request: {
             body: {
+              id: faker.random.word(),
               required: false,
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/json',
                   schema: {
                     type: 'object',
@@ -150,10 +159,12 @@ describe('body params validation', () => {
           path: '/json-body-required',
           responses: [
             {
+              id: faker.random.word(),
               code: '200',
               headers: [],
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
@@ -168,9 +179,11 @@ describe('body params validation', () => {
           servers: [],
           request: {
             body: {
+              id: faker.random.word(),
               required: true,
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/json',
                   schema: {
                     type: 'object',
@@ -206,10 +219,12 @@ describe('body params validation', () => {
           path: '/json-body-property-required',
           responses: [
             {
+              id: faker.random.word(),
               code: '200',
               headers: [],
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
@@ -224,8 +239,10 @@ describe('body params validation', () => {
           servers: [],
           request: {
             body: {
+              id: faker.random.word(),
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/json',
                   schema: {
                     type: 'object',
@@ -258,10 +275,12 @@ describe('body params validation', () => {
           path: '/json-body-property-required-with-custom-415',
           responses: [
             {
+              id: faker.random.word(),
               code: '415',
               headers: [],
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/json',
                   schema: {
                     type: 'object',
@@ -273,6 +292,7 @@ describe('body params validation', () => {
                   },
                   examples: [
                     {
+                      id: faker.random.word(),
                       key: 'test',
                       value: { type: 'foo' },
                     },
@@ -285,8 +305,10 @@ describe('body params validation', () => {
           servers: [],
           request: {
             body: {
+              id: faker.random.word(),
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/json',
                   schema: {
                     type: 'object',
@@ -319,10 +341,12 @@ describe('body params validation', () => {
           path: '/json-body-circular-property-required',
           responses: [
             {
+              id: faker.random.word(),
               code: '200',
               headers: [],
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
@@ -337,8 +361,10 @@ describe('body params validation', () => {
           servers: [],
           request: {
             body: {
+              id: faker.random.word(),
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/json',
                   schema: {
                     $ref: '#/__bundled__/schemas',
@@ -380,10 +406,12 @@ describe('body params validation', () => {
           path: '/empty-body',
           responses: [
             {
+              id: faker.random.word(),
               code: '200',
               headers: [],
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
@@ -620,10 +648,12 @@ describe('body params validation', () => {
           path: '/path',
           responses: [
             {
+              id: faker.random.word(),
               code: '200',
               headers: [],
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'text/plain',
                   schema: {
                     type: 'string',
@@ -638,8 +668,10 @@ describe('body params validation', () => {
           servers: [],
           request: {
             body: {
+              id: faker.random.word(),
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/x-www-form-urlencoded',
                   schema: {
                     type: 'object',

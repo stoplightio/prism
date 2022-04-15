@@ -1,25 +1,34 @@
 import { assertNone, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { generate, improveSchema } from '../HttpParamGenerator';
+import * as faker from 'faker/locale/en';
 
 describe('HttpParamGenerator', () => {
   describe('generate()', () => {
     describe('example is present', () => {
       it('uses static example', () => {
-        assertSome(generate({ examples: [{ key: 'foo', value: 'test' }] }), v => expect(v).toEqual('test'));
+        assertSome(
+          generate({ id: faker.random.word(), examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }] }),
+          v => expect(v).toEqual('test')
+        );
       });
     });
 
     describe('schema and example is present', () => {
       it('prefers static example', () => {
-        assertSome(generate({ schema: { type: 'string' }, examples: [{ key: 'foo', value: 'test' }] }), v =>
-          expect(v).toEqual('test')
+        assertSome(
+          generate({
+            id: faker.random.word(),
+            schema: { type: 'string' },
+            examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+          }),
+          v => expect(v).toEqual('test')
         );
       });
     });
 
     describe('schema is present', () => {
       it('generates example from schema', () => {
-        assertSome(generate({ schema: { type: 'string', format: 'email' } }), v =>
+        assertSome(generate({ id: faker.random.word(), schema: { type: 'string', format: 'email' } }), v =>
           expect(v).toEqual(expect.stringMatching(/@/))
         );
       });
@@ -27,7 +36,7 @@ describe('HttpParamGenerator', () => {
 
     describe('no schema and no examples', () => {
       it('returns none', () => {
-        assertNone(generate({}));
+        assertNone(generate({ id: faker.random.word() }));
       });
     });
   });

@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import { runCallback } from '../callbacks';
 import { mapValues } from 'lodash';
 import { HttpParamStyles } from '@stoplight/types';
+import * as faker from 'faker/locale/en';
 
 jest.mock('node-fetch');
 
@@ -19,7 +20,7 @@ describe('runCallback()', () => {
   describe('callback invocation was correct', () => {
     it('runs without logging violations', async () => {
       const headers = { 'content-type': 'application/json' };
-      ((fetch as unknown) as jest.Mock).mockResolvedValue({
+      (fetch as unknown as jest.Mock).mockResolvedValue({
         status: 200,
         headers: { get: (n: string) => headers[n], raw: () => mapValues(headers, (h: string) => h.split(' ')) },
         json: jest.fn().mockResolvedValue({ test: 'test' }),
@@ -31,13 +32,21 @@ describe('runCallback()', () => {
           method: 'get',
           path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
-          responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
+          responses: [
+            {
+              id: faker.random.word(),
+              code: '200',
+              contents: [{ id: faker.random.word(), mediaType: 'application/json' }],
+            },
+          ],
           request: {
             body: {
+              id: faker.random.word(),
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/json',
-                  examples: [{ key: 'e1', value: { about: 'something' } }],
+                  examples: [{ id: faker.random.word(), key: 'e1', value: { about: 'something' } }],
                 },
               ],
             },
@@ -76,7 +85,7 @@ describe('runCallback()', () => {
   describe('callback response is incorrect', () => {
     it('logs violations', async () => {
       const headers = { 'content-type': 'application/json', test: 'test' };
-      ((fetch as unknown) as jest.Mock).mockResolvedValue({
+      (fetch as unknown as jest.Mock).mockResolvedValue({
         status: 200,
         headers: { get: (n: string) => headers[n], raw: () => mapValues(headers, (h: string) => h.split(' ')) },
         json: jest.fn().mockResolvedValue({ test: 'test' }),
@@ -90,9 +99,11 @@ describe('runCallback()', () => {
           id: '1',
           responses: [
             {
+              id: faker.random.word(),
               code: '200',
               headers: [
                 {
+                  id: faker.random.word(),
                   name: 'test',
                   style: HttpParamStyles.Simple,
                   deprecated: true,
@@ -101,6 +112,7 @@ describe('runCallback()', () => {
               ],
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/json',
                   schema: { type: 'object', properties: { test: { type: 'string', maxLength: 3 } } },
                 },
@@ -109,10 +121,12 @@ describe('runCallback()', () => {
           ],
           request: {
             body: {
+              id: faker.random.word(),
               contents: [
                 {
+                  id: faker.random.word(),
                   mediaType: 'application/json',
-                  examples: [{ key: 'e1', value: { about: 'something' } }],
+                  examples: [{ id: faker.random.word(), key: 'e1', value: { about: 'something' } }],
                 },
               ],
             },
@@ -158,7 +172,7 @@ describe('runCallback()', () => {
   describe('callback request defines neither body nor headers', () => {
     it('makes request without body and headers', async () => {
       const headers = { 'content-type': 'application/json' };
-      ((fetch as unknown) as jest.Mock).mockResolvedValue({
+      (fetch as unknown as jest.Mock).mockResolvedValue({
         status: 200,
         headers: { get: (n: string) => headers[n], raw: () => mapValues(headers, (h: string) => h.split(' ')) },
         json: jest.fn().mockResolvedValue({ test: 'test' }),
@@ -170,7 +184,7 @@ describe('runCallback()', () => {
           method: 'get',
           path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
-          responses: [{ code: '200' }],
+          responses: [{ id: faker.random.word(), code: '200' }],
         },
         request: {
           body: '',

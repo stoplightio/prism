@@ -3,6 +3,7 @@ import { validate } from '../headers';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import * as O from 'fp-ts/Option';
+import * as faker from 'faker/locale/en';
 
 describe('validate()', () => {
   beforeEach(() => {
@@ -13,13 +14,15 @@ describe('validate()', () => {
     describe('header is not present', () => {
       describe('spec defines it as required', () => {
         it('returns validation error', () => {
-          assertLeft(validate({}, [{ name: 'aHeader', style: HttpParamStyles.Simple, required: true }]), error =>
-            expect(error).toContainEqual({
-              code: 'required',
-              message: "must have required property 'aheader'",
-              path: ['header'],
-              severity: 0,
-            })
+          assertLeft(
+            validate({}, [{ id: faker.random.word(), name: 'aHeader', style: HttpParamStyles.Simple, required: true }]),
+            error =>
+              expect(error).toContainEqual({
+                code: 'required',
+                message: "must have required property 'aheader'",
+                path: ['header'],
+                severity: 0,
+              })
           );
         });
       });
@@ -33,6 +36,7 @@ describe('validate()', () => {
               assertRight(
                 validate({ 'x-test-header': 'abc' }, [
                   {
+                    id: faker.random.word(),
                     name: 'x-test-header',
                     style: HttpParamStyles.Simple,
                     schema: { type: 'string' },
@@ -51,6 +55,7 @@ describe('validate()', () => {
           assertRight(
             validate({ 'x-test-header': 'abc' }, [
               {
+                id: faker.random.word(),
                 name: 'x-test-header',
                 style: HttpParamStyles.Simple,
               },
@@ -66,6 +71,7 @@ describe('validate()', () => {
           assertLeft(
             validate({ 'x-test-header': 'abc' }, [
               {
+                id: faker.random.word(),
                 name: 'x-test-header',
                 deprecated: true,
                 style: HttpParamStyles.Simple,

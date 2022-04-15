@@ -6,29 +6,28 @@ import * as validators from '../validators';
 import * as validator from '../';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import { ValidationContext } from '../validators/types';
+import * as faker from 'faker/locale/en';
 
-const validate = (
-  resourceExtension?: Partial<IHttpOperation>,
-  inputExtension?: Partial<IHttpRequest>,
-  length = 3
-) => () => {
-  const validationResult = validator.validateInput({
-    resource: Object.assign<IHttpOperation, unknown>(
-      {
-        method: 'get',
-        path: '/',
-        id: '1',
-        request: {},
-        responses: [{ code: '200' }],
-      },
-      resourceExtension
-    ),
-    element: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
-  });
-  length === 0
-    ? assertRight(validationResult)
-    : assertLeft(validationResult, error => expect(error).toHaveLength(length));
-};
+const validate =
+  (resourceExtension?: Partial<IHttpOperation>, inputExtension?: Partial<IHttpRequest>, length = 3) =>
+  () => {
+    const validationResult = validator.validateInput({
+      resource: Object.assign<IHttpOperation, unknown>(
+        {
+          method: 'get',
+          path: '/',
+          id: '1',
+          request: {},
+          responses: [{ id: faker.random.word(), code: '200' }],
+        },
+        resourceExtension
+      ),
+      element: Object.assign({ method: 'get', url: { path: '/', query: {} } }, inputExtension),
+    });
+    length === 0
+      ? assertRight(validationResult)
+      : assertLeft(validationResult, error => expect(error).toHaveLength(length));
+  };
 
 const mockError: IPrismDiagnostic = {
   message: 'mocked C is required',
@@ -53,7 +52,7 @@ describe('HttpValidator', () => {
         describe('request body is not required', () => {
           it(
             'does not try to validate the body',
-            validate({ request: { body: { required: false, contents: [] } } }, undefined, 0)
+            validate({ request: { body: { id: faker.random.word(), required: false, contents: [] } } }, undefined, 0)
           );
         });
 
@@ -65,8 +64,8 @@ describe('HttpValidator', () => {
                 method: 'get',
                 path: '/',
                 id: '1',
-                request: { body: { contents: [], required: true } },
-                responses: [{ code: '200' }],
+                request: { body: { id: faker.random.word(), contents: [], required: true } },
+                responses: [{ id: faker.random.word(), code: '200' }],
               },
               undefined,
               1
@@ -96,7 +95,13 @@ describe('HttpValidator', () => {
           it(
             'validates query',
             validate(
-              { request: { query: [{ style: HttpParamStyles.SpaceDelimited, name: 'hey', required: true }] } },
+              {
+                request: {
+                  query: [
+                    { id: faker.random.word(), style: HttpParamStyles.SpaceDelimited, name: 'hey', required: true },
+                  ],
+                },
+              },
               undefined,
               1
             )
@@ -120,11 +125,11 @@ describe('HttpValidator', () => {
                 id: '1',
                 request: {
                   path: [
-                    { name: 'a', style: HttpParamStyles.Simple },
-                    { name: 'b', style: HttpParamStyles.Matrix },
+                    { id: faker.random.word(), name: 'a', style: HttpParamStyles.Simple },
+                    { id: faker.random.word(), name: 'b', style: HttpParamStyles.Matrix },
                   ],
                 },
-                responses: [{ code: '200' }],
+                responses: [{ id: faker.random.word(), code: '200' }],
               },
               element: { method: 'get', url: { path: '/a/1/b/;b=2' } },
             });
@@ -132,8 +137,8 @@ describe('HttpValidator', () => {
             expect(validators.validatePath).toHaveBeenCalledWith(
               { a: '1', b: ';b=2' },
               [
-                { name: 'a', style: HttpParamStyles.Simple },
-                { name: 'b', style: HttpParamStyles.Matrix },
+                { id: expect.any(String), name: 'a', style: HttpParamStyles.Simple },
+                { id: expect.any(String), name: 'b', style: HttpParamStyles.Matrix },
               ],
               undefined
             );
@@ -153,11 +158,11 @@ describe('HttpValidator', () => {
                 id: '1',
                 request: {
                   path: [
-                    { name: 'a-id', style: HttpParamStyles.Simple },
-                    { name: 'b-id', style: HttpParamStyles.Matrix },
+                    { id: faker.random.word(), name: 'a-id', style: HttpParamStyles.Simple },
+                    { id: faker.random.word(), name: 'b-id', style: HttpParamStyles.Matrix },
                   ],
                 },
-                responses: [{ code: '200' }],
+                responses: [{ id: faker.random.word(), code: '200' }],
               },
               element: { method: 'get', url: { path: '/a-path/1/b/;b-id=2' } },
             });
@@ -165,8 +170,8 @@ describe('HttpValidator', () => {
             expect(validators.validatePath).toHaveBeenCalledWith(
               { 'a-id': '1', 'b-id': ';b-id=2' },
               [
-                { name: 'a-id', style: HttpParamStyles.Simple },
-                { name: 'b-id', style: HttpParamStyles.Matrix },
+                { id: expect.any(String), name: 'a-id', style: HttpParamStyles.Simple },
+                { id: expect.any(String), name: 'b-id', style: HttpParamStyles.Matrix },
               ],
               undefined
             );
@@ -195,7 +200,7 @@ describe('HttpValidator', () => {
                 path: '/',
                 id: '1',
                 request: {},
-                responses: [{ code: '200' }],
+                responses: [{ id: faker.random.word(), code: '200' }],
               },
               element: { statusCode: 200 },
             }),
@@ -222,7 +227,13 @@ describe('HttpValidator', () => {
                 path: '/',
                 id: '1',
                 request: {},
-                responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
+                responses: [
+                  {
+                    id: faker.random.word(),
+                    code: '200',
+                    contents: [{ id: faker.random.word(), mediaType: 'application/json' }],
+                  },
+                ],
               },
               element: { statusCode: 200, headers: { 'content-type': 'text/plain' } },
             }),
@@ -245,7 +256,7 @@ describe('HttpValidator', () => {
         path: '/',
         id: '1',
         request: {},
-        responses: [{ code: '200' }],
+        responses: [{ id: faker.random.word(), code: '200' }],
       };
 
       describe('when the desidered response is between 200 and 300', () => {
@@ -283,9 +294,11 @@ describe('HttpValidator', () => {
         request: {},
         responses: [
           {
+            id: faker.random.word(),
             code: '200',
             contents: [
               {
+                id: faker.random.word(),
                 mediaType: 'application/json',
                 schema: {
                   type: 'string',
@@ -332,6 +345,7 @@ describe('HttpValidator', () => {
 describe('validateMediaType()', () => {
   describe('when available content type does not have parameters', () => {
     const content: IMediaTypeContent = {
+      id: faker.random.word(),
       mediaType: 'application/vnd.archa.api+json',
     };
 

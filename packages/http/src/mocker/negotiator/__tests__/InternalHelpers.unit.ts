@@ -1,12 +1,17 @@
 import { assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { findBestHttpContentByMediaType } from '../InternalHelpers';
+import * as faker from 'faker/locale/en';
 
 describe('InternalHelpers', () => {
   describe('findBestHttpContentByMediaType()', () => {
     describe('with multiple content types for a response', () => {
       const availableResponses = {
+        id: faker.random.word(),
         code: '200',
-        contents: [{ mediaType: 'application/xml' }, { mediaType: 'application/json' }],
+        contents: [
+          { id: faker.random.word(), mediaType: 'application/xml' },
+          { id: faker.random.word(), mediaType: 'application/json' },
+        ],
       };
 
       it('should respect the q parameter', () => {
@@ -22,7 +27,10 @@ describe('InternalHelpers', () => {
     describe('when available content types has a non standard parameter', () => {
       it('should return an unparametrised version', () => {
         assertSome(
-          findBestHttpContentByMediaType([{ mediaType: 'application/json; version=1' }], ['application/json'])
+          findBestHttpContentByMediaType(
+            [{ id: faker.random.word(), mediaType: 'application/json; version=1' }],
+            ['application/json']
+          )
         );
       });
     });
@@ -30,7 +38,10 @@ describe('InternalHelpers', () => {
     describe('when available content types has the Q and a non standard parameter', () => {
       it('should return an unparametrised version', () => {
         assertSome(
-          findBestHttpContentByMediaType([{ mediaType: 'application/json; version=1; q=0.6' }], ['application/json'])
+          findBestHttpContentByMediaType(
+            [{ id: faker.random.word(), mediaType: 'application/json; version=1; q=0.6' }],
+            ['application/json']
+          )
         );
       });
 
@@ -39,9 +50,9 @@ describe('InternalHelpers', () => {
           assertSome(
             findBestHttpContentByMediaType(
               [
-                { mediaType: 'application/json; version=1; q=1' },
-                { mediaType: 'application/xml; version=1; q=0.6' },
-                { mediaType: 'application/vnd+json; version=1; q=0.5' },
+                { id: faker.random.word(), mediaType: 'application/json; version=1; q=1' },
+                { id: faker.random.word(), mediaType: 'application/xml; version=1; q=0.6' },
+                { id: faker.random.word(), mediaType: 'application/vnd+json; version=1; q=0.5' },
               ],
               ['application/json', 'application/xml']
             ),
@@ -54,7 +65,10 @@ describe('InternalHelpers', () => {
     describe('when requested content type has a parameter', () => {
       it('should return an unparametrised version', () => {
         assertSome(
-          findBestHttpContentByMediaType([{ mediaType: 'application/json' }], ['application/json; version=1'])
+          findBestHttpContentByMediaType(
+            [{ id: faker.random.word(), mediaType: 'application/json' }],
+            ['application/json; version=1']
+          )
         );
       });
     });

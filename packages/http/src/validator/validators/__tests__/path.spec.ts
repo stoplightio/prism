@@ -1,9 +1,9 @@
 import { HttpParamStyles } from '@stoplight/types';
-import { path as registry } from '../../deserializers';
 import { validate } from '../path';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import * as O from 'fp-ts/Option';
+import * as faker from 'faker/locale/en';
 
 describe('validate()', () => {
   beforeEach(() => {
@@ -15,15 +15,17 @@ describe('validate()', () => {
     describe('path param is not present', () => {
       describe('spec defines it as required', () => {
         it('returns validation error', () => {
-          assertLeft(validate({}, [{ name: 'aParam', style: HttpParamStyles.Simple, required: true }]), error =>
-            expect(error).toEqual([
-              {
-                code: 'required',
-                message: "must have required property 'aparam'",
-                path: ['path'],
-                severity: 0,
-              },
-            ])
+          assertLeft(
+            validate({}, [{ id: faker.random.word(), name: 'aParam', style: HttpParamStyles.Simple, required: true }]),
+            error =>
+              expect(error).toEqual([
+                {
+                  code: 'required',
+                  message: "must have required property 'aparam'",
+                  path: ['path'],
+                  severity: 0,
+                },
+              ])
           );
         });
       });
@@ -37,6 +39,7 @@ describe('validate()', () => {
               assertRight(
                 validate({ param: 'abc' }, [
                   {
+                    id: faker.random.word(),
                     name: 'param',
                     style: HttpParamStyles.Simple,
                     schema: { type: 'string' },
@@ -55,6 +58,7 @@ describe('validate()', () => {
           assertRight(
             validate({ param: 'abc' }, [
               {
+                id: faker.random.word(),
                 name: 'param',
                 style: HttpParamStyles.Simple,
               },
@@ -70,6 +74,7 @@ describe('validate()', () => {
           assertLeft(
             validate({ param: 'abc' }, [
               {
+                id: faker.random.word(),
                 name: 'param',
                 deprecated: true,
                 style: HttpParamStyles.Simple,

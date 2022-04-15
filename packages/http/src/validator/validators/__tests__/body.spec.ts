@@ -3,6 +3,7 @@ import { JSONSchema } from '../../..';
 import { validate, findContentByMediaTypeOrFirst } from '../body';
 import { assertRight, assertLeft, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { ValidationContext } from '../types';
+import * as faker from 'faker/locale/en';
 
 describe('validate()', () => {
   describe('content specs are missing', () => {
@@ -16,7 +17,7 @@ describe('validate()', () => {
       assertRight(
         validate(
           'test',
-          [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }],
+          [{ id: faker.random.word(), mediaType: 'application/not-exists-son', examples: [], encodings: [] }],
           ValidationContext.Input
         )
       );
@@ -28,7 +29,7 @@ describe('validate()', () => {
       assertRight(
         validate(
           'test',
-          [{ mediaType: 'application/not-exists-son', examples: [], encodings: [] }],
+          [{ id: faker.random.word(), mediaType: 'application/not-exists-son', examples: [], encodings: [] }],
           ValidationContext.Input,
           'application/json'
         )
@@ -42,7 +43,7 @@ describe('validate()', () => {
       assertLeft(
         validate(
           'test',
-          [{ mediaType: 'application/json', schema: mockSchema, examples: [], encodings: [] }],
+          [{ id: faker.random.word(), mediaType: 'application/json', schema: mockSchema, examples: [], encodings: [] }],
           ValidationContext.Input,
           'application/json'
         ),
@@ -58,6 +59,7 @@ describe('validate()', () => {
           encodeURI('key[a]=str'),
           [
             {
+              id: faker.random.word(),
               mediaType: 'application/x-www-form-urlencoded',
               encodings: [{ property: 'key', style: HttpParamStyles.DeepObject }],
               schema: {
@@ -87,6 +89,7 @@ describe('validate()', () => {
           encodeURI('key[a][ab]=str'),
           [
             {
+              id: faker.random.word(),
               mediaType: 'application/x-www-form-urlencoded',
               encodings: [{ property: 'key', style: HttpParamStyles.DeepObject }],
               schema: {
@@ -125,6 +128,7 @@ describe('validate()', () => {
   describe('readOnly writeOnly parameters', () => {
     const specs: IMediaTypeContent[] = [
       {
+        id: faker.random.word(),
         mediaType: 'application/json',
         schema: {
           type: 'object',
@@ -175,6 +179,7 @@ describe('validate()', () => {
       // Arrange
       const schemas: IMediaTypeContent[] = [
         {
+          id: faker.random.word(),
           mediaType: 'application/json',
           schema: {
             type: 'object',
@@ -204,6 +209,7 @@ describe('validate()', () => {
       // Arrange
       const schemas: IMediaTypeContent[] = [
         {
+          id: faker.random.word(),
           mediaType: 'application/json',
           schema: {
             type: 'object',
@@ -230,6 +236,7 @@ describe('validate()', () => {
       // Arrange
       const schemas: IMediaTypeContent[] = [
         {
+          id: faker.random.word(),
           mediaType: 'application/json',
           schema: {
             type: 'object',
@@ -258,6 +265,7 @@ describe('validate()', () => {
 describe('findContentByMediaTypeOrFirst()', () => {
   describe('when a spec has a content type', () => {
     const content: IMediaTypeContent = {
+      id: faker.random.word(),
       mediaType: 'application/x-www-form-urlencoded',
     };
 

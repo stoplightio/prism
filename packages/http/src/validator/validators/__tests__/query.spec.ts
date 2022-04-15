@@ -3,6 +3,7 @@ import { validate } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import * as O from 'fp-ts/Option';
+import * as faker from 'faker/locale/en';
 
 describe('validate()', () => {
   beforeEach(() => {
@@ -13,8 +14,9 @@ describe('validate()', () => {
     describe('query param is not present', () => {
       describe('spec defines it as required', () => {
         it('returns validation error', () => {
-          assertLeft(validate({}, [{ name: 'aParam', style: HttpParamStyles.Form, required: true }]), error =>
-            expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Error }))
+          assertLeft(
+            validate({}, [{ id: faker.random.word(), name: 'aParam', style: HttpParamStyles.Form, required: true }]),
+            error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Error }))
           );
         });
       });
@@ -28,6 +30,7 @@ describe('validate()', () => {
               assertRight(
                 validate({ param: 'abc' }, [
                   {
+                    id: faker.random.word(),
                     name: 'param',
                     style: HttpParamStyles.Form,
                     schema: { type: 'string' },
@@ -46,6 +49,7 @@ describe('validate()', () => {
           assertRight(
             validate({ param: 'abc' }, [
               {
+                id: faker.random.word(),
                 name: 'param',
                 style: HttpParamStyles.Form,
               },
@@ -61,6 +65,7 @@ describe('validate()', () => {
           assertLeft(
             validate({ param: 'abc' }, [
               {
+                id: faker.random.word(),
                 name: 'param',
                 deprecated: true,
                 style: HttpParamStyles.Form,
