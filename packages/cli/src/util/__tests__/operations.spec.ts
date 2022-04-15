@@ -48,6 +48,7 @@ describe('getHttpOperationsFromSpec()', () => {
             path: '/pet',
             responses: [
               {
+                id: expect.any(String),
                 code: '200',
                 contents: [],
                 description: 'test',

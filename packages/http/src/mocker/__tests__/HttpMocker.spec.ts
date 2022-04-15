@@ -36,22 +36,27 @@ describe('mocker', () => {
       request: {},
       responses: [
         {
+          id: '200',
           code: '200',
           headers: [],
           contents: [
             {
+              id: 'contents',
               mediaType: 'application/json',
               schema: mockSchema,
               examples: [
                 {
+                  id: 'example-1',
                   key: 'preferred key',
                   value: 'hello',
                 },
                 {
+                  id: 'example-2',
                   key: 'test key',
                   value: 'test value',
                 },
                 {
+                  id: 'example-3',
                   key: 'test key2',
                   externalValue: 'http://example.org/examples/example1',
                 },
@@ -61,10 +66,12 @@ describe('mocker', () => {
           ],
         },
         {
+          id: '201',
           code: '201',
           headers: [],
           contents: [
             {
+              id: 'contents',
               mediaType: 'application/json',
               schema: {
                 $ref: '#/responses/0/contents/0/schema',
@@ -73,17 +80,21 @@ describe('mocker', () => {
           ],
         },
         {
+          id: '422',
           code: '422',
           headers: [],
           contents: [
             {
+              id: 'contents',
               mediaType: 'application/json',
               examples: [
                 {
+                  id: 'example-1',
                   key: 'invalid_1',
                   value: 'invalid input 1',
                 },
                 {
+                  id: 'example-2',
                   key: 'invalid_2',
                   value: 'invalid input 2',
                 },
@@ -173,14 +184,14 @@ describe('mocker', () => {
               method: 'get',
               path: 'http://example.com/notify',
               id: '1',
-              responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
+              responses: [{ id: '200', code: '200', contents: [{ id: 'contents', mediaType: 'application/json' }] }],
             },
             {
               callbackName: 'c2',
               method: 'get',
               path: 'http://example.com/notify2',
               id: '2',
-              responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
+              responses: [{ id: '200', code: '200', contents: [{ id: 'contents', mediaType: 'application/json' }] }],
             },
           ],
         };
@@ -218,8 +229,10 @@ describe('mocker', () => {
             ...mockResource,
             request: {
               body: {
+                id: 'body',
                 contents: [
                   {
+                    id: 'application/x-www-form-urlencoded',
                     mediaType: 'application/x-www-form-urlencoded',
                     schema: {
                       type: 'object',
@@ -238,7 +251,9 @@ describe('mocker', () => {
                 method: 'get',
                 path: 'http://example.com/notify',
                 id: '1',
-                responses: [{ code: '200', contents: [{ mediaType: 'application/json' }] }],
+                responses: [
+                  { id: '200', code: '200', contents: [{ id: 'application/json', mediaType: 'application/json' }] },
+                ],
               },
             ],
           };
@@ -470,10 +485,12 @@ describe('mocker', () => {
               request: {},
               responses: [
                 {
+                  id: '200',
                   code: '200',
                   headers: [],
                   contents: [
                     {
+                      id: 'application/json',
                       mediaType: 'application/json',
                       schema,
                     },
