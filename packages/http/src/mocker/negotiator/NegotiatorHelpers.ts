@@ -110,6 +110,7 @@ const helpers = {
             code,
             mediaType: 'text/plain',
             bodyExample: {
+              id: 'example',
               value: undefined,
               key: 'default',
             },
@@ -380,20 +381,21 @@ const helpers = {
 
     return pipe(
       helpers.findResponse(httpResponses, statusCodes),
-      R.chain(foundResponse => logger =>
-        pipe(
-          foundResponse,
-          E.fromOption(() => new Error('No 422, 400, or default responses defined')),
-          E.chain(response =>
-            pipe(
-              O.fromNullable(response.contents && response.contents.find(contentHasExamples)),
-              O.fold(
-                () => buildResponseBySchema(response, logger),
-                contentWithExamples => buildResponseByExamples(response, contentWithExamples, logger, exampleKey)
+      R.chain(
+        foundResponse => logger =>
+          pipe(
+            foundResponse,
+            E.fromOption(() => new Error('No 422, 400, or default responses defined')),
+            E.chain(response =>
+              pipe(
+                O.fromNullable(response.contents && response.contents.find(contentHasExamples)),
+                O.fold(
+                  () => buildResponseBySchema(response, logger),
+                  contentWithExamples => buildResponseByExamples(response, contentWithExamples, logger, exampleKey)
+                )
               )
             )
           )
-        )
       )
     );
   },
