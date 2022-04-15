@@ -24,7 +24,7 @@
     "sanitize-html": "2.3.3"
   },
   "devDependencies": {
-    "@stoplight/types": "^12.2.0",
+    "@stoplight/types": "^13.0.0",
     "@types/caseless": "^0.12.2",
     "@types/content-type": "^1.1.5",
     "@types/faker": "^5.5.8",

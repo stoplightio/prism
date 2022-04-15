@@ -16,12 +16,12 @@
     "node": ">=16"
   },
   "dependencies": {
-    "@stoplight/json": "^3.13.7",
+    "@stoplight/json": "^3.18.1",
     "@stoplight/json-schema-merge-allof": "0.7.8",
     "@stoplight/json-schema-sampler": "0.2.2",
     "@stoplight/prism-core": "^4.8.0",
-    "@stoplight/types": "^12.2.0",
-    "@stoplight/yaml": "^4.2.2",
+    "@stoplight/types": "^13.0.0",
+    "@stoplight/yaml": "^4.2.3",
     "abstract-logging": "^2.0.1",
     "accepts": "^1.3.7",
     "ajv": "^8.4.0",

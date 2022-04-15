@@ -1600,24 +1600,13 @@
     "@types/json-schema" "^7.0.7"
     json-pointer "^0.6.1"
 
-"@stoplight/json@^3.13.7", "@stoplight/json@^3.17.0":
-  version "3.17.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.17.0.tgz#9d864b63b9c6398c7cecae1340225b15953cac74"
-  integrity sha512-WW0z2bb0D4t8FTl+zNTCu46J8lEOsrUhBPgwEYQ3Ri2Y0MiRE4U1/9ZV8Ki+pIJznZgY9i42bbFwOBxyZn5/6w==
+"@stoplight/json@^3.18.0", "@stoplight/json@^3.18.1":
+  version "3.18.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.18.1.tgz#725b34b24e8b0c0f73113362be54c7a4f294cdba"
+  integrity sha512-QmELAqBS8DC+8YuG7+OvDVP6RaUVi8bzN0KKW2UEcZg+0a1sqeeZgfW079AmJIZg8HEN7udAt4iozIB8Dm0t1Q==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.2"
-    "@stoplight/types" "^12.3.0"
-    jsonc-parser "~2.2.1"
-    lodash "^4.17.21"
-    safe-stable-stringify "^1.1"
-
-"@stoplight/json@^3.18.0":
-  version "3.18.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.18.0.tgz#271ca5c7da5b8175b3b1e8344346a835aabc54a4"
-  integrity sha512-JeaOaee2dKOxz3gZKMfx+KxUi5pH7AU/TRgqnSEkQ+3FQhNgx6XYPZwvcfcsVOiHUa2tYIP3kRl30BgYWtSOow==
-  dependencies:
-    "@stoplight/ordered-object-literal" "^1.0.2"
-    "@stoplight/types" "^12.3.0"
+    "@stoplight/types" "^13.0.0"
     jsonc-parser "~2.2.1"
     lodash "^4.17.21"
     safe-stable-stringify "^1.1"
@@ -1632,22 +1621,6 @@
   resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.3.2.tgz#96e591496b72fde0f0cdae01a61d64f065bd9ede"
   integrity sha512-lyIc6JUlUA8Ve5ELywPC8I2Sdnh1zc1zmbYgVarhXIp9YeAB0ReeqmGEOWNtlHkbP2DAA1AL65Wfn2ncjK/jtQ==
 
-"@stoplight/types@^12.0.0":
-  version "12.2.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-12.2.0.tgz#258c9f1bbc6682aa5ca1a4161d5e75979ffe4a3f"
-  integrity sha512-k1VPgSIpP+wLzGJ14lxhwtSyzYG5az+qby7fzYpc2fGWYFe5apmDm26vf/6N4mMQi2UQ7KxgGfNRSjdu6Msslg==
-  dependencies:
-    "@types/json-schema" "^7.0.4"
-    utility-types "^3.10.0"
-
-"@stoplight/types@^12.2.0", "@stoplight/types@^12.3.0":
-  version "12.3.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-12.3.0.tgz#ac71d295319f26abb279e3d89d1c1774857d20b4"
-  integrity sha512-hgzUR1z5BlYvIzUeFK5pjs5JXSvEutA9Pww31+dVicBlunsG1iXopDx/cvfBY7rHOrgtZDuvyeK4seqkwAZ6Cg==
-  dependencies:
-    "@types/json-schema" "^7.0.4"
-    utility-types "^3.10.0"
-
 "@stoplight/types@^13.0.0":
   version "13.0.0"
   resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-13.0.0.tgz#69a22d57d3a67f623a01929b10e25401c9635154"
@@ -1661,13 +1634,13 @@
   resolved "https://registry.yarnpkg.com/@stoplight/yaml-ast-parser/-/yaml-ast-parser-0.0.48.tgz#442b21f419427acaa8a3106ebc5d73351c407002"
   integrity sha512-sV+51I7WYnLJnKPn2EMWgS4EUfoP4iWEbrWwbXsj0MZCB/xOK8j6+C9fntIdOM50kpx45ZLC3s6kwKivWuqvyg==
 
-"@stoplight/yaml@^4.0.2", "@stoplight/yaml@^4.2.2":
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-4.2.2.tgz#8c48a46dcdaee114f659764827f46afc0669d65b"
-  integrity sha512-N086FU8pmSpjc5TvMBjmlTniZVh3OXzmEh6SYljSLiuv6aMxgjyjf13YrAlUqgu0b4b6pQ5zmkjrfo9i0SiLsw==
+"@stoplight/yaml@^4.0.2", "@stoplight/yaml@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@stoplight/yaml/-/yaml-4.2.3.tgz#d177664fecd6b2fd0d4f264f1078550c30cfd8d1"
+  integrity sha512-Mx01wjRAR9C7yLMUyYFTfbUf5DimEpHMkRDQ1PKLe9dfNILbgdxyrncsOXM3vCpsQ1Hfj4bPiGl+u4u6e9Akqw==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.1"
-    "@stoplight/types" "^12.0.0"
+    "@stoplight/types" "^13.0.0"
     "@stoplight/yaml-ast-parser" "0.0.48"
     tslib "^2.2.0"
 
