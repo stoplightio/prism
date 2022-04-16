@@ -11,13 +11,14 @@ import type { IHttpNameValue, IHttpNameValues } from '../../';
 export const header: Dictionary<deserializeFn<IHttpNameValue>, 'simple'> = { simple };
 export const query: Dictionary<
   deserializeFn<IHttpNameValues>,
-  'form' | 'spaceDelimited' | 'pipeDelimited' | 'commaDelimited' | 'deepObject'
+  'form' | 'spaceDelimited' | 'pipeDelimited' | 'commaDelimited' | 'deepObject' | 'simple'
 > = {
   form,
   spaceDelimited: delimited('%20'),
   pipeDelimited: delimited('|'),
   commaDelimited: delimited(','),
   deepObject,
+  simple: form,
 };
 export const path: Dictionary<deserializeFn<IHttpNameValue>, 'simple' | 'label' | 'matrix'> = { simple, label, matrix };
 export const body = query;
