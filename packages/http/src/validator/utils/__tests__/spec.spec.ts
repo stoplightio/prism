@@ -15,7 +15,7 @@ describe('findOperationResponse()', () => {
           ],
           200
         ),
-        value => expect(value).toEqual({ code: '20X', contents: [], headers: [] })
+        value => expect(value).toEqual({ id: expect.any(String), code: '20X', contents: [], headers: [] })
       );
     });
   });
@@ -31,7 +31,7 @@ describe('findOperationResponse()', () => {
           ],
           422
         ),
-        value => expect(value).toEqual({ code: 'default', contents: [], headers: [] })
+        value => expect(value).toEqual({ id: expect.any(String), code: 'default', contents: [], headers: [] })
       );
     });
   });
