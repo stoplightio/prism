@@ -3,17 +3,19 @@ When I send a request to an operation with Accept header containing */*
 And this operation produces a response with content-type matching */* (text/plain)
 Then I should get back a response with Content-Type of text/plain
 ====spec====
-swagger: "2.0"
+swagger: '2.0'
 paths:
   /todos:
     get:
       produces:
         - text/plain
       responses:
-        200:
+        '200':
           description: Get Todo Items
           examples:
             '*/*': hello
+          schema:
+            type: string
 ====server====
 mock -p 4010 ${document}
 ====command====
