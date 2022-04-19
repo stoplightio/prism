@@ -33,7 +33,7 @@ jsf.option({
 });
 
 export function generate(bundle: unknown, source: JSONSchema): Either<Error, unknown> {
-  var test = pipe(
+  return pipe(
     stripWriteOnlyProperties(source),
     E.fromOption(() => Error('Cannot strip writeOnly properties')),
     E.chain(updatedSource =>
@@ -42,8 +42,6 @@ export function generate(bundle: unknown, source: JSONSchema): Either<Error, unk
       tryCatch(() => sortSchemaAlphabetically(jsf.generate({ ...cloneDeep(updatedSource), __bundled__: bundle })), toError)
     )
   );
-
-  return test
 }
 
 //sort alphabetically by keys
