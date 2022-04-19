@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## Changed
 
 - Upgraded the minimum node engine version from 12 to 16 [#2023](https://github.com/stoplightio/prism/pull/2023) - thanks @jasonbarry
-- Relaxed validation constraints for Postman Collections. All properties included in output are no longer marked as required in the generated json schema. By product of removing dependency with security vulnerability. [#2037](https://github.com/stoplightio/prism/pull/2037)
+- Relaxed validation constraints for Postman Collections. All properties included in output are no longer marked as required in the generated json schema. Byproduct of removing dependency with security vulnerability. [#2037](https://github.com/stoplightio/prism/pull/2037)
 
 ## Fixed
 
