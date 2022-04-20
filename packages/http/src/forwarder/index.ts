@@ -19,6 +19,7 @@ import { ProblemJsonError } from '../types';
 import { UPSTREAM_NOT_IMPLEMENTED } from './errors';
 import * as createHttpProxyAgent from 'http-proxy-agent';
 import * as createHttpsProxyAgent from 'https-proxy-agent';
+import { toURLSearchParams } from '../utils/url';
 
 const { version: prismVersion } = require('../../package.json'); // eslint-disable-line
 
@@ -48,7 +49,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           const url = format(
             Object.assign(partialUrl, {
               pathname: posix.join(partialUrl.pathname || '', input.url.path),
-              query: input.url.query,
+              search: toURLSearchParams(input.url.query).toString(),
             })
           );
 

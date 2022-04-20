@@ -36,7 +36,13 @@ describe('forward', () => {
             data: {
               method: 'post',
               body: { some: 'data' },
-              url: { path: '/test' },
+              url: {
+                path: '/test',
+                query: {
+                  x: ['1', 'a'],
+                  y: '3',
+                },
+              },
             },
           },
           'http://example.com',
@@ -44,7 +50,7 @@ describe('forward', () => {
         )(logger),
         () => {
           expect(fetch).toHaveBeenCalledWith(
-            'http://example.com/test',
+            'http://example.com/test?x=1&x=a&y=3',
             expect.objectContaining({ method: 'post', body: '{"some":"data"}' })
           );
         }
