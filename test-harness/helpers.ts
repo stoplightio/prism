@@ -26,7 +26,7 @@ export const xmlValidator = {
 };
 
 export function parseSpecFile(spec: string) {
-  const regex = /====(server|test|spec|command|expect|expect-loose)====\r?\n/gi;
+  const regex = /====(server|test|spec|command|expect|expect-loose|expect-keysOnly)====\r?\n/gi;
   const splitted = spec.split(regex);
 
   const testIndex = splitted.findIndex(t => t === 'test');
@@ -35,6 +35,7 @@ export function parseSpecFile(spec: string) {
   const commandIndex = splitted.findIndex(t => t === 'command');
   const expectIndex = splitted.findIndex(t => t === 'expect');
   const expectLooseIndex = splitted.findIndex(t => t === 'expect-loose');
+  const expectKeysOnlyIndex = splitted.findIndex(t => t === 'expect-keysOnly');
 
   return {
     test: splitted[1 + testIndex],
@@ -43,5 +44,6 @@ export function parseSpecFile(spec: string) {
     command: splitted[1 + commandIndex],
     expect: splitted[1 + expectIndex],
     expectLoose: splitted[1 + expectLooseIndex],
+    expectKeysOnly: splitted[1 + expectKeysOnlyIndex],
   };
 }

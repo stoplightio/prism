@@ -1,0 +1,39 @@
+====test====
+Prism generates dynamic values when instructed to do so.
+
+Given there are no examples defined for an operation
+And this operation can produce application/json response
+And this operation response defines a Schema Object
+And I make a request to this operation
+And the request has Accept header of application/json
+Then I should get a response with dynamically generated JSON as payload that is aplphabetized.
+====spec====
+swagger: "2.0"
+info:
+  title: 'title'
+  version: '1.0'
+paths:
+  /todos:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Get Todo Items
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              description:
+                type: string
+              priority:
+                type: integer
+====server====
+mock -d -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos -H "accept: application/json"
+====expect-keysOnly====
+HTTP/1.1 200 OK
+
+{"description": "any string","priority": "any string","title": "any string"}
