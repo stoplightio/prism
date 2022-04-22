@@ -75,10 +75,10 @@ describe('harness', () => {
         }
 
         const isValid = validate(expected, output).valid;
+
         if (!!isValid) {
           expect(isValid).toBeTruthy();
-        } else if(parsed.expectLoose) {
-          console.log('loose...');
+        } else {
           expect(output).toMatchObject(expected);
         }
         if (parsed.expect) {

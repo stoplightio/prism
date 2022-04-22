@@ -92,6 +92,13 @@ Connection: keep-alive
 - The outputs get converted using `http-string-parser`, a veeery old package transforming curl output to a consumable format
 - Gavel is used to validate the request — it will automagically ignore headers that can change and consider only the "fundamental" one such as content negotiation ones and stuff around.
 
+## Different Types of Expects
+
+There are 3 different keywords you can use for the "expect" portion of the test: `expect`, `expect-loose`, `expect-keysOnly`. With each of these, `gavel` will be used to validate the actual output with the expected output. `expect-loose` will not add any additional checks on top of the `gavel` validation. `expect` and `expect-keysOnly` will add additional checks on the output as described below:
+
+- `expect`: additionally uses jest's `.toStrictEqual()` which ensures the output matches exactly with the expected body supplied. This includes all keys and values match and are in the exact order.
+- `expect-keysOnly`: additionally validates that only the keys are exactly the same and in the exact order. The values of the output are not validated. This is useful when you want to test `dynamic` mode, where the values will be different every time, but also want to validate that the order of the keys of the response are correct.
+
 ## Troubleshooting Harness Tests
 
 - `Async callback was not invoked within the 5000ms timeout specified by jest.setTimeout.Timeout` --> most likely the binary is crashing, failing to start Prism. The best way to troubleshoot is to copy the openapi content from your harness test into a separate OpenAPI file, and try mocking that file with the CLI directly. That will give you more information as to why Prism failed to start.
