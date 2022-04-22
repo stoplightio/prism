@@ -1,5 +1,5 @@
 import * as faker from 'faker';
-import { cloneDeep, forEach, isString, keys, values } from 'lodash';
+import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
 import * as jsf from 'json-schema-faker';
@@ -9,11 +9,6 @@ import { IHttpOperation } from '@stoplight/types';
 import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/lib/Either';
 import { stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
-import { JSONSchema7Type } from 'json-schema';
-import { right } from 'fp-ts/lib/EitherT';
-import { sort } from 'fp-ts/lib/ReadonlyNonEmptyArray';
-import { isFalsy } from 'utility-types';
-// import obj from 'http/src/validator/validators';
 
 // necessary as workaround broken types in json-schema-faker
 // @ts-ignore
@@ -37,33 +32,36 @@ export function generate(bundle: unknown, source: JSONSchema): Either<Error, unk
     stripWriteOnlyProperties(source),
     E.fromOption(() => Error('Cannot strip writeOnly properties')),
     E.chain(updatedSource =>
-      // necessary as workaround broken types in json-schema-faker
-      // @ts-ignore
-      tryCatch(() => sortSchemaAlphabetically(jsf.generate({ ...cloneDeep(updatedSource), __bundled__: bundle })), toError)
+      tryCatch(
+        // necessary as workaround broken types in json-schema-faker
+        // @ts-ignore
+        () => sortSchemaAlphabetically(jsf.generate({ ...cloneDeep(updatedSource), __bundled__: bundle })),
+        toError
+      )
     )
   );
 }
 
 //sort alphabetically by keys
 export function sortSchemaAlphabetically(source: any): any {
-  if (Array.isArray(source)){
-    for (let i in source) {
-      if(typeof(source[i] == "object")){
-        source[i] = sortSchemaAlphabetically(source[i])
-      } 
+  if (Array.isArray(source)) {
+    for (const i of source) {
+      if (typeof source[i] === 'object') {
+        source[i] = sortSchemaAlphabetically(source[i]);
+      }
     }
-    return source
-  } else if(typeof(source) == "object"){
-    Object.keys(source).forEach((key:string)=>{
-        if(typeof(source[key]) == "object"){
-          source[key] = sortSchemaAlphabetically(source[key])
-        } 
-      });
-    return Object.fromEntries(Object.entries(source).sort())
+    return source;
+  } else if (typeof source === 'object') {
+    Object.keys(source).forEach((key: string) => {
+      if (typeof source[key] === 'object') {
+        source[key] = sortSchemaAlphabetically(source[key]);
+      }
+    });
+    return Object.fromEntries(Object.entries(source).sort());
   }
 
   //just return if not array or object
-  return source
+  return source;
 }
 
 export function generateStatic(resource: IHttpOperation, source: JSONSchema): Either<Error, unknown> {
