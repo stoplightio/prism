@@ -1,11 +1,12 @@
 import { get } from 'lodash';
 import { JSONSchema } from '../../../types';
-import { generate } from '../JSONSchema';
+import { generate, sortSchemaAlphabetically } from '../JSONSchema';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('JSONSchema generator', () => {
   const ipRegExp = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
-  const emailRegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const emailRegExp =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const uuidRegExp = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/;
 
   describe('generate()', () => {
@@ -184,6 +185,51 @@ describe('JSONSchema generator', () => {
       Object.defineProperty(schema.properties, 'name', { writable: false });
 
       return expect(generate({}, schema)).toBeTruthy();
+    });
+  });
+
+  describe('sortSchemaAlphabetically()', () => {
+    it('should leave source untouched if not array or object', () => {
+      const source = 'string';
+
+      expect(sortSchemaAlphabetically(source)).toEqual('string');
+    });
+
+    it('should leave source untouched if array of non-objects', () => {
+      const source = ['string'];
+
+      expect(sortSchemaAlphabetically(source)).toEqual(['string']);
+    });
+
+    it('should alphabetize properties of objects in array', () => {
+      const source = ['string', { d: 'd value', a: 'a value', b: 'b value', c: 'c value' }];
+
+      expect(sortSchemaAlphabetically(source)).toEqual([
+        'string',
+        { a: 'a value', b: 'b value', c: 'c value', d: 'd value' },
+      ]);
+    });
+
+    it('should alphabetize properties of object', () => {
+      const source = { d: 'd value', a: 'a value', b: 'b value', c: 'c value' };
+
+      expect(sortSchemaAlphabetically(source)).toEqual({ a: 'a value', b: 'b value', c: 'c value', d: 'd value' });
+    });
+
+    it('should alphabetize properties of nested objects', () => {
+      const source = {
+        d: { d3: 'd3 value', d1: 'd1 value', d4: 'd4 value', d2: 'd2 value' },
+        a: 'a value',
+        b: { b2: 'b2 value', b1: 'b1 value', b3: 'b3 value' },
+        c: 'c value',
+      };
+
+      expect(sortSchemaAlphabetically(source)).toEqual({
+        a: 'a value',
+        b: { b1: 'b1 value', b2: 'b2 value', b3: 'b3 value' },
+        c: 'c value',
+        d: { d1: 'd1 value', d2: 'd2 value', d3: 'd3 value', d4: 'd4 value' },
+      });
     });
   });
 });
