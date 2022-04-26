@@ -189,6 +189,11 @@ describe('JSONSchema generator', () => {
   });
 
   describe('sortSchemaAlphabetically()', () => {
+    it('should handle nulls', () => {
+      const source = null;
+      expect(sortSchemaAlphabetically(source)).toEqual(null);
+    });
+
     it('should leave source untouched if not array or object', () => {
       const source = 'string';
 

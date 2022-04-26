@@ -44,14 +44,14 @@ export function generate(bundle: unknown, source: JSONSchema): Either<Error, unk
 
 //sort alphabetically by keys
 export function sortSchemaAlphabetically(source: any): any {
-  if (Array.isArray(source)) {
+  if (source && Array.isArray(source)) {
     for (const i of source) {
       if (typeof source[i] === 'object') {
         source[i] = sortSchemaAlphabetically(source[i]);
       }
     }
     return source;
-  } else if (typeof source === 'object') {
+  } else if (source && typeof source === 'object') {
     Object.keys(source).forEach((key: string) => {
       if (typeof source[key] === 'object') {
         source[key] = sortSchemaAlphabetically(source[key]);
