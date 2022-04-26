@@ -97,7 +97,7 @@ Connection: keep-alive
 There are 3 different keywords you can use for the "expect" portion of the test: `expect`, `expect-loose`, `expect-keysOnly`. With each of these, `gavel` will be used to validate the actual output with the expected output. `expect-loose` will not add any additional checks on top of the `gavel` validation. `expect` and `expect-keysOnly` will add additional checks on the output as described below:
 
 - `expect`: additionally uses jest's `.toStrictEqual()` which ensures the output matches exactly with the expected body supplied. This includes all keys and values match and are in the exact order.
-- `expect-keysOnly`: additionally validates that only the keys are exactly the same and in the exact order. The values of the output are not validated. This is useful when you want to test `dynamic` mode, where the values will be different every time, but also want to validate that the order of the keys of the response are correct.
+- `expect-keysOnly`: additionally validates that only the keys are exactly the same and in the exact order. The values of the output are not validated. This is useful when you want to test `dynamic` mode, where the values will be different every time, but also want to validate that the order of the keys of the response are correct. This is meant to be used only for tests that return a a JSON object. This is not meant to work with any other response body/type.
 
 ## Troubleshooting Harness Tests
 
