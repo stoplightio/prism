@@ -25,7 +25,7 @@ and `Content-Type` just like with a real API, and it should work as expected, or
 
 ### The "Decision Engine"
 
-The response Prism decides to give can be figred out with this decision flow diagram.
+The response Prism decides to give can be figured out with this decision flow diagram.
 
 ![](../../packages/http/docs/images/mock-server-dfd.jpeg)
 
@@ -73,7 +73,7 @@ Calling the same URL with the `Prefer` header `example=dog` `http://127.0.0.1:40
 
 > #### Remember to provide expected response code
 >
-> It is always worth incidating the HTTP response code from which `example` should be taken. If Prism decides to change the response code due to validation or security violations, your `example` might be ignored.
+> It is always worth indicating the HTTP response code from which `example` should be taken. If Prism decides to change the response code due to validation or security violations, your `example` might be ignored.
 
 ```json
 {
