@@ -1,5 +1,5 @@
 import { matchPath } from '../matchPath';
-import * as faker from '@faker-js/faker';
+import faker from '@faker-js/faker';
 import { MatchType } from '../types';
 import { randomPath } from './utils';
 import { assertRight } from '@stoplight/prism-core/src/__tests__/utils';

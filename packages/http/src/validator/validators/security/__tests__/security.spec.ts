@@ -2,7 +2,7 @@ import { DiagnosticSeverity, HttpSecurityScheme } from '@stoplight/types';
 import { validateSecurity } from '../';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import { IHttpRequest } from '../../../../types';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 
 const baseRequest: IHttpRequest = {
   method: 'get',

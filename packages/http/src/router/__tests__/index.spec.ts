@@ -1,4 +1,4 @@
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { HttpMethod, IHttpOperation, IServer } from '@stoplight/types';
 import { isRight } from 'fp-ts/Either';

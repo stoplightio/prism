@@ -3,7 +3,7 @@ import { validate } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import * as O from 'fp-ts/Option';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 
 describe('validate()', () => {
   beforeEach(() => {

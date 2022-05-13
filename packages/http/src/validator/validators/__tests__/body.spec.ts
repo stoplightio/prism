@@ -3,7 +3,7 @@ import { JSONSchema } from '../../..';
 import { validate, findContentByMediaTypeOrFirst } from '../body';
 import { assertRight, assertLeft, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { ValidationContext } from '../types';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 
 describe('validate()', () => {
   describe('content specs are missing', () => {

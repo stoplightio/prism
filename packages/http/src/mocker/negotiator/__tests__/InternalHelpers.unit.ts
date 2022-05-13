@@ -1,6 +1,6 @@
 import { assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { findBestHttpContentByMediaType } from '../InternalHelpers';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 
 describe('InternalHelpers', () => {
   describe('findBestHttpContentByMediaType()', () => {

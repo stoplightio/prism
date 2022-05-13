@@ -1,7 +1,7 @@
 import { HttpParamStyles } from '@stoplight/types';
 import { createExamplePath } from '../paths';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 
 describe('createExamplePath()', () => {
   describe('path parameters', () => {

@@ -1,6 +1,6 @@
 import { assertNone, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { findOperationResponse } from '../spec';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 
 describe('findOperationResponse()', () => {
   describe('when response for given code exists', () => {

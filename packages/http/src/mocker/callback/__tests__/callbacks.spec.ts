@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import { runCallback } from '../callbacks';
 import { mapValues } from 'lodash';
 import { HttpParamStyles } from '@stoplight/types';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 
 jest.mock('node-fetch');
 

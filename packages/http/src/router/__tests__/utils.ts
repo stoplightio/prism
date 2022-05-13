@@ -1,5 +1,5 @@
 import { HttpMethod } from '@stoplight/types';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 import { defaults } from 'lodash/fp';
 import { DeepNonNullable } from 'utility-types';
 

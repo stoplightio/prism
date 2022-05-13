@@ -1,7 +1,7 @@
 import { convertTemplateToRegExp, matchBaseUrl } from '../matchBaseUrl';
 import { MatchType } from '../types';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 
 describe('matchServer.ts', () => {
   describe('matchServer()', () => {

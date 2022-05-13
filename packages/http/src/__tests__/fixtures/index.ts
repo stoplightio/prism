@@ -1,6 +1,6 @@
 import { IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 import { IHttpRequest, IHttpResponse } from '../../types';
 
 export const httpOperations: IHttpOperation[] = [

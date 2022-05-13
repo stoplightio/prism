@@ -3,7 +3,7 @@ import { IHttpOperation } from '@stoplight/types';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { ThenArg } from '../types';
-import * as faker from 'faker/locale/en';
+import * as faker from '@faker-js/faker/locale/en';
 
 const logger = createLogger('TEST', { enabled: false });
 
