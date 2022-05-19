@@ -30,7 +30,7 @@ RUN mkdir -p /usr/src/prism/packages/cli/node_modules
 ENV NODE_ENV production
 RUN yarn --production
 
-RUN if [ $(uname -m) != "aarch64" ]; then curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash; fi
+RUN if [ $(uname -m) != "aarch64" ]; then curl -sfL https://gobinaries.com/tj/node-prune | sh; fi
 RUN if [ $(uname -m) != "aarch64" ]; then ./bin/node-prune; fi
 
 ###############################################################
