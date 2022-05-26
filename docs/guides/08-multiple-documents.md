@@ -1,6 +1,8 @@
 # Serving Multiple OpenAPI Documents
 
-A single Prism instance serves one OpenAPI document, but serving multiple documents is possible by running multiple Prism instances on different documents, then serving their content using a reverse Proxy.
+A single Prism instance serves one OpenAPI document, but serving multiple documents is possible by running multiple Prism instances on different documents, then serving their content using a reverse Proxy. 
+
+You can use any HTTP proxy along with a process management tool to achieve this. The following example explains how to serve multiple OpenAPI documents using [Docker Compose](https://docs.docker.com/compose/).
 
 ## Preparing configuration files
 

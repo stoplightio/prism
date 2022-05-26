@@ -21,3 +21,8 @@ dist
 .vscode
 .idea
 cli-binaries
+
+# Stoplight Style Guides
+.stoplight/styleguide.json
+.stoplight/custom-functions
+.spectral.json
