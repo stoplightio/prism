@@ -62,11 +62,18 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
                 : createHttpProxyAgent(upstreamProxy);
           }
 
+          // Default behavior is to follow redirects
+          let redirect: RequestRedirect = 'follow';
+          if (input.headers !== undefined && input.headers['follow-redirects'] === 'false') {
+            redirect = 'manual';
+          }
+
           return fetch(url, {
             agent: proxyAgent,
             body,
             method: input.method,
-            headers: defaults(omit(input.headers, ['host']), {
+            redirect,
+            headers: defaults(omit(input.headers, ['host', 'follow-redirects']), {
               'accept-encoding': '*',
               accept: 'application/json, text/plain, */*',
               'user-agent': `Prism/${prismVersion}`,

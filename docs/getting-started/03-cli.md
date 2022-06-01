@@ -90,6 +90,22 @@ curl -v http://127.0.0.1:4010/pets/123 -H "Prefer: dynamic=false"
 
 > **Remember:** you can combine `code`, `example` and `dynamic` parameters. By default, when the `code` parameter is not given, Prism will always try to fetch an example using the `exampleKey` from the 200 HTTP responses **only**. You'll need to use the `code` parameter alongside the `example` one for any specific example using a different HTTP status code than 200.
 
+#### Redirect Handling
+
+By default, Prism will follow all redirects (3XX HTTP responses). In some cases, your API may be designed to return a
+specific redirect. If you are trying to validate a 3XX response, you can do so by disabling redirect following on a
+per-request basis.
+
+```bash
+curl -v http://127.0.0.1:4010/pets/123 -H "Follow-Redirects: false"
+
+HTTP/1.1 302 Found
+content-length: 0
+Date: Thu, 09 May 2019 15:26:07 GMT
+Connection: keep-alive
+Location: http://127.0.0.1:4010/v1/pets/123
+```
+
 #### Circular references
 
 Even though Prism is technically able to internally handle circular references, the CLI will refuse to mock the provided document in case any circular reference is detected. This is essentially because serialising a circular reference is difficult and very dependant on the content type.

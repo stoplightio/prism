@@ -137,6 +137,47 @@ describe('forward', () => {
     });
   });
 
+  describe('redirects are handled properly', () => {
+    it('defaults to follow', () => {
+      return assertResolvesRight(
+        forward(
+          { validations: [], data: { method: 'get', url: { path: '/test' } } },
+          'http://example.com',
+          undefined
+        )(logger),
+        () => {
+          expect(fetch).toHaveBeenCalledWith(
+            'http://example.com/test',
+            expect.objectContaining({ method: 'get', redirect: 'follow' })
+          );
+        }
+      );
+    });
+
+    it('configurable to NOT follow', () => {
+      return assertResolvesRight(
+        forward(
+          {
+            validations: [],
+            data: { method: 'get', url: { path: '/test' }, headers: { 'follow-redirects': 'false' } },
+          },
+          'http://example.com',
+          undefined
+        )(logger),
+        () => {
+          expect(fetch).toHaveBeenCalledWith(
+            'http://example.com/test',
+            expect.objectContaining({
+              method: 'get',
+              redirect: 'manual',
+              headers: expect.not.objectContaining({ 'follow-redirects': 'false' }),
+            })
+          );
+        }
+      );
+    });
+  });
+
   describe('and there are input validation errors', () => {
     it('will refuse to forward and return an error', () =>
       assertResolvesLeft(
