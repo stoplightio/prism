@@ -1,0 +1,45 @@
+====test====
+If I have an OAS3 document referencing a model that
+recursively references itself through an array
+it should return 200 on a regular request and not crash
+====spec====
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prop:
+                    $ref: '#/components/schemas/content'
+components:
+  schemas:
+    content:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Text content
+        type:
+          type: string
+          description: Content type (e.g. text, link, image)
+        metadata:
+          type: object
+          description: Content metadata (e.g. href, src, alt)
+        children:
+          type: array
+          description: sub-content
+          items:
+            $ref: '#/components/schemas/content'
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/
+====expect====
+HTTP/1.1 200 OK
+
+{"prop":{"text":"string","type":"string","metadata":{},"children":[{"text":"string","type":"string","metadata":{},"children":[{}]}]}}
