@@ -514,10 +514,24 @@ describe('body params validation', () => {
         });
 
         describe('and no content is specified', () => {
-          test('returns 200', async () => {
+          test('returns 200 with no body', async () => {
             const response = await makeRequest('/empty-body', {
               method: 'GET',
               headers: { 'content-type': 'application/json' },
+            });
+            expect(response.status).toBe(200);
+          });
+          test('returns 200 with empty plain body', async () => {
+            const response = await makeRequest('/empty-body', {
+              method: 'GET',
+              headers: { 'content-type': 'text/plain', 'content-length': '0' },
+            });
+            expect(response.status).toBe(200);
+          });
+          test('returns 200 with empty JSON body', async () => {
+            const response = await makeRequest('/empty-body', {
+              method: 'GET',
+              headers: { 'content-type': 'application/json', 'content-length': '0' },
             });
             expect(response.status).toBe(200);
           });
@@ -669,6 +683,7 @@ describe('body params validation', () => {
           request: {
             body: {
               id: faker.random.word(),
+              required: true,
               contents: [
                 {
                   id: faker.random.word(),
@@ -716,16 +731,9 @@ describe('body params validation', () => {
           type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
           validation: [
             {
-              location: ['body'],
               severity: 'Error',
               code: 'required',
-              message: "must have required property 'id'",
-            },
-            {
-              location: ['body'],
-              severity: 'Error',
-              code: 'required',
-              message: "must have required property 'status'",
+              message: 'Body parameter is required',
             },
           ],
         });

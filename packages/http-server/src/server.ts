@@ -11,7 +11,7 @@ import { IncomingMessage, ServerResponse, IncomingHttpHeaders } from 'http';
 import { AddressInfo } from 'net';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { MicriHandler } from 'micri';
+import { MicriError, MicriHandler } from 'micri';
 import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
@@ -40,9 +40,11 @@ function addressInfoToString(addressInfo: AddressInfo | string | null) {
 function parseRequestBody(request: IncomingMessage) {
   // if no body provided then return null instead of empty string
   if (
-    request.headers['content-type'] === undefined &&
-    request.headers['transfer-encoding'] === undefined &&
-    (request.headers['content-length'] === '0' || request.headers['content-length'] === undefined)
+    // If the body size is null, it means the body itself is null so the promise can resolve with a null value
+    request.headers['content-length'] === '0' ||
+    (request.headers['content-type'] === undefined &&
+      request.headers['transfer-encoding'] === undefined &&
+      request.headers['content-length'] === undefined)
   ) {
     return Promise.resolve(null);
   }
