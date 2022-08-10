@@ -683,7 +683,6 @@ describe('body params validation', () => {
           request: {
             body: {
               id: faker.random.word(),
-              required: true,
               contents: [
                 {
                   id: faker.random.word(),
@@ -722,7 +721,7 @@ describe('body params validation', () => {
       test('returns 422', async () => {
         const response = await makeRequest('/path', {
           method: 'POST',
-          body: '',
+          body: 'success=false',
           headers: { 'content-type': 'application/x-www-form-urlencoded' },
         });
 
@@ -731,9 +730,16 @@ describe('body params validation', () => {
           type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
           validation: [
             {
+              location: ['body'],
               severity: 'Error',
               code: 'required',
-              message: 'Body parameter is required',
+              message: "must have required property 'id'",
+            },
+            {
+              location: ['body'],
+              severity: 'Error',
+              code: 'required',
+              message: "must have required property 'status'",
             },
           ],
         });

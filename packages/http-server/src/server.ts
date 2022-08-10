@@ -11,7 +11,7 @@ import { IncomingMessage, ServerResponse, IncomingHttpHeaders } from 'http';
 import { AddressInfo } from 'net';
 import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { MicriError, MicriHandler } from 'micri';
+import { MicriHandler } from 'micri';
 import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
