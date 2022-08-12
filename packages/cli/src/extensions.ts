@@ -1,4 +1,4 @@
-import { dereference } from 'json-schema-ref-parser';
+import { dereference } from '@stoplight/json-schema-ref-parser';
 import { decycle } from '@stoplight/json';
 import { get, camelCase, forOwn } from 'lodash';
 import * as jsf from 'json-schema-faker';

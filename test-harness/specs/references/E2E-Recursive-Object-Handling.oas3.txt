@@ -1,0 +1,50 @@
+====test====
+If I have an OAS3 document referencing a model that
+recursively references itself in a request body through other objects
+it should return 200 on a regular request and not crash
+====spec====
+openapi: 3.0.0
+paths:
+  /:
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestModel"
+        required: true
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
+                example:
+                  valid request
+components:
+  schemas:
+    RequestModel:
+      title: RequestModel
+      type: object
+      properties:
+        data:
+          anyOf:
+            - type: array
+              items:
+                "$ref": "#/components/schemas/Document"
+    Document:
+      title: Document
+      type: object
+      properties:
+        chunks:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Document"
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X PUT http://localhost:4010/ -H 'content-type: application/json' -d '{}'
+====expect====
+HTTP/1.1 200 OK
+
+valid request
