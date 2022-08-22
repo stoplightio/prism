@@ -65,7 +65,7 @@
     "ts-jest": "^27.0.6",
     "ts-node": "^9.1.1",
     "ts-transform-import-path-rewrite": "^0.3.0",
-    "tsconfig-paths": "^3.11.0",
+    "tsconfig-paths": "^4.1.0",
     "ttypescript": "^1.5.12",
     "type-is": "^1.6.18",
     "typescript": "^4.2.4"
