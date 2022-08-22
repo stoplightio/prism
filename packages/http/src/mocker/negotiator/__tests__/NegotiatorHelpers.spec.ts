@@ -72,9 +72,9 @@ describe('NegotiatorHelpers', () => {
               id: 'content-id',
               mediaType: actualMediaType,
               examples: [
-                { id: faker.random.word(), key: 'key_1', value: 'value_1', externalValue: 'ext_value_1' },
-                { id: faker.random.word(), key: 'key_2', value: 'value_2', externalValue: 'ext_value_2' },
-                { id: faker.random.word(), key: 'key_3', value: 'value_3', externalValue: 'ext_value_3' },
+                { id: 'id_1', key: 'key_1', value: 'value_1', externalValue: 'ext_value_1' },
+                { id: 'id_2', key: 'key_2', value: 'value_2', externalValue: 'ext_value_2' },
+                { id: 'id_3', key: 'key_3', value: 'value_3', externalValue: 'ext_value_3' },
               ],
               encodings: [],
             },
@@ -99,7 +99,7 @@ describe('NegotiatorHelpers', () => {
           assertRight(actualConfig, operationConfig =>
             expect(operationConfig).toEqual({
               ...expectedResult,
-              bodyExample: { key: 'key_2', value: 'value_2', externalValue: 'ext_value_2' },
+              bodyExample: { id: 'id_2', key: 'key_2', value: 'value_2', externalValue: 'ext_value_2' },
             })
           );
         });
@@ -128,7 +128,7 @@ describe('NegotiatorHelpers', () => {
           assertRight(actualConfig, operationConfig =>
             expect(operationConfig).toEqual({
               ...expectedResult,
-              bodyExample: { key: 'key_1', value: 'value_1', externalValue: 'ext_value_1' },
+              bodyExample: { id: 'id_1', key: 'key_1', value: 'value_1', externalValue: 'ext_value_1' },
             })
           );
         });
