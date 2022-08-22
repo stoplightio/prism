@@ -72,9 +72,9 @@ describe('NegotiatorHelpers', () => {
               id: 'content-id',
               mediaType: actualMediaType,
               examples: [
-                { key: 'key_1', value: 'value_1', externalValue: 'ext_value_1' },
-                { key: 'key_2', value: 'value_2', externalValue: 'ext_value_2' },
-                { key: 'key_3', value: 'value_3', externalValue: 'ext_value_3' },
+                { id: 'id_1', key: 'key_1', value: 'value_1', externalValue: 'ext_value_1' },
+                { id: 'id_2', key: 'key_2', value: 'value_2', externalValue: 'ext_value_2' },
+                { id: 'id_3', key: 'key_3', value: 'value_3', externalValue: 'ext_value_3' },
               ],
               encodings: [],
             },
@@ -99,7 +99,7 @@ describe('NegotiatorHelpers', () => {
           assertRight(actualConfig, operationConfig =>
             expect(operationConfig).toEqual({
               ...expectedResult,
-              bodyExample: { key: 'key_2', value: 'value_2', externalValue: 'ext_value_2' },
+              bodyExample: { id: 'id_2', key: 'key_2', value: 'value_2', externalValue: 'ext_value_2' },
             })
           );
         });
@@ -128,7 +128,7 @@ describe('NegotiatorHelpers', () => {
           assertRight(actualConfig, operationConfig =>
             expect(operationConfig).toEqual({
               ...expectedResult,
-              bodyExample: { key: 'key_1', value: 'value_1', externalValue: 'ext_value_1' },
+              bodyExample: { id: 'id_1', key: 'key_1', value: 'value_1', externalValue: 'ext_value_1' },
             })
           );
         });
@@ -238,8 +238,8 @@ describe('NegotiatorHelpers', () => {
                   id: faker.random.word(),
                   mediaType: faker.system.mimeType(),
                   examples: [
-                    { key: faker.random.word(), value: '', externalValue: '' },
-                    { key: faker.random.word(), value: '', externalValue: '' },
+                    { id: faker.random.word(), key: faker.random.word(), value: '', externalValue: '' },
+                    { id: faker.random.word(), key: faker.random.word(), value: '', externalValue: '' },
                   ],
                   encodings: [],
                 },
@@ -264,8 +264,8 @@ describe('NegotiatorHelpers', () => {
                   id: faker.random.word(),
                   mediaType: faker.system.mimeType(),
                   examples: [
-                    { key: faker.random.word(), value: '', externalValue: '' },
-                    { key: faker.random.word(), value: '', externalValue: '' },
+                    { id: faker.random.word(), key: faker.random.word(), value: '', externalValue: '' },
+                    { id: faker.random.word(), key: faker.random.word(), value: '', externalValue: '' },
                   ],
                   encodings: [],
                 },
@@ -1005,6 +1005,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: false,
       };
       const bodyExample: INodeExample | INodeExternalExample = {
+        id: faker.random.word(),
         key: faker.random.word(),
         value: '',
         externalValue: '',
@@ -1015,6 +1016,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         examples: [
           bodyExample,
           {
+            id: faker.random.word(),
             key: faker.random.word(),
             value: '',
             externalValue: '',
