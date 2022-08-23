@@ -8934,10 +8934,10 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-uri-template-lite@^20.5.0:
-  version "20.5.0"
-  resolved "https://registry.yarnpkg.com/uri-template-lite/-/uri-template-lite-20.5.0.tgz#6904cb90006d3c4d93423d1e37bde76260d6b8b3"
-  integrity sha512-RL6Pnz0DO4XH9WZhZTX6u0SP6afNM9z+u7lXYHO+RkVGzpNcgKc1Y2tcAX/KVIEi2ctfzf+iLcofkwKoYiGH4Q==
+uri-template-lite@^22.1.0:
+  version "22.1.0"
+  resolved "https://registry.yarnpkg.com/uri-template-lite/-/uri-template-lite-22.1.0.tgz#7bf3293d4a3419f287b8ec1d380c5aa9fee59896"
+  integrity sha512-KJvWlYkFgeHxFt2Y0c6E/MM6X1mgw1PZ/PfhLKI/S/dPqnr6RXZ6AFE7uEE3T5RxZ8+8uHwONsmBZ/CUPfNaRg==
 
 urijs@^1.19.11:
   version "1.19.11"
