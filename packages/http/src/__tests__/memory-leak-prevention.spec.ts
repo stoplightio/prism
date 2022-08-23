@@ -33,12 +33,14 @@ describe('Checks if memory leaks', () => {
 
     for (let i = 0; i < 5000; i++) {
       round(client);
-      if (i % 100 === 0) {
+      if (i % 100 === 0 && global.gc) {
         global.gc();
       }
     }
 
-    global.gc();
+    if (global.gc) {
+      global.gc();
+    }
     expect(process.memoryUsage().heapUsed).toBeLessThanOrEqual(baseMemoryUsage * 1.03);
   });
 });
