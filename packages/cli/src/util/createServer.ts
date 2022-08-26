@@ -79,6 +79,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
     validateResponse: true,
     checkSecurity: true,
     errors: false,
+    errorHeader: true,
     upstreamProxy: undefined,
   };
 
