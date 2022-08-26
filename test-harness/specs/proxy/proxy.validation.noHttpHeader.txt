@@ -1,6 +1,5 @@
 ====test====
-Returns response violations as sl-violations header
-but won't touch the response body
+Does not return response violations as sl-violations header when provided with --error-header false
 ====spec====
 swagger: "2.0"
 paths:
