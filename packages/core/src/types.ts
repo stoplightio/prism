@@ -20,6 +20,7 @@ type IPrismBaseConfig = {
   validateResponse: boolean;
   errors: boolean;
   upstreamProxy: string | undefined;
+  errorHeader: boolean;
 };
 
 export type IPrismMockConfig = IPrismBaseConfig & {
@@ -42,6 +43,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
     input: IPrismInput<Input>,
     baseUrl: string,
     upstreamProxy: Config['upstreamProxy'],
+    errorHeader: boolean,
     resource?: Resource
   ) => ReaderTaskEither<Logger, Error, Output>;
   mock: (opts: {

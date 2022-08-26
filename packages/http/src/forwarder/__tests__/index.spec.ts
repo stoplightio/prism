@@ -46,7 +46,8 @@ describe('forward', () => {
             },
           },
           'http://example.com',
-          undefined
+          undefined,
+          true
         )(logger),
         () => {
           expect(fetch).toHaveBeenCalledWith(
@@ -78,7 +79,8 @@ describe('forward', () => {
             },
           },
           'http://example.com',
-          undefined
+          undefined,
+          true
         )(logger)
       );
     });
@@ -103,7 +105,8 @@ describe('forward', () => {
             },
           },
           'http://example.com',
-          undefined
+          undefined,
+          true
         )(logger),
         () => {
           expect(fetch).toHaveBeenCalledWith(
@@ -127,7 +130,8 @@ describe('forward', () => {
         forward(
           { validations: [], data: { method: 'get', url: { path: '/test' } } },
           'http://example.com',
-          undefined
+          undefined,
+          true
         )(logger),
         r =>
           hopByHopHeaders.forEach(hopHeader => {
@@ -149,7 +153,8 @@ describe('forward', () => {
             },
           },
           'http://example.com',
-          undefined
+          undefined,
+          true
         )(logger),
         e => expect(e).toHaveProperty('status', 422)
       ));
@@ -172,6 +177,7 @@ describe('forward', () => {
           },
           'http://example.com',
           undefined,
+          true,
           {
             deprecated: true,
             method: 'post',
@@ -198,6 +204,7 @@ describe('forward', () => {
           },
           'http://example.com',
           undefined,
+          true,
           {
             deprecated: true,
             method: 'post',

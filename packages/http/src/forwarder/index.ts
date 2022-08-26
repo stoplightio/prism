@@ -28,6 +28,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
     { data: input, validations }: IPrismInput<IHttpRequest>,
     baseUrl: string,
     upstreamProxy: IHttpConfig['upstreamProxy'],
+    errorHeader,
     resource
   ): RTE.ReaderTaskEither<Logger, Error, IHttpResponse> =>
   logger =>

@@ -12,6 +12,7 @@ describe('User Http Client', () => {
         validateRequest: true,
         validateResponse: true,
         errors: false,
+        errorHeader: true,
         checkSecurity: true,
         upstreamProxy: undefined,
       };

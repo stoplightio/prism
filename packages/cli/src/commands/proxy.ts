@@ -36,6 +36,12 @@ const proxyCommand: CommandModule = {
             'If an http proxy is required to reach upstream, formatted as "{protocol}://[{user}[:{password}]@]{host}[:{port}]". eg "http://myUser:myPassword@proxy.example.com:1234"',
           string: true,
         },
+        'error-header': {
+          description:
+            'Apply "sl-violations" header to response detailing errors.',
+          boolean: true,
+          default: true,
+        },
       }),
   handler: parsedArgs => {
     parsedArgs.validateRequest = parsedArgs['validate-request'];
@@ -50,7 +56,8 @@ const proxyCommand: CommandModule = {
       'upstream',
       'errors',
       'validateRequest',
-      'upstreamProxy'
+      'upstreamProxy',
+      'errorHeader',
     );
 
     const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;

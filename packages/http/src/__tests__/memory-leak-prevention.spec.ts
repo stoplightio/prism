@@ -21,6 +21,7 @@ describe('Checks if memory leaks', () => {
       validateResponse: true,
       checkSecurity: true,
       errors: true,
+      errorHeader: true,
       mock: {
         dynamic: false,
       },

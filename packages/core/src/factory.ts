@@ -77,6 +77,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
         },
         config.upstream.href,
         config.upstreamProxy,
+        config.errorHeader,
         resource
       );
 
@@ -113,7 +114,8 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
                 components.forward(
                   { data: input, validations: [] },
                   config.upstream.href,
-                  config.upstreamProxy
+                  config.upstreamProxy,
+                  config.errorHeader
                 )(components.logger.child({ name: 'PROXY' })),
                 TE.map(createWarningOutput)
               );

@@ -89,6 +89,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
         upstream: options.upstream,
         errors: options.errors,
         upstreamProxy: options.upstreamProxy,
+        errorHeader: options.errorHeader,
       }
     : { ...shared, mock: { dynamic: options.dynamic }, errors: options.errors };
 
@@ -151,6 +152,7 @@ export interface CreateProxyServerOptions extends CreateBaseServerOptions {
   upstream: URL;
   validateRequest: boolean;
   upstreamProxy: string | undefined;
+  errorHeader: boolean;
 }
 
 export type CreateMockServerOptions = CreateBaseServerOptions;

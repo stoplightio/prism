@@ -101,7 +101,9 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         const inputOutputValidationErrors = inputValidationErrors.concat(outputValidationErrors);
 
         if (inputOutputValidationErrors.length > 0) {
-          reply.setHeader('sl-violations', JSON.stringify(inputOutputValidationErrors));
+          if (opts.config.errorHeader) {
+            reply.setHeader('sl-violations', JSON.stringify(inputOutputValidationErrors));
+          }
 
           const errorViolations = outputValidationErrors.filter(
             v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
