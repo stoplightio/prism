@@ -14,7 +14,7 @@
     "@stoplight/prism-http": "^4.10.4",
     "@stoplight/prism-http-server": "^4.10.4",
     "@stoplight/types": "^13.6.0",
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.1",
     "chokidar": "^3.5.2",
     "fp-ts": "^2.11.5",
     "json-schema-faker": "0.5.0-rcv.40",
