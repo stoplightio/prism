@@ -6,8 +6,10 @@ import { pipe } from 'fp-ts/function';
 import { defaults } from 'lodash';
 import { IPrism, IPrismComponents, IPrismConfig, IPrismDiagnostic, IPrismProxyConfig, IPrismOutput } from './types';
 import { getSemigroup, NonEmptyArray } from 'fp-ts/NonEmptyArray';
-import { DiagnosticSeverity } from '@stoplight/types';
+import { DiagnosticSeverity, IHttpRequest } from '@stoplight/types';
+import { IHttpNameValue } from "@stoplight/prism-http/src/types";
 import { identity } from 'fp-ts/function';
+import { getHttpConfigFromRequest } from '@stoplight/prism-http-server/src/getHttpConfigFromRequest';
 
 const eitherSequence = A.sequence(E.getApplicativeValidation(getSemigroup<IPrismDiagnostic>()));
 
@@ -62,12 +64,30 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     config: Config,
     validations: IPrismDiagnostic[]
   ): TE.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
-    const mockCall = () =>
-      components.mock({
+    const mockCall = () => {
+
+      // Construct input
+      const input = {
+        url: {
+          path: "",
+        },
+        headers: (data as unknown as IHttpRequest).headers as IHttpNameValue,
+      };
+
+      const configRequest = pipe(
+        getHttpConfigFromRequest(input),
+        E.match(
+          () => (undefined),
+          success => success
+        )
+      )
+
+      return components.mock({
         resource,
         input: { data, validations },
-        config: config.mock || {},
-      })(components.logger.child({ name: 'NEGOTIATOR' }));
+        config: configRequest || config.mock || {},
+      })(components.logger.child({ name: 'NEGOTIATOR' }))
+    }
 
     const forwardCall = (config: IPrismProxyConfig) =>
       components.forward(
