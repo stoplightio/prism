@@ -1,0 +1,75 @@
+{
+    "openapi": "3.0.0",
+    "x-stoplight": {
+      "id": "onkt7wj0054vs"
+    },
+    "paths": {
+      "/todos": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "Expected response to a valid request",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "x-faker": "name.firstName"
+                      },
+                      "surname": {
+                        "type": "string",
+                        "format": "string",
+                        "x-faker": "name.lastName"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "surname"
+                    ]
+                  },
+                  "examples": {
+                    "Example1": {
+                      "value": {
+                        "name": "jhon",
+                        "surname": "doe"
+                      }
+                    },
+                    "Example2": {
+                      "value": {
+                        "name": "doe",
+                        "surname": "jhon"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "default": {
+              "description": "unexpected error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "required": [
+                      "code",
+                      "message"
+                    ],
+                    "properties": {
+                      "code": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

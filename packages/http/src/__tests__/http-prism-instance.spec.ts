@@ -15,6 +15,7 @@ const fixturePath = (filename: string) => resolve(__dirname, 'fixtures', filenam
 const noRefsPetstoreMinimalOas2Path = fixturePath('no-refs-petstore-minimal.oas2.json');
 const petStoreOas2Path = fixturePath('petstore.oas2.yaml');
 const staticExamplesOas2Path = fixturePath('static-examples.oas2.json');
+const dynamicGenerationOas3Path = fixturePath('dynamic-generation.oas3.json');
 const serverValidationOas2Path = fixturePath('server-validation.oas2.json');
 const serverValidationOas3Path = fixturePath('server-validation.oas3.json');
 
@@ -419,4 +420,67 @@ describe('proxy server', () => {
       });
     });
   });
+
+  describe('when upstream response 501, proxy server will remocking the call', () => {
+
+    beforeEach(() =>
+      nock(baseUrl).get('/todos').reply(501)
+    );
+  
+    afterEach(() => nock.cleanAll());
+  
+    const prism = createInstance(
+      {
+        mock: false,
+        checkSecurity: true,
+        validateRequest: true,
+        validateResponse: true,
+        upstream: new URL(baseUrl),
+        errors: false,
+        upstreamProxy: undefined,
+      },
+      { logger }
+    );
+  
+    it('returns stringified static example when one defined in spec', async () => {
+        
+      const resources = await getHttpOperationsFromSpec(staticExamplesOas2Path);
+      
+      return assertResolvesRight(prism.request({ method: 'get', url: { path: '/todos' } }, resources), response => {
+        expect(response.output).toBeDefined();
+        expect(response.output.statusCode).toBe(200);
+        expect(response.output.body).toBeInstanceOf(Array);
+      });
+    });
+  
+    it("return dynamic response when Prefer header set to dynamic=true", async () => {
+      const resources = await getHttpOperationsFromSpec(dynamicGenerationOas3Path);
+      const headers = {
+        prefer: "dynamic=true"
+      }
+  
+      return assertResolvesRight(prism.request({ method: 'get', url: { path: '/todos' }, headers }, resources), response => {
+        expect(response.output).toBeDefined();
+        expect(response.output.statusCode).toBe(200);
+        expect(response.output.body);
+      });
+    })
+  
+    it("return example response when Prefer header set to example=ExampleName", async () => {
+      const resources = await getHttpOperationsFromSpec(dynamicGenerationOas3Path);
+      const headers = {
+        prefer: "example=Example1"
+      }
+  
+      return assertResolvesRight(prism.request({ method: 'get', url: { path: '/todos' }, headers }, resources), response => {
+        expect(response.output).toBeDefined();
+        expect(response.output.statusCode).toBe(200);
+        expect(response.output.body).toEqual({
+          name: "jhon",
+          surname: "doe"
+        });
+      });
+    })
+  });
+  
 });
