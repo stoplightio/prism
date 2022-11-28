@@ -12,7 +12,8 @@
   "scripts": {
     "lint": "eslint ./packages/**/src/*.ts",
     "lint.fix": "yarn lint --fix",
-    "build": "rm -rf ./packages/**/dist ./packages/**/*.tsbuildinfo && ttsc --build --verbose ./packages/tsconfig.build.json",
+    "clean": "rm -rf ./packages/**/dist ./packages/**/*.tsbuildinfo",
+    "build": "npm run clean && ttsc --build --verbose ./packages/tsconfig.build.json",
     "posttest": "yarn lint",
     "test": "node --expose-gc ./node_modules/.bin/jest",
     "release": "lerna version",

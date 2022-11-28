@@ -6152,10 +6152,10 @@ json-schema-compare@^0.2.2:
   dependencies:
     lodash "^4.17.4"
 
-json-schema-faker@0.5.0-rcv.46:
-  version "0.5.0-rcv.46"
-  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rcv.46.tgz#5f9eff94f463c337a361044a460cc46797ceb053"
-  integrity sha512-Q+sGrxptZfezwm7M9W9VmHT9E8s5fWPCaRC4J2zUjb3CmDsxokiCBdHdS/psu91Tafc/ITv+GtIztGzUVT2zIg==
+json-schema-faker@0.5.0-rcv.40:
+  version "0.5.0-rcv.40"
+  resolved "https://registry.yarnpkg.com/json-schema-faker/-/json-schema-faker-0.5.0-rcv.40.tgz#71d4f770368d6832bb66b044a504a9ecc2604651"
+  integrity sha512-BczZvu03jKrGh3ovCWrHusiX6MwiaKK2WZeyomKBNA8Nm/n7aBYz0mub1CnONB6cgxOZTNxx4afNmLblbUmZbA==
   dependencies:
     json-schema-ref-parser "^6.1.0"
     jsonpath-plus "^5.1.0"

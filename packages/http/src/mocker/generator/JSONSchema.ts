@@ -2,7 +2,7 @@ import faker from '@faker-js/faker';
 import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
-import { JSONSchemaFaker, JSONSchemaFakerOptions } from 'json-schema-faker';
+import * as JSONSchemaFaker from 'json-schema-faker';
 import * as sampler from '@stoplight/json-schema-sampler';
 import { Either, toError, tryCatch } from 'fp-ts/Either';
 import { IHttpOperation } from '@stoplight/types';
@@ -10,11 +10,13 @@ import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/lib/Either';
 import { stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
 
+// necessary as workaround broken types in json-schema-faker
+// @ts-ignore
 JSONSchemaFaker.extend('faker', () => faker);
 
 // From https://github.com/json-schema-faker/json-schema-faker/tree/develop/docs
 // Using from entries since the types aren't 100% compatible
-const JSON_SCHEMA_FAKER_DEFAULT_OPTIONS: Readonly<JSONSchemaFakerOptions> = Object.fromEntries([
+const JSON_SCHEMA_FAKER_DEFAULT_OPTIONS = Object.fromEntries([
   ['defaultInvalidTypeProduct', null],
   ['defaultRandExpMax', 10],
   ['pruneProperties', []],
@@ -44,6 +46,8 @@ const JSON_SCHEMA_FAKER_DEFAULT_OPTIONS: Readonly<JSONSchemaFakerOptions> = Obje
 ]);
 
 export function resetGenerator() {
+  // necessary as workaround broken types in json-schema-faker
+  // @ts-ignore
   JSONSchemaFaker.option({
     ...JSON_SCHEMA_FAKER_DEFAULT_OPTIONS,
     failOnInvalidTypes: false,
@@ -63,6 +67,8 @@ export function generate(bundle: unknown, source: JSONSchema): Either<Error, unk
     E.fromOption(() => Error('Cannot strip writeOnly properties')),
     E.chain(updatedSource =>
       tryCatch(
+        // necessary as workaround broken types in json-schema-faker
+        // @ts-ignore
         () => sortSchemaAlphabetically(JSONSchemaFaker.generate({ ...cloneDeep(updatedSource), __bundled__: bundle })),
         toError
       )
