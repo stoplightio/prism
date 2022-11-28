@@ -12,7 +12,7 @@
   "scripts": {
     "lint": "eslint ./packages/**/src/*.ts",
     "lint.fix": "yarn lint --fix",
-    "build": "ttsc --build ./packages/tsconfig.build.json",
+    "build": "rm -rf ./packages/**/dist ./packages/**/*.tsbuildinfo && ttsc --build --verbose ./packages/tsconfig.build.json",
     "posttest": "yarn lint",
     "test": "node --expose-gc ./node_modules/.bin/jest",
     "release": "lerna version",
@@ -66,9 +66,9 @@
     "ts-node": "^9.1.1",
     "ts-transform-import-path-rewrite": "^0.3.0",
     "tsconfig-paths": "^4.1.0",
-    "ttypescript": "^1.5.12",
+    "ttypescript": "^1.5.13",
     "type-is": "^1.6.18",
-    "typescript": "^4.2.4"
+    "typescript": "4.9.3"
   },
   "lint-staged": {
     "**/packages/**/*.ts": [
