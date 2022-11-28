@@ -7,6 +7,9 @@ openapi: "3.0.2"
 x-json-schema-faker:
   resolveJsonPath: true
   useDefaultValue: true
+  optionalsProbability: null
+  minItems: 3
+  maxItems: 3
 tags:
   - name: example-tag
 info:
@@ -38,6 +41,11 @@ paths:
                   alias:
                     type: string
                     jsonPath: $..name
+                  array:
+                    type: array
+                    items:
+                      type: string
+                      default: "Item"
 ====server====
 mock -p 4010 -d ${document}
 ====command====
@@ -46,4 +54,4 @@ curl -i http://localhost:4010/widget
 HTTP/1.1 200 OK
 content-type: application/json
 
-{"alias":"Super Widget","name":"Super Widget"}
+{"alias":"Super Widget","name":"Super Widget","array":["Item","Item","Item"]}

@@ -42,6 +42,7 @@ import {
   splitUriParams,
 } from '../validator/validators/body';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
+export { resetGenerator as resetJSONSchemaGenerator } from './generator/JSONSchema';
 
 const eitherRecordSequence = Record.sequence(E.Applicative);
 const eitherSequence = sequenceT(E.Apply);
