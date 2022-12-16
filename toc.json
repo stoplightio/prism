@@ -46,7 +46,7 @@
     {
       "type": "item",
       "title": "Dynamic Response Generation with Faker",
-      "uri": "/docs/guides/02-request-validation.md"
+      "uri": "docs/guides/11-dynamic-response-with-faker.md"
     },
     {
       "type": "item",
