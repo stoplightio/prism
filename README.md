@@ -1,7 +1,6 @@
 [![Prism - API Mock Servers and Contract Testing](assets/readme-header.svg)][mocking_landing_page]
 
-![readme-header1.png](docs/readme-header1.png)
-
+![readme-header1.png](assets/readme-header1.png)
 
 [![CircleCI][circle_ci_image]][circle_ci]
 [![NPM Downloads][npm_image]][npm]
