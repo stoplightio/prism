@@ -1,5 +1,6 @@
 import { IHttpConfig, PickRequired, PrismHttpComponents, PrismHttpInstance } from '@stoplight/prism-http';
 import { Logger } from 'pino';
+import { Server } from 'http';
 
 export interface IPrismHttpServerOpts {
   components: PickRequired<Partial<PrismHttpComponents>, 'logger'>;
@@ -10,6 +11,7 @@ export interface IPrismHttpServerOpts {
 export interface IPrismHttpServer {
   readonly prism: PrismHttpInstance;
   readonly logger: Logger;
+  readonly server: Server;
   close: () => Promise<void>;
   listen: (port: number, address?: string, backlog?: number) => Promise<string>;
 }

@@ -209,6 +209,10 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       return components.logger;
     },
 
+    get server() {
+      return server;
+    },
+
     close() {
       return new Promise((resolve, reject) =>
         server.close(error => {
