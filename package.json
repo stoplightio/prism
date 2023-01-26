@@ -49,7 +49,7 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "fast-xml-parser": "^3.20.3",
+    "fast-xml-parser": "^4.0.15",
     "gavel": "^10.0.3",
     "glob": "^7.2.0",
     "http-string-parser": "^0.0.6",
