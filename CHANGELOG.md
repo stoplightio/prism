@@ -6,7 +6,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to Semantic Versioning.
 
-# 4.10.6 (2022.03.01)
+# 4.11.0 (2023.03.14)
+
+## Added
+
+- CLI option flag `--verboseLevel` or `-v` to set log levels. [#2231](https://github.com/stoplightio/prism/pull/2231)
+
+# 4.10.6 (2023.03.01)
 
 ## Changed
 
