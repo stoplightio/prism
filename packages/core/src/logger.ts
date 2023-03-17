@@ -10,7 +10,7 @@ export function createLogger(
     name,
     base: {},
     customLevels: {
-      success: pino.levels.values['info'],
+      success: pino.levels.values['info'] + 2,
     },
     level: 'success',
     timestamp: false,

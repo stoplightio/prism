@@ -21,7 +21,7 @@ type PrismLogDescriptor = pino.LogDescriptor & { name: keyof typeof LOG_COLOR_MA
 signale.config({ displayTimestamp: true });
 
 const cliSpecificLoggerOptions: pino.LoggerOptions = {
-  customLevels: { start: pino.levels.values['info']},
+  customLevels: { start: pino.levels.values['info'] + 1 },
   level: 'start',
   formatters: {
     level: level => ({ level }),
@@ -99,7 +99,6 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
   });
 
   const address = await server.listen(options.port, options.host);
-
   operations.forEach(resource => {
     const path = pipe(
       createExamplePath(resource, attachTagsToParamsValues),

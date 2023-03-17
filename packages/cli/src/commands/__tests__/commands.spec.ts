@@ -31,6 +31,7 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
         document: '/path/to',
         multiprocess: false,
         errors: false,
+        verboseLevel: 'info',
       })
     );
   });
