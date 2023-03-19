@@ -1,0 +1,2 @@
+import ruleset from "https://stoplight.io/api/v1/projects/cHJqOjM/spectral.js?branch_slug=chore%2Fpath-order-and-svg-images&token=b10e9324-ff03-4c83-85eb-25dff8fd6fd7";
+export default { extends: ruleset };

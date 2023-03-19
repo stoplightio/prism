@@ -4,27 +4,40 @@
 [![NPM Downloads][npm_image]][npm]
 [![Stoplight Forest](https://img.shields.io/ecologi/trees/stoplightinc)][stoplight_forest]
 
+# Prism Overview
+
 Prism is a set of packages for API mocking and contract testing with **OpenAPI v2** (formerly known as Swagger) and **OpenAPI v3.x**.
 
-- **Mock Servers**: Life-like mock servers from any API Specification Document.
-- **Validation Proxy**: Contract Testing for API Consumers and Developers.
+Prism provides:
+
+- **Mock Servers**: Life-like mock servers from any API specification document.
+- **Validation Proxy**: Contract Testing for API consumers and developers.
 - **Comprehensive API Specification Support**: OpenAPI v3.1, OpenAPI v3.0, OpenAPI v2.0 (formerly Swagger) and Postman Collections.
+
+## Ways to Use Prism
+
+### Hosted Prism
+
+Stoplight provides hosted mock servers for convenience so that API consumers can experiment with an API without the need for backend code.
+
+Use one of these options for instant, hosted mock servers:
+
+- [Stoplight Platform](https://stoplight.io/?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_prism): Collaborative API Design Platform for designing, developing and documenting APIs with hosted mocking powered by Prism.
+- [Stoplight Studio](https://stoplight.io/studio/?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_prism): Free visual OpenAPI designer that comes integrated with mocking powered by Prism.
+
+Learn more in the [hosted Prism documentation](https://docs.stoplight.io/docs/platform/336b74db38c50-work-with-mock-servers).
+
+### Self-hosted Prism
+
+Prism is an open-source HTTP server run from the command-line. It provides mocking, request validation, and content negotation. Use it standalone tool or in continuous integration.
 
 ![Demo of Prism Mock Server being called with curl from the CLI](./examples/prism-cli.svg)
 
-> Note: This branch refers to Prism 3.x, which is the current version most likely you will use. If you're looking for the 2.x version, look at the [`2.x` branch][2.x]
+## Installation and Usage
 
-# Overview
+This information refers to Open Source Prism 3.x, which is the current version most likely you will use. If you're looking for the 2.x version, look at the [`2.x` branch][2.x]
 
-- [Installation and Usage](#-installation-and-usage)
-- [Documentation and Community](#-documentation-and-community)
-- [Roadmap](#-roadmap)
-- [FAQs](#-faqs)
-- [Contributing](#-contributing)
-
-## 🧰 Installation and Usage
-
-### Installation
+### Install Self-hosted Prism
 
 _Prism requires NodeJS >= 16 to properly work._
 
@@ -60,22 +73,12 @@ Learn more about [how the validation proxy works](docs/guides/03-validation-prox
 
 ## 📖 Documentation and Community
 
-- [Documentation](https://meta.stoplight.io/docs/prism)
+- [Documentation](https://docs.stoplight.io/docs/prism)
   - [Getting Started](./docs/getting-started/01-installation.md)
   - [Guides](./docs/guides/01-mocking.md)
 - [Community](https://github.com/stoplightio/prism/discussions)
 
-## 🚧 Roadmap
-
-- [x] Content Negotiation
-- [x] Security Validation
-- [x] Validation Proxy
-- [ ] [Recording/Learning Mode](https://roadmap.stoplight.io/c/66-learning-recording?utm_source=github&utm_medium=prism&utm_campaign=readme) (create OpenAPI from HTTP traffic)
-- [ ] [Data Persistence](https://roadmap.stoplight.io/c/50-persisted-mock-data?utm_source=github&utm_medium=prism&utm_campaign=readme) (allow Prism act like a sandbox)
-
-Submit your ideas for new functionality on the [Stoplight Roadmap](https://roadmap.stoplight.io/?utm_source=github&utm_medium=prism&utm_campaign=readme).
-
-## ❓ FAQs
+### ❓ FAQs
 
 **Cannot access mock server when using Docker?**
 
@@ -95,24 +98,25 @@ the URL. If you have a base path of `api/v1` and your path is defined as `hello`
 confuses some, but the other way was confusing to others. Check the default output of Prism CLI to
 see what URLs you have available.
 
-**Is there a hosted version of Prism?**
+### 🚧 Roadmap
 
-Yes, hosted mocking is available as part of Stoplight Platform. [Learn More](https://stoplight.io/api-mocking?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_prism)
+- [x] Content Negotiation
+- [x] Security Validation
+- [x] Validation Proxy
+- [ ] [Recording/Learning Mode](https://roadmap.stoplight.io/c/66-learning-recording?utm_source=github&utm_medium=prism&utm_campaign=readme) (create OpenAPI from HTTP traffic)
+- [ ] [Data Persistence](https://roadmap.stoplight.io/c/50-persisted-mock-data?utm_source=github&utm_medium=prism&utm_campaign=readme) (allow Prism act like a sandbox)
 
-## ⚙️ Integrations
+Submit your ideas for new functionality on the [Stoplight Roadmap](https://roadmap.stoplight.io/?utm_source=github&utm_medium=prism&utm_campaign=readme).
 
-- [Stoplight Studio](https://stoplight.io/studio/?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_prism): Free visual OpenAPI designer that comes integrated with mocking powered by Prism.
-- [Stoplight Platform](https://stoplight.io/?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_prism): Collaborative API Design Platform for designing, developing and documenting APIs with hosted mocking powered by Prism.
-
-## 🏁 Help Others Utilize Prism
+### 🏁 Help Others Utilize Prism
 
 If you're using Prism for an interesting use case, [contact us](mailto:growth@stoplight.io) for a case study. We'll add it to a list here. Spread the goodness 🎉
 
-## 👏 Contributing
+### 👏 Contributing
 
 If you are interested in contributing to Prism itself, check out our [contributing docs ⇗][contributing] and [code of conduct ⇗][code_of_conduct] to get started.
 
-## 🎉 Thanks
+### 🎉 Thanks
 
 Prism is built on top of lots of excellent packages, and here are a few we'd like to say a special thanks to.
 
@@ -128,7 +132,7 @@ Prism is built on top of lots of excellent packages, and here are a few we'd lik
 
 Check these projects out!
 
-## 🌲 Sponsor Prism by Planting a Tree
+### 🌲 Sponsor Prism by Planting a Tree
 
 If you would like to thank us for creating Prism, we ask that you [**buy the world a tree**](https://ecologi.com/stoplightinc).
 
