@@ -90,7 +90,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
         errors: options.errors,
         upstreamProxy: options.upstreamProxy,
       }
-    : { ...shared, mock: { dynamic: options.dynamic }, errors: options.errors };
+    : { ...shared, mock: { dynamic: options.dynamic, scenarios: options.scenarios }, errors: options.errors };
 
   const server = createHttpServer(operations, {
     cors: options.cors,
@@ -154,6 +154,8 @@ export interface CreateProxyServerOptions extends CreateBaseServerOptions {
   upstreamProxy: string | undefined;
 }
 
-export type CreateMockServerOptions = CreateBaseServerOptions;
+export interface CreateMockServerOptions extends CreateBaseServerOptions {
+  scenarios?: boolean;
+}
 
 export { createMultiProcessPrism, createSingleProcessPrism };

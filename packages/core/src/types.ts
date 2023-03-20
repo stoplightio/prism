@@ -22,6 +22,11 @@ type IPrismBaseConfig = {
   upstreamProxy: string | undefined;
 };
 
+export type IPrismMockArgs = {
+  dynamic: boolean;
+  scenarios?: boolean;
+};
+
 export type IPrismMockConfig = IPrismBaseConfig & {
   mock: object;
 };

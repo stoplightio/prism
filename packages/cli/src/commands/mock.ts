@@ -20,11 +20,18 @@ const mockCommand: CommandModule = {
           boolean: true,
           default: false,
         },
+        scenarios: {
+          alias: 's',
+          description: 'Start a scenario endpoint for configuring Prefered scenarios.',
+          boolean: true,
+          default: false,
+        },
       }),
   handler: parsedArgs => {
     const {
       multiprocess,
       dynamic,
+      scenarios,
       port,
       host,
       cors,
@@ -34,7 +41,7 @@ const mockCommand: CommandModule = {
     } = (parsedArgs as unknown) as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
-    const options = { cors, dynamic, port, host, document, multiprocess, errors, verboseLevel };
+    const options = { cors, dynamic, scenarios, port, host, document, multiprocess, errors, verboseLevel };
 
     return runPrismAndSetupWatcher(createPrism, options);
   },

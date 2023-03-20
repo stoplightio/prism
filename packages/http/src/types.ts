@@ -8,11 +8,18 @@ export type PrismHttpInstance = IPrism<IHttpOperation, IHttpRequest, IHttpRespon
 
 export type PrismHttpComponents = IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
 
+export interface IScenario {
+  code?: number;
+  exampleKey?: string;
+}
+
 export interface IHttpOperationConfig {
   mediaTypes?: string[];
   code?: number;
   exampleKey?: string;
   dynamic: boolean;
+  scenarios?: boolean;
+  scenarioStore?: IScenario[];
 }
 
 export type IHttpMockConfig = Overwrite<IPrismMockConfig, { mock: IHttpOperationConfig }>;

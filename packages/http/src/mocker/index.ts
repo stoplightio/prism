@@ -18,7 +18,7 @@ import { sequenceT } from 'fp-ts/Apply';
 import * as R from 'fp-ts/Reader';
 import * as O from 'fp-ts/Option';
 import * as RE from 'fp-ts/ReaderEither';
-import { get, groupBy, isNumber, isString, keyBy, mapValues, partial, pick } from 'lodash';
+import { get, groupBy, isNumber, isString, keyBy, mapValues, partial, pick, size, defaults } from 'lodash';
 import { Logger } from 'pino';
 import { is } from 'type-is';
 import {
@@ -67,6 +67,11 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
       if (!config.mediaTypes && acceptMediaType) {
         logger.info(`Request contains an accept header: ${acceptMediaType}`);
         config.mediaTypes = acceptMediaType.split(',');
+      }
+
+      // Override with a stored scenario?
+      if (config.scenarios && size(config.scenarioStore) > 0) {
+        return defaults({}, config.scenarioStore?.shift(), config);
       }
 
       return config;
