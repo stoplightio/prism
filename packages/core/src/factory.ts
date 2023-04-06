@@ -103,7 +103,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     request: (input: Input, resources: Resource[], c?: Config) => {
       // build the config for this request
       const config: Config = defaults(c, defaultConfig);
-
+      console.log('Request input:', input);
       return pipe(
         components.route({ resources, input }),
         E.fold(

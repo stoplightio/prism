@@ -192,7 +192,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       ),
       Router.otherwise((req, res, options) => {
         if (opts.cors) setCommonCORSHeaders(req.headers, res);
-
+        console.log('REQUEST:', request.socket.remoteAddress, req.);
         return handler(req, res, options);
       })
     )

@@ -58,6 +58,8 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
     ? partial(generate, resource['__bundled__'])
     : partial(generateStatic, resource);
 
+  console.trace('input.data:', input.data);
+
   return pipe(
     withLogger(logger => {
       logRequest({ logger, prefix: `${chalk.grey('< ')}`, ...pick(input.data, 'body', 'headers') });
@@ -69,9 +71,15 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
         config.mediaTypes = acceptMediaType.split(',');
       }
 
-      // Override with a stored scenario?
+      // Override with a stored scenario for the requesting client?
       if (config.scenarios && size(config.scenarioStore) > 0) {
-        return defaults({}, config.scenarioStore?.shift(), config);
+        // Grab the x-forwarded-for or the x-client-ip headers or default to 0.0.0.0
+        const clientIp = get(input,
+                             "data.headers['x-forwarded-for']",
+                             get(input,
+                                 "data.headers['x-client-ip']",
+                                 "0.0.0.0"))
+        return defaults({}, config.scenarioStore?[clientIp]?.shift(), config);
       }
 
       return config;
@@ -97,16 +105,16 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
 
 function mockResponseLogger(logger: Logger) {
   const prefix = chalk.grey('> ');
-  
+
   return (response: IHttpResponse) => {
     logger.info(`${prefix}Responding with "${response.statusCode}"`);
-  
+
     logResponse({
       logger,
       prefix,
       ...pick(response, 'statusCode', 'body', 'headers'),
     });
-  
+
     return response;
   };
 }
