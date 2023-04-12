@@ -42,9 +42,10 @@ function parseRequestBody(request: IncomingMessage) {
   if (
     // If the body size is null, it means the body itself is null so the promise can resolve with a null value
     request.headers['content-length'] === '0' ||
-    (request.headers['content-type'] === undefined &&
-      request.headers['transfer-encoding'] === undefined &&
-      request.headers['content-length'] === undefined)
+    // Per HTTP 1.1 - these 2 headers are the valid way to indicate that a body exists:
+    // > The presence of a message body in a request is signaled by a Content-Length or Transfer-Encoding header field.
+    // https://httpwg.org/specs/rfc9112.html#message.body
+    (request.headers['transfer-encoding'] === undefined && request.headers['content-length'] === undefined)
   ) {
     return Promise.resolve(null);
   }

@@ -1,0 +1,18 @@
+====test====
+Making a  GET request with a Content-Type header through the proxy server ignores null body
+====spec====
+swagger: "2.0"
+paths:
+  /status/204:
+    get:
+      produces:
+        - text/plain
+      responses:
+        204:
+          description: No Content
+====server====
+proxy -p 4010 ${document} http://httpbin.org
+====command====
+curl -i http://localhost:4010/status/204 -X GET --header 'Content-Type: application/json'
+====expect====
+HTTP/1.1 204 No Content
