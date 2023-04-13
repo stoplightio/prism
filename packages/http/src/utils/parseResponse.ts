@@ -8,11 +8,11 @@ import { Dictionary } from '@stoplight/types';
 import { IHttpResponse } from '../types';
 
 export const parseResponseBody = (
-  response: Pick<Response, 'headers' | 'json' | 'text'>
+  response: Pick<Response, 'headers' | 'json' | 'text' | 'status'>
 ): TE.TaskEither<Error, unknown> =>
   TE.tryCatch(
     () =>
-      typeIs(response.headers.get('content-type') || '', ['application/json', 'application/*+json'])
+      (response.status != 204 && typeIs(response.headers.get('content-type') || '', ['application/json', 'application/*+json']))
         ? response.json()
         : response.text(),
     E.toError

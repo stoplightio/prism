@@ -10,6 +10,7 @@ describe('parseResponseBody()', () => {
           headers: new Headers({ 'content-type': 'application/json' }),
           json: jest.fn().mockResolvedValue({ test: 'test' }),
           text: jest.fn(),
+          status: 200,
         };
 
         expect(response.text).not.toHaveBeenCalled();
@@ -20,6 +21,7 @@ describe('parseResponseBody()', () => {
     describe('body is not parseable', () => {
       it('returns error', () => {
         const response = {
+          status: 200,
           headers: new Headers({ 'content-type': 'application/json' }),
           json: jest.fn().mockRejectedValue(new Error('Big Bada Boom')),
           text: jest.fn(),
@@ -35,6 +37,7 @@ describe('parseResponseBody()', () => {
     describe('body is readable', () => {
       it('returns body text', () => {
         const response = {
+          status: 200,
           headers: new Headers({ 'content-type': 'text/html' }),
           json: jest.fn(),
           text: jest.fn().mockResolvedValue('<html>Test</html>'),
@@ -48,9 +51,11 @@ describe('parseResponseBody()', () => {
     describe('body is not readable', () => {
       it('returns error', () => {
         const response = {
+          status: 200,
           headers: new Headers(),
           json: jest.fn(),
           text: jest.fn().mockRejectedValue(new Error('Big Bada Boom')),
+
         };
 
         expect(response.json).not.toHaveBeenCalled();
@@ -62,6 +67,7 @@ describe('parseResponseBody()', () => {
   describe('content-type header not set', () => {
     it('returns body text', () => {
       const response = {
+        status: 200,
         headers: new Headers(),
         json: jest.fn(),
         text: jest.fn().mockResolvedValue('Plavalaguna'),
@@ -69,6 +75,20 @@ describe('parseResponseBody()', () => {
 
       expect(response.json).not.toHaveBeenCalled();
       return assertResolvesRight(parseResponseBody(response), body => expect(body).toEqual('Plavalaguna'));
+    });
+  });
+
+  describe('content-type header is set', () => {
+    it('does not call json() on 204', () => {
+      const response = {
+        status: 204,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: jest.fn(),
+        text: jest.fn().mockResolvedValue(''),
+      };
+
+      expect(response.json).not.toHaveBeenCalled();
+      return assertResolvesRight(parseResponseBody(response), body => expect(body).toEqual(''));
     });
   });
 });

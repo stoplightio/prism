@@ -154,6 +154,13 @@ curl -v -X POST http://localhost:4010/pet/ -d '{"name"": "Skip", "species": 100}
 < HTTP/1.1 422 Unprocessable Entity
 {"statusCode": 400, "message": "Pet 'species' field should be a string, got integer", "code": "PET-ERROR-400"}
 ```
+
+## Logging Options
+
+Use the `-v` command to enable verbose request and response logging for mocking, proxy, and callbacks. 
+
+Command options are ``fatal`, `error`, `warn`, `info`, `debug`, and `silent`. The `info` level is the default and the fallback for custom log levels. 
+
 ## Running in Production
 
 When running in development mode (which happens when the `NODE_ENV` environment variable isn't set to `production`) or the `-m` flag is set to false, both the HTTP Server and the CLI (which is responsible of parsing and showing the received logs on the screen) will run within the same process.

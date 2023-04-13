@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to Semantic Versioning.
 
+# 4.12.0 (2023.04.12)
+
+## Added
+
+- Improves handling of GET/HEAD requests in the proxy that look like they include a request body. [#2260](https://github.com/stoplightio/prism/pull/2260)
+
 # 4.11.1 (2023.03.15)
 
 ## Added

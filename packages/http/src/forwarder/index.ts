@@ -16,7 +16,7 @@ import { parseResponse } from '../utils/parseResponse';
 import { hopByHopHeaders } from './resources';
 import { createUnauthorisedResponse, createUnprocessableEntityResponse } from '../mocker';
 import { ProblemJsonError } from '../types';
-import { UPSTREAM_NOT_IMPLEMENTED } from './errors';
+import { PROXY_UNSUPPORTED_REQUEST_BODY, UPSTREAM_NOT_IMPLEMENTED } from './errors';
 import * as createHttpProxyAgent from 'http-proxy-agent';
 import * as createHttpsProxyAgent from 'https-proxy-agent';
 import { toURLSearchParams } from '../utils/url';
@@ -44,7 +44,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           : createUnprocessableEntityResponse(failedValidations);
       }),
       TE.swap,
-      TE.chainEitherK(() => serializeBody(input.body)),
+      TE.chainEitherK(() => serializeBodyForFetch(input, logger)),
       TE.chain(body =>
         TE.tryCatch(async () => {
           const partialUrl = new URL(baseUrl);
@@ -98,13 +98,23 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
 
 export default forward;
 
+function serializeBodyForFetch(input: IHttpRequest, logger: Logger): E.Either<Error, string | undefined> {
+  const upperMethod = input.method.toUpperCase();
+  if (['GET', 'HEAD'].includes(upperMethod) && ![null, undefined].includes(input.body as any)) {
+    logger.warn(`Upstream ${upperMethod} call to ${input.url.path} has request body`);
+    return E.left(ProblemJsonError.fromTemplate(PROXY_UNSUPPORTED_REQUEST_BODY));
+  }
+
+  return serializeBody(input.body);
+}
+
 export function serializeBody(body: unknown): E.Either<Error, string | undefined> {
   if (typeof body === 'string') {
     return E.right(body);
   }
-  
+
   if (body) return pipe(J.stringify(body), E.mapLeft(E.toError));
-  
+
   return E.right(undefined);
 }
 
@@ -113,13 +123,13 @@ function logForwardRequest({ logger, url, request }: { logger: Logger; url: stri
   logger.info(`${prefix}Forwarding "${request.method}" request to ${url}...`);
   logRequest({ logger, prefix, ...pick(request, 'body', 'headers') });
 }
-  
+
 function forwardResponseLogger(logger: Logger) {
   return (response: Response) => {
     const prefix = chalk.grey('< ');
-  
+
     logger.info(`${prefix}Received forward response`);
-  
+
     const { status: statusCode } = response;
 
     logResponse({
@@ -127,7 +137,7 @@ function forwardResponseLogger(logger: Logger) {
       statusCode,
       ...pick(response, 'body', 'headers'),
       prefix,
-      });
+    });
 
     return response;
   };

@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-cli",
-  "version": "4.11.1",
+  "version": "4.12.0",
   "author": "Stoplight <support@stoplight.io>",
   "bin": {
     "prism": "./dist/index.js"
@@ -10,9 +10,9 @@
     "@stoplight/http-spec": "^5.5.2",
     "@stoplight/json": "^3.18.1",
     "@stoplight/json-schema-ref-parser": "9.2.1",
-    "@stoplight/prism-core": "^4.11.1",
-    "@stoplight/prism-http": "^4.11.1",
-    "@stoplight/prism-http-server": "^4.11.1",
+    "@stoplight/prism-core": "^4.12.0",
+    "@stoplight/prism-http": "^4.12.0",
+    "@stoplight/prism-http-server": "^4.12.0",
     "@stoplight/types": "^13.6.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
