@@ -1,7 +1,7 @@
-import { j2xParser } from 'fast-xml-parser';
+import { XMLBuilder } from 'fast-xml-parser';
 import { is as typeIs } from 'type-is';
 
-const xmlSerializer = new j2xParser({});
+const xmlSerializer = new XMLBuilder({});
 
 const serializers = [
   {
@@ -10,7 +10,7 @@ const serializers = [
   },
   {
     test: (value: string) => !!typeIs(value, ['application/xml', 'application/*+xml']),
-    serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.parse({ xml: data })),
+    serializer: (data: unknown) => (typeof data === 'string' ? data : xmlSerializer.build({ xml: data })),
   },
   {
     test: (value: string) => !!typeIs(value, ['text/*']),
