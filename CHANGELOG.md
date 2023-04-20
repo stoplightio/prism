@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to Semantic Versioning.
 
+# Unreleased
+
+## Fixed
+
+- Put `chalk` as an explicit dependency in the HTTP package [#x](https://github.com/stoplightio/prism/pull/x)
+- Upgrade fast-xml-parser (thanks @spriggyjeff) [#2262](https://github.com/stoplightio/prism/pull/2262)
+
 # 4.12.0 (2023.04.12)
 
 ## Added
