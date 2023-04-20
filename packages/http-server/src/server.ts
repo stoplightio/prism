@@ -90,7 +90,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             getHttpConfigFromRequest(input),
             E.map(operationSpecificConfig => ({ ...config, mock: merge(config.mock, operationSpecificConfig) }))
           );
-
+          
     pipe(
       TE.fromEither(requestConfig),
       TE.chain(requestConfig => prism.request(input, operations, requestConfig)),

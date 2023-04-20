@@ -48,6 +48,12 @@ const sharedOptions: Dictionary<Options> = {
     // custom levels like "success" and "start" are set to the same severity value as "info"
     choices: Object.keys(pino.levels.values).concat('silent')
   },
+
+  noAcceptVoidResponseError: {
+    description: 'Suppress error and make prism mock respond with 200 and no body for accept: application/json command if method does not respond with body',
+    boolean: true,
+    default: false,
+  },
 };
 
 export default sharedOptions;

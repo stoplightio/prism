@@ -131,12 +131,11 @@ const helpers = {
     response: IHttpOperationResponse
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     const { code, headers = [] } = response;
-    const { mediaTypes, dynamic, exampleKey } = desiredOptions;
+    const { mediaTypes, dynamic, exampleKey, noAcceptVoidResponseError } = desiredOptions;
 
     return logger => {
       if (requestMethod === 'head') {
         logger.info(`Responding with an empty body to a HEAD request.`);
-
         return E.right({ code: response.code, headers });
       }
 
@@ -160,18 +159,24 @@ const helpers = {
               O.fromNullable(response.contents),
               O.chain(contents => findBestHttpContentByMediaType(contents, mediaTypes)),
               O.fold(
-                () =>
-                  pipe(
+                () => {
+                  logger.warn(outputNoContentFoundMessage(mediaTypes));
+                  if (noAcceptVoidResponseError) {
+                    return E.right<Error, IHttpNegotiationResult>({
+                      code: response.code,
+                      headers: headers,
+                    })
+                  }
+                  return pipe(
                     createEmptyResponse(response.code, headers, mediaTypes),
                     O.map(payloadlessResponse => {
                       logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
                       return payloadlessResponse;
                     }),
                     E.fromOption<Error>(() => {
-                      logger.warn(outputNoContentFoundMessage(mediaTypes));
                       return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
                     })
-                  ),
+                  )},
                 content => {
                   logger.success(`Found a compatible content for ${mediaTypes}`);
                   // a httpContent for a provided mediaType exists
