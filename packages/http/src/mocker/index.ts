@@ -57,7 +57,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
   const payloadGenerator: PayloadGenerator = config.dynamic
     ? partial(generate, resource['__bundled__'])
     : partial(generateStatic, resource);
-    
+
   return pipe(
     withLogger(logger => {
       logRequest({ logger, prefix: `${chalk.grey('< ')}`, ...pick(input.data, 'body', 'headers') });

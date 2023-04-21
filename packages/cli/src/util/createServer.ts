@@ -79,7 +79,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
     validateResponse: true,
     checkSecurity: true,
     errors: false,
-    upstreamProxy: undefined
+    upstreamProxy: undefined,
   };
 
   const config: IHttpConfig = isProxyServerOptions(options)
