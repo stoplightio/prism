@@ -50,7 +50,7 @@ const helpers = {
     httpContent: IMediaTypeContent
   ): E.Either<Error, BodyNegotiationResult> {
     const { mediaType } = httpContent;
-
+ 
     if (exampleKey) {
       return pipe(
         findExampleByKey(httpContent, exampleKey),
@@ -131,7 +131,7 @@ const helpers = {
     response: IHttpOperationResponse
   ): RE.ReaderEither<Logger, Error, IHttpNegotiationResult> {
     const { code, headers = [] } = response;
-    const { mediaTypes, dynamic, exampleKey, noAcceptVoidResponseError } = desiredOptions;
+    const { mediaTypes, dynamic, exampleKey } = desiredOptions;
 
     return logger => {
       if (requestMethod === 'head') {
@@ -161,22 +161,22 @@ const helpers = {
               O.fold(
                 () => {
                   logger.warn(outputNoContentFoundMessage(mediaTypes));
-                  if (noAcceptVoidResponseError) {
-                    return E.right<Error, IHttpNegotiationResult>({
-                      code: response.code,
-                      headers: headers,
-                    })
-                  }
-                  return pipe(
-                    createEmptyResponse(response.code, headers, mediaTypes),
-                    O.map(payloadlessResponse => {
-                      logger.info(`${outputNoContentFoundMessage(mediaTypes)}. Sending an empty response.`);
-                      return payloadlessResponse;
-                    }),
-                    E.fromOption<Error>(() => {
-                      return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
-                    })
-                  )},
+
+                  // the spec has a response body but does NOT have a media type defined for the one requested with the accept header (throw error)
+                  if (response.contents?.length && response.contents?.length > 0) {
+                    return pipe(
+                      createEmptyResponse(response.code, headers, mediaTypes),
+                        E.fromOption<Error>(() => {
+                              return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
+                        })
+                  )}
+
+                  // though accept header may have a request media type, the spec does not define a response body for the endpoint, so we essentially ignore the accept header (no error)
+                  return E.right<Error, IHttpNegotiationResult>({
+                    code: response.code,
+                    headers: headers,
+                  })
+                },
                 content => {
                   logger.success(`Found a compatible content for ${mediaTypes}`);
                   // a httpContent for a provided mediaType exists

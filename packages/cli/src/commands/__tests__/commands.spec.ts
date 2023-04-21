@@ -32,7 +32,6 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
         multiprocess: false,
         errors: false,
         verboseLevel: 'info',
-        noAcceptVoidResponseError: false,
       })
     );
   });
@@ -63,13 +62,6 @@ describe.each<{ 0: string; 1: string; 2: unknown }>([
 
     expect(createMultiProcessPrism).not.toHaveBeenCalled();
     expect(createSingleProcessPrism).toHaveBeenLastCalledWith(expect.objectContaining({ verboseLevel: 'trace' }));
-  });
-
-  test(`starts ${command} server with noAcceptVoidResponseError option`, () => {
-    parser.parse(`${command} /path/to --noAcceptVoidResponseError ${upstream}`);
-
-    expect(createMultiProcessPrism).not.toHaveBeenCalled();
-    expect(createSingleProcessPrism).toHaveBeenLastCalledWith(expect.objectContaining({ noAcceptVoidResponseError: true }));
   });
 
   test(`starts ${command} server with multiprocess option `, () => {

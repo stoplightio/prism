@@ -90,7 +90,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
         errors: options.errors,
         upstreamProxy: options.upstreamProxy,
       }
-    : { ...shared, mock: { dynamic: options.dynamic, noAcceptVoidResponseError: options.noAcceptVoidResponseError }, errors: options.errors };
+    : { ...shared, mock: { dynamic: options.dynamic }, errors: options.errors };
 
   const server = createHttpServer(operations, {
     cors: options.cors,
@@ -144,7 +144,6 @@ type CreateBaseServerOptions = {
   multiprocess: boolean;
   errors: boolean;
   verboseLevel: string;
-  noAcceptVoidResponseError: boolean;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {

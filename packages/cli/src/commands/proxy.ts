@@ -51,8 +51,7 @@ const proxyCommand: CommandModule = {
       'errors',
       'validateRequest',
       'verboseLevel',
-      'upstreamProxy',
-      'noAcceptVoidResponseError'
+      'upstreamProxy'
     );
 
     const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
