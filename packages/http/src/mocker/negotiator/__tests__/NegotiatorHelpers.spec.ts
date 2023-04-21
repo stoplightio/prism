@@ -658,7 +658,7 @@ describe('NegotiatorHelpers', () => {
           assertPayloadlessResponse(actualResponse);
         });
 
-        it('should throw an error', () => {
+        it('should not throw an error', () => {
           const desiredOptions: NegotiationOptions = {
             mediaTypes: [faker.system.mimeType()],
             dynamic: faker.datatype.boolean(),
@@ -671,7 +671,7 @@ describe('NegotiatorHelpers', () => {
             httpResponseSchema
           )(logger);
 
-          expect(E.isLeft(actualResponse)).toBeTruthy();
+          expect(E.isRight(actualResponse)).toBeTruthy();
         });
       });
 

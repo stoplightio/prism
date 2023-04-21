@@ -1,5 +1,6 @@
 ====test====
-Prism responds with a 406 when the content-type from Accept header cannot be matched.
+Prism responds with a 200 OK when the the spec has no content,
+even when the content-type from Accept header cannot be matched.
 ====spec====
 openapi: 3.0.2
 paths:
@@ -13,4 +14,4 @@ mock -p 4010 ${document}
 ====command====
 curl -sIXGET http://localhost:4010/path -H "Accept: text/plain"
 ====expect====
-HTTP/1.1 406 Not Acceptable
+HTTP/1.1 200 OK
