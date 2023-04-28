@@ -50,7 +50,6 @@ const helpers = {
     httpContent: IMediaTypeContent
   ): E.Either<Error, BodyNegotiationResult> {
     const { mediaType } = httpContent;
- 
     if (exampleKey) {
       return pipe(
         findExampleByKey(httpContent, exampleKey),
