@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+- Allow spec document to be requested via HTTP Basic auth via the URL parameters in Node 18+.
+
 # 4.13.0 (2023.04.28)
 
 ## Fixed
