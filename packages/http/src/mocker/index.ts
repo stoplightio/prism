@@ -178,7 +178,10 @@ export function createInvalidInputResponse(
   const isExampleKeyFromExpectedCodes = !!mockConfig.code && expectedCodes.includes(mockConfig.code);
 
   return pipe(
-    withLogger(logger => logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules')),
+    withLogger(logger => {
+      logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules');
+      failedValidations.map(failedValidation => (logger.error({ name: 'VALIDATOR' }, 'Request ' + failedValidation.message)));
+    }),
     R.chain(() =>
       pipe(
         helpers.negotiateOptionsForInvalidRequest(
