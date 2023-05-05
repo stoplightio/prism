@@ -70,7 +70,7 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
   );
 }
 
-function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, bundle?: unknown) {
+function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, bundle?: unknown, prefix?: string) {
   const encodings = get(content, 'encodings', []);
   const encodedUriParams = splitUriParams(target);
 
@@ -80,7 +80,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
     E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised =>
       pipe(
-        validateAgainstSchema(deserialised, schema, true, undefined, bundle),
+        validateAgainstSchema(deserialised, schema, true, prefix, bundle),
         E.fromOption(() => deserialised),
         E.swap
       )
@@ -139,6 +139,7 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
       pipe(O.fromNullable(contentResult.content.schema), O.chain(normalizeSchemaProcessorMap[context]))
     )
   );
+  const prefix = 'body';
 
   return pipe(
     findContentByMediaType,
@@ -151,7 +152,7 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
           O.fold(
             () =>
               pipe(
-                validateAgainstSchema(target, schema, false, undefined, bundle),
+                validateAgainstSchema(target, schema, false, prefix, bundle),
                 E.fromOption(() => target),
                 E.swap
               ),
@@ -165,21 +166,25 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
                 E.chain(target => deserializeAndValidate(content, schema, target))
               )
           ),
-          E.mapLeft(diagnostics => applyPrefix('body', diagnostics))
+        //   E.mapLeft(diagnostics => {
+        //     return diagnostics;
+            // console.log("BODY DIAGNOSTICS", diagnostics);
+            // return applyPrefix('body', diagnostics)
+        //   })
         )
     )
   );
 };
 
-function applyPrefix(
-  prefix: string,
-  diagnostics: NEA.NonEmptyArray<IPrismDiagnostic>
-): NEA.NonEmptyArray<IPrismDiagnostic> {
-  return pipe(
-    diagnostics,
-    NEA.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }))
-  );
-}
+// function applyPrefix(
+//   prefix: string,
+//   diagnostics: NEA.NonEmptyArray<IPrismDiagnostic>
+// ): NEA.NonEmptyArray<IPrismDiagnostic> {
+//   return pipe(
+//     diagnostics,
+//     NEA.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }))
+//   );
+// }
 
 function validateAgainstReservedCharacters(
   encodedUriParams: Dictionary<string>,
