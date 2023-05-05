@@ -1,6 +1,6 @@
 import { Dictionary } from '@stoplight/types/dist';
 import * as xmlDiff from 'diff-js-xml';
-import * as parser from 'fast-xml-parser';
+const { XMLValidator} = require("fast-xml-parser");
 import { is as typeIs } from 'type-is';
 
 type Result = { body: string; headers: Dictionary<string> };
@@ -12,7 +12,7 @@ export const xmlValidator = {
       'application/*+xml',
       'text/xml',
     ]);
-    const isContentXML = parser.validate(content) === true;
+    const isContentXML = XMLValidator.validate(content) === true;
 
     return doesContentTypeMatch || isContentXML;
   },
