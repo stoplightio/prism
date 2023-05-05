@@ -21,7 +21,7 @@ Object {
   "left": Array [
     Object {
       "code": "format",
-      "message": "must match format \\"date-time\\"",
+      "message": "Request query parameter updated_since must match format \\"date-time\\"",
       "path": Array [
         "query",
         "updated_since",
@@ -53,7 +53,7 @@ Object {
   "left": Array [
     Object {
       "code": "format",
-      "message": "must match format \\"date-time\\"",
+      "message": "Request query parameter updated_since must match format \\"date-time\\"",
       "path": Array [
         "query",
         "updated_since",
@@ -70,7 +70,7 @@ Object {
   "left": Array [
     Object {
       "code": "type",
-      "message": "must be boolean",
+      "message": "Request body property completed must be boolean",
       "path": Array [
         "body",
         "completed",
@@ -79,7 +79,7 @@ Object {
     },
     Object {
       "code": "format",
-      "message": "must match format \\"date-time\\"",
+      "message": "Request header parameter x-todos-publish must match format \\"date-time\\"",
       "path": Array [
         "header",
         "x-todos-publish",
@@ -88,7 +88,7 @@ Object {
     },
     Object {
       "code": "pattern",
-      "message": "must match pattern \\"^(yes|no)$\\"",
+      "message": "Request query parameter overwrite must match pattern \\"^(yes|no)$\\"",
       "path": Array [
         "query",
         "overwrite",
@@ -109,7 +109,7 @@ Object {
     },
     Object {
       "code": "type",
-      "message": "must be boolean",
+      "message": "Request body property completed must be boolean",
       "path": Array [
         "body",
         "completed",
@@ -118,7 +118,7 @@ Object {
     },
     Object {
       "code": "format",
-      "message": "must match format \\"date-time\\"",
+      "message": "Request header parameter x-todos-publish must match format \\"date-time\\"",
       "path": Array [
         "header",
         "x-todos-publish",

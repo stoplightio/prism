@@ -21,7 +21,7 @@ describe('validate()', () => {
               expect(error).toEqual([
                 {
                   code: 'required',
-                  message: "must have required property 'aparam'",
+                  message: "Request path must have required property 'aparam'",
                   path: ['path'],
                   severity: 0,
                 },

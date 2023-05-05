@@ -47,7 +47,7 @@ describe('validate()', () => {
           ValidationContext.Input,
           'application/json'
         ),
-        error => expect(error).toContainEqual(expect.objectContaining({ code: 'type', message: 'must be number' }))
+        error => expect(error).toContainEqual(expect.objectContaining({ code: 'type', message: 'Request body must be number' }))
       );
     });
   });
@@ -118,7 +118,7 @@ describe('validate()', () => {
           expect(error).toContainEqual(
             expect.objectContaining({
               code: 'required',
-              message: "must have required property 'aa'",
+              message: "Request body property key.a must have required property 'aa'",
             })
           )
       );
@@ -151,7 +151,7 @@ describe('validate()', () => {
     ];
     it('requires writeOnly params from input', () => {
       assertLeft(validate({ name: 'Item One' }, specs, ValidationContext.Input, 'application/json'), error => {
-        expect(error[0].message).toEqual("must have required property 'description'");
+        expect(error[0].message).toEqual("Request body must have required property 'description'");
       });
     });
     it('succeed when writeOnly params are provided', () => {
@@ -166,7 +166,7 @@ describe('validate()', () => {
     });
     it('requires readOnly params from output', () => {
       assertLeft(validate({ name: 'Item One' }, specs, ValidationContext.Output, 'application/json'), error => {
-        expect(error[0].message).toEqual("must have required property 'title'");
+        expect(error[0].message).toEqual("Request body must have required property 'title'");
       });
     });
     it('succeed when readOnly params are provided', () => {

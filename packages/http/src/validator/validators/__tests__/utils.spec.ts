@@ -32,7 +32,7 @@ describe('convertAjvErrors()', () => {
     it('converts properly', () => {
       expect(
         convertAjvErrors([Object.assign({}, errorObjectFixture, { message: undefined })], DiagnosticSeverity.Error)[0]
-      ).toHaveProperty('message', '');
+      ).toHaveProperty('message', 'Request parameter a.b ');
     });
   });
 });
@@ -116,14 +116,14 @@ describe('validateAgainstSchema()', () => {
       };
 
       assertSome(validateAgainstSchema('test', numberSchema, true, 'pfx'), error => {
-        expect(error).toEqual([expect.objectContaining({ path: ['pfx'], message: 'must be number' })]);
+        expect(error).toEqual([expect.objectContaining({ path: ['pfx'], message: 'Request pfx must be number' })]);
       });
 
       const arr = [{ id: 11 }, { status: 'TODO' }];
 
       assertSome(validateAgainstSchema(arr, rootArraySchema, true, 'pfx'), error => {
         expect(error).toEqual([
-          expect.objectContaining({ path: ['pfx', '1'], message: "must have required property 'id'" }),
+          expect.objectContaining({ path: ['pfx', '1'], message: "Request pfx parameter 1 must have required property 'id'" }),
         ]);
       });
 
@@ -131,7 +131,7 @@ describe('validateAgainstSchema()', () => {
 
       assertSome(validateAgainstSchema(obj, nestedArraySchema, true, 'pfx'), error => {
         expect(error).toEqual([
-          expect.objectContaining({ path: ['pfx', 'data', '1'], message: "must have required property 'id'" }),
+          expect.objectContaining({ path: ['pfx', 'data', '1'], message: "Request pfx parameter data.1 must have required property 'id'" }),
         ]);
       });
 
@@ -141,7 +141,7 @@ describe('validateAgainstSchema()', () => {
         expect(error).toEqual([
           expect.objectContaining({
             path: ['pfx', 'value', 'data', '1'],
-            message: "must have required property 'id'",
+            message: "Request pfx parameter value.data.1 must have required property 'id'",
           }),
         ]);
       });
@@ -149,17 +149,17 @@ describe('validateAgainstSchema()', () => {
       const arr2 = [{ id: [false] }];
 
       assertSome(validateAgainstSchema(arr2, rootArraySchema, true, 'pfx'), error => {
-        expect(error).toEqual([expect.objectContaining({ path: ['pfx', '0', 'id'], message: 'must be number' })]);
+        expect(error).toEqual([expect.objectContaining({ path: ['pfx', '0', 'id'], message: 'Request pfx parameter 0.id must be number' })]);
       });
 
       const arr3 = [{ id: 11 }, { status: 'TODONT' }];
 
       assertSome(validateAgainstSchema(arr3, rootArraySchema, true, 'pfx'), error => {
         expect(error).toEqual([
-          expect.objectContaining({ path: ['pfx', '1'], message: "must have required property 'id'" }),
+          expect.objectContaining({ path: ['pfx', '1'], message: "Request pfx parameter 1 must have required property 'id'" }),
           expect.objectContaining({
             path: ['pfx', '1', 'status'],
-            message: 'must be equal to one of the allowed values: TODO, IN_PROGRESS, CANCELLED, DONE',
+            message: 'Request pfx parameter 1.status must be equal to one of the allowed values: TODO, IN_PROGRESS, CANCELLED, DONE',
           }),
         ]);
       });
@@ -170,11 +170,11 @@ describe('validateAgainstSchema()', () => {
         expect(error).toEqual([
           expect.objectContaining({
             path: ['pfx', '1'],
-            message: "must NOT have additional properties; found 'nope'",
+            message: "Request pfx parameter 1 must NOT have additional properties; found 'nope'",
           }),
           expect.objectContaining({
             path: ['pfx', '1'],
-            message: "must NOT have additional properties; found 'neither'",
+            message: "Request pfx parameter 1 must NOT have additional properties; found 'neither'",
           }),
         ]);
       });
@@ -193,7 +193,7 @@ describe('validateAgainstSchema()', () => {
     it('will return error for convertible values', () => {
       assertSome(
         validateAgainstSchema({ test: 10 }, { type: 'object', properties: { test: { type: 'string' } } }, false),
-        error => expect(error).toContainEqual(expect.objectContaining({ message: 'must be string' }))
+        error => expect(error).toContainEqual(expect.objectContaining({ message: 'Request parameter test must be string' }))
       );
     });
   });

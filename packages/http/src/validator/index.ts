@@ -61,11 +61,7 @@ const validateInputIfBodySpecIsProvided = (
     sequenceOption(body, requestBody),
     O.fold(
       () => E.right(body),
-      ([body, contents]) => {
-        const res = validateBody(body, contents.contents ?? [], ValidationContext.Input, mediaType, bundle)
-        console.log("BODY VALIDATION", res);
-        return res
-      }
+      ([body, contents]) => validateBody(body, contents.contents ?? [], ValidationContext.Input, mediaType, bundle)
     )
   );
 

@@ -70,20 +70,22 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
   );
 }
 
-function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, bundle?: unknown, prefix?: string) {
+function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, prefix?: string, bundle?: unknown) {
   const encodings = get(content, 'encodings', []);
   const encodedUriParams = splitUriParams(target);
 
   return pipe(
-    validateAgainstReservedCharacters(encodedUriParams, encodings),
+    validateAgainstReservedCharacters(encodedUriParams, encodings, prefix),
     E.map(decodeUriEntities),
     E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-    E.chain(deserialised =>
-      pipe(
+    E.chain(deserialised => {
+      return pipe(
         validateAgainstSchema(deserialised, schema, true, prefix, bundle),
         E.fromOption(() => deserialised),
         E.swap
       )
+
+    }
     )
   );
 }
@@ -150,12 +152,11 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
           mt,
           O.fromPredicate(mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded'])),
           O.fold(
-            () =>
-              pipe(
-                validateAgainstSchema(target, schema, false, prefix, bundle),
-                E.fromOption(() => target),
-                E.swap
-              ),
+            () => pipe(
+              validateAgainstSchema(target, schema, false, prefix, bundle),
+              E.fromOption(() => target),
+              E.swap
+            ),
             () =>
               pipe(
                 target,
@@ -163,32 +164,18 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
                   (target: unknown): target is string => typeof target === 'string',
                   () => [{ message: 'Target is not a string', code: '422', severity: DiagnosticSeverity.Error }]
                 ),
-                E.chain(target => deserializeAndValidate(content, schema, target))
+                E.chain(target => deserializeAndValidate(content, schema, target, prefix))
               )
           ),
-        //   E.mapLeft(diagnostics => {
-        //     return diagnostics;
-            // console.log("BODY DIAGNOSTICS", diagnostics);
-            // return applyPrefix('body', diagnostics)
-        //   })
         )
     )
   );
 };
 
-// function applyPrefix(
-//   prefix: string,
-//   diagnostics: NEA.NonEmptyArray<IPrismDiagnostic>
-// ): NEA.NonEmptyArray<IPrismDiagnostic> {
-//   return pipe(
-//     diagnostics,
-//     NEA.map(d => ({ ...d, path: [prefix, ...(d.path || [])] }))
-//   );
-// }
-
 function validateAgainstReservedCharacters(
   encodedUriParams: Dictionary<string>,
-  encodings: IHttpEncoding[]
+  encodings: IHttpEncoding[],
+  prefix?: string
 ): E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
   return pipe(
     encodings,
@@ -199,7 +186,7 @@ function validateAgainstReservedCharacters(
 
       if (!allowReserved && /[/?#[\]@!$&'()*+,;=]/.test(value)) {
         diagnostics.push({
-          path: [property],
+          path: prefix ? [prefix, property] : [property],
           message: 'Reserved characters used in request body',
           severity: DiagnosticSeverity.Error,
         });

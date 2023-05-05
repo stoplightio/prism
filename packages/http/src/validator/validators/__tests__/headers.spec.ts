@@ -19,7 +19,7 @@ describe('validate()', () => {
             error =>
               expect(error).toContainEqual({
                 code: 'required',
-                message: "must have required property 'aheader'",
+                message: "Request header must have required property 'aheader'",
                 path: ['header'],
                 severity: 0,
               })

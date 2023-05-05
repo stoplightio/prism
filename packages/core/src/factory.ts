@@ -48,9 +48,7 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
       config.checkSecurity ? components.validateSecurity({ resource, element: input }) : undefined,
       config.validateRequest ? components.validateInput({ resource, element: input }) : undefined,
     ]);
-    // console.log(resource, validations, input);
-    const inp = config.validateRequest ? components.validateInput({ resource, element: input }) : undefined;
-    // console.log(inp);
+
     return pipe(
       eitherSequence(validations),
       E.fold<NonEmptyArray<IPrismDiagnostic>, unknown, IPrismDiagnostic[]>(identity, () => []),

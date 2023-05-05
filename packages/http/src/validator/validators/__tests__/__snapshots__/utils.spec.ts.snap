@@ -4,7 +4,7 @@ exports[`convertAjvErrors() all fields defined converts properly 1`] = `
 Array [
   Object {
     "code": "required",
-    "message": "c is required",
+    "message": "Request parameter a.b c is required",
     "path": Array [
       "a",
       "b",
@@ -18,7 +18,7 @@ exports[`convertAjvErrors() keyword field is missing converts properly 1`] = `
 Array [
   Object {
     "code": "",
-    "message": "c is required",
+    "message": "Request parameter a.b c is required",
     "path": Array [
       "a",
       "b",

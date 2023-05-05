@@ -191,7 +191,7 @@ describe('HttpValidator', () => {
           error =>
             expect(error).toContainEqual({
               code: 'pattern',
-              message: 'must match pattern "^(yes|no)$"',
+              message: 'Request query parameter overwrite must match pattern "^(yes|no)$"',
               path: ['query', 'overwrite'],
               severity: DiagnosticSeverity.Error,
             })

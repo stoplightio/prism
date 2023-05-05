@@ -451,7 +451,7 @@ describe('body params validation', () => {
               {
                 code: 'type',
                 location: ['body', 'id'],
-                message: 'must be integer',
+                message: 'Request body property id must be integer',
                 severity: 'Error',
               },
             ],
@@ -471,7 +471,7 @@ describe('body params validation', () => {
 
           expect(response.status).toBe(422);
           return expect(response.json()).resolves.toMatchObject({
-            validation: [{ code: 'required', message: "must have required property 'id'", severity: 'Error' }],
+            validation: [{ code: 'required', message: "Request body must have required property 'id'", severity: 'Error' }],
           });
         });
       });
@@ -497,7 +497,7 @@ describe('body params validation', () => {
               {
                 code: 'required',
                 location: ['body', 'self'],
-                message: "must have required property 'id'",
+                message: "Request body property self must have required property 'id'",
                 severity: 'Error',
               },
             ],
@@ -602,7 +602,7 @@ describe('body params validation', () => {
                 {
                   code: 'type',
                   location: ['body', 'id'],
-                  message: 'must be integer',
+                  message: 'Request body property id must be integer',
                   severity: 'Error',
                 },
               ],
@@ -624,7 +624,7 @@ describe('body params validation', () => {
                 {
                   code: 'enum',
                   location: ['body', 'status'],
-                  message: 'must be equal to one of the allowed values: placed, approved, delivered',
+                  message: 'Request body property status must be equal to one of the allowed values: placed, approved, delivered',
                   severity: 'Error',
                 },
               ],
@@ -733,13 +733,13 @@ describe('body params validation', () => {
               location: ['body'],
               severity: 'Error',
               code: 'required',
-              message: "must have required property 'id'",
+              message: "Request body must have required property 'id'",
             },
             {
               location: ['body'],
               severity: 'Error',
               code: 'required',
-              message: "must have required property 'status'",
+              message: "Request body must have required property 'status'",
             },
           ],
         });
@@ -765,13 +765,13 @@ describe('body params validation', () => {
               location: ['body', 'id'],
               severity: 'Error',
               code: 'type',
-              message: 'must be integer',
+              message: 'Request body property id must be integer',
             },
             {
               location: ['body', 'status'],
               severity: 'Error',
               code: 'enum',
-              message: 'must be equal to one of the allowed values: open, close',
+              message: 'Request body property status must be equal to one of the allowed values: open, close',
             },
           ],
         });

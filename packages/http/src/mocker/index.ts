@@ -176,7 +176,7 @@ export function createInvalidInputResponse(
 ): R.Reader<Logger, E.Either<ProblemJsonError, IHttpNegotiationResult>> {
   const expectedCodes = getExpectedCodesForViolations(failedValidations);
   const isExampleKeyFromExpectedCodes = !!mockConfig.code && expectedCodes.includes(mockConfig.code);
-  console.log("HIGH LEVEL ERRORS", failedValidations);
+
   return pipe(
     withLogger(logger => {
       logger.warn({ name: 'VALIDATOR' }, 'Request did not pass the validation rules');
@@ -265,7 +265,7 @@ function negotiateResponse(
     input.validations,
     validation => validation.severity
   );
-//   console.log(input);
+
   if (errors && A.isNonEmpty(input.validations)) {
     return createInvalidInputResponse(input.validations, resource.responses, mockConfig);
   } else {
