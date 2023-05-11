@@ -14,6 +14,21 @@ import { stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
 // @ts-ignore
 JSONSchemaFaker.extend('faker', () => faker);
 
+// allows setting array item counts via and x-count property
+// @ts-ignore
+JSONSchemaFaker.define("count", (count, schema) => {
+  if (typeof count !== "number") {
+    throw new Error("x-count must be a number");
+  }
+  if (!("minItems" in schema) || schema.minItems < count) {
+    schema.minItems = count;
+  }
+  if (!("maxItems" in schema) || schema.maxItems > count) {
+    schema.maxItems = count;
+  }
+  return schema;
+});
+
 // From https://github.com/json-schema-faker/json-schema-faker/tree/develop/docs
 // Using from entries since the types aren't 100% compatible
 const JSON_SCHEMA_FAKER_DEFAULT_OPTIONS = Object.fromEntries([
