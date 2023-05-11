@@ -12,14 +12,14 @@ import {
   IHttpPathParam,
   IHttpQueryParam,
 } from '@stoplight/types';
-import * as E from 'fp-ts/Either';
 import * as A from 'fp-ts/Array';
-import * as ROA from 'fp-ts/ReadonlyArray';
+import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
-import { sequenceSEither } from '../combinators';
+import * as ROA from 'fp-ts/ReadonlyArray';
 import { pipe } from 'fp-ts/function';
-import { identity, fromPairs } from 'lodash';
+import { fromPairs, identity } from 'lodash';
 import { URI } from 'uri-template-lite';
+import { sequenceSEither } from '../combinators';
 import { ValuesTransformer } from './colorizer';
 
 export function createExamplePath(
@@ -148,11 +148,16 @@ function createParamUriTemplate(name: string, style: HttpParamStyles, explode: b
 }
 
 function createQueryUriTemplate(path: string, specs: IHttpQueryParam[]) {
-  // defaults for query: style=Form exploded=false
+  // defaults for query: style=Form
+  // when query is style == form, default exploded=false
   const formSpecs = specs
     .filter(spec => (spec.style || HttpParamStyles.Form) === HttpParamStyles.Form)
     .map(spec => {
       spec.name = encodeURI(spec.name);
+      // default explode for form style query params is true
+      if (spec.explode === undefined) {
+        spec.explode = true;
+      }
       return spec;
     });
 
