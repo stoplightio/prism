@@ -1,7 +1,7 @@
 import { get } from 'lodash';
 import { JSONSchema } from '../../../types';
 import { generate, sortSchemaAlphabetically } from '../JSONSchema';
-import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
+import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 
 describe('JSONSchema generator', () => {
   const ipRegExp = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
@@ -141,51 +141,127 @@ describe('JSONSchema generator', () => {
       });
     });
 
-    describe('when x-count is 5', () => {
+    describe('when x-count is fixed', () => {
+      for (const expectedCount of [0, 3, 6, 8, 12, 51]) {
+        const schema: JSONSchema & any = {
+          type: 'object',
+          properties: {
+            arrayItems: {
+              'x-count': expectedCount,
+              type: 'array',
+              minItems: 0,
+              maxItems: 100,
+              items: {
+                type: 'string',
+                'x-faker': 'name.findName',
+              },
+            },
+          },
+          required: ['arrayItems'],
+        };
+
+        it(`will generate exactly ${expectedCount} items`, () => {
+          assertRight(generate({}, schema), instance => {
+            expect(instance).toHaveProperty('arrayItems');
+            const items = get(instance, 'arrayItems');
+            console.log('exact', expectedCount, items);
+
+            expect(items.length).toEqual(expectedCount);
+          });
+        });
+      }
+    });
+
+    describe(`when x-count is a range`, () => {
+      for (const [min, max] of [
+        [5, 10],
+        [3, 15],
+        [2, 3],
+        [11, 11],
+      ]) {
+        const schema: JSONSchema & any = {
+          type: 'object',
+          properties: {
+            arrayItems: {
+              'x-count': [min, max],
+              type: 'array',
+              minItems: 0,
+              maxItems: 100,
+              items: {
+                type: 'string',
+                'x-faker': 'name.findName',
+              },
+              required: ['items'],
+            },
+          },
+        };
+
+        it(`will generate ${min} to ${max} items`, () => {
+          assertRight(generate({}, schema), instance => {
+            expect(instance).toHaveProperty('arrayItems');
+            const items = get(instance, 'arrayItems');
+            console.log('minmax', min, max, items);
+
+            expect(items.length).toBeGreaterThanOrEqual(min);
+            expect(items.length).toBeLessThanOrEqual(max);
+          });
+        });
+      }
+    });
+
+    describe(`when x-count is smaller than minItems`, () => {
       const schema: JSONSchema & any = {
         type: 'object',
         properties: {
-          items: {
+          arrayItems: {
+            'x-count': 2,
             type: 'array',
-            'x-count': 5,
+            minItems: 10,
             items: {
               type: 'string',
+              'x-faker': 'animal.cat',
             },
           },
         },
+        required: ['arrayItems'],
       };
 
-      it('will generate exactly 5 items', () => {
+      it(`will generate at least 10 items although 2 is set`, () => {
         assertRight(generate({}, schema), instance => {
-          expect(instance).toHaveProperty('items');
-          const items = get(instance, 'items');
+          expect(instance).toHaveProperty('arrayItems');
+          const items = get(instance, 'arrayItems');
+          console.log('when x-count is smaller than minItems', items);
 
-          expect(items.length).toEqual(5);
+          expect(items.length).toBeGreaterThanOrEqual(10);
         });
       });
     });
 
-    describe('when x-count is a range of 5 to 10', () => {
+    describe(`when x-count is larger than maxItems`, () => {
       const schema: JSONSchema & any = {
         type: 'object',
         properties: {
-          items: {
+          arrayItems: {
+            'x-count': 30,
             type: 'array',
-            'x-count': [5, 10],
+            minItems: 10,
+            maxItems: 20,
             items: {
               type: 'string',
+              'x-faker': 'animal.dog',
             },
           },
         },
+        required: ['arrayItems'],
       };
 
-      it('will generate exactly 5 to 10 items', () => {
+      it(`will generate at most 20 items although 30 is set`, () => {
         assertRight(generate({}, schema), instance => {
-          expect(instance).toHaveProperty('items');
-          const items = get(instance, 'items');
+          expect(instance).toHaveProperty('arrayItems');
+          const items = get(instance, 'arrayItems');
+          console.log('when x-count is larger than maxItems', items);
 
-          expect(items.length).toBeGreaterThanOrEqual(5);
-          expect(items.length).toBeLessThanOrEqual(10);
+          expect(items.length).toBeLessThanOrEqual(20);
         });
       });
     });

@@ -17,7 +17,7 @@ JSONSchemaFaker.extend('faker', () => faker);
 /**
  * Replaces template values from the root schema.
  */
-function template(value: JsonValue, rootSchema: JSONSchemaFaker.Schema): JsonValue {
+function template(value: JsonValue, rootSchema: JSONSchema): JsonValue {
   if (Array.isArray(value)) {
     return value.map(x => template(x, rootSchema));
   }
@@ -35,11 +35,14 @@ function minItemsExtension(
   value: JsonValue,
   schema: JsonObject,
   property: string,
-  rootSchema: JSONSchemaFaker.Schema
+  rootSchema: JSONSchema
 ): JsonValue {
   value = Number(template(value, rootSchema));
   if (!isNaN(value)) {
-    if (!('minItems' in schema) || (typeof schema.minItems === 'number' && schema.minItems < value)) {
+    if (
+      (!('minItems' in schema) || (typeof schema.minItems === 'number' && schema.minItems <= value)) &&
+      (!('maxItems' in schema) || (typeof schema.maxItems === 'number' && schema.maxItems >= value))
+    ) {
       schema.minItems = value;
     }
   }
@@ -56,11 +59,14 @@ function maxItemsExtension(
   value: JsonValue,
   schema: JsonObject,
   property: string,
-  rootSchema: JSONSchemaFaker.Schema
+  rootSchema: JSONSchema
 ): JsonValue {
   value = Number(template(value, rootSchema));
   if (!isNaN(value)) {
-    if (!('maxItems' in schema) || (typeof schema.maxItems === 'number' && schema.maxItems > value)) {
+    if (
+      (!('minItems' in schema) || (typeof schema.minItems === 'number' && schema.minItems <= value)) &&
+      (!('maxItems' in schema) || (typeof schema.maxItems === 'number' && schema.maxItems >= value))
+    ) {
       schema.maxItems = value;
     }
   }
@@ -77,7 +83,7 @@ function countExtension(
   value: JsonValue,
   schema: JsonObject,
   property: string,
-  rootSchema: JSONSchemaFaker.Schema
+  rootSchema: JSONSchema
 ): JsonValue {
   value = template(value, rootSchema);
   if (Array.isArray(value) && value.length >= 2) {
