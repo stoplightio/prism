@@ -149,22 +149,18 @@ describe('JSONSchema generator', () => {
             arrayItems: {
               'x-count': expectedCount,
               type: 'array',
-              minItems: 0,
-              maxItems: 100,
               items: {
                 type: 'string',
                 'x-faker': 'name.findName',
               },
             },
           },
-          required: ['arrayItems'],
         };
 
         it(`will generate exactly ${expectedCount} items`, () => {
           assertRight(generate({}, schema), instance => {
             expect(instance).toHaveProperty('arrayItems');
             const items = get(instance, 'arrayItems');
-            console.log('exact', expectedCount, items);
 
             expect(items.length).toEqual(expectedCount);
           });
@@ -185,13 +181,10 @@ describe('JSONSchema generator', () => {
             arrayItems: {
               'x-count': [min, max],
               type: 'array',
-              minItems: 0,
-              maxItems: 100,
               items: {
                 type: 'string',
                 'x-faker': 'name.findName',
               },
-              required: ['items'],
             },
           },
         };
@@ -200,7 +193,6 @@ describe('JSONSchema generator', () => {
           assertRight(generate({}, schema), instance => {
             expect(instance).toHaveProperty('arrayItems');
             const items = get(instance, 'arrayItems');
-            console.log('minmax', min, max, items);
 
             expect(items.length).toBeGreaterThanOrEqual(min);
             expect(items.length).toBeLessThanOrEqual(max);
@@ -223,14 +215,12 @@ describe('JSONSchema generator', () => {
             },
           },
         },
-        required: ['arrayItems'],
       };
 
       it(`will generate at least 10 items although 2 is set`, () => {
         assertRight(generate({}, schema), instance => {
           expect(instance).toHaveProperty('arrayItems');
           const items = get(instance, 'arrayItems');
-          console.log('when x-count is smaller than minItems', items);
 
           expect(items.length).toBeGreaterThanOrEqual(10);
         });
@@ -252,14 +242,12 @@ describe('JSONSchema generator', () => {
             },
           },
         },
-        required: ['arrayItems'],
       };
 
       it(`will generate at most 20 items although 30 is set`, () => {
         assertRight(generate({}, schema), instance => {
           expect(instance).toHaveProperty('arrayItems');
           const items = get(instance, 'arrayItems');
-          console.log('when x-count is larger than maxItems', items);
 
           expect(items.length).toBeLessThanOrEqual(20);
         });
