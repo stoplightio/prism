@@ -163,3 +163,29 @@ x-json-schema-faker:
   optionalsProbability: 0.5
   resolve-json-path: true
 ```
+
+## Setting preferred array item cardinalities
+
+You can use the `x-count` property to set the preferred number of items for an array.
+
+You may enter a range or numbers (e.g. an array of 5 to 10 dogs at random):
+
+```yaml
+dogs:
+  type: array
+  x-count: [5, 10]
+  items:
+    type: string
+    x-faker: animal.dog
+```
+
+But you may also set a fixed number of items (e.g. an array of exactly 10 cats):
+
+```yaml
+ten-cats:
+  type: array
+  x-count: 10
+  items:
+    type: string
+    x-faker: animal.cat
+```
