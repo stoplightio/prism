@@ -141,6 +141,39 @@ describe('JSONSchema generator', () => {
       });
     });
 
+    describe('when x-count is 5', () => {
+      const schema: JSONSchema & any = {
+        type: 'array',
+        'x-count': 5,
+        items: {
+          type: 'string',
+        },
+      };
+
+      it('will generate exactly 5 items', () => {
+        assertRight(generate({}, schema), instance => {
+          expect(instance.length).toEqual(5);
+        });
+      });
+    });
+
+    describe('when x-count is a range of 5 to 10', () => {
+      const schema: JSONSchema & any = {
+        type: 'array',
+        'x-count': [5, 10],
+        items: {
+          type: 'string',
+        },
+      };
+
+      it('will generate exactly 5 to 10 items', () => {
+        assertRight(generate({}, schema), instance => {
+          expect(instance.length).toBeGreaterThanOrEqual(5);
+          expect(instance.length).toBeGreaterThanOrEqual(10);
+        });
+      });
+    });
+
     describe('when used with a schema that is not valid', () => {
       const schema: JSONSchema = {
         type: 'object',
