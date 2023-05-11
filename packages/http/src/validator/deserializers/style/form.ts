@@ -5,7 +5,9 @@ export function deserializeFormStyle(name: string, parameters: IHttpNameValues, 
   const type = schema ? schema.type : undefined;
   const values = parameters[name];
 
-  if (!values) return undefined;
+  // if param is type object and explode is true, the param name will NOT be in the request. Skip this check.
+  // https://spec.openapis.org/oas/v3.0.3#style-examples
+  if (!(type === 'object' && explode) && !values) return undefined;
 
   if (type === 'array') {
     return explode ? deserializeImplodeArray(values) : deserializeArray(values);
