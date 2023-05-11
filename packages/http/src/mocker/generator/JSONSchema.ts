@@ -17,7 +17,7 @@ JSONSchemaFaker.extend('faker', () => faker);
 /**
  * Replaces template values from the root schema.
  */
-function template(value: JsonValue, rootSchema: JSONSchemaFaker.Schema) {
+function template(value: JsonValue, rootSchema: JSONSchemaFaker.Schema): JsonValue {
   if (Array.isArray(value)) {
     return value.map(x => template(x, rootSchema));
   }
@@ -46,6 +46,7 @@ function minItemsExtension(
   return schema;
 }
 
+// @ts-ignore
 JSONSchemaFaker.define('min-items', minItemsExtension);
 
 /**
@@ -66,6 +67,7 @@ function maxItemsExtension(
   return schema;
 }
 
+// @ts-ignore
 JSONSchemaFaker.define('max-items', maxItemsExtension);
 
 /**
@@ -88,6 +90,7 @@ function countExtension(
   return schema;
 }
 
+// @ts-ignore
 JSONSchemaFaker.define('count', countExtension);
 
 // From https://github.com/json-schema-faker/json-schema-faker/tree/develop/docs
