@@ -1,7 +1,7 @@
 import faker from '@faker-js/faker';
+import { JsonValue, JsonObject } from 'type-fest';
 import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
-
 import * as JSONSchemaFaker from 'json-schema-faker';
 import * as sampler from '@stoplight/json-schema-sampler';
 import { Either, toError, tryCatch } from 'fp-ts/Either';
@@ -14,20 +14,81 @@ import { stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
 // @ts-ignore
 JSONSchemaFaker.extend('faker', () => faker);
 
-// allows setting array item counts via and x-count property
-// @ts-ignore
-JSONSchemaFaker.define("count", (count, schema) => {
-  if (typeof count !== "number") {
-    throw new Error("x-count must be a number");
+/**
+ * Replaces template values from the root schema.
+ */
+function template(value: JsonValue, rootSchema: JSONSchemaFaker.Schema) {
+  if (Array.isArray(value)) {
+    return value.map(x => template(x, rootSchema));
   }
-  if (!("minItems" in schema) || schema.minItems < count) {
-    schema.minItems = count;
+
+  if (typeof value === 'string') {
+    value = value.replace(/#\{([\w.-]+)\}/g, (_, $1) => rootSchema[$1]);
   }
-  if (!("maxItems" in schema) || schema.maxItems > count) {
-    schema.maxItems = count;
+  return value;
+}
+
+/**
+ * Allows setting minimum array cardinality via an x-min-items property.
+ */
+function minItemsExtension(
+  value: JsonValue,
+  schema: JsonObject,
+  property: string,
+  rootSchema: JSONSchemaFaker.Schema
+): JsonValue {
+  value = Number(template(value, rootSchema));
+  if (!isNaN(value)) {
+    if (!('minItems' in schema) || (typeof schema.minItems === 'number' && schema.minItems < value)) {
+      schema.minItems = value;
+    }
   }
   return schema;
-});
+}
+
+JSONSchemaFaker.define('min-items', minItemsExtension);
+
+/**
+ * Allows setting maximum array cardinality via an x-max-items property.
+ */
+function maxItemsExtension(
+  value: JsonValue,
+  schema: JsonObject,
+  property: string,
+  rootSchema: JSONSchemaFaker.Schema
+): JsonValue {
+  value = Number(template(value, rootSchema));
+  if (!isNaN(value)) {
+    if (!('maxItems' in schema) || (typeof schema.maxItems === 'number' && schema.maxItems > value)) {
+      schema.maxItems = value;
+    }
+  }
+  return schema;
+}
+
+JSONSchemaFaker.define('max-items', maxItemsExtension);
+
+/**
+ * Allows setting array cardinality via an x-count property.
+ */
+function countExtension(
+  value: JsonValue,
+  schema: JsonObject,
+  property: string,
+  rootSchema: JSONSchemaFaker.Schema
+): JsonValue {
+  value = template(value, rootSchema);
+  if (Array.isArray(value) && value.length >= 2) {
+    minItemsExtension(value[0], schema, property, rootSchema);
+    maxItemsExtension(value[1], schema, property, rootSchema);
+  } else if (!Array.isArray(value)) {
+    minItemsExtension(value, schema, property, rootSchema);
+    maxItemsExtension(value, schema, property, rootSchema);
+  }
+  return schema;
+}
+
+JSONSchemaFaker.define('count', countExtension);
 
 // From https://github.com/json-schema-faker/json-schema-faker/tree/develop/docs
 // Using from entries since the types aren't 100% compatible
