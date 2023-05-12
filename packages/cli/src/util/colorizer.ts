@@ -20,6 +20,9 @@ const attachPrePostTags = (paramValue: unknown) => {
   if (isArray(paramValue)) {
     return paramValue.map(v => `${PRE_PARAM_VALUE_TAG}${v}${POST_PARAM_VALUE_TAG}`);
   } else if (paramValue && typeof paramValue === 'object') {
+    for (const key of Object.keys(paramValue)) {
+      paramValue[key] = `${PRE_PARAM_VALUE_TAG}${paramValue[key]}${POST_PARAM_VALUE_TAG}`;
+    }
     return paramValue;
   } else {
     return `${PRE_PARAM_VALUE_TAG}${paramValue}${POST_PARAM_VALUE_TAG}`;
