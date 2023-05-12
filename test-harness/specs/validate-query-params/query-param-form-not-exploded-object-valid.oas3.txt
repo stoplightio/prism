@@ -1,0 +1,34 @@
+====test====
+When I send a request to an operation
+And the operation has a required NOT exploded form query param
+And in the request I sent the param name and object properties correctly
+Then I should get a 200 response back
+====spec====
+openapi: '3.0.2'
+paths:
+  /recipes:
+    get:
+      parameters:
+        - name: pagination
+          in: query
+          required: true
+          style: form
+          explode: false
+          schema:
+            type: object
+            properties:
+              offset:
+                type: integer
+                example: 0
+              limit:
+                type: integer
+                example: 25
+      responses:
+        '200':
+          description: OK
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X GET http://127.0.0.1:4010/recipes?pagination=offset,0,limit,123
+====expect====
+HTTP/1.1 200 OK
