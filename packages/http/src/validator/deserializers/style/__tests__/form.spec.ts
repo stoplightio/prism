@@ -55,7 +55,7 @@ describe('deserialize()', () => {
 
       describe('schema properties are missing', () => {
         it('returns empty object', () => {
-          expect(deserializeFormStyle('-', {}, { type: 'object' }, true)).toBeUndefined();
+          expect(deserializeFormStyle('-', {}, { type: 'object' }, true)).toEqual({});
         });
       });
     });
