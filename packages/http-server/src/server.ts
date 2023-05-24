@@ -37,6 +37,27 @@ function addressInfoToString(addressInfo: AddressInfo | string | null) {
   return `http://${addressInfo.address}:${addressInfo.port}`;
 }
 
+type ValidationError = {
+  location: string[];
+  severity: string;
+  code: string | number | undefined;
+  message: string | undefined;
+};
+
+const MAX_SAFE_HEADER_LENGTH = 8 * 1024 - 100; // 8kb minus some
+function addViolationHeader(reply: ServerResponse, validationErrors: ValidationError[]) {
+  if (validationErrors.length === 0) {
+    return;
+  }
+
+  let value = JSON.stringify(validationErrors);
+  if (value.length > MAX_SAFE_HEADER_LENGTH) {
+    value = `Too many violations! ${value.substring(0, MAX_SAFE_HEADER_LENGTH)}`;
+  }
+
+  reply.setHeader('sl-violations', value);
+}
+
 function parseRequestBody(request: IncomingMessage) {
   // if no body provided then return null instead of empty string
   if (
@@ -99,7 +120,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         const inputOutputValidationErrors = inputValidationErrors.concat(outputValidationErrors);
 
         if (inputOutputValidationErrors.length > 0) {
-          reply.setHeader('sl-violations', JSON.stringify(inputOutputValidationErrors));
+          addViolationHeader(reply, inputOutputValidationErrors);
 
           const errorViolations = outputValidationErrors.filter(
             v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]

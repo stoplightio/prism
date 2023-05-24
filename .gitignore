@@ -26,3 +26,6 @@ cli-binaries
 .stoplight/styleguide.json
 .stoplight/custom-functions
 .spectral.json
+
+# macOS
+.DS_Store

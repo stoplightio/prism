@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+- Limit the `sl-violations` response header to around 8kb. [#2297](https://github.com/stoplightio/prism/pull/2297)
+
 # 5.0.0 (2023.05.17)
 
 ## Changed

@@ -1,0 +1,117 @@
+====test====
+Returns response violations as sl-violations header (truncated)
+====spec====
+swagger: "2.0"
+paths:
+  /json:
+    get:
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            required:
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long1
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long2
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long3
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long4
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long5
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long6
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long7
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long8
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long9
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long10
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long11
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long12
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long13
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long14
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long15
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long16
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long17
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long18
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long19
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long20
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long21
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long22
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long23
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long24
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long25
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long26
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long27
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long28
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long29
+              - property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long30
+            properties:
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long1:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long2:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long3:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long4:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long5:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long6:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long7:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long8:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long9:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long10:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long11:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long12:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long13:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long14:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long15:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long16:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long17:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long18:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long19:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long20:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long21:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long22:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long23:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long24:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long25:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long26:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long27:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long28:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long29:
+                type: string
+              property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long30:
+                type: string
+          
+
+====server====
+proxy -p 4010 ${document} http://httpbin.org
+====command====
+curl -i http://localhost:4010/json
+====expect====
+HTTP/1.1 200 OK
+sl-violations: Too many violations! [{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long1'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long2'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long3'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long4'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long5'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long6'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long7'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long8'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long9'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long10'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long11'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long12'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long13'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long14'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long15'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long16'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long17'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long18'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long19'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long20'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long21'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long22'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long23'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_long_name_but_it_has_to_be_obnoxious_so_that_the_header_is_way_too_long24'"},{"location":["response","body"],"severity":"Error","code":"required","message":"Request body must have required property 'property_with_a_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_really_lo
+
+{"slideshow":{"author":"Yours Truly","date":"date of publication","slides":[{"title":"Wake up to WonderWidgets!","type":"all"},{"items":["Why <em>WonderWidgets</em> are great","Who <em>buys</em> WonderWidgets"],"title":"Overview","type":"all"}],"title":"Sample Slide Show"}}
