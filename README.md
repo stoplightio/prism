@@ -39,7 +39,9 @@ This information refers to Open Source Prism 3.x, which is the current version m
 
 ### Install Self-hosted Prism
 
-_Prism requires NodeJS >= 16 to properly work._
+Prism requires
+- NodeJS >= 16
+- for NodeJS 18.x, [>= 18.16 is required](https://github.com/stoplightio/prism/issues/2305)
 
 ```bash
 npm install -g @stoplight/prism-cli
