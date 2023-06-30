@@ -718,6 +718,66 @@ describe('body params validation', () => {
           tags: [],
           security: [],
         },
+        {
+          id: '?http-operation-id?',
+          method: 'post',
+          path: '/multipart-form-data-body-required',
+          responses: [
+            {
+              id: faker.random.word(),
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  id: faker.random.word(),
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                  },
+                  examples: [
+                    {
+                      id: faker.random.word(),
+                      key: 'test',
+                      value: { type: 'foo' },
+                    },
+                  ],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            body: {
+              id: faker.random.word(),
+              required: true,
+              contents: [
+                {
+                  id: faker.random.word(),
+                  mediaType: 'multipart/form-data',
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: {
+                        type: 'string'
+                      },
+                    },
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+        },
       ]);
     });
 
@@ -794,6 +854,34 @@ describe('body params validation', () => {
         });
 
         expect(response.status).toBe(200);
+      });
+    });
+
+    describe('valid multipart form data parameter provided', () => {
+      test('returns 200', async () => {
+        const response = await makeRequest('/multipart-form-data-body-required', {
+          method: 'POST',
+          body: new URLSearchParams({
+            type: 'new',
+          }).toString(),
+          headers: { 'content-type': 'multipart/form-data' },
+        });
+
+        // expect(response.status).toBe(200);
+        // await expect(response.json()).resolves.toMatchObject({ type: 'foo' });
+
+        expect(response.status).toBe(422);
+        return expect(response.json()).resolves.toMatchObject({
+          type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
+          validation: [
+            {
+              location: ['body'],
+              severity: 'Error',
+              code: 'type',
+              message: 'Request body must be object',
+            },
+          ],
+        });
       });
     });
   });
