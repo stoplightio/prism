@@ -730,10 +730,14 @@ describe('body params validation', () => {
               contents: [
                 {
                   id: faker.random.word(),
-                  mediaType: 'text/plain',
+                  mediaType: 'application/json',
                   schema: {
-                    type: 'string',
-                    $schema: 'http://json-schema.org/draft-07/schema#',
+                    type: 'object',
+                    properties: {
+                      type: {
+                        type: 'string',
+                      },
+                    },
                   },
                   examples: [
                     {
@@ -858,30 +862,30 @@ describe('body params validation', () => {
     });
 
     describe('valid multipart form data parameter provided', () => {
-      test('returns 200', async () => {
+      test('returns 422', async () => {
         const response = await makeRequest('/multipart-form-data-body-required', {
           method: 'POST',
           body: new URLSearchParams({
-            type: 'new',
+            status: 'new',
           }).toString(),
           headers: { 'content-type': 'multipart/form-data' },
         });
 
-        // expect(response.status).toBe(200);
-        // await expect(response.json()).resolves.toMatchObject({ type: 'foo' });
+        expect(response.status).toBe(200);
+        await expect(response.json()).resolves.toMatchObject({ type: 'foo' });
 
-        expect(response.status).toBe(422);
-        return expect(response.json()).resolves.toMatchObject({
-          type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
-          validation: [
-            {
-              location: ['body'],
-              severity: 'Error',
-              code: 'type',
-              message: 'Request body must be object',
-            },
-          ],
-        });
+        // expect(response.status).toBe(422);
+        // return expect(response.json()).resolves.toMatchObject({
+        //   type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
+        //   validation: [
+        //     {
+        //       location: ['body'],
+        //       severity: 'Error',
+        //       code: 'type',
+        //       message: 'Request body must be object',
+        //     },
+        //   ],
+        // });
       });
     });
   });

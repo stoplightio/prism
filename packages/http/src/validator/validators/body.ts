@@ -150,7 +150,7 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
       ({ contentResult: { content, mediaType: mt }, schema }) =>
         pipe(
           mt,
-          O.fromPredicate(mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded'])),
+          O.fromPredicate(mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded', 'multipart/form-data'])),
           O.fold(
             () => pipe(
               validateAgainstSchema(target, schema, false, prefix, bundle),

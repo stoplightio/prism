@@ -140,8 +140,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   const mediaType = caseless(request.headers || {}).get('content-type');
   if (!mediaType) return request;
 
-  if (!is(mediaType, ['application/x-www-form-urlencoded'])) return request;
-
+  if (!is(mediaType, ['application/x-www-form-urlencoded', 'multipart/form-data'])) return request;
   const specs = pipe(
     O.fromNullable(resource.request),
     O.chainNullableK(request => request.body),
