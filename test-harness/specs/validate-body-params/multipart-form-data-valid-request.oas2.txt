@@ -1,0 +1,38 @@
+====test====
+Given form data expected in request body
+and valid data sent then return OK
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      produces:
+        - text/plain
+      consumes:
+        - multipart/form-data
+      responses:
+        200:
+          schema:
+            type: string
+            example: abc
+      parameters:
+        - in: formData
+          type: integer
+          name: id
+          required: true
+        - in: formData
+          type: string
+          name: status
+          required: true
+          enum:
+            - open
+            - close
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" --data "id=123&status=open"
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+abc

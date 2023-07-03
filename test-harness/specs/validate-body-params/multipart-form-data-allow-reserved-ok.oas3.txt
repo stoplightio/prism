@@ -1,0 +1,34 @@
+====test====
+Send reserved characters in body and expect to pass validation.
+====spec====
+openapi: '3.0.1'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          content:
+            text/plain:
+              example: ok
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                reserved:
+                  type: string
+            encoding:
+              reserved:
+                contentType: text/plain
+                allowReserved: true
+                style: form
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" --data "reserved=:/?#[]@!$&'()*+,;"
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+ok

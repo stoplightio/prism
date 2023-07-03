@@ -1,0 +1,37 @@
+====test====
+Given form data expected in request body
+but invalid data sent then return 422
+====spec====
+swagger: '2.0'
+paths:
+  /path:
+    post:
+      consumes:
+        - multipart/form-data
+      responses:
+        200:
+          schema:
+            type: string
+      parameters:
+        - in: formData
+          type: integer
+          name: id
+          required: true
+          minimum: 100
+          exclusiveMinimum: true
+        - in: formData
+          type: string
+          name: status
+          required: true
+          enum:
+            - open
+            - close
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" --data "id=100&status=open"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
+
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","id"],"severity":"Error","code":"exclusiveMinimum","message":"Request body property id must be > 100"}]}

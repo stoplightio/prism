@@ -1,0 +1,40 @@
+====test====
+Test sending form data with a missing property and invalid string.
+Expect to get validation errors in return.
+====spec====
+openapi: '3.0.1'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          content:
+            text/plain:
+              example: ok
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  minimum: 100
+                  exclusiveMinimum: true
+                status:
+                  type: string
+                  enum:
+                    - open
+                    - close
+              required:
+                - id
+                - status
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" --data "id=100&status=open"
+====expect====
+HTTP/1.1 422 Unprocessable Entity
+content-type: application/problem+json
+
+{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","id"],"severity":"Error","code":"exclusiveMinimum","message":"Request body property id must be > 100"}]}
