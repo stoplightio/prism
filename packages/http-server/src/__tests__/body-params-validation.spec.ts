@@ -873,19 +873,6 @@ describe('body params validation', () => {
 
         expect(response.status).toBe(200);
         await expect(response.json()).resolves.toMatchObject({ type: 'foo' });
-
-        // expect(response.status).toBe(422);
-        // return expect(response.json()).resolves.toMatchObject({
-        //   type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
-        //   validation: [
-        //     {
-        //       location: ['body'],
-        //       severity: 'Error',
-        //       code: 'type',
-        //       message: 'Request body must be object',
-        //     },
-        //   ],
-        // });
       });
     });
   });
