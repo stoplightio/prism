@@ -86,8 +86,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
   return pipe(
     validateAgainstReservedCharacters(encodedUriParams, encodings, prefix),
     E.map(decodeUriEntities),
-    E.map(decodedUriEntities => {
-      return deserializeFormBody(schema, encodings, decodedUriEntities)}),
+    E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised => {
       return pipe(
         validateAgainstSchema(deserialised, schema, true, prefix, bundle),

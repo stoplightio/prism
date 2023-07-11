@@ -1,0 +1,7 @@
+{
+  "surname" : "Doe",
+  "name" : "John",
+  "city" : "Manchester",
+  "address" : "5 Main Street",
+  "hobbies" : ["painting","lawnbowls"]
+}
