@@ -1,6 +1,6 @@
 ====test====
-If I have an operation with a parameter with the allowEmptyValue set to false to false
-and I send a request with a correcly encoded parameter and with the parameter empty
+If I have an operation with a parameter with the allowEmptyValue set to true
+and I send a request with a correctly encoded parameter and with the parameter empty
 I should get a 200 response
 ====spec====
 swagger: '2.0'

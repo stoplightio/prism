@@ -26,7 +26,7 @@ paths:
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" --data "reserved=:/?#[]@!$&'()*+,;"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" -F "reserved=:/?#[]@!$&'()*+,;"
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 content-type: application/problem+json

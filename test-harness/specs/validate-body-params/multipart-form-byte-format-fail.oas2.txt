@@ -20,7 +20,7 @@ paths:
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" --data-urlencode "id=%"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" -F "id=?"
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 

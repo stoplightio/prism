@@ -766,7 +766,17 @@ describe('body params validation', () => {
                       status: {
                         type: 'string'
                       },
+                      test_img_file: {
+                        type: 'string'
+                      },
+                      test_json_file: {
+                        type: 'string'
+                      },
+                      num: {
+                        type: 'integer'
+                      },
                     },
+                    required: ['status'],
                     $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
@@ -862,12 +872,17 @@ describe('body params validation', () => {
     });
 
     describe('valid multipart form data parameter provided', () => {
-      test('returns 422', async () => {
+      test('returns 200', async () => {
+        const FormData = require('form-data');
+        const formData = new FormData();
+        formData.append("status", "new");
+        formData.append("test_img_file", "@test_img.png");
+        formData.append("test_json_file", "<test_json.json");
+        formData.append("num", "10");
+
         const response = await makeRequest('/multipart-form-data-body-required', {
           method: 'POST',
-          body: new URLSearchParams({
-            status: 'new',
-          }).toString(),
+          body: formData,
           headers: { 'content-type': 'multipart/form-data' },
         });
 

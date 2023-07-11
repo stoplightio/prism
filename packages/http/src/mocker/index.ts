@@ -42,6 +42,7 @@ import {
   deserializeFormBody,
   findContentByMediaTypeOrFirst,
   splitUriParams,
+  parseMultipartFormDataParams
 } from '../validator/validators/body';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 export { resetGenerator as resetJSONSchemaGenerator } from './generator/JSONSchema';
@@ -68,7 +69,6 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
         logger.info(`Request contains an accept header: ${acceptMediaType}`);
         config.mediaTypes = acceptMediaType.split(',');
       }
-
       return config;
     }),
     R.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
@@ -147,8 +147,9 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
     O.chainNullableK(body => body.contents),
     O.getOrElse(() => [] as IMediaTypeContent[])
   );
-
-  const encodedUriParams = splitUriParams(request.body as string);
+  
+  const requestBody = request.body as string;
+  const encodedUriParams = mediaType === 'multipart/form-data' ? parseMultipartFormDataParams(requestBody) : splitUriParams(requestBody);
 
   if (specs.length < 1) {
     return Object.assign(request, { body: encodedUriParams });

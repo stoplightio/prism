@@ -54,6 +54,15 @@ export function splitUriParams(target: string) {
   }, {});
 }
 
+export function parseMultipartFormDataParams(target: string) {
+  const pairs = target.split(/--.*\s*.*="/).filter(element => element);
+  return pairs.reduce((result: Dictionary<string>, pair: string) => {
+    const [key, ...rest] = pair.split(/"\r\n\r\n/); 
+    result[key] = rest.join('').replace(/\r\n.*[\r\n]*/, "");
+    return result;
+  }, {});
+}
+
 export function decodeUriEntities(target: Dictionary<string>) {
   return Object.entries(target).reduce((result, [k, v]) => {
     result[decodeURIComponent(k)] = decodeURIComponent(v);
@@ -72,12 +81,13 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
 
 function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, prefix?: string, bundle?: unknown) {
   const encodings = get(content, 'encodings', []);
-  const encodedUriParams = splitUriParams(target);
+  const encodedUriParams = content.mediaType === "multipart/form-data" ? parseMultipartFormDataParams(target) : splitUriParams(target);
 
   return pipe(
     validateAgainstReservedCharacters(encodedUriParams, encodings, prefix),
     E.map(decodeUriEntities),
-    E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
+    E.map(decodedUriEntities => {
+      return deserializeFormBody(schema, encodings, decodedUriEntities)}),
     E.chain(deserialised => {
       return pipe(
         validateAgainstSchema(deserialised, schema, true, prefix, bundle),

@@ -1,6 +1,6 @@
 ====test====
-If I have an operation with a parameter with the allowEmptyValue set to false to false
-and I send a request with a correcly encoded parameter but with an empty key
+If I have an operation with a parameter with the allowEmptyValue set to false
+and I send a request with a correctly encoded parameter but with an empty key
 I should get a 422 error
 ====spec====
 swagger: '2.0'
@@ -21,7 +21,7 @@ paths:
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" --data "id"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" -F "id="
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 

@@ -27,7 +27,7 @@ paths:
 ====server====
 mock -p 4010 ${document}
 ====command====
-curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" --data "id=123&status=open"
+curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" -F "id=123" -F "status=open"
 ====expect====
 HTTP/1.1 200 OK
 content-type: text/plain
