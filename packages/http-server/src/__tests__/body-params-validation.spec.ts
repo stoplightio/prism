@@ -766,6 +766,9 @@ describe('body params validation', () => {
                       status: {
                         type: 'string'
                       },
+                      lines: {
+                        type: 'string'
+                      },
                       test_img_file: {
                         type: 'string'
                       },
@@ -875,15 +878,15 @@ describe('body params validation', () => {
       test('returns 200', async () => {
         const FormData = require('form-data');
         const formData = new FormData();
-        formData.append("status", "new");
+        formData.append("status", "--=\"");
+        formData.append("lines", "\r\n\r\n\s");
         formData.append("test_img_file", "@test_img.png");
         formData.append("test_json_file", "<test_json.json");
         formData.append("num", "10");
 
         const response = await makeRequest('/multipart-form-data-body-required', {
           method: 'POST',
-          body: formData,
-          headers: { 'content-type': 'multipart/form-data' },
+          body: formData
         });
 
         expect(response.status).toBe(200);

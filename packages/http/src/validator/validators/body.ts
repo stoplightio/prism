@@ -10,6 +10,7 @@ import { is as typeIs } from 'type-is';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
 import { validateAgainstSchema } from './utils';
+import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 import { ValidationContext, validateFn } from './types';
 // @ts-ignore no typings
 import * as mergeAllOf from '@stoplight/json-schema-merge-allof';
@@ -54,11 +55,26 @@ export function splitUriParams(target: string) {
   }, {});
 }
 
-export function parseMultipartFormDataParams(target: string) {
-  const pairs = target.split(/--.*\s*.*="/).filter(element => element);
-  return pairs.reduce((result: Dictionary<string>, pair: string) => {
-    const [key, ...rest] = pair.split(/"\r\n\r\n/); 
-    result[key] = rest.join('').replace(/\r\n.*[\r\n]*/, "");
+export function parseMultipartFormDataParams(target: string, multipartBoundary?: string) {
+  if(!multipartBoundary) {
+    const error = "Request for multipart/form-data specifies content-type so boundary string is not defined in header. Remove content-type header for multipart/form-data requests";
+    return E.left<NonEmptyArray<IPrismDiagnostic>>([
+      {
+        message: error,
+        code: 415,
+        severity: DiagnosticSeverity.Error,
+      },
+    ]);
+  }
+
+  const multipart = require('parse-multipart-data');
+  const bufferBody = Buffer.from(target, "utf-8");
+
+  // the parse-multipart-data package requires that the body is passed in as a buffer, not a string
+  const parts = multipart.parse(bufferBody, multipartBoundary);
+
+  return parts.reduce((result: Dictionary<string>, pair: string) => {
+    result[pair['name']] = pair['data'].toString();
     return result;
   }, {});
 }
@@ -79,10 +95,10 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
   );
 }
 
-function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, prefix?: string, bundle?: unknown) {
+function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, prefix?: string, multipartBoundary?: string, bundle?: unknown) {
   const encodings = get(content, 'encodings', []);
-  const encodedUriParams = content.mediaType === "multipart/form-data" ? parseMultipartFormDataParams(target) : splitUriParams(target);
-
+  const encodedUriParams = content.mediaType === "multipart/form-data" ? parseMultipartFormDataParams(target, multipartBoundary) : splitUriParams(target);
+  
   return pipe(
     validateAgainstReservedCharacters(encodedUriParams, encodings, prefix),
     E.map(decodeUriEntities),
@@ -93,9 +109,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
         E.fromOption(() => deserialised),
         E.swap
       )
-
-    }
-    )
+    })
   );
 }
 
@@ -140,7 +154,7 @@ const normalizeSchemaProcessorMap: Record<ValidationContext, SchemaNormalizer> =
   [ValidationContext.Output]: memoizeSchemaNormalizer(stripWriteOnlyProperties),
 };
 
-export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, context, mediaType, bundle) => {
+export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, context, mediaType, multipartBoundary, bundle) => {
   const findContentByMediaType = pipe(
     O.Do,
     O.bind('mediaType', () => O.fromNullable(mediaType)),
@@ -173,7 +187,7 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
                   (target: unknown): target is string => typeof target === 'string',
                   () => [{ message: 'Target is not a string', code: '422', severity: DiagnosticSeverity.Error }]
                 ),
-                E.chain(target => deserializeAndValidate(content, schema, target, prefix))
+                E.chain(target => deserializeAndValidate(content, schema, target, prefix, multipartBoundary))
               )
           ),
         )

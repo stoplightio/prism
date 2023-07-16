@@ -12,5 +12,6 @@ export type validateFn<Target, Specs> = (
   specs: Specs[],
   context: ValidationContext,
   mediaType?: string,
+  multipartBoundary?: string,
   bundle?: unknown
 ) => Either<NonEmptyArray<IPrismDiagnostic>, Target>;

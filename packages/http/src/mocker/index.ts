@@ -137,9 +137,14 @@ function runCallbacks({
   we cannot carry parsed informations in case of an error — which is what we do need instead.
 */
 function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) {
-  const mediaType = caseless(request.headers || {}).get('content-type');
-  if (!mediaType) return request;
+  // parse boundary string from content-type in case media type is multipart/form-data
+  const multipart = require('parse-multipart-data');
+  const mediaInfo = caseless(request.headers || {}).get('content-type');
+  const multipartBoundary = multipart.getBoundary(mediaInfo);
+  const mediaType = mediaInfo.replace(";boundary=" + multipartBoundary, "");
 
+  if (!mediaType) return request;
+  
   if (!is(mediaType, ['application/x-www-form-urlencoded', 'multipart/form-data'])) return request;
   const specs = pipe(
     O.fromNullable(resource.request),
@@ -149,7 +154,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   );
   
   const requestBody = request.body as string;
-  const encodedUriParams = mediaType === 'multipart/form-data' ? parseMultipartFormDataParams(requestBody) : splitUriParams(requestBody);
+  const encodedUriParams = mediaType === 'multipart/form-data' ? parseMultipartFormDataParams(requestBody, multipartBoundary) : splitUriParams(requestBody);
 
   if (specs.length < 1) {
     return Object.assign(request, { body: encodedUriParams });
