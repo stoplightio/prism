@@ -57,7 +57,7 @@ export function splitUriParams(target: string) {
 
 export function parseMultipartFormDataParams(target: string, multipartBoundary?: string) {
   if(!multipartBoundary) {
-    const error = "Request for multipart/form-data specifies content-type so boundary string is not defined in header. Remove content-type header for multipart/form-data requests";
+    const error = "Boundary parameter for multipart/form-data is not defined or generated in the request header. Try removing manually defined content-type from your request header if it exists.";
     return E.left<NonEmptyArray<IPrismDiagnostic>>([
       {
         message: error,
