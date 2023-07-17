@@ -78,9 +78,9 @@ const validateInputBody = (
     E.chain(([requestBody, body, headers]) => {
       // parse boundary string from content-type in case media type is multipart/form-data
       const multipart = require('parse-multipart-data');
-      const mediaInfo = headers.get('content-type');
-      const multipartBoundary = multipart.getBoundary(mediaInfo);
-      const mediaType = mediaInfo.replace(new RegExp(";\\s*boundary=" + multipartBoundary), "");
+      const contentTypeHeader = headers.get('content-type');
+      const multipartBoundary = contentTypeHeader ? multipart.getBoundary(contentTypeHeader) : "";
+      const mediaType = contentTypeHeader ? contentTypeHeader.replace(new RegExp(";\\s*boundary=" + multipartBoundary), "") : contentTypeHeader;
 
       const contentLength = parseInt(headers.get('content-length')) || 0;
       if (contentLength === 0) {
