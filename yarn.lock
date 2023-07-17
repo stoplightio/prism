@@ -2040,10 +2040,10 @@
     isomorphic-fetch "^3.0.0"
     node-abort-controller "^3.0.1"
 
-"@stoplight/json-schema-sampler@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/json-schema-sampler/-/json-schema-sampler-0.2.2.tgz#e64264977e7407e5019768735bb56579678838ee"
-  integrity sha512-QP4ZwXh3dEn5wHZs2361kdf4BmaKiiP+pxIImAuVTLmulv9sBTB+ETG7Y5z9u4DOUQu2GNxfUY10iSwuBQMXrg==
+"@stoplight/json-schema-sampler@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/json-schema-sampler/-/json-schema-sampler-0.3.0.tgz#0d20ccc37e886cdcb4ec1955efe7fad60938f635"
+  integrity sha512-G7QImi2xr9+8iPEg0D9YUi1BWhIiiEm19aMb91oWBSdxuhezOAqqRP3XNY6wczHV9jLWW18f+KkghTy9AG0BQA==
   dependencies:
     "@types/json-schema" "^7.0.7"
     json-pointer "^0.6.1"

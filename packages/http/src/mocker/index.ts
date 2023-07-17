@@ -31,8 +31,8 @@ import {
   ProblemJsonError,
 } from '../types';
 import withLogger from '../withLogger';
-import { UNAUTHORIZED, UNPROCESSABLE_ENTITY, INVALID_CONTENT_TYPE } from './errors';
-import { generate, generateStatic } from './generator/JSONSchema';
+import { UNAUTHORIZED, UNPROCESSABLE_ENTITY, INVALID_CONTENT_TYPE, SCHEMA_TOO_COMPLEX } from './errors';
+import { generate, generateStatic, SchemaTooComplexGeneratorError } from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 import { runCallback } from './callback/callbacks';
@@ -55,7 +55,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
   config,
 }) => {
   const payloadGenerator: PayloadGenerator = config.dynamic
-    ? partial(generate, resource['__bundled__'])
+    ? partial(generate, resource, resource['__bundle__'])
     : partial(generateStatic, resource);
 
   return pipe(
@@ -357,6 +357,7 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: Pay
           } else {
             return pipe(
               payloadGenerator(header.schema),
+              mapPayloadGeneratorError('header'),
               E.map(example => {
                 if (isNumber(example) || isString(example)) return example;
                 return null;
@@ -378,9 +379,20 @@ function computeBody(
     return E.right(negotiationResult.bodyExample.value);
   }
   if (negotiationResult.schema) {
-    return payloadGenerator(negotiationResult.schema);
+    return pipe(payloadGenerator(negotiationResult.schema), mapPayloadGeneratorError('body'));
   }
   return E.right(undefined);
 }
+
+const mapPayloadGeneratorError = (source: string) =>
+  E.mapLeft<Error, Error>(err => {
+    if (err instanceof SchemaTooComplexGeneratorError) {
+      return ProblemJsonError.fromTemplate(
+        SCHEMA_TOO_COMPLEX,
+        `Unable to generate ${source} for response. The schema is too complex to generate.`
+      );
+    }
+    return err;
+  });
 
 export default mock;

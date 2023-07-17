@@ -49,7 +49,7 @@ export function generate(param: IHttpParam | IHttpContent): O.Option<unknown> {
       pipe(
         O.fromNullable(param.schema),
         O.map(improveSchema),
-        O.chain(schema => O.fromEither(generateDynamicExample({}, schema)))
+        O.chain(schema => O.fromEither(generateDynamicExample(param, {}, schema)))
       )
     )
   );

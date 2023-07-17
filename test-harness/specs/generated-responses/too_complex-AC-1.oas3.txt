@@ -1,0 +1,26 @@
+====test====
+When requesting a schema that is too complex for JSON Schema Sampler,
+I expect a 500 problem detail response.
+====spec====
+openapi: 3.0.2
+paths:
+  /todos:
+    get:
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                minItems: 3000
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i http://localhost:4010/todos
+====expect====
+HTTP/1.1 500 Internal Server Error
+
+{"type":"https://stoplight.io/prism/errors#SCHEMA_TOO_COMPLEX","title":"Schema too complex","status":500,"detail":"Unable to generate body for response. The schema is too complex to generate."}

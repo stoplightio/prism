@@ -5,7 +5,7 @@ import { JSONSchema } from '../../types';
 import * as JSONSchemaFaker from 'json-schema-faker';
 import * as sampler from '@stoplight/json-schema-sampler';
 import { Either, toError, tryCatch } from 'fp-ts/Either';
-import { IHttpOperation } from '@stoplight/types';
+import { IHttpContent, IHttpOperation, IHttpParam } from '@stoplight/types';
 import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/lib/Either';
 import { stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
@@ -61,7 +61,11 @@ export function resetGenerator() {
 
 resetGenerator();
 
-export function generate(bundle: unknown, source: JSONSchema): Either<Error, unknown> {
+export function generate(
+  resource: IHttpOperation | IHttpParam | IHttpContent,
+  bundle: unknown,
+  source: JSONSchema
+): Either<Error, unknown> {
   return pipe(
     stripWriteOnlyProperties(source),
     E.fromOption(() => Error('Cannot strip writeOnly properties')),
@@ -98,6 +102,26 @@ export function sortSchemaAlphabetically(source: any): any {
   return source;
 }
 
-export function generateStatic(resource: IHttpOperation, source: JSONSchema): Either<Error, unknown> {
-  return tryCatch(() => sampler.sample(source, {}, resource), toError);
+export function generateStatic(operation: IHttpOperation, source: JSONSchema): Either<Error, unknown> {
+  return pipe(
+    tryCatch(() => sampler.sample(source, { ticks: 2500 }, operation), toError),
+    E.mapLeft(err => {
+      if (err instanceof sampler.SchemaSizeExceededError) {
+        return new SchemaTooComplexGeneratorError(operation, err);
+      }
+      return err;
+    })
+  );
+}
+
+export class GeneratorError extends Error {}
+
+export class SchemaTooComplexGeneratorError extends GeneratorError {
+  constructor(operation: IHttpOperation, public readonly cause: Error) {
+    super(
+      `The operation ${operation.method.toUpperCase()} ${
+        operation.path
+      } references a JSON Schema that is too complex to generate.`
+    );
+  }
 }

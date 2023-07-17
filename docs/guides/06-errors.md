@@ -264,6 +264,20 @@ paths:
 
 **Explanation:** This error occurs when the current request specifies a `Content-Type` that isn't supported by corresponding HTTP Operation. In the case there is no request body or `Content-Length` is 0, the `Content-Type` header is ignored.
 
+
+### SCHEMA_TOO_COMPLEX
+
+**Message: Unable to generate [body|header] for response. The schema is too complex to generate.**
+
+**Returned Status Code: `500`**
+
+**Explanation:** This error occurs when part of the response can't be generated using JSON Schema Sampler. JSON Schema Sampler has been configured to use a limit of 2500 "ticks". A "tick" is loosely defined as any instance of a JSON Schema schema or subschema. This includes a/an single:
+* Property
+* Object
+* Array item (each in an array between `minItems` and `maxItems`, defaulting to 1)
+* Combiner item (members of `allOf`, `oneOf`, `anyOf`)
+ 
+...all recursively, unless a `$ref` has already been visited (in which case, the subschema is skipped). As a workaround, consider using [dynamic response mocking](./11-dynamic-response-with-faker.md).
 ## Unknown error
 
 In case you get an `UNKNOWN` error, it likely means this particular edge case isn't handled. If you encounter one of these, open an [issue](https://github.com/stoplightio/prism/issues/new?labels=bug&template=bug_report.md).

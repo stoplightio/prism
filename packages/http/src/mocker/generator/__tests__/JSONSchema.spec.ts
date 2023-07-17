@@ -2,6 +2,7 @@ import { get } from 'lodash';
 import { JSONSchema } from '../../../types';
 import { generate, sortSchemaAlphabetically } from '../JSONSchema';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
+import { IHttpOperation } from '@stoplight/types';
 
 describe('JSONSchema generator', () => {
   const ipRegExp = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
@@ -10,6 +11,8 @@ describe('JSONSchema generator', () => {
   const uuidRegExp = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/;
 
   describe('generate()', () => {
+    const operation = {} as IHttpOperation;
+
     describe('when used with a schema with a simple string property', () => {
       const schema: JSONSchema = {
         type: 'object',
@@ -20,7 +23,7 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property not matching anything in particular', () => {
-        assertRight(generate({}, schema), instance => {
+        assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toHaveProperty('name');
           const name = get(instance, 'name');
 
@@ -40,7 +43,7 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property matching the email regex', () => {
-        assertRight(generate({}, schema), instance => {
+        assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toHaveProperty('email');
           const email = get(instance, 'email');
 
@@ -60,14 +63,14 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property matching uuid regex', () => {
-        assertRight(generate({}, schema), instance => {
+        assertRight(generate(operation, {}, schema), instance => {
           const id = get(instance, 'id');
           expect(id).toMatch(uuidRegExp);
         });
       });
 
       it('will not be presented in the form of UUID as a URN', () => {
-        assertRight(generate({}, schema), instance => {
+        assertRight(generate(operation, {}, schema), instance => {
           const id = get(instance, 'id');
           expect(uuidRegExp.test(id)).not.toContainEqual('urn:uuid');
         });
@@ -84,7 +87,7 @@ describe('JSONSchema generator', () => {
       };
 
       it('will have a string property matching the ip regex', () => {
-        assertRight(generate({}, schema), instance => {
+        assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toHaveProperty('ip');
           const ip = get(instance, 'ip');
 
@@ -112,7 +115,7 @@ describe('JSONSchema generator', () => {
           required: ['meaning'],
         };
 
-        assertRight(generate({}, schema), instance => {
+        assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toHaveProperty('meaning');
           const actual = get(instance, 'meaning');
           expect(actual).toStrictEqual(42);
@@ -133,7 +136,7 @@ describe('JSONSchema generator', () => {
           required: ['slug'],
         };
 
-        assertRight(generate({}, schema), instance => {
+        assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toHaveProperty('slug');
           const actual = get(instance, 'slug');
           expect(actual).toStrictEqual('two-words');
@@ -151,7 +154,7 @@ describe('JSONSchema generator', () => {
         },
       };
 
-      it('will return a left', () => assertLeft(generate({}, schema)));
+      it('will return a left', () => assertLeft(generate(operation, {}, schema)));
     });
 
     describe('when writeOnly properties are provided', () => {
@@ -165,7 +168,7 @@ describe('JSONSchema generator', () => {
       };
 
       it('removes writeOnly properties', () => {
-        assertRight(generate({}, schema), instance => {
+        assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toEqual({
             id: expect.any(String),
           });
@@ -184,7 +187,7 @@ describe('JSONSchema generator', () => {
 
       Object.defineProperty(schema.properties, 'name', { writable: false });
 
-      return expect(generate({}, schema)).toBeTruthy();
+      return expect(generate(operation, {}, schema)).toBeTruthy();
     });
   });
 

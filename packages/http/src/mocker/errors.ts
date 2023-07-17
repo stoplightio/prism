@@ -41,3 +41,9 @@ export const INVALID_CONTENT_TYPE: Omit<ProblemJson, 'detail'> = {
   title: 'Invalid content type',
   status: 415,
 };
+
+export const SCHEMA_TOO_COMPLEX: Omit<ProblemJson, 'detail'> = {
+  type: 'SCHEMA_TOO_COMPLEX',
+  title: 'Schema too complex',
+  status: 500,
+};
