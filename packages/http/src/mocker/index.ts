@@ -143,7 +143,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   // parse boundary string from content-type in case media type is multipart/form-data
   const multipart = require('parse-multipart-data');
   const multipartBoundary = multipart.getBoundary(contentTypeHeader);
-  const mediaType = contentTypeHeader.replace(";boundary=" + multipartBoundary, "");
+  const mediaType = contentTypeHeader.replace(new RegExp(";\\s*boundary=" + multipartBoundary), "");
 
   if (!is(mediaType, ['application/x-www-form-urlencoded', 'multipart/form-data'])) return request;
 
