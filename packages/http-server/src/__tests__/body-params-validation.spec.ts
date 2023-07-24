@@ -4,6 +4,7 @@ import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { ThenArg } from '../types';
 import * as faker from '@faker-js/faker/locale/en';
+import { Dictionary } from '@stoplight/types';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -875,7 +876,8 @@ describe('body params validation', () => {
     });
 
     describe('valid multipart form data parameter provided', () => {
-      test('returns 200', async () => {
+      let requestParams: Dictionary<any>;
+      beforeEach(() => {
         const FormData = require('form-data');
         const formData = new FormData();
         formData.append("status", "--=\"");
@@ -884,13 +886,32 @@ describe('body params validation', () => {
         formData.append("test_json_file", "<test_json.json");
         formData.append("num", "10");
 
-        const response = await makeRequest('/multipart-form-data-body-required', {
+        requestParams = {
           method: 'POST',
           body: formData
-        });
+        };
+      });
 
-        expect(response.status).toBe(200);
-        await expect(response.json()).resolves.toMatchObject({ type: 'foo' });
+      describe('boundary string generated correctly', () =>{
+        test('returns 200', async () => {
+          const response = await makeRequest('/multipart-form-data-body-required', requestParams);
+          expect(response.status).toBe(200);
+          expect(response.json()).resolves.toMatchObject({ type: 'foo' });
+        });
+      });
+
+      describe('missing generated boundary string due to content-type manually specified in the header', () => {
+        test('returns 415 & error message', async () => {
+          requestParams['headers'] = { 'content-type':'multipart/form-data' };
+          const response = await makeRequest('/multipart-form-data-body-required', requestParams);
+          expect(response.status).toBe(415);
+          expect(response.json()).resolves.toMatchObject({
+            detail: "Boundary parameter for multipart/form-data is not defined or generated in the request header. Try removing manually defined content-type from your request header if it exists.",
+            status: 415,
+            title: "Invalid content type",
+            type: "https://stoplight.io/prism/errors#INVALID_CONTENT_TYPE",
+          });
+        });
       });
     });
   });

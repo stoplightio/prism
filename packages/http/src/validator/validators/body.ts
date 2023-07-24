@@ -6,6 +6,7 @@ import * as O from 'fp-ts/Option';
 import * as NEA from 'fp-ts/NonEmptyArray';
 import { pipe } from 'fp-ts/function';
 import { get } from 'lodash';
+import * as multipart from 'parse-multipart-data';
 import { is as typeIs } from 'type-is';
 import { JSONSchema } from '../../types';
 import { body } from '../deserializers';
@@ -48,14 +49,17 @@ export function deserializeFormBody(
 }
 
 export function splitUriParams(target: string) {
-  return target.split('&').reduce((result: Dictionary<string>, pair: string) => {
+  return E.right(target.split('&').reduce((result: Dictionary<string>, pair: string) => {
     const [key, ...rest] = pair.split('=');
     result[key] = rest.join('=');
     return result;
-  }, {});
+  }, {}));
 }
 
-export function parseMultipartFormDataParams(target: string, multipartBoundary?: string) {
+export function parseMultipartFormDataParams(
+  target: string, 
+  multipartBoundary?: string
+): E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
   if(!multipartBoundary) {
     const error = "Boundary parameter for multipart/form-data is not defined or generated in the request header. Try removing manually defined content-type from your request header if it exists.";
     return E.left<NonEmptyArray<IPrismDiagnostic>>([
@@ -66,17 +70,14 @@ export function parseMultipartFormDataParams(target: string, multipartBoundary?:
       },
     ]);
   }
-
-  const multipart = require('parse-multipart-data');
-  const bufferBody = Buffer.from(target, "utf-8");
-
   // the parse-multipart-data package requires that the body is passed in as a buffer, not a string
+  const bufferBody = Buffer.from(target, "utf-8");
   const parts = multipart.parse(bufferBody, multipartBoundary);
 
-  return parts.reduce((result: Dictionary<string>, pair: string) => {
+  return E.right(parts.reduce((result: Dictionary<string>, pair: any) => {
     result[pair['name']] = pair['data'].toString();
     return result;
-  }, {});
+  }, {}));
 }
 
 export function decodeUriEntities(target: Dictionary<string>) {
@@ -97,10 +98,10 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
 
 function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, prefix?: string, multipartBoundary?: string, bundle?: unknown) {
   const encodings = get(content, 'encodings', []);
-  const encodedUriParams = content.mediaType === "multipart/form-data" ? parseMultipartFormDataParams(target, multipartBoundary) : splitUriParams(target);
-  
+
   return pipe(
-    validateAgainstReservedCharacters(encodedUriParams, encodings, prefix),
+    content.mediaType === "multipart/form-data" ? parseMultipartFormDataParams(target, multipartBoundary) : splitUriParams(target),
+    E.chain((encodedUriParams) => validateAgainstReservedCharacters(encodedUriParams, encodings, prefix)),
     E.map(decodeUriEntities),
     E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised => {

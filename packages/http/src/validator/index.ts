@@ -21,6 +21,7 @@ import { findOperationResponse } from './utils/spec';
 import { validateBody, validateHeaders, validatePath, validateQuery } from './validators';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 import { ValidationContext } from './validators/types';
+import { parseMIMEHeader } from '../validator/validators/headers';
 import { wildcardMediaTypeMatch } from './utils/wildcardMediaTypeMatch';
 
 export { validateSecurity } from './validators/security';
@@ -53,8 +54,8 @@ const isMediaTypeSupportedInContents = (mediaType?: string, contents?: IMediaTyp
 
 const validateInputIfBodySpecIsProvided = (
   body: O.Option<unknown>,
-  mediaType: string,
   requestBody: O.Option<IHttpOperationRequestBody>,
+  mediaType?: string,
   multipartBoundary?: string,
   bundle?: unknown
 ) =>
@@ -76,12 +77,14 @@ const validateInputBody = (
     checkRequiredBodyIsProvided(requestBody, body),
     E.map(b => [...b, caseless(headers || {})] as const),
     E.chain(([requestBody, body, headers]) => {
-      // parse boundary string from content-type in case media type is multipart/form-data
-      const multipart = require('parse-multipart-data');
       const contentTypeHeader = headers.get('content-type');
-      const multipartBoundary = contentTypeHeader ? multipart.getBoundary(contentTypeHeader) : "";
-      const mediaType = contentTypeHeader ? contentTypeHeader.replace(new RegExp(";\\s*boundary=" + multipartBoundary), "") : contentTypeHeader;
+      let multipartBoundary; // exists when media type is multipart/form-data
+      let mediaType;
 
+      if (contentTypeHeader) {
+        [multipartBoundary, mediaType] = parseMIMEHeader(contentTypeHeader);
+      }
+      
       const contentLength = parseInt(headers.get('content-length')) || 0;
       if (contentLength === 0) {
         // generously allow this content type if there isn't a body actually provided
@@ -109,7 +112,7 @@ const validateInputBody = (
         },
       ]);
     }),
-    E.chain(([requestBody, body, mediaType, multipartBoundary]) => validateInputIfBodySpecIsProvided(body, mediaType, requestBody, multipartBoundary, bundle))
+    E.chain(([requestBody, body, mediaType, multipartBoundary]) => validateInputIfBodySpecIsProvided(body, requestBody, mediaType, multipartBoundary, bundle))
   );
 
 export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {

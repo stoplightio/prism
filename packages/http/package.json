@@ -40,7 +40,8 @@
     "pino": "^6.13.3",
     "tslib": "^2.3.1",
     "type-is": "^1.6.18",
-    "uri-template-lite": "^22.9.0"
+    "uri-template-lite": "^22.9.0",
+    "whatwg-mimetype": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"

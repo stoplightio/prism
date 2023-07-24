@@ -1,6 +1,7 @@
 import { IPrismComponents, IPrismDiagnostic, IPrismInput } from '@stoplight/prism-core';
 import {
   DiagnosticSeverity,
+  Dictionary,
   IHttpHeaderParam,
   IHttpOperation,
   IHttpOperationResponse,
@@ -44,6 +45,7 @@ import {
   splitUriParams,
   parseMultipartFormDataParams
 } from '../validator/validators/body';
+import { parseMIMEHeader } from '../validator/validators/headers';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
 export { resetGenerator as resetJSONSchemaGenerator } from './generator/JSONSchema';
 
@@ -139,11 +141,7 @@ function runCallbacks({
 function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) {
   const contentTypeHeader = caseless(request.headers || {}).get('content-type');
   if (!contentTypeHeader) return request;
-  
-  // parse boundary string from content-type in case media type is multipart/form-data
-  const multipart = require('parse-multipart-data');
-  const multipartBoundary = multipart.getBoundary(contentTypeHeader);
-  const mediaType = contentTypeHeader.replace(new RegExp(";\\s*boundary=" + multipartBoundary), "");
+  const [multipartBoundary, mediaType] = parseMIMEHeader(contentTypeHeader);
 
   if (!is(mediaType, ['application/x-www-form-urlencoded', 'multipart/form-data'])) return request;
 
@@ -155,7 +153,10 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   );
   
   const requestBody = request.body as string;
-  const encodedUriParams = mediaType === 'multipart/form-data' ? parseMultipartFormDataParams(requestBody, multipartBoundary) : splitUriParams(requestBody);
+  const encodedUriParams = pipe(
+    mediaType === "multipart/form-data" ? parseMultipartFormDataParams(requestBody, multipartBoundary) : splitUriParams(requestBody),
+    E.getOrElse<IPrismDiagnostic[], Dictionary<string>>(() => ({} as Dictionary<string>))
+  );
 
   if (specs.length < 1) {
     return Object.assign(request, { body: encodedUriParams });
