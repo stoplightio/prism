@@ -78,12 +78,7 @@ const validateInputBody = (
     E.map(b => [...b, caseless(headers || {})] as const),
     E.chain(([requestBody, body, headers]) => {
       const contentTypeHeader = headers.get('content-type');
-      let multipartBoundary; // exists when media type is multipart/form-data
-      let mediaType;
-
-      if (contentTypeHeader) {
-        [multipartBoundary, mediaType] = parseMIMEHeader(contentTypeHeader);
-      }
+      const [multipartBoundary, mediaType] = contentTypeHeader ? parseMIMEHeader(contentTypeHeader) : [undefined, undefined];
       
       const contentLength = parseInt(headers.get('content-length')) || 0;
       if (contentLength === 0) {
