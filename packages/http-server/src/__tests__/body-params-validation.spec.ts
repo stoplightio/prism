@@ -5,6 +5,7 @@ import { createServer } from '../';
 import { ThenArg } from '../types';
 import * as faker from '@faker-js/faker/locale/en';
 import { Dictionary } from '@stoplight/types';
+import * as FormData from 'form-data';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -878,7 +879,6 @@ describe('body params validation', () => {
     describe('valid multipart form data parameter provided', () => {
       let requestParams: Dictionary<any>;
       beforeEach(() => {
-        const FormData = require('form-data');
         const formData = new FormData();
         formData.append("status", "--=\"");
         formData.append("lines", "\r\n\r\n\s");
