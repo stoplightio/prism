@@ -49,11 +49,13 @@ export function deserializeFormBody(
 }
 
 export function splitUriParams(target: string) {
-  return E.right(target.split('&').reduce((result: Dictionary<string>, pair: string) => {
-    const [key, ...rest] = pair.split('=');
-    result[key] = rest.join('=');
-    return result;
-  }, {}));
+  return E.right(
+    target.split('&').reduce((result: Dictionary<string>, pair: string) => {
+      const [key, ...rest] = pair.split('=');
+      result[key] = rest.join('=');
+      return result;
+    }, {})
+  );
 }
 
 export function parseMultipartFormDataParams(
@@ -74,10 +76,12 @@ export function parseMultipartFormDataParams(
   const bufferBody = Buffer.from(target, "utf-8");
   const parts = multipart.parse(bufferBody, multipartBoundary);
 
-  return E.right(parts.reduce((result: Dictionary<string>, pair: any) => {
-    result[pair['name']] = pair['data'].toString();
-    return result;
-  }, {}));
+  return E.right(
+    parts.reduce((result: Dictionary<string>, pair: any) => {
+      result[pair['name']] = pair['data'].toString();
+      return result;
+    }, {})
+  );
 }
 
 export function decodeUriEntities(target: Dictionary<string>) {
@@ -101,7 +105,7 @@ function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, 
 
   return pipe(
     content.mediaType === "multipart/form-data" ? parseMultipartFormDataParams(target, multipartBoundary) : splitUriParams(target),
-    E.chain((encodedUriParams) => validateAgainstReservedCharacters(encodedUriParams, encodings, prefix)),
+    E.chain(encodedUriParams => validateAgainstReservedCharacters(encodedUriParams, encodings, prefix)),
     E.map(decodeUriEntities),
     E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised => {
