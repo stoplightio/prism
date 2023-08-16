@@ -10,6 +10,7 @@ import { JSONSchema } from '../../';
 import { validateAgainstSchema } from './utils';
 import type { deserializeFn } from '../deserializers/types';
 import type { IPrismDiagnostic } from '@stoplight/prism-core';
+import { ValidationContext } from './types';
 
 export type Deps<Target> = {
   deserializers: Dictionary<deserializeFn<Target>>;
@@ -23,6 +24,7 @@ export const validateParams =
   <Target>(
     target: Target,
     specs: IHttpParam[],
+    context: ValidationContext,
     bundle?: unknown
   ): RE.ReaderEither<Deps<Target>, NEA.NonEmptyArray<IPrismDiagnostic>, Target> =>
   ({ deserializers, prefix, defaultStyle }) => {
@@ -64,7 +66,9 @@ export const validateParams =
         );
         return { parameterValues, schema };
       }),
-      O.chain(({ parameterValues, schema }) => validateAgainstSchema(parameterValues, schema, true, prefix, bundle)),
+      O.chain(({ parameterValues, schema }) =>
+        validateAgainstSchema(parameterValues, schema, true, context, prefix, bundle)
+      ),
       O.map(schemaDiagnostic => NEA.concat(schemaDiagnostic, deprecatedWarnings)),
       O.alt(() => NEA.fromArray(deprecatedWarnings)),
       E.fromOption(() => target),

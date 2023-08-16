@@ -63,7 +63,8 @@ const validateInputIfBodySpecIsProvided = (
     sequenceOption(body, requestBody),
     O.fold(
       () => E.right(body),
-      ([body, contents]) => validateBody(body, contents.contents ?? [], ValidationContext.Input, mediaType, multipartBoundary, bundle)
+      ([body, contents]) =>
+        validateBody(body, contents.contents ?? [], ValidationContext.Input, mediaType, multipartBoundary, bundle)
     )
   );
 
@@ -78,8 +79,10 @@ const validateInputBody = (
     E.map(b => [...b, caseless(headers || {})] as const),
     E.chain(([requestBody, body, headers]) => {
       const contentTypeHeader = headers.get('content-type');
-      const [multipartBoundary, mediaType] = contentTypeHeader ? parseMIMEHeader(contentTypeHeader) : [undefined, undefined];
-      
+      const [multipartBoundary, mediaType] = contentTypeHeader
+        ? parseMIMEHeader(contentTypeHeader)
+        : [undefined, undefined];
+
       const contentLength = parseInt(headers.get('content-length')) || 0;
       if (contentLength === 0) {
         // generously allow this content type if there isn't a body actually provided
@@ -107,7 +110,9 @@ const validateInputBody = (
         },
       ]);
     }),
-    E.chain(([requestBody, body, mediaType, multipartBoundary]) => validateInputIfBodySpecIsProvided(body, requestBody, mediaType, multipartBoundary, bundle))
+    E.chain(([requestBody, body, mediaType, multipartBoundary]) =>
+      validateInputIfBodySpecIsProvided(body, requestBody, mediaType, multipartBoundary, bundle)
+    )
   );
 
 export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resource, element }) => {
@@ -122,10 +127,19 @@ export const validateInput: ValidatorFn<IHttpOperation, IHttpRequest> = ({ resou
       request =>
         sequenceValidation(
           validateInputBody(O.fromNullable(request.body), bundle, body, element.headers || {}),
-          request.headers ? validateHeaders(element.headers || {}, request.headers, bundle) : E.right(undefined),
-          request.query ? validateQuery(element.url.query || {}, request.query, bundle) : E.right(undefined),
+          request.headers
+            ? validateHeaders(element.headers || {}, request.headers, ValidationContext.Input, bundle)
+            : E.right(undefined),
+          request.query
+            ? validateQuery(element.url.query || {}, request.query, ValidationContext.Input, bundle)
+            : E.right(undefined),
           request.path
-            ? validatePath(getPathParams(element.url.path, resource.path), request.path, bundle)
+            ? validatePath(
+                getPathParams(element.url.path, resource.path),
+                request.path,
+                ValidationContext.Input,
+                bundle
+              )
             : E.right(undefined)
         )
     ),
@@ -186,7 +200,7 @@ export const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ res
           )
         ),
         validateBody(element.body, response.contents || [], ValidationContext.Output, mediaType, bundle),
-        validateHeaders(element.headers || {}, response.headers || [], bundle)
+        validateHeaders(element.headers || {}, response.headers || [], ValidationContext.Output, bundle)
       )
     ),
     E.map(() => element)

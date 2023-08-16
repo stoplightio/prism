@@ -10,6 +10,7 @@ import Ajv2020 from 'ajv/dist/2020';
 import addFormats from 'ajv-formats';
 import type { JSONSchema } from '../../';
 import { compareDateTime, date_time, fmtDef } from './dateTime';
+import { ValidationContext } from './types';
 
 const unknownFormatSilencerLogger: Logger = {
   warn(...args: unknown[]): void {
@@ -70,7 +71,12 @@ function assignAjvInstance($schema: string, coerce: boolean): AjvCore {
   return ajvInstances[draft][member];
 }
 
-export const convertAjvErrors = (errors: NonEmptyArray<ErrorObject>, severity: DiagnosticSeverity, prefix?: string) =>
+export const convertAjvErrors = (
+  errors: NonEmptyArray<ErrorObject>,
+  severity: DiagnosticSeverity,
+  context: ValidationContext,
+  prefix?: string
+) =>
   pipe(
     errors,
     map<ErrorObject, IPrismDiagnostic>(error => {
@@ -81,7 +87,7 @@ export const convertAjvErrors = (errors: NonEmptyArray<ErrorObject>, severity: D
       const path = prefix ? [prefix, ...errorPath] : errorPath;
       const errorPathType = errorPath.length > 0 ? (prefix == 'body' ? 'property ' : 'parameter ') : '';
       const errorSourceDescription =
-        'Request ' +
+        `${context === ValidationContext.Input ? 'Request' : 'Response'} ` +
         (prefix ? `${prefix} ` : '') +
         errorPathType +
         errorPath.join('.').trim() +
@@ -126,6 +132,7 @@ export const validateAgainstSchema = (
   value: unknown,
   schema: JSONSchema,
   coerce: boolean,
+  context: ValidationContext,
   prefix?: string,
   bundle?: unknown
 ): O.Option<NonEmptyArray<IPrismDiagnostic>> =>
@@ -133,5 +140,5 @@ export const validateAgainstSchema = (
     O.tryCatch(() => getValidationFunction(assignAjvInstance(String(schema.$schema), coerce), schema, bundle)),
     O.chainFirst(validateFn => O.tryCatch(() => validateFn(value))),
     O.chain(validateFn => pipe(O.fromNullable(validateFn.errors), O.chain(fromArray))),
-    O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, prefix))
+    O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, context, prefix))
   );

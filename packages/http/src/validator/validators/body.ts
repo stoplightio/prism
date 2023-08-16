@@ -59,11 +59,12 @@ export function splitUriParams(target: string) {
 }
 
 export function parseMultipartFormDataParams(
-  target: string, 
+  target: string,
   multipartBoundary?: string
 ): E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
-  if(!multipartBoundary) {
-    const error = "Boundary parameter for multipart/form-data is not defined or generated in the request header. Try removing manually defined content-type from your request header if it exists.";
+  if (!multipartBoundary) {
+    const error =
+      'Boundary parameter for multipart/form-data is not defined or generated in the request header. Try removing manually defined content-type from your request header if it exists.';
     return E.left<NonEmptyArray<IPrismDiagnostic>>([
       {
         message: error,
@@ -73,7 +74,7 @@ export function parseMultipartFormDataParams(
     ]);
   }
   // the parse-multipart-data package requires that the body is passed in as a buffer, not a string
-  const bufferBody = Buffer.from(target, "utf-8");
+  const bufferBody = Buffer.from(target, 'utf-8');
   const parts = multipart.parse(bufferBody, multipartBoundary);
 
   return E.right(
@@ -100,20 +101,30 @@ export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaT
   );
 }
 
-function deserializeAndValidate(content: IMediaTypeContent, schema: JSONSchema, target: string, prefix?: string, multipartBoundary?: string, bundle?: unknown) {
+function deserializeAndValidate(
+  content: IMediaTypeContent,
+  schema: JSONSchema,
+  target: string,
+  context: ValidationContext,
+  prefix?: string,
+  multipartBoundary?: string,
+  bundle?: unknown
+) {
   const encodings = get(content, 'encodings', []);
 
   return pipe(
-    content.mediaType === "multipart/form-data" ? parseMultipartFormDataParams(target, multipartBoundary) : splitUriParams(target),
+    content.mediaType === 'multipart/form-data'
+      ? parseMultipartFormDataParams(target, multipartBoundary)
+      : splitUriParams(target),
     E.chain(encodedUriParams => validateAgainstReservedCharacters(encodedUriParams, encodings, prefix)),
     E.map(decodeUriEntities),
     E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised => {
       return pipe(
-        validateAgainstSchema(deserialised, schema, true, prefix, bundle),
+        validateAgainstSchema(deserialised, schema, true, context, prefix, bundle),
         E.fromOption(() => deserialised),
         E.swap
-      )
+      );
     })
   );
 }
@@ -159,7 +170,14 @@ const normalizeSchemaProcessorMap: Record<ValidationContext, SchemaNormalizer> =
   [ValidationContext.Output]: memoizeSchemaNormalizer(stripWriteOnlyProperties),
 };
 
-export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, context, mediaType, multipartBoundary, bundle) => {
+export const validate: validateFn<unknown, IMediaTypeContent> = (
+  target,
+  specs,
+  context,
+  mediaType,
+  multipartBoundary,
+  bundle
+) => {
   const findContentByMediaType = pipe(
     O.Do,
     O.bind('mediaType', () => O.fromNullable(mediaType)),
@@ -178,13 +196,16 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
       ({ contentResult: { content, mediaType: mt }, schema }) =>
         pipe(
           mt,
-          O.fromPredicate(mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded', 'multipart/form-data'])),
+          O.fromPredicate(
+            mediaType => !!typeIs(mediaType, ['application/x-www-form-urlencoded', 'multipart/form-data'])
+          ),
           O.fold(
-            () => pipe(
-              validateAgainstSchema(target, schema, false, prefix, bundle),
-              E.fromOption(() => target),
-              E.swap
-            ),
+            () =>
+              pipe(
+                validateAgainstSchema(target, schema, false, context, prefix, bundle),
+                E.fromOption(() => target),
+                E.swap
+              ),
             () =>
               pipe(
                 target,
@@ -192,9 +213,9 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (target, specs, 
                   (target: unknown): target is string => typeof target === 'string',
                   () => [{ message: 'Target is not a string', code: '422', severity: DiagnosticSeverity.Error }]
                 ),
-                E.chain(target => deserializeAndValidate(content, schema, target, prefix, multipartBoundary))
+                E.chain(target => deserializeAndValidate(content, schema, target, context, prefix, multipartBoundary))
               )
-          ),
+          )
         )
     )
   );
