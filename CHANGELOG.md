@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 5.3.0 (2023.08.16)
+
+- added new cli parameter to control the json schema faker fillProperties setting universally. [#2355](https://github.com/stoplightio/prism/pull/2355)
+- correctly list Response or Request in violation messages. [#2358](https://github.com/stoplightio/prism/pull/2358)
+
 # 5.2.0 (2023.07.28)
 
 - added support for multipart/form-data in the request body. [#2321](https://github.com/stoplightio/prism/pull/2321) - thanks @ilanashapiro for your contribution!
