@@ -47,7 +47,10 @@ describe('validate()', () => {
           ValidationContext.Input,
           'application/json'
         ),
-        error => expect(error).toContainEqual(expect.objectContaining({ code: 'type', message: 'Request body must be number' }))
+        error =>
+          expect(error).toContainEqual(
+            expect.objectContaining({ code: 'type', message: 'Request body must be number' })
+          )
       );
     });
   });
@@ -166,7 +169,7 @@ describe('validate()', () => {
     });
     it('requires readOnly params from output', () => {
       assertLeft(validate({ name: 'Item One' }, specs, ValidationContext.Output, 'application/json'), error => {
-        expect(error[0].message).toEqual("Request body must have required property 'title'");
+        expect(error[0].message).toEqual("Response body must have required property 'title'");
       });
     });
     it('succeed when readOnly params are provided', () => {
