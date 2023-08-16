@@ -140,6 +140,7 @@ describe('HttpValidator', () => {
                 { id: expect.any(String), name: 'a', style: HttpParamStyles.Simple },
                 { id: expect.any(String), name: 'b', style: HttpParamStyles.Matrix },
               ],
+              ValidationContext.Input,
               undefined
             );
           });
@@ -173,6 +174,7 @@ describe('HttpValidator', () => {
                 { id: expect.any(String), name: 'a-id', style: HttpParamStyles.Simple },
                 { id: expect.any(String), name: 'b-id', style: HttpParamStyles.Matrix },
               ],
+              ValidationContext.Input,
               undefined
             );
           });
@@ -309,8 +311,8 @@ describe('HttpValidator', () => {
                 mediaType: 'image/*',
                 schema: {
                   type: 'string',
-                }
-              }
+                },
+              },
             ],
           },
         ],
@@ -355,7 +357,7 @@ describe('HttpValidator', () => {
             })
           );
         });
-      })
+      });
     });
   });
 });

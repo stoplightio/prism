@@ -155,12 +155,12 @@ describe('runCallback()', () => {
       expect(logger.error).toHaveBeenNthCalledWith(
         1,
         { name: 'VALIDATOR' },
-        'Violation: body.test Request body property test must NOT have more than 3 characters'
+        'Violation: body.test Response body property test must NOT have more than 3 characters'
       );
       expect(logger.error).toHaveBeenNthCalledWith(
         2,
         { name: 'VALIDATOR' },
-        'Violation: header.test Request header parameter test must be equal to one of the allowed values: a'
+        'Violation: header.test Response header parameter test must be equal to one of the allowed values: a'
       );
     });
   });

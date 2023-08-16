@@ -109,7 +109,7 @@ Object {
     },
     Object {
       "code": "type",
-      "message": "Request body property completed must be boolean",
+      "message": "Response body property completed must be boolean",
       "path": Array [
         "body",
         "completed",
@@ -118,7 +118,7 @@ Object {
     },
     Object {
       "code": "format",
-      "message": "Request header parameter x-todos-publish must match format \\"date-time\\"",
+      "message": "Response header parameter x-todos-publish must match format \\"date-time\\"",
       "path": Array [
         "header",
         "x-todos-publish",
