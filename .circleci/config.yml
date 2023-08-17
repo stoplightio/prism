@@ -11,9 +11,6 @@ executors:
   macos:
     macos:
       xcode: 13.4.1
-
-orbs:
-  stoplight: stoplight/cli@0.0.3
 jobs:
   build:
     executor: docker-node
@@ -148,11 +145,3 @@ workflows:
               only: /^v.*/
           requires:
             - publish
-      - stoplight/analyze:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-          requires:
-            - upload_artifacts
