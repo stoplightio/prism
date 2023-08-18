@@ -199,7 +199,7 @@ export const validateOutput: ValidatorFn<IHttpOperation, IHttpResponse> = ({ res
             contents => validateMediaType(contents, mediaType)
           )
         ),
-        validateBody(element.body, response.contents || [], ValidationContext.Output, mediaType, bundle),
+        validateBody(element.body, response.contents || [], ValidationContext.Output, mediaType, undefined, bundle),
         validateHeaders(element.headers || {}, response.headers || [], ValidationContext.Output, bundle)
       )
     ),
