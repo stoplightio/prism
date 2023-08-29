@@ -105,7 +105,7 @@ describe('JSONSchema generator', () => {
             meaning: {
               type: 'number',
               'x-faker': {
-                'random.number': {
+                'datatype.number': {
                   min: 42,
                   max: 42,
                 },

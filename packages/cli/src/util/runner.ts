@@ -6,7 +6,10 @@ import { getHttpOperationsFromSpec } from '../operations';
 
 export type CreatePrism = (options: CreateMockServerOptions) => Promise<IPrismHttpServer | void>;
 
-export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: CreateMockServerOptions) {
+export function runPrismAndSetupWatcher(
+  createPrism: CreatePrism,
+  options: CreateMockServerOptions
+): Promise<IPrismHttpServer | void> {
   return createPrism(options).then(possibleServer => {
     if (possibleServer) {
       let server: IPrismHttpServer = possibleServer;
@@ -52,7 +55,7 @@ export function runPrismAndSetupWatcher(createPrism: CreatePrism, options: Creat
           });
       });
 
-      return new Promise(resolve => watcher.once('ready', resolve));
+      return new Promise(resolve => watcher.once('ready', () => resolve(server)));
     }
   });
 }

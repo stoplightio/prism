@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`http mocker request is valid given enforced example key and mediaType should return 200 response 1`] = `
-Object {
-  "body": "{ \\"root\\": \\"second\\" }",
-  "headers": Object {
+{
+  "body": "{ "root": "second" }",
+  "headers": {
     "Content-type": "application/xml",
   },
   "statusCode": 200,
@@ -11,15 +11,15 @@ Object {
 `;
 
 exports[`http mocker request is valid given enforced example key should return application/json, 200 response 1`] = `
-Object {
-  "body": Array [
-    Object {
+{
+  "body": [
+    {
       "completed": false,
       "id": 2,
       "name": "make bears",
     },
   ],
-  "headers": Object {
+  "headers": {
     "Content-type": "application/json",
   },
   "statusCode": 200,
@@ -27,9 +27,9 @@ Object {
 `;
 
 exports[`http mocker request is valid given enforced status code and contentType and exampleKey should return the matching example 1`] = `
-Object {
+{
   "body": "<root>second</root>",
-  "headers": Object {
+  "headers": {
     "Content-type": "application/xml",
   },
   "statusCode": 201,
@@ -37,9 +37,9 @@ Object {
 `;
 
 exports[`http mocker request is valid given enforced status code and contentType should return the first matching example 1`] = `
-Object {
+{
   "body": "<root>first</root>",
-  "headers": Object {
+  "headers": {
     "Content-type": "application/xml",
   },
   "statusCode": 201,
@@ -47,9 +47,9 @@ Object {
 `;
 
 exports[`http mocker request is valid given enforced status code and example key should return application/json example 1`] = `
-Object {
-  "body": "{ \\"root\\": \\"second\\" }",
-  "headers": Object {
+{
+  "body": "{ "root": "second" }",
+  "headers": {
     "Content-type": "application/json",
   },
   "statusCode": 201,
@@ -57,9 +57,9 @@ Object {
 `;
 
 exports[`http mocker request is valid given enforced status code should return the first matching example of application/json 1`] = `
-Object {
-  "body": "{ \\"root\\": \\"first\\" }",
-  "headers": Object {
+{
+  "body": "{ "root": "first" }",
+  "headers": {
     "Content-type": "application/json",
   },
   "statusCode": 201,
@@ -67,9 +67,9 @@ Object {
 `;
 
 exports[`http mocker request is valid given only enforced content type and that content type exists should first 200 static example 1`] = `
-Object {
+{
   "body": "some text",
-  "headers": Object {
+  "headers": {
     "Content-type": "text/plain",
   },
   "statusCode": 200,
