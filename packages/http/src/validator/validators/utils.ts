@@ -1,5 +1,5 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
-import { DiagnosticSeverity } from '@stoplight/types';
+import { DiagnosticSeverity, Dictionary } from '@stoplight/types';
 import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import { NonEmptyArray, fromArray, map } from 'fp-ts/NonEmptyArray';

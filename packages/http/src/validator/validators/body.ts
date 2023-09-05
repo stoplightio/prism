@@ -29,6 +29,28 @@ export function deserializeFormBody(
     return decodedUriParams;
   }
 
+  // if the request body array contains JSON objects with multiple fields (i.e. '{"foo":"value"}, {"foo":"dd","xx":"xx"}'),
+  // depending on the deserialization indicated in the encoding, it's possible we end up with an array of broken JSON
+  // objects that were split on the ',' character, such as [ '{"foo":"value"}', '{"foo":"dd"', '"xx":"xx"}' ]. This function
+  // processes such cases so that complete JSON objects, i.e. [ '{"foo":"value"}', '{"foo":"dd", "xx":"xx"}' ], are handled
+  function parseBrokenJSONArray(inputArray: string[]): string[] {
+    let parsedJSONObjects: any[] = [];
+    let currentJSONObject: string = "";
+  
+    for (const item of inputArray) {
+      currentJSONObject += (currentJSONObject.length > 0 ? "," : "") + item;
+
+      try {
+        let parsed = JSON.parse(currentJSONObject);
+        parsed = parsed.startsWith("+") ? parsed.substring(1) : parsed;
+        parsedJSONObjects.push(parsed);
+        currentJSONObject = "";
+      } catch (error) {}
+    }
+  
+    return parsedJSONObjects;
+  }
+
   return pipe(
     Object.keys(schema.properties),
     A.reduce({}, (deserialized, property) => {
@@ -39,8 +61,19 @@ export function deserializeFormBody(
         const deserializer = body[encoding.style];
         const propertySchema = schema.properties?.[property];
 
-        if (propertySchema && typeof propertySchema !== 'boolean')
-          deserialized[property] = deserializer(property, decodedUriParams, propertySchema);
+        if (propertySchema && typeof propertySchema !== 'boolean') {
+          let deserialized_values = encoding.explode !== undefined
+            ? deserializer(property, decodedUriParams, propertySchema, encoding.explode)
+            : deserializer(property, decodedUriParams, propertySchema);
+
+          // As per https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.1.md#styleValues, 
+          // the default deserialization standard of objects in an array of objects is JSON
+          const items = propertySchema.items;
+          if (Array.isArray(deserialized_values) && typeof items === "object" && items['type'] === 'object') {
+              deserialized_values = parseBrokenJSONArray(deserialized_values);
+          }
+          deserialized[property]=deserialized_values;
+        }
       }
 
       return deserialized;
@@ -117,15 +150,15 @@ function deserializeAndValidate(
       ? parseMultipartFormDataParams(target, multipartBoundary)
       : splitUriParams(target),
     E.chain(encodedUriParams => validateAgainstReservedCharacters(encodedUriParams, encodings, prefix)),
-    E.map(decodeUriEntities),
+    E.map(encodedValidatedUriParams => decodeUriEntities(encodedValidatedUriParams)),
     E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
-    E.chain(deserialised => {
-      return pipe(
+    E.chain(deserialised => 
+      pipe(
         validateAgainstSchema(deserialised, schema, true, context, prefix, bundle),
         E.fromOption(() => deserialised),
         E.swap
-      );
-    })
+      )
+    )
   );
 }
 

@@ -6,6 +6,7 @@ import { ThenArg } from '../types';
 import * as faker from '@faker-js/faker/locale/en';
 import { Dictionary } from '@stoplight/types';
 import * as FormData from 'form-data';
+import { HttpParamStyles } from '@stoplight/types';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -723,6 +724,83 @@ describe('body params validation', () => {
         {
           id: '?http-operation-id?',
           method: 'post',
+          path: '/application-x-www-form-urlencoded-complex-request-body',
+          responses: [
+            {
+              id: faker.random.word(),
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  id: faker.random.word(),
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            body: {
+              id: faker.random.word(),
+              contents: [
+                {
+                  id: faker.random.word(),
+                  mediaType: 'application/x-www-form-urlencoded',
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      arrays: {
+                        type: 'array',
+                        items: { type: 'string' },
+                      },
+                      user_profiles: {
+                        type: 'array',
+                          items:
+                            {
+                              type: 'object',
+                              properties: {
+                                foo: {
+                                  type: 'string'
+                                },
+                                num: {
+                                  type: 'integer'
+                                },
+                                str: {
+                                  type: 'string'
+                                }
+                              },
+                              required: ['foo', 'num']
+                            },
+                        }
+                    },
+                    required: ['arrays', 'user_profiles'],
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                  },
+                  examples: [],
+                  encodings: [
+                    { property: 'arrays', style: HttpParamStyles.Form, allowReserved: true, explode: false },
+                    { property: 'user_profiles', style: HttpParamStyles.Form, allowReserved: true, explode: false }
+                  ],
+                },
+              ],
+            },
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+        },
+        {
+          id: '?http-operation-id?',
+          method: 'post',
           path: '/multipart-form-data-body-required',
           responses: [
             {
@@ -780,12 +858,32 @@ describe('body params validation', () => {
                       num: {
                         type: 'integer'
                       },
+                      arrays: {
+                        type: 'array',
+                        items: { type: 'string' },
+                      },
+                      user_profiles: {
+                        type: 'array',
+                          items:
+                            {
+                              type: 'object',
+                              properties: {
+                                foo: {
+                                  type: 'integer'
+                                }
+                              },
+                              required: ['foo']
+                            },
+                        }
                     },
-                    required: ['status'],
+                    required: ['status', 'arrays', 'user_profiles'],
                     $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
-                  encodings: [],
+                  encodings: [
+                    { property: 'arrays', style: HttpParamStyles.Form, allowReserved: true, explode: false },
+                    { property: 'user_profiles', style: HttpParamStyles.Form, allowReserved: true, explode: false }
+                  ],
                 },
               ],
             },
@@ -861,14 +959,16 @@ describe('body params validation', () => {
       });
     });
 
-    describe('valid parameter provided', () => {
+    describe('valid application/x-www-form-urlencoded simple parameters provided', () => {
       test('returns 200', async () => {
+        const params = new URLSearchParams({
+          id: '123',
+          status: 'open',
+        });
+
         const response = await makeRequest('/path', {
           method: 'POST',
-          body: new URLSearchParams({
-            id: '123',
-            status: 'open',
-          }).toString(),
+          body: params.toString(),
           headers: { 'content-type': 'application/x-www-form-urlencoded' },
         });
 
@@ -876,8 +976,26 @@ describe('body params validation', () => {
       });
     });
 
-    describe('valid multipart form data parameter provided', () => {
+    describe('valid application/x-www-form-urlencoded complex parameters provided', () => {
+      test('returns 200', async () => {
+        const params = new URLSearchParams({
+          arrays: 'a,b,c',
+          user_profiles: '{"foo":"value1","num":1,"str":"test"}, {"foo":"value2","num":2}',
+        });
+
+        const response = await makeRequest('/application-x-www-form-urlencoded-complex-request-body', {
+          method: 'POST',
+          body: params.toString(),
+          headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        });
+
+        expect(response.status).toBe(200);
+      });
+    });
+
+    describe('valid multipart form data parameters provided', () => {
       let requestParams: Dictionary<any>;
+
       beforeEach(() => {
         const formData = new FormData();
         formData.append("status", "--=\"");
@@ -885,7 +1003,9 @@ describe('body params validation', () => {
         formData.append("test_img_file", "@test_img.png");
         formData.append("test_json_file", "<test_json.json");
         formData.append("num", "10");
-
+        formData.append('arrays', 'a,b,c');
+        formData.append('user_profiles', '{"foo":1}, {"foo":2}');
+        
         requestParams = {
           method: 'POST',
           body: formData
