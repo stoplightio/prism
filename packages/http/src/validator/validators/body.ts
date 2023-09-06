@@ -150,7 +150,7 @@ function deserializeAndValidate(
       ? parseMultipartFormDataParams(target, multipartBoundary)
       : splitUriParams(target),
     E.chain(encodedUriParams => validateAgainstReservedCharacters(encodedUriParams, encodings, prefix)),
-    E.map(encodedValidatedUriParams => decodeUriEntities(encodedValidatedUriParams)),
+    E.map(decodeUriEntities),
     E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised => 
       pipe(
