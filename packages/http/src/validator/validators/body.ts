@@ -42,6 +42,9 @@ export function deserializeFormBody(
 
       try {
         let parsed = JSON.parse(currentJSONObject);
+
+        // handle the scenario where a JSON object in the encoded array is preceded by a "+", which can occur when 
+        // the user puts a space between JSON array entries, such as '{"foo":"a"}, {"foo":"b"}'
         parsed = parsed.startsWith("+") ? parsed.substring(1) : parsed;
         parsedJSONObjects.push(parsed);
         currentJSONObject = "";
@@ -72,7 +75,7 @@ export function deserializeFormBody(
           if (Array.isArray(deserialized_values) && typeof items === "object" && items['type'] === 'object') {
               deserialized_values = parseBrokenJSONArray(deserialized_values);
           }
-          deserialized[property]=deserialized_values;
+          deserialized[property] = deserialized_values;
         }
       }
 
