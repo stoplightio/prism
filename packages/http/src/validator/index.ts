@@ -64,7 +64,8 @@ const validateInputIfBodySpecIsProvided = (
     O.fold(
       () => E.right(body),
       ([body, contents]) =>
-        validateBody(body, contents.contents ?? [], ValidationContext.Input, mediaType, multipartBoundary, bundle)    )
+        validateBody(body, contents.contents ?? [], ValidationContext.Input, mediaType, multipartBoundary, bundle)
+    )
   );
 
 const validateInputBody = (
