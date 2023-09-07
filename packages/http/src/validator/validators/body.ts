@@ -37,18 +37,17 @@ export function deserializeFormBody(
     let parsedJSONObjects: any[] = [];
     let currentJSONObject: string = "";
   
-    for (const item of inputArray) {
+    for (let item of inputArray) {
+      // handle the scenario where a JSON object in the encoded array is preceded by a "+", which can occur when 
+      // the user puts a space between JSON array entries, such as '{"foo": "a"}, {"foo":"b"}'
+      item = item.startsWith("+") ? item.substring(1) : item;
       currentJSONObject += (currentJSONObject.length > 0 ? "," : "") + item;
 
       try {
-        let parsed = JSON.parse(currentJSONObject);
-
-        // handle the scenario where a JSON object in the encoded array is preceded by a "+", which can occur when 
-        // the user puts a space between JSON array entries, such as '{"foo":"a"}, {"foo":"b"}'
-        parsed = parsed.startsWith("+") ? parsed.substring(1) : parsed;
+        const parsed = JSON.parse(currentJSONObject);
         parsedJSONObjects.push(parsed);
         currentJSONObject = "";
-      } catch (error) {}
+      } catch (_) {}
     }
   
     return parsedJSONObjects;

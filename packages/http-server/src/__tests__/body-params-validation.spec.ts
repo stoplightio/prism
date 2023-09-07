@@ -768,14 +768,14 @@ describe('body params validation', () => {
                                 foo: {
                                   type: 'string'
                                 },
+                                data: {
+                                  type: 'boolean'
+                                },
                                 num: {
                                   type: 'integer'
-                                },
-                                str: {
-                                  type: 'string'
                                 }
                               },
-                              required: ['foo', 'num']
+                              required: ['foo', 'data']
                             },
                         }
                     },
@@ -980,7 +980,7 @@ describe('body params validation', () => {
       test('returns 200', async () => {
         const params = new URLSearchParams({
           arrays: 'a,b,c',
-          user_profiles: '{"foo":"value1","num":1,"str":"test"}, {"foo":"value2","num":2}',
+          user_profiles: '{"foo":"value1","num":1,"data":true}, {"foo":"value2","data":false}',
         });
 
         const response = await makeRequest('/application-x-www-form-urlencoded-complex-request-body', {
