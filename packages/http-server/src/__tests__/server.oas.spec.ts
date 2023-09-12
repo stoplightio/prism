@@ -154,10 +154,7 @@ describe('Invalid examples', () => {
       mock: { dynamic: false, defaultExamples: true },
     });
   });
-<<<<<<< HEAD
-
-=======
->>>>>>> e3136402e7bdd5e49dd82ccb423ebe2abfa5c239
+  
   afterAll(() => server.close());
 
   describe('when running the server with defaultExamples to true', () => {
