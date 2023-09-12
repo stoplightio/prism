@@ -49,7 +49,7 @@ const helpers = {
     { code, exampleKey, dynamic }: NegotiatePartialOptions,
     httpContent: IMediaTypeContent
   ): E.Either<Error, BodyNegotiationResult> {
-    const { mediaType, schema } = httpContent;
+    const { mediaType } = httpContent;
     if (exampleKey) {
       return pipe(
         findExampleByKey(httpContent, exampleKey),
@@ -59,11 +59,11 @@ const helpers = {
             `Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`
           )
         ),
-        E.map(bodyExample => ({ code, mediaType, bodyExample, schema }))
+        E.map(bodyExample => ({ code, mediaType, bodyExample }))
       );
     } else if (dynamic) {
       return pipe(
-        schema,
+        httpContent.schema,
         E.fromNullable(new Error(`Tried to force a dynamic response for: ${mediaType} but schema is not defined.`)),
         E.map(schema => ({ code, mediaType, schema }))
       );
@@ -71,15 +71,14 @@ const helpers = {
       return E.right(
         pipe(
           findFirstExample(httpContent),
-          O.map(bodyExample => ({ code, mediaType, bodyExample, schema })),
-          O.alt(() => {
-            return pipe(
-              O.fromNullable(schema),
+          O.map(bodyExample => ({ code, mediaType, bodyExample })),
+          O.alt(() =>
+            pipe(
+              O.fromNullable(httpContent.schema),
               O.map<JSONSchema, BodyNegotiationResult>(schema => ({ schema, code, mediaType }))
             )
-          }
           ),
-          O.getOrElse<BodyNegotiationResult>(() => ({ code, mediaType, schema }))
+          O.getOrElse<BodyNegotiationResult>(() => ({ code, mediaType }))
         )
       );
     }

@@ -21,7 +21,6 @@ import { pipe } from 'fp-ts/function';
 import * as TE from 'fp-ts/TaskEither';
 import * as E from 'fp-ts/Either';
 import * as IOE from 'fp-ts/IOEither';
-import { error } from 'console';
 
 function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValues {
   const params = {};
@@ -127,27 +126,14 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
           );
 
-          if (errorViolations.length > 0) {
-              if (opts.config.errors) {
-                return IOE.left(
-                  ProblemJsonError.fromTemplate(
-                    VIOLATIONS,
-                    'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
-                    { validation: errorViolations }
-                  )
-                );
-            } else if (opts.config.mock.defaultExamples){
-              if (!response.output.defaultDynamicBody) {
-                return IOE.left(
-                  ProblemJsonError.fromTemplate(
-                    VIOLATIONS,
-                    '`Your response was not valid and the --defaultExamples flag is set, so Prism tried to force a dynamic response, but schema is not defined.`',
-                    { validation: errorViolations }
-                  )
-                );
-              }
-              response.output.body = response.output.defaultDynamicBody;
-            }
+          if (opts.config.errors && errorViolations.length > 0) {
+            return IOE.left(
+              ProblemJsonError.fromTemplate(
+                VIOLATIONS,
+                'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
+                { validation: errorViolations }
+              )
+            );
           }
         }
 

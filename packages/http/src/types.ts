@@ -13,7 +13,6 @@ export interface IHttpOperationConfig {
   code?: number;
   exampleKey?: string;
   dynamic: boolean;
-  defaultExamples?: boolean;
 }
 
 export type IHttpMockConfig = Overwrite<IPrismMockConfig, { mock: IHttpOperationConfig }>;
@@ -41,7 +40,6 @@ export interface IHttpResponse {
   statusCode: number;
   headers?: IHttpNameValue;
   body?: unknown;
-  defaultDynamicBody?: unknown;
 }
 
 export type ProblemJson = {

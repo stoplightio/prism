@@ -6,7 +6,6 @@ import { merge } from 'lodash';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { ThenArg } from '../types';
-import { WithUnknownContainers } from 'io-ts/lib/Schemable';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -137,60 +136,11 @@ describe('Prefer header overrides', () => {
   });
 });
 
-describe('Invalid examples', () => {
-  let server: ThenArg<ReturnType<typeof instantiatePrism>>;
-  const schema = { id: 'number', name: 'string', status: 'string' };
-
-  interface PayloadSchema {
-    [key: string]: string;
-  }
-
-  function hasPropertiesOfType(obj: any, schema: PayloadSchema): boolean {
-    return Object.keys(schema).every(key => typeof obj[key] === schema[key]);
-  }
-
-  beforeAll(async () => {
-    server = await instantiatePrism(resolve(__dirname, 'fixtures', 'invalid-examples.oas3.yaml'), {
-      mock: { dynamic: false, defaultExamples: true },
-    });
-  });
-  afterAll(() => server.close());
-
-  describe('when running the server with defaultExamples to true', () => {
-    describe('and there is no preference header sent', () => {
-      describe('and the first schema example is invalid', () => {
-        let payload: unknown;
-        beforeAll(async () => {
-          payload = await fetch(new URL('/pets', server.address), { method: 'GET' }).then(r =>
-            r.json()
-          );
-        });
-        it('should return a dynamically generated example', () => expect(hasPropertiesOfType(payload, schema)).toBe(true));
-      });
-    });
-
-    describe('and I send a request with Prefer header selecting a specific example', () => {
-      describe('and the selected example is invalid', () => {
-        let payload: unknown;
-        beforeAll(async () => {
-          payload = await fetch(new URL('/pets', server.address), { 
-            method: 'GET', 
-            headers: { prefer: 'example=invalid_dog' }, 
-          }).then(r =>
-            r.json()
-          );
-        });
-        it('should return a dynamically generated example', () => expect(hasPropertiesOfType(payload, schema)).toBe(true));
-      });
-    });
-  });
-});
-
 describe.each([[...oas2File], [...oas3File]])('server %s', file => {
   let server: ThenArg<ReturnType<typeof instantiatePrism>>;
 
   beforeEach(async () => {
-    server = await instantiatePrism(resolve(__dirname, 'fixtures', file), { mock: { dynamic: false, defaultExamples: true } });
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', file), { mock: { dynamic: true } });
   });
 
   afterEach(() => server.close());
