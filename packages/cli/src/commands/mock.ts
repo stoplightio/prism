@@ -25,10 +25,16 @@ const mockCommand: CommandModule = {
           default: undefined,
           boolean: true,
         },
+        defaultExamples: {
+          alias: 'de',
+          description: 'Generates dynamic default response examples in place of schema examples that are invalid.',
+          boolean: true,
+          default: false,
+        },
       }),
   handler: parsedArgs => {
     parsedArgs.jsonSchemaFakerFillProperties = parsedArgs['json-schema-faker-fillProperties'];
-    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, jsonSchemaFakerFillProperties } =
+    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, defaultExamples, jsonSchemaFakerFillProperties } =
       parsedArgs as unknown as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
@@ -41,6 +47,7 @@ const mockCommand: CommandModule = {
       multiprocess,
       errors,
       verboseLevel,
+      defaultExamples,
       jsonSchemaFakerFillProperties,
     };
 
