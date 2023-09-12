@@ -21,6 +21,7 @@ import { pipe } from 'fp-ts/function';
 import * as TE from 'fp-ts/TaskEither';
 import * as E from 'fp-ts/Either';
 import * as IOE from 'fp-ts/IOEither';
+import { error } from 'console';
 
 function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValues {
   const params = {};

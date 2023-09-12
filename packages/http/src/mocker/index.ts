@@ -395,7 +395,11 @@ function computeBody(
   return E.right(undefined);
 }
 
+<<<<<<< HEAD
 const dynamicBody = (negotiationResultSchema: JSONSchema7, payloadGenerator: PayloadGenerator) => 
+=======
+const dynamicBody = (negotiationResultSchema: JSONSchema7, payloadGenerator: PayloadGenerator, ) => 
+>>>>>>> e3136402e7bdd5e49dd82ccb423ebe2abfa5c239
   pipe(payloadGenerator(negotiationResultSchema), mapPayloadGeneratorError('body'));
 
 const mapPayloadGeneratorError = (source: string) =>

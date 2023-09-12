@@ -6,6 +6,7 @@ import { merge } from 'lodash';
 import fetch, { RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { ThenArg } from '../types';
+import { WithUnknownContainers } from 'io-ts/lib/Schemable';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -153,7 +154,10 @@ describe('Invalid examples', () => {
       mock: { dynamic: false, defaultExamples: true },
     });
   });
+<<<<<<< HEAD
 
+=======
+>>>>>>> e3136402e7bdd5e49dd82ccb423ebe2abfa5c239
   afterAll(() => server.close());
 
   describe('when running the server with defaultExamples to true', () => {
@@ -190,7 +194,7 @@ describe.each([[...oas2File], [...oas3File]])('server %s', file => {
   let server: ThenArg<ReturnType<typeof instantiatePrism>>;
 
   beforeEach(async () => {
-    server = await instantiatePrism(resolve(__dirname, 'fixtures', file), { mock: { dynamic: true } });
+    server = await instantiatePrism(resolve(__dirname, 'fixtures', file), { mock: { dynamic: false, defaultExamples: true } });
   });
 
   afterEach(() => server.close());
