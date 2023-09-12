@@ -3,6 +3,7 @@ import Ajv from 'ajv';
 import { createLogger } from '@stoplight/prism-core';
 import { httpOperations, httpRequests, httpOperationsByRef } from '../../__tests__/fixtures';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
+import { removeDefaultDynamicBody } from './utils';
 import mock from '../index';
 
 const logger = createLogger('TEST', { enabled: false });
@@ -20,7 +21,7 @@ describe('http mocker', () => {
           },
         })(logger);
 
-        assertRight(response, result => expect(result).toMatchSnapshot());
+        assertRight(response, result => expect(removeDefaultDynamicBody(result)).toMatchSnapshot());
       });
 
       test('and that content type does not exist should return a 406 error', () => {
@@ -50,7 +51,7 @@ describe('http mocker', () => {
           },
         })(logger);
 
-        assertRight(response, result => expect(result).toMatchSnapshot());
+        assertRight(response, result => expect(removeDefaultDynamicBody(result)).toMatchSnapshot());
       });
     });
 
@@ -66,7 +67,7 @@ describe('http mocker', () => {
           },
         })(logger);
 
-        assertRight(response, result => expect(result).toMatchSnapshot());
+        assertRight(response, result => expect(removeDefaultDynamicBody(result)).toMatchSnapshot());
       });
     });
 
@@ -81,7 +82,7 @@ describe('http mocker', () => {
           },
         })(logger);
 
-        assertRight(response, result => expect(result).toMatchSnapshot());
+        assertRight(response, result => expect(removeDefaultDynamicBody(result)).toMatchSnapshot());
       });
 
       test('and mediaType should return 200 response', () => {
@@ -95,7 +96,7 @@ describe('http mocker', () => {
           },
         })(logger);
 
-        assertRight(response, result => expect(result).toMatchSnapshot());
+        assertRight(response, result => expect(removeDefaultDynamicBody(result)).toMatchSnapshot());
       });
     });
 
@@ -110,7 +111,7 @@ describe('http mocker', () => {
           },
         })(logger);
 
-        assertRight(response, result => expect(result).toMatchSnapshot());
+        assertRight(response, result => expect(removeDefaultDynamicBody(result)).toMatchSnapshot());
       });
 
       test('given that status code is not defined should throw an error', () => {
@@ -137,7 +138,7 @@ describe('http mocker', () => {
           },
         })(logger);
 
-        assertRight(response, result => expect(result).toMatchSnapshot());
+        assertRight(response, result => expect(removeDefaultDynamicBody(result)).toMatchSnapshot());
       });
 
       describe('HttpOperation contains example', () => {

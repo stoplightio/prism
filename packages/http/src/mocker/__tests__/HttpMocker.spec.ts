@@ -9,6 +9,7 @@ import { IHttpRequest, JSONSchema } from '../../types';
 import helpers from '../negotiator/NegotiatorHelpers';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { runCallback } from '../callback/callbacks';
+import { removeDefaultDynamicBody } from './utils';
 
 jest.mock('../callback/callbacks', () => ({
   runCallback: jest.fn(() => () => () => undefined),
@@ -148,7 +149,7 @@ describe('mocker', () => {
           input: mockInput,
         })(logger);
 
-        assertRight(mockResult, result => expect(result).toMatchSnapshot());
+        assertRight(mockResult, result => expect(removeDefaultDynamicBody(result)).toMatchSnapshot());
       });
 
       it('returns dynamic example', () => {
@@ -393,7 +394,7 @@ describe('mocker', () => {
           input: mockInput,
         })(logger);
 
-        assertRight(mockResult, result => expect(result).toMatchSnapshot());
+        assertRight(mockResult, result => expect(removeDefaultDynamicBody(result)).toMatchSnapshot());
       });
     });
 

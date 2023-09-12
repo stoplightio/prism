@@ -83,13 +83,13 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
         /*  Note: This is now just logging the errors without propagating them back. This might be moved as a first
         level concept in Prism.
     */
-      logger =>
-        pipe(
-          response,
-          E.map(mockResponseLogger(logger)),
-          E.map(response => runCallbacks({ resource, request: input.data, response })(logger)),
-          E.chain(() => response)
-        )
+        logger =>
+          pipe(
+            response,
+            E.map(mockResponseLogger(logger)),
+            E.map(response => runCallbacks({ resource, request: input.data, response })(logger)),
+            E.chain(() => response)
+          )
     )
   );
 };
