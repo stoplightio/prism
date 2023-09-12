@@ -51,6 +51,7 @@ const proxyCommand: CommandModule = {
       'errors',
       'validateRequest',
       'verboseLevel',
+      'defaultExamples',
       'upstreamProxy',
       'jsonSchemaFakerFillProperties'
     );
