@@ -47,6 +47,7 @@ import {
 } from '../validator/validators/body';
 import { parseMIMEHeader } from '../validator/validators/headers';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
+import { JSONSchema7 } from 'json-schema';
 export { resetGenerator as resetJSONSchemaGenerator } from './generator/JSONSchema';
 
 const eitherRecordSequence = Record.sequence(E.Applicative);
@@ -57,8 +58,9 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
   input,
   config,
 }) => {
-  const payloadGenerator: PayloadGenerator = config.dynamic
-    ? partial(generate, resource, resource['__bundle__'])
+  const dynamicPayloadGenerator = partial(generate, resource, resource['__bundle__']);
+  const configPayloadGenerator: PayloadGenerator = config.dynamic
+    ? dynamicPayloadGenerator
     : partial(generateStatic, resource);
 
   return pipe(
@@ -74,20 +76,21 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
       return config;
     }),
     R.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
-    R.chain(result => negotiateDeprecation(result, resource)),
-    R.chain(result => assembleResponse(result, payloadGenerator)),
+    R.chain(result => (negotiateDeprecation(result, resource))),
+    R.chain(result => assembleResponse(result, configPayloadGenerator, dynamicPayloadGenerator)),
     R.chain(
       response =>
         /*  Note: This is now just logging the errors without propagating them back. This might be moved as a first
         level concept in Prism.
-    */
-        logger =>
+    */{
+        return logger =>
           pipe(
             response,
             E.map(mockResponseLogger(logger)),
             E.map(response => runCallbacks({ resource, request: input.data, response })(logger)),
             E.chain(() => response)
           )
+}
     )
   );
 };
@@ -313,7 +316,8 @@ function negotiateDeprecation(
 const assembleResponse =
   (
     result: E.Either<Error, IHttpNegotiationResult>,
-    payloadGenerator: PayloadGenerator
+    configPayloadGenerator: PayloadGenerator,
+    dynamicPayloadGenerator: PayloadGenerator
   ): R.Reader<Logger, E.Either<Error, IHttpResponse>> =>
   logger =>
     pipe(
@@ -321,8 +325,8 @@ const assembleResponse =
       E.bind('negotiationResult', () => result),
       E.bind('mockedData', ({ negotiationResult }) =>
         eitherSequence(
-          computeBody(negotiationResult, payloadGenerator),
-          computeMockedHeaders(negotiationResult.headers || [], payloadGenerator)
+          computeBody(negotiationResult, configPayloadGenerator),
+          computeMockedHeaders(negotiationResult.headers || [], configPayloadGenerator)
         )
       ),
       E.map(({ mockedData: [mockedBody, mockedHeaders], negotiationResult }) => {
@@ -338,6 +342,7 @@ const assembleResponse =
             }),
           },
           body: mockedBody,
+          defaultDynamicBody: negotiationResult.schema ? dynamicBody(negotiationResult.schema, dynamicPayloadGenerator)["right"] : undefined
         };
 
         logger.success(`Responding with the requested status code ${response.statusCode}`);
@@ -386,10 +391,13 @@ function computeBody(
     return E.right(negotiationResult.bodyExample.value);
   }
   if (negotiationResult.schema) {
-    return pipe(payloadGenerator(negotiationResult.schema), mapPayloadGeneratorError('body'));
+    return dynamicBody(negotiationResult.schema, payloadGenerator);
   }
   return E.right(undefined);
 }
+
+const dynamicBody = (negotiationResultSchema: JSONSchema7, payloadGenerator: PayloadGenerator, ) => 
+  pipe(payloadGenerator(negotiationResultSchema), mapPayloadGeneratorError('body'));
 
 const mapPayloadGeneratorError = (source: string) =>
   E.mapLeft<Error, Error>(err => {
