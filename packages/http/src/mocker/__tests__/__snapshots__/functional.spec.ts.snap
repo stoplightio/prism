@@ -3,6 +3,7 @@
 exports[`http mocker request is valid given enforced example key and mediaType should return 200 response 1`] = `
 Object {
   "body": "{ \\"root\\": \\"second\\" }",
+  "defaultDynamicBody": undefined,
   "headers": Object {
     "Content-type": "application/xml",
   },
@@ -19,6 +20,16 @@ Object {
       "name": "make bears",
     },
   ],
+  "defaultDynamicBody": Array [
+    Object {
+      "completed": false,
+      "name": "officia occaecat",
+    },
+    Object {
+      "completed": true,
+      "name": "in quis elit",
+    },
+  ],
   "headers": Object {
     "Content-type": "application/json",
   },
@@ -29,6 +40,7 @@ Object {
 exports[`http mocker request is valid given enforced status code and contentType and exampleKey should return the matching example 1`] = `
 Object {
   "body": "<root>second</root>",
+  "defaultDynamicBody": undefined,
   "headers": Object {
     "Content-type": "application/xml",
   },
@@ -39,6 +51,7 @@ Object {
 exports[`http mocker request is valid given enforced status code and contentType should return the first matching example 1`] = `
 Object {
   "body": "<root>first</root>",
+  "defaultDynamicBody": undefined,
   "headers": Object {
     "Content-type": "application/xml",
   },
@@ -49,6 +62,7 @@ Object {
 exports[`http mocker request is valid given enforced status code and example key should return application/json example 1`] = `
 Object {
   "body": "{ \\"root\\": \\"second\\" }",
+  "defaultDynamicBody": undefined,
   "headers": Object {
     "Content-type": "application/json",
   },
@@ -59,6 +73,7 @@ Object {
 exports[`http mocker request is valid given enforced status code should return the first matching example of application/json 1`] = `
 Object {
   "body": "{ \\"root\\": \\"first\\" }",
+  "defaultDynamicBody": undefined,
   "headers": Object {
     "Content-type": "application/json",
   },
@@ -69,6 +84,7 @@ Object {
 exports[`http mocker request is valid given only enforced content type and that content type exists should first 200 static example 1`] = `
 Object {
   "body": "some text",
+  "defaultDynamicBody": undefined,
   "headers": Object {
     "Content-type": "text/plain",
   },

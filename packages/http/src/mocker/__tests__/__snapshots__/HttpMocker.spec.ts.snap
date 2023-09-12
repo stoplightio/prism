@@ -3,6 +3,7 @@
 exports[`mocker mock() when example is of type INodeExternalExample generates a dynamic example 1`] = `
 Object {
   "body": "test value",
+  "defaultDynamicBody": "example value chelsea",
   "headers": Object {
     "Content-type": "test",
   },
@@ -13,6 +14,7 @@ Object {
 exports[`mocker mock() with valid negotiator response returns static example 1`] = `
 Object {
   "body": "hello",
+  "defaultDynamicBody": undefined,
   "headers": Object {
     "Content-type": "test",
   },
