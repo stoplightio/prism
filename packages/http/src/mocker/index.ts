@@ -76,7 +76,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
       return config;
     }),
     R.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
-    R.chain(result => (negotiateDeprecation(result, resource))),
+    R.chain(result => negotiateDeprecation(result, resource)),
     R.chain(result => assembleResponse(result, configPayloadGenerator, dynamicPayloadGenerator)),
     R.chain(
       response =>
