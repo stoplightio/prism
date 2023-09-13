@@ -21,7 +21,6 @@ import { pipe } from 'fp-ts/function';
 import * as TE from 'fp-ts/TaskEither';
 import * as E from 'fp-ts/Either';
 import * as IOE from 'fp-ts/IOEither';
-import { error } from 'console';
 
 function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValues {
   const params = {};
@@ -128,15 +127,15 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           );
 
           if (errorViolations.length > 0) {
-              if (opts.config.errors) {
-                return IOE.left(
-                  ProblemJsonError.fromTemplate(
-                    VIOLATIONS,
-                    'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
-                    { validation: errorViolations }
-                  )
-                );
-            } else if (opts.config.mock.defaultExamples){
+            if (opts.config.errors) {
+              return IOE.left(
+                ProblemJsonError.fromTemplate(
+                  VIOLATIONS,
+                  'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
+                  { validation: errorViolations }
+                )
+              );
+            } else if (opts.config.mock.defaultExamples) {
               if (!response.output.defaultDynamicBody) {
                 return IOE.left(
                   ProblemJsonError.fromTemplate(
