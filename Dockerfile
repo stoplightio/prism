@@ -1,14 +1,18 @@
 FROM node:16 as compiler
 
+ARG YARN_NETWORK_TIMEOUT=30000
+
 WORKDIR /usr/src/prism
 
 COPY package.json yarn.lock /usr/src/prism/
 COPY packages/ /usr/src/prism/packages/
 
-RUN yarn && yarn build
+RUN yarn --network-timeout $YARN_NETWORK_TIMEOUT && yarn build
 
 ###############################################################
 FROM node:16 as dependencies
+
+ARG YARN_NETWORK_TIMEOUT=30000
 
 WORKDIR /usr/src/prism/
 
@@ -28,7 +32,7 @@ COPY packages/cli/package.json /usr/src/prism/packages/cli/
 RUN mkdir -p /usr/src/prism/packages/cli/node_modules
 
 ENV NODE_ENV production
-RUN yarn --production
+RUN yarn --network-timeout $YARN_NETWORK_TIMEOUT --production
 
 RUN if [ $(uname -m) != "aarch64" ]; then curl -sfL https://gobinaries.com/tj/node-prune | bash; fi
 RUN if [ $(uname -m) != "aarch64" ]; then node-prune; fi
