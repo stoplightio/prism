@@ -87,7 +87,14 @@ export function parseMultipartFormDataParams(
 
 export function decodeUriEntities(target: Dictionary<string>) {
   return Object.entries(target).reduce((result, [k, v]) => {
-    result[decodeURIComponent(k)] = decodeURIComponent(v);
+    try {
+      // NOTE: this will decode the value even if it shouldn't (i.e when text/plain mime type).
+      // the decision to decode or not should be made before calling this function
+      result[decodeURIComponent(k)] = decodeURIComponent(v);
+    } catch (e) {
+      // when the data is binary, for example, uri decoding will fail so leave value as-is
+      result[decodeURIComponent(k)] = v;
+    }
     return result;
   }, {});
 }

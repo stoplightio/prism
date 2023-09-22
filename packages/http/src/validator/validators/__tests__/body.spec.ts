@@ -1,6 +1,6 @@
 import { HttpParamStyles, IMediaTypeContent } from '@stoplight/types';
 import { JSONSchema } from '../../..';
-import { validate, findContentByMediaTypeOrFirst } from '../body';
+import { validate, findContentByMediaTypeOrFirst, decodeUriEntities } from '../body';
 import { assertRight, assertLeft, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { ValidationContext } from '../types';
 import * as faker from '@faker-js/faker/locale/en';
@@ -277,5 +277,22 @@ describe('findContentByMediaTypeOrFirst()', () => {
 
       it('should return the generic content', () => assertSome(foundContent));
     });
+  });
+});
+
+describe('decodeUriEntities', () => {
+  it('should decode both key and value', () => {
+    const target = { 'profile%2DImage': 'outer%20space' };
+    const results = decodeUriEntities(target);
+    expect(results).toEqual({ 'profile-Image': 'outer space' });
+  });
+
+  it('should decode the key but leave the value as encoded if decoding fails', () => {
+    const target = {
+      'profile%2DImage':
+        '�PNG\r\n\u001a\n\u0000\u0000\u0000\rIHDR\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0001\u0003\u0000\u0000\u0000%�V�\u0000\u0000\u0000\u0003PLTE\u0000\u0000\u0000�z=�\u0000\u0000\u0000\u0001tRNS\u0000@��f\u0000\u0000\u0000\nIDAT\b�c`\u0000\u0000\u0000\u0002\u0000\u0001�!�3\u0000\u0000\u0000\u0000IEND�B`�',
+    };
+    const results = decodeUriEntities(target);
+    expect(results).toEqual({ 'profile-Image': target['profile%2DImage'] });
   });
 });
