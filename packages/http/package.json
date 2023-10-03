@@ -33,7 +33,7 @@
     "fp-ts": "^2.11.5",
     "http-proxy-agent": "^5.0.0",
     "https-proxy-agent": "^5.0.0",
-    "json-schema-faker": "0.5.0-rcv.40",
+    "json-schema-faker": "0.5.3",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.5",
     "parse-multipart-data": "^1.5.0",
