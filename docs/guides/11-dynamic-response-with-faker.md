@@ -178,5 +178,5 @@ openapi: 3.1.0
 x-json-schema-faker:
    min-items: 2
    max-items: 3
-   fillproperties: false
+   fillProperties: false
 ```
