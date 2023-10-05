@@ -6,8 +6,7 @@
       "@stoplight/prism-core": ["./core/src"],
       "@stoplight/prism-cli": ["./cli/src"],
       "@stoplight/prism-http": ["./http/src"],
-      "@stoplight/prism-http-server": ["./http-server/src"],
-      "json-schema-faker": ["../node_modules/@types/json-schema-faker/index.d.ts"]
+      "@stoplight/prism-http-server": ["./http-server/src"]
     }
   },
   "extends": "./tsconfig.json",

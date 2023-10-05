@@ -1,16 +1,7 @@
-const { pathsToModuleNameMapper } = require('ts-jest/utils');
-const path = require('path');
-const { mapValues } = require('lodash');
-const { compilerOptions } = require('./packages/tsconfig.test');
-
-// Due to invalid typings built-in to `json-schema-faker` we had to force typescript to load
-// typings from @types/json-schema-faker instead
-const pathsMappings = Object.fromEntries(
-  Object.entries(compilerOptions.paths).filter(([name]) => name.startsWith('@stoplight'))
-);
-
 const projectDefault = {
-  moduleNameMapper: mapValues(pathsToModuleNameMapper(pathsMappings), v => path.resolve(path.join('packages', v))),
+  moduleNameMapper: {
+    'json-schema-faker': 'json-schema-faker/dist/main.cjs',
+  },
   testEnvironment: 'node',
   transform: {
     '^.+\\.(ts)$': 'ts-jest',

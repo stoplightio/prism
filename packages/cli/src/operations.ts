@@ -43,13 +43,13 @@ export async function getHttpOperationsFromSpec(specFilePathOrObject: string | o
 }
 
 function isOpenAPI2(document: unknown): document is Spec {
-  return get(document, 'swagger');
+  return get(document, 'swagger') !== undefined;
 }
 
 function isOpenAPI3(document: unknown): document is OpenAPIObject {
-  return get(document, 'openapi');
+  return get(document, 'openapi') !== undefined;
 }
 
 function isPostmanCollection(document: unknown): document is CollectionDefinition {
-  return Array.isArray(get(document, 'item')) && get(document, 'info.name');
+  return Array.isArray(get(document, 'item')) && get(document, 'info.name') !== undefined;
 }

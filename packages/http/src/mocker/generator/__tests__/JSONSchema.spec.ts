@@ -165,6 +165,7 @@ describe('JSONSchema generator', () => {
           title: { type: 'string', writeOnly: true },
         },
         required: ['id', 'title'],
+        additionalProperties: false,
       };
 
       it('removes writeOnly properties', () => {
