@@ -77,30 +77,32 @@ export const convertAjvErrors = (
   context: ValidationContext,
   prefix?: string
 ) =>
-  pipe(
-    errors,
-    map<ErrorObject, IPrismDiagnostic>(error => {
-      const allowedParameters = 'allowedValues' in error.params ? `: ${error.params.allowedValues.join(', ')}` : '';
-      const detectedAdditionalProperties =
-        'additionalProperty' in error.params ? `; found '${error.params.additionalProperty}'` : '';
-      const errorPath = error.instancePath.split('/').filter(segment => segment !== '');
-      const path = prefix ? [prefix, ...errorPath] : errorPath;
-      const errorPathType = errorPath.length > 0 ? (prefix == 'body' ? 'property ' : 'parameter ') : '';
-      const errorSourceDescription =
-        `${context === ValidationContext.Input ? 'Request' : 'Response'} ` +
-        (prefix ? `${prefix} ` : '') +
-        errorPathType +
-        errorPath.join('.').trim() +
-        (errorPath.length > 0 ? ' ' : '');
-
-      return {
-        path,
-        code: error.keyword || '',
-        message: `${errorSourceDescription}${error.message || ''}${allowedParameters}${detectedAdditionalProperties}`,
-        severity,
-      };
-    })
-  );
+  {
+    return pipe(
+      errors,
+      map<ErrorObject, IPrismDiagnostic>(error => {
+        // We do not return a pattern or allowed values because it may contain non-ASCII characters which will break sl-violations HTTP-Headers        
+        const detectedRegexMismatch = error.message?.includes('must match pattern') ? `does not pass regular expression check ` : false
+        
+        const errorPath = error.instancePath.split('/').filter(segment => segment !== '');
+        const path = prefix ? [prefix, ...errorPath] : errorPath;
+        const errorPathType = errorPath.length > 0 ? (prefix == 'body' ? 'property ' : 'parameter ') : '';
+        const errorSourceDescription =
+          `${context === ValidationContext.Input ? 'Request' : 'Response'} ` +
+          (prefix ? `${prefix} ` : '') +
+          errorPathType +
+          errorPath.join('.').trim() +
+          (errorPath.length > 0 ? ' ' : '');
+        
+        return {
+          path,
+          code: error.keyword || '',
+          message: `${errorSourceDescription}${detectedRegexMismatch || error.message}`,
+          severity,
+        };
+      })
+    )
+  };
 
 const validationsFunctionsCache = new WeakMap<JSONSchema, WeakMap<object, ValidateFunction>>();
 const EMPTY_BUNDLE = { _emptyBundle: true };
