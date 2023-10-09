@@ -35,7 +35,7 @@
     "https-proxy-agent": "^5.0.0",
     "json-schema-faker": "0.5.3",
     "lodash": "^4.17.21",
-    "node-fetch": "^2.6.5",
+    "node-fetch": "^3.3.2",
     "parse-multipart-data": "^1.5.0",
     "pino": "^6.13.3",
     "tslib": "^2.3.1",
