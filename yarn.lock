@@ -1488,10 +1488,10 @@
     json-schema-compare "^0.2.2"
     lodash "^4.17.4"
 
-"@stoplight/json-schema-ref-parser@9.2.5":
-  version "9.2.5"
-  resolved "https://registry.npmjs.org/@stoplight/json-schema-ref-parser/-/json-schema-ref-parser-9.2.5.tgz"
-  integrity sha512-7UI3pX5oyGzAdGPah001CyPnIsJZJW+38sGjvx862zXQFidBe0sxFO5MUety61Zr/RaygCQ2RU/KfD7hSfOLxg==
+"@stoplight/json-schema-ref-parser@9.2.7":
+  version "9.2.7"
+  resolved "https://registry.yarnpkg.com/@stoplight/json-schema-ref-parser/-/json-schema-ref-parser-9.2.7.tgz#b1320b3a8ac9783663af870667fae9a616c4bfd3"
+  integrity sha512-1vNzJ7iSrFTAFNbZHPyhI6GiJJw74+WaV61bARUQEDR4Jm80f9s0Tq9uCvGoMYwIFmWDJAoTiyegnUs6SvVxDw==
   dependencies:
     "@jsdevtools/ono" "^7.1.3"
     "@stoplight/path" "^1.3.2"
