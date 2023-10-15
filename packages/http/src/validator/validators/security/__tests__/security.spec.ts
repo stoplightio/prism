@@ -397,6 +397,63 @@ describe('validateSecurity', () => {
     });
   });
 
+  describe('when security scheme is optional', () => {
+    const securityScheme: HttpSecurityScheme[][] = [
+      [
+        {
+          id: faker.random.word(),
+          scheme: 'bearer',
+          type: 'http',
+          key: 'sec',
+          extensions: { 'x-test': faker.random.word() },
+        },
+      ],
+      [], // yeah that's how you do optional in OpenAPI
+    ];
+
+    it('passes if no security scheme is used', () => {
+      assertRight(
+        validateSecurity({
+          element: { ...baseRequest, headers: {} },
+          resource: {
+            security: securityScheme,
+          },
+        })
+      );
+    });
+
+    it('passes the validation', () => {
+      assertRight(
+        validateSecurity({
+          element: { ...baseRequest, headers: { authorization: 'Bearer abc123' } },
+          resource: {
+            security: securityScheme,
+          },
+        })
+      );
+    });
+
+    it('fails with an invalid security scheme error', () => {
+      assertLeft(
+        validateSecurity({
+          element: { ...baseRequest, headers: { authorization: 'Basic abc123' } },
+          resource: {
+            security: securityScheme,
+          },
+        }),
+        res =>
+          expect(res).toStrictEqual([
+            {
+              code: 401,
+              message: 'Invalid security scheme used',
+              severity: DiagnosticSeverity.Error,
+              tags: ['Bearer', 'None'],
+            },
+          ])
+      );
+    });
+  });
+
   describe('OR relation between security schemes', () => {
     const securityScheme: HttpSecurityScheme[][] = [
       [
@@ -615,6 +672,146 @@ describe('validateSecurity', () => {
           })
         );
       });
+    });
+  });
+
+  describe('Mix of AND and OR security schemes', () => {
+    const headerScheme: HttpSecurityScheme = {
+      id: faker.random.word(),
+      in: 'header' as const,
+      type: 'apiKey' as const,
+      name: 'x-api-key' as const,
+      key: 'sec' as const,
+      extensions: { 'x-test': 'test' },
+    };
+
+    const queryScheme: HttpSecurityScheme = {
+      id: faker.random.word(),
+      in: 'query' as const,
+      type: 'apiKey' as const,
+      name: 'x-api-key' as const,
+      key: 'sec' as const,
+      extensions: { 'x-test': 'test' },
+    };
+
+    const cookieScheme: HttpSecurityScheme = {
+      id: faker.random.word(),
+      in: 'cookie' as const,
+      type: 'apiKey' as const,
+      name: 'x-api-key' as const,
+      key: 'sec' as const,
+      extensions: { 'x-test': 'test' },
+    };
+
+    const bearerScheme: HttpSecurityScheme = {
+      id: faker.random.word(),
+      scheme: 'bearer',
+      type: 'http',
+      key: 'sec',
+      extensions: { 'x-test': faker.random.word() },
+    };
+
+    const oauth2Scheme: HttpSecurityScheme = {
+      id: faker.random.word(),
+      type: 'oauth2',
+      flows: {},
+      key: 'sec',
+      extensions: { 'x-test': faker.random.word() },
+    };
+
+    const openIdScheme: HttpSecurityScheme = {
+      id: faker.random.word(),
+      type: 'openIdConnect',
+      openIdConnectUrl: 'https://google.it',
+      key: 'sec',
+      extensions: { 'x-test': faker.random.word() },
+    };
+
+    const securityScheme: HttpSecurityScheme[][] = [
+      // one of
+      [
+        // all of
+        cookieScheme,
+      ],
+      [
+        // all of
+        queryScheme,
+        oauth2Scheme,
+      ],
+      [
+        // all of
+        bearerScheme,
+        headerScheme,
+        openIdScheme,
+      ],
+    ];
+
+    it('case 1 passes the validation', () => {
+      assertRight(
+        validateSecurity({
+          element: {
+            ...baseRequest,
+            headers: { cookie: 'x-api-key=abc123' },
+          },
+          resource: {
+            security: securityScheme,
+          },
+        })
+      );
+    });
+
+    it('case 2 passes the validation', () => {
+      assertRight(
+        validateSecurity({
+          element: {
+            ...baseRequest,
+            headers: { authorization: 'Bearer abc123' },
+            url: { path: '/', query: { 'x-api-key': 'abc123' } },
+          },
+          resource: {
+            security: securityScheme,
+          },
+        })
+      );
+    });
+
+    it('case 3 passes the validation', () => {
+      assertRight(
+        validateSecurity({
+          element: {
+            ...baseRequest,
+            headers: { 'x-api-key': 'abc123', authorization: 'Bearer abc123' },
+            url: { path: '/', query: { 'x-api-key': 'abc123' } },
+          },
+          resource: {
+            security: securityScheme,
+          },
+        })
+      );
+    });
+
+    it('fails with an invalid security scheme error', () => {
+      assertLeft(
+        validateSecurity({
+          element: {
+            ...baseRequest,
+            headers: { 'x-api-key': 'abc123' },
+            url: { path: '/', query: { 'x-api-key': 'abc123' } },
+          },
+          resource: {
+            security: securityScheme,
+          },
+        }),
+        res =>
+          expect(res).toStrictEqual([
+            {
+              code: 401,
+              message: 'Invalid security scheme used',
+              severity: DiagnosticSeverity.Error,
+              tags: ['OAuth2', 'Bearer', 'OpenID'],
+            },
+          ])
+      );
     });
   });
 });

@@ -26,7 +26,7 @@ const mockCommand: CommandModule = {
           boolean: true,
         },
       }),
-  handler: parsedArgs => {
+  handler: async parsedArgs => {
     parsedArgs.jsonSchemaFakerFillProperties = parsedArgs['json-schema-faker-fillProperties'];
     const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, jsonSchemaFakerFillProperties } =
       parsedArgs as unknown as CreateMockServerOptions;
@@ -44,7 +44,7 @@ const mockCommand: CommandModule = {
       jsonSchemaFakerFillProperties,
     };
 
-    return runPrismAndSetupWatcher(createPrism, options);
+    await runPrismAndSetupWatcher(createPrism, options);
   },
 };
 

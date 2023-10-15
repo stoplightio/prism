@@ -27,6 +27,7 @@ describe('mocker', () => {
         surname: { type: 'string', format: 'email' },
       },
       required: ['name', 'surname'],
+      additionalProperties: false,
     };
 
     const mockResource: IHttpOperation = {

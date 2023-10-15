@@ -40,6 +40,7 @@ This information refers to Open Source Prism 3.x, which is the current version m
 ### Install Self-hosted Prism
 
 Prism requires
+
 - NodeJS >= 16
 - for NodeJS 18.x, [>= 18.16 is required](https://github.com/stoplightio/prism/issues/2305)
 
@@ -75,7 +76,7 @@ Learn more about [how the validation proxy works](docs/guides/03-validation-prox
 
 ## 📖 Documentation and Community
 
-- [Documentation](https://docs.stoplight.io/docs/prism)
+- [Documentation](https://docs.stoplight.io/docs/prism/674b27b261c3c-prism-overview)
   - [Getting Started](./docs/getting-started/01-installation.md)
   - [Guides](./docs/guides/01-mocking.md)
 - [Community](https://github.com/stoplightio/prism/discussions)

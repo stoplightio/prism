@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 5.4.0 (2023.10.09)
+
+- Fixed issue with filling additional properties [#2398](https://github.com/stoplightio/prism/pull/2398)
+- added more validation around optional security. [#2401](https://github.com/stoplightio/prism/pull/2401)
+- Fixed issue with internal refs inside json schemas [#2402](https://github.com/stoplightio/prism/pull/2402)
+
 # 5.3.2 (2023.09.19)
 
 - fixed issue with sending binary data in proxy mode. [#2387](https://github.com/stoplightio/prism/pull/2387)

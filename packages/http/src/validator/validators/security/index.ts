@@ -4,7 +4,7 @@ import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import { flatten } from 'lodash';
 import { set } from 'lodash/fp';
-import { findSecurityHandler } from './handlers';
+import { findSecurityHandler, noneSecurityHandler } from './handlers';
 import { NonEmptyArray, getSemigroup } from 'fp-ts/NonEmptyArray';
 import { isNonEmpty, sequence } from 'fp-ts/Array';
 import { IPrismDiagnostic, ValidatorFn } from '@stoplight/prism-core';
@@ -35,7 +35,15 @@ function getAuthenticationArray(securitySchemes: HttpSecurityScheme[][], input: 
         E.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
       )
     );
-
+    // an empty array indicates "optional" security,
+    // in which case we run the special `None` validator
+    if (securitySchemePairs.length === 0) {
+      const optionalCheck = pipe(
+        noneSecurityHandler(input),
+        E.mapLeft<IPrismDiagnostic, NonEmptyArray<IPrismDiagnostic>>(e => [e])
+      );
+      authResults.push(optionalCheck);
+    }
     return eitherSequence(authResults);
   });
 }

@@ -105,7 +105,7 @@ describe('JSONSchema generator', () => {
             meaning: {
               type: 'number',
               'x-faker': {
-                'random.number': {
+                'datatype.number': {
                   min: 42,
                   max: 42,
                 },
@@ -165,6 +165,7 @@ describe('JSONSchema generator', () => {
           title: { type: 'string', writeOnly: true },
         },
         required: ['id', 'title'],
+        additionalProperties: false,
       };
 
       it('removes writeOnly properties', () => {

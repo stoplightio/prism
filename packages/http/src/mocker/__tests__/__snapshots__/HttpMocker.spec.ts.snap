@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`mocker mock() when example is of type INodeExternalExample generates a dynamic example 1`] = `
-Object {
+{
   "body": "test value",
-  "headers": Object {
+  "headers": {
     "Content-type": "test",
   },
   "statusCode": 202,
@@ -11,9 +11,9 @@ Object {
 `;
 
 exports[`mocker mock() with valid negotiator response returns static example 1`] = `
-Object {
+{
   "body": "hello",
-  "headers": Object {
+  "headers": {
     "Content-type": "test",
   },
   "statusCode": 202,
