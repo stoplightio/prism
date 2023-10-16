@@ -1,0 +1,48 @@
+openapi: 3.0.2
+paths:
+  /pets:
+    get:
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                '$ref': '#/schemas/Pet'
+              examples:
+                invalid_cat:
+                  summary: An invalid example of a cat
+                  value:
+                    name: 456
+                    status: "new"
+                invalid_dog:
+                  summary: An invalid example of a dog
+                  value:
+                    id: 135
+                    name: 123
+                valid_dog:
+                  summary: A valid example of a dog
+                  value:
+                    id: 135
+                    name: "dog"
+                    status: "available"
+
+schemas:
+  Pet:
+      type: object
+      required:
+      - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          example: doggie
+        status:
+          type: string
+          description: pet status in the store
+          enum:
+          - available
+          - pending
+          - sold

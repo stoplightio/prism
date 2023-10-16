@@ -13,6 +13,7 @@ export interface IHttpOperationConfig {
   code?: number;
   exampleKey?: string;
   dynamic: boolean;
+  ignoreExamples?: boolean;
 }
 
 export type IHttpMockConfig = Overwrite<IPrismMockConfig, { mock: IHttpOperationConfig }>;
