@@ -180,7 +180,6 @@ describe('Ignore examples', () => {
             headers: { prefer: 'example=invalid_dog' }
           });
           const payload = await response.json();
-          console.log("PAYLOAD1", payload)
           expect(hasPropertiesOfType(payload, schema)).toBe(true);
           expect(payload.name).toBe('doggie');
         }
