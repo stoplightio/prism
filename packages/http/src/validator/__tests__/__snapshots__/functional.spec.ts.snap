@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`HttpValidator validateInput() all validations are turned on properly validate date-time format ("") 1`] = `
-Object {
+{
   "_tag": "Right",
-  "right": Object {
+  "right": {
     "method": "get",
-    "url": Object {
+    "url": {
       "path": "/todos",
-      "query": Object {
+      "query": {
         "updated_since": "",
       },
     },
@@ -16,13 +16,13 @@ Object {
 `;
 
 exports[`HttpValidator validateInput() all validations are turned on properly validate date-time format ("2021-02-18T12:02:16.49") 1`] = `
-Object {
+{
   "_tag": "Left",
-  "left": Array [
-    Object {
+  "left": [
+    {
       "code": "format",
-      "message": "Request query parameter updated_since must match format \\"date-time\\"",
-      "path": Array [
+      "message": "Request query parameter updated_since must match format "date-time"",
+      "path": [
         "query",
         "updated_since",
       ],
@@ -33,13 +33,13 @@ Object {
 `;
 
 exports[`HttpValidator validateInput() all validations are turned on properly validate date-time format ("2021-02-18T12:02:16.49Z") 1`] = `
-Object {
+{
   "_tag": "Right",
-  "right": Object {
+  "right": {
     "method": "get",
-    "url": Object {
+    "url": {
       "path": "/todos",
-      "query": Object {
+      "query": {
         "updated_since": "2021-02-18T12:02:16.49Z",
       },
     },
@@ -48,13 +48,13 @@ Object {
 `;
 
 exports[`HttpValidator validateInput() all validations are turned on properly validate date-time format ("yesterday") 1`] = `
-Object {
+{
   "_tag": "Left",
-  "left": Array [
-    Object {
+  "left": [
+    {
       "code": "format",
-      "message": "Request query parameter updated_since must match format \\"date-time\\"",
-      "path": Array [
+      "message": "Request query parameter updated_since must match format "date-time"",
+      "path": [
         "query",
         "updated_since",
       ],
@@ -65,31 +65,31 @@ Object {
 `;
 
 exports[`HttpValidator validateInput() all validations are turned on returns validation errors for whole request structure 1`] = `
-Object {
+{
   "_tag": "Left",
-  "left": Array [
-    Object {
+  "left": [
+    {
       "code": "type",
       "message": "Request body property completed must be boolean",
-      "path": Array [
+      "path": [
         "body",
         "completed",
       ],
       "severity": 0,
     },
-    Object {
+    {
       "code": "format",
-      "message": "Request header parameter x-todos-publish must match format \\"date-time\\"",
-      "path": Array [
+      "message": "Request header parameter x-todos-publish must match format "date-time"",
+      "path": [
         "header",
         "x-todos-publish",
       ],
       "severity": 0,
     },
-    Object {
+    {
       "code": "pattern",
-      "message": "Request query parameter overwrite must match pattern \\"^(yes|no)$\\"",
-      "path": Array [
+      "message": "Request query parameter overwrite must match pattern "^(yes|no)$"",
+      "path": [
         "query",
         "overwrite",
       ],
@@ -100,26 +100,26 @@ Object {
 `;
 
 exports[`HttpValidator validateOutput() all validations are turned on returns validation errors for whole request structure 1`] = `
-Object {
+{
   "_tag": "Left",
-  "left": Array [
-    Object {
-      "message": "The received media type \\"application/something\\" does not match the ones specified in the current response: application/json, application/xml",
+  "left": [
+    {
+      "message": "The received media type "application/something" does not match the ones specified in the current response: application/json, application/xml",
       "severity": 0,
     },
-    Object {
+    {
       "code": "type",
       "message": "Response body property completed must be boolean",
-      "path": Array [
+      "path": [
         "body",
         "completed",
       ],
       "severity": 0,
     },
-    Object {
+    {
       "code": "format",
-      "message": "Response header parameter x-todos-publish must match format \\"date-time\\"",
-      "path": Array [
+      "message": "Response header parameter x-todos-publish must match format "date-time"",
+      "path": [
         "header",
         "x-todos-publish",
       ],

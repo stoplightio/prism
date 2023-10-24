@@ -2,6 +2,7 @@ import { apiKeyInCookie, apiKeyInHeader, apiKeyInQuery } from './apiKey';
 import { httpBasic } from './basicAuth';
 import { httpDigest } from './digestAuth';
 import { bearer, oauth2, openIdConnect } from './bearer';
+import { none } from './none';
 import { HttpSecurityScheme, DiagnosticSeverity } from '@stoplight/types';
 import { ValidateSecurityFn } from './utils';
 import { Either, fromNullable } from 'fp-ts/Either';
@@ -20,6 +21,7 @@ const securitySchemeHandlers: {
     basic: ValidateSecurityFn;
     bearer: ValidateSecurityFn;
   };
+  none: ValidateSecurityFn;
 } = {
   openIdConnect,
   oauth2,
@@ -33,6 +35,7 @@ const securitySchemeHandlers: {
     basic: httpBasic,
     bearer,
   },
+  none,
 };
 
 function createDiagnosticFor(scheme: string): IPrismDiagnostic {
@@ -55,3 +58,5 @@ export function findSecurityHandler(scheme: HttpSecurityScheme): Either<IPrismDi
   }
   return fromNullable(createDiagnosticFor(scheme.type))(securitySchemeHandlers[scheme.type]);
 }
+
+export { none as noneSecurityHandler };

@@ -1,7 +1,7 @@
 import * as $RefParser from '@stoplight/json-schema-ref-parser';
 import { decycle } from '@stoplight/json';
 import { get, camelCase, forOwn } from 'lodash';
-import * as JSONSchemaFaker from 'json-schema-faker';
+import { JSONSchemaFaker } from 'json-schema-faker';
 import type { JSONSchemaFakerOptions } from 'json-schema-faker';
 import { resetJSONSchemaGenerator } from '@stoplight/prism-http';
 

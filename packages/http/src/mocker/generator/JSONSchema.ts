@@ -2,7 +2,7 @@ import faker from '@faker-js/faker';
 import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
-import * as JSONSchemaFaker from 'json-schema-faker';
+import { JSONSchemaFaker } from 'json-schema-faker';
 import * as sampler from '@stoplight/json-schema-sampler';
 import { Either, toError, tryCatch } from 'fp-ts/Either';
 import { IHttpContent, IHttpOperation, IHttpParam } from '@stoplight/types';

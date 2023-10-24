@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`convertAjvErrors() all fields defined converts properly 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "required",
     "message": "Request parameter a.b c is required",
-    "path": Array [
+    "path": [
       "a",
       "b",
     ],
@@ -15,11 +15,11 @@ Array [
 `;
 
 exports[`convertAjvErrors() keyword field is missing converts properly 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "",
     "message": "Request parameter a.b c is required",
-    "path": Array [
+    "path": [
       "a",
       "b",
     ],
