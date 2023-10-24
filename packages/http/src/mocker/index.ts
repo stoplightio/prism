@@ -75,7 +75,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
     }),
     R.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
     R.chain(result => negotiateDeprecation(result, resource)),
-    R.chain(result => assembleResponse(result, payloadGenerator)),
+    R.chain(result => assembleResponse(result, payloadGenerator, config.ignoreExamples ?? false)),
     R.chain(
       response =>
         /*  Note: This is now just logging the errors without propagating them back. This might be moved as a first
@@ -313,7 +313,8 @@ function negotiateDeprecation(
 const assembleResponse =
   (
     result: E.Either<Error, IHttpNegotiationResult>,
-    payloadGenerator: PayloadGenerator
+    payloadGenerator: PayloadGenerator,
+    ignoreExamples: boolean
   ): R.Reader<Logger, E.Either<Error, IHttpResponse>> =>
   logger =>
     pipe(
@@ -321,7 +322,7 @@ const assembleResponse =
       E.bind('negotiationResult', () => result),
       E.bind('mockedData', ({ negotiationResult }) =>
         eitherSequence(
-          computeBody(negotiationResult, payloadGenerator),
+          computeBody(negotiationResult, payloadGenerator, ignoreExamples),
           computeMockedHeaders(negotiationResult.headers || [], payloadGenerator)
         )
       ),
@@ -380,9 +381,10 @@ function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: Pay
 
 function computeBody(
   negotiationResult: Pick<IHttpNegotiationResult, 'schema' | 'mediaType' | 'bodyExample'>,
-  payloadGenerator: PayloadGenerator
+  payloadGenerator: PayloadGenerator,
+  ignoreExamples: boolean
 ): E.Either<Error, unknown> {
-  if (isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
+  if (!ignoreExamples && isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
     return E.right(negotiationResult.bodyExample.value);
   }
   if (negotiationResult.schema) {

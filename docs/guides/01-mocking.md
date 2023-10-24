@@ -203,6 +203,8 @@ When you call `curl http://127.0.0.1:4010/pets/123`, the operation references th
 
 Notice that `name` had an `example` with a value so Prism used it, but `photoUrls` didn't, so it just returned `"string"`.
 
+Users also have the option to use the command-line flag `--ignoreExamples`. When present, and in static mode, the flag tells Prism to treat the spec as if it doesn't have any response examples defined. In this case, Prism continues to do what it already does in static mode when no response example are present, which is to return an example that has not been generated using json-schema-faker, but was created by Prism (it replicates the behavior of the situation just above where no response examples are given in the schema). However, when the `--ignoreExamples` flag is present, and in dynamic mode, the flag is essentially ignored, since in dynamic mode, examples are not consulted and json-schema-faker is used to generate a response based on the schema defined in the spec.
+
 #### Dynamic Response Generation
 
 Testing against the exact same piece of data over and over again isn't the best way to build a robust integration. What happens when a name is longer than you expected, or the value happens to be 0 instead of 6?

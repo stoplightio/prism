@@ -25,10 +25,19 @@ const mockCommand: CommandModule = {
           default: undefined,
           boolean: true,
         },
+        ignoreExamples: {
+          description: `Tell Prism to treat the spec as though it has no examples. When in static mode,
+                        returns an example that has not been generated using json-schema-faker, but was 
+                        created by Prism. When in dynamic mode, this flag is ignored, since in dynamic mode,
+                        examples are not consulted and json-schema-faker is used to generate a response based 
+                        on the schema defined in the spec`,
+          boolean: true,
+          default: false,
+        },
       }),
   handler: async parsedArgs => {
     parsedArgs.jsonSchemaFakerFillProperties = parsedArgs['json-schema-faker-fillProperties'];
-    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, jsonSchemaFakerFillProperties } =
+    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, ignoreExamples, jsonSchemaFakerFillProperties } =
       parsedArgs as unknown as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
@@ -41,6 +50,7 @@ const mockCommand: CommandModule = {
       multiprocess,
       errors,
       verboseLevel,
+      ignoreExamples,
       jsonSchemaFakerFillProperties,
     };
 
