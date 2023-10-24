@@ -1004,7 +1004,7 @@ describe('body params validation', () => {
         formData.append("test_json_file", "<test_json.json");
         formData.append("num", "10");
         formData.append('arrays', 'a,b,c');
-        formData.append('user_profiles', '{"foo":1}, {"foo":2}');
+        formData.append('user_profiles', '{"foo+bar":1}, {"foo":2}, {"foo,bar": "abc"}, {"fizz buzz": 35}');
         
         requestParams = {
           method: 'POST',

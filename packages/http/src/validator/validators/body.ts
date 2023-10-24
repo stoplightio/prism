@@ -64,19 +64,18 @@ export function deserializeFormBody(
         const propertySchema = schema.properties?.[property];
 
         if (propertySchema && typeof propertySchema !== 'boolean') {
-          let deserialized_values = encoding.explode !== undefined
-            ? deserializer(property, decodedUriParams, propertySchema, encoding.explode)
-            : deserializer(property, decodedUriParams, propertySchema);
+          let deserializedValues = deserializer(property, decodedUriParams, propertySchema, encoding.explode)
 
           // As per https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.1.md#styleValues, 
           // the default deserialization standard of objects in an array of objects is JSON
           const items = propertySchema.items;
-          if (Array.isArray(deserialized_values) && typeof items === "object" && items['type'] === 'object') {
-              deserialized_values = parseBrokenJSONArray(deserialized_values);
+          if (Array.isArray(deserializedValues) && typeof items === "object" && items['type'] === 'object') {
+            deserializedValues = parseBrokenJSONArray(deserializedValues);
           }
-          deserialized[property] = deserialized_values;
+          deserialized[property] = deserializedValues;
         }
       }
+      console.log("DESERIALIZED", deserialized);
 
       return deserialized;
     })
