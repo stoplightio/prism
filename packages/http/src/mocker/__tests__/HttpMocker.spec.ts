@@ -181,14 +181,14 @@ describe('mocker', () => {
           ...mockResource,
           callbacks: [
             {
-              callbackName: 'c1',
+              key: 'c1',
               method: 'get',
               path: 'http://example.com/notify',
               id: '1',
               responses: [{ id: '200', code: '200', contents: [{ id: 'contents', mediaType: 'application/json' }] }],
             },
             {
-              callbackName: 'c2',
+              key: 'c2',
               method: 'get',
               path: 'http://example.com/notify2',
               id: '2',
@@ -248,7 +248,7 @@ describe('mocker', () => {
             },
             callbacks: [
               {
-                callbackName: 'callback',
+                key: 'callback',
                 method: 'get',
                 path: 'http://example.com/notify',
                 id: '1',
