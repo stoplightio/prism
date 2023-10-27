@@ -215,11 +215,11 @@ describe('mocker', () => {
           expect(runCallback).toHaveBeenCalledTimes(2);
           expect(runCallback).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c1' }) })
+            expect.objectContaining({ callback: expect.objectContaining({ key: 'c1' }) })
           );
           expect(runCallback).toHaveBeenNthCalledWith(
             2,
-            expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c2' }) })
+            expect.objectContaining({ callback: expect.objectContaining({ key: 'c2' }) })
           );
         });
       });
