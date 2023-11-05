@@ -26,21 +26,20 @@ export function deserializeFormBody(
   decodedUriParams: Dictionary<string>
 ) {
   if (!schema.properties) {
-    return decodedUriParams;
+    return E.right(decodedUriParams);
   }
 
   // if the request body array contains JSON objects with multiple fields (i.e. '{"foo":"value"}, {"foo":"dd","xx":"xx"}'),
   // depending on the deserialization indicated in the encoding, it's possible we end up with an array of broken JSON
   // objects that were split on the ',' character, such as [ '{"foo":"value"}', '{"foo":"dd"', '"xx":"xx"}' ]. This function
   // processes such cases so that complete JSON objects, i.e. [ '{"foo":"value"}', '{"foo":"dd", "xx":"xx"}' ], are handled
-  function parseBrokenJSONArray(inputArray: string[]): string[] {
+  function parseBrokenJSONArrayInput(inputArray: string[]) : [string[], string] {//E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, string[]> {
     let parsedJSONObjects: any[] = [];
     let currentJSONObject: string = "";
   
     for (let item of inputArray) {
       // handle the scenario where a JSON object in the encoded array is preceded by a "+", which can occur when 
       // the user puts a space between JSON array entries, such as '{"foo": "a"}, {"foo":"b"}'
-      item = item.startsWith("+") ? item.substring(1) : item;
       currentJSONObject += (currentJSONObject.length > 0 ? "," : "") + item;
 
       try {
@@ -49,37 +48,51 @@ export function deserializeFormBody(
         currentJSONObject = "";
       } catch (_) {}
     }
-  
-    return parsedJSONObjects;
+
+    return [parsedJSONObjects, currentJSONObject]
   }
 
   return pipe(
     Object.keys(schema.properties),
-    A.reduce({}, (deserialized, property) => {
-      deserialized[property] = decodedUriParams[property];
-      const encoding = encodings.find(enc => enc.property === property);
+    (properties: string[]) => {
+      const deserialized = {}
+      for (let property of properties) {
+        deserialized[property] = decodedUriParams[property];
+        const encoding = encodings.find(enc => enc.property === property);
 
-      if (encoding && encoding.style) {
-        const deserializer = body[encoding.style];
-        const propertySchema = schema.properties?.[property];
+        if (encoding && encoding.style) {
+          const deserializer = body[encoding.style];
+          const propertySchema = schema.properties?.[property];
 
-        if (propertySchema && typeof propertySchema !== 'boolean') {
-          let deserializedValues = deserializer(property, decodedUriParams, propertySchema, encoding.explode)
+          if (propertySchema && typeof propertySchema !== 'boolean') {
+            let deserializedValues = deserializer(property, decodedUriParams, propertySchema, encoding.explode)
 
-          // As per https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.1.md#styleValues, 
-          // the default deserialization standard of objects in an array of objects is JSON
-          const items = propertySchema.items;
-          if (Array.isArray(deserializedValues) && typeof items === "object" && items['type'] === 'object') {
-            deserializedValues = parseBrokenJSONArray(deserializedValues);
+            // As per https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.1.md#styleValues, 
+            // the default deserialization standard of objects in an array of objects is JSON
+            const items = propertySchema.items;
+            if (Array.isArray(deserializedValues) && typeof items === "object" && items['type'] === 'object') {
+              const [parsedValues, unparsedJSONString] = parseBrokenJSONArrayInput(deserializedValues);
+              if (unparsedJSONString.length > 0) {
+                return E.left<NonEmptyArray<IPrismDiagnostic>>([
+                  {
+                    message: `Cannot deserialize JSON object array in form data request body. Make sure the array is in JSON`,
+                    code: 415,
+                    severity: DiagnosticSeverity.Error,
+                  },
+                ])
+              } else {
+                deserializedValues = parsedValues;
+              }
+            }
+
+            deserialized[property] = deserializedValues;// as string | string[];
           }
-          deserialized[property] = deserializedValues;
         }
       }
-      console.log("DESERIALIZED", deserialized);
+    console.log("DESERIALIZED", deserialized);
 
-      return deserialized;
-    })
-  );
+    return E.right(deserialized);
+  });
 }
 
 export function splitUriParams(target: string) {
@@ -159,7 +172,7 @@ function deserializeAndValidate(
       : splitUriParams(target),
     E.chain(encodedUriParams => validateAgainstReservedCharacters(encodedUriParams, encodings, prefix)),
     E.map(decodeUriEntities),
-    E.map(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
+    E.chain(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised => 
       pipe(
         validateAgainstSchema(deserialised, schema, true, context, prefix, bundle),
