@@ -288,10 +288,12 @@ describe('mocker', () => {
             expect(runCallback).toHaveBeenCalledWith(
               expect.objectContaining({
                 request: expect.objectContaining({
-                  body: {
-                    param1: 'test1',
-                    param2: 'test2',
-                  },
+                  body: expect.objectContaining({
+                    right: {
+                      param1: 'test1',
+                      param2: 'test2',
+                    }
+                  }),
                 }),
               })
             );
