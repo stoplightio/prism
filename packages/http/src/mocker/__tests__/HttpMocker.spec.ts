@@ -181,14 +181,14 @@ describe('mocker', () => {
           ...mockResource,
           callbacks: [
             {
-              callbackName: 'c1',
+              key: 'c1',
               method: 'get',
               path: 'http://example.com/notify',
               id: '1',
               responses: [{ id: '200', code: '200', contents: [{ id: 'contents', mediaType: 'application/json' }] }],
             },
             {
-              callbackName: 'c2',
+              key: 'c2',
               method: 'get',
               path: 'http://example.com/notify2',
               id: '2',
@@ -215,11 +215,11 @@ describe('mocker', () => {
           expect(runCallback).toHaveBeenCalledTimes(2);
           expect(runCallback).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c1' }) })
+            expect.objectContaining({ callback: expect.objectContaining({ key: 'c1' }) })
           );
           expect(runCallback).toHaveBeenNthCalledWith(
             2,
-            expect.objectContaining({ callback: expect.objectContaining({ callbackName: 'c2' }) })
+            expect.objectContaining({ callback: expect.objectContaining({ key: 'c2' }) })
           );
         });
       });
@@ -248,7 +248,7 @@ describe('mocker', () => {
             },
             callbacks: [
               {
-                callbackName: 'callback',
+                key: 'callback',
                 method: 'get',
                 path: 'http://example.com/notify',
                 id: '1',

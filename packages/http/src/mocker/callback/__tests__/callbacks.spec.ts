@@ -29,7 +29,7 @@ describe('runCallback()', () => {
 
       await runCallback({
         callback: {
-          callbackName: 'test callback',
+          key: 'test callback',
           method: 'get',
           path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
@@ -89,7 +89,7 @@ describe('runCallback()', () => {
 
       await runCallback({
         callback: {
-          callbackName: 'test callback',
+          key: 'test callback',
           method: 'get',
           path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
@@ -176,7 +176,7 @@ describe('runCallback()', () => {
 
       await runCallback({
         callback: {
-          callbackName: 'test callback',
+          key: 'test callback',
           method: 'get',
           path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',

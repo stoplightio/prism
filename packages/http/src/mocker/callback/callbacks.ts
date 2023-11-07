@@ -31,15 +31,13 @@ export function runCallback({
     const { url, requestData } = assembleRequest({ resource: callback, request, response });
     const logViolation = violationLogger(logger);
 
-    logCallbackRequest({ logger, callbackName: callback.callbackName, url, requestData });
+    logCallbackRequest({ logger, callbackName: callback.key, url, requestData });
 
     return pipe(
       TE.tryCatch(() => fetch(url, requestData), E.toError),
       TE.chain(parseResponse),
-      TE.map(callbackResponseLogger({ logger, callbackName: callback.callbackName })),
-      TE.mapLeft(error =>
-        logger.error(`${chalk.blueBright(callback.callbackName + ':')} Request failed: ${error.message}`)
-      ),
+      TE.map(callbackResponseLogger({ logger, callbackName: callback.key })),
+      TE.mapLeft(error => logger.error(`${chalk.blueBright(callback.key + ':')} Request failed: ${error.message}`)),
       TE.chainEitherK(element => {
         return pipe(
           validateOutput({ resource: callback, element }),
@@ -52,15 +50,25 @@ export function runCallback({
   };
 }
 
-function logCallbackRequest({ logger, url, callbackName, requestData }: { logger: Logger, callbackName: string, url: string, requestData: Pick<RequestInit, 'headers' | 'method' | 'body'> }) {
+function logCallbackRequest({
+  logger,
+  url,
+  callbackName,
+  requestData,
+}: {
+  logger: Logger;
+  callbackName: string;
+  url: string;
+  requestData: Pick<RequestInit, 'headers' | 'method' | 'body'>;
+}) {
   const prefix = `${chalk.blueBright(callbackName + ':')} ${chalk.grey('> ')}`;
   logger.info(`${prefix}Executing "${requestData.method}" callback to ${url}...`);
   logRequest({ logger, prefix, ...pick(requestData, 'body', 'headers') });
 }
 
-function callbackResponseLogger({ logger, callbackName }: { logger: Logger, callbackName: string }) {
+function callbackResponseLogger({ logger, callbackName }: { logger: Logger; callbackName: string }) {
   const prefix = `${chalk.blueBright(callbackName + ':')} ${chalk.grey('< ')}`;
-  
+
   return (response: IHttpResponse) => {
     logger.info(`${prefix}Received callback response`);
     logResponse({ logger, prefix, ...pick(response, 'body', 'headers', 'statusCode') });

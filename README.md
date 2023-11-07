@@ -29,7 +29,7 @@ Learn more in the [hosted Prism documentation](https://docs.stoplight.io/docs/pl
 
 ### Self-hosted Prism
 
-Prism is an open-source HTTP server run from the command-line. It provides mocking, request validation, and content negotation. Use it standalone tool or in continuous integration.
+Prism is an open-source HTTP server run from the command-line. It provides mocking, request validation, and content negotiation. Use it standalone tool or in continuous integration.
 
 ![Demo of Prism Mock Server being called with curl from the CLI](./examples/prism-cli.svg)
 
