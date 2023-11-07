@@ -980,7 +980,7 @@ describe('body params validation', () => {
       test('returns 200', async () => {
         const params = new URLSearchParams({
           arrays: 'a,b,c',
-          user_profiles: '{"foo":"value1","num":1,"data":true}, {"foo:"value2","data":false}',
+          user_profiles: '{"foo":"value1","num":1,"data":true},{"foo":"value2","data":false}',
         });
 
         const response = await makeRequest('/application-x-www-form-urlencoded-complex-request-body', {
