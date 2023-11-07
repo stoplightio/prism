@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 # Unreleased
 
+# 5.5.1 (2023.10.30)
+
+- fixed issue with int64 [#2420](https://github.com/stoplightio/prism/pull/2420)
+
 # 5.5.0 (2023.10.23)
 
 - added new cli flag `--ignoreExamples` [#2408](https://github.com/stoplightio/prism/pull/2408) - thanks @ilanashapiro for your contribution!

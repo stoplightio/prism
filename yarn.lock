@@ -1364,14 +1364,14 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@stoplight/http-spec@^5.9.2":
-  version "5.9.6"
-  resolved "https://registry.npmjs.org/@stoplight/http-spec/-/http-spec-5.9.6.tgz"
-  integrity sha512-3BSNYLwUw/O8wXAeLalyNC6tMeDP7OffX3jiLBzxNKTqGiQJAbnRWdD6wcDqL2EtZLt6FBamHTI5vw9lNvUbew==
+"@stoplight/http-spec@^6.0.2":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-6.0.2.tgz#924e7be225bac3c2a3feec152f9b2671cb174358"
+  integrity sha512-6uQxW0ycJF3cUSthsv7u3EClGn6AgqkLW9Q0dlrxOYJ1iH5Rx6SJEGYtmnkbTc/iXX/LygyoQ40lk8ebpqSegQ==
   dependencies:
     "@stoplight/json" "^3.18.1"
     "@stoplight/json-schema-generator" "1.0.2"
-    "@stoplight/types" "^13.15.0"
+    "@stoplight/types" "14.0.0"
     "@types/json-schema" "7.0.11"
     "@types/swagger-schema-official" "~2.0.22"
     "@types/type-is" "^1.6.3"
@@ -1381,7 +1381,7 @@
     lodash.pickby "^4.6.0"
     openapi3-ts "^2.0.2"
     postman-collection "^4.1.2"
-    tslib "^2.3.1"
+    tslib "^2.6.2"
     type-is "^1.6.18"
 
 "@stoplight/json-schema-generator@1.0.2":
@@ -1447,7 +1447,15 @@
   resolved "https://registry.npmjs.org/@stoplight/path/-/path-1.3.2.tgz"
   integrity sha512-lyIc6JUlUA8Ve5ELywPC8I2Sdnh1zc1zmbYgVarhXIp9YeAB0ReeqmGEOWNtlHkbP2DAA1AL65Wfn2ncjK/jtQ==
 
-"@stoplight/types@^13.0.0", "@stoplight/types@^13.15.0", "@stoplight/types@^13.6.0":
+"@stoplight/types@14.0.0", "@stoplight/types@^14.0.0":
+  version "14.0.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-14.0.0.tgz#f444490664c2c16d5f06265fcbac8d94a33481e8"
+  integrity sha512-w7Ejau6TaB7RqR0vWzGJSdmgLEYD2frjgbHPZoxgGQwAq/R8Qh/D9p9Bl9JFdii+YTL5xoDjyX0c1WDRlbMV8g==
+  dependencies:
+    "@types/json-schema" "^7.0.4"
+    utility-types "^3.10.0"
+
+"@stoplight/types@^13.0.0", "@stoplight/types@^13.6.0":
   version "13.15.0"
   resolved "https://registry.npmjs.org/@stoplight/types/-/types-13.15.0.tgz"
   integrity sha512-pBLjVRrWGVd+KzTbL3qrmufSKIEp0UfziDBdt/nrTHPKrlrtVwaHdrrQMcpM23yJDU1Wcg4cHvhIuGtKCT5OmA==
@@ -7455,6 +7463,11 @@ tslib@^2.4.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.1.tgz#fd8c9a0ff42590b25703c0acb3de3d3f4ede0410"
   integrity sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==
+
+tslib@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.2.tgz#703ac29425e7b37cd6fd456e92404d46d1f3e4ae"
+  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
 
 tsutils@^3.17.1:
   version "3.17.1"
