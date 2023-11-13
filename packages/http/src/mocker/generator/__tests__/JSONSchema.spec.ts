@@ -25,7 +25,7 @@ describe('JSONSchema generator', () => {
       it('will have a string property not matching anything in particular', () => {
         assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toHaveProperty('name');
-          const name = get(instance, 'name');
+          const name = get(instance, 'name', '');
 
           expect(ipRegExp.test(name)).toBeFalsy();
           expect(emailRegExp.test(name)).toBeFalsy();
@@ -45,7 +45,7 @@ describe('JSONSchema generator', () => {
       it('will have a string property matching the email regex', () => {
         assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toHaveProperty('email');
-          const email = get(instance, 'email');
+          const email = get(instance, 'email', '');
 
           expect(ipRegExp.test(email)).toBeFalsy();
           expect(emailRegExp.test(email)).toBeTruthy();
@@ -71,7 +71,7 @@ describe('JSONSchema generator', () => {
 
       it('will not be presented in the form of UUID as a URN', () => {
         assertRight(generate(operation, {}, schema), instance => {
-          const id = get(instance, 'id');
+          const id = get(instance, 'id', '');
           expect(uuidRegExp.test(id)).not.toContainEqual('urn:uuid');
         });
       });
@@ -89,7 +89,7 @@ describe('JSONSchema generator', () => {
       it('will have a string property matching the ip regex', () => {
         assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toHaveProperty('ip');
-          const ip = get(instance, 'ip');
+          const ip = get(instance, 'ip', '');
 
           expect(ipRegExp.test(ip)).toBeTruthy();
           expect(emailRegExp.test(ip)).toBeFalsy();
