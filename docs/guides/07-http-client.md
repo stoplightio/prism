@@ -13,13 +13,14 @@ const { URL } = require('url');
 
 const operations = await getHttpOperationsFromSpec('examples/petstore.oas2.yaml');
 const client = createClientFromOperations(operations, {
-  mock: false,
+  mock: { dynamic: false },
   validateRequest: true,
   validateResponse: true,
   checkSecurity: false,
   errors: true,
-  upstream: new URL('https://api.example.com'), 
+  upstream: new URL('https://api.example.com'),
   upstreamProxy: undefined,
+  isProxy: true,
 });
 ```
 
@@ -57,13 +58,14 @@ const client = createClientFromOperations(
     },
   ],
   {
-    mock: false,
+    mock: { dynamic: false },
     validateRequest: true,
     validateResponse: true,
     checkSecurity: false,
     errors: true,
-    upstream: new URL('https://api.example.com'), 
+    upstream: new URL('https://api.example.com'),
     upstreamProxy: undefined,
+    isProxy: true,
   }
 );
 ```
@@ -94,7 +96,7 @@ This disables response validation _only for the current request_
 You can do the same thing using the shortcut methods
 
 ```ts
-client.get('https://google.it', { mock: false }).then(console.log);
+client.get('https://google.it', { mock: { dynamic: false } }).then(console.log);
 ```
 
 For the shortcut methods (since the only mandatory option is intrinsic in the function name) the option parameter can be omitted
@@ -120,6 +122,6 @@ client.get('/users/10', { baseUrl: 'https://api.stoplight.io/' }).then(console.l
 ```ts
 client.request('https://google.it', { method: 'get' }, { mock: { dynamic: true } }).then(console.log);
 client
-  .request('https://google.it', { method: 'get' }, { mock: false, upstream: new URL('https://api.example.com') })
+  .request('https://google.it', { method: 'get' }, { isProxy: true, upstream: new URL('https://api.example.com') })
   .then(console.log);
 ```

@@ -980,7 +980,7 @@ describe('body params validation', () => {
       test('returns 200', async () => {
         const params = new URLSearchParams({
           arrays: 'a,b,c',
-          user_profiles: '{"foo":"value1","num":1,"data":true},{"foo":"value2","data":false}',
+          user_profiles: '{"foo":"value1","num   ":1,  "data":true}, {"foo":"value2","data":false,  "test": "   hello  +"}',
         });
 
         const response = await makeRequest('/application-x-www-form-urlencoded-complex-request-body', {
@@ -1004,7 +1004,7 @@ describe('body params validation', () => {
         formData.append("test_json_file", "<test_json.json");
         formData.append("num", "10");
         formData.append('arrays', 'a,b,c');
-        formData.append('user_profiles', '{"foo": 1, "foo,+bar":1}, {"foo":2, "{\\"test\\":x}": 2}, {"foo":3}, {"foo":4, "fizz buzz": 35}');
+        formData.append('user_profiles', '{"foo": 1, "foo,  +bar":1}, {"foo":2, "{\\"test\\":x}": 2}, {"foo":3}, {"foo":4, "fizz buzz": 35}');
         requestParams = {
           method: 'POST',
           body: formData

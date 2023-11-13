@@ -19,6 +19,8 @@ import * as mergeAllOf from '@stoplight/json-schema-merge-allof';
 import { stripReadOnlyProperties, stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
 import { JSONSchema7 } from 'json-schema';
 import { wildcardMediaTypeMatch } from '../utils/wildcardMediaTypeMatch';
+import { json } from 'fp-ts';
+import { type } from 'os';
 
 export function deserializeFormBody(
   schema: JSONSchema,
@@ -33,15 +35,15 @@ export function deserializeFormBody(
   // depending on the deserialization indicated in the encoding, it's possible we end up with an array of broken JSON
   // objects that were split on the ',' character, such as [ '{"foo":"value"}', '{"foo":"dd"', '"xx":"xx"}' ]. This function
   // processes such cases so that complete JSON objects, i.e. [ '{"foo":"value"}', '{"foo":"dd", "xx":"xx"}' ], are handled
-  function parseBrokenJSONArray(inputArray: string[]) : [string[], string] {//E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, string[]> {
+  function parseBrokenJSONArray(inputArray: string[]) {
     let parsedJSONObjects: any[] = [];
     let currentJSONObject: string = "";
-  
+
     for (let item of inputArray) {
       // handle the scenario where a JSON object in the encoded array is preceded by a "+", which can occur when 
       // the user puts a space between JSON array entries, such as '{"foo": "a"}, {"foo":"b"}'
       currentJSONObject += (currentJSONObject.length > 0 ? "," : "") + item;
-      console.log("CURR", currentJSONObject)
+
       try {
         const parsed = JSON.parse(currentJSONObject);
         parsedJSONObjects.push(parsed);
@@ -72,8 +74,6 @@ export function deserializeFormBody(
             const items = propertySchema.items;
             if (Array.isArray(deserializedValues) && typeof items === "object" && items['type'] === 'object') {
               const [parsedValues, unparsedJSONString] = parseBrokenJSONArray(deserializedValues);
-              console.log("PARSED", parsedValues)
-              console.log("LEFT OVER", unparsedJSONString);
               if (unparsedJSONString.length > 0) {
                 return E.left<NonEmptyArray<IPrismDiagnostic>>([
                   {
@@ -134,7 +134,7 @@ export function parseMultipartFormDataParams(
   );
 }
 
-export function decodeUriEntities(target: Dictionary<string>) {
+export function decodeUriEntities(target: Dictionary<string>, mediaType: string) {
   return Object.entries(target).reduce((result, [k, v]) => {
     try {
       // NOTE: this will decode the value even if it shouldn't (i.e when text/plain mime type).
@@ -173,7 +173,7 @@ function deserializeAndValidate(
       ? parseMultipartFormDataParams(target, multipartBoundary)
       : splitUriParams(target),
     E.chain(encodedUriParams => validateAgainstReservedCharacters(encodedUriParams, encodings, prefix)),
-    E.map(decodeUriEntities),
+    E.map(target => decodeUriEntities(target, content.mediaType)),
     E.chain(decodedUriEntities => deserializeFormBody(schema, encodings, decodedUriEntities)),
     E.chain(deserialised => 
       pipe(

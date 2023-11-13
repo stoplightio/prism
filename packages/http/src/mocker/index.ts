@@ -174,7 +174,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   if (!content.schema) return Object.assign(request, { body: encodedUriParams });
 
   return Object.assign(request, {
-    body: deserializeFormBody(content.schema, encodings, decodeUriEntities(encodedUriParams)),
+    body: deserializeFormBody(content.schema, encodings, decodeUriEntities(encodedUriParams, mediaType)),
   });
 }
 
