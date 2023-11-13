@@ -991,11 +991,32 @@ describe('body params validation', () => {
 
         expect(response.status).toBe(200);
       });
+
+      test('returns 415 and error message', async () => {
+        const params = new URLSearchParams({
+          arrays: 'a,b,c',
+          // Note invalid JSON "foo:"value1"
+          user_profiles: '{"foo:"value1","num   ":1,  "data":true}, {"foo":"value2","data":false,  "test": "   hello  +"}',
+        });
+
+        const response = await makeRequest('/application-x-www-form-urlencoded-complex-request-body', {
+          method: 'POST',
+          body: params.toString(),
+          headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        });
+
+        expect(response.status).toBe(415);
+        expect(response.json()).resolves.toMatchObject({
+          detail: "Cannot deserialize JSON object array in form data request body. Make sure the array is in JSON",
+          status: 415,
+          title: "Invalid content type",
+          type: "https://stoplight.io/prism/errors#INVALID_CONTENT_TYPE",
+        });
+      });
     });
 
     describe('valid multipart form data parameters provided', () => {
       let requestParams: Dictionary<any>;
-
       beforeEach(() => {
         const formData = new FormData();
         formData.append("status", "--=\"");

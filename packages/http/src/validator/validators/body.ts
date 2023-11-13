@@ -19,8 +19,6 @@ import * as mergeAllOf from '@stoplight/json-schema-merge-allof';
 import { stripReadOnlyProperties, stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
 import { JSONSchema7 } from 'json-schema';
 import { wildcardMediaTypeMatch } from '../utils/wildcardMediaTypeMatch';
-import { json } from 'fp-ts';
-import { type } from 'os';
 
 export function deserializeFormBody(
   schema: JSONSchema,
@@ -40,10 +38,7 @@ export function deserializeFormBody(
     let currentJSONObject: string = "";
 
     for (let item of inputArray) {
-      // handle the scenario where a JSON object in the encoded array is preceded by a "+", which can occur when 
-      // the user puts a space between JSON array entries, such as '{"foo": "a"}, {"foo":"b"}'
       currentJSONObject += (currentJSONObject.length > 0 ? "," : "") + item;
-
       try {
         const parsed = JSON.parse(currentJSONObject);
         parsedJSONObjects.push(parsed);
@@ -91,7 +86,6 @@ export function deserializeFormBody(
           }
         }
       }
-    console.log("DESERIALIZED", deserialized);
 
     return E.right(deserialized);
   });
@@ -137,12 +131,14 @@ export function parseMultipartFormDataParams(
 export function decodeUriEntities(target: Dictionary<string>, mediaType: string) {
   return Object.entries(target).reduce((result, [k, v]) => {
     try {
-      // In application/x-www-form-urlencoded format, decodeURIComponent does NOT correctly handle
-      // spaces. encodeURIComponent correctly encodes spaces as + (plus signs), and actual plus signs as 
-      // %2B, but decodeURIComponent only decodes %2B and leaves the +'s that represent spaces encoded as +
-      // This means the result has + signs that are indistiguinshable as originally spaces or +
-      // Therefore, must replace all + in the encoded string (which all represent spaces), with %20, so
-      // that decodeURIComponent processes them correctly
+      // In application/x-www-form-urlencoded format, the standard encoding of spaces is the plus sign "+", 
+      // and plus signs in the input string are encoded as "%2B". The encoding of spaces as plus signs is 
+      // unique to application/x-www-form-urlencoded. decodeURIComponent incorrectly handles decoding the plus signs. 
+      // encodeURIComponent correctly encodes spaces as + (plus signs), and actual plus signs as %2B, but 
+      // decodeURIComponent only decodes %2B and leaves the +'s that represent spaces encoded as +. This means 
+      // the result has + signs that are indistinguishable as originally spaces or originally plus signs. Therefore, 
+      // we must replace all + in the encoded string (which must all represent spaces by the standard), with %20, 
+      // the non-application/x-www-form-urlencoded encoding of spaces, so that decodeURIComponent decodes them correctly
       if (typeIs(mediaType, 'application/x-www-form-urlencoded')) {
         v = v.replaceAll('+', '%20')
       }
