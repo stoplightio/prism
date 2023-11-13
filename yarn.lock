@@ -2219,10 +2219,10 @@ commander@2.14.1:
   resolved "https://registry.npmjs.org/commander/-/commander-2.14.1.tgz"
   integrity sha512-+YR16o3rK53SmWHU3rEM3tPAh2rwb1yPcQX5irVn7mb0gXbwuCCrnkbV5+PBfETdfg1vui07nM6PCG1zndcjQw==
 
-commander@8.1.0:
-  version "8.1.0"
-  resolved "https://registry.npmjs.org/commander/-/commander-8.1.0.tgz"
-  integrity sha512-mf45ldcuHSYShkplHHGKWb4TrmwQadxOn7v4WuhDJy0ZVoY5JFajaRDKD0PNe5qXzBX0rhovjTnP6Kz9LETcuA==
+commander@7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-7.1.0.tgz#f2eaecf131f10e36e07d894698226e36ae0eb5ff"
+  integrity sha512-pRxBna3MJe6HKnBGsDyMv8ETbptw3axEdYHoqNh7gu5oDcew8fs0xnivZGm06Ogk8zGAJ9VX+OPEr2GXEQK4dg==
 
 commander@^6.2.0:
   version "6.2.1"
@@ -3268,13 +3268,13 @@ gauge@^4.0.3:
     strip-ansi "^6.0.1"
     wide-align "^1.1.5"
 
-gavel@^10.0.3:
-  version "10.0.4"
-  resolved "https://registry.yarnpkg.com/gavel/-/gavel-10.0.4.tgz#6db1bbb0f020de8c470bcd98ae1f28cb85630f3f"
-  integrity sha512-8pjcRBCsQAGoztrVxh7aHV6Sz3wtCuyHFEZBfv/OQ8cHJ/eGk7rxCr7VlmErJG3pMxyrsCznqKrl9E7+wPOiqA==
+gavel@10.0.3:
+  version "10.0.3"
+  resolved "https://registry.yarnpkg.com/gavel/-/gavel-10.0.3.tgz#79352a29bdf8278c6b10d64dc9bf5771f5f16fa5"
+  integrity sha512-HN8rtey/sicBKqGPZkBtBKMjiZYzFDzjnkAzSNP0OtSuMzEpR/dUjCytJ27z6senKWJcLq1NR4miWgJwYtKDWw==
   dependencies:
     ajv "6.12.6"
-    commander "8.1.0"
+    commander "7.1.0"
     content-type "1.0.4"
     curl-trace-parser "0.0.10"
     deep-equal "2.0.5"
