@@ -83,6 +83,8 @@ export const convertAjvErrors = (
       const allowedParameters = 'allowedValues' in error.params ? `: ${error.params.allowedValues.join(', ')}` : '';
       const detectedAdditionalProperties =
         'additionalProperty' in error.params ? `; found '${error.params.additionalProperty}'` : '';
+      const unevaluatedProperty =
+        'unevaluatedProperty' in error.params ? `: '${error.params.unevaluatedProperty}'` : '';
       const errorPath = error.instancePath.split('/').filter(segment => segment !== '');
       const path = prefix ? [prefix, ...errorPath] : errorPath;
       const errorPathType = errorPath.length > 0 ? (prefix == 'body' ? 'property ' : 'parameter ') : '';
@@ -96,7 +98,7 @@ export const convertAjvErrors = (
       return {
         path,
         code: error.keyword || '',
-        message: `${errorSourceDescription}${error.message || ''}${allowedParameters}${detectedAdditionalProperties}`,
+        message: `${errorSourceDescription}${error.message || ''}${allowedParameters}${detectedAdditionalProperties}${unevaluatedProperty}`,
         severity,
       };
     })
