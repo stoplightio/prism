@@ -1,0 +1,67 @@
+name: Jira Issue Label Added
+
+# If this needs to be re-used outside of platform-internal,
+# then consider a workflow call.
+# 
+# For comparison, see https://github.com/pact-foundation/pact_broker/blob/master/.github/workflows/smartbear-issue-label-added.yml
+# 
+
+# on:
+#   workflow_call:
+#     inputs:
+#       team-name:
+#         type: string
+
+on:
+  issues:
+    types:
+      - labeled
+
+jobs:
+  create-issue-in-stoplight-jira:
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'jira'
+    steps:
+    - name: Login
+      uses: atlassian/gajira-login@v3
+      with:
+        team-name: ${{ inputs.team-name }}
+      env:
+        JIRA_BASE_URL: ${{ secrets.SMARTBEAR_JIRA_BASE_URL }}
+        JIRA_USER_EMAIL: ${{ secrets.SMARTBEAR_JIRA_USER_EMAIL }}
+        JIRA_API_TOKEN: ${{ secrets.SMARTBEAR_JIRA_API_TOKEN }}
+
+    - name: Search
+      id: search
+      uses: tomhjp/gh-action-jira-search@v0.1.0
+      with:
+        jql: 'summary ~ "${{ github.event.repository.name }}#${{ github.event.issue.number }}:" AND project=${{ vars.SMARTBEAR_JIRA_PROJECT }}'
+
+    - name: Log
+      run: echo "Found issue ${{ steps.search.outputs.issue }}"
+
+    - name: Create
+      id: create
+      uses: atlassian/gajira-create@v3
+      if: steps.search.outputs.issue == ''
+      with:
+        project: ${{ vars.SMARTBEAR_JIRA_PROJECT }}
+        issuetype: Task
+        summary: '${{ github.event.repository.name }}#${{ github.event.issue.number }}: ${{ github.event.issue.title }}'
+        description: |
+          *Issue Link:* ${{ github.event.issue.html_url }}
+
+          ${{ github.event.issue.body }}
+
+    - name: Add Comment
+      if: steps.search.outputs.issue == '' && steps.create.outputs.issue != ''
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: "This ticket has been labeled <i>jira</i>. A tracking ticket in Stoplight's Jira (<a href='https://smartbear.atlassian.net/browse/${{steps.create.outputs.issue}}'><code>${{steps.create.outputs.issue}}</code></a>) has been created."
+          })
