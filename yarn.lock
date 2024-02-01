@@ -1038,21 +1038,19 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@stoplight/http-spec@^6.0.2":
-  version "6.0.2"
-  resolved "https://registry.npmjs.org/@stoplight/http-spec/-/http-spec-6.0.2.tgz"
-  integrity sha512-6uQxW0ycJF3cUSthsv7u3EClGn6AgqkLW9Q0dlrxOYJ1iH5Rx6SJEGYtmnkbTc/iXX/LygyoQ40lk8ebpqSegQ==
+"@stoplight/http-spec@^7.0.2":
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-7.0.2.tgz#010f10d1f721b0f6265ae3a851d0f41f62df0875"
+  integrity sha512-4DvT0w5goAhLxVbHfdzkMqGcTdi9bU4LmBrYNrZBOCFV4JPAHRERSBdI7F7n/MfgVvzxWb3Vftrh6pCgTd/+Jg==
   dependencies:
     "@stoplight/json" "^3.18.1"
     "@stoplight/json-schema-generator" "1.0.2"
-    "@stoplight/types" "14.0.0"
+    "@stoplight/types" "14.1.0"
     "@types/json-schema" "7.0.11"
     "@types/swagger-schema-official" "~2.0.22"
     "@types/type-is" "^1.6.3"
     fnv-plus "^1.3.1"
-    lodash.isequalwith "^4.4.0"
-    lodash.pick "^4.4.0"
-    lodash.pickby "^4.6.0"
+    lodash "^4.17.21"
     openapi3-ts "^2.0.2"
     postman-collection "^4.1.2"
     tslib "^2.6.2"
@@ -1121,10 +1119,10 @@
   resolved "https://registry.npmjs.org/@stoplight/path/-/path-1.3.2.tgz"
   integrity sha512-lyIc6JUlUA8Ve5ELywPC8I2Sdnh1zc1zmbYgVarhXIp9YeAB0ReeqmGEOWNtlHkbP2DAA1AL65Wfn2ncjK/jtQ==
 
-"@stoplight/types@14.0.0", "@stoplight/types@^14.0.0":
-  version "14.0.0"
-  resolved "https://registry.npmjs.org/@stoplight/types/-/types-14.0.0.tgz"
-  integrity sha512-w7Ejau6TaB7RqR0vWzGJSdmgLEYD2frjgbHPZoxgGQwAq/R8Qh/D9p9Bl9JFdii+YTL5xoDjyX0c1WDRlbMV8g==
+"@stoplight/types@14.1.0":
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-14.1.0.tgz#36b04488acc1d8ab5bb712416f50d3bc99610b34"
+  integrity sha512-fL8Nzw03+diALw91xHEHA5Q0WCGeW9WpPgZQjodNUWogAgJ56aJs03P9YzsQ1J6fT7/XjDqHMgn7/RlsBzB/SQ==
   dependencies:
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
@@ -1133,6 +1131,14 @@
   version "13.20.0"
   resolved "https://registry.npmjs.org/@stoplight/types/-/types-13.20.0.tgz"
   integrity sha512-2FNTv05If7ib79VPDA/r9eUet76jewXFH2y2K5vuge6SXbRHtWBhcaRmu+6QpF4/WRNoJj5XYRSwLGXDxysBGA==
+  dependencies:
+    "@types/json-schema" "^7.0.4"
+    utility-types "^3.10.0"
+
+"@stoplight/types@^14.1.0":
+  version "14.1.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/types/-/types-14.1.1.tgz#0dd5761aac25673a951955e984c724c138368b7a"
+  integrity sha512-/kjtr+0t0tjKr+heVfviO9FrU/uGLc+QNX3fHJc19xsCNYqU7lVhaXxDmEID9BZTjG+/r9pK9xP/xU02XGg65g==
   dependencies:
     "@types/json-schema" "^7.0.4"
     utility-types "^3.10.0"
@@ -4873,11 +4879,6 @@ lodash.camelcase@^4.3.0:
   resolved "https://registry.npmjs.org/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz"
   integrity sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==
 
-lodash.isequalwith@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.npmjs.org/lodash.isequalwith/-/lodash.isequalwith-4.4.0.tgz"
-  integrity sha512-dcZON0IalGBpRmJBmMkaoV7d3I80R2O+FrzsZyHdNSFrANq/cgDqKQNmAHE8UEj4+QYWwwhkQOVdLHiAopzlsQ==
-
 lodash.ismatch@^4.4.0:
   version "4.4.0"
   resolved "https://registry.npmjs.org/lodash.ismatch/-/lodash.ismatch-4.4.0.tgz"
@@ -4892,16 +4893,6 @@ lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.npmjs.org/lodash.merge/-/lodash.merge-4.6.2.tgz"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
-
-lodash.pick@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.npmjs.org/lodash.pick/-/lodash.pick-4.4.0.tgz"
-  integrity sha512-hXt6Ul/5yWjfklSGvLQl8vM//l3FtyHZeuelpzK6mm99pNvN9yTDruNZPEJZD1oWrqo+izBmB7oUfWgcCX7s4Q==
-
-lodash.pickby@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.npmjs.org/lodash.pickby/-/lodash.pickby-4.6.0.tgz"
-  integrity sha512-AZV+GsS/6ckvPOVQPXSiFFacKvKB4kOQu6ynt9wz0F3LO4R9Ij4K1ddYsIytDpSgLz88JHd9P+oaLeej5/Sl7Q==
 
 lodash.truncate@^4.4.2:
   version "4.4.2"
