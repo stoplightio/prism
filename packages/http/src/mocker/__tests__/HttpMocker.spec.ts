@@ -292,7 +292,7 @@ describe('mocker', () => {
                     right: {
                       param1: 'test1',
                       param2: 'test2',
-                    }
+                    },
                   }),
                 }),
               })
@@ -310,6 +310,32 @@ describe('mocker', () => {
         mock({
           config: { dynamic: false },
           resource: mockResource,
+          input: Object.assign({}, mockInput, { validations: [{ severity: DiagnosticSeverity.Warning }] }),
+        })(logger);
+
+        expect(helpers.negotiateOptionsForValidRequest).toHaveBeenCalled();
+        expect(helpers.negotiateOptionsForInvalidRequest).not.toHaveBeenCalled();
+      });
+      it.only('returns static example from a string testing another thing', () => {
+        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest');
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest');
+
+        mock({
+          config: { dynamic: false },
+          resource: `{
+            "openapi": "3.0.0",
+            "paths": {
+              "/pet": {
+                "get": {
+                  "responses": {
+                    "200": {
+                      "description": "test"
+                    }
+                  }
+                }
+              }
+            }
+          }`,
           input: Object.assign({}, mockInput, { validations: [{ severity: DiagnosticSeverity.Warning }] }),
         })(logger);
 
