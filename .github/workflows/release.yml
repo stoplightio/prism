@@ -1,0 +1,25 @@
+name: Release
+on:
+  push:
+    branches:
+      - master
+      
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  # Update release PR
+  release_please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    if: github.repository == 'stoplightio/prism'
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
+          release-type: 'node'
