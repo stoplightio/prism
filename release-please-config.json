@@ -1,10 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
-  "bootstrap-sha": "f330ff2996cf36c3809b6406ac66546977b840e7",
   "plugins": ["node-workspace"],
   "sequential-calls": true,
-  "include-component-in-tag": false,
-  "release-type": "node",
   "packages": {
     "packages/cli": {},
     "packages/core": {},

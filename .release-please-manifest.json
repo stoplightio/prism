@@ -1,1 +1,1 @@
-{}
+{ "packages/cli": "5.5.4", "packages/core": "5.5.4", "packages/http": "5.5.4", "packages/http-server": "5.5.4" }
