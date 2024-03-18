@@ -1,66 +1,87 @@
+# Changelog
+
+## [5.1.0](https://github.com/stoplightio/prism/compare/v5.0.1...v5.1.0) (2024-03-18)
+
+
+### Features
+
+* better validation for optional auth ([#2401](https://github.com/stoplightio/prism/issues/2401)) ([e2d9f0f](https://github.com/stoplightio/prism/commit/e2d9f0f23884c73a8dad371e3497a0956c00ee11))
+* **http:** detect complex schema error, improve error message ([#2327](https://github.com/stoplightio/prism/issues/2327)) ([07af511](https://github.com/stoplightio/prism/commit/07af51120ecb8593bc7c0892bc79f5ad5258a67c))
+
+
+### Bug Fixes
+
+* **ci:** release please simpler config ([#2489](https://github.com/stoplightio/prism/issues/2489)) ([b6be539](https://github.com/stoplightio/prism/commit/b6be539ff987194fda497d6b08c3671a7beed63f))
+* **ci:** STOP-267 add release please manifest ([#2484](https://github.com/stoplightio/prism/issues/2484)) ([82fe01e](https://github.com/stoplightio/prism/commit/82fe01e3a868863ba2854b7a14e8c10666b4f4a3))
+* **ci:** STOP-267 automate release branch creation ([#2479](https://github.com/stoplightio/prism/issues/2479)) ([182e4f9](https://github.com/stoplightio/prism/commit/182e4f96917d4967b9d363657ef65528ce3e33ae))
+* **ci:** STOP-267 improve auto-release config ([#2481](https://github.com/stoplightio/prism/issues/2481)) ([bb29592](https://github.com/stoplightio/prism/commit/bb29592ded13f2ec248236a564b46b6180f5e100))
+* json schema faker fillProperties not working ([#2398](https://github.com/stoplightio/prism/issues/2398)) ([e8acebd](https://github.com/stoplightio/prism/commit/e8acebd430dfe3cfc9db7bda3228256153346488))
+* keep encoded value if uri decoding fails. ([#2387](https://github.com/stoplightio/prism/issues/2387)) ([aba9bee](https://github.com/stoplightio/prism/commit/aba9bee0dae442da8364c327bd3d2e560e7de4cc))
+* validateOutput() when schema contains internal reference ([#2363](https://github.com/stoplightio/prism/issues/2363)) ([8e143e6](https://github.com/stoplightio/prism/commit/8e143e6622bdc8098a5c86c399831a12858612d5))
+
 <!-- markdown-link-check-disable -->
 
-# Change Log
+## Change Log
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to Semantic Versioning.
 
-# Unreleased
+## Unreleased
 
-# 5.5.4 (2024.02.02)
+## 5.5.4 (2024.02.02)
 
 - upgrade dependencies to eliminate lodash prototype pollution vulnerabilities [#2459](https://github.com/stoplightio/prism/pull/2459)
 
-# 5.5.3 (2024.01.12)
+## 5.5.3 (2024.01.12)
 
 - added functionality to show unevaluated property name in error message [#2441](https://github.com/stoplightio/prism/pull/2441) - thanks @aleung for your contribution!
 
-# 5.5.2 (2023.12.01)
+## 5.5.2 (2023.12.01)
 
 - added support for default JSON deserialization for arrays of objects in form data request bodies in OpenAPI 3 [#2379](https://github.com/stoplightio/prism/pull/2379) - thanks @ilanashapiro for your contribution!
 
-# 5.5.1 (2023.10.30)
+## 5.5.1 (2023.10.30)
 
 - fixed issue with int64 [#2420](https://github.com/stoplightio/prism/pull/2420)
 
-# 5.5.0 (2023.10.23)
+## 5.5.0 (2023.10.23)
 
 - added new cli flag `--ignoreExamples` [#2408](https://github.com/stoplightio/prism/pull/2408) - thanks @ilanashapiro for your contribution!
 
-# 5.4.0 (2023.10.09)
+## 5.4.0 (2023.10.09)
 
 - Fixed issue with filling additional properties [#2398](https://github.com/stoplightio/prism/pull/2398)
 - added more validation around optional security. [#2401](https://github.com/stoplightio/prism/pull/2401)
 - Fixed issue with internal refs inside json schemas [#2402](https://github.com/stoplightio/prism/pull/2402)
 
-# 5.3.2 (2023.09.19)
+## 5.3.2 (2023.09.19)
 
 - fixed issue with sending binary data in proxy mode. [#2387](https://github.com/stoplightio/prism/pull/2387)
 
-# 5.3.1 (2023.08.25)
+## 5.3.1 (2023.08.25)
 
 - fixed issue with validateOutput() when schema contains internal reference. [#2363](https://github.com/stoplightio/prism/pull/2363) - thanks @mtjandra for your contribution!
 
-# 5.3.0 (2023.08.17)
+## 5.3.0 (2023.08.17)
 
 - added new cli parameter to control the json schema faker fillProperties setting universally. [#2355](https://github.com/stoplightio/prism/pull/2355)
 - correctly list Response or Request in violation messages. [#2358](https://github.com/stoplightio/prism/pull/2358)
 
-# 5.2.0 (2023.07.28)
+## 5.2.0 (2023.07.28)
 
 - added support for multipart/form-data in the request body. [#2321](https://github.com/stoplightio/prism/pull/2321) - thanks @ilanashapiro for your contribution!
 
-# 5.1.0 (2023.07.24)
+## 5.1.0 (2023.07.24)
 
 - Improved error messages when using static mocking and the schema is too complex.
 
-# 5.0.1 (2023.06.01)
+## 5.0.1 (2023.06.01)
 
 - Limit the `sl-violations` response header to around 8 KB. [#2297](https://github.com/stoplightio/prism/pull/2297)
 - Improve error messages that describe unresolvable JSON Pointer references. [#2195](https://github.com/stoplightio/prism/issues/2195)
 
-# 5.0.0 (2023.05.17)
+## 5.0.0 (2023.05.17)
 
 ## Changed
 
@@ -72,13 +93,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Handle exploded form query params. [#2288](https://github.com/stoplightio/prism/pull/2288)
 - Respect prefer header for validation proxy when server returns 501. [#2292](https://github.com/stoplightio/prism/pull/2292) - thanks @nursanamar for your contribution to this.
 
-# 4.14.1 (2023.05.11)
+## 4.14.1 (2023.05.11)
 
 ## Fixed
 
 - Bump @stoplight/types and @stoplight/http-spec to support `unspecified` parameter style to fix query param errors for OAS 2.0 documents.
 
-# 4.14.0 (2023.05.08)
+## 4.14.0 (2023.05.08)
 
 ## Changed
 
@@ -88,7 +109,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Allow spec document to be requested via HTTP Basic auth via the URL parameters in Node 18+. [#2279](https://github.com/stoplightio/prism/pull/2279)
 
-# 4.13.0 (2023.04.28)
+## 4.13.0 (2023.04.28)
 
 ## Fixed
 
@@ -96,19 +117,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Upgrade fast-xml-parser (thanks @spriggyjeff) [#2262](https://github.com/stoplightio/prism/pull/2262)
 - Do not error when there is no response content but accept header is set (thanks @ilanashapiro) [#2267](https://github.com/stoplightio/prism/pull/2267)
 
-# 4.12.0 (2023.04.12)
+## 4.12.0 (2023.04.12)
 
 ## Added
 
 - Improves handling of GET/HEAD requests in the proxy that look like they include a request body. [#2260](https://github.com/stoplightio/prism/pull/2260)
 
-# 4.11.1 (2023.03.15)
+## 4.11.1 (2023.03.15)
 
 ## Added
 
 - CLI option flag `--verboseLevel` or `-v` to set log levels. [#2231](https://github.com/stoplightio/prism/pull/2231)
 
-# 4.10.6 (2023.03.01)
+## 4.10.6 (2023.03.01)
 
 ## Changed
 
@@ -119,61 +140,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Make x-json-schema-faker work more sensibly. [#2181](https://github.com/stoplightio/prism/pull/2181)
 
-# 4.10.5 (2022.10.05)
+## 4.10.5 (2022.10.05)
 
 ## Fixed
 
 - Fixed breaking change with mock command in v4.10.4. [#2138](https://github.com/stoplightio/prism/issues/2138)
 
-# 4.10.4 (2022.09.14)
+## 4.10.4 (2022.09.14)
 
 ## Changed
 
 - Various 3rd party dependency updates and Dependabot configuration changes
 
-# 4.10.3 (2022.08.16)
+## 4.10.3 (2022.08.16)
 
 ## Fixed
 
 - Fixed issue with recursive request body schemas. [#2090](https://github.com/stoplightio/prism/pull/2090)
 
-# 4.10.2 (2022.08.11)
+## 4.10.2 (2022.08.11)
 
 ## Fixed
 
 - Fixed issue with empty body when content-type header is set. [#2103](https://github.com/stoplightio/prism/pull/2103) - thanks @acolombier
 
-# 4.10.1 (2022.06.22)
+## 4.10.1 (2022.06.22)
 
 ## Changed
 
 - Upgraded dependencies to resolve security vulnerabilities. [#2075](https://github.com/stoplightio/prism/pull/2075) [#2076](https://github.com/stoplightio/prism/pull/2076)
 
-# 4.10.0 (2022.06.07)
+## 4.10.0 (2022.06.07)
 
 ## Added
 
 - Added support for ranges of response status codes. [#2065](https://github.com/stoplightio/prism/pull/2065)
 
-# 4.9.3 (2022.05.19)
+## 4.9.3 (2022.05.19)
 
 ## Changed
 
 - Update faker dependency to point to official community-maintained version. [#2021](https://github.com/stoplightio/prism/pull/2021) - thanks @jasonbarry
 
-# 4.9.2 (2022.04.26)
+## 4.9.2 (2022.04.26)
 
 ## Added
 
 - Alphabetize properties for dynamic responses. [#2041](https://github.com/stoplightio/prism/pull/2041)
 
-# 4.9.1 (2022.04.20)
+## 4.9.1 (2022.04.20)
 
 ## Fixed
 
 - Fixed issue where query parameters weren't being forwarded in proxy mode. [#2042](https://github.com/stoplightio/prism/pull/2042)
 
-# 4.9.0 (2022.04.19)
+## 4.9.0 (2022.04.19)
 
 ## Changed
 
@@ -185,7 +206,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Fixed deprecated usage of `parse` [#1959](https://github.com/stoplightio/prism/pull/1959) - thanks @jbl428
 - Removed dependency that had critical security vulnerability [#2037](https://github.com/stoplightio/prism/pull/2037)
 
-# 4.8.0 (2022.02.17)
+## 4.8.0 (2022.02.17)
 
 ## Added
 
@@ -195,36 +216,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Ignore `Content-Type` when validating a request and the body is empty instead of producing a HTTP 415. [#1990](https://github.com/stoplightio/prism/pull/1990)
 
-# 4.7.0 (2022.02.03)
+## 4.7.0 (2022.02.03)
 
 ## Added
 
 - CLI flag to control validating requests when running the proxy [#1980](https://github.com/stoplightio/prism/pull/1980)
 
-# 4.6.2 (2021.12.10)
+## 4.6.2 (2021.12.10)
 
 ## Changed
 
 - When `allOf` has the effect of adding `readOnly` to a property, the property is no longer required in input.
 - When `allOf` has the effect of adding `writeOnly` to a property, the property is no longer required in output.
 
-# 4.6.1 (2021.11.22)
+## 4.6.1 (2021.11.22)
 
 ## Changed
 
 - in proxy mode, Prism does not send `Content-Encoding` header back to client as it was received from the upstream server because Prism's response is never compressed
 
-# 4.6.0 (2021.11.08)
+## 4.6.0 (2021.11.08)
 
 ## Changed
 
 - Prism now responds with 415 http code if request content-type does not match content-types available in operation body
 
-# 4.5.0 (2021.10.21)
+## 4.5.0 (2021.10.21)
 
 - allow [json-schema-faker configuration in specification](https://github.com/stoplightio/prism/pull/1899)
 
-# 4.4.3 (2021.10.21)
+## 4.4.3 (2021.10.21)
 
 ## Fixed
 
@@ -232,91 +253,91 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Updated dependencies #1916
 - Do not check content-type for 204 code #1915
 
-# 4.4.2 (2021.10.13)
+## 4.4.2 (2021.10.13)
 
 ## Fixed
 
 - Fixed issue with generating numbers with maximum and minimum range of `Number.MAX_VALUE`
 
-# 4.4.1 (2021.09.29)
+## 4.4.1 (2021.09.29)
 
 ## Fixed
 
 - Fixed memory leak [#1881](https://github.com/stoplightio/prism/issues/1881)
 
-# 4.4.0 (2021.09.09)
+## 4.4.0 (2021.09.09)
 
 ## Changed
 
 - Added support for Deprecation header for deprecated operations [#1879](https://github.com/stoplightio/prism/pull/1879)
 
-# 4.3.4 (2021-08-26)
+## 4.3.4 (2021-08-26)
 
 ## Fixed
 
 - Better path matching for concrete and templated parts [1876](https://github.com/stoplightio/prism/pull/1876)
 
-# 4.3.3 (2021-08-24)
+## 4.3.3 (2021-08-24)
 
 ## Fixed
 
 - Fixes issue with encoded URLs: was unable to find them in spec while mocking.
 
-# 4.3.2 (2021-08-23)
+## 4.3.2 (2021-08-23)
 
 ## Fixed
 
 - Fixes performance regression in `prism-cli` [#1860](https://github.com/stoplightio/prism/issues/1860)
 
-# 4.3.1 (2021-07-16)
+## 4.3.1 (2021-07-16)
 
 ## Fixed
 
 - Fixed issue with date-time type validation [#1856](https://github.com/stoplightio/prism/pull/1856)
 
-# 4.3.0 (2021-07-08)
+## 4.3.0 (2021-07-08)
 
 ## Changed
 
 - Supports readOnly writeOnly properties [#1853](https://github.com/stoplightio/prism/pull/1853)
 
-# 4.2.6 (2021-06-23)
+## 4.2.6 (2021-06-23)
 
 ## Changed
 
 - Increase Max Request Size to 10mb by default [#1844](https://github.com/stoplightio/prism/pull/1844)
 
-# 4.2.5 (2021-05-25)
+## 4.2.5 (2021-05-25)
 
 ## Changed
 
 - Support Circular JSON Refs [#1835](https://github.com/stoplightio/prism/pull/1835)
 
-# 4.2.4 (2021-05-24)
+## 4.2.4 (2021-05-24)
 
 ## Changed
 
 - Improved the build pipeline [#1834](https://github.com/stoplightio/prism/pull/1834)
 
-# 4.2.3 (2021-05-17)
+## 4.2.3 (2021-05-17)
 
 ## Fixed
 
 - bumped `sanitize-html` dep to address security issue [#1828](https://github.com/stoplightio/prism/pull/1828)
 
-# 4.2.2 (2021-05-04)
+## 4.2.2 (2021-05-04)
 
 ## Fixed
 
 - encodeURI param names to avoid performance issues on startup [#1816](https://github.com/stoplightio/prism/pull/1816)
 
-# 4.2.1 (2021-04-28)
+## 4.2.1 (2021-04-28)
 
 ## Changed
 
 - Bump @stoplight/json-schema-sampler to support `if/then/else` JSON Schema compound keywords in static mode [#1792](https://github.com/stoplightio/prism/pull/1792)
 
-# 4.2.0 (2021-04-23)
+## 4.2.0 (2021-04-23)
 
 ## Added
 
@@ -326,20 +347,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Return preferred example when validation fails [#1786](https://github.com/stoplightio/prism/pull/1786)
 
-# 4.1.3 (2021-04-21)
+## 4.1.3 (2021-04-21)
 
 ## Fixed
 
 - Prism is now supporting nullable validations [#1782](https://github.com/stoplightio/prism/pull/1782)
 
-# 4.1.2 (2020-12-01)
+## 4.1.2 (2020-12-01)
 
 ## Fixed
 
 - Yet another improvement for the returned path in Problem JSON payloads [#1548](https://github.com/stoplightio/prism/pull/1548)
 - Prism is now respecting `min/maxItems` properties in JSON Schemas [#1530](https://github.com/stoplightio/prism/pull/1530)
 
-# 4.1.1 (2020-11-24)
+## 4.1.1 (2020-11-24)
 
 ## Fixed
 
@@ -351,19 +372,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Prism will now validate that the requested code (either through prefer code header or \_\_code query param) is a number. [#1542](https://github.com/stoplightio/prism/pull/1542)
 
-# 4.1.0 (2020-09-25)
+## 4.1.0 (2020-09-25)
 
 ## Changed
 
 - When running in proxy mode and an upstream server responds with `501`, Prism will now "remock" the request and provide a meaningful response. This is a fancy way to say "if the upstream server has not yet implemented an operation, it will mock" [#1426](https://github.com/stoplightio/prism/pull/1426)
 
-# 4.0.1 (2020-09-07)
+## 4.0.1 (2020-09-07)
 
 ## Fixed
 
 - Fixed a type issue in the HTTP Client that would let you pass incorrect parameters [#1391](https://github.com/stoplightio/prism/pull/1391)
 
-# 4.0.0 (2020-08-25)
+## 4.0.0 (2020-08-25)
 
 ## Fixed
 
@@ -378,7 +399,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 * **BREAKING**: Prism does **NOT** support Node 8 and 10 anymore; the miminal runtime is now 12
 * A significant number of dependencies has been upgraded
 
-# 3.3.7 (2020-07-24)
+## 3.3.7 (2020-07-24)
 
 ## Fixed
 
@@ -388,20 +409,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Prism is now stop to claim error for paths declared in the document that are not starting with a `/` [#1340](https://github.com/stoplightio/prism/pull/1340)
 
-# 3.3.6 (2020-07-08)
+## 3.3.6 (2020-07-08)
 
 ## Fixed
 
 - Prism is not returning an error anymore when trying to construct a schema for HTTP headers and query string with mixed cases property names [#1268](https://github.com/stoplightio/prism/pull/1268)
 
-# 3.3.5 (2020-05-26)
+## 3.3.5 (2020-05-26)
 
 ## Fixed
 
 - Since the media type parameters are not standardised (apart from the quality one), the negotiator will discard them during the matching process or simply treat them as strings/numbers without trying to guess anything more [#1159](https://github.com/stoplightio/prism/pull/1159)
 - Prism is now handling correctly hypens on both Path parameters and Query Parameters [#1189](https://github.com/stoplightio/prism/pull/1189), [#1992](https://github.com/stoplightio/prism/pull/1992)
 
-# 3.3.4 (2020-05-04)
+## 3.3.4 (2020-05-04)
 
 ## Fixed
 
@@ -410,20 +431,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Autogenerated security validation errors now have the `detail` field filled with an informative message [#1101](https://github.com/stoplightio/prism/pull/1101)
 - Correctly catch some exceptions and propagate them to the CLI [#1107](https://github.com/stoplightio/prism/pull/1107)
 
-# 3.3.3 (2020-04-02)
+## 3.3.3 (2020-04-02)
 
 ## Fixed
 
 - All the dependencies used by the various Prism packages have been explicitily declared avoiding some resolutions problems in case you are using Prism programmatically [#1072](https://github.com/stoplightio/prism/pull/1072)
 - Prism's current options aren't overriden internally anymore because of the `Prefer` header set [#1074](https://github.com/stoplightio/prism/pull/1074)
 
-# 3.3.2 (2020-03-16)
+## 3.3.2 (2020-03-16)
 
 ## Fixed
 
 - Prism will not correctly consider that HTTP Security Schemes are case insensitive [#1044](https://github.com/stoplightio/prism/pull/1044)
 
-# 3.3.1 (2020-03-13)
+## 3.3.1 (2020-03-13)
 
 ## Fixed
 
@@ -431,46 +452,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Fixed a condition where Prism would ignore CLI flags in case the nor `Prefer` or Query String preferences were passed [#1034](https://github.com/stoplightio/prism/pull/1034)
 - Created a specific error when a 200-299 response cannot be found for a successful request [#1035](https://github.com/stoplightio/prism/pull/1035)
 
-# 3.3.0 (2020-03-10)
+## 3.3.0 (2020-03-10)
 
 ## Added
 
 - Prism now supports sending its configuration parameters through the `Prefer` header [#984](https://github.com/stoplightio/prism/pull/984)
 - Experimental Postman Collection support [#985](https://github.com/stoplightio/prism/pull/985)
 
-# 3.2.9 (2020-02-19)
+## 3.2.9 (2020-02-19)
 
 ## Fixed
 
 - Correctly evaluate the `ServerMatch` property so that Prism will prefer concrete matches over templated ones [#983](https://github.com/stoplightio/prism/pull/983)
 - HTTP Client now correctly returns empty bodies [#993](https://github.com/stoplightio/prism/pull/993)
 
-# 3.2.8 (2020-02-11)
+## 3.2.8 (2020-02-11)
 
 ## Fixed
 
 - Correctly discriminate methods in the router when server is not defined [#969](https://github.com/stoplightio/prism/pull/969)
 
-# 3.2.7 (2020-02-06)
+## 3.2.7 (2020-02-06)
 
 ## Fixed
 
 - Removed double definition of the `ProblemJsonError` [#965](https://github.com/stoplightio/prism/pull/965)
 
-# 3.2.6 (2020-02-03)
+## 3.2.6 (2020-02-03)
 
 ## Fixed
 
 - Correctly set `access-control-expose-headers` headers for preflight and regular responses when CORS is enabled [#958](https://github.com/stoplightio/prism/pull/958)
 - Prism public HTTP Client fixes and docs improvements [#959](https://github.com/stoplightio/prism/pull/959)
 
-# 3.2.5 (2020-01-30)
+## 3.2.5 (2020-01-30)
 
 ## Fixed
 
 - Correctly set `vary` and `access-control-request-headers` headers for preflight and regular responses when CORS is enabled
 
-# 3.2.4 (2020-01-28)
+## 3.2.4 (2020-01-28)
 
 ## Changed
 
@@ -482,27 +503,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is now normalising the media types so that when looking for compatible contents charsets and other parameters are not taken in consideration [#944](https://github.com/stoplightio/prism/pull/944)
 - Prism's external HTTP Client is now correctly constructing the internal log object [#952](https://github.com/stoplightio/prism/pull/952)
 
-# 3.2.3 (2019-12-19)
+## 3.2.3 (2019-12-19)
 
 ## Fixed
 
 - Prism will not coerce JSON Payloads anymore during the schema validation [#905](https://github.com/stoplightio/prism/pull/905)
 
-# 3.2.2 (2019-12-13)
+## 3.2.2 (2019-12-13)
 
 ## Fixed
 
 - Correctly handle the possibility of a body/headers generation failure [#875](https://github.com/stoplightio/prism/pull/875)
 - Input validation errors should not trigger a `500` status code when the `--errors` flag is set to true [#892](https://github.com/stoplightio/prism/pull/892)
 
-# 3.2.1 (2019-11-21)
+## 3.2.1 (2019-11-21)
 
 ## Fixed
 
 - Put `chalk` as an explicit dependency in the CLI package [#854](https://github.com/stoplightio/prism/pull/854)
 - Make sure callbacks work on `application/x-www-form-urlencoded` data [#856](https://github.com/stoplightio/prism/pull/856)
 
-# 3.2.0 (2019-11-21)
+## 3.2.0 (2019-11-21)
 
 ## Added
 
@@ -531,7 +552,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - When the request is missing the `Accept` header, Prism will now effectively treat it as a `*/*`, according to the respective CFP [#802](https://github.com/stoplightio/prism/pull/802)
 - Prism will now passthrough as response anything that matches `text/*` instead of only `text/plain` [#796](https://github.com/stoplightio/prism/pull/796)
 
-# 3.1.1 (2019-09-23)
+## 3.1.1 (2019-09-23)
 
 ## Fixed
 
@@ -542,7 +563,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is now selecting proper serializer when Accept header contains content type which is missing in spec. This is a result of simplifying serializer selection approach. [#620](https://github.com/stoplightio/prism/pull/620)
 - HEAD requests no longer fail with 406 Not Acceptable [#603](https://github.com/stoplightio/prism/pull/603)
 
-# 3.1.0 (2019-09-03)
+## 3.1.0 (2019-09-03)
 
 ## Added
 
@@ -560,7 +581,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism is correctly returning a single root node with the payload for XML data [#578](https://github.com/stoplightio/prism/pull/578)
 - Prism is correctly returning payload-less responses #606
 
-# 3.0.4 (2019-08-20)
+## 3.0.4 (2019-08-20)
 
 ## Added
 
@@ -573,7 +594,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism got rid of some big internal dependencies that now aren't required anymore, making it faster and lighter. [#490](https://github.com/stoplightio/prism/pull/490)
 - Prism now correctly validates OAS2 `application/x-www-urlencoded` (form data) params (#483)
 
-# 3.0.3 (2019-07-25)
+## 3.0.3 (2019-07-25)
 
 ## Fixed
 
@@ -588,17 +609,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Prism HTTP Client is now adding 'user-agent' header with Prism/<<PRISM_VERSION>> as the value when making HTTP requests
 - Prism is now using `yargs` for its command line interface, replacing oclif.
 
-# 3.0.1 (2019-07-16)
+## 3.0.1 (2019-07-16)
 
 ## Fixed
 
 - Fixed an error in the JSON Path bundling for NPM Package download
 
-# 3.0.0 (2019-07-16)
+## 3.0.0 (2019-07-16)
 
 This is nothing more than the beta 6 rebranded.
 
-# 3.0.0-beta.6 (2019-07-12)
+## 3.0.0-beta.6 (2019-07-12)
 
 ### Fixed
 
@@ -607,20 +628,20 @@ This is nothing more than the beta 6 rebranded.
 - Prism now validates any payload, as long it has a schema and it's parsable [#446](https://github.com/stoplightio/prism/issues/446)
 - Prism now will tell you explicitly when a response has been constructed from a `default` response definition [#445](https://github.com/stoplightio/prism/issues/445)
 
-# 3.0.0-beta.5 (2019-07-09)
+## 3.0.0-beta.5 (2019-07-09)
 
 ### Features
 
 - Internal refactoring: Prism validation process is now completely sync [#400](https://github.com/stoplightio/prism/issues/400)
 
-# 3.0.0-beta.3 (2019-07-05)
+## 3.0.0-beta.3 (2019-07-05)
 
 ### Features
 
 - Prism examples generator supports `x-faker` extensions [#384 — thanks @vanhoofmaarten!](https://github.com/stoplightio/prism/issues/vanhoofmaarten!)
 - Documentation reorganisation [#393](https://github.com/stoplightio/prism/issues/393)
 
-# 3.0.0-beta.3 (2019-07-01)
+## 3.0.0-beta.3 (2019-07-01)
 
 ### Features
 
@@ -633,7 +654,7 @@ This is nothing more than the beta 6 rebranded.
 
 - Prism is now able to parse HTTP FormData payloads [#381](https://github.com/stoplightio/prism/issues/381)
 
-# 3.0.0-beta.1 (2019-06-22)
+## 3.0.0-beta.1 (2019-06-22)
 
 ### Features
 
@@ -644,7 +665,7 @@ This is nothing more than the beta 6 rebranded.
 
 - Static JSON Schema examples generator gives precendece to `default` over `examples` [#373](https://github.com/stoplightio/prism/issues/373)
 
-# 3.0.0-beta.1 (2019-06-18)
+## 3.0.0-beta.1 (2019-06-18)
 
 ### Features
 
@@ -656,13 +677,13 @@ This is nothing more than the beta 6 rebranded.
 
 - Prism's build process in TypeScript has been revisited [#356](https://github.com/stoplightio/prism/issues/356)
 
-# 3.0.0-alpha.16 (2019-06-17)
+## 3.0.0-alpha.16 (2019-06-17)
 
 ### Features
 
 - Prism can now validate servers [#351](https://github.com/stoplightio/prism/issues/351)
 
-# 3.0.0-alpha.15 (2019-06-14)
+## 3.0.0-alpha.15 (2019-06-14)
 
 ### Fixed
 
@@ -672,14 +693,14 @@ This is nothing more than the beta 6 rebranded.
 
 - Prism now has got a static example fallback in case the `dynamic` flag is not enabled [#347](https://github.com/stoplightio/prism/issues/347)
 
-# 3.0.0-alpha.14 (2019-06-11)
+## 3.0.0-alpha.14 (2019-06-11)
 
 ### Fixed
 
 - Prism is now handling the fact that HTTP headers are case insensitive [#338](https://github.com/stoplightio/prism/issues/338)
 - Prism is now normalising OAS2/3 schemas improving and simplyfing the validation capabilites [#338](https://github.com/stoplightio/prism/issues/338)
 
-# 3.0.0-alpha.13 (2019-06-09)
+## 3.0.0-alpha.13 (2019-06-09)
 
 ### Fixed
 
@@ -689,7 +710,7 @@ This is nothing more than the beta 6 rebranded.
 
 - Prism CLI has now a new CLI option to specify the IP Address where it will listen connections for [#340](https://github.com/stoplightio/prism/issues/340)
 
-# 3.0.0-alpha.12 (2019-06-04)
+## 3.0.0-alpha.12 (2019-06-04)
 
 ### Fixed
 
@@ -703,7 +724,7 @@ This is nothing more than the beta 6 rebranded.
 - Add new GitHub ISSUES template files for the project [#326](https://github.com/stoplightio/prism/issues/326)
 - Decouple payload generation from its serialisation [#322](https://github.com/stoplightio/prism/issues/322)
 
-# 3.0.0-alpha.11 (2019-05-24)
+## 3.0.0-alpha.11 (2019-05-24)
 
 ### Fixed
 
