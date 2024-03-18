@@ -1,6 +1,16 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to Semantic Versioning.
+
+<!-- markdown-link-check-disable -->
+
 ## [5.6.0](https://github.com/stoplightio/prism/compare/v5.5.4...v5.6.0) (2024-03-18)
+
+This is an inaccurate view of this release.
+We are working to add Release Please to manage this and this should be cleaner in the next release. 
+Sorry for the inconvenience.
 
 
 ### Features
@@ -20,7 +30,7 @@
 * [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([931fc0f](https://github.com/stoplightio/prism/commit/931fc0fe47b4ff4ec58f8ba3369d50f8d1bf47c3))
 * [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([bfc258a](https://github.com/stoplightio/prism/commit/bfc258aa98e49c46fa5116ca1e7b49b8a3117ce9))
 * [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([1a05283](https://github.com/stoplightio/prism/commit/1a0528365251043d041c487ebeb905a51310e420))
-* [#7839](https://github.com/stoplightio/prism/issues/7839) fixed handling of number with format: double ([e10a1e5](https://github.com/stoplightio/prism/commit/e10a1e54995bd0a0c325412de63041835023f5d5))
+* fixed handling of number with format: double ([e10a1e5](https://github.com/stoplightio/prism/commit/e10a1e54995bd0a0c325412de63041835023f5d5))
 * 1917 fixed handling of example request for invalid requests ([444012b](https://github.com/stoplightio/prism/commit/444012bf1d9675abb2628727d4c5b39de486eb43))
 * another fix for memory leak of schema validation ([ded2a9b](https://github.com/stoplightio/prism/commit/ded2a9b110459b7c15e00115e5a600f6f8cd8438))
 * **ci:** release please simpler config ([#2489](https://github.com/stoplightio/prism/issues/2489)) ([b6be539](https://github.com/stoplightio/prism/commit/b6be539ff987194fda497d6b08c3671a7beed63f))
@@ -48,15 +58,11 @@
 * use proper client call in memory leak tests ([c223192](https://github.com/stoplightio/prism/commit/c223192750c2edde958e43da8bffe639f2672952))
 * validateOutput() when schema contains internal reference ([#2363](https://github.com/stoplightio/prism/issues/2363)) ([8e143e6](https://github.com/stoplightio/prism/commit/8e143e6622bdc8098a5c86c399831a12858612d5))
 
-<!-- markdown-link-check-disable -->
 
-## Change Log
 
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to Semantic Versioning.
 
-## Unreleased
+
 
 ## 5.5.4 (2024.02.02)
 

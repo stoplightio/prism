@@ -19,7 +19,7 @@
 * [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([931fc0f](https://github.com/stoplightio/prism/commit/931fc0fe47b4ff4ec58f8ba3369d50f8d1bf47c3))
 * [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([bfc258a](https://github.com/stoplightio/prism/commit/bfc258aa98e49c46fa5116ca1e7b49b8a3117ce9))
 * [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([1a05283](https://github.com/stoplightio/prism/commit/1a0528365251043d041c487ebeb905a51310e420))
-* [#7839](https://github.com/stoplightio/prism/issues/7839) fixed handling of number with format: double ([e10a1e5](https://github.com/stoplightio/prism/commit/e10a1e54995bd0a0c325412de63041835023f5d5))
+* fixed handling of number with format: double ([e10a1e5](https://github.com/stoplightio/prism/commit/e10a1e54995bd0a0c325412de63041835023f5d5))
 * 1917 fixed handling of example request for invalid requests ([444012b](https://github.com/stoplightio/prism/commit/444012bf1d9675abb2628727d4c5b39de486eb43))
 * another fix for memory leak of schema validation ([ded2a9b](https://github.com/stoplightio/prism/commit/ded2a9b110459b7c15e00115e5a600f6f8cd8438))
 * decode path before matching it ([ed5bce8](https://github.com/stoplightio/prism/commit/ed5bce837fb0cf83d15fb1a085227986f063aee7))
