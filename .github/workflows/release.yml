@@ -9,8 +9,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  # Update release PR
-  release_please:
+  # Create release PR
+  release-please:
     name: Release Please
     runs-on: ubuntu-latest
     if: github.repository == 'stoplightio/prism'
@@ -18,8 +18,14 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: google-github-actions/release-please-action@v4
         id: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
           release-type: 'node'
+          target-branch: master
