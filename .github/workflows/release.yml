@@ -21,5 +21,7 @@ jobs:
       - uses: google-github-actions/release-please-action@v4
         id: release
         with:
+          # the manifest file is release-please-config.json in the root dir
+          command: manifest
           token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
           release-type: 'node'
