@@ -4,7 +4,7 @@ import { IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
 import { createAndCallPrismInstanceWithSpec } from '../instanceWithSpec';
-import { IHttpConfig } from 'http/dist';
+import { IHttpConfig } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
 
