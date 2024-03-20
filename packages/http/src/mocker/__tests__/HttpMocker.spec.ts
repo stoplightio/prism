@@ -316,32 +316,6 @@ describe('mocker', () => {
         expect(helpers.negotiateOptionsForValidRequest).toHaveBeenCalled();
         expect(helpers.negotiateOptionsForInvalidRequest).not.toHaveBeenCalled();
       });
-      it.only('returns static example from a string testing another thing', () => {
-        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest');
-        jest.spyOn(helpers, 'negotiateOptionsForValidRequest');
-
-        mock({
-          config: { dynamic: false },
-          resource: `{
-            "openapi": "3.0.0",
-            "paths": {
-              "/pet": {
-                "get": {
-                  "responses": {
-                    "200": {
-                      "description": "test"
-                    }
-                  }
-                }
-              }
-            }
-          }`,
-          input: Object.assign({}, mockInput, { validations: [{ severity: DiagnosticSeverity.Warning }] }),
-        })(logger);
-
-        expect(helpers.negotiateOptionsForValidRequest).toHaveBeenCalled();
-        expect(helpers.negotiateOptionsForInvalidRequest).not.toHaveBeenCalled();
-      });
     });
 
     describe('with a negotiator response containing validation results of Error severity', () => {

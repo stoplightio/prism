@@ -1,4 +1,4 @@
-import { IPrismComponents, IPrismComponentsWithPromise, IPrismDiagnostic, IPrismInput } from '@stoplight/prism-core';
+import { IPrismComponents, IPrismDiagnostic, IPrismInput } from '@stoplight/prism-core';
 import {
   DiagnosticSeverity,
   Dictionary,
@@ -12,16 +12,14 @@ import {
 import * as caseless from 'caseless';
 import * as chalk from 'chalk';
 import * as E from 'fp-ts/Either';
-import * as TE from 'fp-ts/TaskEither';
-import * as T from 'fp-ts/Task';
 import * as Record from 'fp-ts/Record';
-import { Lazy, pipe } from 'fp-ts/function';
+import { pipe } from 'fp-ts/function';
 import * as A from 'fp-ts/Array';
 import { sequenceT } from 'fp-ts/Apply';
 import * as R from 'fp-ts/Reader';
 import * as O from 'fp-ts/Option';
 import * as RE from 'fp-ts/ReaderEither';
-import { get, groupBy, isError, isNumber, isString, keyBy, mapValues, partial, pick } from 'lodash';
+import { get, groupBy, isNumber, isString, keyBy, mapValues, partial, pick } from 'lodash';
 import { Logger } from 'pino';
 import { is } from 'type-is';
 import {
@@ -32,7 +30,6 @@ import {
   IHttpResponse,
   PayloadGenerator,
   ProblemJsonError,
-  isIHttpOperation,
 } from '../types';
 import withLogger from '../withLogger';
 import { UNAUTHORIZED, UNPROCESSABLE_ENTITY, INVALID_CONTENT_TYPE, SCHEMA_TOO_COMPLEX } from './errors';
@@ -55,22 +52,14 @@ export { resetGenerator as resetJSONSchemaGenerator } from './generator/JSONSche
 const eitherRecordSequence = Record.sequence(E.Applicative);
 const eitherSequence = sequenceT(E.Apply);
 
-const mock: IPrismComponents<IHttpOperation | string, IHttpRequest, IHttpResponse, IHttpMockConfig>['mock'] = ({
+const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpMockConfig>['mock'] = ({
   resource,
   input,
   config,
 }) => {
-  let finalResource: IHttpOperation;
-  if (typeof resource === 'string') {
-    finalResource = { method: 200, path: '/test', responses: {}, id: 12223 } as unknown as IHttpOperation;
-  } else {
-    finalResource = resource;
-  }
-
-  //do additional work to get specific operation for request
   const payloadGenerator: PayloadGenerator = config.dynamic
-    ? partial(generate, finalResource, resource['__bundle__'])
-    : partial(generateStatic, finalResource);
+    ? partial(generate, resource, resource['__bundle__'])
+    : partial(generateStatic, resource);
 
   return pipe(
     withLogger(logger => {
@@ -84,8 +73,8 @@ const mock: IPrismComponents<IHttpOperation | string, IHttpRequest, IHttpRespons
       }
       return config;
     }),
-    R.chain(mockConfig => negotiateResponse(mockConfig, input, finalResource)),
-    R.chain(result => negotiateDeprecation(result, finalResource)),
+    R.chain(mockConfig => negotiateResponse(mockConfig, input, resource)),
+    R.chain(result => negotiateDeprecation(result, resource)),
     R.chain(result => assembleResponse(result, payloadGenerator, config.ignoreExamples ?? false)),
     R.chain(
       response =>
@@ -96,7 +85,7 @@ const mock: IPrismComponents<IHttpOperation | string, IHttpRequest, IHttpRespons
           pipe(
             response,
             E.map(mockResponseLogger(logger)),
-            E.map(response => runCallbacks({ resource: finalResource, request: input.data, response })(logger)),
+            E.map(response => runCallbacks({ resource, request: input.data, response })(logger)),
             E.chain(() => response)
           )
     )
