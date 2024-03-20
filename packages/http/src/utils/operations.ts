@@ -12,7 +12,7 @@ import type { OpenAPIObject } from 'openapi3-ts';
 import type { CollectionDefinition } from 'postman-collection';
 
 export async function getHttpOperationsFromSpec(specFilePathOrObject: string | object): Promise<IHttpOperation[]> {
-  const prismVersion = require('../package.json').version;
+  const prismVersion = require('../../package.json').version;
   const httpResolverOpts: HTTPResolverOptions = {
     headers: {
       'User-Agent': `PrismMockServer/${prismVersion} (${os.type()} ${os.arch()} ${os.release()})`,

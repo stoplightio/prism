@@ -10,10 +10,10 @@ import * as signale from 'signale';
 import * as split from 'split2';
 import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
+import { CreatePrism } from './runner';
+import { getHttpOperationsFromSpec } from '@stoplight/prism-http';
 import { createExamplePath } from './paths';
 import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer';
-import { CreatePrism } from './runner';
-import { getHttpOperationsFromSpec } from '../operations';
 import { configureExtensionsUserProvided } from '../extensions';
 
 type PrismLogDescriptor = pino.LogDescriptor & {
