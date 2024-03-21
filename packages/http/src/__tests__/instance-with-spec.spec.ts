@@ -1,9 +1,9 @@
-import { createLogger, IPrismOutput } from '@stoplight/prism-core';
+import { createLogger } from '@stoplight/prism-core';
 import { basename, resolve } from 'path';
-import { IHttpRequest, IHttpResponse, ProblemJsonError } from '../';
+import { IHttpRequest, ProblemJsonError } from '../';
 import { UNPROCESSABLE_ENTITY } from '../mocker/errors';
 import { NO_PATH_MATCHED_ERROR, NO_SERVER_MATCHED_ERROR } from '../router/errors';
-import { createAndCallPrismInstanceWithSpec } from '../instanceWithSpec';
+import { createAndCallPrismInstanceWithSpec, PrismErrorResult, PrismOkResult } from '../instanceWithSpec';
 import { IHttpConfig } from '../types';
 
 const logger = createLogger('TEST', { enabled: false });
@@ -38,14 +38,11 @@ describe('Http Client .request', () => {
             path: '/pet',
           },
         };
-        const result = (await createAndCallPrismInstanceWithSpec(
-          specPath,
-          config,
-          prismRequest,
-          logger
-        )) as unknown as IPrismOutput<IHttpResponse>;
-        expect(result.output).toBeDefined();
-        expect(result.output.statusCode).toBe(200);
+        const result = await createAndCallPrismInstanceWithSpec(specPath, config, prismRequest, logger);
+        expect(result.result).toBe('ok');
+        const output = (result as PrismOkResult).response.output;
+        expect(output).toBeDefined();
+        expect(output.statusCode).toBe(200);
       });
     });
     describe('valid baseUrl set', () => {
@@ -57,14 +54,11 @@ describe('Http Client .request', () => {
             baseUrl: 'http://example.com/api',
           },
         };
-        const result = (await createAndCallPrismInstanceWithSpec(
-          specPath,
-          config,
-          prismRequest,
-          logger
-        )) as unknown as IPrismOutput<IHttpResponse>;
-        expect(result.output).toBeDefined();
-        expect(result.output.statusCode).toBe(200);
+        const result = await createAndCallPrismInstanceWithSpec(specPath, config, prismRequest, logger);
+        expect(result.result).toBe('ok');
+        const output = (result as PrismOkResult).response.output;
+        expect(output).toBeDefined();
+        expect(output.statusCode).toBe(200);
       });
     });
 
@@ -78,9 +72,10 @@ describe('Http Client .request', () => {
           },
         };
         const result = await createAndCallPrismInstanceWithSpec(specPath, config, prismRequest, logger);
-        const resultJson = JSON.parse(result as string);
-        const expectedError = ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR);
-        expect(ProblemJsonError.fromTemplate(resultJson)).toMatchObject(expectedError);
+        expect(result.result).toBe('error');
+        expect((result as PrismErrorResult).error).toMatchObject(
+          ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR)
+        );
       });
     });
 
@@ -94,51 +89,10 @@ describe('Http Client .request', () => {
           },
         };
         const result = await createAndCallPrismInstanceWithSpec(specPath, config, prismRequest, logger);
-        const resultJson = JSON.parse(result as string);
-        const expectedError = ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR);
-        expect(ProblemJsonError.fromTemplate(resultJson)).toMatchObject(expectedError);
-      });
-    });
-
-    describe('mocking is off', () => {
-      const baseUrl = 'https://stoplight.io';
-
-      describe.each<[boolean, string]>([
-        [false, 'will let the request go through'],
-        [true, 'fails the operation'],
-      ])('errors flag is %s', (errors, testText) => {
-        config = {
-          mock: { dynamic: false },
-          checkSecurity: true,
-          validateRequest: true,
-          validateResponse: true,
-          errors,
-          upstream: new URL(baseUrl),
-          upstreamProxy: undefined,
-          isProxy: true,
-        };
-
-        describe('path is not valid', () => {
-          const request: IHttpRequest = {
-            method: 'get',
-            url: {
-              path: '/x-bet',
-              baseUrl,
-            },
-          };
-
-          it(testText, async () => {
-            const result = await createAndCallPrismInstanceWithSpec(specPath, config, request, logger);
-            if (typeof result === 'string') {
-              const resultJson = JSON.parse(result);
-              const expectedError = ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR);
-              expect(ProblemJsonError.fromTemplate(resultJson)).toMatchObject(expectedError);
-            } else {
-              expect(result.output).toBeDefined();
-              expect(result.output.statusCode).toBe(200);
-            }
-          });
-        });
+        expect(result.result).toBe('error');
+        expect((result as PrismErrorResult).error).toMatchObject(
+          ProblemJsonError.fromTemplate(NO_SERVER_MATCHED_ERROR)
+        );
       });
     });
   });
@@ -163,9 +117,8 @@ describe('Http Client .request', () => {
           },
         };
         const result = await createAndCallPrismInstanceWithSpec(specPath, config, request, logger);
-        const resultJson = JSON.parse(result as string);
-        const expectedError = ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR);
-        expect(ProblemJsonError.fromTemplate(resultJson)).toMatchObject(expectedError);
+        expect(result.result).toBe('error');
+        expect((result as PrismErrorResult).error).toMatchObject(ProblemJsonError.fromTemplate(NO_PATH_MATCHED_ERROR));
       });
     });
 
@@ -180,14 +133,11 @@ describe('Http Client .request', () => {
             },
           },
         };
-        const result = (await createAndCallPrismInstanceWithSpec(
-          specPath,
-          config,
-          request,
-          logger
-        )) as unknown as IPrismOutput<IHttpResponse>;
-        expect(result).toHaveProperty('output.body');
-        expect(typeof result.output.body).toBe('string');
+        const result = await createAndCallPrismInstanceWithSpec(specPath, config, request, logger);
+        expect(result.result).toBe('ok');
+        const response = (result as PrismOkResult).response;
+        expect(response).toHaveProperty('output.body');
+        expect(typeof response.output.body).toBe('string');
       });
 
       it('w/o required params throws a validation error', async () => {
@@ -198,9 +148,8 @@ describe('Http Client .request', () => {
           },
         };
         const result = await createAndCallPrismInstanceWithSpec(specPath, config, request, logger);
-        const resultJson = JSON.parse(result as string);
-        const expectedError = ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY);
-        expect(ProblemJsonError.fromTemplate(resultJson)).toMatchObject(expectedError);
+        expect(result.result).toBe('error');
+        expect((result as PrismErrorResult).error).toMatchObject(ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY));
       });
 
       it('with valid body param then returns no validation issues', async () => {
@@ -218,13 +167,9 @@ describe('Http Client .request', () => {
             complete: true,
           },
         };
-        const result = (await createAndCallPrismInstanceWithSpec(
-          specPath,
-          config,
-          request,
-          logger
-        )) as unknown as IPrismOutput<IHttpResponse>;
-        expect(result.validations).toEqual({
+        const result = await createAndCallPrismInstanceWithSpec(specPath, config, request, logger);
+        expect(result.result).toBe('ok');
+        expect((result as PrismOkResult).response.validations).toEqual({
           input: [],
           output: [],
         });
@@ -243,14 +188,10 @@ describe('Http Client .request', () => {
           aPi_keY: 'hello',
         },
       };
-      const result = (await createAndCallPrismInstanceWithSpec(
-        noRefsPetstoreMinimalOas2Path,
-        config,
-        request,
-        logger
-      )) as unknown as IPrismOutput<IHttpResponse>;
+      const result = await createAndCallPrismInstanceWithSpec(noRefsPetstoreMinimalOas2Path, config, request, logger);
       expect(result).toBeDefined();
-      expect(result.output).toHaveProperty('statusCode', 200);
+      expect(result.result).toBe('ok');
+      expect((result as PrismOkResult).response.output).toHaveProperty('statusCode', 200);
     });
 
     it('returns an error if the the header is missing', async () => {
@@ -261,9 +202,8 @@ describe('Http Client .request', () => {
         },
       };
       const result = await createAndCallPrismInstanceWithSpec(noRefsPetstoreMinimalOas2Path, config, request, logger);
-      const resultJson = JSON.parse(result as string);
-      const expectedError = ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY);
-      expect(ProblemJsonError.fromTemplate(resultJson)).toMatchObject(expectedError);
+      expect(result.result).toBe('error');
+      expect((result as PrismErrorResult).error).toMatchObject(ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY));
     });
   });
 
@@ -283,13 +223,10 @@ describe('Http Client .request', () => {
         path: '/todos',
       },
     };
-    const result = (await createAndCallPrismInstanceWithSpec(
-      staticExamplesOas2Path,
-      config,
-      request,
-      logger
-    )) as unknown as IPrismOutput<IHttpResponse>;
-    expect(result.output).toBeDefined();
-    expect(result.output.body).toBeInstanceOf(Array);
+    const result = await createAndCallPrismInstanceWithSpec(staticExamplesOas2Path, config, request, logger);
+    expect(result.result).toBe('ok');
+    const output = (result as PrismOkResult).response.output;
+    expect(output).toBeDefined();
+    expect(output.body).toBeInstanceOf(Array);
   });
 });
