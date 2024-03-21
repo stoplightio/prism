@@ -1038,10 +1038,10 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@stoplight/http-spec@^7.0.2":
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-7.0.2.tgz#010f10d1f721b0f6265ae3a851d0f41f62df0875"
-  integrity sha512-4DvT0w5goAhLxVbHfdzkMqGcTdi9bU4LmBrYNrZBOCFV4JPAHRERSBdI7F7n/MfgVvzxWb3Vftrh6pCgTd/+Jg==
+"@stoplight/http-spec@^7.0.3":
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/@stoplight/http-spec/-/http-spec-7.0.3.tgz#a27a3a72d429114e7994512f435312b5ee448c8b"
+  integrity sha512-r9Y8rT4RbqY7NWqSXjiqtBq0Nme2K5cArSX9gDPeuud8F4CwbizP7xkUwLdwDdHgoJkyIQ3vkFJpHzUVCQeOOA==
   dependencies:
     "@stoplight/json" "^3.18.1"
     "@stoplight/json-schema-generator" "1.0.2"
@@ -1052,7 +1052,7 @@
     fnv-plus "^1.3.1"
     lodash "^4.17.21"
     openapi3-ts "^2.0.2"
-    postman-collection "^4.1.2"
+    postman-collection "^4.1.3"
     tslib "^2.6.2"
     type-is "^1.6.18"
 
@@ -6031,10 +6031,10 @@ postcss@^8.3.11:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-postman-collection@^4.1.2:
-  version "4.2.1"
-  resolved "https://registry.npmjs.org/postman-collection/-/postman-collection-4.2.1.tgz"
-  integrity sha512-DFLt3/yu8+ldtOTIzmBUctoupKJBOVK4NZO0t68K2lIir9smQg7OdQTBjOXYy+PDh7u0pSDvD66tm93eBHEPHA==
+postman-collection@^4.1.3:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/postman-collection/-/postman-collection-4.4.0.tgz#6acb6e3796fcd9f6ac5a94e6894185e42387d7da"
+  integrity sha512-2BGDFcUwlK08CqZFUlIC8kwRJueVzPjZnnokWPtJCd9f2J06HBQpGL7t2P1Ud1NEsK9NHq9wdipUhWLOPj5s/Q==
   dependencies:
     "@faker-js/faker" "5.5.3"
     file-type "3.9.0"
