@@ -13,6 +13,7 @@ export { generate as generateHttpParam } from './mocker/generator/HttpParamGener
 export { resetJSONSchemaGenerator } from './mocker';
 import { IHttpConfig, IHttpResponse, IHttpRequest, PickRequired, PrismHttpComponents, IHttpProxyConfig } from './types';
 export { getHttpOperationsFromSpec } from './utils/operations';
+export { createAndCallPrismInstanceWithSpec, PrismErrorResult, PrismOkResult } from './instanceWithSpec';
 
 export const createInstance = (
   defaultConfig: IHttpConfig | IHttpProxyConfig,
