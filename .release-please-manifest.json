@@ -1,7 +1,7 @@
 {
-  ".": "5.6.0",
-  "packages/cli": "5.6.0",
+  ".": "5.7.0",
+  "packages/cli": "5.7.0",
   "packages/core": "5.6.0",
-  "packages/http": "5.6.0",
-  "packages/http-server": "5.6.0"
+  "packages/http": "5.7.0",
+  "packages/http-server": "5.7.0"
 }
