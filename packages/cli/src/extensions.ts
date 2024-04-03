@@ -1,4 +1,4 @@
-import * as $RefParser from '@stoplight/json-schema-ref-parser';
+import $RefParser from '@apidevtools/json-schema-ref-parser';
 import { decycle } from '@stoplight/json';
 import { get, camelCase, forOwn } from 'lodash';
 import { JSONSchemaFaker } from 'json-schema-faker';

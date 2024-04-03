@@ -1,8 +1,8 @@
 import { transformOas3Operations } from '@stoplight/http-spec/oas3/operation';
 import { transformOas2Operations } from '@stoplight/http-spec/oas2/operation';
 import { transformPostmanCollectionOperations } from '@stoplight/http-spec/postman/operation';
-import * as $RefParser from '@stoplight/json-schema-ref-parser';
-import { HTTPResolverOptions } from '@stoplight/json-schema-ref-parser';
+import $RefParser from '@apidevtools/json-schema-ref-parser';
+import { HTTPResolverOptions } from '@apidevtools/json-schema-ref-parser';
 import { bundleTarget, decycle } from '@stoplight/json';
 import { IHttpOperation } from '@stoplight/types';
 import { get } from 'lodash';
