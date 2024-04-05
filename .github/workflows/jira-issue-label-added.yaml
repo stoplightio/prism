@@ -9,5 +9,5 @@ jobs:
   call-workflow:
     uses: stoplightio/.github/.github/workflows/jira-issue-label-added.yaml@master
     with:
-      team-name: ${{ contains(github.event.pull_request.labels.*.name, 'team/bear-claws') && 'Bear Claws' || contains(github.event.pull_request.labels.*.name, 'team/honey-hackers') && 'Honey Hackers' || '' }}
+      team-name: ${{ contains(github.event.pull_request.labels.*.name, 'team/bear-claws') && 'Bear Claws' || contains(github.event.pull_request.labels.*.name, 'team/honey-hackers') && 'Honey Hackers' || contains(github.event.pull_request.labels.*.name, 'team/maintenance') && 'Maintenance' || '' }}
     secrets: inherit
