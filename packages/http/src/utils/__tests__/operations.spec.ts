@@ -1,4 +1,4 @@
-import { getHttpOperationsFromSpec } from '../../operations';
+import { getHttpOperationsFromSpec } from '../operations';
 
 describe('getHttpOperationsFromSpec()', () => {
   describe('ref resolving fails', () => {

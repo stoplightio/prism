@@ -22,10 +22,10 @@
     "test.harness": "jest -c ./jest.harness.config.js"
   },
   "resolutions": {
-    "sanitize-html": "2.3.3"
+    "sanitize-html": "2.12.1"
   },
   "devDependencies": {
-    "@stoplight/types": "^14.0.0",
+    "@stoplight/types": "^14.1.0",
     "@types/caseless": "^0.12.2",
     "@types/content-type": "^1.1.5",
     "@types/jest": "^29.5.4",
@@ -33,7 +33,7 @@
     "@types/lodash": "^4.14.175",
     "@types/node": "^13.1.1",
     "@types/node-fetch": "2.5.10",
-    "@types/pino": "6.3.8",
+    "@types/pino": "6.3.12",
     "@types/postman-collection": "^3.5.7",
     "@types/raw-body": "^2.3.0",
     "@types/signale": "^1.4.2",
@@ -51,7 +51,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "fast-xml-parser": "^4.2.0",
     "form-data": "^4.0.0",
-    "gavel": "^10.0.3",
+    "gavel": "10.0.3",
     "glob": "^7.2.0",
     "http-string-parser": "^0.0.6",
     "husky": "^8.0.1",

@@ -6,6 +6,7 @@ import { ThenArg } from '../types';
 import * as faker from '@faker-js/faker/locale/en';
 import { Dictionary } from '@stoplight/types';
 import * as FormData from 'form-data';
+import { HttpParamStyles } from '@stoplight/types';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -639,7 +640,7 @@ describe('body params validation', () => {
         });
 
         describe('and size bigger than 10MB', () => {
-          test('returns 422', async () => {
+          test('returns 413', async () => {
             const response = await makeRequest('/json-body-required', {
               method: 'POST',
               headers: { 'content-type': 'application/json' },
@@ -723,6 +724,82 @@ describe('body params validation', () => {
         {
           id: '?http-operation-id?',
           method: 'post',
+          path: '/application-x-www-form-urlencoded-complex-request-body',
+          responses: [
+            {
+              id: faker.random.word(),
+              code: '200',
+              headers: [],
+              contents: [
+                {
+                  id: faker.random.word(),
+                  mediaType: 'text/plain',
+                  schema: {
+                    type: 'string',
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                  },
+                  examples: [],
+                  encodings: [],
+                },
+              ],
+            },
+          ],
+          servers: [],
+          request: {
+            body: {
+              id: faker.random.word(),
+              contents: [
+                {
+                  id: faker.random.word(),
+                  mediaType: 'application/x-www-form-urlencoded',
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      arrays: {
+                        type: 'array',
+                        items: { type: 'string' },
+                      },
+                      user_profiles: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            foo: {
+                              type: 'string',
+                            },
+                            data: {
+                              type: 'boolean',
+                            },
+                            num: {
+                              type: 'integer',
+                            },
+                          },
+                          required: ['foo', 'data'],
+                        },
+                      },
+                    },
+                    required: ['arrays', 'user_profiles'],
+                    $schema: 'http://json-schema.org/draft-07/schema#',
+                  },
+                  examples: [],
+                  encodings: [
+                    { property: 'arrays', style: HttpParamStyles.Form, allowReserved: true, explode: false },
+                    { property: 'user_profiles', style: HttpParamStyles.Form, allowReserved: true, explode: false },
+                  ],
+                },
+              ],
+            },
+            headers: [],
+            query: [],
+            cookie: [],
+            path: [],
+          },
+          tags: [],
+          security: [],
+        },
+        {
+          id: '?http-operation-id?',
+          method: 'post',
           path: '/multipart-form-data-body-required',
           responses: [
             {
@@ -766,26 +843,45 @@ describe('body params validation', () => {
                     type: 'object',
                     properties: {
                       status: {
-                        type: 'string'
+                        type: 'string',
                       },
                       lines: {
-                        type: 'string'
+                        type: 'string',
                       },
                       test_img_file: {
-                        type: 'string'
+                        type: 'string',
                       },
                       test_json_file: {
-                        type: 'string'
+                        type: 'string',
                       },
                       num: {
-                        type: 'integer'
+                        type: 'integer',
+                      },
+                      arrays: {
+                        type: 'array',
+                        items: { type: 'string' },
+                      },
+                      user_profiles: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            foo: {
+                              type: 'integer',
+                            },
+                          },
+                          required: ['foo'],
+                        },
                       },
                     },
-                    required: ['status'],
+                    required: ['status', 'arrays', 'user_profiles'],
                     $schema: 'http://json-schema.org/draft-07/schema#',
                   },
                   examples: [],
-                  encodings: [],
+                  encodings: [
+                    { property: 'arrays', style: HttpParamStyles.Form, allowReserved: true, explode: false },
+                    { property: 'user_profiles', style: HttpParamStyles.Form, allowReserved: true, explode: false },
+                  ],
                 },
               ],
             },
@@ -861,14 +957,16 @@ describe('body params validation', () => {
       });
     });
 
-    describe('valid parameter provided', () => {
+    describe('valid application/x-www-form-urlencoded simple parameters provided', () => {
       test('returns 200', async () => {
+        const params = new URLSearchParams({
+          id: '123',
+          status: 'open',
+        });
+
         const response = await makeRequest('/path', {
           method: 'POST',
-          body: new URLSearchParams({
-            id: '123',
-            status: 'open',
-          }).toString(),
+          body: params.toString(),
           headers: { 'content-type': 'application/x-www-form-urlencoded' },
         });
 
@@ -876,23 +974,68 @@ describe('body params validation', () => {
       });
     });
 
-    describe('valid multipart form data parameter provided', () => {
+    describe('valid application/x-www-form-urlencoded complex parameters provided', () => {
+      test('returns 200', async () => {
+        const params = new URLSearchParams({
+          arrays: 'a,b,c',
+          user_profiles:
+            '{"foo":"value1","num   ":1,  "data":true}, {"foo":"value2","data":false,  "test": "   hello  +"}',
+        });
+
+        const response = await makeRequest('/application-x-www-form-urlencoded-complex-request-body', {
+          method: 'POST',
+          body: params.toString(),
+          headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        });
+
+        expect(response.status).toBe(200);
+      });
+
+      test('returns 415 and error message', async () => {
+        const params = new URLSearchParams({
+          arrays: 'a,b,c',
+          // Note invalid JSON "foo:"value1"
+          user_profiles:
+            '{"foo:"value1","num   ":1,  "data":true}, {"foo":"value2","data":false,  "test": "   hello  +"}',
+        });
+
+        const response = await makeRequest('/application-x-www-form-urlencoded-complex-request-body', {
+          method: 'POST',
+          body: params.toString(),
+          headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        });
+
+        expect(response.status).toBe(415);
+        expect(response.json()).resolves.toMatchObject({
+          detail: 'Cannot deserialize JSON object array in form data request body. Make sure the array is in JSON',
+          status: 415,
+          title: 'Invalid content type',
+          type: 'https://stoplight.io/prism/errors#INVALID_CONTENT_TYPE',
+        });
+      });
+    });
+
+    describe('valid multipart form data parameters provided', () => {
       let requestParams: Dictionary<any>;
       beforeEach(() => {
         const formData = new FormData();
-        formData.append("status", "--=\"");
-        formData.append("lines", "\r\n\r\n\s");
-        formData.append("test_img_file", "@test_img.png");
-        formData.append("test_json_file", "<test_json.json");
-        formData.append("num", "10");
-
+        formData.append('status', '--="');
+        formData.append('lines', '\r\n\r\ns');
+        formData.append('test_img_file', '@test_img.png');
+        formData.append('test_json_file', '<test_json.json');
+        formData.append('num', '10');
+        formData.append('arrays', 'a,b,c');
+        formData.append(
+          'user_profiles',
+          '{"foo": 1, "foo,  +bar":1}, {"foo":2, "{\\"test\\":x}": 2}, {"foo":3}, {"foo":4, "fizz buzz": 35}'
+        );
         requestParams = {
           method: 'POST',
-          body: formData
+          body: formData,
         };
       });
 
-      describe('boundary string generated correctly', () =>{
+      describe('boundary string generated correctly', () => {
         test('returns 200', async () => {
           const response = await makeRequest('/multipart-form-data-body-required', requestParams);
           expect(response.status).toBe(200);
@@ -902,14 +1045,15 @@ describe('body params validation', () => {
 
       describe('missing generated boundary string due to content-type manually specified in the header', () => {
         test('returns 415 & error message', async () => {
-          requestParams['headers'] = { 'content-type':'multipart/form-data' };
+          requestParams['headers'] = { 'content-type': 'multipart/form-data' };
           const response = await makeRequest('/multipart-form-data-body-required', requestParams);
           expect(response.status).toBe(415);
           expect(response.json()).resolves.toMatchObject({
-            detail: "Boundary parameter for multipart/form-data is not defined or generated in the request header. Try removing manually defined content-type from your request header if it exists.",
+            detail:
+              'Boundary parameter for multipart/form-data is not defined or generated in the request header. Try removing manually defined content-type from your request header if it exists.',
             status: 415,
-            title: "Invalid content type",
-            type: "https://stoplight.io/prism/errors#INVALID_CONTENT_TYPE",
+            title: 'Invalid content type',
+            type: 'https://stoplight.io/prism/errors#INVALID_CONTENT_TYPE',
           });
         });
       });

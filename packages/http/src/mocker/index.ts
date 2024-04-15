@@ -43,7 +43,7 @@ import {
   deserializeFormBody,
   findContentByMediaTypeOrFirst,
   splitUriParams,
-  parseMultipartFormDataParams
+  parseMultipartFormDataParams,
 } from '../validator/validators/body';
 import { parseMIMEHeader } from '../validator/validators/headers';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
@@ -151,10 +151,12 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
     O.chainNullableK(body => body.contents),
     O.getOrElse(() => [] as IMediaTypeContent[])
   );
-  
+
   const requestBody = request.body as string;
   const encodedUriParams = pipe(
-    mediaType === "multipart/form-data" ? parseMultipartFormDataParams(requestBody, multipartBoundary) : splitUriParams(requestBody),
+    mediaType === 'multipart/form-data'
+      ? parseMultipartFormDataParams(requestBody, multipartBoundary)
+      : splitUriParams(requestBody),
     E.getOrElse<IPrismDiagnostic[], Dictionary<string>>(() => ({} as Dictionary<string>))
   );
 
@@ -174,7 +176,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
   if (!content.schema) return Object.assign(request, { body: encodedUriParams });
 
   return Object.assign(request, {
-    body: deserializeFormBody(content.schema, encodings, decodeUriEntities(encodedUriParams)),
+    body: deserializeFormBody(content.schema, encodings, decodeUriEntities(encodedUriParams, mediaType)),
   });
 }
 
@@ -384,7 +386,11 @@ function computeBody(
   payloadGenerator: PayloadGenerator,
   ignoreExamples: boolean
 ): E.Either<Error, unknown> {
-  if (!ignoreExamples && isINodeExample(negotiationResult.bodyExample) && negotiationResult.bodyExample.value !== undefined) {
+  if (
+    !ignoreExamples &&
+    isINodeExample(negotiationResult.bodyExample) &&
+    negotiationResult.bodyExample.value !== undefined
+  ) {
     return E.right(negotiationResult.bodyExample.value);
   }
   if (negotiationResult.schema) {
