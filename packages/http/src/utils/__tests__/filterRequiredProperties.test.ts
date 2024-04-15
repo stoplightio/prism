@@ -23,7 +23,7 @@ describe('filterRequiredProperties', () => {
     });
   });
 
-  it('strips readOnly properties', () => {
+  it('strips readOnly properties on standalone object', () => {
     const schema: JSONSchema = {
       type: 'object',
       properties: {
@@ -40,6 +40,44 @@ describe('filterRequiredProperties', () => {
         name: expect.any(Object),
         description: expect.any(Object),
       });
+    });
+  });
+
+  it('strips readOnly properties from objects within an array', () => {
+    const schema: JSONSchema = {
+      type: 'object',
+      properties: {
+        objectsArray: {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['id', 'name'],
+            properties: {
+              id: {
+                readOnly: true,
+                type: 'string'
+              },
+              name: {
+                type: 'string'
+              }
+            }
+          }
+        }
+      }
+    };
+
+    assertSome(stripReadOnlyProperties(schema), schema => {
+      expect(schema.properties).not.toBeNull()
+      if (schema.properties) {
+        const arr_items = (schema.properties.objectsArray as JSONSchema).items as JSONSchema
+        expect(arr_items).not.toBeNull()
+        if (arr_items){
+          expect(arr_items.required).toEqual(['name']);
+          expect(arr_items.properties).toEqual({
+            name: expect.any(Object),
+          });
+        }
+      }
     });
   });
 
