@@ -16,7 +16,7 @@
     "node": ">=16"
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^11.5.4",
+    "@apidevtools/json-schema-ref-parser": "^11.5.5",
     "@faker-js/faker": "^6.0.0",
     "@stoplight/http-spec": "^7.0.3",
     "@stoplight/json": "^3.18.1",
