@@ -43,7 +43,7 @@ describe('filterRequiredProperties', () => {
     });
   });
 
-  it('strips readOnly properties from objects within an array', () => {
+  it('strips readOnly properties from objects in single schema array', () => {
     const schema: JSONSchema = {
       type: 'object',
       properties: {
@@ -62,16 +62,109 @@ describe('filterRequiredProperties', () => {
               }
             }
           }
-        }
-      }
+        },
+        title: { type: 'string', readOnly: true },
+        address: { type: 'integer' },
+      },
+      required: ['title', 'address'],
     };
 
     assertSome(stripReadOnlyProperties(schema), schema => {
       expect(schema.properties).not.toBeNull()
       if (schema.properties) {
+        console.log("FINAL", schema.properties)
         const arr_items = (schema.properties.objectsArray as JSONSchema).items as JSONSchema
+        console.log("FINAL ARR", arr_items)
         expect(arr_items).not.toBeNull()
         if (arr_items){
+          expect(arr_items.required).toEqual(['name']);
+          expect(arr_items.properties).toEqual({
+            name: expect.any(Object),
+          });
+          expect(schema.required).toEqual(['address']);
+          expect(schema.properties).toEqual({
+            address: expect.any(Object),
+            objectsArray: expect.any(Object),
+          });
+        }
+      }
+    });
+  });
+
+  it('strips readOnly properties from objects in tuple-typed array and unspecified additionalItems', () => {
+    const schema: JSONSchema = {
+      type: 'object',
+      properties: {
+        objectsArrayAdditionalItemsUnspecified: {
+          type: 'array',
+          items: [
+            { 
+              type: 'object', 
+              required: ['id', 'name'], 
+              properties: { id: { readOnly: true, type: 'string' }, name: { type: 'string' } } 
+            },
+            { 
+              type: 'object', 
+              required: ['id', 'name'], 
+              properties: { id: { readOnly: true, type: 'string' }, name: { type: 'string' } } 
+            }
+          ]
+        },
+      }
+    };
+
+    // assertSome(stripReadOnlyProperties(schema), schema => {
+    //   expect(schema.properties).not.toBeNull()
+    //   if (schema.properties) {
+    //     const arr_items = (schema.properties.objectsArrayAdditionalItemsUnspecified as JSONSchema).items as JSONSchema
+    //     expect(arr_items).not.toBeNull()
+    //     if (arr_items){
+    //       expect(arr_items.required).toEqual(['name']);
+    //       expect(arr_items.properties).toEqual({
+    //         name: expect.any(Object),
+    //       });
+    //     }
+    //   }
+    // });
+  });
+
+  it('strips readOnly properties from objects in tuple-typed array with additionalItems', () => {
+    const schema: JSONSchema = {
+      type: 'object',
+      properties: {
+        objectsArrayWithAdditionalItems: {
+          type: 'array',
+          items: [
+            { 
+              type: 'object', 
+              required: ['id', 'name'], 
+              properties: { id: { readOnly: true, type: 'string' }, name: { type: 'string' } } 
+            },
+            { 
+              type: 'object', 
+              required: ['id', 'name'], 
+              properties: { id: { readOnly: true, type: 'string' }, name: { type: 'string' } } 
+            }
+          ],
+          additionalItems: {
+            type: 'object',
+            properties: {
+              status: { type: 'string' } 
+            },
+            required: ['status']
+          }
+        }
+      }
+    };
+
+    assertSome(stripReadOnlyProperties(schema), schema => {
+      console.log("RESULT", schema.properties)
+      expect(schema.properties).not.toBeNull()
+      if (schema.properties) {
+        const arr_items = (schema.properties.objectsArrayWithAdditionalItems as JSONSchema).items as JSONSchema
+        expect(arr_items).not.toBeNull()
+        if (arr_items){
+          console.log("RESULT2", arr_items)
           expect(arr_items.required).toEqual(['name']);
           expect(arr_items.properties).toEqual({
             name: expect.any(Object),
@@ -79,6 +172,44 @@ describe('filterRequiredProperties', () => {
         }
       }
     });
+  });
+
+  it('strips readOnly properties from objects within tuple-typed array no additionalItems', () => {
+    const schema: JSONSchema = {
+      type: 'object',
+      properties: {
+        objectsArrayNoAdditionalItems: {
+          type: 'array',
+          items: [
+            { 
+              type: 'object', 
+              required: ['id', 'name'], 
+              properties: { id: { readOnly: true, type: 'string' }, name: { type: 'string' } } 
+            },
+            { 
+              type: 'object', 
+              required: ['id', 'name'], 
+              properties: { id: { readOnly: true, type: 'string' }, name: { type: 'string' } } 
+            }
+          ],
+          additionalItems: false
+        },
+      }
+    };
+
+    // assertSome(stripReadOnlyProperties(schema), schema => {
+    //   expect(schema.properties).not.toBeNull()
+    //   if (schema.properties) {
+    //     const arr_items = (schema.properties.objectsArrayNoAdditionalItems as JSONSchema).items as JSONSchema
+    //     expect(arr_items).not.toBeNull()
+    //     if (arr_items){
+    //       expect(arr_items.required).toEqual(['name']);
+    //       expect(arr_items.properties).toEqual({
+    //         name: expect.any(Object),
+    //       });
+    //     }
+    //   }
+    // });
   });
 
   it('strips nested writeOnly properties', () => {

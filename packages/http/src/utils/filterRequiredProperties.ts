@@ -5,22 +5,144 @@ import { Option } from 'fp-ts/Option';
 import * as A from 'fp-ts/Array';
 import { JSONSchema } from '../types';
 
-type Properties = Record<string, JSONSchema6 | JSONSchema7 | JSONSchema4 | boolean>;
+type JSONSchemaObjectType = JSONSchema6 | JSONSchema7 | JSONSchema4
+type JSONSchemaArrType = JSONSchema4[] | JSONSchema6[] | JSONSchema7[]
+
+type Properties = Record<string, JSONSchemaObjectType | boolean>;
+type ArrayItems = JSONSchemaObjectType | JSONSchemaArrType | boolean;
+type ArrayAdditionalItems = JSONSchemaObjectType | boolean;
 
 type RequiredSchemaSubset = {
   readOnly?: boolean;
   writeOnly?: boolean;
   properties?: Properties;
   required?: string[] | false;
+  items?: ArrayItems;
+  additionalItems?: ArrayAdditionalItems;
 };
 
 const buildSchemaFilter = <S extends RequiredSchemaSubset>(
   keepPropertyPredicate: (schema: S) => Option<S>
 ): ((schema: S) => Option<S>) => {
   function filterProperties(schema: S): Option<S> {
+    console.log("SCHEMA ITEMS", schema.items)
     return pipe(
-      O.fromNullable(schema.properties),
-      O.map(properties =>
+      O.fromNullable(schema.items),
+      O.chain(items => {
+        if (typeof items === 'object') {
+          console.log("ARRAY FOUND PROPS")
+          return pipe(
+            O.fromNullable((items as JSONSchemaObjectType).properties),
+            O.chainNullableK(properties => properties as Properties)
+          )
+        } 
+        // else if (Array.isArray(items)) {
+        //   O.map(items =>
+        //     pipe(
+        //       items,
+        //       A.map(item => )
+        //     )
+        //   )
+        // }
+        return O.none
+      }),
+      O.alt(() => {
+        console.log("ALT PROPS")
+        return O.fromNullable(schema.properties)}),
+      (unfilteredProps) => filterPropertiesHelper(unfilteredProps),
+      O.map(filteredProperties => {
+        console.log("FILTERED PROPS", filteredProperties, "SCHEMA", schema)
+        if (schema.items && typeof schema.items === 'object') {
+          return {
+            ...schema,
+            items: {
+              ...schema.items,
+              properties: filteredProperties,
+            },
+          };
+        } 
+        return {
+          ...schema,
+          properties: filteredProperties,
+        }
+      }
+      ),
+      O.alt(() => {
+        console.log("RESULT SCHEMA", schema)
+        return O.some(schema)
+      })
+    );
+  }
+
+  function filterRequired(updatedSchema: S, originalSchema: S): Option<S> {
+    return pipe(
+      updatedSchema,
+      O.fromPredicate((schema: S) => {
+        let required;
+        if (schema.items && typeof schema.items === 'object') {
+          required = (schema.items as JSONSchemaObjectType).required;
+        } else {
+          required = schema.required;
+        }
+        return Array.isArray(required)
+      }),
+      O.map(schema => 
+        { 
+          let properties;
+          if (schema.items && typeof schema.items === 'object') {
+            properties = (schema.items as JSONSchemaObjectType).properties;
+          } else {
+            properties = schema.properties;
+          }
+          return Object.keys(properties || {})
+      }
+      ),
+      O.map(updatedProperties => {
+        let properties;
+          if (originalSchema.items && typeof originalSchema.items === 'object') {
+            properties = (originalSchema.items as JSONSchemaObjectType).properties;
+          } else {
+            properties = originalSchema.properties;
+          }
+
+        const originalPropertyNames = Object.keys(properties || {});
+        return originalPropertyNames.filter(name => !updatedProperties.includes(name));
+      }),
+      O.map(removedProperties =>
+        {
+          let required;
+          if (originalSchema.items && typeof originalSchema.items === 'object') {
+            required = (originalSchema.items as JSONSchemaObjectType).required;
+          } else {
+            required = originalSchema.required;
+          }
+        return (required as string[]).filter(name => !removedProperties.includes(name))
+        }
+      ),
+      O.map(required => {
+        console.log("UPDATED SCHEMA", updatedSchema, "REQUIRED", required)
+        if (updatedSchema.items && typeof updatedSchema.items === 'object') {
+          return {
+            ...updatedSchema,
+            items: {
+              ...updatedSchema.items,
+              required: required,
+            },
+          };
+        } 
+        return {
+          ...updatedSchema,
+          required: required,
+        }
+      }),
+      O.alt(() => O.some(updatedSchema))
+    );
+  }
+
+  function filterPropertiesHelper(properties: Option<Properties>): Option<Properties> {
+    return pipe(
+        properties,
+        O.map(properties =>
         pipe(
           Object.keys(properties),
           A.reduce(
@@ -29,10 +151,13 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
               return pipe(
                 properties[propertyName],
                 O.fromPredicate(p => {
-                  if (typeof p === 'boolean') {
+                  console.log("properties", properties)
+                  console.log("propertyName", propertyName)
+                  if (typeof p === 'boolean') { // I think this is bc Object.keys only handles string props so boolean props need to be added back in manually
                     filteredProperties[propertyName] = properties[propertyName];
                     return false;
                   }
+                  console.log("P", p)
                   return true;
                 }),
                 O.chain(p => filter(p as S)),
@@ -45,42 +170,18 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
             }
           )
         )
-      ),
-      O.map(filteredProperties => ({
-        ...schema,
-        properties: filteredProperties,
-      })),
-      O.alt(() => O.some(schema))
-    );
-  }
-
-  function filterRequired(updatedSchema: S, originalSchema: S): Option<S> {
-    return pipe(
-      updatedSchema,
-      O.fromPredicate((schema: S) => Array.isArray(schema.required)),
-      O.map(schema => Object.keys(schema.properties || {})),
-      O.map(updatedProperties => {
-        const originalPropertyNames = Object.keys(originalSchema.properties || {});
-        return originalPropertyNames.filter(name => !updatedProperties.includes(name));
-      }),
-      O.map(removedProperties =>
-        (originalSchema.required as string[]).filter(name => !removedProperties.includes(name))
-      ),
-      O.map(required => {
-        return {
-          ...updatedSchema,
-          required,
-        };
-      }),
-      O.alt(() => O.some(updatedSchema))
-    );
+      )
+    )
   }
 
   function filter(inputSchema: S): Option<S> {
     return pipe(
       inputSchema,
       keepPropertyPredicate,
-      O.chain(inputSchema => filterProperties(inputSchema)),
+      O.chain(inputSchema => {
+        console.log("INPUT SCHEMA", inputSchema)
+        return filterProperties(inputSchema)
+      } ),
       O.chain(schema => filterRequired(schema, inputSchema))
     );
   }
