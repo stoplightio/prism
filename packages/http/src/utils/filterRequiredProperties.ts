@@ -4,6 +4,7 @@ import * as O from 'fp-ts/Option';
 import { Option } from 'fp-ts/Option';
 import * as A from 'fp-ts/Array';
 import { JSONSchema } from '../types';
+import { update } from 'lodash';
 
 type JSONSchemaObjectType = JSONSchema6 | JSONSchema7 | JSONSchema4
 type JSONSchemaArrType = JSONSchema4[] | JSONSchema6[] | JSONSchema7[]
@@ -115,51 +116,26 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
     );
   }
 
-  function filterRequired(updatedSchema: S, originalSchema: S): Option<S> {
+  function filterNonTupleTypedRequired(updatedSchema: S, originalSchema: S): Option<S> {
+    function getCorrectSchema(schema: S) {
+      if (schema.items && typeof schema.items === 'object') { // i.e. this is an array
+        return (schema.items as JSONSchemaObjectType);
+      } 
+      return schema; // i.e. this is an object
+    }
+
     return pipe(
       updatedSchema,
-      O.fromPredicate((schema: S) => {
-        let required;
-        if (schema.items && typeof schema.items === 'object') {
-          required = (schema.items as JSONSchemaObjectType).required;
-        } else {
-          required = schema.required;
-        }
-        return Array.isArray(required)
-      }),
-      O.map(schema => 
-        { 
-          let properties;
-          if (schema.items && typeof schema.items === 'object') {
-            properties = (schema.items as JSONSchemaObjectType).properties;
-          } else {
-            properties = schema.properties;
-          }
-          return Object.keys(properties || {})
-      }
-      ),
+      O.fromPredicate(schema => Array.isArray(getCorrectSchema(schema).required)),
+      O.map(schema => Object.keys(getCorrectSchema(schema).properties || {})),
       O.map(updatedProperties => {
-        let properties;
-          if (originalSchema.items && typeof originalSchema.items === 'object') {
-            properties = (originalSchema.items as JSONSchemaObjectType).properties;
-          } else {
-            properties = originalSchema.properties;
-          }
-
-        const originalPropertyNames = Object.keys(properties || {});
+        const originalPropertyNames = Object.keys(getCorrectSchema(originalSchema).properties || {});
         return originalPropertyNames.filter(name => !updatedProperties.includes(name));
       }),
-      O.map(removedProperties =>
-        {
-          let required;
-          if (originalSchema.items && typeof originalSchema.items === 'object') {
-            required = (originalSchema.items as JSONSchemaObjectType).required;
-          } else {
-            required = originalSchema.required;
-          }
+      O.map(removedProperties => {
+        const required = getCorrectSchema(originalSchema).required
         return (required as string[]).filter(name => !removedProperties.includes(name))
-        }
-      ),
+      }),
       O.map(required => {
         console.log("UPDATED SCHEMA", updatedSchema, "REQUIRED", required)
         if (updatedSchema.items && typeof updatedSchema.items === 'object') {
@@ -226,7 +202,7 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
         }
         return filterNonTupleTypedProperties(inputSchema)
       } ),
-      O.chain(schema => filterRequired(schema, inputSchema))
+      O.chain(schema => filterNonTupleTypedRequired(schema, inputSchema))
     );
   }
 
