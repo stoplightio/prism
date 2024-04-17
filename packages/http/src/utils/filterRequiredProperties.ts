@@ -24,7 +24,7 @@ type RequiredSchemaSubset = {
 const buildSchemaFilter = <S extends RequiredSchemaSubset>(
   keepPropertyPredicate: (schema: S) => Option<S>
 ): ((schema: S) => Option<S>) => {
-  function filterProperties(schema: S): Option<S> {
+  function filterNonTupleTypedProperties(schema: S): Option<S> {
     console.log("SCHEMA ITEMS", schema.items)
     return pipe(
       O.fromNullable(schema.items),
@@ -36,20 +36,12 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
             O.chainNullableK(properties => properties as Properties)
           )
         } 
-        // else if (Array.isArray(items)) {
-        //   O.map(items =>
-        //     pipe(
-        //       items,
-        //       A.map(item => )
-        //     )
-        //   )
-        // }
         return O.none
       }),
       O.alt(() => {
-        console.log("ALT PROPS")
+        console.log("NORMAL NON ARRAY PROPS")
         return O.fromNullable(schema.properties)}),
-      (unfilteredProps) => filterPropertiesHelper(unfilteredProps),
+      O.chain(unfilteredProps => filterPropertiesHelper(O.fromNullable(unfilteredProps as Properties))),
       O.map(filteredProperties => {
         console.log("FILTERED PROPS", filteredProperties, "SCHEMA", schema)
         if (schema.items && typeof schema.items === 'object') {
@@ -65,6 +57,55 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
           ...schema,
           properties: filteredProperties,
         }
+      }
+      ),
+      O.alt(() => {
+        console.log("RESULT SCHEMA", schema)
+        return O.some(schema)
+      })
+    );
+  }
+
+  function filterTupleTypedProperties(schema: S): Option<S> {
+    console.log("SCHEMA ITEMS", schema.items)
+    return pipe(
+      O.fromNullable(schema.items as Properties[]),
+      O.chain(items => {
+        return pipe(
+            items,
+            A.map(item => (item as JSONSchemaObjectType).properties),
+            propertiesArray => O.fromNullable(propertiesArray as Properties[]) // Casting because Properties is likely expected to be an object, not an array
+          )
+        }
+      ),
+      O.map(unfilteredProps => {
+        return pipe(
+              unfilteredProps,
+              A.map(unfilteredProp => filterPropertiesHelper(O.fromNullable(unfilteredProp as Properties))),
+            )
+        }
+      ),
+      O.chain(filteredProperties => {
+        console.log("FILTERED PROPS", filteredProperties, "SCHEMA", schema)
+        if (schema.items && typeof schema.items === 'object') {
+          const items = (schema.items as JSONSchemaArrType).map((item, index) => {
+            const defaultProperty = {};
+            const properties = 
+              pipe(
+                    filteredProperties[index],
+                   O.getOrElse(() => defaultProperty)
+                 );
+            return { ...item, properties };
+          });
+
+          return O.some({
+            ...schema,
+            items: {
+              ...items
+            },
+          });
+        } 
+        return O.none
       }
       ),
       O.alt(() => {
@@ -141,8 +182,8 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
 
   function filterPropertiesHelper(properties: Option<Properties>): Option<Properties> {
     return pipe(
-        properties,
-        O.map(properties =>
+      properties,
+      O.map(properties =>
         pipe(
           Object.keys(properties),
           A.reduce(
@@ -180,7 +221,10 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
       keepPropertyPredicate,
       O.chain(inputSchema => {
         console.log("INPUT SCHEMA", inputSchema)
-        return filterProperties(inputSchema)
+        if (inputSchema.items && Array.isArray(inputSchema.items)) { // Tuple typing
+          return filterTupleTypedProperties(inputSchema)
+        }
+        return filterNonTupleTypedProperties(inputSchema)
       } ),
       O.chain(schema => filterRequired(schema, inputSchema))
     );
