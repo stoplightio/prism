@@ -23,7 +23,7 @@ describe('filterRequiredProperties', () => {
     });
   });
 
-  it('strips readOnly properties on standalone object', () => {
+  it('strips readOnly properties on non-array object', () => {
     const schema: JSONSchema = {
       type: 'object',
       properties: {
@@ -72,11 +72,12 @@ describe('filterRequiredProperties', () => {
     assertSome(stripReadOnlyProperties(schema), schema => {
       expect(schema.properties).not.toBeNull()
       if (schema.properties) {
-        console.log("FINAL", schema.properties)
-        const arr_items = (schema.properties.objectsArray as JSONSchema).items as JSONSchema
-        console.log("FINAL ARR", arr_items)
-        expect(arr_items).not.toBeNull()
-        if (arr_items){
+        const arr_items = (schema.properties.objectsArray as JSONSchema).items as JSONSchema;
+
+        expect(arr_items).not.toBeNull();
+        expect(arr_items).not.toBeUndefined();
+
+        if (arr_items) {
           expect(arr_items.required).toEqual(['name']);
           expect(arr_items.properties).toEqual({
             name: expect.any(Object),
@@ -116,11 +117,12 @@ describe('filterRequiredProperties', () => {
     assertSome(stripReadOnlyProperties(schema), schema => {
       expect(schema.properties).not.toBeNull()
       if (schema.properties) {
-        console.log("FINAL", schema.properties)
-        const arr_items = (schema.properties.objectsArrayAdditionalItemsUnspecified as JSONSchema).items as JSONSchema
-        console.log("FINAL ARR", arr_items)
-        expect(arr_items).not.toBeNull()
-        if (arr_items){
+        const arr_items = (schema.properties.objectsArrayAdditionalItemsUnspecified as JSONSchema).items;
+
+        expect(arr_items).not.toBeNull();
+        expect(arr_items).not.toBeUndefined();
+
+        if (arr_items) {
           expect(arr_items[0].required).toEqual(['name']);
           expect(arr_items[0].properties).toEqual({
             name: expect.any(Object),
@@ -167,12 +169,12 @@ describe('filterRequiredProperties', () => {
     assertSome(stripReadOnlyProperties(schema), schema => {
       expect(schema.properties).not.toBeNull()
       if (schema.properties) {
-        console.log("FINAL", schema.properties)
-        const arr = schema.properties.objectsArrayWithAdditionalItems as JSONSchema
-        const arr_items = arr.items as JSONSchema
-        console.log("FINAL ARR", arr_items)
+        const arr = schema.properties.objectsArrayWithAdditionalItems as JSONSchema;
         
-        expect(arr_items).not.toBeNull()
+        expect(arr.items).not.toBeNull();
+        expect(arr.items).not.toBeUndefined();
+
+        const arr_items = arr.items as JSONSchema;
         expect(arr_items[0].required).toEqual(['name']);
         expect(arr_items[0].properties).toEqual({
           name: expect.any(Object)
@@ -182,11 +184,11 @@ describe('filterRequiredProperties', () => {
           title: expect.any(Object)
         });
 
-        expect(arr.additionalItems).not.toBeNull()
+        expect(arr.additionalItems).not.toBeNull();
         const additional_items = arr.additionalItems as JSONSchema
         expect(additional_items.properties).toEqual({
           ticket: expect.any(Object)
-        })
+        });
         expect(additional_items.required).toEqual(['ticket']);
       }
     });
@@ -218,12 +220,12 @@ describe('filterRequiredProperties', () => {
     assertSome(stripReadOnlyProperties(schema), schema => {
       expect(schema.properties).not.toBeNull()
       if (schema.properties) {
-        console.log("FINAL", schema.properties)
-        const arr = schema.properties.objectsArrayNoAdditionalItems as JSONSchema
-        const arr_items = arr.items as JSONSchema
-        console.log("FINAL ARR", arr_items)
+        const arr = schema.properties.objectsArrayNoAdditionalItems as JSONSchema;
         
-        expect(arr_items).not.toBeNull()
+        expect(arr.items).not.toBeNull();
+        expect(arr.items).not.toBeUndefined();
+
+        const arr_items = arr.items as JSONSchema;
         expect(arr_items[0].required).toEqual(['name']);
         expect(arr_items[0].properties).toEqual({
           name: expect.any(Object)
@@ -233,7 +235,7 @@ describe('filterRequiredProperties', () => {
           title: expect.any(Object)
         });
 
-        expect(arr.additionalItems).toEqual(false)
+        expect(arr.additionalItems).toEqual(false);
       }
     });
   });
