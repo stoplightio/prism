@@ -148,36 +148,47 @@ describe('filterRequiredProperties', () => {
             },
             { 
               type: 'object', 
-              required: ['id', 'name'], 
-              properties: { id: { readOnly: true, type: 'string' }, name: { type: 'string' } } 
+              required: ['address', 'title'], 
+              properties: { address: { readOnly: true, type: 'string' }, title: { type: 'string' } } 
             }
           ],
           additionalItems: {
             type: 'object',
             properties: {
-              status: { type: 'string' } 
+              status: { readOnly: true, type: 'string' },
+              ticket: { type: 'string' } 
             },
-            required: ['status']
+            required: ['status', 'ticket']
           }
         }
       }
     };
 
-    // assertSome(stripReadOnlyProperties(schema), schema => {
-    //   console.log("RESULT", schema.properties)
-    //   expect(schema.properties).not.toBeNull()
-    //   if (schema.properties) {
-    //     const arr_items = (schema.properties.objectsArrayWithAdditionalItems as JSONSchema).items as JSONSchema
-    //     expect(arr_items).not.toBeNull()
-    //     if (arr_items){
-    //       console.log("RESULT2", arr_items)
-    //       expect(arr_items.required).toEqual(['name']);
-    //       expect(arr_items.properties).toEqual({
-    //         name: expect.any(Object),
-    //       });
-    //     }
-    //   }
-    // });
+    assertSome(stripReadOnlyProperties(schema), schema => {
+      expect(schema.properties).not.toBeNull()
+      if (schema.properties) {
+        console.log("FINAL", schema.properties)
+        const arr = schema.properties.objectsArrayWithAdditionalItems as JSONSchema
+        const arr_items = arr.items as JSONSchema
+        console.log("FINAL ARR", arr_items)
+        
+        expect(arr_items).not.toBeNull()
+        expect(arr_items[0].required).toEqual(['name']);
+        expect(arr_items[0].properties).toEqual({
+          name: expect.any(Object)
+        });
+        expect(arr_items[1].required).toEqual(['title']);
+        expect(arr_items[1].properties).toEqual({
+          title: expect.any(Object)
+        });
+
+        expect(arr.additionalItems).not.toBeNull()
+        const additional_items = arr.additionalItems as JSONSchema
+        expect(additional_items.properties).toEqual({
+          ticket: expect.any(Object)
+        })
+      }
+    });
   });
 
   it('strips readOnly properties from objects within tuple-typed array no additionalItems', () => {
