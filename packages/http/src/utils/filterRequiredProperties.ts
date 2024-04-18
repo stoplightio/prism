@@ -26,7 +26,7 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
   keepPropertyPredicate: (schema: S) => Option<S>
 ): ((schema: S) => Option<S>) => {
   function filterPropertiesFromObjectSingle(schema: S): Option<S> {
-    console.log("SCHEMA ITEMS", schema.items, "SCHEMA", schema)
+    // console.log("SCHEMA ITEMS", schema.items, "SCHEMA", schema)
     return pipe(
       O.fromNullable(schema.items),
       O.chain(items => {
@@ -43,12 +43,12 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
       }),
       O.chain((unfilteredProps: Properties) => filterPropertiesHelper(O.fromNullable(unfilteredProps))),
       O.map(filteredProperties => {
-        console.log("FILTERED PROPS", filteredProperties, "SCHEMA", schema, "ITEMS", schema.items)
+        // console.log("FILTERED PROPS", filteredProperties, "SCHEMA", schema, "ITEMS", schema.items)
         if (schema.items) { // the schema is an array
-          console.log("I HAVE FOUND SCHEMA ITEMS", schema.items, typeof schema.items === 'object', Array.isArray(schema.items), "ADDITIONAL", schema.additionalItems, typeof schema.additionalItems === 'object')
+          // console.log("I HAVE FOUND SCHEMA ITEMS", schema.items, typeof schema.items === 'object', Array.isArray(schema.items), "ADDITIONAL", schema.additionalItems, typeof schema.additionalItems === 'object')
           // console.log("I AM HERE")
           if (Array.isArray(schema.items) && typeof schema.additionalItems === 'object') { // tuple typed array with additionalItems specified
-            console.log("FOUND ADDITIONAL ITEMS, RESULTING SCHEMA", schema, "ADDITIONAL ITEMS ORIGINAL", schema.additionalItems)
+            // console.log("FOUND ADDITIONAL ITEMS, RESULTING SCHEMA", schema, "ADDITIONAL ITEMS ORIGINAL", schema.additionalItems)
             return {
               ...schema,
               additionalItems: {
@@ -57,7 +57,7 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
               }
             };
           } else if (typeof schema.items === 'object') { // the array is non-tuple typed
-              console.log("ARRAY IS OBJECT")
+              // console.log("ARRAY IS OBJECT")
               return {
                 ...schema,
                 items: {
@@ -76,14 +76,14 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
       }
       ),
       O.alt(() => {
-        console.log("RESULT SCHEMA", schema)
+        // console.log("RESULT SCHEMA", schema)
         return O.some(schema)
       })
     );
   }
 
   function filterPropertiesFromObjectsList(schema: S): Option<S> {
-    console.log("SCHEMA ITEMS", schema.items)
+    // console.log("SCHEMA ITEMS", schema.items)
     return pipe(
       O.fromNullable(schema.items as JSONSchemaArrType),
       O.chain(items => {
@@ -118,7 +118,7 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
         };
       }),
       O.alt(() => {
-        console.log("RESULT SCHEMA", schema)
+        // console.log("RESULT SCHEMA", schema)
         return O.some(schema)
       })
     );
@@ -136,13 +136,13 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
               return pipe(
                 properties[propertyName],
                 O.fromPredicate(p => {
-                  console.log("properties", properties)
-                  console.log("propertyName", propertyName)
+                  // console.log("properties", properties)
+                  // console.log("propertyName", propertyName)
                   if (typeof p === 'boolean') { // I think this is bc Object.keys only handles string props so boolean props need to be added back in manually
                     filteredProperties[propertyName] = properties[propertyName];
                     return false;
                   }
-                  console.log("P", p)
+                  // console.log("P", p)
                   return true;
                 }),
                 O.chain(p => filter(p as S)),
@@ -160,7 +160,7 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
   }
 
   function filterRequiredHelper(updatedSchema: S | JSONSchemaObjectType, originalSchema: S | JSONSchemaObjectType): Option<string []> {
-    return pipe (
+    const x = pipe (
       updatedSchema,
       O.fromPredicate(schema => Array.isArray(schema.required)),
       O.map(schema => Object.keys(schema.properties || {})),
@@ -170,25 +170,46 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
       }),
       O.map(removedProperties => {
         const required = originalSchema.required
+        // console.log("HEHEHRERER", required, "REMOVED PROPS", removedProperties)
+        // console.log("RES", (required as string[]).filter(name => !removedProperties.includes(name)))
         return (required as string[]).filter(name => !removedProperties.includes(name))
       }),
     )
+    console.log("INTERMEDIATE", x)
+    return x
   }
 
   function filterRequiredFromObjectSingle(updatedSchema: S, originalSchema: S): Option<S> {
     function getCorrectSchema(schema: S) {
-      if (schema.items && typeof schema.items === 'object') { // i.e. this is an array
-        return (schema.items as JSONSchemaObjectType);
+      if (Array.isArray(schema.items) && typeof schema.additionalItems === 'object') { 
+        return schema.additionalItems; // we're looking at the additionItems object in a schema with a tuple-typed array
+      } else if (typeof schema.items === 'object') { 
+        return (schema.items as JSONSchemaObjectType); // we're looking at the item schema for a non-tuple-typed array
       } 
-      return schema; // i.e. this is an object
+      return schema; // schema is not an array
     }
 
     return pipe(
       updatedSchema,
-      schema => filterRequiredHelper(getCorrectSchema(schema), getCorrectSchema(originalSchema)),
+      schema => {
+        console.log("HERE1")
+        const x = filterRequiredHelper(getCorrectSchema(schema), getCorrectSchema(originalSchema))
+        console.log("HERE2", x)
+        return x
+      },
       O.map(required => {
-        console.log("UPDATED SCHEMA", updatedSchema, "REQUIRED", required)
-        if (updatedSchema.items && typeof updatedSchema.items === 'object') {
+        // console.log("UPDATED SCHEMA", updatedSchema, "REQUIRED", required)
+        // console.log("Array.isArray(updatedSchema.items)", updatedSchema.items, Array.isArray(updatedSchema.items), updatedSchema.additionalItems, typeof updatedSchema.additionalItems === 'object')
+        if (Array.isArray(updatedSchema.items) && typeof updatedSchema.additionalItems === 'object') {
+          return {
+            ...updatedSchema,
+            additionalItems: {
+              ...updatedSchema.additionalItems,
+              required: required
+            }
+          };
+        }
+        else if (updatedSchema.items && typeof updatedSchema.items === 'object') {
           return {
             ...updatedSchema,
             items: {
@@ -213,21 +234,21 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
         return pipe(
           O.fromNullable(originalSchema.items as JSONSchemaArrType),
           O.map(originalItemSchemas => {
-            console.log("ITEM SCHEMAS", itemSchemas, "ORIGINAL ITEM SCHEMAS", originalSchema.items)
+            // console.log("ITEM SCHEMAS", itemSchemas, "ORIGINAL ITEM SCHEMAS", originalSchema.items)
             return A.zip(itemSchemas, originalItemSchemas)}),
           O.map(zippedSchemas => {
-            console.log("HERE", zippedSchemas)
+            // console.log("HERE", zippedSchemas)
             return zippedSchemas.map(([itemSchema, originalItemSchema]) => filterRequiredHelper(itemSchema, originalItemSchema))
           }
           )
         )
       }),
       O.map(requiredList => {
-        console.log("REQUIRED LIST", requiredList)
+        // console.log("REQUIRED LIST", requiredList)
         const items = pipe(
           A.zip(updatedSchema.items as JSONSchemaArrType, requiredList),
           A.map(([item, required]) => {
-            console.log("ITEM", item, "REQUIRED", required)
+            // console.log("ITEM", item, "REQUIRED", required)
           return {
             ...item,
             required: pipe(
@@ -262,30 +283,36 @@ const buildSchemaFilter = <S extends RequiredSchemaSubset>(
             Array.isArray(schema.items) ?
               pipe(
                 filterPropertiesFromObjectsList(schema),
-                O.alt(() => O.some(schema)), // Use the original schema if filterPropertiesFromObjectsList returns None
+                O.alt(() => O.some(schema)), 
                 O.chain(filteredSchema => { 
-                  console.log("HEREEEE", filteredSchema, filteredSchema.items)
+                  // console.log("HEREEEE", filteredSchema, filteredSchema.items)
                   return filterPropertiesFromObjectSingle(filteredSchema)
                 })
               ) :
               filterPropertiesFromObjectSingle(schema)
           )
         );
-
-        // if (inputSchema.items && Array.isArray(inputSchema.items)) { // Tuple typing
-        //   return pipe(
-        //     O.fromNullable(inputSchema),
-        //     filterPropertiesFromObjectsList(inputSchema),
-        //     filterPropertiesFromObjectSingle(inputSchema)
-        //   )
-        // }
-        // return filterPropertiesFromObjectSingle(inputSchema)
       } ),
       O.chain(schema => {
-        if (inputSchema.items && Array.isArray(inputSchema.items)) { // Tuple typing
-          return filterRequiredFromObjectsList(schema, inputSchema)
-        }
-        return filterRequiredFromObjectSingle(schema, inputSchema)
+        return pipe(
+          O.fromNullable(schema),
+          O.chain(schema => 
+            Array.isArray(schema.items) ?
+              pipe(
+                filterRequiredFromObjectsList(schema, inputSchema),
+                O.alt(() => O.some(schema)), 
+                O.chain(filteredSchema => { 
+                  // console.log("HEREEEE", filteredSchema, filteredSchema.items)
+                  return filterRequiredFromObjectSingle(filteredSchema, inputSchema)
+                })
+              ) :
+              filterRequiredFromObjectSingle(schema, inputSchema)
+          )
+        );
+        // if (inputSchema.items && Array.isArray(inputSchema.items)) { // Tuple typing
+        //   return filterRequiredFromObjectsList(schema, inputSchema)
+        // }
+        // return filterRequiredFromObjectSingle(schema, inputSchema)
       })
     );
   }
