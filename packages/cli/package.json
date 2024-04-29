@@ -28,7 +28,7 @@
     "yargs": "^16.2.0"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18.20.1"
   },
   "files": [
     "/dist"

@@ -2,10 +2,10 @@ version: 2.1
 executors:
   docker-node:
     docker:
-      - image: cimg/node:16.20.2
+      - image: cimg/node:18.20.1
   docker-harness:
     docker:
-      - image: cimg/node:16.20.2
+      - image: cimg/node:18.20.1
       - image: kennethreitz/httpbin
         name: httpbin.org
   macos:

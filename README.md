@@ -41,7 +41,7 @@ This information refers to Open Source Prism 3.x, which is the current version m
 
 Prism requires
 
-- NodeJS >= 16
+- NodeJS >= 18.20.1
 - for NodeJS 18.x, [>= 18.16 is required](https://github.com/stoplightio/prism/issues/2305)
 
 ```bash

@@ -10,7 +10,7 @@
     "url": "https://github.com/stoplightio/prism.git"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18.20.1"
   },
   "files": [
     "/dist"
