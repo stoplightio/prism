@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.8.1](https://github.com/stoplightio/prism/compare/v5.8.0...v5.8.1) (2024-04-29)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-core bumped from ^5.7.0 to ^5.8.0
+    * @stoplight/prism-http bumped from ^5.8.0 to ^5.8.1
+
 ## [5.8.0](https://github.com/stoplightio/prism/compare/v5.7.0...v5.8.0) (2024-04-29)
 
 

@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!-- markdown-link-check-disable -->
 
+## [5.9.0](https://github.com/stoplightio/prism/compare/v5.8.0...v5.9.0) (2024-04-29)
+
+
+### Features
+
+* **deps:** bump xcode version ([#2522](https://github.com/stoplightio/prism/issues/2522)) ([939f749](https://github.com/stoplightio/prism/commit/939f749100ed2a1d36bf0e62c37190ac192ea209))
+
 ## [5.8.0](https://github.com/stoplightio/prism/compare/v5.7.0...v5.8.0) (2024-04-29)
 
 
