@@ -5,7 +5,7 @@ executors:
       - image: cimg/node:18.20.1
   docker-harness:
     docker:
-      - image: cimg/node:18.20.1
+      - image: cimg/node:18.20
       - image: kennethreitz/httpbin
         name: httpbin.org
   macos:
