@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!-- markdown-link-check-disable -->
 
+## [5.8.0](https://github.com/stoplightio/prism/compare/v5.7.0...v5.8.0) (2024-04-29)
+
+
+### Features
+
+* **deps:** bump node from 16 to 18.20 ([#2520](https://github.com/stoplightio/prism/issues/2520)) ([4b175a6](https://github.com/stoplightio/prism/commit/4b175a614a7d1f184863d741c8cbec494b37b57f))
+
+
+### Bug Fixes
+
+* readOnly objects in arrays are handled correctly ([#2513](https://github.com/stoplightio/prism/issues/2513)) ([7670236](https://github.com/stoplightio/prism/commit/767023681f481d5e9d8c46203613faa635541eab))
+
 ## [5.7.0](https://github.com/stoplightio/prism/compare/v5.6.0...v5.7.0) (2024-03-22)
 
 
