@@ -2,7 +2,7 @@ version: 2.1
 executors:
   docker-node:
     docker:
-      - image: cimg/node:18.20.1
+      - image: cimg/node:18.20
   docker-harness:
     docker:
       - image: cimg/node:18.20
