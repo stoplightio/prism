@@ -28,4 +28,4 @@ curl -i http://localhost:4010/ -H 'accept: text/html'
 ====expect====
 HTTP/1.1 500 Internal Server Error
 
-{"type":"https://stoplight.io/prism/errors#NO_COMPLEX_OBJECT_TEXT","title":"Cannot serialise complex objects as text","status":500,"detail":"Cannot serialise complex objects as text"}
+{"type":"NO_COMPLEX_OBJECT_TEXT","title":"Cannot serialise complex objects as text","status":500,"detail":"Cannot serialise complex objects as text"}

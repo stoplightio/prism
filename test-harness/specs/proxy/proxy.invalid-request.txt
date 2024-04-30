@@ -22,4 +22,4 @@ curl -i http://localhost:4010/status/201
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 
-{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["header"],"severity":"Error","code":"required","message":"Request header must have required property 'x-company-auth'"}]}
+{"type":"UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["header"],"severity":"Error","code":"required","message":"Request header must have required property 'x-company-auth'"}]}

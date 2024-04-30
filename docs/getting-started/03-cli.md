@@ -135,7 +135,7 @@ prism proxy examples/petstore.oas2.yaml https://petstore.swagger.io/v2 --errors
 curl -v -X POST http://localhost:4010/pet/
 
 < HTTP/1.1 422 Unprocessable Entity
-{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.","validation":[{"location":["request"],"severity":"Error","code":401,"message":"Invalid security scheme used"}]}
+{"type":"UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.","validation":[{"location":["request"],"severity":"Error","code":401,"message":"Invalid security scheme used"}]}
 ```
 
 The response body contains the found output violations.

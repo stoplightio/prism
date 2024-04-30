@@ -906,7 +906,7 @@ describe('body params validation', () => {
 
         expect(response.status).toBe(422);
         return expect(response.json()).resolves.toMatchObject({
-          type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
+          type: 'UNPROCESSABLE_ENTITY',
           validation: [
             {
               location: ['body'],
@@ -938,7 +938,7 @@ describe('body params validation', () => {
 
         expect(response.status).toBe(422);
         return expect(response.json()).resolves.toMatchObject({
-          type: 'https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY',
+          type: 'UNPROCESSABLE_ENTITY',
           validation: [
             {
               location: ['body', 'id'],
@@ -1010,7 +1010,7 @@ describe('body params validation', () => {
           detail: 'Cannot deserialize JSON object array in form data request body. Make sure the array is in JSON',
           status: 415,
           title: 'Invalid content type',
-          type: 'https://stoplight.io/prism/errors#INVALID_CONTENT_TYPE',
+          type: 'INVALID_CONTENT_TYPE',
         });
       });
     });
@@ -1053,7 +1053,7 @@ describe('body params validation', () => {
               'Boundary parameter for multipart/form-data is not defined or generated in the request header. Try removing manually defined content-type from your request header if it exists.',
             status: 415,
             title: 'Invalid content type',
-            type: 'https://stoplight.io/prism/errors#INVALID_CONTENT_TYPE',
+            type: 'INVALID_CONTENT_TYPE',
           });
         });
       });

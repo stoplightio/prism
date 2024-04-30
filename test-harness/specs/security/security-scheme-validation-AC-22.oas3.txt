@@ -28,4 +28,4 @@ curl -i http://localhost:4010/todos
 HTTP/1.1 401 Unauthorized
 www-authenticate: Digest realm="*", nonce="abc123"
 
-{"type":"https://stoplight.io/prism/errors#UNAUTHORIZED","title":"Invalid security scheme used","status":401,"detail":"Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you.","headers":{"WWW-Authenticate":"Digest realm=\"*\", nonce=\"abc123\""}}
+{"type":"UNAUTHORIZED","title":"Invalid security scheme used","status":401,"detail":"Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you.","headers":{"WWW-Authenticate":"Digest realm=\"*\", nonce=\"abc123\""}}

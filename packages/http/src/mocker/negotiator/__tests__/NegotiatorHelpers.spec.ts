@@ -114,7 +114,7 @@ describe('NegotiatorHelpers', () => {
 
           assertLeft(actualConfig, operationConfig =>
             expect(operationConfig).toMatchObject({
-              name: 'https://stoplight.io/prism/errors#NOT_FOUND',
+              name: 'NOT_FOUND',
               status: 404,
               detail: `Response for contentType: ${actualMediaType} and exampleKey: undefined key does not exist.`,
             })

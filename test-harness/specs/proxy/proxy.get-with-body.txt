@@ -17,4 +17,4 @@ curl -i http://localhost:4010/status/204 -X GET --header 'Content-Type: applicat
 ====expect====
 HTTP/1.1 501 Not Implemented
 
-{"type":"https://stoplight.io/prism/errors#PROXY_UNSUPPORTED_REQUEST_BODY","title":"The Prism proxy does not support sending a GET/HEAD request with a message body to an upstream server. See: https://github.com/stoplightio/prism/issues/2259","status":501,"detail":""}
+{"type":"PROXY_UNSUPPORTED_REQUEST_BODY","title":"The Prism proxy does not support sending a GET/HEAD request with a message body to an upstream server. See: https://github.com/stoplightio/prism/issues/2259","status":501,"detail":""}

@@ -30,7 +30,7 @@ describe('getHttpConfigFromRequest()', () => {
           getHttpConfigFromRequest({
             url: { path: '/', query: { __code: 'default' } },
           }),
-          error => expect(error.name).toEqual('https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY')
+          error => expect(error.name).toEqual('UNPROCESSABLE_ENTITY')
         );
       });
 
@@ -60,7 +60,7 @@ describe('getHttpConfigFromRequest()', () => {
             url: { path: '/' },
             headers: { prefer: 'code=default' },
           }),
-          error => expect(error.name).toEqual('https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY')
+          error => expect(error.name).toEqual('UNPROCESSABLE_ENTITY')
         );
       });
 

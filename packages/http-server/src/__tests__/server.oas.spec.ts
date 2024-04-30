@@ -77,7 +77,7 @@ describe('GET /pet?__server', () => {
   );
 
   const expectedPayload = (serverUrl: string) =>
-    `{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url ${serverUrl} hasn't been matched with any of the provided servers"}`;
+    `{"type":"NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url ${serverUrl} hasn't been matched with any of the provided servers"}`;
 
   function requestPetGivenServer(serverUrl: string) {
     return fetch(new URL(`/pet?__server=${serverUrl}`, server.address), { method: 'GET' });
@@ -313,7 +313,7 @@ describe.each([[...oas2File], [...oas3File]])('server %s', file => {
       expect(response.status).toBe(404);
       const parsed = await response.json();
 
-      expect(parsed).toHaveProperty('type', 'https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR');
+      expect(parsed).toHaveProperty('type', 'NO_SERVER_MATCHED_ERROR');
       expect(parsed).toHaveProperty(
         'detail',
         "The server url https://google.com hasn't been matched with any of the provided servers"
@@ -360,7 +360,7 @@ describe.each([[...oas2File], [...oas3File]])('server %s', file => {
           const response = await makeRequest('/store/inventory?__server=https://petstore.swagger.io/v2');
           expect(response.status).toBe(404);
           return expect(response.text()).resolves.toEqual(
-            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}'
+            '{"type":"NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://petstore.swagger.io/v2 hasn\'t been matched with any of the provided servers"}'
           );
         });
 
@@ -368,7 +368,7 @@ describe.each([[...oas2File], [...oas3File]])('server %s', file => {
           const response = await makeRequest('/store/inventory?__server=https://notvalid.com');
           expect(response.status).toBe(404);
           return expect(response.text()).resolves.toEqual(
-            '{"type":"https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}'
+            '{"type":"NO_SERVER_MATCHED_ERROR","title":"Route not resolved, no server matched","status":404,"detail":"The server url https://notvalid.com hasn\'t been matched with any of the provided servers"}'
           );
         });
       });

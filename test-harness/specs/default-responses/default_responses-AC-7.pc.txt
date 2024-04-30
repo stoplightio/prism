@@ -35,4 +35,4 @@ curl -i -X GET http://localhost:4010/todos?__code=404
 HTTP/1.1 404 Not Found
 content-type: application/problem+json
 
-{"type":"https://stoplight.io/prism/errors#NOT_FOUND","title":"The server cannot find the requested content","status":404,"detail":"Requested status code 404 is not defined in the document."}
+{"type":"NOT_FOUND","title":"The server cannot find the requested content","status":404,"detail":"Requested status code 404 is not defined in the document."}

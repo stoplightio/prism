@@ -368,7 +368,7 @@ describe('mocker', () => {
           assertLeft(response, result => {
             expect(result).toMatchObject({
               detail: 'Response for contentType: application/json and exampleKey: missingKey does not exist.',
-              name: 'https://stoplight.io/prism/errors#NOT_FOUND',
+              name: 'NOT_FOUND',
               status: 404,
             });
           });

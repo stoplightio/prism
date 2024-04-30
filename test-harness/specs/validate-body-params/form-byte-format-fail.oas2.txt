@@ -24,4 +24,4 @@ curl -i -X POST http://localhost:4010/path -H "Content-Type: application/x-www-f
 ====expect====
 HTTP/1.1 422 Unprocessable Entity
 
-{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","id"],"severity":"Error","code":"pattern","message":"Request body property id must match pattern \"^[\\w\\d+\\/=]*$\""},{"location":["body","id"],"severity":"Error","code":"format","message":"Request body property id must match format \"byte\""}]}
+{"type":"UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","id"],"severity":"Error","code":"pattern","message":"Request body property id must match pattern \"^[\\w\\d+\\/=]*$\""},{"location":["body","id"],"severity":"Error","code":"format","message":"Request body property id must match format \"byte\""}]}

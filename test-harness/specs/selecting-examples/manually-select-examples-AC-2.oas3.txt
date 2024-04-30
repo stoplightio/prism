@@ -20,4 +20,4 @@ curl -i http://localhost:4010/todos?__example=mantis-shrimp
 HTTP/1.1 404 Not Found
 content-type: application/problem+json
 
-{"type":"https://stoplight.io/prism/errors#NOT_FOUND","title":"The server cannot find the requested content","status":404,"detail":"Response for contentType: application/json and exampleKey: mantis-shrimp does not exist."}
+{"type":"NOT_FOUND","title":"The server cannot find the requested content","status":404,"detail":"Response for contentType: application/json and exampleKey: mantis-shrimp does not exist."}

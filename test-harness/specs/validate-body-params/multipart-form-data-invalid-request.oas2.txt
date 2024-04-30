@@ -34,4 +34,4 @@ curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data
 HTTP/1.1 422 Unprocessable Entity
 content-type: application/problem+json
 
-{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","id"],"severity":"Error","code":"exclusiveMinimum","message":"Request body property id must be > 100"}]}
+{"type":"UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["body","id"],"severity":"Error","code":"exclusiveMinimum","message":"Request body property id must be > 100"}]}

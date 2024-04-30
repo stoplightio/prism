@@ -21,4 +21,4 @@ curl -i -X OPTIONS http://localhost:4010/todos
 ====expect====
 HTTP/1.1 405 Method Not Allowed
 
-{"type":"https://stoplight.io/prism/errors#NO_METHOD_MATCHED_ERROR","title":"Route resolved, but no method matched","status":405,"detail":"The route /todos has been matched, but it does not have \"options\" method defined"}
+{"type":"NO_METHOD_MATCHED_ERROR","title":"Route resolved, but no method matched","status":405,"detail":"The route /todos has been matched, but it does not have \"options\" method defined"}

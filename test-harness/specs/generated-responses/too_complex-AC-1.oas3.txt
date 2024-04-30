@@ -23,4 +23,4 @@ curl -i http://localhost:4010/todos
 ====expect====
 HTTP/1.1 500 Internal Server Error
 
-{"type":"https://stoplight.io/prism/errors#SCHEMA_TOO_COMPLEX","title":"Schema too complex","status":500,"detail":"Unable to generate body for response. The schema is too complex to generate."}
+{"type":"SCHEMA_TOO_COMPLEX","title":"Schema too complex","status":500,"detail":"Unable to generate body for response. The schema is too complex to generate."}

@@ -22,4 +22,4 @@ curl -i http://localhost:4010/todos -H "accept: application/json"
 HTTP/1.1 406 Not Acceptable
 content-type: application/problem+json
 
-{"type":"https://stoplight.io/prism/errors#NOT_ACCEPTABLE","title":"The server cannot produce a representation for your accept header","status":406,"detail":"Unable to find content for application/json"}
+{"type":"NOT_ACCEPTABLE","title":"The server cannot produce a representation for your accept header","status":406,"detail":"Unable to find content for application/json"}

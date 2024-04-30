@@ -31,4 +31,4 @@ curl -i http://localhost:4010/todos?apiKey=abc123
 ====expect====
 HTTP/1.1 401 Unauthorized
 
-{"type":"https://stoplight.io/prism/errors#UNAUTHORIZED","title":"Invalid security scheme used","status":401,"detail":"Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you."}
+{"type":"UNAUTHORIZED","title":"Invalid security scheme used","status":401,"detail":"Your request does not fullfil the security requirements and no HTTP unauthorized response was found in the spec, so Prism is generating this error for you."}

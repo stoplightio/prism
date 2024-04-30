@@ -33,4 +33,4 @@ curl -i http://127.0.0.1:4010/path/fp
 HTTP/1.1 422 Unprocessable Entity
 content-type: application/problem+json
 
-{"type":"https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["path","param"],"severity":"Error","code":"pattern","message":"Request path parameter param must match pattern \"^[A-Z]+$\""}]}
+{"type":"UNPROCESSABLE_ENTITY","title":"Invalid request","status":422,"detail":"Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.","validation":[{"location":["path","param"],"severity":"Error","code":"pattern","message":"Request path parameter param must match pattern \"^[A-Z]+$\""}]}

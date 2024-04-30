@@ -353,7 +353,7 @@ You would get this in response
 [
   {
     message: 'Route not resolved, no resource provided.',
-    source: 'https://stoplight.io/prism/errors#NO_RESOURCE_PROVIDED_ERROR',
+    source: 'NO_RESOURCE_PROVIDED_ERROR',
     code: 404,
     severity: 1
   }

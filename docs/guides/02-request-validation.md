@@ -32,7 +32,7 @@ Date: Fri, 05 Jul 2019 07:56:18 GMT
 Connection: keep-alive
 
 {
-   "type" : "https://stoplight.io/prism/errors#UNPROCESSABLE_ENTITY",
+   "type" : "UNPROCESSABLE_ENTITY",
    "title" : "Invalid request.",
    "detail" : "Your request is not valid and no HTTP validation response was found in the spec, so Prism is generating this error for you.",
    "status" : 422,
@@ -97,7 +97,7 @@ Will give you the following error:
 
 ```json
 {
-  "type": "https://stoplight.io/prism/errors#NO_SERVER_MATCHED_ERROR",
+  "type": "NO_SERVER_MATCHED_ERROR",
   "title": "Route not resolved, no server matched.",
   "status": 404,
   "detail": "The server url http://nonsense.com/api hasn't been matched with any of the provided servers"
