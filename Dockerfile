@@ -1,4 +1,4 @@
-FROM node:18.20.1 as compiler
+FROM node:18.20.3 as compiler
 
 WORKDIR /usr/src/prism
 
@@ -8,7 +8,7 @@ COPY packages/ /usr/src/prism/packages/
 RUN yarn && yarn build
 
 ###############################################################
-FROM node:18.20.1 as dependencies
+FROM node:18.20.3 as dependencies
 
 WORKDIR /usr/src/prism/
 
@@ -34,7 +34,7 @@ RUN if [ $(uname -m) != "aarch64" ]; then curl -sfL https://gobinaries.com/tj/no
 RUN if [ $(uname -m) != "aarch64" ]; then node-prune; fi
 
 ###############################################################
-FROM node:18.20.1-alpine
+FROM node:18.20.3-alpine
 
 WORKDIR /usr/src/prism
 ARG BUILD_TYPE=development
