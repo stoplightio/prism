@@ -159,7 +159,7 @@ curl -v -X POST http://localhost:4010/pet/ -d '{"name"": "Skip", "species": 100}
 
 Use the `-v` command to enable verbose request and response logging for mocking, proxy, and callbacks. 
 
-Command options are ``fatal`, `error`, `warn`, `info`, `debug`, and `silent`. The `info` level is the default and the fallback for custom log levels. 
+Command options are `fatal`, `error`, `warn`, `info`, `debug`, and `silent`. The `info` level is the default and the fallback for custom log levels. 
 
 ## Running in Production
 
