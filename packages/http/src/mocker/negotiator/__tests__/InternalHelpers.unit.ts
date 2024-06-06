@@ -1,16 +1,16 @@
 import { assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { findBestHttpContentByMediaType } from '../InternalHelpers';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker/locale/en';
 
 describe('InternalHelpers', () => {
   describe('findBestHttpContentByMediaType()', () => {
     describe('with multiple content types for a response', () => {
       const availableResponses = {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         code: '200',
         contents: [
-          { id: faker.random.word(), mediaType: 'application/xml' },
-          { id: faker.random.word(), mediaType: 'application/json' },
+          { id: faker.string.alpha(), mediaType: 'application/xml' },
+          { id: faker.string.alpha(), mediaType: 'application/json' },
         ],
       };
 
@@ -28,7 +28,7 @@ describe('InternalHelpers', () => {
       it('should return an unparametrised version', () => {
         assertSome(
           findBestHttpContentByMediaType(
-            [{ id: faker.random.word(), mediaType: 'application/json; version=1' }],
+            [{ id: faker.string.alpha(), mediaType: 'application/json; version=1' }],
             ['application/json']
           )
         );
@@ -39,7 +39,7 @@ describe('InternalHelpers', () => {
       it('should return an unparametrised version', () => {
         assertSome(
           findBestHttpContentByMediaType(
-            [{ id: faker.random.word(), mediaType: 'application/json; version=1; q=0.6' }],
+            [{ id: faker.string.alpha(), mediaType: 'application/json; version=1; q=0.6' }],
             ['application/json']
           )
         );
@@ -50,9 +50,9 @@ describe('InternalHelpers', () => {
           assertSome(
             findBestHttpContentByMediaType(
               [
-                { id: faker.random.word(), mediaType: 'application/json; version=1; q=1' },
-                { id: faker.random.word(), mediaType: 'application/xml; version=1; q=0.6' },
-                { id: faker.random.word(), mediaType: 'application/vnd+json; version=1; q=0.5' },
+                { id: faker.string.alpha(), mediaType: 'application/json; version=1; q=1' },
+                { id: faker.string.alpha(), mediaType: 'application/xml; version=1; q=0.6' },
+                { id: faker.string.alpha(), mediaType: 'application/vnd+json; version=1; q=0.5' },
               ],
               ['application/json', 'application/xml']
             ),
@@ -66,7 +66,7 @@ describe('InternalHelpers', () => {
       it('should return an unparametrised version', () => {
         assertSome(
           findBestHttpContentByMediaType(
-            [{ id: faker.random.word(), mediaType: 'application/json' }],
+            [{ id: faker.string.alpha(), mediaType: 'application/json' }],
             ['application/json; version=1']
           )
         );

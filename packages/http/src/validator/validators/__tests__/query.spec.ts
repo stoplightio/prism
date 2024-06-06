@@ -3,7 +3,7 @@ import { validate } from '../query';
 import * as validateAgainstSchemaModule from '../utils';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import * as O from 'fp-ts/Option';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker/locale/en';
 import { ValidationContext } from '../types';
 
 describe('validate()', () => {
@@ -18,7 +18,7 @@ describe('validate()', () => {
           assertLeft(
             validate(
               {},
-              [{ id: faker.random.word(), name: 'aParam', style: HttpParamStyles.Form, required: true }],
+              [{ id: faker.string.alpha(), name: 'aParam', style: HttpParamStyles.Form, required: true }],
               ValidationContext.Input
             ),
             error => expect(error).toContainEqual(expect.objectContaining({ severity: DiagnosticSeverity.Error }))
@@ -37,7 +37,7 @@ describe('validate()', () => {
                   { param: 'abc' },
                   [
                     {
-                      id: faker.random.word(),
+                      id: faker.string.alpha(),
                       name: 'param',
                       style: HttpParamStyles.Form,
                       schema: { type: 'string' },
@@ -60,7 +60,7 @@ describe('validate()', () => {
               { param: 'abc' },
               [
                 {
-                  id: faker.random.word(),
+                  id: faker.string.alpha(),
                   name: 'param',
                   style: HttpParamStyles.Form,
                 },
@@ -80,7 +80,7 @@ describe('validate()', () => {
               { param: 'abc' },
               [
                 {
-                  id: faker.random.word(),
+                  id: faker.string.alpha(),
                   name: 'param',
                   deprecated: true,
                   style: HttpParamStyles.Form,

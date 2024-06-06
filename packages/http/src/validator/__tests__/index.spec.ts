@@ -6,7 +6,7 @@ import * as validators from '../validators';
 import * as validator from '../';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import { ValidationContext } from '../validators/types';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker/locale/en';
 
 const validate =
   (resourceExtension?: Partial<IHttpOperation>, inputExtension?: Partial<IHttpRequest>, length = 3) =>
@@ -18,7 +18,7 @@ const validate =
           path: '/',
           id: '1',
           request: {},
-          responses: [{ id: faker.random.word(), code: '200' }],
+          responses: [{ id: faker.string.alpha(), code: '200' }],
         },
         resourceExtension
       ),
@@ -52,7 +52,7 @@ describe('HttpValidator', () => {
         describe('request body is not required', () => {
           it(
             'does not try to validate the body',
-            validate({ request: { body: { id: faker.random.word(), required: false, contents: [] } } }, undefined, 0)
+            validate({ request: { body: { id: faker.string.alpha(), required: false, contents: [] } } }, undefined, 0)
           );
         });
 
@@ -64,8 +64,8 @@ describe('HttpValidator', () => {
                 method: 'get',
                 path: '/',
                 id: '1',
-                request: { body: { id: faker.random.word(), contents: [], required: true } },
-                responses: [{ id: faker.random.word(), code: '200' }],
+                request: { body: { id: faker.string.alpha(), contents: [], required: true } },
+                responses: [{ id: faker.string.alpha(), code: '200' }],
               },
               undefined,
               1
@@ -98,7 +98,7 @@ describe('HttpValidator', () => {
               {
                 request: {
                   query: [
-                    { id: faker.random.word(), style: HttpParamStyles.SpaceDelimited, name: 'hey', required: true },
+                    { id: faker.string.alpha(), style: HttpParamStyles.SpaceDelimited, name: 'hey', required: true },
                   ],
                 },
               },
@@ -125,11 +125,11 @@ describe('HttpValidator', () => {
                 id: '1',
                 request: {
                   path: [
-                    { id: faker.random.word(), name: 'a', style: HttpParamStyles.Simple },
-                    { id: faker.random.word(), name: 'b', style: HttpParamStyles.Matrix },
+                    { id: faker.string.alpha(), name: 'a', style: HttpParamStyles.Simple },
+                    { id: faker.string.alpha(), name: 'b', style: HttpParamStyles.Matrix },
                   ],
                 },
-                responses: [{ id: faker.random.word(), code: '200' }],
+                responses: [{ id: faker.string.alpha(), code: '200' }],
               },
               element: { method: 'get', url: { path: '/a/1/b/;b=2' } },
             });
@@ -159,11 +159,11 @@ describe('HttpValidator', () => {
                 id: '1',
                 request: {
                   path: [
-                    { id: faker.random.word(), name: 'a-id', style: HttpParamStyles.Simple },
-                    { id: faker.random.word(), name: 'b-id', style: HttpParamStyles.Matrix },
+                    { id: faker.string.alpha(), name: 'a-id', style: HttpParamStyles.Simple },
+                    { id: faker.string.alpha(), name: 'b-id', style: HttpParamStyles.Matrix },
                   ],
                 },
-                responses: [{ id: faker.random.word(), code: '200' }],
+                responses: [{ id: faker.string.alpha(), code: '200' }],
               },
               element: { method: 'get', url: { path: '/a-path/1/b/;b-id=2' } },
             });
@@ -197,11 +197,11 @@ describe('HttpValidator', () => {
               __bundled__: { OutputType: { type: 'string' } },
               responses: [
                 {
-                  id: faker.random.word(),
+                  id: faker.string.alpha(),
                   code: '200',
                   contents: [
                     {
-                      id: faker.random.word(),
+                      id: faker.string.alpha(),
                       mediaType: 'application/json',
                       schema: {
                         type: 'object',
@@ -247,7 +247,7 @@ describe('HttpValidator', () => {
                 path: '/',
                 id: '1',
                 request: {},
-                responses: [{ id: faker.random.word(), code: '200' }],
+                responses: [{ id: faker.string.alpha(), code: '200' }],
               },
               element: { statusCode: 200 },
             }),
@@ -277,9 +277,9 @@ describe('HttpValidator', () => {
                 request: {},
                 responses: [
                   {
-                    id: faker.random.word(),
+                    id: faker.string.alpha(),
                     code: '200',
-                    contents: [{ id: faker.random.word(), mediaType: 'application/json' }],
+                    contents: [{ id: faker.string.alpha(), mediaType: 'application/json' }],
                   },
                 ],
               },
@@ -304,7 +304,7 @@ describe('HttpValidator', () => {
         path: '/',
         id: '1',
         request: {},
-        responses: [{ id: faker.random.word(), code: '200' }],
+        responses: [{ id: faker.string.alpha(), code: '200' }],
       };
 
       describe('when the desidered response is between 200 and 300', () => {
@@ -342,18 +342,18 @@ describe('HttpValidator', () => {
         request: {},
         responses: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             code: '200',
             contents: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 mediaType: 'application/json',
                 schema: {
                   type: 'string',
                 },
               },
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 mediaType: 'image/*',
                 schema: {
                   type: 'string',
@@ -411,7 +411,7 @@ describe('HttpValidator', () => {
 describe('validateMediaType()', () => {
   describe('when available content type does not have parameters', () => {
     const content: IMediaTypeContent = {
-      id: faker.random.word(),
+      id: faker.string.alpha(),
       mediaType: 'application/vnd.archa.api+json',
     };
 

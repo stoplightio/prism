@@ -1,6 +1,6 @@
 import { assertNone, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { findOperationResponse } from '../spec';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker/locale/en';
 
 describe('findOperationResponse()', () => {
   describe('when response for given code exists', () => {
@@ -8,10 +8,10 @@ describe('findOperationResponse()', () => {
       assertSome(
         findOperationResponse(
           [
-            { id: faker.random.word(), code: '2XX', contents: [], headers: [] },
-            { id: faker.random.word(), code: '20X', contents: [], headers: [] },
-            { id: faker.random.word(), code: 'default', contents: [], headers: [] },
-            { id: faker.random.word(), code: '1XX', contents: [], headers: [] },
+            { id: faker.string.alpha(), code: '2XX', contents: [], headers: [] },
+            { id: faker.string.alpha(), code: '20X', contents: [], headers: [] },
+            { id: faker.string.alpha(), code: 'default', contents: [], headers: [] },
+            { id: faker.string.alpha(), code: '1XX', contents: [], headers: [] },
           ],
           200
         ),
@@ -25,9 +25,9 @@ describe('findOperationResponse()', () => {
       assertSome(
         findOperationResponse(
           [
-            { id: faker.random.word(), code: '2XX', contents: [], headers: [] },
-            { id: faker.random.word(), code: 'default', contents: [], headers: [] },
-            { id: faker.random.word(), code: '1XX', contents: [], headers: [] },
+            { id: faker.string.alpha(), code: '2XX', contents: [], headers: [] },
+            { id: faker.string.alpha(), code: 'default', contents: [], headers: [] },
+            { id: faker.string.alpha(), code: '1XX', contents: [], headers: [] },
           ],
           422
         ),
@@ -41,8 +41,8 @@ describe('findOperationResponse()', () => {
       assertNone(
         findOperationResponse(
           [
-            { id: faker.random.word(), code: '2XX', contents: [], headers: [] },
-            { id: faker.random.word(), code: '1XX', contents: [], headers: [] },
+            { id: faker.string.alpha(), code: '2XX', contents: [], headers: [] },
+            { id: faker.string.alpha(), code: '1XX', contents: [], headers: [] },
           ],
           500
         )

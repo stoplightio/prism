@@ -1,14 +1,14 @@
 import { convertTemplateToRegExp, matchBaseUrl } from '../matchBaseUrl';
 import { MatchType } from '../types';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker/locale/en';
 
 describe('matchServer.ts', () => {
   describe('matchServer()', () => {
     test('concrete server url fully matches request url', () => {
       const serverMatch = matchBaseUrl(
         {
-          id: faker.random.word(),
+          id: faker.string.alpha(),
           url: 'http://www.example.com/',
         },
         'http://www.example.com/'
@@ -19,29 +19,29 @@ describe('matchServer.ts', () => {
 
     test('concrete server url does not match request url', () => {
       assertRight(
-        matchBaseUrl({ id: faker.random.word(), url: 'http://www.example.com' }, 'http://www.example.com/'),
+        matchBaseUrl({ id: faker.string.alpha(), url: 'http://www.example.com' }, 'http://www.example.com/'),
         result => expect(result).toBe(MatchType.NOMATCH)
       );
 
       assertRight(
-        matchBaseUrl({ id: faker.random.word(), url: 'http://www.example.com' }, 'http://www.example'),
+        matchBaseUrl({ id: faker.string.alpha(), url: 'http://www.example.com' }, 'http://www.example'),
         result => expect(result).toBe(MatchType.NOMATCH)
       );
 
       assertRight(
-        matchBaseUrl({ id: faker.random.word(), url: 'http://www.example.com' }, 'http://www.google.com/'),
+        matchBaseUrl({ id: faker.string.alpha(), url: 'http://www.example.com' }, 'http://www.google.com/'),
         result => expect(result).toBe(MatchType.NOMATCH)
       );
 
       assertRight(
-        matchBaseUrl({ id: faker.random.word(), url: 'http://www.example.com:8081/v1' }, 'http://www.example.com/v1'),
+        matchBaseUrl({ id: faker.string.alpha(), url: 'http://www.example.com:8081/v1' }, 'http://www.example.com/v1'),
         result => expect(result).toBe(MatchType.NOMATCH)
       );
     });
 
     test('entirely templated server url to match request from enum', () => {
       const serverConfig = {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         url: '{url}',
         variables: {
           url: {
@@ -69,7 +69,7 @@ describe('matchServer.ts', () => {
       assertRight(
         matchBaseUrl(
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             url: 'http://{host}/v1',
             variables: {
               host: { default: 'www.example.com' },
@@ -83,7 +83,7 @@ describe('matchServer.ts', () => {
 
     test('server url with templated enum host to match request url', () => {
       const serverConfig = {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         url: 'http://{host}/v1',
         variables: {
           host: {
@@ -104,7 +104,7 @@ describe('matchServer.ts', () => {
 
     describe('a complex server template should match request url', () => {
       const serverConfig = {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         url: '{protocol}://{username}@{host}/{path}',
         variables: {
           protocol: {

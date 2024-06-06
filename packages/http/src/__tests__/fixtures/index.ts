@@ -1,6 +1,6 @@
 import { IPrismInput } from '@stoplight/prism-core';
 import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/types';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker/locale/en';
 import { IHttpRequest, IHttpResponse } from '../../types';
 
 export const httpOperations: IHttpOperation[] = [
@@ -11,13 +11,13 @@ export const httpOperations: IHttpOperation[] = [
     request: {
       query: [
         {
-          id: faker.random.word(),
+          id: faker.string.alpha(),
           required: false,
           name: 'name',
           style: HttpParamStyles.Form,
         },
         {
-          id: faker.random.word(),
+          id: faker.string.alpha(),
           required: true,
           name: 'completed',
           style: HttpParamStyles.Form,
@@ -26,11 +26,11 @@ export const httpOperations: IHttpOperation[] = [
     },
     responses: [
       {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         code: '200',
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/json',
             schema: {
               type: 'array',
@@ -49,7 +49,7 @@ export const httpOperations: IHttpOperation[] = [
             },
             examples: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'application/json',
                 value: {
                   id: 1,
@@ -58,7 +58,7 @@ export const httpOperations: IHttpOperation[] = [
                 },
               },
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'bear',
                 value: [
                   {
@@ -72,16 +72,16 @@ export const httpOperations: IHttpOperation[] = [
             encodings: [],
           },
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/xml',
             examples: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'first',
                 value: '{ "root": "first" }',
               },
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'second',
                 value: '{ "root": "second" }',
               },
@@ -89,16 +89,16 @@ export const httpOperations: IHttpOperation[] = [
             encodings: [],
           },
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'text/plain',
             examples: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'text',
                 value: 'some text',
               },
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'plain',
                 value: 'some plain',
               },
@@ -108,36 +108,36 @@ export const httpOperations: IHttpOperation[] = [
         ],
       },
       {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         code: '201',
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/json',
             examples: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'first',
                 value: '{ "root": "first" }',
               },
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'second',
                 value: '{ "root": "second" }',
               },
             ],
           },
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/xml',
             examples: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'first',
                 value: '<root>first</root>',
               },
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'second',
                 value: '<root>second</root>',
               },
@@ -146,11 +146,11 @@ export const httpOperations: IHttpOperation[] = [
         ],
       },
       {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         code: '422',
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/json',
             schema: {
               type: 'object',
@@ -163,7 +163,7 @@ export const httpOperations: IHttpOperation[] = [
             },
             examples: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'application/json',
                 value: {
                   message: 'error',
@@ -182,11 +182,11 @@ export const httpOperations: IHttpOperation[] = [
     request: {},
     responses: [
       {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         code: '200',
         headers: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             name: 'x-todos-publish',
             style: HttpParamStyles.Simple,
             schema: { type: 'string', format: 'date-time' },
@@ -194,7 +194,7 @@ export const httpOperations: IHttpOperation[] = [
         ],
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/json',
             schema: {
               type: 'object',
@@ -212,11 +212,11 @@ export const httpOperations: IHttpOperation[] = [
             encodings: [],
           },
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/xml',
             examples: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'xml',
                 value: '<todo><name>Shopping</name><completed>false</completed></todo>',
               },
@@ -226,12 +226,12 @@ export const httpOperations: IHttpOperation[] = [
         ],
       },
       {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         code: '422',
         headers: [],
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/json',
             schema: {
               type: 'object',
@@ -253,10 +253,10 @@ export const httpOperations: IHttpOperation[] = [
     path: '/todos',
     request: {
       body: {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/json',
             schema: {
               type: 'object',
@@ -268,7 +268,7 @@ export const httpOperations: IHttpOperation[] = [
       },
       query: [
         {
-          id: faker.random.word(),
+          id: faker.string.alpha(),
           name: 'overwrite',
           style: HttpParamStyles.Form,
           schema: { type: 'string', pattern: '^(yes|no)$' },
@@ -276,7 +276,7 @@ export const httpOperations: IHttpOperation[] = [
       ],
       headers: [
         {
-          id: faker.random.word(),
+          id: faker.string.alpha(),
           name: 'x-todos-publish',
           style: HttpParamStyles.Simple,
           schema: { type: 'string', format: 'date-time' },
@@ -289,7 +289,7 @@ export const httpOperations: IHttpOperation[] = [
     },
     responses: [
       {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         code: '200',
       },
     ],
@@ -302,16 +302,16 @@ export const httpOperations: IHttpOperation[] = [
     request: {},
     responses: [
       {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         code: '200',
         headers: [],
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/json',
             examples: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'application/json',
                 value: 'OK',
               },
@@ -320,16 +320,16 @@ export const httpOperations: IHttpOperation[] = [
         ],
       },
       {
-        id: faker.random.word(),
+        id: faker.string.alpha(),
         code: '400',
         headers: [],
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.string.alpha(),
             mediaType: 'application/json',
             examples: [
               {
-                id: faker.random.word(),
+                id: faker.string.alpha(),
                 key: 'application/json',
                 value: {
                   message: 'error',

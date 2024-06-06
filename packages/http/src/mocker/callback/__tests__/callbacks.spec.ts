@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import { runCallback } from '../callbacks';
 import { mapValues } from 'lodash';
 import { HttpParamStyles } from '@stoplight/types';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker/locale/en';
 
 jest.mock('node-fetch');
 
@@ -35,19 +35,19 @@ describe('runCallback()', () => {
           id: '1',
           responses: [
             {
-              id: faker.random.word(),
+              id: faker.string.alpha(),
               code: '200',
-              contents: [{ id: faker.random.word(), mediaType: 'application/json' }],
+              contents: [{ id: faker.string.alpha(), mediaType: 'application/json' }],
             },
           ],
           request: {
             body: {
-              id: faker.random.word(),
+              id: faker.string.alpha(),
               contents: [
                 {
-                  id: faker.random.word(),
+                  id: faker.string.alpha(),
                   mediaType: 'application/json',
-                  examples: [{ id: faker.random.word(), key: 'e1', value: { about: 'something' } }],
+                  examples: [{ id: faker.string.alpha(), key: 'e1', value: { about: 'something' } }],
                 },
               ],
             },
@@ -95,11 +95,11 @@ describe('runCallback()', () => {
           id: '1',
           responses: [
             {
-              id: faker.random.word(),
+              id: faker.string.alpha(),
               code: '200',
               headers: [
                 {
-                  id: faker.random.word(),
+                  id: faker.string.alpha(),
                   name: 'test',
                   style: HttpParamStyles.Simple,
                   deprecated: true,
@@ -108,7 +108,7 @@ describe('runCallback()', () => {
               ],
               contents: [
                 {
-                  id: faker.random.word(),
+                  id: faker.string.alpha(),
                   mediaType: 'application/json',
                   schema: { type: 'object', properties: { test: { type: 'string', maxLength: 3 } } },
                 },
@@ -117,12 +117,12 @@ describe('runCallback()', () => {
           ],
           request: {
             body: {
-              id: faker.random.word(),
+              id: faker.string.alpha(),
               contents: [
                 {
-                  id: faker.random.word(),
+                  id: faker.string.alpha(),
                   mediaType: 'application/json',
-                  examples: [{ id: faker.random.word(), key: 'e1', value: { about: 'something' } }],
+                  examples: [{ id: faker.string.alpha(), key: 'e1', value: { about: 'something' } }],
                 },
               ],
             },
@@ -180,7 +180,7 @@ describe('runCallback()', () => {
           method: 'get',
           path: 'http://example.com/{$method}/{$statusCode}/{$response.body#/id}/{$request.header.content-type}',
           id: '1',
-          responses: [{ id: faker.random.word(), code: '200' }],
+          responses: [{ id: faker.string.alpha(), code: '200' }],
         },
         request: {
           body: '',
