@@ -81,7 +81,7 @@ describe('JSONSchema generator', () => {
       const schema: JSONSchema & any = {
         type: 'object',
         properties: {
-          ip: { type: 'string', format: 'ip', 'x-faker': 'internet.ip' },
+          ip: { type: 'string', format: 'ip', 'x-faker': 'internet.ipv4' },
         },
         required: ['ip'],
       };
@@ -90,7 +90,6 @@ describe('JSONSchema generator', () => {
         assertRight(generate(operation, {}, schema), instance => {
           expect(instance).toHaveProperty('ip');
           const ip = get(instance, 'ip', '');
-
           expect(ipRegExp.test(ip)).toBeTruthy();
           expect(emailRegExp.test(ip)).toBeFalsy();
         });
