@@ -104,6 +104,19 @@ describe('mocker', () => {
             },
           ],
         },
+        {
+          id: '500',
+          code: '500',
+          headers: [],
+          contents: [
+            {
+              id: 'contents',
+              mediaType: 'application/json',
+              examples: [{ id: 'example-1', key: 'internalServerError', value: { message: 'Internal Server Error' } }],
+              encodings: [],
+            },
+          ],
+        },
       ],
     };
 
@@ -673,6 +686,143 @@ describe('mocker', () => {
         assertRight(mockResult, result => {
           expect(result.body).toHaveProperty('name');
           expect(result.body).toHaveProperty('surname');
+        });
+      });
+    });
+
+    describe('should return 500 error', () => {
+      it('returns a 500 error response', () => {
+        jest.spyOn(helpers, 'negotiateOptionsForInvalidRequest').mockReturnValue(
+          right({
+            code: '500',
+            mediaType: 'application/json',
+            bodyExample: mockResource.responses[3].contents![0].examples![0],
+            headers: [],
+          })
+        );
+        const mockResult = mock({
+          config: { dynamic: false },
+          resource: mockResource,
+          input: Object.assign({}, mockInput, {
+            validations: [{ severity: DiagnosticSeverity.Error }],
+          }),
+        })(logger);
+        assertRight(mockResult, result => {
+          expect(result).toMatchObject({
+            statusCode: 500,
+            body: { message: 'Internal Server Error' },
+          });
+        });
+      });
+    });
+
+    describe('With __bundled__ should get response', () => {
+      it('With __bundled__ should get response', () => {
+        const BundledResource: IHttpOperation = {
+          ...mockResource,
+          // @ts-ignore - Requires update in @stoplight/types to allow for '__bundled__'
+          __bundled__: {
+            properties: {
+              id: {
+                type: 'integer',
+                description: 'Unique identifier for the given user.',
+              },
+              name: {
+                type: 'string',
+              },
+              surname: {
+                type: 'string',
+              },
+              user: {
+                title: 'User',
+                type: 'object',
+                examples: [
+                  {
+                    id: 142,
+                    name: 'Alice',
+                    surname: 'Smith',
+                  },
+                ],
+                required: ['id', 'name', 'surname'],
+                properties: {
+                  $ref: '#/__bundled__/properties',
+                },
+              },
+              test: {
+                title: 'Test',
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                  user: {
+                    title: 'User',
+                    type: 'object',
+                    examples: [
+                      {
+                        id: 142,
+                        name: 'Alice',
+                        surname: 'Smith',
+                      },
+                    ],
+                    required: ['id', 'name', 'surname'],
+                    properties: {
+                      $ref: '#/__bundled__/properties',
+                    },
+                  },
+                  test: {
+                    title: 'Test',
+                    type: 'object',
+                    properties: {
+                      $ref: '#/__bundled__/properties_2',
+                    },
+                  },
+                },
+              },
+            },
+            properties_2: {
+              id: {
+                type: 'string',
+              },
+              user: {
+                title: 'User',
+                type: 'object',
+                examples: [
+                  {
+                    id: 142,
+                    name: 'Alice',
+                    surname: 'Smith',
+                  },
+                ],
+                required: ['id', 'name', 'surname'],
+                properties: {
+                  $ref: '#/__bundled__/properties',
+                },
+              },
+              test: {
+                title: 'Test',
+                type: 'object',
+                properties: {
+                  $ref: '#/__bundled__/properties_2',
+                },
+              },
+            },
+          },
+        };
+
+        const mockResult = mock({
+          config: { dynamic: true },
+          resource: BundledResource,
+          input: mockInput,
+        })(logger);
+        assertRight(mockResult, result => {
+          expect(result).toMatchObject({
+            statusCode: 200,
+          });
+          expect(result).toHaveProperty('body', {
+            name: expect.any(String),
+            surname: expect.any(String),
+          });
         });
       });
     });

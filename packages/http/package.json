@@ -22,7 +22,7 @@
     "@stoplight/json-schema-sampler": "0.3.0",
     "@stoplight/prism-core": "^5.8.0",
     "@stoplight/http-spec": "^7.0.3",
-    "@stoplight/json-schema-ref-parser": "9.2.7",
+    "@stoplight/json-schema-ref-parser": "10.0.0",
     "@stoplight/types": "^14.1.0",
     "@stoplight/yaml": "^4.2.3",
     "abstract-logging": "^2.0.1",

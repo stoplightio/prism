@@ -8,7 +8,7 @@
   "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
     "@stoplight/json": "^3.18.1",
-    "@stoplight/json-schema-ref-parser": "9.2.7",
+    "@stoplight/json-schema-ref-parser": "10.0.0",
     "@stoplight/prism-core": "^5.8.0",
     "@stoplight/prism-http": "^5.8.1",
     "@stoplight/prism-http-server": "^5.8.1",
