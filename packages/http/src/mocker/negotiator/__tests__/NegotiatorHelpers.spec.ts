@@ -13,7 +13,6 @@ import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/uti
 import helpers from '../NegotiatorHelpers';
 import { IHttpNegotiationResult, NegotiationOptions } from '../types';
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray';
-import * as pino from 'pino';
 const logger = createLogger('TEST', { enabled: false });
 
 const assertPayloadlessResponse = (actualResponse: E.Either<Error, IHttpNegotiationResult>) => {
@@ -545,7 +544,8 @@ describe('NegotiatorHelpers', () => {
             dynamic: desiredOptions.dynamic,
             exampleKey: desiredOptions.exampleKey,
           },
-          contents
+          contents,
+          logger
         );
         expect(helpers.negotiateDefaultMediaType).not.toHaveBeenCalled();
         assertRight(actualOperationConfig, operationConfig => {
@@ -742,7 +742,8 @@ describe('NegotiatorHelpers', () => {
             dynamic: desiredOptions.dynamic,
             exampleKey: desiredOptions.exampleKey,
           },
-          httpResponseSchema
+          httpResponseSchema,
+          logger
         );
 
         assertRight(actualOperationConfig, operationConfig => {
@@ -788,7 +789,7 @@ describe('NegotiatorHelpers', () => {
 
         jest.spyOn(helpers, 'negotiateByPartialOptionsAndHttpContent').mockReturnValue(E.right(fakeOperationConfig));
 
-        const actualOperationConfig = helpers.negotiateDefaultMediaType(partialOptions, response);
+        const actualOperationConfig = helpers.negotiateDefaultMediaType(partialOptions, response, logger);
 
         expect(helpers.negotiateByPartialOptionsAndHttpContent).toHaveBeenCalledTimes(1);
         expect(helpers.negotiateByPartialOptionsAndHttpContent).toHaveBeenCalledWith(
@@ -797,7 +798,8 @@ describe('NegotiatorHelpers', () => {
             dynamic: partialOptions.dynamic,
             exampleKey: partialOptions.exampleKey,
           },
-          contents[1] // Check that the */* has been requested
+          contents[1], // Check that the */* has been requested
+          logger
         );
 
         assertRight(actualOperationConfig, operationConfig => {
@@ -828,7 +830,7 @@ describe('NegotiatorHelpers', () => {
       };
 
       it('returns text/plain with empty body', () => {
-        const negotiationResult = helpers.negotiateDefaultMediaType(partialOptions, response);
+        const negotiationResult = helpers.negotiateDefaultMediaType(partialOptions, response, logger);
 
         assertRight(negotiationResult, result => {
           expect(result).toEqual(expectedResponse);
@@ -858,7 +860,7 @@ describe('NegotiatorHelpers', () => {
             examples: [{ id: faker.random.word(), key: 'hey', value: {} }],
           },
         ],
-      });
+      }, logger);
 
       it('should give json precedence', () => {
         assertRight(negotiationResult, result => {
@@ -884,7 +886,7 @@ describe('NegotiatorHelpers', () => {
             examples: [{ id: faker.random.word(), key: 'hey', value: {} }],
           },
         ],
-      });
+      }, logger);
 
       it('should take the first content type', () => {
         assertRight(negotiationResult, result => {
@@ -917,7 +919,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         encodings: [],
       };
 
-      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent, logger);
 
       const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
         code: partialOptions.code,
@@ -944,7 +946,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         encodings: [],
       };
 
-      const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent, logger);
       assertLeft(negotiationResult, e => {
         expect(e.message).toBe('The server cannot find the requested content');
       });
@@ -965,7 +967,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         encodings: [],
       };
 
-      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent, logger);
 
       assertRight(actualOperationConfig, operationConfig => {
         expect(operationConfig).toEqual({
@@ -988,7 +990,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         encodings: [],
       };
 
-      const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      const negotiationResult = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent, logger);
 
       assertLeft(negotiationResult, e =>
         expect(e.message).toBe(
@@ -1025,7 +1027,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         encodings: [],
       };
 
-      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent, logger);
       const expectedConfig: Omit<IHttpNegotiationResult, 'headers'> = {
         code: partialOptions.code,
         mediaType: httpContent.mediaType,
@@ -1050,7 +1052,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         encodings: [],
       };
 
-      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      const actualOperationConfig = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent, logger);
 
       assertRight(actualOperationConfig, operationConfig => {
         expect(operationConfig).toEqual({
@@ -1074,7 +1076,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         encodings: [],
       };
 
-      const proposedResponse = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent);
+      const proposedResponse = helpers.negotiateByPartialOptionsAndHttpContent(partialOptions, httpContent, logger);
 
       assertRight(proposedResponse, response => {
         expect(response).toHaveProperty('code');

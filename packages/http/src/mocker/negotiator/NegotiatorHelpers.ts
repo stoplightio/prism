@@ -47,18 +47,20 @@ type BodyNegotiationResult = Omit<IHttpNegotiationResult, 'headers'>;
 const helpers = {
   negotiateByPartialOptionsAndHttpContent(
     { code, exampleKey, dynamic }: NegotiatePartialOptions,
-    httpContent: IMediaTypeContent
+    httpContent: IMediaTypeContent,
+    logger: Logger
   ): E.Either<Error, BodyNegotiationResult> {
     const { mediaType, schema } = httpContent;
     if (exampleKey) {
       return pipe(
         findExampleByKey(httpContent, exampleKey),
-        E.fromOption(() =>
-          ProblemJsonError.fromTemplate(
+        E.fromOption(() => {
+          logger.warn(`Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`);
+          return ProblemJsonError.fromTemplate(
             NOT_FOUND,
             `Response for contentType: ${mediaType} and exampleKey: ${exampleKey} does not exist.`
-          )
-        ),
+          );
+        }),
         E.map(bodyExample => ({ code, mediaType, bodyExample, schema }))
       );
     } else if (dynamic) {
@@ -86,7 +88,8 @@ const helpers = {
 
   negotiateDefaultMediaType(
     partialOptions: NegotiatePartialOptions,
-    response: IHttpOperationResponse
+    response: IHttpOperationResponse,
+    logger: Logger
   ): E.Either<Error, IHttpNegotiationResult> {
     const { code, dynamic, exampleKey } = partialOptions;
     const { headers = [] } = response;
@@ -117,7 +120,7 @@ const helpers = {
           }),
         content =>
           pipe(
-            helpers.negotiateByPartialOptionsAndHttpContent({ code, dynamic, exampleKey }, content),
+            helpers.negotiateByPartialOptionsAndHttpContent({ code, dynamic, exampleKey }, content, logger),
             E.map(contentNegotiationResult => ({ headers, ...contentNegotiationResult }))
           )
       )
@@ -150,7 +153,8 @@ const helpers = {
                 dynamic,
                 exampleKey,
               },
-              response
+              response,
+              logger
             );
           },
           mediaTypes =>
@@ -165,9 +169,12 @@ const helpers = {
                   if (response.contents?.length && response.contents?.length > 0) {
                     return pipe(
                       createEmptyResponse(response.code, headers, mediaTypes),
-                        E.fromOption<Error>(() => {
-                              return ProblemJsonError.fromTemplate(NOT_ACCEPTABLE, `Unable to find content for ${mediaTypes}`);
-                        })
+                      E.fromOption<Error>(() => {
+                        return ProblemJsonError.fromTemplate(
+                          NOT_ACCEPTABLE,
+                          `Unable to find content for ${mediaTypes}`
+                        );
+                      })
                   )}
 
                   // though accept header may have a request media type, the spec does not define a response body for the endpoint, so we essentially ignore the accept header (no error)
@@ -186,7 +193,8 @@ const helpers = {
                         dynamic,
                         exampleKey,
                       },
-                      content
+                      content,
+                      logger
                     ),
                     E.map(contentNegotiationResult => ({
                       headers,
