@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.8.2](https://github.com/stoplightio/prism/compare/v5.8.1...v5.8.2) (2024-07-02)
+
+
+### Bug Fixes
+
+* **http-negotiator:** [#2381](https://github.com/stoplightio/prism/issues/2381) add additional warn log message ([#2550](https://github.com/stoplightio/prism/issues/2550)) ([64a23fc](https://github.com/stoplightio/prism/commit/64a23fc530ff1e01c186f01e77a5906c0251f394))
+
 ## [5.8.1](https://github.com/stoplightio/prism/compare/v5.8.0...v5.8.1) (2024-04-29)
 
 
