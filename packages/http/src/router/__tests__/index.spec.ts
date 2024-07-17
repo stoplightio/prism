@@ -316,7 +316,7 @@ describe('http router', () => {
           );
         });
 
-        test('given a concrete servers and templated paths should match first resource', () => {
+        test('given a concrete servers and templated paths should match second resource', () => {
           const templatedPathA = '/{x}/y';
           const templatedPathB = '/a/{z}';
           const url = 'concrete.com';
@@ -334,7 +334,7 @@ describe('http router', () => {
                 },
               },
             }),
-            resource => expect(resource).toBe(firstResource)
+            resource => expect(resource).toBe(secondResource)
           );
         });
 

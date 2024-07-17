@@ -9,7 +9,7 @@ function fragmentize(path: string): string[] {
   return path.split('/').slice(1).map(decodePathFragment);
 }
 
-function isTemplated(pathFragment: string) {
+export function isTemplated(pathFragment: string) {
   return /{(.+)}/.test(pathFragment);
 }
 
