@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.8.3](https://github.com/stoplightio/prism/compare/v5.8.2...v5.8.3) (2024-07-19)
+
+
+### Bug Fixes
+
+* mock issue resolve for similar templated requests ([#2564](https://github.com/stoplightio/prism/issues/2564)) ([b8e9fd8](https://github.com/stoplightio/prism/commit/b8e9fd815f0f612664b36704e4200d5473875fbe))
+
 ## [5.8.2](https://github.com/stoplightio/prism/compare/v5.8.1...v5.8.2) (2024-07-02)
 
 
