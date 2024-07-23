@@ -42,7 +42,7 @@
     "@types/uri-template-lite": "^19.12.1",
     "@types/urijs": "^1.19.17",
     "@types/whatwg-mimetype": "^3.0.0",
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^4.33.0",
     "abstract-logging": "^2.0.1",
     "diff-js-xml": "^1.0.5",
