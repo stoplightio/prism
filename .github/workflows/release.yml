@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      
+
 permissions:
   contents: write
   pull-requests: write
@@ -13,7 +13,7 @@ jobs:
   release-please:
     name: Release Please
     runs-on: ubuntu-latest
-    if: github.repository == 'stoplightio/prism'
+    if: github.repository == 'stainless-api/prism'
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
