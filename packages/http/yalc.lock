@@ -1,0 +1,11 @@
+{
+  "version": "v1",
+  "packages": {
+    "@stoplight/json": {
+      "version": "0.0.0",
+      "signature": "b57e6c9ef2c538fab0be04b6337078e6",
+      "file": true,
+      "replaced": "^3.18.1"
+    }
+  }
+}

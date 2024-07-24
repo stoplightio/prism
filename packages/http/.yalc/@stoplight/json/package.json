@@ -1,0 +1,37 @@
+{
+  "name": "@stoplight/json",
+  "version": "0.0.0",
+  "description": "Useful functions when working with JSON.",
+  "keywords": [
+    "json",
+    "json parser",
+    "json.parse",
+    "parser",
+    "sourcemap"
+  ],
+  "sideEffects": false,
+  "files": [
+    "**/*"
+  ],
+  "author": "Stoplight <support@stoplight.io>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stoplightio/json"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=8.3.0"
+  },
+  "dependencies": {
+    "@stoplight/ordered-object-literal": "^1.0.3",
+    "@stoplight/path": "^1.3.2",
+    "@stoplight/types": "^13.6.0",
+    "jsonc-parser": "~2.2.1",
+    "lodash": "^4.17.21",
+    "safe-stable-stringify": "^1.1"
+  },
+  "main": "index.cjs.js",
+  "module": "index.es.js",
+  "typings": "index.d.ts",
+  "yalcSig": "b57e6c9ef2c538fab0be04b6337078e6"
+}
