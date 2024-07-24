@@ -8,16 +8,11 @@
     {
       "type": "linked-versions",
       "groupName": "prism",
-      "components": ["prism", "cli", "core", "http", "http-server"]
+      "components": ["cli", "core", "http", "http-server"]
     }
   ],
   "sequential-calls": true,
   "packages": {
-    ".": {
-      "component": "prism",
-      "release-type": "simple",
-      "include-component-in-tag": false
-    },
     "packages/cli": {
       "component": "cli",
       "include-component-in-tag": false
