@@ -1165,10 +1165,10 @@
     "@types/json-schema" "^7.0.7"
     json-pointer "^0.6.1"
 
-"@stoplight/json@^3.18.1":
-  version "3.21.0"
-  resolved "https://registry.npmjs.org/@stoplight/json/-/json-3.21.0.tgz"
-  integrity sha512-5O0apqJ/t4sIevXCO3SBN9AHCEKKR/Zb4gaj7wYe5863jme9g02Q0n/GhM7ZCALkL+vGPTe4ZzTETP8TFtsw3g==
+"@stoplight/json@3.21.5", "@stoplight/json@^3.18.1":
+  version "3.21.5"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.21.5.tgz#6f9eab019ade5dbe147c8a00f7de773a6e2ec325"
+  integrity sha512-hWc0ctoZ+tZwhJm8FjTP4OHxEm1V28rU84FNJToLYUBLgInZEMqQZ4f55eUECm08QCyUl5x7E48iyiWj+P+ejA==
   dependencies:
     "@stoplight/ordered-object-literal" "^1.0.3"
     "@stoplight/path" "^1.3.2"

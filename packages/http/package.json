@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^6.0.0",
-    "@stoplight/json": "^3.18.1",
+    "@stoplight/json": "3.21.5",
     "@stoplight/json-schema-merge-allof": "0.7.8",
     "@stoplight/json-schema-sampler": "0.3.0",
     "@stoplight/prism-core": "^5.8.0",
