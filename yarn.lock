@@ -1165,6 +1165,18 @@
     "@types/json-schema" "^7.0.7"
     json-pointer "^0.6.1"
 
+"@stoplight/json@3.21.6":
+  version "3.21.6"
+  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.21.6.tgz#0053ece24d6b19f372b11591f249ede48514ed5b"
+  integrity sha512-KGisXfNigoYdWIj1jA4p3IAAIW5YFpU9BdoECdjyDLBbhWGGHzs77e0STSCBmXQ/K3ApxfED2R7mQ79ymjzlvQ==
+  dependencies:
+    "@stoplight/ordered-object-literal" "^1.0.3"
+    "@stoplight/path" "^1.3.2"
+    "@stoplight/types" "^13.6.0"
+    jsonc-parser "~2.2.1"
+    lodash "^4.17.21"
+    safe-stable-stringify "^1.1"
+
 "@stoplight/json@^3.18.1":
   version "3.21.0"
   resolved "https://registry.npmjs.org/@stoplight/json/-/json-3.21.0.tgz"
