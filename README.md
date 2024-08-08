@@ -106,8 +106,8 @@ see what URLs you have available.
 - [x] Content Negotiation
 - [x] Security Validation
 - [x] Validation Proxy
-- [ ] [Recording/Learning Mode](https://roadmap.stoplight.io/c/66-learning-recording?utm_source=github&utm_medium=prism&utm_campaign=readme) (create OpenAPI from HTTP traffic)
-- [ ] [Data Persistence](https://roadmap.stoplight.io/c/50-persisted-mock-data?utm_source=github&utm_medium=prism&utm_campaign=readme) (allow Prism act like a sandbox)
+- [ ] [Recording/Learning Mode](https://roadmap.stoplight.io/c/324-learning-recording?utm_source=github&utm_medium=prism&utm_campaign=readme) (create OpenAPI from HTTP traffic)
+- [ ] [Data Persistence](https://roadmap.stoplight.io/c/308-persisted-mock-data?utm_source=github&utm_medium=prism&utm_campaign=readme) (allow Prism act like a sandbox)
 
 Submit your ideas for new functionality on the [Stoplight Roadmap](https://roadmap.stoplight.io/?utm_source=github&utm_medium=prism&utm_campaign=readme).
 
