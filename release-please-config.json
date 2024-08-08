@@ -1,33 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
-  "plugins": [
-    {
-      "type": "node-workspace",
-      "merge": false
-    },
-    {
-      "type": "linked-versions",
-      "groupName": "prism",
-      "components": ["cli", "core", "http", "http-server"]
-    }
-  ],
+  "plugins": ["node-workspace"],
   "sequential-calls": true,
   "packages": {
-    "packages/cli": {
-      "component": "cli",
-      "include-component-in-tag": false
-    },
-    "packages/core": {
-      "component": "core",
-      "include-component-in-tag": false
-    },
-    "packages/http": {
-      "component": "http",
-      "include-component-in-tag": false
-    },
-    "packages/http-server": {
-      "component": "http-server",
-      "include-component-in-tag": false
-    }
+    "packages/cli": {},
+    "packages/core": {},
+    "packages/http": {},
+    "packages/http-server": {}
   }
 }
