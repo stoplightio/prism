@@ -1,6 +1,6 @@
 {
   "name": "@stainless-api/prism-cli",
-  "version": "5.8.4",
+  "version": "5.8.5",
   "author": "Stainless <dev@stainlessapi.com>",
   "bin": {
     "prism": "./dist/index.js"
