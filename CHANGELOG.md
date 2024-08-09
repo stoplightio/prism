@@ -16,6 +16,13 @@ The format for this file is based on [Keep a Changelog](https://keepachangelog.c
 
 <!-- markdown-link-check-disable -->
 
+## [5.11.1](https://github.com/stoplightio/prism/compare/v5.11.0...v5.11.1) (2024-08-09)
+
+
+### Bug Fixes
+
+* version update and bundled_issue changes ([#2577](https://github.com/stoplightio/prism/issues/2577)) ([c4074fa](https://github.com/stoplightio/prism/commit/c4074fa24438079e659061ee32d08464a688c17c))
+
 ## [5.8.0](https://github.com/stoplightio/prism/compare/v5.7.0...v5.8.0) (2024-04-29)
 
 ### Features
