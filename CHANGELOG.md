@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!-- markdown-link-check-disable -->
 
+## [5.11.1](https://github.com/stainless-api/prism/compare/v5.11.0...v5.11.1) (2024-08-09)
+
+
+### Bug Fixes
+
+* pin @stoplight/json dep to 3.20.0 ([#1](https://github.com/stainless-api/prism/issues/1)) ([1e7a286](https://github.com/stainless-api/prism/commit/1e7a286ca284aad9d12e0f5784c8e564a23c3e32))
+
 ## [5.11.0](https://github.com/stoplightio/prism/compare/v5.10.0...v5.11.0) (2024-07-19)
 
 
