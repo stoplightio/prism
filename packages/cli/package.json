@@ -7,7 +7,7 @@
   },
   "bugs": "https://github.com/stainless-api/prism/issues",
   "dependencies": {
-    "@stoplight/json": "3.20.0",
+    "@stoplight/json": "3.21.6",
     "@stoplight/json-schema-ref-parser": "9.2.7",
     "@stoplight/prism-core": "5.9.0",
     "@stoplight/prism-http": "5.9.0",

@@ -18,7 +18,7 @@
   "dependencies": {
     "@faker-js/faker": "^6.0.0",
     "@stoplight/http-spec": "^7.0.3",
-    "@stoplight/json": "~3.20.0",
+    "@stoplight/json": "3.21.6",
     "@stoplight/json-schema-merge-allof": "0.7.8",
     "@stoplight/json-schema-ref-parser": "9.2.7",
     "@stoplight/json-schema-sampler": "0.3.0",
