@@ -34,10 +34,16 @@ const mockCommand: CommandModule = {
           boolean: true,
           default: false,
         },
+        seed: {
+          description: `Provide a seed so that Prism generates dynamic examples deterministically`,
+          string: true,
+          demandOption: true,
+          default: null
+        },
       }),
   handler: async parsedArgs => {
     parsedArgs.jsonSchemaFakerFillProperties = parsedArgs['json-schema-faker-fillProperties'];
-    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, ignoreExamples, jsonSchemaFakerFillProperties } =
+    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, ignoreExamples, seed, jsonSchemaFakerFillProperties } =
       parsedArgs as unknown as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
@@ -51,6 +57,7 @@ const mockCommand: CommandModule = {
       errors,
       verboseLevel,
       ignoreExamples,
+      seed,
       jsonSchemaFakerFillProperties,
     };
 

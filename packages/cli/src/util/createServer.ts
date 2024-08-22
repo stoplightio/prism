@@ -87,7 +87,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
     checkSecurity: true,
     errors: options.errors,
     upstreamProxy: undefined,
-    mock: { dynamic: options.dynamic, ignoreExamples: options.ignoreExamples },
+    mock: { dynamic: options.dynamic, ignoreExamples: options.ignoreExamples, seed: options.seed },
   };
 
   const config: IHttpConfig = isProxyServerOptions(options)
@@ -155,6 +155,7 @@ type CreateBaseServerOptions = {
   errors: boolean;
   verboseLevel: string;
   ignoreExamples: boolean;
+  seed: string;
   jsonSchemaFakerFillProperties: boolean;
 };
 
