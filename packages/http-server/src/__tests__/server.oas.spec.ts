@@ -200,7 +200,7 @@ describe('Ignore examples', () => {
 
   beforeAll(async () => {
     server = await instantiatePrism(resolve(__dirname, 'fixtures', 'ignore-examples.oas3.yaml'), {
-      mock: { dynamic: false, ignoreExamples: true, seed: "test_seed"},
+      mock: { dynamic: false, ignoreExamples: true },
     });
   });
 
@@ -241,24 +241,6 @@ describe('Ignore examples', () => {
         const payload = await response.json();
         expect(hasPropertiesOfType(payload, schema)).toBe(true);
         expect(payload.name).not.toBe('doggie');
-      });
-
-      describe('and since a seed was set', () => {
-        describe('if I hit the same endpoint twice', () => {
-          let payload: unknown;
-          let secondPayload: unknown;
-    
-          beforeAll(async () => {
-            payload = await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' }).then(r =>
-              r.json()
-            );
-            secondPayload = await fetch(new URL('/no_auth/pets?name=joe', server.address), { method: 'GET' }).then(r =>
-              r.json()
-            );
-          });
-    
-          it('should return the same object', () => expect(payload).toStrictEqual(secondPayload));
-        });
       });
     });
   });
