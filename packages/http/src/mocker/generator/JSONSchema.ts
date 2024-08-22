@@ -9,6 +9,7 @@ import { IHttpContent, IHttpOperation, IHttpParam } from '@stoplight/types';
 import { pipe } from 'fp-ts/function';
 import * as E from 'fp-ts/lib/Either';
 import { stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
+import * as seedrandom from 'seedrandom';
 
 // necessary as workaround broken types in json-schema-faker
 // @ts-ignore
@@ -64,7 +65,8 @@ resetGenerator();
 export function generate(
   resource: IHttpOperation | IHttpParam | IHttpContent,
   bundle: unknown,
-  source: JSONSchema
+  source: JSONSchema,
+  seed?: string
 ): Either<Error, unknown> {
   return pipe(
     stripWriteOnlyProperties(source),
@@ -73,7 +75,12 @@ export function generate(
       tryCatch(
         // necessary as workaround broken types in json-schema-faker
         // @ts-ignore
-        () => sortSchemaAlphabetically(JSONSchemaFaker.generate({ ...cloneDeep(updatedSource), __bundled__: bundle })),
+        () => {
+          if (seed) {
+            JSONSchemaFaker.option('random', seedrandom(seed))
+          }
+          return sortSchemaAlphabetically(JSONSchemaFaker.generate({ ...cloneDeep(updatedSource), __bundled__: bundle }))
+        },
         toError
       )
     )

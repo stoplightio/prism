@@ -16,6 +16,7 @@ const IntegerFromString = D.parse<string, number>(s => {
 const PreferencesDecoder = D.partial({
   code: pipe(D.string, IntegerFromString),
   dynamic: pipe(D.string, BooleanFromString),
+  seed: D.string,
   example: D.string,
 });
 
@@ -27,13 +28,18 @@ export const getHttpConfigFromRequest = (
   const preferences: unknown =
     req.headers && req.headers['prefer']
       ? parsePreferHeader(req.headers['prefer'])
-      : { code: req.url.query?.__code, dynamic: req.url.query?.__dynamic, example: req.url.query?.__example };
+      : {
+          code: req.url.query?.__code,
+          dynamic: req.url.query?.__dynamic,
+          seed: req.url.query?.__seed,
+          example: req.url.query?.__example,
+        };
 
   return pipe(
     PreferencesDecoder.decode(preferences),
     E.bimap(
       err => ProblemJsonError.fromTemplate(UNPROCESSABLE_ENTITY, D.draw(err)),
-      parsed => ({ code: parsed?.code, exampleKey: parsed?.example, dynamic: parsed?.dynamic })
+      parsed => ({ code: parsed?.code, exampleKey: parsed?.example, dynamic: parsed?.dynamic, seed: parsed?.seed })
     )
   );
 };

@@ -38,6 +38,7 @@ import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 import { runCallback } from './callback/callbacks';
 import { logRequest, logResponse } from '../utils/logger';
+import { JSONSchema } from '../types';
 import {
   decodeUriEntities,
   deserializeFormBody,
@@ -57,9 +58,14 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
   input,
   config,
 }) => {
-  const payloadGenerator: PayloadGenerator = config.dynamic
-    ? partial(generate, resource, resource['__bundled__'])
-    : partial(generateStatic, resource);
+  function createPayloadGenerator(config: IHttpOperationConfig, resource: IHttpOperation): PayloadGenerator {
+    return (source: JSONSchema) => {
+      return config.dynamic
+      ? generate(resource, resource['__bundled__'], source, config.seed)
+      : generateStatic(resource, source);
+    };
+  }
+  const payloadGenerator = createPayloadGenerator(config, resource);
 
   return pipe(
     withLogger(logger => {
