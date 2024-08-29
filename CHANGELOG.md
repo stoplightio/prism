@@ -16,12 +16,21 @@ The format for this file is based on [Keep a Changelog](https://keepachangelog.c
 
 <!-- markdown-link-check-disable -->
 
-## [5.11.1](https://github.com/stoplightio/prism/compare/v5.11.0...v5.11.1) (2024-08-09)
-
+## [5.8.4](https://github.com/stoplightio/prism/compare/v5.8.3...v5.8.4) (2024-08-02)
 
 ### Bug Fixes
 
 * version update and bundled_issue changes ([#2577](https://github.com/stoplightio/prism/issues/2577)) ([c4074fa](https://github.com/stoplightio/prism/commit/c4074fa24438079e659061ee32d08464a688c17c))
+
+
+## [5.8.3](https://github.com/stoplightio/prism/compare/v5.8.0...v5.8.3) (2024-07-19)
+
+### Bug Fixes
+
+* mock issue resolve for similar templated requests ([#2564](https://github.com/stoplightio/prism/pull/2564)) ([9f52185](https://github.com/stoplightio/prism/commit/9f52185cbd71ea3564974bf2e815d4078ea2285c))
+
+* bump prism-http into cli and http-server ([#2577](https://github.com/stoplightio/prism/issues/2577)) ([5e082bf](https://github.com/stoplightio/prism/commit/5e082bf974a0ae10ea5efb5ddacf3ba0d413683c))
+
 
 ## [5.8.0](https://github.com/stoplightio/prism/compare/v5.7.0...v5.8.0) (2024-04-29)
 
