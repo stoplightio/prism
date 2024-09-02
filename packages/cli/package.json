@@ -7,7 +7,7 @@
   },
   "bugs": "https://github.com/stoplightio/prism/issues",
   "dependencies": {
-    "@stoplight/json": "3.21.6",
+    "@stoplight/json": "3.21.7",
     "@stoplight/json-schema-ref-parser": "9.2.7",
     "@stoplight/prism-core": "^5.8.0",
     "@stoplight/prism-http": "5.9.0",
@@ -16,7 +16,7 @@
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "fp-ts": "^2.11.5",
-    "json-schema-faker": "0.5.3",
+    "json-schema-faker": "0.5.6",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.5",
     "pino": "^6.13.3",
