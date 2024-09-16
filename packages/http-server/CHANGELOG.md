@@ -1,8 +1,6 @@
 # Changelog
 
-
 ## [5.10.0](https://github.com/stoplightio/prism/compare/v5.9.0...v5.10.0) (2024-09-12)
-
 
 ### Bug Fixes
 
