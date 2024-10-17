@@ -1446,10 +1446,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/split2@^2.1.6":
-  version "2.1.6"
-  resolved "https://registry.npmjs.org/@types/split2/-/split2-2.1.6.tgz"
-  integrity sha512-ddaFSOMuy2Rp97l6q/LEteQygvTQJuEZ+SRhxFKR0uXGsdbFDqX/QF2xoGcOqLQ8XV91v01SnAv2vpgihNgW/Q==
+"@types/split2@^4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@types/split2/-/split2-4.2.3.tgz#ddd9b6b8518df6e0a7825851fcd98de12e415f0b"
+  integrity sha512-59OXIlfUsi2k++H6CHgUQKEb2HKRokUA39HY1i1dS8/AIcqVjtAAFdf8u+HxTWK/4FUHMJQlKSZ4I6irCBJ1Zw==
   dependencies:
     "@types/node" "*"
 
@@ -6915,7 +6915,7 @@ split2@^3.2.2:
   dependencies:
     readable-stream "^3.0.0"
 
-split2@^4.0.0:
+split2@^4.0.0, split2@^4.2.0:
   version "4.2.0"
   resolved "https://registry.npmjs.org/split2/-/split2-4.2.0.tgz"
   integrity sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==

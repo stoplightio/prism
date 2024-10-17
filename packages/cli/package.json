@@ -21,7 +21,7 @@
     "node-fetch": "^2.6.5",
     "pino": "^6.13.3",
     "signale": "^1.4.0",
-    "split2": "^3.2.2",
+    "split2": "^4.2.0",
     "tslib": "^2.3.1",
     "uri-template-lite": "^22.9.0",
     "urijs": "^1.19.11",
