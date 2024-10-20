@@ -1,5 +1,13 @@
 # Changelog
 
+
+## [5.10.0](https://github.com/stoplightio/prism/compare/v5.9.0...v5.10.0) (2024-09-12)
+
+### Bug Fixes
+
+* reverted changes and bump the JSON version ([#2598](https://github.com/stoplightio/prism/issues/2598)) ([4acb898](https://github.com/stoplightio/prism/commit/4acb8980b31c3902ff01cabef06a4fb6f9a6cd48))
+
+
 ## [5.9.0](https://github.com/stoplightio/prism/compare/v5.8.3...v5.9.0) (2024-08-09)
 
 ### Bug Fixes
@@ -8,20 +16,17 @@
 
 ## [5.8.3](https://github.com/stoplightio/prism/compare/v5.8.2...v5.8.3) (2024-07-19)
 
-
 ### Bug Fixes
 
 * mock issue resolve for similar templated requests ([#2564](https://github.com/stoplightio/prism/issues/2564)) ([b8e9fd8](https://github.com/stoplightio/prism/commit/b8e9fd815f0f612664b36704e4200d5473875fbe))
 
 ## [5.8.2](https://github.com/stoplightio/prism/compare/v5.8.1...v5.8.2) (2024-07-02)
 
-
 ### Bug Fixes
 
 * **http-negotiator:** [#2381](https://github.com/stoplightio/prism/issues/2381) add additional warn log message ([#2550](https://github.com/stoplightio/prism/issues/2550)) ([64a23fc](https://github.com/stoplightio/prism/commit/64a23fc530ff1e01c186f01e77a5906c0251f394))
 
 ## [5.8.1](https://github.com/stoplightio/prism/compare/v5.8.0...v5.8.1) (2024-04-29)
-
 
 ### Dependencies
 
@@ -31,16 +36,13 @@
 
 ## [5.8.0](https://github.com/stoplightio/prism/compare/v5.7.0...v5.8.0) (2024-04-29)
 
-
 ### Features
 
 * **deps:** bump node from 16 to 18.20 ([#2520](https://github.com/stoplightio/prism/issues/2520)) ([4b175a6](https://github.com/stoplightio/prism/commit/4b175a614a7d1f184863d741c8cbec494b37b57f))
 
-
 ### Bug Fixes
 
 * readOnly objects in arrays are handled correctly ([#2513](https://github.com/stoplightio/prism/issues/2513)) ([7670236](https://github.com/stoplightio/prism/commit/767023681f481d5e9d8c46203613faa635541eab))
-
 
 ### Dependencies
 
@@ -50,13 +52,11 @@
 
 ## [5.7.0](https://github.com/stoplightio/prism/compare/v5.6.0...v5.7.0) (2024-03-22)
 
-
 ### Features
 
 * STOP-243 - create prism instance with full spec ([#2501](https://github.com/stoplightio/prism/issues/2501)) ([ed41dca](https://github.com/stoplightio/prism/commit/ed41dca89e5ad673f1a0d813b403a44de7e367b2))
 
 ## [5.6.0](https://github.com/stoplightio/prism/compare/v5.5.4...v5.6.0) (2024-03-18)
-
 
 ### Features
 
@@ -67,7 +67,6 @@
 * **http:** added support to Deprecation header for deprecated operations [#1563](https://github.com/stoplightio/prism/issues/1563) ([1415319](https://github.com/stoplightio/prism/commit/14153193c69bccd960e62bc2b86ec23470d66921))
 * **http:** detect complex schema error, improve error message ([#2327](https://github.com/stoplightio/prism/issues/2327)) ([07af511](https://github.com/stoplightio/prism/commit/07af51120ecb8593bc7c0892bc79f5ad5258a67c))
 * support circular refs ([#1835](https://github.com/stoplightio/prism/issues/1835)) ([d287dd7](https://github.com/stoplightio/prism/commit/d287dd700c2597c0b20214c8340680dd42e20085))
-
 
 ### Bug Fixes
 
@@ -87,7 +86,6 @@
 * upgrade dependencies and resolve breaking http spec changes ([#2105](https://github.com/stoplightio/prism/issues/2105)) ([ebbc6c1](https://github.com/stoplightio/prism/commit/ebbc6c1546aced8db0f492dd80651d2459c9bae0))
 * use proper client call in memory leak tests ([c223192](https://github.com/stoplightio/prism/commit/c223192750c2edde958e43da8bffe639f2672952))
 * validateOutput() when schema contains internal reference ([#2363](https://github.com/stoplightio/prism/issues/2363)) ([8e143e6](https://github.com/stoplightio/prism/commit/8e143e6622bdc8098a5c86c399831a12858612d5))
-
 
 ### Dependencies
 

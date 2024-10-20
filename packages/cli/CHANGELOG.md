@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.10.0](https://github.com/stoplightio/prism/compare/v5.9.0...v5.10.0) (2024-09-12)
+
+### Bug Fixes
+
+* reverted changes and bump the JSON version ([#2598](https://github.com/stoplightio/prism/issues/2598)) ([4acb898](https://github.com/stoplightio/prism/commit/4acb8980b31c3902ff01cabef06a4fb6f9a6cd48))
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-http bumped from 5.9.0 to 5.10.0
+    * @stoplight/prism-http-server bumped from ^5.9.0 to ^5.10.0
+
 ## [5.9.0](https://github.com/stoplightio/prism/compare/v5.8.3...v5.9.0) (2024-08-09)
 
 ### Bug Fixes
