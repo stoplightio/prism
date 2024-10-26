@@ -36,6 +36,9 @@ RUN if [ $(uname -m) != "aarch64" ]; then node-prune; fi
 ###############################################################
 FROM node:18-alpine
 
+# https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#handling-kernel-signals
+RUN apk add --no-cache tini
+
 WORKDIR /usr/src/prism
 ARG BUILD_TYPE=development
 ENV NODE_ENV production
@@ -68,4 +71,4 @@ fi
 
 EXPOSE 4010
 
-ENTRYPOINT [ "node", "dist/index.js" ]
+ENTRYPOINT [ "/sbin/tini", "--", "node", "dist/index.js" ]
