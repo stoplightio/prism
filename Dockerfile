@@ -1,4 +1,4 @@
-FROM node:18 as compiler
+FROM node:18 AS compiler
 
 WORKDIR /usr/src/prism
 
@@ -8,7 +8,7 @@ COPY packages/ /usr/src/prism/packages/
 RUN yarn && yarn build
 
 ###############################################################
-FROM node:18 as dependencies
+FROM node:18 AS dependencies
 
 WORKDIR /usr/src/prism/
 
