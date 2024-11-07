@@ -121,21 +121,11 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
 
         if (inputOutputValidationErrors.length > 0) {
           addViolationHeader(reply, inputOutputValidationErrors);
-
-          const errorViolations = outputValidationErrors.filter(
-            v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
-          );
-
-          if (opts.config.errors && errorViolations.length > 0) {
-            return IOE.left(
-              ProblemJsonError.fromTemplate(
-                VIOLATIONS,
-                'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
-                { validation: errorViolations }
-              )
-            );
-          }
         }
+
+        const errorViolations = outputValidationErrors.filter(
+          v => v.severity === DiagnosticSeverity[DiagnosticSeverity.Error]
+        );
 
         inputOutputValidationErrors.forEach(validation => {
           const message = `Violation: ${validation.location.join('.') || ''} ${validation.message}`;
@@ -147,6 +137,16 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
             components.logger.info({ name: 'VALIDATOR' }, message);
           }
         });
+
+        if (opts.config.errors && errorViolations.length > 0) {
+          return IOE.left(
+            ProblemJsonError.fromTemplate(
+              VIOLATIONS,
+              'Your request/response is not valid and the --errors flag is set, so Prism is generating this error for you.',
+              { validation: errorViolations }
+            )
+          );
+        }
 
         return IOE.fromEither(
           E.tryCatch(() => {
