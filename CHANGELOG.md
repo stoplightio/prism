@@ -16,6 +16,13 @@ The format for this file is based on [Keep a Changelog](https://keepachangelog.c
 
 <!-- markdown-link-check-disable -->
 
+## [5.12.0](https://github.com/stoplightio/prism/compare/v5.11.2...v5.12.0) (2024-11-13)
+
+
+### Features
+
+* add --seed CLI flag for deterministic generation of dynamic examples ([#2594](https://github.com/stoplightio/prism/issues/2594)) ([8edc1cc](https://github.com/stoplightio/prism/commit/8edc1cccd29e07e6f4a20642247189b4a1375cb2))
+
 ## [5.11.2](https://github.com/stoplightio/prism/compare/v5.11.1...v5.11.2) (2024-09-12)
 
 
