@@ -1,5 +1,24 @@
 # Changelog
 
+## [5.12.0](https://github.com/stoplightio/prism/compare/v5.11.0...v5.12.0) (2024-11-13)
+
+
+### Features
+
+* add --seed CLI flag for deterministic generation of dynamic examples ([#2594](https://github.com/stoplightio/prism/issues/2594)) ([8edc1cc](https://github.com/stoplightio/prism/commit/8edc1cccd29e07e6f4a20642247189b4a1375cb2))
+
+
+### Bug Fixes
+
+* version update and bundled_issue changes ([#2577](https://github.com/stoplightio/prism/issues/2577)) ([c4074fa](https://github.com/stoplightio/prism/commit/c4074fa24438079e659061ee32d08464a688c17c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-http bumped from ^5.11.0 to ^5.12.0
+
 ## [5.11.0](https://github.com/stoplightio/prism/compare/v5.10.0...v5.11.0) (2024-11-13)
 
 
