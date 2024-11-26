@@ -16,6 +16,13 @@ The format for this file is based on [Keep a Changelog](https://keepachangelog.c
 
 <!-- markdown-link-check-disable -->
 
+## [5.12.2](https://github.com/stoplightio/prism/compare/v5.12.1...v5.12.2) (2024-11-26)
+
+
+### Bug Fixes
+
+* **Docker:** use tini to handle kernel signals ([#2622](https://github.com/stoplightio/prism/issues/2622)) ([c55d633](https://github.com/stoplightio/prism/commit/c55d633486e57a1d67f7260a847d1d8f3a281208))
+
 ## [5.12.1](https://github.com/stoplightio/prism/compare/v5.12.0...v5.12.1) (2024-11-13)
 
 

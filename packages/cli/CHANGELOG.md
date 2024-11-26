@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.12.1](https://github.com/stoplightio/prism/compare/v5.12.0...v5.12.1) (2024-11-26)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-http bumped from 5.12.0 to 5.12.1
+    * @stoplight/prism-http-server bumped from ^5.12.0 to ^5.12.1
+
 ## [5.12.0](https://github.com/stoplightio/prism/compare/v5.11.0...v5.12.0) (2024-11-13)
 
 
