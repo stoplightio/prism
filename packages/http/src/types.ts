@@ -14,6 +14,7 @@ export interface IHttpOperationConfig {
   exampleKey?: string;
   dynamic: boolean;
   ignoreExamples?: boolean;
+  seed?: string;
 }
 
 export type IHttpMockConfig = Overwrite<IPrismMockConfig, { mock: IHttpOperationConfig }>;

@@ -31,6 +31,28 @@ describe('JSONSchema generator', () => {
           expect(emailRegExp.test(name)).toBeFalsy();
         });
       });
+
+      it('will have a deterministic dynamic response if the seed is set', () => {
+        const result1 = generate(operation, {}, schema, "test_seed");
+        const result2 = generate(operation, {}, schema, "test_seed");
+
+        assertRight(result1, instance1 => {
+          assertRight(result2, instance2 => {
+            expect(instance1).toEqual(instance2);
+          });
+        });
+      });
+
+      it('will have a nondeterministic dynamic response if the seed is not set', () => {
+        const result1 = generate(operation, {}, schema);
+        const result2 = generate(operation, {}, schema);
+
+        assertRight(result1, instance1 => {
+          assertRight(result2, instance2 => {
+            expect(instance1).not.toEqual(instance2);
+          });
+        });
+      });
     });
 
     describe('when used with a schema with a string and email as format', () => {

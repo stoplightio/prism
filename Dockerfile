@@ -1,4 +1,4 @@
-FROM node:18 as compiler
+FROM node:18 AS compiler
 
 WORKDIR /usr/src/prism
 
@@ -8,7 +8,7 @@ COPY packages/ /usr/src/prism/packages/
 RUN yarn && yarn build
 
 ###############################################################
-FROM node:18 as dependencies
+FROM node:18 AS dependencies
 
 WORKDIR /usr/src/prism/
 
@@ -35,6 +35,9 @@ RUN if [ $(uname -m) != "aarch64" ]; then node-prune; fi
 
 ###############################################################
 FROM node:18-alpine
+
+# https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#handling-kernel-signals
+RUN apk add --no-cache tini
 
 WORKDIR /usr/src/prism
 ARG BUILD_TYPE=development
@@ -68,4 +71,4 @@ fi
 
 EXPOSE 4010
 
-ENTRYPOINT [ "node", "dist/index.js" ]
+ENTRYPOINT [ "/sbin/tini", "--", "node", "dist/index.js" ]
