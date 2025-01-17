@@ -148,10 +148,11 @@ export function parseMultipartFormDataParams(
       // This code handles the case where the same key is used multiple times in the multipart/form-data request
       // for representing an array of values.
       if (result[key]) {
-        if (Array.isArray(result[key])) {
-          (result[key] as string[]).push(value);
+        const existingValue: string | string[] = result[key];
+        if (Array.isArray(existingValue)) {
+          existingValue.push(value);
         } else {
-          result[key] = [result[key] as string, value];
+          result[key] = [existingValue, value];
         }
       } else {
         result[key] = value;
