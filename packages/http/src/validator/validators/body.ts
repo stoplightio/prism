@@ -107,10 +107,11 @@ export function splitUriParams(target: string) {
       const [key, ...rest] = pair.split('=');
       const value = rest.join('=');
       if (result[key]) {
-        if (Array.isArray(result[key])) {
-          result[key].push(value);
+        const existingValue: string | string[] = result[key];
+        if (Array.isArray(existingValue)) {
+          existingValue.push(value);
         } else {
-          result[key] = [result[key], value];
+          result[key] = [existingValue, value];
         }
       } else {
         result[key] = value;
