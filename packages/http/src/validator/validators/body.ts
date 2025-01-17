@@ -23,7 +23,7 @@ import { wildcardMediaTypeMatch } from '../utils/wildcardMediaTypeMatch';
 export function deserializeFormBody(
   schema: JSONSchema,
   encodings: IHttpEncoding[],
-  decodedUriParams: Dictionary<string>
+  decodedUriParams: Dictionary<string | string[]>
 ) {
   if (!schema.properties) {
     return E.right(decodedUriParams);
@@ -54,12 +54,22 @@ export function deserializeFormBody(
     (properties: string[]) => {
       const deserialized = {}
       for (let property of properties) {
-        deserialized[property] = decodedUriParams[property];
+        const propertySchema = schema.properties?.[property];
+        if (
+          propertySchema &&
+          typeof propertySchema !== 'boolean' &&
+          propertySchema.type === 'array' &&
+          typeof decodedUriParams[property] === 'string'
+        ) {
+          deserialized[property] = [decodedUriParams[property]];
+        } else {
+          deserialized[property] = decodedUriParams[property];
+        }
+
         const encoding = encodings.find(enc => enc.property === property);
 
         if (encoding && encoding.style) {
           const deserializer = body[encoding.style];
-          const propertySchema = schema.properties?.[property];
 
           if (propertySchema && typeof propertySchema !== 'boolean') {
             let deserializedValues = deserializer(property, decodedUriParams, propertySchema, encoding.explode)
@@ -93,9 +103,18 @@ export function deserializeFormBody(
 
 export function splitUriParams(target: string) {
   return E.right(
-    target.split('&').reduce((result: Dictionary<string>, pair: string) => {
+    target.split('&').reduce((result: Dictionary<string | string[]>, pair: string) => {
       const [key, ...rest] = pair.split('=');
-      result[key] = rest.join('=');
+      const value = rest.join('=');
+      if (result[key]) {
+        if (Array.isArray(result[key])) {
+          result[key].push(value);
+        } else {
+          result[key] = [result[key], value];
+        }
+      } else {
+        result[key] = value;
+      }
       return result;
     }, {})
   );
@@ -104,7 +123,7 @@ export function splitUriParams(target: string) {
 export function parseMultipartFormDataParams(
   target: string,
   multipartBoundary?: string
-): E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
+): E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, Dictionary<string | string[]>> {
   if (!multipartBoundary) {
     const error =
       'Boundary parameter for multipart/form-data is not defined or generated in the request header. Try removing manually defined content-type from your request header if it exists.';
@@ -121,15 +140,29 @@ export function parseMultipartFormDataParams(
   const parts = multipart.parse(bufferBody, multipartBoundary);
 
   return E.right(
-    parts.reduce((result: Dictionary<string>, pair: any) => {
-      result[pair['name']] = pair['data'].toString();
+    parts.reduce((result: Dictionary<string | string[]>, pair: any) => {
+      const key = pair['name'];
+      const value = pair['data'].toString();
+
+      // This code handles the case where the same key is used multiple times in the multipart/form-data request
+      // for representing an array of values.
+      if (result[key]) {
+        if (Array.isArray(result[key])) {
+          (result[key] as string[]).push(value);
+        } else {
+          result[key] = [result[key] as string, value];
+        }
+      } else {
+        result[key] = value;
+      }
+
       return result;
     }, {})
   );
 }
 
-export function decodeUriEntities(target: Dictionary<string>, mediaType: string) {
-  return Object.entries(target).reduce((result, [k, v]) => {
+export function decodeUriEntities(target: Dictionary<string | string[]>, mediaType: string) {
+  return Object.entries(target).reduce((result: Dictionary<string | string[]>, [k, v]) => {
     try {
       // In application/x-www-form-urlencoded format, the standard encoding of spaces is the plus sign "+", 
       // and plus signs in the input string are encoded as "%2B". The encoding of spaces as plus signs is 
@@ -140,11 +173,11 @@ export function decodeUriEntities(target: Dictionary<string>, mediaType: string)
       // we must replace all + in the encoded string (which must all represent spaces by the standard), with %20, 
       // the non-application/x-www-form-urlencoded encoding of spaces, so that decodeURIComponent decodes them correctly
       if (typeIs(mediaType, 'application/x-www-form-urlencoded')) {
-        v = v.replaceAll('+', '%20')
+        v = Array.isArray(v) ? v.map(val => val.replaceAll('+', '%20')) : v.replaceAll('+', '%20');
       }
       // NOTE: this will decode the value even if it shouldn't (i.e when text/plain mime type).
       // the decision to decode or not should be made before calling this function
-      result[decodeURIComponent(k)] = decodeURIComponent(v);
+      result[decodeURIComponent(k)] = Array.isArray(v) ? v.map(decodeURIComponent) : decodeURIComponent(v);
     } catch (e) {
       // when the data is binary, for example, uri decoding will fail so leave value as-is
       result[decodeURIComponent(k)] = v;
@@ -283,23 +316,26 @@ export const validate: validateFn<unknown, IMediaTypeContent> = (
 };
 
 function validateAgainstReservedCharacters(
-  encodedUriParams: Dictionary<string>,
+  encodedUriParams: Dictionary<string | string[]>,
   encodings: IHttpEncoding[],
   prefix?: string
-): E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, Dictionary<string>> {
+): E.Either<NEA.NonEmptyArray<IPrismDiagnostic>, Dictionary<string | string[]>> {
   return pipe(
     encodings,
     A.reduce<IHttpEncoding, IPrismDiagnostic[]>([], (diagnostics, encoding) => {
       const allowReserved = get(encoding, 'allowReserved', false);
       const property = encoding.property;
-      const value = encodedUriParams[property];
+      const rawValue = encodedUriParams[property];
+      const values: string[] = Array.isArray(rawValue) ? rawValue : [rawValue];
 
-      if (!allowReserved && /[/?#[\]@!$&'()*+,;=]/.test(value)) {
-        diagnostics.push({
-          path: prefix ? [prefix, property] : [property],
-          message: 'Reserved characters used in request body',
-          severity: DiagnosticSeverity.Error,
-        });
+      for (const value of values) {
+        if (!allowReserved && /[/?#[\]@!$&'()*+,;=]/.test(value)) {
+          diagnostics.push({
+            path: prefix ? [prefix, property] : [property],
+            message: 'Reserved characters used in request body',
+            severity: DiagnosticSeverity.Error,
+          });
+        }
       }
 
       return diagnostics;
