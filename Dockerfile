@@ -1,4 +1,4 @@
-FROM node:18 AS compiler
+FROM node:20 AS compiler
 
 WORKDIR /usr/src/prism
 
@@ -8,7 +8,7 @@ COPY packages/ /usr/src/prism/packages/
 RUN yarn && yarn build
 
 ###############################################################
-FROM node:18 AS dependencies
+FROM node:20 AS dependencies
 
 WORKDIR /usr/src/prism/
 
@@ -34,7 +34,7 @@ RUN if [ $(uname -m) != "aarch64" ]; then curl -sfL https://gobinaries.com/tj/no
 RUN if [ $(uname -m) != "aarch64" ]; then node-prune; fi
 
 ###############################################################
-FROM node:18-alpine
+FROM node:20-alpine
 
 # https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#handling-kernel-signals
 RUN apk add --no-cache tini

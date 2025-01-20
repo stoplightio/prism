@@ -41,8 +41,8 @@ This information refers to Open Source Prism 3.x, which is the current version m
 
 Prism requires
 
-- NodeJS >= 18.20.1
-- for NodeJS 18.x, [>= 18.16 is required](https://github.com/stoplightio/prism/issues/2305)
+- NodeJS >= 20.0.0
+- for NodeJS 20.x, >= 20.0 is required
 
 ```bash
 npm install -g @stoplight/prism-cli
