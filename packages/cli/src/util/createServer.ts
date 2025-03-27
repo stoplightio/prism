@@ -7,7 +7,7 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 import * as pino from 'pino';
 import * as signale from 'signale';
-import * as split from 'split2';
+import * as split from './customTransformStream';
 import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 import { CreatePrism } from './runner';
@@ -132,7 +132,7 @@ function pipeOutputToSignale(stream: Readable) {
       ? prefix.concat(' ' + chalk.bold.white(`${logLine.input.method} ${logLine.input.url.path}`))
       : prefix;
   }
-
+  
   stream.pipe(split(JSON.parse)).on('data', (logLine: PrismLogDescriptor) => {
     signale[logLine.level]({ prefix: constructPrefix(logLine), message: logLine.msg });
   });
