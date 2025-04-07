@@ -33,8 +33,8 @@ describe('JSONSchema generator', () => {
       });
 
       it('will have a deterministic dynamic response if the seed is set', () => {
-        const result1 = generate(operation, {}, schema, "test_seed");
-        const result2 = generate(operation, {}, schema, "test_seed");
+        const result1 = generate(operation, {}, schema, 'test_seed');
+        const result2 = generate(operation, {}, schema, 'test_seed');
 
         assertRight(result1, instance1 => {
           assertRight(result2, instance2 => {
@@ -127,7 +127,7 @@ describe('JSONSchema generator', () => {
             meaning: {
               type: 'number',
               'x-faker': {
-                'datatype.number': {
+                'number.int': {
                   min: 42,
                   max: 42,
                 },
