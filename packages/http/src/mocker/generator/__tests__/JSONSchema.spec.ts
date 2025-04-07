@@ -103,7 +103,7 @@ describe('JSONSchema generator', () => {
       const schema: JSONSchema & any = {
         type: 'object',
         properties: {
-          ip: { type: 'string', format: 'ip', 'x-faker': 'internet.ip' },
+          ip: { type: 'string', format: 'ip', 'x-faker': 'internet.ipv4' },
         },
         required: ['ip'],
       };
