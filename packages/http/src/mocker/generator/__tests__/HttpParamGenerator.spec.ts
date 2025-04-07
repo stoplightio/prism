@@ -1,13 +1,13 @@
 import { assertNone, assertSome } from '@stoplight/prism-core/src/__tests__/utils';
 import { generate, improveSchema } from '../HttpParamGenerator';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker';
 
 describe('HttpParamGenerator', () => {
   describe('generate()', () => {
     describe('example is present', () => {
       it('uses static example', () => {
         assertSome(
-          generate({ id: faker.random.word(), examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }] }),
+          generate({ id: faker.lorem.word(), examples: [{ id: faker.lorem.word(), key: 'foo', value: 'test' }] }),
           v => expect(v).toEqual('test')
         );
       });
@@ -17,9 +17,9 @@ describe('HttpParamGenerator', () => {
       it('prefers static example', () => {
         assertSome(
           generate({
-            id: faker.random.word(),
+            id: faker.lorem.word(),
             schema: { type: 'string' },
-            examples: [{ id: faker.random.word(), key: 'foo', value: 'test' }],
+            examples: [{ id: faker.lorem.word(), key: 'foo', value: 'test' }],
           }),
           v => expect(v).toEqual('test')
         );
@@ -28,7 +28,7 @@ describe('HttpParamGenerator', () => {
 
     describe('schema is present', () => {
       it('generates example from schema', () => {
-        assertSome(generate({ id: faker.random.word(), schema: { type: 'string', format: 'email' } }), v =>
+        assertSome(generate({ id: faker.lorem.word(), schema: { type: 'string', format: 'email' } }), v =>
           expect(v).toEqual(expect.stringMatching(/@/))
         );
       });
@@ -36,7 +36,7 @@ describe('HttpParamGenerator', () => {
 
     describe('no schema and no examples', () => {
       it('returns none', () => {
-        assertNone(generate({ id: faker.random.word() }));
+        assertNone(generate({ id: faker.lorem.word() }));
       });
     });
   });
