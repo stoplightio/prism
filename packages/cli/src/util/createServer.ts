@@ -122,7 +122,6 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
   return server;
 }
 
-
 function pipeOutputToSignale(stream: Readable) {
   function constructPrefix(logLine: PrismLogDescriptor): string {
     const logOptions = LOG_COLOR_MAP[logLine.name];
