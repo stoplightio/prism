@@ -85,5 +85,8 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "dependencies": {
+    "jsonrepair": "^3.12.0"
   }
 }

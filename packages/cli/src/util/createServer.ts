@@ -7,7 +7,7 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 import * as pino from 'pino';
 import * as signale from 'signale';
-import * as split from './customTransformStream';
+import * as split from 'split2';
 import { PassThrough, Readable } from 'stream';
 import { LOG_COLOR_MAP } from '../const/options';
 import { CreatePrism } from './runner';
@@ -15,6 +15,7 @@ import { getHttpOperationsFromSpec } from '@stoplight/prism-http';
 import { createExamplePath } from './paths';
 import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer';
 import { configureExtensionsUserProvided } from '../extensions';
+import { jsonrepair } from 'jsonrepair';
 
 type PrismLogDescriptor = pino.LogDescriptor & {
   name: keyof typeof LOG_COLOR_MAP;
@@ -121,6 +122,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
   return server;
 }
 
+
 function pipeOutputToSignale(stream: Readable) {
   function constructPrefix(logLine: PrismLogDescriptor): string {
     const logOptions = LOG_COLOR_MAP[logLine.name];
@@ -132,10 +134,21 @@ function pipeOutputToSignale(stream: Readable) {
       ? prefix.concat(' ' + chalk.bold.white(`${logLine.input.method} ${logLine.input.url.path}`))
       : prefix;
   }
-  
-  stream.pipe(split(JSON.parse)).on('data', (logLine: PrismLogDescriptor) => {
-    signale[logLine.level]({ prefix: constructPrefix(logLine), message: logLine.msg });
-  });
+  stream
+    .pipe(
+      split(chunk => {
+        try {
+          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Valid JSON'});
+          const repairedJson = jsonrepair(chunk);
+          return JSON.parse(repairedJson);
+        } catch (error) {
+          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Invalid JSON and unable to correct'});
+        }
+      })
+    )
+    .on('data', (logLine: PrismLogDescriptor) => {
+      signale[logLine.level]({ prefix: constructPrefix(logLine), message: logLine.msg });
+    });
 }
 
 function isProxyServerOptions(options: CreateBaseServerOptions): options is CreateProxyServerOptions {
