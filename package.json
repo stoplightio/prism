@@ -22,7 +22,8 @@
     "test.harness": "jest -c ./jest.harness.config.js"
   },
   "resolutions": {
-    "sanitize-html": "2.12.1"
+    "sanitize-html": "2.12.1",
+    "jsonpath-plus":"10.2.0"
   },
   "devDependencies": {
     "@stoplight/types": "^14.1.0",
