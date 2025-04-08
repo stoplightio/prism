@@ -138,7 +138,6 @@ function pipeOutputToSignale(stream: Readable) {
     .pipe(
       split(chunk => {
         try {
-          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Valid JSON'});
           const repairedJson = jsonrepair(chunk);
           return JSON.parse(repairedJson);
         } catch (error) {
