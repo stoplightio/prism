@@ -4740,6 +4740,11 @@ jsonpath-plus@10.2.0, jsonpath-plus@^10.1.0:
     "@jsep-plugin/regex" "^1.0.4"
     jsep "^1.4.0"
 
+jsonrepair@^3.12.0:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/jsonrepair/-/jsonrepair-3.12.0.tgz#a0c9f97f5628156a44b78597fc8cdaf3561db751"
+  integrity sha512-SWfjz8SuQ0wZjwsxtSJ3Zy8vvLg6aO/kxcp9TWNPGwJKgTZVfhNEQBMk/vPOpYCDFWRxD6QWuI6IHR1t615f0w==
+
 just-diff-apply@^5.2.0:
   version "5.5.0"
   resolved "https://registry.npmjs.org/just-diff-apply/-/just-diff-apply-5.5.0.tgz"

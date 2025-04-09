@@ -15,6 +15,7 @@ import { getHttpOperationsFromSpec } from '@stoplight/prism-http';
 import { createExamplePath } from './paths';
 import { attachTagsToParamsValues, transformPathParamsValues } from './colorizer';
 import { configureExtensionsUserProvided } from '../extensions';
+import { jsonrepair } from 'jsonrepair';
 
 type PrismLogDescriptor = pino.LogDescriptor & {
   name: keyof typeof LOG_COLOR_MAP;
@@ -132,10 +133,20 @@ function pipeOutputToSignale(stream: Readable) {
       ? prefix.concat(' ' + chalk.bold.white(`${logLine.input.method} ${logLine.input.url.path}`))
       : prefix;
   }
-
-  stream.pipe(split(JSON.parse)).on('data', (logLine: PrismLogDescriptor) => {
-    signale[logLine.level]({ prefix: constructPrefix(logLine), message: logLine.msg });
-  });
+  stream
+    .pipe(
+      split(chunk => {
+        try {
+          const repairedJson = jsonrepair(chunk);
+          return JSON.parse(repairedJson);
+        } catch (error) {
+          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Invalid JSON and unable to correct'});
+        }
+      })
+    )
+    .on('data', (logLine: PrismLogDescriptor) => {
+      signale[logLine.level]({ prefix: constructPrefix(logLine), message: logLine.msg });
+    });
 }
 
 function isProxyServerOptions(options: CreateBaseServerOptions): options is CreateProxyServerOptions {
