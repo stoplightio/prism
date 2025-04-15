@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.13.0](https://github.com/stoplightio/prism/compare/v5.12.0...v5.13.0) (2025-04-15)
+
+
+### Features
+
+* prevent crashing on parsing malformed JSONs ([#2679](https://github.com/stoplightio/prism/issues/2679)) ([a4cf04b](https://github.com/stoplightio/prism/commit/a4cf04beb2172570cde513b66679663d4f79e369))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-http bumped from 5.12.0 to 5.12.1
+    * @stoplight/prism-http-server bumped from ^5.12.0 to ^5.12.1
+
 ## [5.12.0](https://github.com/stoplightio/prism/compare/v5.11.0...v5.12.0) (2024-11-13)
 
 
