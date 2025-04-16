@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.14.1](https://github.com/stoplightio/prism/compare/v5.14.0...v5.14.1) (2025-04-16)
+
+
+### Bug Fixes
+
+* **cli:** put new library dependency into proper package.json ([#2688](https://github.com/stoplightio/prism/issues/2688)) ([#2690](https://github.com/stoplightio/prism/issues/2690)) ([98ab747](https://github.com/stoplightio/prism/commit/98ab7477023de599298795a6e6a664e4586beb6b))
+
 ## [5.14.0](https://github.com/stoplightio/prism/compare/v5.13.0...v5.14.0) (2025-04-15)
 
 
