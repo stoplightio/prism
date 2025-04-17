@@ -2,7 +2,7 @@ import { DiagnosticSeverity, HttpParamStyles, IHttpOperation } from '@stoplight/
 import { httpInputs, httpOperations, httpOutputs } from '../../__tests__/fixtures';
 import { validateInput, validateOutput } from '../index';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker';
 
 const BAD_INPUT = Object.assign({}, httpInputs[2], {
   body: { name: 'Shopping', completed: 'yes' },
@@ -37,14 +37,14 @@ describe('HttpValidator', () => {
                 path: '/todos',
                 responses: [
                   {
-                    id: faker.random.word(),
+                    id: faker.lorem.word(),
                     code: '200',
                   },
                 ],
                 request: {
                   query: [
                     {
-                      id: faker.random.word(),
+                      id: faker.lorem.word(),
                       name: 'updated_since',
                       schema: {
                         type: 'string',
@@ -81,14 +81,14 @@ describe('HttpValidator', () => {
         path: '/test',
         responses: [
           {
-            id: faker.random.word(),
+            id: faker.lorem.word(),
             code: '200',
           },
         ],
         request: {
           query: [
             {
-              id: faker.random.word(),
+              id: faker.lorem.word(),
               style: HttpParamStyles.Form,
               deprecated: true,
               name: 'productId',
@@ -148,7 +148,7 @@ describe('HttpValidator', () => {
               path: '/hey',
               responses: [
                 {
-                  id: faker.random.word(),
+                  id: faker.lorem.word(),
                   code: '200',
                 },
               ],
@@ -156,7 +156,7 @@ describe('HttpValidator', () => {
               request: {
                 headers: [
                   {
-                    id: faker.random.word(),
+                    id: faker.lorem.word(),
                     name: 'API_KEY',
                     style: HttpParamStyles.Simple,
                     schema: {
