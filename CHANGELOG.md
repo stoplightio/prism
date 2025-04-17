@@ -16,6 +16,13 @@ The format for this file is based on [Keep a Changelog](https://keepachangelog.c
 
 <!-- markdown-link-check-disable -->
 
+## [5.14.2](https://github.com/stoplightio/prism/compare/v5.14.1...v5.14.2) (2025-04-17)
+
+
+### Bug Fixes
+
+* downgrade version of prism components to published ([#2692](https://github.com/stoplightio/prism/issues/2692)) ([083ac1e](https://github.com/stoplightio/prism/commit/083ac1ee57a3a445d887157f9dec81b4a18c9991))
+
 ## [5.14.1](https://github.com/stoplightio/prism/compare/v5.14.0...v5.14.1) (2025-04-16)
 
 
