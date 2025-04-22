@@ -81,7 +81,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
     throw new Error('No operations found in the current file.');
   }
 
-  const validateRequest = isProxyServerOptions(options) ? options.validateRequest : true;
+  const validateRequest = options.validateRequest !== undefined ? options.validateRequest : true;
   const shared = {
     validateRequest,
     validateResponse: true,
