@@ -39,6 +39,12 @@ const sharedOptions: Dictionary<Options> = {
     default: false,
   },
 
+  'validate-request': {
+    description: 'Validate incoming HTTP requests.',
+    boolean: true,
+    default: true,
+  },
+
   verboseLevel: {
     alias: 'v',
     description: 'Turns on verbose logging.',

@@ -168,6 +168,7 @@ type CreateBaseServerOptions = {
   ignoreExamples: boolean;
   seed: string;
   jsonSchemaFakerFillProperties: boolean;
+  validateRequest?: boolean;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {
