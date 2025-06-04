@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import './patch';
 import * as yargs from 'yargs';
 import mockCommand from './commands/mock';
 import proxyCommand from './commands/proxy';
