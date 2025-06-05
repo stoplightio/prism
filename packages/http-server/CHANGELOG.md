@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.13.1](https://github.com/stainless-api/prism/compare/v5.13.0...v5.13.1) (2025-06-05)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-core bumped from ^5.9.0 to ^5.10.0
+    * @stoplight/prism-http bumped from ^5.13.0 to ^5.13.1
+
 ## [5.13.0](https://github.com/stainless-api/prism/compare/v5.12.0...v5.13.0) (2025-06-04)
 
 
