@@ -23,7 +23,7 @@
   },
   "resolutions": {
     "sanitize-html": "2.12.1",
-    "jsonpath-plus":"10.2.0"
+    "jsonpath-plus":"10.3.0"
   },
   "devDependencies": {
     "@stoplight/types": "^14.1.0",
