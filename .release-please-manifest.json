@@ -1,7 +1,7 @@
 {
   ".": "5.13.0",
-  "packages/cli": "5.13.1",
-  "packages/core": "5.10.0",
-  "packages/http": "5.13.1",
-  "packages/http-server": "5.13.1"
+  "packages/cli": "5.13.2",
+  "packages/core": "5.11.0",
+  "packages/http": "5.13.2",
+  "packages/http-server": "5.13.2"
 }
