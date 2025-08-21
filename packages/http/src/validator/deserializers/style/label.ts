@@ -13,7 +13,7 @@ export function deserializeLabelStyle(
     throw new Error('Label serialization style requires parameter to be prefixed with "."');
   }
 
-  const value = parameters[name].toString().subString(1);
+  const value = parameters[name].toString().substring(1);
 
   if (type === 'array') {
     return deserializeArray(value, explode);
