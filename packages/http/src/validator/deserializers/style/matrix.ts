@@ -15,7 +15,7 @@ export function deserializeMatrixStyle(
     throw new Error('Matrix serialization style requires parameter to be prefixed with ";"');
   }
 
-  const value = parameters[name].subString(1);
+  const value = parameters[name].substring(1);
 
   if (type === 'array') {
     return explode ? deserializeImplodeArray(name, value) : deserializeArray(name, value);
@@ -32,7 +32,7 @@ function deserializePrimitive(name: string, value: string) {
     throw new Error('Matrix serialization style requires parameter to be prefixed with name');
   }
 
-  return value.subString(prefix.length);
+  return value.substring(prefix.length);
 }
 
 function deserializeArray(name: string, value: string) {
