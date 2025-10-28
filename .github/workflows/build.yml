@@ -1,0 +1,125 @@
+name: stoplightio/prism/build
+on:
+  push:
+    branches:
+    - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: node:18.20
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - name: restore_cache
+      uses: actions/cache@v3.3.2
+      with:
+        key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+        path: node_modules/
+        restore-keys: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    - name: Install Dependencies
+      run: yarn --frozen-lockfile
+    - name: Lint the codebase
+      run: yarn lint
+    - name: Run tests
+      run: yarn test --colors --maxWorkers=2
+    - name: Run build
+      run: yarn build
+  harness-macos:
+    if: (github.ref == 'refs/tags/"v[0-9].[0-9]+.[0-9]+"') && (github.ref != 'refs/heads/master')
+    runs-on: macos-latest
+    env:
+      executor: macos
+      install_manually: true
+    steps:
+    - uses: maxim-lobanov/setup-xcode@v1.6.0
+      with:
+        xcode-version: 13.4.1
+    - uses: actions/checkout@v4.1.0
+    - run: nvm install 18.20.1 && nvm alias default 18.20.1
+      if: env.install_manually
+    - run: pip3 install pipenv gunicorn
+      if: env.install_manually
+    - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+      if: env.install_manually
+    - run: git clone https://github.com/stoplightio/httpbin httpbin
+      if: env.install_manually
+    - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv requirements) && pip3 install --no-cache-dir ./
+      if: env.install_manually
+    - run: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
+      if: env.install_manually
+    - name: Install Dependencies
+      run: yarn --frozen-lockfile
+    - name: Create CLI binary
+      run: yarn build.binary
+    - name: Run Harness
+      run: yarn test.harness
+  harness-docker:
+    runs-on: ubuntu-latest
+    container:
+      image: node:18.20
+    env:
+      executor: docker-harness
+      install_manually: true
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - run: nvm install 18.20.1 && nvm alias default 18.20.1
+      if: env.install_manually
+    - run: pip3 install pipenv gunicorn
+      if: env.install_manually
+    - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+      if: env.install_manually
+    - run: git clone REDACTED://github.com/stoplightio/httpbin httpbin
+      if: env.install_manually
+    - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv requirements) && pip3 install --no-cache-dir ./
+      if: env.install_manually
+    - run: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
+      if: env.install_manually
+    - name: Install Dependencies
+      run: yarn --frozen-lockfile
+    - name: Create CLI binary
+      run: yarn build.binary
+    - name: Run Harness
+      run: yarn test.harness
+  publish:
+    if: (github.ref == 'refs/tags/"v[0-9].[0-9]+.[0-9]+"') && (github.ref != 'refs/heads/master')
+    runs-on: ubuntu-latest
+    container:
+      image: node:18.20
+    needs:
+    - build
+    - harness-macos
+    - harness-docker
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - name: Set git identity
+      run: git config user.email "circle@circleci.com" && git config user.name "circleci"
+    - name: Install Dependencies
+      run: yarn --frozen-lockfile
+    - name: Build all code to JavaScript
+      run: yarn build
+    - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+    - name: Publish
+      run: yarn lerna publish from-git --create-release=github --yes
+    - name: Create CLI binaries
+      run: npx pkg --out-path ./cli-binaries ./packages/cli/
+    - uses: actions/upload-artifact@v4.1.0
+      with:
+        path: "./cli-binaries"
+    - uses: actions/upload-artifact@v4.1.0
+      with:
+        path: ".//cli-binaries"
+  upload_artifacts:
+    if: (github.ref == 'refs/tags/"v[0-9].[0-9]+.[0-9]+"') && (github.ref != 'refs/heads/master')
+    runs-on: ubuntu-latest
+    container:
+      image: golang:1.23
+    needs:
+    - publish
+    steps:
+    - uses: actions/download-artifact@v4.1.0
+      with:
+        path: "/tmp/"
+    - name: Download GitHub Release Utility
+      run: go install github.com/tcnksm/ghr@latest
+    - name: Publish Release artifacts on GitHub
+      run: ghr -t ${{github.token}} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} /tmp/cli-binaries
