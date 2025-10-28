@@ -1,6 +1,6 @@
 # Changelog
 
-## [5.14.3](https://github.com/stoplightio/prism/compare/v5.14.2...v5.14.3) (2025-04-17)
+## [5.14.3](https://github.com/stoplightio/prism/compare/v5.14.2...v5.14.3) (2025-10-27)
 
 
 ### Dependencies

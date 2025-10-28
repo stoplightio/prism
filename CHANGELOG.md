@@ -16,6 +16,13 @@ The format for this file is based on [Keep a Changelog](https://keepachangelog.c
 
 <!-- markdown-link-check-disable -->
 
+## [5.14.3](https://github.com/stoplightio/prism/compare/v5.14.2...v5.14.3) (2025-10-27)
+
+
+### Bug Fixes
+
+* Fix vulnerability CVE-2025-1302 ([#2702](https://github.com/stoplightio/prism/issues/2702)) ([fdc55de](https://github.com/stoplightio/prism/commit/fdc55de8742ac1f47ac32a69700406a71774cd29))
+
 ## [5.14.2](https://github.com/stoplightio/prism/compare/v5.14.1...v5.14.2) (2025-04-17)
 
 
