@@ -1,5 +1,5 @@
 import { matchPath } from '../matchPath';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { MatchType } from '../types';
 import { randomPath } from './utils';
 import { assertRight } from '@stoplight/prism-core/src/__tests__/utils';
@@ -13,7 +13,7 @@ describe('matchPath()', () => {
   test('any concrete path with spaces should match an equal concrete path', () => {
     // e.g. /a b/c should match /a b/c
     const path = randomPath({
-      pathFragments: faker.datatype.number({ min: 2, max: 6 }),
+      pathFragments: faker.number.int({ min: 2, max: 6 }),
       includeTemplates: false,
       includeSpaces: true,
     });
@@ -24,7 +24,7 @@ describe('matchPath()', () => {
   test('any concrete path should match an equal concrete path', () => {
     // e.g. /a/b/c should match /a/b/c
     const path = randomPath({
-      pathFragments: faker.datatype.number({ min: 1, max: 6 }),
+      pathFragments: faker.number.int({ min: 1, max: 6 }),
       includeTemplates: false,
     });
 
@@ -34,7 +34,7 @@ describe('matchPath()', () => {
   test('any concrete path with colon should match an equal concrete path', () => {
     // e.g. /a/b:c should match /a/b:c
     const path = randomPath({
-      pathFragments: faker.datatype.number({ min: 2, max: 6 }),
+      pathFragments: faker.number.int({ min: 2, max: 6 }),
       includeTemplates: false,
       includeColon: true,
     });
@@ -47,12 +47,12 @@ describe('matchPath()', () => {
     // e.g. /a/b/c should not match /{a}/b
     const trailingSlash = faker.datatype.boolean();
     const requestPath = randomPath({
-      pathFragments: faker.datatype.number({ min: 4, max: 6 }),
+      pathFragments: faker.number.int({ min: 4, max: 6 }),
       includeTemplates: false,
       trailingSlash,
     });
     const operationPath = randomPath({
-      pathFragments: faker.datatype.number({ min: 1, max: 3 }),
+      pathFragments: faker.number.int({ min: 1, max: 3 }),
       trailingSlash,
     });
 
@@ -63,7 +63,7 @@ describe('matchPath()', () => {
     // e.g. /a/b:c should not match /a/b
     // e.g. /a/b:c should not match /{a}/b
     const requestPath = randomPath({
-      pathFragments: faker.datatype.number({ min: 5, max: 7 }),
+      pathFragments: faker.number.int({ min: 5, max: 7 }),
       includeTemplates: false,
       includeColon: true,
     });
@@ -74,7 +74,7 @@ describe('matchPath()', () => {
   test('none request path with a colon should not match equivalent slash path', () => {
     // e.g. /a/b:c should not match /a/b/c
     const requestPath = randomPath({
-      pathFragments: faker.datatype.number({ min: 5, max: 7 }),
+      pathFragments: faker.number.int({ min: 5, max: 7 }),
       includeTemplates: false,
       includeColon: true,
     });
@@ -87,11 +87,11 @@ describe('matchPath()', () => {
     // e.g. /a/b should not match /a/b/c
     // e.g. /a/b/ should not match /a/b/c
     const requestPath = randomPath({
-      pathFragments: faker.datatype.number({ min: 4, max: 6 }),
+      pathFragments: faker.number.int({ min: 4, max: 6 }),
       includeTemplates: false,
     });
     const operationPath = randomPath({
-      pathFragments: faker.datatype.number({ min: 1, max: 3 }),
+      pathFragments: faker.number.int({ min: 1, max: 3 }),
       includeTemplates: false,
     });
 
@@ -102,13 +102,13 @@ describe('matchPath()', () => {
     // e.g. /a/b:c should not match /a/b/c:d
     // e.g. /a/b:c should not match /{a}/b/c:d
     const requestPath = randomPath({
-      pathFragments: faker.datatype.number({ min: 5, max: 7 }),
+      pathFragments: faker.number.int({ min: 5, max: 7 }),
       includeTemplates: false,
       includeColon: true,
     });
     const newPath = requestPath.split(':').shift();
     const lastWord = requestPath.split(':').pop();
-    const operationPath = [newPath, '/', lastWord, ':', faker.random.word()].join('');
+    const operationPath = [newPath, '/', lastWord, ':', faker.lorem.word()].join('');
 
     assertRight(matchPath(requestPath, operationPath), e => expect(e).toEqual(MatchType.NOMATCH));
   });
@@ -150,13 +150,13 @@ describe('matchPath()', () => {
     // e.g. `/a/b` should not match /{x}/{y}/{z}
     // e.g. `/a` should not match /{x}/{y}/{z}
     const requestPath = randomPath({
-      pathFragments: faker.datatype.number({ min: 1, max: 3 }),
+      pathFragments: faker.number.int({ min: 1, max: 3 }),
       includeTemplates: false,
       trailingSlash: false,
     });
 
     const operationPath = randomPath({
-      pathFragments: faker.datatype.number({ min: 4, max: 6 }),
+      pathFragments: faker.number.int({ min: 4, max: 6 }),
       includeTemplates: true,
       trailingSlash: false,
     });
