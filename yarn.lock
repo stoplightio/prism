@@ -4005,9 +4005,9 @@ internal-slot@^1.0.4:
     side-channel "^1.0.4"
 
 io-ts@^2.2.16:
-  version "2.2.20"
-  resolved "https://registry.npmjs.org/io-ts/-/io-ts-2.2.20.tgz"
-  integrity sha512-Rq2BsYmtwS5vVttie4rqrOCIfHCS9TgpRLFpKQCM1wZBBRY9nWVGmEvm2FnDbSE2un1UE39DvFpTR5UL47YDcA==
+  version "2.2.22"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.22.tgz#5ab0d3636fe8494a275f0266461ab019da4b8d0b"
+  integrity sha512-FHCCztTkHoV9mdBsHpocLpdTAfh956ZQcIkWQxxS0U5HT53vtrcuYdQneEJKH6xILaLNzXVl2Cvwtoy8XNN0AA==
 
 ip-address@^9.0.5:
   version "9.0.5"
