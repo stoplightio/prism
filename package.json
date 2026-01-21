@@ -33,7 +33,7 @@
     "@types/json-schema": "^7.0.9",
     "@types/lodash": "^4.14.175",
     "@types/node": "^13.1.1",
-    "@types/node-fetch": "2.5.10",
+    "@types/node-fetch": "^2.6.13",
     "@types/pino": "6.3.12",
     "@types/postman-collection": "^3.5.7",
     "@types/raw-body": "^2.3.0",

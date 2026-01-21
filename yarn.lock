@@ -1418,13 +1418,13 @@
   resolved "https://registry.npmjs.org/@types/minimist/-/minimist-1.2.5.tgz"
   integrity sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==
 
-"@types/node-fetch@2.5.10":
-  version "2.5.10"
-  resolved "https://registry.npmjs.org/@types/node-fetch/-/node-fetch-2.5.10.tgz"
-  integrity sha512-IpkX0AasN44hgEad0gEF/V6EgR5n69VEqPEgnmoM8GsIGro3PowbWs4tR6IhxUTyPLpOn+fiGG6nrQhcmoCuIQ==
+"@types/node-fetch@^2.6.13":
+  version "2.6.13"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.6.13.tgz#e0c9b7b5edbdb1b50ce32c127e85e880872d56ee"
+  integrity sha512-QGpRVpzSaUs30JBSGPjOg4Uveu384erbHBoT1zeONvyCfwQxIkUshLAOqN/k9EjGviPRmWTTe6aH2qySWKTVSw==
   dependencies:
     "@types/node" "*"
-    form-data "^3.0.0"
+    form-data "^4.0.4"
 
 "@types/node@*":
   version "20.9.0"
@@ -3346,19 +3346,21 @@ foreground-child@^3.1.0:
     cross-spawn "^7.0.0"
     signal-exit "^4.0.1"
 
-form-data@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.npmjs.org/form-data/-/form-data-3.0.1.tgz"
-  integrity sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==
-  dependencies:
-    asynckit "^0.4.0"
-    combined-stream "^1.0.8"
-    mime-types "^2.1.12"
-
 form-data@^4.0.0:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.4.tgz#784cdcce0669a9d68e94d11ac4eea98088edd2c4"
   integrity sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.8"
+    es-set-tostringtag "^2.1.0"
+    hasown "^2.0.2"
+    mime-types "^2.1.12"
+
+form-data@^4.0.4:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.5.tgz#b49e48858045ff4cbf6b03e1805cebcad3679053"
+  integrity sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
