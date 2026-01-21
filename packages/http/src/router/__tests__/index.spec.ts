@@ -1,4 +1,4 @@
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker';
 import { assertLeft, assertRight } from '@stoplight/prism-core/src/__tests__/utils';
 import { HttpMethod, IHttpOperation, IServer } from '@stoplight/types';
 import { isRight } from 'fp-ts/Either';
@@ -15,10 +15,10 @@ import { pickSetOfHttpMethods, pickOneHttpMethod, randomPath } from './utils';
 
 function createResource(method: string, path: string, servers: IServer[]): IHttpOperation {
   return {
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     method,
     path,
-    responses: [{ id: faker.random.word(), code: '200' }],
+    responses: [{ id: faker.lorem.word(), code: '200' }],
     servers,
     security: [],
     request: { path: [], query: [], cookie: [], headers: [] },
@@ -92,7 +92,7 @@ describe('http router', () => {
             resources: [
               createResource(resourceMethod, randomPath(), [
                 {
-                  id: faker.random.word(),
+                  id: faker.lorem.word(),
                   url,
                 },
               ]),
@@ -121,7 +121,7 @@ describe('http router', () => {
               resources: [
                 createResource(method, path, [
                   {
-                    id: faker.random.word(),
+                    id: faker.lorem.word(),
                     url,
                   },
                 ]),
@@ -143,7 +143,7 @@ describe('http router', () => {
           const path = randomPath({ includeTemplates: false });
           const expectedResource = createResource(method, path, [
             {
-              id: faker.random.word(),
+              id: faker.lorem.word(),
               url,
             },
           ]);
@@ -167,8 +167,8 @@ describe('http router', () => {
             assertLeft(
               route({
                 resources: [
-                  createResource(method, '/pet', [{ id: faker.random.word(), url: 'http://example.com/api' }]),
-                  createResource(method, '/owner', [{ id: faker.random.word(), url: 'http://stg.example.com/api/v2' }]),
+                  createResource(method, '/pet', [{ id: faker.lorem.word(), url: 'http://example.com/api' }]),
+                  createResource(method, '/owner', [{ id: faker.lorem.word(), url: 'http://stg.example.com/api/v2' }]),
                 ],
                 input: {
                   method,
@@ -187,7 +187,7 @@ describe('http router', () => {
           const path = randomPath({ includeTemplates: false });
           const expectedResource = createResource(method, path, [
             {
-              id: faker.random.word(),
+              id: faker.lorem.word(),
               url,
               variables: {
                 host: {
@@ -217,7 +217,7 @@ describe('http router', () => {
           const path = '/{x}/b';
           const expectedResource = createResource(method, path, [
             {
-              id: faker.random.word(),
+              id: faker.lorem.word(),
               url,
               variables: {
                 host: {
@@ -248,7 +248,7 @@ describe('http router', () => {
           const requestPath = '/a/x/c';
           const expectedResource = createResource(method, templatedPath, [
             {
-              id: faker.random.word(),
+              id: faker.lorem.word(),
               url,
             },
           ]);
@@ -274,7 +274,7 @@ describe('http router', () => {
           const requestPath = '/a/y/b';
           const expectedResource = createResource(method, templatedPath, [
             {
-              id: faker.random.word(),
+              id: faker.lorem.word(),
               url,
             },
           ]);
@@ -298,8 +298,8 @@ describe('http router', () => {
           const templatedPath = '/{x}/y';
           const concretePath = '/a/y';
           const url = 'concrete.com';
-          const resourceWithConcretePath = createResource(method, concretePath, [{ id: faker.random.word(), url }]);
-          const resourceWithTemplatedPath = createResource(method, templatedPath, [{ id: faker.random.word(), url }]);
+          const resourceWithConcretePath = createResource(method, concretePath, [{ id: faker.lorem.word(), url }]);
+          const resourceWithTemplatedPath = createResource(method, templatedPath, [{ id: faker.lorem.word(), url }]);
 
           assertRight(
             route({
@@ -320,8 +320,8 @@ describe('http router', () => {
           const templatedPathA = '/{x}/y';
           const templatedPathB = '/a/{z}';
           const url = 'concrete.com';
-          const firstResource = createResource(method, templatedPathA, [{ id: faker.random.word(), url }]);
-          const secondResource = createResource(method, templatedPathB, [{ id: faker.random.word(), url }]);
+          const firstResource = createResource(method, templatedPathA, [{ id: faker.lorem.word(), url }]);
+          const secondResource = createResource(method, templatedPathB, [{ id: faker.lorem.word(), url }]);
 
           assertRight(
             route({
@@ -342,12 +342,12 @@ describe('http router', () => {
           const path = '/';
           const url = 'concrete.com';
           const resourceWithConcreteMatch = createResource(method, path, [
-            { id: faker.random.word(), url },
-            { id: faker.random.word(), url: '{template}', variables: { template: { default: url, enum: [url] } } },
+            { id: faker.lorem.word(), url },
+            { id: faker.lorem.word(), url: '{template}', variables: { template: { default: url, enum: [url] } } },
           ]);
 
           const resourceWithTemplatedMatch = createResource(method, path, [
-            { id: faker.random.word(), url: '{template}', variables: { template: { default: url, enum: [url] } } },
+            { id: faker.lorem.word(), url: '{template}', variables: { template: { default: url, enum: [url] } } },
           ]);
 
           assertRight(
@@ -369,9 +369,9 @@ describe('http router', () => {
           const matchingPath = '/a/b/c';
           const nonMatchingPath = '/a/b/c/d';
           const url = 'concrete.com';
-          const resourceWithMatchingPath = createResource(method, matchingPath, [{ id: faker.random.word(), url }]);
+          const resourceWithMatchingPath = createResource(method, matchingPath, [{ id: faker.lorem.word(), url }]);
           const resourceWithNonMatchingPath = createResource(method, nonMatchingPath, [
-            { id: faker.random.word(), url },
+            { id: faker.lorem.word(), url },
           ]);
 
           assertRight(
@@ -392,7 +392,7 @@ describe('http router', () => {
         test('given empty baseUrl and concrete server it should match', () => {
           const path = randomPath({ includeTemplates: false });
           const url = 'concrete.com';
-          const expectedResource = createResource(method, path, [{ id: faker.random.word(), url }]);
+          const expectedResource = createResource(method, path, [{ id: faker.lorem.word(), url }]);
 
           assertRight(
             route({
@@ -415,7 +415,7 @@ describe('http router', () => {
 
           assertLeft(
             route({
-              resources: [createResource(method, path, [{ id: faker.random.word(), url }])],
+              resources: [createResource(method, path, [{ id: faker.lorem.word(), url }])],
               input: {
                 method,
                 url: {
@@ -431,7 +431,7 @@ describe('http router', () => {
         test('given empty baseUrl and empty server url it should match', () => {
           const path = randomPath({ includeTemplates: false });
           const url = '';
-          const expectedResource = createResource(method, path, [{ id: faker.random.word(), url }]);
+          const expectedResource = createResource(method, path, [{ id: faker.lorem.word(), url }]);
 
           assertRight(
             route({
@@ -451,7 +451,7 @@ describe('http router', () => {
         test('given no baseUrl and a server url it should ignore servers and match by path', () => {
           const path = randomPath({ includeTemplates: false });
           const expectedResource = createResource(method, path, [
-            { id: faker.random.word(), url: 'www.stoplight.io/v1' },
+            { id: faker.lorem.word(), url: 'www.stoplight.io/v1' },
           ]);
 
           assertRight(
@@ -495,7 +495,7 @@ describe('http router', () => {
 
           const expectedResource = createResource(method, path, [
             {
-              id: faker.random.word(),
+              id: faker.lorem.word(),
               url,
             },
           ]);
@@ -544,7 +544,7 @@ describe('http router', () => {
 
         assertLeft(
           route({
-            resources: [createResource(method, path, [{ id: faker.random.word(), url }])],
+            resources: [createResource(method, path, [{ id: faker.lorem.word(), url }])],
             input: {
               method: 'post',
               url: {

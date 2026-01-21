@@ -16,12 +16,12 @@
                   "properties": {
                     "name": {
                       "type": "string",
-                      "x-faker": "name.firstName"
+                      "x-faker": "person.firstName"
                     },
                     "surname": {
                       "type": "string",
                       "format": "string",
-                      "x-faker": "name.lastName"
+                      "x-faker": "person.lastName"
                     }
                   },
                   "required": ["name", "surname"]

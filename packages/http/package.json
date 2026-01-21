@@ -16,7 +16,7 @@
     "node": ">=18.20.1"
   },
   "dependencies": {
-    "@faker-js/faker": "^6.0.0",
+    "@faker-js/faker": "^9.6.0",
     "@stoplight/json": "3.21.7",
     "@stoplight/json-schema-merge-allof": "0.7.8",
     "@stoplight/json-schema-sampler": "0.3.0",
