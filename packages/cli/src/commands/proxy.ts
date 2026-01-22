@@ -26,11 +26,6 @@ const proxyCommand: CommandModule = {
       })
       .options({
         ...sharedOptions,
-        'validate-request': {
-          description: 'Validate incoming HTTP requests.',
-          boolean: true,
-          default: true,
-        },
         'upstream-proxy': {
           description:
             'If an http proxy is required to reach upstream, formatted as "{protocol}://[{user}[:{password}]@]{host}[:{port}]". eg "http://myUser:myPassword@proxy.example.com:1234"',
