@@ -23,7 +23,7 @@
   },
   "resolutions": {
     "sanitize-html": "2.12.1",
-    "jsonpath-plus":"10.2.0"
+    "jsonpath-plus": "10.3.0"
   },
   "devDependencies": {
     "@stoplight/types": "^14.1.0",
@@ -33,7 +33,7 @@
     "@types/json-schema": "^7.0.9",
     "@types/lodash": "^4.14.175",
     "@types/node": "^13.1.1",
-    "@types/node-fetch": "2.5.10",
+    "@types/node-fetch": "^2.6.13",
     "@types/pino": "6.3.12",
     "@types/postman-collection": "^3.5.7",
     "@types/raw-body": "^2.3.0",
