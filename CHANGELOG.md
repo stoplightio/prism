@@ -16,6 +16,13 @@ The format for this file is based on [Keep a Changelog](https://keepachangelog.c
 
 <!-- markdown-link-check-disable -->
 
+## [5.15.0](https://github.com/stoplightio/prism/compare/v5.14.3...v5.15.0) (2026-01-30)
+
+
+### Features
+
+* converted circleci build job to gha workflow ([#2719](https://github.com/stoplightio/prism/issues/2719)) ([d7b6ce3](https://github.com/stoplightio/prism/commit/d7b6ce3992a4305c68ec26b02ffe7e54b2df9dd5))
+
 ## [5.14.3](https://github.com/stoplightio/prism/compare/v5.14.2...v5.14.3) (2025-10-27)
 
 
