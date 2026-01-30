@@ -1723,6 +1723,13 @@ ajv-formats@^2.1.1:
   dependencies:
     ajv "^8.0.0"
 
+ajv-formats@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/ajv-formats/-/ajv-formats-3.0.1.tgz#3d5dc762bca17679c3c2ea7e90ad6b7532309578"
+  integrity sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==
+  dependencies:
+    ajv "^8.0.0"
+
 ajv@6.12.6, ajv@^6.10.0, ajv@^6.12.4:
   version "6.12.6"
   resolved "https://registry.npmjs.org/ajv/-/ajv-6.12.6.tgz"
@@ -2758,9 +2765,9 @@ domhandler@^5.0.2, domhandler@^5.0.3:
     domelementtype "^2.3.0"
 
 domutils@^3.0.1:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/domutils/-/domutils-3.1.0.tgz#c47f551278d3dc4b0b1ab8cbb42d751a6f0d824e"
-  integrity sha512-H78uMmQtI2AhgDJjWeQmHwJJ2bLPD3GMmO7Zja/ZZh84wkm+4ut+IUnUdRa8uCGX88DiVx1j6FRe1XfxEgjEZA==
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/domutils/-/domutils-3.2.2.tgz#edbfe2b668b0c1d97c24baf0f1062b132221bc78"
+  integrity sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==
   dependencies:
     dom-serializer "^2.0.0"
     domelementtype "^2.3.0"
@@ -5487,10 +5494,10 @@ mute-stream@^1.0.0:
   resolved "https://registry.npmjs.org/mute-stream/-/mute-stream-1.0.0.tgz"
   integrity sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==
 
-nanoid@^3.3.7:
-  version "3.3.8"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.8.tgz#b1be3030bee36aaff18bacb375e5cce521684baf"
-  integrity sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==
+nanoid@^3.3.11:
+  version "3.3.11"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.11.tgz#4f4f112cefbe303202f2199838128936266d185b"
+  integrity sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==
 
 natural-compare@^1.4.0:
   version "1.4.0"
@@ -6195,11 +6202,11 @@ postcss-selector-parser@^6.0.10:
     util-deprecate "^1.0.2"
 
 postcss@^8.3.11:
-  version "8.4.49"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.49.tgz#4ea479048ab059ab3ae61d082190fabfd994fe19"
-  integrity sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==
+  version "8.5.6"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.6.tgz#2825006615a619b4f62a9e7426cc120b349a8f3c"
+  integrity sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==
   dependencies:
-    nanoid "^3.3.7"
+    nanoid "^3.3.11"
     picocolors "^1.1.1"
     source-map-js "^1.2.1"
 
