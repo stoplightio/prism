@@ -8,7 +8,7 @@ export function deserializeSimpleStyle(
   explode?: boolean
 ): unknown {
   const type = schema ? schema.type : 'undefined';
-  const value = parameters[name];
+  const value = parameters[name] == undefined ? parameters[name] : parameters[name].toString();
 
   if (type === 'array') {
     return deserializeArray(value);
