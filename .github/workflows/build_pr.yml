@@ -23,35 +23,6 @@ jobs:
       run: yarn test --colors --maxWorkers=2
     - name: Run build
       run: yarn build
-  harness-macos:
-    if: (github.ref == 'refs/tags/"v[0-9].[0-9]+.[0-9]+"') && (github.ref != 'refs/heads/master')
-    runs-on: macos-latest
-    env:
-      executor: macos
-      install_manually: true
-    steps:
-      - uses: maxim-lobanov/setup-xcode@v1.6.0
-        with:
-          xcode-version: 13.4.1
-      - uses: actions/checkout@v4.1.0
-      - run: nvm install 18.20.1 && nvm alias default 18.20.1
-        if: env.install_manually
-      - run: pip3 install pipenv gunicorn
-        if: env.install_manually
-      - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
-        if: env.install_manually
-      - run: git clone https://github.com/stoplightio/httpbin httpbin
-        if: env.install_manually
-      - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv requirements) && pip3 install --no-cache-dir ./
-        if: env.install_manually
-      - run: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
-        if: env.install_manually
-      - name: Install Dependencies
-        run: yarn --frozen-lockfile
-      - name: Create CLI binary
-        run: yarn build.binary
-      - name: Run Harness
-        run: yarn test.harness
   harness-docker:
     runs-on: ubuntu-latest
     container:
@@ -77,9 +48,6 @@ jobs:
         run: |
           apt-get update
           apt-get install -y python3 python3-pip
-      - name: Install pipenv and gunicorn
-        run: pip3 install pipenv gunicorn
-        if: env.install_manually
       - name: Set up Python virtual environment
         run: |
           python3 -m venv venv
