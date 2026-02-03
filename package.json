@@ -23,7 +23,8 @@
   },
   "resolutions": {
     "sanitize-html": "2.12.1",
-    "jsonpath-plus": "10.3.0"
+    "jsonpath-plus": "10.3.0",
+    "lodash": "^4.17.23"
   },
   "devDependencies": {
     "@stoplight/types": "^14.1.0",
