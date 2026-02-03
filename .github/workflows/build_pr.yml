@@ -61,21 +61,61 @@ jobs:
       install_manually: true
     steps:
       - uses: actions/checkout@v4.1.0
-      - run: nvm install 18.20.1 && nvm alias default 18.20.1
+      - run: |
+          set -euo pipefail
+          export NVM_DIR="$HOME/.nvm"
+          mkdir -p "$NVM_DIR"
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+          source "$NVM_DIR/nvm.sh"
+          nvm install 18.20.1
+          nvm alias default 18.20.1
+          nvm use 18.20.1
+          node -v
+          npm -v
         if: env.install_manually
-      - run: pip3 install pipenv gunicorn
+      - run: |
+              set -euo pipefail
+              if ! command -v pip3 >/dev/null 2>&1; then
+                apt-get update
+                apt-get install -y --no-install-recommends python3-pip ca-certificates
+                rm -rf /var/lib/apt/lists/*
+              fi
         if: env.install_manually
-      - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+      - run: bash -lc 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
         if: env.install_manually
       - run: git clone REDACTED://github.com/stoplightio/httpbin httpbin
         if: env.install_manually
       - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv requirements) && pip3 install --no-cache-dir ./
+        shell: bash
+        if: env.install_manually
+      - run: pip3 install --no-cache-dir pipenv gunicorn gevent
         if: env.install_manually
       - run: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
         if: env.install_manually
+      - run: |
+          cd httpbin
+          nohup gunicorn -b 0.0.0.0:80 httpbin:app -k gevent > httpbin.log 2>&1 &
+          echo $! > httpbin.pid
+          for i in {1..30}; do
+            if curl -sSf http://127.0.0.1/status/200 >/dev/null; then
+              echo "httpbin is up."
+              break
+            fi
+            sleep 1
+          done
+        if: env.install_manually
       - name: Install Dependencies
-        run: yarn --frozen-lockfile
+        run: |
+          source "$HOME/.nvm/nvm.sh"
+          nvm use 18.20.1
+          yarn --frozen-lockfile
       - name: Create CLI binary
-        run: yarn build.binary
+        run: |
+          source "$HOME/.nvm/nvm.sh"
+          nvm use 18.20.1
+          yarn build.binary
       - name: Run Harness
-        run: yarn test.harness
+        run: |
+          source "$HOME/.nvm/nvm.sh"
+          nvm use 18.20.1
+          yarn test.harness
