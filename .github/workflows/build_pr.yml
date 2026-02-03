@@ -58,7 +58,10 @@ jobs:
       image: node:18.20
     env:
       executor: docker-harness
-      install_manually: true
+      install_manually: true  
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4.1.0
       - run: |
