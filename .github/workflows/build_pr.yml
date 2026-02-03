@@ -1,0 +1,25 @@
+name: Build PR
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: node:18.20
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - name: restore_cache
+      uses: actions/cache@v4.3.0
+      with:
+        key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+        path: node_modules/
+        restore-keys: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    - name: Install Dependencies
+      run: yarn --frozen-lockfile
+    - name: Lint the codebase
+      run: yarn lint
+    - name: Run tests
+      run: yarn test --colors --maxWorkers=2
+    - name: Run build
+      run: yarn build
