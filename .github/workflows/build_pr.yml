@@ -54,6 +54,7 @@ jobs:
           . venv/bin/activate
           pip install --upgrade pip
           pip install pipenv gunicorn
+          pipenv --version  # Verify pipenv is installed
         if: env.install_manually
       - run: bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
         if: env.install_manually
@@ -61,6 +62,7 @@ jobs:
         if: env.install_manually
       - run: |
           cd httpbin
+          . ../venv/bin/activate
           pipenv requirements > requirements.txt
           pip3 install --no-cache-dir -r requirements.txt
           pip3 install --no-cache-dir ./
