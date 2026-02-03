@@ -71,7 +71,9 @@ jobs:
       - run: |
           cd httpbin
           . ../venv/bin/activate
-          gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
+          gunicorn -b 0.0.0.0:80 httpbin:app -k gevent &
+          sleep 15  # Wait for the server to start
+          curl -I http://0.0.0.0:80  # Test server availability
         if: env.install_manually
       - name: Install Dependencies
         run: yarn --frozen-lockfile
