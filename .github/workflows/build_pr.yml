@@ -44,10 +44,10 @@ jobs:
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm install 18.20.1
           nvm alias default 18.20.1
-      - name: Install Python and pip3
+      - name: Install Python and required packages
         run: |
           apt-get update
-          apt-get install -y python3 python3-pip
+          apt-get install -y python3 python3-pip python3-venv
       - name: Set up Python virtual environment
         run: |
           python3 -m venv venv
