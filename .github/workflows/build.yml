@@ -1,8 +1,9 @@
-name: stoplightio/prism/build
+name: Build
 on:
   push:
-    branches:
-    - master
+    branches: [main]
+  pull_request:
+    branches: [main]
 jobs:
   build:
     runs-on: ubuntu-latest
