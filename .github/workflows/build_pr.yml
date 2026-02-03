@@ -59,7 +59,11 @@ jobs:
         if: env.install_manually
       - run: git clone https://github.com/stoplightio/httpbin httpbin
         if: env.install_manually
-      - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv requirements) && pip3 install --no-cache-dir ./
+      - run: |
+          cd httpbin
+          pipenv requirements > requirements.txt
+          pip3 install --no-cache-dir -r requirements.txt
+          pip3 install --no-cache-dir ./
         if: env.install_manually
       - run: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
         if: env.install_manually
