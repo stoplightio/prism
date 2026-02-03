@@ -75,12 +75,19 @@ jobs:
           nvm alias default 18.20.1
       - name: Install Python and pip3
         run: |
-          apt-get update
-          apt-get install -y python3 python3-pip
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
       - name: Install pipenv and gunicorn
         run: pip3 install pipenv gunicorn
         if: env.install_manually
-      - run: bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+      - name: Set up Python virtual environment
+        run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install --upgrade pip
+          pip install pipenv gunicorn
+        if: env.install_manually
+      - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
         if: env.install_manually
       - run: git clone REDACTED://github.com/stoplightio/httpbin httpbin
         if: env.install_manually
