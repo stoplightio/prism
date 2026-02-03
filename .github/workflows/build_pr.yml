@@ -73,7 +73,12 @@ jobs:
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm install 18.20.1
           nvm alias default 18.20.1
-      - run: pip3 install pipenv gunicorn
+      - name: Install Python and pip3
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+      - name: Install pipenv and gunicorn
+        run: pip3 install pipenv gunicorn
         if: env.install_manually
       - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
         if: env.install_manually
