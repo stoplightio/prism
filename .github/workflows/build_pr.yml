@@ -55,6 +55,7 @@ jobs:
           pip install --upgrade pip
           pip install pipenv gunicorn
           pipenv --version  # Verify pipenv is installed
+          gunicorn --version  # Verify gunicorn is installed
         if: env.install_manually
       - run: bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
         if: env.install_manually
@@ -67,7 +68,10 @@ jobs:
           pip3 install --no-cache-dir -r requirements.txt
           pip3 install --no-cache-dir ./
         if: env.install_manually
-      - run: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
+      - run: |
+          cd httpbin
+          . ../venv/bin/activate
+          gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
         if: env.install_manually
       - name: Install Dependencies
         run: yarn --frozen-lockfile
