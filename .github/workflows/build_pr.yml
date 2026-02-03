@@ -58,67 +58,34 @@ jobs:
       image: node:18.20
     env:
       executor: docker-harness
-      install_manually: true  
-    defaults:
-      run:
-        shell: bash
+      install_manually: true
     steps:
       - uses: actions/checkout@v4.1.0
-      - run: |
-          set -euo pipefail
+      - name: Install nvm
+        run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
           export NVM_DIR="$HOME/.nvm"
-          mkdir -p "$NVM_DIR"
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-          source "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+      - name: Use Node.js 18.20.1
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm install 18.20.1
           nvm alias default 18.20.1
-          nvm use 18.20.1
-          node -v
-          npm -v
+      - run: pip3 install pipenv gunicorn
         if: env.install_manually
-      - run: |
-              set -euo pipefail
-              if ! command -v pip3 >/dev/null 2>&1; then
-                apt-get update
-                apt-get install -y --no-install-recommends python3-pip ca-certificates
-                rm -rf /var/lib/apt/lists/*
-              fi
+      - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
         if: env.install_manually
-      - run: bash -lc 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
-        if: env.install_manually
-      - run: git clone https://github.com/stoplightio/httpbin httpbin
+      - run: git clone REDACTED://github.com/stoplightio/httpbin httpbin
         if: env.install_manually
       - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv requirements) && pip3 install --no-cache-dir ./
-        shell: bash
-        if: env.install_manually
-      - run: pip3 install --no-cache-dir pipenv gunicorn gevent
         if: env.install_manually
       - run: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
         if: env.install_manually
-      - run: |
-          cd httpbin
-          nohup gunicorn -b 0.0.0.0:80 httpbin:app -k gevent > httpbin.log 2>&1 &
-          echo $! > httpbin.pid
-          for i in {1..30}; do
-            if curl -sSf http://127.0.0.1/status/200 >/dev/null; then
-              echo "httpbin is up."
-              break
-            fi
-            sleep 1
-          done
-        if: env.install_manually
       - name: Install Dependencies
-        run: |
-          source "$HOME/.nvm/nvm.sh"
-          nvm use 18.20.1
-          yarn --frozen-lockfile
+        run: yarn --frozen-lockfile
       - name: Create CLI binary
-        run: |
-          source "$HOME/.nvm/nvm.sh"
-          nvm use 18.20.1
-          yarn build.binary
+        run: yarn build.binary
       - name: Run Harness
-        run: |
-          source "$HOME/.nvm/nvm.sh"
-          nvm use 18.20.1
-          yarn test.harness
+        run: yarn test.harness
