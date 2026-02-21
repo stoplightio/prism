@@ -1,6 +1,6 @@
 import { createLogger } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
-import fetch, { RequestInit } from 'node-fetch';
+import fetch, { FetchError, RequestInit } from 'node-fetch';
 import { createServer } from '../';
 import { ThenArg } from '../types';
 import * as faker from '@faker-js/faker/locale/en';
@@ -37,7 +37,18 @@ async function instantiatePrism(operations: IHttpOperation[]) {
 describe('body params validation', () => {
   let server: ThenArg<ReturnType<typeof instantiatePrism>>;
 
-  afterEach(() => server.close());
+  afterEach(async () => {
+    await server.close();
+
+    while (true) {
+      try {
+        await makeRequest('/');
+      } catch (err) {
+        if ((err instanceof FetchError) && (err as any).code === 'ECONNREFUSED') break;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+  });
 
   function makeRequest(url: string, init?: RequestInit) {
     return fetch(new URL(url, server.address), init);
