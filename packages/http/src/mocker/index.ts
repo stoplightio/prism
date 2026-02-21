@@ -69,7 +69,7 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
 
   return pipe(
     withLogger(logger => {
-      logRequest({ logger, prefix: `${chalk.grey('< ')}`, ...pick(input.data, 'body', 'headers') });
+      logRequest({ logger, prefix: `${chalk.grey('< ')}`, ...pick(input.data, 'body', 'headers', 'url') });
 
       // setting default values
       const acceptMediaType = input.data.headers && caseless(input.data.headers).get('accept');
