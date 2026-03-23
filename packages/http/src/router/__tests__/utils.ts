@@ -1,11 +1,12 @@
 import { HttpMethod } from '@stoplight/types';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker';
 import { defaults } from 'lodash/fp';
 import { DeepNonNullable } from 'utility-types';
 
 const httpMethods: HttpMethod[] = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
 export function pickOneHttpMethod(): HttpMethod {
+  // @ts-ignore
   return faker.helpers.arrayElement(httpMethods);
 }
 
@@ -40,7 +41,7 @@ export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions):
   }
 
   const randomPathFragments = new Array(options.pathFragments).fill(0).map(() => {
-    const words = faker.random.words(options.includeSpaces ? 3 : 1);
+    const words = faker.lorem.words(options.includeSpaces ? 3 : 1);
     return options.includeTemplates && faker.datatype.boolean() ? `{${words}}` : words;
   });
 

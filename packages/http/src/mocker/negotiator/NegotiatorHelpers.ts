@@ -175,13 +175,14 @@ const helpers = {
                           `Unable to find content for ${mediaTypes}`
                         );
                       })
-                  )}
+                    );
+                  }
 
                   // though accept header may have a request media type, the spec does not define a response body for the endpoint, so we essentially ignore the accept header (no error)
                   return E.right<Error, IHttpNegotiationResult>({
                     code: response.code,
                     headers: headers,
-                  })
+                  });
                 },
                 content => {
                   logger.success(`Found a compatible content for ${mediaTypes}`);
