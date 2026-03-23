@@ -19,6 +19,7 @@ import { ProblemJsonError } from '../types';
 import { PROXY_UNSUPPORTED_REQUEST_BODY, UPSTREAM_NOT_IMPLEMENTED } from './errors';
 import * as createHttpProxyAgent from 'http-proxy-agent';
 import * as createHttpsProxyAgent from 'https-proxy-agent';
+import type { Agent as HttpAgent } from 'http';
 import { toURLSearchParams } from '../utils/url';
 import { logRequest, logResponse } from '../utils/logger';
 import * as chalk from 'chalk';
@@ -65,7 +66,7 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           }
 
           return fetch(url, {
-            agent: proxyAgent,
+            agent: proxyAgent as HttpAgent | undefined,
             body,
             method: input.method,
             headers: defaults(omit(input.headers, ['host']), {

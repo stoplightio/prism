@@ -229,15 +229,16 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     },
 
     close() {
-      return new Promise((resolve, reject) =>
+      return new Promise((resolve, reject) => {
+        server.closeAllConnections();
         server.close(error => {
           if (error) {
             reject(error);
           }
 
           resolve();
-        })
-      );
+        });
+      });
     },
 
     listen: (port: number, ...args: any[]) =>

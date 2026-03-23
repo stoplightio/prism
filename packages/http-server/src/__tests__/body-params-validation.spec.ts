@@ -7,6 +7,7 @@ import * as faker from '@faker-js/faker/locale/en';
 import { Dictionary } from '@stoplight/types';
 import * as FormData from 'form-data';
 import { HttpParamStyles } from '@stoplight/types';
+import * as http from 'http';
 
 const logger = createLogger('TEST', { enabled: false });
 
@@ -39,8 +40,13 @@ describe('body params validation', () => {
 
   afterEach(() => server.close());
 
+  // Use an agent with keepAlive disabled to prevent stale connection reuse across server restarts.
+  // Node 20+ enables keepAlive by default in http.globalAgent, causing "socket hang up" errors
+  // when node-fetch tries to reuse connections after the server has been restarted between tests.
+  const agent = new http.Agent({ keepAlive: false });
+
   function makeRequest(url: string, init?: RequestInit) {
-    return fetch(new URL(url, server.address), init);
+    return fetch(new URL(url, server.address), { agent, ...init });
   }
 
   describe('http operation with body param', () => {
