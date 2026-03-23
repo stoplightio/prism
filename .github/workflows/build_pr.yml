@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: node:18.20
+      image: node:24.14
     steps:
     - uses: actions/checkout@v4.1.0
     - name: restore_cache
@@ -26,7 +26,7 @@ jobs:
   harness-docker:
     runs-on: ubuntu-latest
     container:
-      image: node:18.20
+      image: node:24.14
     env:
       executor: docker-harness
       install_manually: true
@@ -38,12 +38,12 @@ jobs:
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-      - name: Use Node.js 18.20.1
+      - name: Use Node.js 24
         run: |
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm install 18.20.1
-          nvm alias default 18.20.1
+          nvm install 24.14.0
+          nvm alias default 24.14.0
       - name: Install Python and required packages
         run: |
           apt-get update
