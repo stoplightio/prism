@@ -55,7 +55,7 @@ jobs:
   harness-docker:
     runs-on: ubuntu-latest
     container:
-      image: node:24.14.0
+      image: node:24.14
     env:
       executor: docker-harness
       install_manually: true
