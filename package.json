@@ -13,7 +13,7 @@
     "lint": "eslint ./packages/**/src/*.ts",
     "lint.fix": "yarn lint --fix",
     "clean": "rm -rf ./packages/**/dist ./packages/**/*.tsbuildinfo",
-    "build": "npm run clean && ttsc --build --verbose ./packages/tsconfig.build.json",
+    "build": "npm run clean && tsc --build --verbose ./packages/tsconfig.build.json",
     "posttest": "yarn lint",
     "test": "node --expose-gc ./node_modules/.bin/jest",
     "release": "lerna version",
@@ -72,7 +72,7 @@
     "tsconfig-paths": "^4.1.0",
     "ttypescript": "^1.5.15",
     "type-is": "^1.6.18",
-    "typescript": "4.9.3"
+    "typescript": "5.4.5"
   },
   "lint-staged": {
     "**/packages/**/*.ts": [
