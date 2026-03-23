@@ -34,7 +34,7 @@ RUN if [ $(uname -m) != "aarch64" ]; then curl -sfL https://gobinaries.com/tj/no
 RUN if [ $(uname -m) != "aarch64" ]; then node-prune; fi
 
 ###############################################################
-FROM node:24.14.0-alpine
+FROM node:24-alpine
 
 # https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#handling-kernel-signals
 RUN apk add --no-cache tini
