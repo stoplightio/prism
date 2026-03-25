@@ -19,7 +19,7 @@ import { sequenceT } from 'fp-ts/Apply';
 import * as R from 'fp-ts/Reader';
 import * as O from 'fp-ts/Option';
 import * as RE from 'fp-ts/ReaderEither';
-import { get, groupBy, isNumber, isString, keyBy, mapValues, partial, pick } from 'lodash';
+import { get, groupBy, isNumber, isString, keyBy, mapValues, pick } from 'lodash';
 import { Logger } from 'pino';
 import { is } from 'type-is';
 import {
@@ -32,8 +32,21 @@ import {
   ProblemJsonError,
 } from '../types';
 import withLogger from '../withLogger';
-import { UNAUTHORIZED, UNPROCESSABLE_ENTITY, INVALID_CONTENT_TYPE, SCHEMA_TOO_COMPLEX } from './errors';
-import { generate, generateStatic, SchemaTooComplexGeneratorError } from './generator/JSONSchema';
+import {
+  UNAUTHORIZED,
+  UNPROCESSABLE_ENTITY,
+  INVALID_CONTENT_TYPE,
+  SCHEMA_TOO_COMPLEX,
+  SERIALIZATION_ERROR,
+  GENERATOR_INTERNAL_ERROR,
+} from './errors';
+import {
+  generate,
+  generateStatic,
+  SchemaTooComplexGeneratorError,
+  InternalGeneratorError,
+  CircularReferenceSerializationError,
+} from './generator/JSONSchema';
 import helpers from './negotiator/NegotiatorHelpers';
 import { IHttpNegotiationResult } from './negotiator/types';
 import { runCallback } from './callback/callbacks';
@@ -61,8 +74,8 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
   function createPayloadGenerator(config: IHttpOperationConfig, resource: IHttpOperation): PayloadGenerator {
     return (source: JSONSchema) => {
       return config.dynamic
-      ? generate(resource, resource['__bundled__'], source, config.seed)
-      : generateStatic(resource, source);
+        ? generate(resource, (resource as any)['__bundled__'], source, config.seed)
+        : generateStatic(resource, source);
     };
   }
   const payloadGenerator = createPayloadGenerator(config, resource);
@@ -411,6 +424,18 @@ const mapPayloadGeneratorError = (source: string) =>
       return ProblemJsonError.fromTemplate(
         SCHEMA_TOO_COMPLEX,
         `Unable to generate ${source} for response. The schema is too complex to generate.`
+      );
+    }
+    if (err instanceof InternalGeneratorError) {
+      return ProblemJsonError.fromTemplate(
+        GENERATOR_INTERNAL_ERROR,
+        `Unable to generate ${source} for response due to an internal processing error.`
+      );
+    }
+    if (err instanceof CircularReferenceSerializationError) {
+      return ProblemJsonError.fromTemplate(
+        SERIALIZATION_ERROR,
+        `Unable to serialize the generated ${source} for response (circular reference detected).`
       );
     }
     return err;

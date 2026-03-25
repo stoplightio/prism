@@ -77,13 +77,25 @@ export function generate(
         // @ts-ignore
         () => {
           if (seed) {
-            JSONSchemaFaker.option('random', seedrandom(seed))
+            JSONSchemaFaker.option('random', seedrandom(seed));
           }
-          return sortSchemaAlphabetically(JSONSchemaFaker.generate({ ...cloneDeep(updatedSource), __bundled__: bundle }))
+          return sortSchemaAlphabetically(
+            JSONSchemaFaker.generate({ ...cloneDeep(updatedSource), __bundled__: bundle })
+          );
         },
         toError
       )
-    )
+    ),
+    E.mapLeft(err => {
+      // Check if it's a json-schema-faker internal error
+      if (
+        err.message &&
+        (err.message.includes('Cannot read properties of undefined') || err.message.includes('TypeError'))
+      ) {
+        return new InternalGeneratorError(err);
+      }
+      return err;
+    })
   );
 }
 
@@ -93,7 +105,7 @@ export function sortSchemaAlphabetically(source: any): any {
     for (const i of source) {
       if (typeof source[i] === 'object') {
         source[i] = sortSchemaAlphabetically(source[i]);
-      }
+      } 
     }
     return source;
   } else if (source && typeof source === 'object') {
@@ -130,5 +142,17 @@ export class SchemaTooComplexGeneratorError extends GeneratorError {
         operation.path
       } references a JSON Schema that is too complex to generate.`
     );
+  }
+}
+
+export class InternalGeneratorError extends GeneratorError {
+  constructor(public readonly cause: Error) {
+    super('Internal error occurred while generating mock data from schema.');
+  }
+}
+
+export class CircularReferenceSerializationError extends Error {
+  constructor(public readonly cause: Error) {
+    super('Unable to serialize response due to circular references.');
   }
 }

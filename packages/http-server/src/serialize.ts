@@ -3,10 +3,26 @@ import { is as typeIs } from 'type-is';
 
 const xmlSerializer = new XMLBuilder({});
 
+export class CircularReferenceError extends Error {
+  constructor(public readonly cause: Error) {
+    super('Converting circular structure to JSON');
+    this.name = 'CircularReferenceError';
+  }
+}
+
 const serializers = [
   {
     test: (value: string) => !!typeIs(value, ['application/json', 'application/*+json']),
-    serializer: JSON.stringify,
+    serializer: (data: unknown) => {
+      try {
+        return JSON.stringify(data);
+      } catch (err) {
+        if (err instanceof Error && err.message.includes('circular')) {
+          throw new CircularReferenceError(err);
+        }
+        throw err;
+      }
+    },
   },
   {
     test: (value: string) => !!typeIs(value, ['application/xml', 'application/*+xml']),

@@ -5,6 +5,7 @@ import {
   ProblemJsonError,
   VIOLATIONS,
   IHttpConfig,
+  SERIALIZATION_ERROR,
 } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
 import { IncomingMessage, ServerResponse, IncomingHttpHeaders } from 'http';
@@ -15,7 +16,7 @@ import { MicriHandler } from 'micri';
 import micri, { Router, json, send, text } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
-import { serialize } from './serialize';
+import { serialize, CircularReferenceError } from './serialize';
 import { merge } from 'lodash/fp';
 import { pipe } from 'fp-ts/function';
 import * as TE from 'fp-ts/TaskEither';
@@ -152,11 +153,21 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           E.tryCatch(() => {
             if (output.headers) Object.entries(output.headers).forEach(([name, value]) => reply.setHeader(name, value));
 
-            send(
-              reply,
-              output.statusCode,
-              serialize(output.body, reply.getHeader('content-type') as string | undefined)
-            );
+            try {
+              send(
+                reply,
+                output.statusCode,
+                serialize(output.body, reply.getHeader('content-type') as string | undefined)
+              );
+            } catch (err) {
+              if (err instanceof CircularReferenceError) {
+                throw ProblemJsonError.fromTemplate(
+                  SERIALIZATION_ERROR,
+                  'Unable to serialize the generated response (circular reference detected).'
+                );
+              }
+              throw err;
+            }
           }, E.toError)
         );
       }),

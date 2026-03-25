@@ -47,3 +47,15 @@ export const SCHEMA_TOO_COMPLEX: Omit<ProblemJson, 'detail'> = {
   title: 'Schema too complex',
   status: 500,
 };
+
+export const SERIALIZATION_ERROR: Omit<ProblemJson, 'detail'> = {
+  type: 'SERIALIZATION_ERROR',
+  title: 'Serialization error',
+  status: 500,
+};
+
+export const GENERATOR_INTERNAL_ERROR: Omit<ProblemJson, 'detail'> = {
+  type: 'GENERATOR_INTERNAL_ERROR',
+  title: 'Internal generator error',
+  status: 500,
+};
