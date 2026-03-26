@@ -94,7 +94,7 @@ describe('JSONSchema generator', () => {
       it('will not be presented in the form of UUID as a URN', () => {
         assertRight(generate(operation, {}, schema), instance => {
           const id = get(instance, 'id', '');
-          expect(uuidRegExp.test(id)).not.toContainEqual('urn:uuid');
+          expect(id).not.toContain('urn:uuid');
         });
       });
     });

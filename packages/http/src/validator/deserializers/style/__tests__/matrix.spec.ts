@@ -4,7 +4,7 @@ import * as createObjectFromKeyValListModule from '../utils';
 describe('deserialize()', () => {
   describe('value does not begin with a semicolon', () => {
     it('throws exception', () => {
-      expect(() => deserializeMatrixStyle('name', { name: 'bad' }, { type: 'string' })).toThrowError(
+      expect(() => deserializeMatrixStyle('name', { name: 'bad' }, { type: 'string' })).toThrow(
         'Matrix serialization style requires parameter to be prefixed with ";"'
       );
     });
@@ -19,7 +19,7 @@ describe('deserialize()', () => {
 
     describe('value is incorrectly serialized', () => {
       it('throws error', () => {
-        expect(() => deserializeMatrixStyle('name', { name: ';value' }, { type: 'string' })).toThrowError(
+        expect(() => deserializeMatrixStyle('name', { name: ';value' }, { type: 'string' })).toThrow(
           'Matrix serialization style requires parameter to be prefixed with name'
         );
       });

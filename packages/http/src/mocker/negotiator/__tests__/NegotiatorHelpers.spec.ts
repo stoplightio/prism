@@ -336,8 +336,8 @@ describe('NegotiatorHelpers', () => {
   });
 
   describe('negotiateOptionsBySpecificCode()', () => {
-    let negotiateOptionsBySpecificResponseMock: jest.SpyInstance;
-    let negotiateOptionsForUnspecifiedCodeMock: jest.SpyInstance;
+    let negotiateOptionsBySpecificResponseMock: jest.SpiedFunction<typeof helpers.negotiateOptionsBySpecificResponse>;
+    let negotiateOptionsForUnspecifiedCodeMock: jest.SpiedFunction<typeof helpers.negotiateOptionsForUnspecifiedCode>;
 
     beforeEach(() => {
       negotiateOptionsBySpecificResponseMock = jest.spyOn(helpers, 'negotiateOptionsBySpecificResponse');

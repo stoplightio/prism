@@ -4,7 +4,7 @@ import * as createObjectFromKeyValListModule from '../utils';
 describe('deserialize()', () => {
   describe('value does not begin with a dot', () => {
     it('throws exception', () => {
-      expect(() => deserializeLabelStyle('name', { name: 'bad' }, { type: 'string' })).toThrowError(
+      expect(() => deserializeLabelStyle('name', { name: 'bad' }, { type: 'string' })).toThrow(
         'Label serialization style requires parameter to be prefixed with "."'
       );
     });

@@ -53,7 +53,7 @@ describe('validate()', () => {
                 )
               );
 
-              expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
+              expect(validateAgainstSchemaModule.validateAgainstSchema).toHaveReturnedWith(O.none);
             });
           });
         });
@@ -75,7 +75,7 @@ describe('validate()', () => {
             )
           );
 
-          expect(validateAgainstSchemaModule.validateAgainstSchema).toReturnWith(O.none);
+          expect(validateAgainstSchemaModule.validateAgainstSchema).toHaveReturnedWith(O.none);
         });
       });
 
