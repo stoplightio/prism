@@ -6,7 +6,7 @@ import {
   INodeExample,
   INodeExternalExample,
 } from '@stoplight/types';
-import * as faker from '@faker-js/faker/locale/en';
+import { faker } from '@faker-js/faker/locale/en';
 import * as E from 'fp-ts/Either';
 import { left, right } from 'fp-ts/ReaderEither';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
@@ -28,10 +28,10 @@ const assertPayloadlessResponse = (actualResponse: E.Either<Error, IHttpNegotiat
 
 function anHttpOperation(givenHttpOperation?: IHttpOperation) {
   const httpOperation = givenHttpOperation || {
-    method: faker.random.word(),
+    method: faker.word.sample(),
     path: faker.internet.url(),
-    responses: [{ id: faker.random.word(), code: '300' }],
-    id: faker.random.word(),
+    responses: [{ id: faker.word.sample(), code: '300' }],
+    id: faker.word.sample(),
     request: {},
   };
   return {
@@ -155,23 +155,23 @@ describe('NegotiatorHelpers', () => {
           httpOperation = anHttpOperation(httpOperation)
             .withResponses([
               {
-                id: faker.random.word(),
+                id: faker.word.sample(),
                 code: actualCode,
                 headers: [],
                 contents: [
                   {
-                    id: faker.random.word(),
-                    mediaType: actualMediaType + faker.random.word[0],
+                    id: faker.word.sample(),
+                    mediaType: actualMediaType + faker.word.sample()[0],
                   },
                   {
-                    id: faker.random.word(),
+                    id: faker.word.sample(),
                     schema: { type: 'string' },
                     mediaType: actualMediaType,
                   },
                   {
-                    id: faker.random.word(),
+                    id: faker.word.sample(),
                     schema: { type: 'number' },
-                    mediaType: actualMediaType + faker.random.word[0],
+                    mediaType: actualMediaType + faker.word.sample()[0],
                   },
                 ],
               },
@@ -193,18 +193,18 @@ describe('NegotiatorHelpers', () => {
           httpOperation = anHttpOperation(httpOperation)
             .withResponses([
               {
-                id: faker.random.word(),
+                id: faker.word.sample(),
                 code: actualCode,
                 headers: [],
                 contents: [
                   {
-                    id: faker.random.word(),
+                    id: faker.word.sample(),
                     mediaType: actualMediaType,
                     examples: [],
                     encodings: [],
                   },
                   {
-                    id: faker.random.word(),
+                    id: faker.word.sample(),
                     mediaType: actualMediaType,
                     examples: [],
                     encodings: [],
@@ -229,16 +229,16 @@ describe('NegotiatorHelpers', () => {
         httpOperation = anHttpOperation(httpOperation)
           .withResponses([
             {
-              id: faker.random.word(),
+              id: faker.word.sample(),
               code: '400',
               headers: [],
               contents: [
                 {
-                  id: faker.random.word(),
+                  id: faker.word.sample(),
                   mediaType: faker.system.mimeType(),
                   examples: [
-                    { id: faker.random.word(), key: faker.random.word(), value: '', externalValue: '' },
-                    { id: faker.random.word(), key: faker.random.word(), value: '', externalValue: '' },
+                    { id: faker.word.sample(), key: faker.word.sample(), value: '', externalValue: '' },
+                    { id: faker.word.sample(), key: faker.word.sample(), value: '', externalValue: '' },
                   ],
                   encodings: [],
                 },
@@ -255,16 +255,16 @@ describe('NegotiatorHelpers', () => {
         httpOperation = anHttpOperation(httpOperation)
           .withResponses([
             {
-              id: faker.random.word(),
+              id: faker.word.sample(),
               code: 'default',
               headers: [],
               contents: [
                 {
-                  id: faker.random.word(),
+                  id: faker.word.sample(),
                   mediaType: faker.system.mimeType(),
                   examples: [
-                    { id: faker.random.word(), key: faker.random.word(), value: '', externalValue: '' },
-                    { id: faker.random.word(), key: faker.random.word(), value: '', externalValue: '' },
+                    { id: faker.word.sample(), key: faker.word.sample(), value: '', externalValue: '' },
+                    { id: faker.word.sample(), key: faker.word.sample(), value: '', externalValue: '' },
                   ],
                   encodings: [],
                 },
@@ -350,9 +350,9 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response defined should try to negotiate by that response', () => {
-      const code = faker.datatype.number();
+      const code = faker.number.int();
       const fakeResponse = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         code: code.toString(),
         contents: [],
         headers: [],
@@ -382,9 +382,9 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response defined should fallback to default code on error', () => {
-      const code = faker.datatype.number();
+      const code = faker.number.int();
       const fakeResponse = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         code: code.toString(),
       };
       const desiredOptions = { dynamic: false };
@@ -414,7 +414,7 @@ describe('NegotiatorHelpers', () => {
     });
 
     it('given response not defined should fallback to default code', () => {
-      const code = faker.datatype.number();
+      const code = faker.number.int();
       const desiredOptions = { dynamic: false };
       httpOperation = anHttpOperation(httpOperation).instance();
 
@@ -428,7 +428,7 @@ describe('NegotiatorHelpers', () => {
     it('given only a generic 2XX response should negotiate that one', () => {
       const desiredOptions = { dynamic: false };
       const response = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         code: '2xx',
         contents: [],
         headers: [],
@@ -452,7 +452,7 @@ describe('NegotiatorHelpers', () => {
     it('given two 2xx response should negotiate the lowest', () => {
       const desiredOptions = { dynamic: false };
       const response = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         code: '200',
         contents: [],
         headers: [],
@@ -469,13 +469,13 @@ describe('NegotiatorHelpers', () => {
         .withResponses([
           response,
           {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             code: '201',
             contents: [],
             headers: [],
           },
           {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             code: '2xx',
             contents: [],
             headers: [],
@@ -506,18 +506,18 @@ describe('NegotiatorHelpers', () => {
         const desiredOptions = {
           mediaTypes: [faker.system.mimeType()],
           dynamic: faker.datatype.boolean(),
-          exampleKey: faker.random.word(),
+          exampleKey: faker.word.sample(),
         };
 
         const contents: IMediaTypeContent = {
-          id: faker.random.word(),
+          id: faker.word.sample(),
           mediaType: desiredOptions.mediaTypes[0],
           examples: [],
           encodings: [],
         };
 
         const httpResponseSchema: IHttpOperationResponse = {
-          id: faker.random.word(),
+          id: faker.word.sample(),
           code: '200',
           contents: [contents],
           headers: [],
@@ -561,14 +561,14 @@ describe('NegotiatorHelpers', () => {
           };
 
           const contents: IMediaTypeContent[] = desiredOptions.mediaTypes.reverse().map(mediaType => ({
-            id: faker.random.word(),
+            id: faker.word.sample(),
             mediaType,
             encodings: [],
             examples: [],
           }));
 
           const httpResponseSchema: IHttpOperationResponse = {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             code: '200',
             contents,
             headers: [],
@@ -590,14 +590,14 @@ describe('NegotiatorHelpers', () => {
           };
 
           const content: IMediaTypeContent = {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             mediaType: 'application/json',
             encodings: [],
             examples: [],
           };
 
           const httpResponseSchema: IHttpOperationResponse = {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             code: '200',
             contents: [content],
             headers: [],
@@ -616,7 +616,7 @@ describe('NegotiatorHelpers', () => {
       describe('204 response', () => {
         it('returns an empty payload response when desired media type does not exist', () => {
           const httpResponseSchema: IHttpOperationResponse = {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             code: '204',
             contents: [],
           };
@@ -638,7 +638,7 @@ describe('NegotiatorHelpers', () => {
 
       describe('the response exists, but there is no httpContent', () => {
         const httpResponseSchema: IHttpOperationResponse = {
-          id: faker.random.word(),
+          id: faker.word.sample(),
           code: '200',
           contents: [],
         };
@@ -662,7 +662,7 @@ describe('NegotiatorHelpers', () => {
           const desiredOptions: NegotiationOptions = {
             mediaTypes: [faker.system.mimeType()],
             dynamic: faker.datatype.boolean(),
-            exampleKey: faker.random.word(),
+            exampleKey: faker.word.sample(),
           };
 
           const actualResponse = helpers.negotiateOptionsBySpecificResponse(
@@ -683,11 +683,11 @@ describe('NegotiatorHelpers', () => {
           };
 
           const httpResponseSchema: IHttpOperationResponse = {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             code: '200',
             contents: [
               {
-                id: faker.random.word(),
+                id: faker.word.sample(),
                 mediaType: 'text/plain',
               },
             ],
@@ -710,11 +710,11 @@ describe('NegotiatorHelpers', () => {
       it('should negotiate default media type', () => {
         const desiredOptions: NegotiationOptions = {
           dynamic: faker.datatype.boolean(),
-          exampleKey: faker.random.word(),
+          exampleKey: faker.word.sample(),
         };
 
         const httpResponseSchema: IHttpOperationResponse = {
-          id: faker.random.word(),
+          id: faker.word.sample(),
           code: '200',
           contents: [],
           headers: [],
@@ -760,22 +760,22 @@ describe('NegotiatorHelpers', () => {
         ['*/*', 'application/json'],
         ['application/json', 'application/xml'],
       ])('should return %s even when %s is available', (defaultMediaType, alternateMediaType) => {
-        const code = faker.random.word();
+        const code = faker.word.sample();
         const partialOptions = {
           code,
           dynamic: faker.datatype.boolean(),
-          exampleKey: faker.random.word(),
+          exampleKey: faker.word.sample(),
         };
 
         const contents: IMediaTypeContent[] = [alternateMediaType, defaultMediaType].map(mediaType => ({
-          id: faker.random.word(),
+          id: faker.word.sample(),
           mediaType,
           examples: [],
           encodings: [],
         }));
 
         const response: IHttpOperationResponse = {
-          id: faker.random.word(),
+          id: faker.word.sample(),
           code,
           contents,
           headers: [],
@@ -809,10 +809,10 @@ describe('NegotiatorHelpers', () => {
     });
 
     describe('when no default response', () => {
-      const code = faker.random.word();
+      const code = faker.word.sample();
       const partialOptions = { code: '200', dynamic: false };
       const response: IHttpOperationResponse = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         code,
         contents: [],
         headers: [],
@@ -840,24 +840,24 @@ describe('NegotiatorHelpers', () => {
   });
 
   describe('when multiple responses', () => {
-    const code = faker.random.word();
+    const code = faker.word.sample();
     const partialOptions = { code: '200', dynamic: false };
 
     describe('and json is among them', () => {
       const negotiationResult = helpers.negotiateDefaultMediaType(partialOptions, {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         code,
         headers: [],
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             mediaType: 'text/plain',
-            examples: [{ id: faker.random.word(), key: 'hey', value: {} }],
+            examples: [{ id: faker.word.sample(), key: 'hey', value: {} }],
           },
           {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             mediaType: 'application/json',
-            examples: [{ id: faker.random.word(), key: 'hey', value: {} }],
+            examples: [{ id: faker.word.sample(), key: 'hey', value: {} }],
           },
         ],
       }, logger);
@@ -871,19 +871,19 @@ describe('NegotiatorHelpers', () => {
 
     describe('and json is not them', () => {
       const negotiationResult = helpers.negotiateDefaultMediaType(partialOptions, {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         code,
         headers: [],
         contents: [
           {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             mediaType: 'application/xml',
-            examples: [{ id: faker.random.word(), key: 'hey', value: {} }],
+            examples: [{ id: faker.word.sample(), key: 'hey', value: {} }],
           },
           {
-            id: faker.random.word(),
+            id: faker.word.sample(),
             mediaType: 'text/plain',
-            examples: [{ id: faker.random.word(), key: 'hey', value: {} }],
+            examples: [{ id: faker.word.sample(), key: 'hey', value: {} }],
           },
         ],
       }, logger);
@@ -900,20 +900,20 @@ describe('NegotiatorHelpers', () => {
 describe('negotiateByPartialOptionsAndHttpContent()', () => {
   describe('given exampleKey forced', () => {
     it('and example exists should return that example', () => {
-      const exampleKey = faker.random.word();
+      const exampleKey = faker.word.sample();
       const partialOptions = {
         code: '200',
         exampleKey,
         dynamic: faker.datatype.boolean(),
       };
       const bodyExample: INodeExample = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         key: exampleKey,
         value: '',
       };
 
       const httpContent: IMediaTypeContent = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         mediaType: faker.system.mimeType(),
         examples: [bodyExample],
         encodings: [],
@@ -933,14 +933,14 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
     });
 
     it('and example not exist should throw an error', () => {
-      const exampleKey = faker.random.word();
+      const exampleKey = faker.word.sample();
       const partialOptions = {
         code: '200',
         exampleKey,
         dynamic: faker.datatype.boolean(),
       };
       const httpContent: IMediaTypeContent = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         mediaType: faker.system.mimeType(),
         examples: [],
         encodings: [],
@@ -960,7 +960,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: true,
       };
       const httpContent: IMediaTypeContent = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         mediaType: faker.system.mimeType(),
         examples: [],
         schema: { type: 'string' },
@@ -984,7 +984,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: true,
       };
       const httpContent: IMediaTypeContent = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         mediaType: faker.system.mimeType(),
         examples: [],
         encodings: [],
@@ -1007,19 +1007,19 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         dynamic: false,
       };
       const bodyExample: INodeExample | INodeExternalExample = {
-        id: faker.random.word(),
-        key: faker.random.word(),
+        id: faker.word.sample(),
+        key: faker.word.sample(),
         value: '',
         externalValue: '',
       };
       const httpContent: IMediaTypeContent = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         mediaType: faker.system.mimeType(),
         examples: [
           bodyExample,
           {
-            id: faker.random.word(),
-            key: faker.random.word(),
+            id: faker.word.sample(),
+            key: faker.word.sample(),
             value: '',
             externalValue: '',
           },
@@ -1045,7 +1045,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
         code: '200',
       };
       const httpContent: IMediaTypeContent = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         mediaType: faker.system.mimeType(),
         examples: [],
         schema: { type: 'string' },
@@ -1070,7 +1070,7 @@ describe('negotiateByPartialOptionsAndHttpContent()', () => {
       };
 
       const httpContent: IMediaTypeContent = {
-        id: faker.random.word(),
+        id: faker.word.sample(),
         mediaType: faker.system.mimeType(),
         examples: [],
         encodings: [],

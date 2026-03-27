@@ -3,6 +3,10 @@ const path = require('path');
 const { mapValues } = require('lodash');
 const { compilerOptions } = require('./packages/tsconfig.test');
 
+const tsJestOptions = {
+  tsconfig: '<rootDir>/packages/tsconfig.test.json',
+};
+
 const projectDefault = {
   moduleNameMapper: {
     ...mapValues(pathsToModuleNameMapper(compilerOptions.paths), v => path.resolve(path.join('packages', v))),
@@ -11,6 +15,7 @@ const projectDefault = {
   transform: {
     '^.+\\.(ts)$': 'ts-jest',
   },
+  transformIgnorePatterns: ['node_modules/(?!@faker-js/faker)'],
 };
 
 module.exports = {
@@ -20,12 +25,8 @@ module.exports = {
       displayName: 'HTTP-SERVER',
       testMatch: ['<rootDir>/packages/http-server/src/**/__tests__/*.*.ts'],
       transform: {
-        '^.+\\.tsx?$': [
-          'ts-jest',
-          {
-            tsconfig: '<rootDir>/packages/tsconfig.test.json',
-          },
-        ],
+        '^.+\\.tsx?$': ['ts-jest', tsJestOptions],
+        '^.+\\.js$': ['ts-jest', { ...tsJestOptions, tsconfig: { allowJs: true } }],
       },
     },
     {
@@ -33,12 +34,8 @@ module.exports = {
       displayName: 'HTTP',
       testMatch: ['<rootDir>/packages/http/src/**/__tests__/*.*.ts'],
       transform: {
-        '^.+\\.tsx?$': [
-          'ts-jest',
-          {
-            tsconfig: '<rootDir>/packages/tsconfig.test.json',
-          },
-        ],
+        '^.+\\.tsx?$': ['ts-jest', tsJestOptions],
+        '^.+\\.js$': ['ts-jest', { ...tsJestOptions, tsconfig: { allowJs: true } }],
       },
     },
     {
@@ -46,12 +43,8 @@ module.exports = {
       displayName: 'CORE',
       testMatch: ['<rootDir>/packages/core/src/**/__tests__/*.*.ts'],
       transform: {
-        '^.+\\.tsx?$': [
-          'ts-jest',
-          {
-            tsconfig: '<rootDir>/packages/tsconfig.test.json',
-          },
-        ],
+        '^.+\\.tsx?$': ['ts-jest', tsJestOptions],
+        '^.+\\.js$': ['ts-jest', { ...tsJestOptions, tsconfig: { allowJs: true } }],
       },
     },
     {
@@ -59,12 +52,8 @@ module.exports = {
       displayName: 'CLI',
       testMatch: ['<rootDir>/packages/cli/src/**/__tests__/*.*.ts'],
       transform: {
-        '^.+\\.tsx?$': [
-          'ts-jest',
-          {
-            tsconfig: '<rootDir>/packages/tsconfig.test.json',
-          },
-        ],
+        '^.+\\.tsx?$': ['ts-jest', tsJestOptions],
+        '^.+\\.js$': ['ts-jest', { ...tsJestOptions, tsconfig: { allowJs: true } }],
       },
     },
   ],
