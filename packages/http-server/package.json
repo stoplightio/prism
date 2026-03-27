@@ -10,7 +10,7 @@
     "url": "https://github.com/stoplightio/prism.git"
   },
   "engines": {
-    "node": ">=18.20.1"
+    "node": ">=24.14.0"
   },
   "files": [
     "/dist"
@@ -22,10 +22,10 @@
     "@stoplight/prism-core": "^5.8.0",
     "@stoplight/prism-http": "^5.12.0",
     "@stoplight/types": "^14.1.0",
-    "fast-xml-parser": "^4.2.0",
+    "fast-xml-parser": "^5.5.7",
     "fp-ts": "^2.11.5",
     "io-ts": "^2.2.16",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "micri": "^4.3.0",
     "node-fetch": "^2.6.5",
     "parse-prefer-header": "1.0.0",
