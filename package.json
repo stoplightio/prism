@@ -53,7 +53,7 @@
     "eslint-plugin-prettier": "^5.5.5",
     "fast-xml-parser": "^5.5.7",
     "form-data": "^4.0.0",
-    "gavel": "10.0.4",
+    "gavel": "10.0.3",
     "glob": "^7.2.0",
     "http-string-parser": "^0.0.6",
     "husky": "^9.1.7",
