@@ -68,7 +68,7 @@ describe('User Http Client', () => {
         afterAll(() => jest.clearAllMocks());
 
         test('should call the mocker with the replaced full url', () => {
-          expect(mock.default).toBeCalledWith({
+          expect(mock.default).toHaveBeenCalledWith({
             resource: expect.anything(),
             input: expect.objectContaining({
               data: expect.objectContaining({
@@ -89,7 +89,7 @@ describe('User Http Client', () => {
         afterAll(() => jest.clearAllMocks());
 
         test('should call the mocker with the replaced full url', () => {
-          expect(mock.default).toBeCalledWith({
+          expect(mock.default).toHaveBeenCalledWith({
             resource: expect.anything(),
             input: expect.objectContaining({
               data: expect.objectContaining({

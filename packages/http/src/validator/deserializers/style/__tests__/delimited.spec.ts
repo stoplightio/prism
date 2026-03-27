@@ -5,7 +5,7 @@ const delimitedStyleDeserializer = createDelimitedDeserializerStyle('|');
 describe('deserialize()', () => {
   describe('schema type is not array', () => {
     it('throws exception', () => {
-      expect(() => delimitedStyleDeserializer('key', {}, { type: 'string' }, false)).toThrowError();
+      expect(() => delimitedStyleDeserializer('key', {}, { type: 'string' }, false)).toThrow();
     });
   });
 
