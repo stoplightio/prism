@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.9.0](https://github.com/stoplightio/prism/compare/v5.8.0...v5.9.0) (2026-03-27)
+
+
+### Features
+
+* **deps:** bump node from 18.20 to 24.14 ([#2752](https://github.com/stoplightio/prism/issues/2752)) ([3940161](https://github.com/stoplightio/prism/commit/39401611f00b997852dcf54fc52902720377034d))
+
 ## [5.8.0](https://github.com/stoplightio/prism/compare/v5.7.0...v5.8.0) (2024-04-29)
 
 
