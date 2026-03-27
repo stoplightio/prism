@@ -13,7 +13,7 @@
     "/dist"
   ],
   "engines": {
-    "node": ">=18.20.1"
+    "node": ">=24.14.0"
   },
   "dependencies": {
     "fp-ts": "^2.11.5",
