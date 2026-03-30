@@ -115,7 +115,7 @@ jobs:
     - run: |
         cd httpbin
         . ../venv/bin/activate
-        gunicorn -b 0.0.0.0:80 httpbin:app -k gevent &
+        sudo $(which gunicorn) -b 0.0.0.0:80 httpbin:app -k gevent &
         sleep 15
         curl -I http://0.0.0.0:80
       if: env.install_manually
