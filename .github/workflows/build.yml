@@ -95,7 +95,7 @@ jobs:
       if: env.install_manually
     - run: bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
       if: env.install_manually
-    - run: git clone REDACTED://github.com/stoplightio/httpbin httpbin
+    - run: git clone https://github.com/stoplightio/httpbin httpbin
       if: env.install_manually
     - run: |
         cd httpbin
