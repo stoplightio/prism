@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.15.0](https://github.com/stoplightio/prism/compare/v5.14.3...v5.15.0) (2026-03-27)
+
+
+### Features
+
+* **deps:** bump node from 18.20 to 24.14 ([#2752](https://github.com/stoplightio/prism/issues/2752)) ([3940161](https://github.com/stoplightio/prism/commit/39401611f00b997852dcf54fc52902720377034d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-core bumped from ^5.8.0 to ^5.9.0
+    * @stoplight/prism-http bumped from 5.12.0 to 5.13.0
+    * @stoplight/prism-http-server bumped from ^5.13.0 to ^5.14.0
+
 ## [5.14.3](https://github.com/stoplightio/prism/compare/v5.14.2...v5.14.3) (2025-10-27)
 
 
