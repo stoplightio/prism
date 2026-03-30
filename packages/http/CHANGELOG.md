@@ -1,6 +1,15 @@
 # Changelog
 
 
+## [5.15.2](https://github.com/stoplightio/prism/compare/v5.15.1...v5.15.2) (2026-03-30)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-core bumped from ^5.12.0 to ^5.13.0
+
 ## [5.15.1](https://github.com/stoplightio/prism/compare/v5.15.0...v5.15.1) (2026-03-30)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.13.0](https://github.com/stoplightio/prism/compare/v5.12.0...v5.13.0) (2026-03-30)
+
+
+### Features
+
+* **deps:** bump node from 18.20 to 24.14 ([#2752](https://github.com/stoplightio/prism/issues/2752)) ([3940161](https://github.com/stoplightio/prism/commit/39401611f00b997852dcf54fc52902720377034d))
+
 ## [5.12.0](https://github.com/stoplightio/prism/compare/v5.11.0...v5.12.0) (2026-03-30)
 
 
