@@ -38,9 +38,9 @@ jobs:
       with:
         node-version-file: .nvmrc
         cache: 'yarn'
-    - name: Install gevent build dependencies
-      run: brew install libev
-      if: env.install_manually
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
     - name: Set up Python virtual environment
       run: |
         python3 -m venv venv
