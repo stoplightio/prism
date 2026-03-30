@@ -24,7 +24,7 @@ jobs:
     - name: Run build
       run: yarn build
   harness-macos:
-    if: startsWith(github.ref, 'refs/tags/v') && github.ref != 'refs/heads/master'
+    if: startsWith(github.ref, 'refs/heads/dependabot') && github.ref != 'refs/heads/master'
     runs-on: macos-latest
     env:
       executor: macos
@@ -118,7 +118,7 @@ jobs:
     - name: Run Harness
       run: yarn test.harness
   publish:
-    if: startsWith(github.ref, 'refs/tags/v') && github.ref != 'refs/heads/master'
+    if: startsWith(github.ref, 'refs/heads/dependabot') && github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
     container:
       image: node:24.14
@@ -143,7 +143,7 @@ jobs:
       with:
         path: "./cli-binaries"
   upload_artifacts:
-    if: startsWith(github.ref, 'refs/tags/v') && github.ref != 'refs/heads/master'
+    if: startsWith(github.ref, 'refs/heads/dependabot') && github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
     container:
       image: golang:1.23
