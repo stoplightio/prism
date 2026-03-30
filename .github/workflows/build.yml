@@ -34,8 +34,10 @@ jobs:
       with:
         xcode-version: 13.4.1
     - uses: actions/checkout@v4.1.0
-    - run: nvm install 24.14.0 && nvm alias default 24.14.0
-      if: env.install_manually
+    - uses: actions/setup-node@v6
+      with:
+        node-version-file: .nvmrc
+        cache: 'yarn'
     - run: pip3 install pipenv gunicorn
       if: env.install_manually
     - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
@@ -61,8 +63,6 @@ jobs:
       install_manually: true
     steps:
     - uses: actions/checkout@v4.1.0
-    - run: nvm install 24.14.0 && nvm alias default 24.14.0
-      if: env.install_manually
     - run: pip3 install pipenv gunicorn
       if: env.install_manually
     - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
