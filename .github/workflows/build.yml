@@ -38,15 +38,32 @@ jobs:
       with:
         node-version-file: .nvmrc
         cache: 'yarn'
-    - run: pip3 install pipenv gunicorn
+    - name: Set up Python virtual environment
+      run: |
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install --upgrade pip
+        pip install pipenv gunicorn
+        pipenv --version  # Verify pipenv is installed
+        gunicorn --version  # Verify gunicorn is installed
       if: env.install_manually
     - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
       if: env.install_manually
     - run: git clone https://github.com/stoplightio/httpbin httpbin
       if: env.install_manually
-    - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv requirements) && pip3 install --no-cache-dir ./
+    - run: |
+        cd httpbin
+        . ../venv/bin/activate
+        pipenv requirements > requirements.txt
+        pip install --no-cache-dir -r requirements.txt
+        pip install --no-cache-dir ./
       if: env.install_manually
-    - run: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
+    - run: |
+        cd httpbin
+        . ../venv/bin/activate
+        gunicorn -b 0.0.0.0:80 httpbin:app -k gevent &
+        sleep 15
+        curl -I http://0.0.0.0:80
       if: env.install_manually
     - name: Install Dependencies
       run: yarn --frozen-lockfile
@@ -73,6 +90,8 @@ jobs:
         . venv/bin/activate
         pip install --upgrade pip
         pip install pipenv gunicorn
+        pipenv --version  # Verify pipenv is installed
+        gunicorn --version  # Verify gunicorn is installed
       if: env.install_manually
     - run: bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
       if: env.install_manually
