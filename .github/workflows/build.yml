@@ -1,7 +1,7 @@
 name: Build
 on:
   push:
-    branches: [master]
+    branches: [dependabot/npm_and_yarn/prettier-3.8.1]
 jobs:
   build:
     runs-on: ubuntu-latest
