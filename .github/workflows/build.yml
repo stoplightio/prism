@@ -151,6 +151,7 @@ jobs:
       run: npx @yao-pkg/pkg --out-path ./cli-binaries --options max_old_space_size=4096 ./packages/cli/
     - uses: actions/upload-artifact@v7
       with:
+        name: cli-binaries
         path: "./cli-binaries"
   upload_artifacts:
     if: "github.event_name == 'push' && startsWith(github.event.head_commit.message, 'chore: release master')"
