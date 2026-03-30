@@ -156,7 +156,7 @@ jobs:
     if: "github.event_name == 'push' && startsWith(github.event.head_commit.message, 'chore: release master')"
     runs-on: ubuntu-latest
     container:
-      image: golang:1.23
+      image: golang:1.25
     needs:
     - publish
     steps:
