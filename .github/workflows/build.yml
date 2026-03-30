@@ -163,8 +163,8 @@ jobs:
     steps:
     - uses: actions/download-artifact@v8
       with:
-        path: "/tmp/"
+        path: "${{ github.workspace }}"
     - name: Download GitHub Release Utility
       run: go install github.com/tcnksm/ghr@latest
     - name: Publish Release artifacts on GitHub
-      run: ghr -t ${{github.token}} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} /tmp/cli-binaries
+      run: ghr -t ${{github.token}} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} ${{ github.workspace }}/cli-binaries
