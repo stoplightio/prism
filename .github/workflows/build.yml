@@ -63,15 +63,34 @@ jobs:
       install_manually: true
     steps:
     - uses: actions/checkout@v4
-    - run: pip3 install pipenv gunicorn
+    - name: Install Python and required packages
+      run: |
+        apt-get update
+        apt-get install -y python3 python3-pip python3-venv
+    - name: Set up Python virtual environment
+      run: |
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install --upgrade pip
+        pip install pipenv gunicorn
       if: env.install_manually
-    - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+    - run: bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
       if: env.install_manually
     - run: git clone REDACTED://github.com/stoplightio/httpbin httpbin
       if: env.install_manually
-    - run: cd httpbin && pip3 install --no-cache-dir -r <(pipenv requirements) && pip3 install --no-cache-dir ./
+    - run: |
+        cd httpbin
+        . ../venv/bin/activate
+        pipenv requirements > requirements.txt
+        pip3 install --no-cache-dir -r requirements.txt
+        pip3 install --no-cache-dir ./
       if: env.install_manually
-    - run: cd httpbin && gunicorn -b 0.0.0.0:80 httpbin:app -k gevent
+    - run: |
+        cd httpbin
+        . ../venv/bin/activate
+        gunicorn -b 0.0.0.0:80 httpbin:app -k gevent &
+        sleep 15
+        curl -I http://0.0.0.0:80
       if: env.install_manually
     - name: Install Dependencies
       run: yarn --frozen-lockfile
