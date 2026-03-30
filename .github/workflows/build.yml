@@ -165,10 +165,9 @@ jobs:
     - uses: actions/download-artifact@v8
       with:
         path: "${{ github.workspace }}/cli-binaries"
-    - uses: actions/setup-go@v5
-      with:
-        go-version: '1.23'
-    - name: Download GitHub Release Utility
-      run: go install github.com/tcnksm/ghr@latest
     - name: Publish Release artifacts on GitHub
-      run: ghr -t ${{github.token}} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} $(git describe --tags --abbrev=0) ${{ github.workspace }}/cli-binaries
+      run: |
+        TAG=$(git describe --tags --abbrev=0)
+        gh release upload "$TAG" ${{ github.workspace }}/cli-binaries/* --clobber
+      env:
+        GH_TOKEN: ${{ github.token }}
