@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-core",
-  "version": "5.8.0",
+  "version": "5.10.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -13,7 +13,7 @@
     "/dist"
   ],
   "engines": {
-    "node": ">=18.20.1"
+    "node": ">=24.14.0"
   },
   "dependencies": {
     "fp-ts": "^2.11.5",

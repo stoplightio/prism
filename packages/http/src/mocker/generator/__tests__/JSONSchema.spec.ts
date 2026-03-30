@@ -33,8 +33,8 @@ describe('JSONSchema generator', () => {
       });
 
       it('will have a deterministic dynamic response if the seed is set', () => {
-        const result1 = generate(operation, {}, schema, "test_seed");
-        const result2 = generate(operation, {}, schema, "test_seed");
+        const result1 = generate(operation, {}, schema, 'test_seed');
+        const result2 = generate(operation, {}, schema, 'test_seed');
 
         assertRight(result1, instance1 => {
           assertRight(result2, instance2 => {
@@ -94,7 +94,7 @@ describe('JSONSchema generator', () => {
       it('will not be presented in the form of UUID as a URN', () => {
         assertRight(generate(operation, {}, schema), instance => {
           const id = get(instance, 'id', '');
-          expect(uuidRegExp.test(id)).not.toContainEqual('urn:uuid');
+          expect(id).not.toContain('urn:uuid');
         });
       });
     });
@@ -103,7 +103,7 @@ describe('JSONSchema generator', () => {
       const schema: JSONSchema & any = {
         type: 'object',
         properties: {
-          ip: { type: 'string', format: 'ip', 'x-faker': 'internet.ip' },
+          ip: { type: 'string', format: 'ip', 'x-faker': 'internet.ipv4' },
         },
         required: ['ip'],
       };
@@ -127,7 +127,7 @@ describe('JSONSchema generator', () => {
             meaning: {
               type: 'number',
               'x-faker': {
-                'datatype.number': {
+                'number.int': {
                   min: 42,
                   max: 42,
                 },

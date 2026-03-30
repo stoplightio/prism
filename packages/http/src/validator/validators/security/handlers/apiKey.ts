@@ -23,5 +23,5 @@ export const apiKeyInHeader = (input: Pick<IHttpRequest, 'headers' | 'url'>, nam
 export const apiKeyInQuery = (input: Pick<IHttpRequest, 'headers' | 'url'>, name: string) => {
   const isApiKeyInQuery = get(input, ['url', 'query', name]);
 
-  return when(isApiKeyInQuery, undefined);
+  return when(!!isApiKeyInQuery, undefined);
 };

@@ -1,5 +1,37 @@
 # Changelog
 
+## [5.15.1](https://github.com/stoplightio/prism/compare/v5.15.0...v5.15.1) (2026-03-30)
+
+
+### Bug Fixes
+
+* upgrade json-schema-ref-parser to fix URL specs on Node.js 24 ([#2762](https://github.com/stoplightio/prism/issues/2762)) ([0ef7ee8](https://github.com/stoplightio/prism/commit/0ef7ee8550c3ce60a77d9a425eff977fa09726a4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-core bumped from ^5.9.0 to ^5.10.0
+    * @stoplight/prism-http bumped from 5.13.0 to 5.14.0
+    * @stoplight/prism-http-server bumped from ^5.14.0 to ^5.15.0
+
+## [5.15.0](https://github.com/stoplightio/prism/compare/v5.14.3...v5.15.0) (2026-03-27)
+
+
+### Features
+
+* **deps:** bump node from 18.20 to 24.14 ([#2752](https://github.com/stoplightio/prism/issues/2752)) ([3940161](https://github.com/stoplightio/prism/commit/39401611f00b997852dcf54fc52902720377034d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @stoplight/prism-core bumped from ^5.8.0 to ^5.9.0
+    * @stoplight/prism-http bumped from 5.12.0 to 5.13.0
+    * @stoplight/prism-http-server bumped from ^5.13.0 to ^5.14.0
+
 ## [5.14.3](https://github.com/stoplightio/prism/compare/v5.14.2...v5.14.3) (2025-10-27)
 
 

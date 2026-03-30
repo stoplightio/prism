@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
@@ -79,6 +79,7 @@ export function generate(
           if (seed) {
             JSONSchemaFaker.option('random', seedrandom(seed))
           }
+          // @ts-ignore
           return sortSchemaAlphabetically(JSONSchemaFaker.generate({ ...cloneDeep(updatedSource), __bundled__: bundle }))
         },
         toError

@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-http",
-  "version": "5.12.1",
+  "version": "5.14.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "author": "Stoplight <support@stoplight.io>",
@@ -13,16 +13,16 @@
     "/dist"
   ],
   "engines": {
-    "node": ">=18.20.1"
+    "node": ">=24.14.0"
   },
   "dependencies": {
-    "@faker-js/faker": "^6.0.0",
+    "@faker-js/faker": "^10.4.0",
     "@stoplight/json": "3.21.7",
     "@stoplight/json-schema-merge-allof": "0.7.8",
     "@stoplight/json-schema-sampler": "0.3.0",
-    "@stoplight/prism-core": "^5.8.0",
-    "@stoplight/http-spec": "^7.0.3",
-    "@stoplight/json-schema-ref-parser": "9.2.7",
+    "@stoplight/prism-core": "^5.10.0",
+    "@stoplight/http-spec": "^7.1.0",
+    "@stoplight/json-schema-ref-parser": "10.0.0",
     "@stoplight/types": "^14.1.0",
     "@stoplight/yaml": "^4.2.3",
     "abstract-logging": "^2.0.1",
@@ -36,7 +36,7 @@
     "http-proxy-agent": "^5.0.0",
     "https-proxy-agent": "^5.0.0",
     "json-schema-faker": "0.5.8",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "node-fetch": "^2.6.5",
     "parse-multipart-data": "^1.5.0",
     "pino": "^6.13.3",
