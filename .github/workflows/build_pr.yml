@@ -8,13 +8,13 @@ jobs:
     container:
       image: node:24.14
     steps:
-    - uses: actions/checkout@v4.1.0
+    - uses: actions/checkout@v4
     - name: restore_cache
-      uses: actions/cache@v4.3.0
+      uses: actions/cache@v4
       with:
-        key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+        key: yarn-packages-${{ github.ref_name }}-${{ hashFiles('yarn.lock') }}
         path: node_modules/
-        restore-keys: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+        restore-keys: yarn-packages-${{ github.ref_name }}-
     - name: Install Dependencies
       run: yarn --frozen-lockfile
     - name: Lint the codebase
@@ -31,19 +31,7 @@ jobs:
       executor: docker-harness
       install_manually: true
     steps:
-      - uses: actions/checkout@v4.1.0
-      - name: Install nvm
-        run: |
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-      - name: Use Node.js 24
-        run: |
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm install 24.14.0
-          nvm alias default 24.14.0
+      - uses: actions/checkout@v4
       - name: Install Python and required packages
         run: |
           apt-get update
