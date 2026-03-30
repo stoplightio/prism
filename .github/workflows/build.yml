@@ -156,15 +156,16 @@ jobs:
   upload_artifacts:
     if: "github.event_name == 'push' && startsWith(github.event.head_commit.message, 'chore: release master')"
     runs-on: ubuntu-latest
-    container:
-      image: golang:1.25
     needs:
     - publish
     steps:
     - uses: actions/download-artifact@v8
       with:
         path: "${{ github.workspace }}"
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '1.23'
     - name: Download GitHub Release Utility
       run: go install github.com/tcnksm/ghr@latest
     - name: Publish Release artifacts on GitHub
-      run: ghr -t ${{github.token}} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} $GITHUB_WORKSPACE/cli-binaries
+      run: ghr -t ${{github.token}} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} ${{ github.workspace }}/cli-binaries
