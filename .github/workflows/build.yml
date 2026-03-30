@@ -7,10 +7,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: node:24.14
     steps:
     - uses: actions/checkout@v6
+    - uses: actions/setup-node@v6
+      with:
+        node-version-file: .nvmrc
+        cache: 'yarn'
     - name: restore_cache
       uses: actions/cache@v5
       with:
@@ -26,7 +28,6 @@ jobs:
     - name: Run build
       run: yarn build
   harness-macos:
-    if: startsWith(github.ref, 'refs/tags/v') && github.ref != 'refs/heads/master'
     runs-on: macos-latest
     env:
       executor: macos
@@ -78,17 +79,19 @@ jobs:
       run: yarn test.harness
   harness-docker:
     runs-on: ubuntu-latest
-    container:
-      image: node:24.14
     env:
       executor: docker-harness
       install_manually: true
     steps:
     - uses: actions/checkout@v6
+    - uses: actions/setup-node@v6
+      with:
+        node-version-file: .nvmrc
+        cache: 'yarn'
     - name: Install Python and required packages
       run: |
-        apt-get update
-        apt-get install -y python3 python3-pip python3-venv
+        sudo apt-get update
+        sudo apt-get install -y python3 python3-pip python3-venv
     - name: Set up Python virtual environment
       run: |
         python3 -m venv venv
@@ -98,7 +101,7 @@ jobs:
         pipenv --version  # Verify pipenv is installed
         gunicorn --version  # Verify gunicorn is installed
       if: env.install_manually
-    - run: bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+    - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
       if: env.install_manually
     - run: git clone https://github.com/stoplightio/httpbin httpbin
       if: env.install_manually
@@ -125,14 +128,16 @@ jobs:
   publish:
     if: startsWith(github.ref, 'refs/tags/v') && github.ref != 'refs/heads/master'
     runs-on: ubuntu-latest
-    container:
-      image: node:24.14
     needs:
     - build
     - harness-macos
     - harness-docker
     steps:
     - uses: actions/checkout@v6
+    - uses: actions/setup-node@v6
+      with:
+        node-version-file: .nvmrc
+        cache: 'yarn'
     - name: Set git identity
       run: git config user.email "circle@circleci.com" && git config user.name "circleci"
     - name: Install Dependencies
