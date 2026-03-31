@@ -48,6 +48,18 @@ const sharedOptions: Dictionary<Options> = {
     // custom levels like "success" and "start" are set to the same severity value as "info"
     choices: Object.keys(pino.levels.values).concat('silent'),
   },
+
+  dynamic: {
+    description: 'Enables dynamic mode, generating responses based on the OpenAPI schema.',
+    boolean: true,
+    default: false,
+  },
+
+  'json-schema-faker-fillProperties': {
+    description: 'Number of properties to generate in dynamic mode (0 for all properties).',
+    number: true,
+    default: 0,
+  },
 };
 
 export default sharedOptions;
