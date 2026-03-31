@@ -18,7 +18,7 @@ export interface IHttpOperationConfig {
 }
 
 export type IHttpMockConfig = Overwrite<IPrismMockConfig, { mock: IHttpOperationConfig }>;
-export type IHttpProxyConfig = Overwrite<IPrismProxyConfig, { mock: IHttpOperationConfig }>;
+export type IHttpProxyConfig = Overwrite<IPrismProxyConfig, { mock: IHttpOperationConfig; disableRemock?: boolean }>;
 
 export type IHttpConfig = IHttpProxyConfig | IHttpMockConfig;
 
