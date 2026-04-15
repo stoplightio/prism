@@ -16,6 +16,13 @@ The format for this file is based on [Keep a Changelog](https://keepachangelog.c
 
 <!-- markdown-link-check-disable -->
 
+## [5.15.2](https://github.com/stoplightio/prism/compare/v5.15.1...v5.15.2) (2026-04-15)
+
+
+### Bug Fixes
+
+* **deps:** bump axios from 1.13.6 to 1.15.0 ([#2773](https://github.com/stoplightio/prism/issues/2773)) ([4cd6ff4](https://github.com/stoplightio/prism/commit/4cd6ff4bd12e09962d3214c920bcb5837de5e883))
+
 ## [5.15.1](https://github.com/stoplightio/prism/compare/v5.15.0...v5.15.1) (2026-03-30)
 
 

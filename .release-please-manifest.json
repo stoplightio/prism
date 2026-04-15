@@ -1,5 +1,5 @@
 {
-  ".": "5.15.1",
+  ".": "5.15.2",
   "packages/cli": "5.15.6",
   "packages/core": "5.15.0",
   "packages/http": "5.15.4",
