@@ -14,15 +14,136 @@ env:
   HUSKY: 0
 
 jobs:
+  validate:
+    name: Lint, test & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Lint
+        run: yarn lint
+      - name: Test
+        run: yarn test --colors --maxWorkers=2
+      - name: Build
+        run: yarn build
+
+  harness-macos:
+    name: Harness tests (macOS)
+    runs-on: macos-latest
+    env:
+      executor: macos
+      install_manually: true
+    steps:
+      - uses: maxim-lobanov/setup-xcode@v1.7.0
+        with:
+          xcode-version: latest-stable
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Set up Python virtual environment
+        if: env.install_manually
+        run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install --upgrade pip
+          pip install pipenv gunicorn
+          pipenv --version
+          gunicorn --version
+      - if: env.install_manually
+        run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+      - if: env.install_manually
+        run: git clone https://github.com/stoplightio/httpbin httpbin
+      - if: env.install_manually
+        run: |
+          cd httpbin
+          . ../venv/bin/activate
+          pipenv requirements > requirements.txt
+          pip install --no-cache-dir -r requirements.txt
+          pip install --no-cache-dir ./
+      - if: env.install_manually
+        run: |
+          cd httpbin
+          . ../venv/bin/activate
+          gunicorn -b 0.0.0.0:80 httpbin:app -k gevent &
+          sleep 15
+          curl -I http://0.0.0.0:80
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Create CLI binary
+        run: yarn build.binary
+      - name: Run Harness
+        run: yarn test.harness
+
+  harness-docker:
+    name: Harness tests (Docker)
+    runs-on: ubuntu-latest
+    env:
+      executor: docker-harness
+      install_manually: true
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - name: Install Python and required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip python3-venv
+      - name: Set up Python virtual environment
+        if: env.install_manually
+        run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install --upgrade pip
+          pip install pipenv gunicorn
+          pipenv --version
+          gunicorn --version
+      - if: env.install_manually
+        run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+      - if: env.install_manually
+        run: git clone https://github.com/stoplightio/httpbin httpbin
+      - if: env.install_manually
+        run: |
+          cd httpbin
+          . ../venv/bin/activate
+          pipenv requirements > requirements.txt
+          pip3 install --no-cache-dir -r requirements.txt
+          pip3 install --no-cache-dir ./
+      - if: env.install_manually
+        run: |
+          cd httpbin
+          . ../venv/bin/activate
+          sudo $(which gunicorn) -b 0.0.0.0:80 httpbin:app -k gevent &
+          sleep 15
+          curl -I http://0.0.0.0:80
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Create CLI binary
+        run: yarn build.binary
+      - name: Run Harness
+        run: yarn test.harness
+
   release:
     name: Release
     runs-on: ubuntu-latest
+    needs: [validate, harness-macos, harness-docker]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -33,15 +154,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn --frozen-lockfile
-
-      - name: Lint
-        run: yarn lint
-
-      - name: Test
-        run: yarn test --colors --maxWorkers=2
-
-      - name: Build
-        run: yarn build
 
       - name: Version bump & GitHub release
         run: |
