@@ -1,7 +1,19 @@
 {
   "packages": ["packages/*"],
   "npmClient": "yarn",
-  "version": "5.5.4",
-  "independent": false,
-  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
+  "version": "5.15.6",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "changelogPreset": "angular",
+  "command": {
+    "version": {
+      "allowBranch": ["master"],
+      "conventionalCommits": true,
+      "createRelease": "github",
+      "message": "chore(release): cut the %s release [skip ci]",
+      "ignoreChanges": ["**/test/**", "**/__tests__/**"]
+    },
+    "publish": {
+      "registry": "https://registry.npmjs.org"
+    }
+  }
 }

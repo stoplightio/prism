@@ -1,30 +1,135 @@
 name: Release
 on:
-  push:
+  workflow_dispatch:
     branches:
       - master
-      
-permissions:
-  contents: write
-  pull-requests: write
+    inputs:
+      dry_run:
+        description: 'Dry run — lint, test, and build; version bump is local only, nothing is pushed or published'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  HUSKY: 0
 
 jobs:
-  # Create release PR
-  release-please:
-    name: Release Please
+  release:
+    name: Release
     runs-on: ubuntu-latest
-    if: github.repository == 'stoplightio/prism'
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ secrets.RELEASE_GITHUB_TOKEN }}
 
-      - uses: google-github-actions/release-please-action@v4
-        id: release
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Test
+        run: yarn test --colors --maxWorkers=2
+
+      - name: Build
+        run: yarn build
+
+      - name: Version bump & GitHub release
+        run: |
+          git config user.email "swagger-bot@smartbear.com"
+          git config user.name "swagger-bot"
+          npx lerna version --no-private --yes --force-publish ${{ inputs.dry_run && '--no-push' || '' }}
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish npm packages
+        if: ${{ !inputs.dry_run }}
+        run: npx lerna publish from-package --no-private --yes
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  sync-lockfile:
+    name: Sync lockfile
+    runs-on: ubuntu-latest
+    needs: release
+    if: ${{ !inputs.dry_run }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
           token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
-          target-branch: master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Sync lockfile
+        run: |
+          git config user.email "swagger-bot@smartbear.com"
+          git config user.name "swagger-bot"
+          git pull --rebase origin master
+          yarn
+          git add yarn.lock
+          git diff --cached --quiet || git commit -m "chore: sync lockfile [skip ci]"
+          git push origin master
+
+  build-binaries:
+    name: Build CLI binaries
+    runs-on: ubuntu-latest
+    needs: release
+    if: ${{ !inputs.dry_run }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Create CLI binaries
+        run: npx @yao-pkg/pkg --out-path ./cli-binaries --options max_old_space_size=4096 ./packages/cli/
+
+      - name: Upload CLI binaries artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: cli-binaries
+          path: ./cli-binaries
+
+  upload-binaries:
+    name: Upload CLI binaries to GitHub Release
+    runs-on: ubuntu-latest
+    needs: build-binaries
+    container:
+      image: golang:1.25
+    steps:
+      - name: Download CLI binaries artifact
+        uses: actions/download-artifact@v8
+        with:
+          path: /tmp/
+
+      - name: Download GitHub Release Utility
+        run: go install github.com/tcnksm/ghr@latest
+
+      - name: Publish Release artifacts on GitHub
+        run: ghr -t ${{ github.token }} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} /tmp/cli-binaries
