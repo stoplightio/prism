@@ -176,8 +176,9 @@ jobs:
         run: |
           git config user.email "swagger-bot@smartbear.com"
           git config user.name "swagger-bot"
-          git pull --rebase origin master
-          yarn
+          git fetch origin
+          git checkout -B master origin/master
+          yarn install
           git add yarn.lock
           git diff --cached --quiet || git commit -m "chore: sync lockfile [skip ci]"
           git push origin master
@@ -202,6 +203,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn --frozen-lockfile
+
+      - name: Build
+        run: yarn build
 
       - name: Create CLI binaries
         run: npx @yao-pkg/pkg --out-path ./cli-binaries --options max_old_space_size=4096 ./packages/cli/
