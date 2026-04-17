@@ -41,7 +41,7 @@ jobs:
       with:
         node-version-file: .nvmrc
         cache: 'yarn'
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Set up Python virtual environment
