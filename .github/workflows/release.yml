@@ -139,6 +139,9 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
 
+      - name: Build
+        run: yarn build
+
       - name: Version bump & GitHub release
         run: |
           git config user.email "swagger-bot@smartbear.com"
