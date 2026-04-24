@@ -187,7 +187,7 @@ jobs:
           git push origin master
 
   build-binaries:
-    name: Build CLI binaries
+    name: Build & publish CLI binaries
     runs-on: ubuntu-latest
     needs: release
     if: ${{ !inputs.dry_run }}
@@ -219,20 +219,13 @@ jobs:
           name: cli-binaries
           path: ./cli-binaries
 
-  upload-binaries:
-    name: Upload CLI binaries to GitHub Release
-    runs-on: ubuntu-latest
-    needs: build-binaries
-    container:
-      image: golang:1.26
-    steps:
-      - name: Download CLI binaries artifact
-        uses: actions/download-artifact@v8
+      - name: Set up Go
+        uses: actions/setup-go@v6
         with:
-          path: /tmp/
+          go-version: '1.26'
 
       - name: Download GitHub Release Utility
         run: go install github.com/tcnksm/ghr@latest
 
       - name: Publish Release artifacts on GitHub
-        run: ghr -t ${{ github.token }} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} /tmp/cli-binaries
+        run: ghr -t ${{ github.token }} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} ./cli-binaries
