@@ -44,7 +44,7 @@
     "@types/type-is": "^1.6.3",
     "@types/uri-template-lite": "^19.12.1",
     "@types/urijs": "^1.19.17",
-    "@types/whatwg-mimetype": "^3.0.0",
+    "@types/whatwg-mimetype": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^8.57.2",
     "@typescript-eslint/parser": "^8.57.2",
     "abstract-logging": "^2.0.1",
