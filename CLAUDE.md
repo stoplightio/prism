@@ -41,7 +41,7 @@ npm run test.harness
 
 ## Architecture
 
-This is a **Lerna monorepo** with Yarn workspaces. Packages have a strict layering:
+This is a **Lerna monorepo** with npm workspaces. Packages have a strict layering:
 
 ```
 packages/

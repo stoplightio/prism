@@ -2,18 +2,15 @@
 
 ## Development
 
-Yarn is a package manager for your code, similar to npm. While you can use npm to use Prism in your own project, we use yarn for development of Prism.
-
-1. If you don't already have the yarn package manager on your machine, install [yarn](https://yarnpkg.com/lang/en/docs/install/).
-2. Fork the [https://github.com/stoplightio/prism](https://github.com/stoplightio/prism) repo.
-3. Git clone your fork (i.e. `git clone https://github.com/<your-username>/prism.git`) to your machine.
-4. Run `yarn` to install dependencies and setup the project.
-5. Because during the development we run the software directly on top of TypeScript sources, we advise you to use our script: `cd packages/cli && yarn cli mock openapi.yaml`.
-6. Run `git checkout -b [name_of_your_new_branch]` to create a new branch for your work. To help build nicer changelogs, we have a convention for branch names. Please start your branch with either `feature/{branch-name}`, `chore/{branch-name}`, or `fix/{branch-name}`. For example, if I was adding a new CLI feature, I would make my branch name: `feature/add-cli-new-feature`.
-7. Make changes, write code and tests, etc. The fun stuff!
-8. Run `yarn test` to test your changes.
-9. Commit your changes.
-10. Don't forget to `git push` to your branch after you have committed changes.
+1. Fork the [https://github.com/stoplightio/prism](https://github.com/stoplightio/prism) repo.
+2. Git clone your fork (i.e. `git clone https://github.com/<your-username>/prism.git`) to your machine.
+3. Run `npm ci` to install dependencies and setup the project.
+4. Because during the development we run the software directly on top of TypeScript sources, we advise you to use our script: `cd packages/cli && npm run cli -- mock openapi.yaml`.
+5. Run `git checkout -b [name_of_your_new_branch]` to create a new branch for your work. To help build nicer changelogs, we have a convention for branch names. Please start your branch with either `feature/{branch-name}`, `chore/{branch-name}`, or `fix/{branch-name}`. For example, if I was adding a new CLI feature, I would make my branch name: `feature/add-cli-new-feature`.
+6. Make changes, write code and tests, etc. The fun stuff!
+7. Run `npm test` to test your changes.
+8. Commit your changes.
+9. Don't forget to `git push` to your branch after you have committed changes.
 
 Now, you are ready to make a pull request to the Stoplight repo! 😃
 
@@ -25,7 +22,7 @@ We have a pull request template setup that you will fill out when you open your 
 
 ### Dependencies
 
-If you are adding a new `devDependency`, add it to the root workspace `package.json`: `yarn add -D -W {packageName}`.
+If you are adding a new `devDependency`, add it to the root workspace `package.json`: `npm install -D {packageName}`.
 
 If you are adding a new runtime dependency, add it to the relevant `package.json` file (inside of `prism-core`, `prism-http`, etc).
 
@@ -34,16 +31,14 @@ If you are adding a new runtime dependency, add it to the relevant `package.json
 Prism has an extensive test suite. To run it, use the regular `test` script
 
 ```bash
-yarn test
-# or
 npm test
 ```
 
 We also have an harness test that requires some more setup. In general you do not need to run this on your computer but if you really have nothing better to do, you can run it by executing the following commands:
 
 ```bash
-yarn build.binary
-yarn test.harness
+npm run build.binary
+npm run test.harness
 ```
 
 There's a dedicated README.MD file in the `test-harness` directory in case you want to know what's going on.
@@ -55,7 +50,7 @@ The best way to debug a Prism behavior is probably to attach your debugger to th
 ```bash
 cd packages/cli
 
-yarn cli:debug mock file.oas.yml
+npm run cli:debug -- mock file.oas.yml
 ```
 
 The application will wait for a debugger to be attached and break on the first line; from there, you can put your breakpoint here and there and help us debug the software!
@@ -89,7 +84,7 @@ The application will wait for a debugger to be attached and break on the first l
 Prism is using TypeScript's incremental compiler capability that sometimes does not work. The best way to fix the issue is to simply remove any compiled file as well the incremental files:
 
 ```sh
-yarn build --clean
+npm run build -- --clean
 ```
 
 ## Support
