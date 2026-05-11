@@ -22,15 +22,15 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
+          cache: npm
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: npm ci
       - name: Lint
-        run: yarn lint
+        run: npm run lint
       - name: Test
-        run: yarn test --colors --maxWorkers=2
+        run: npm test -- --colors --maxWorkers=2
       - name: Build
-        run: yarn build
+        run: npm run build
 
   harness-macos:
     name: Harness tests (macOS)
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
+          cache: npm
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -70,11 +70,11 @@ jobs:
           sleep 15
           curl -I http://0.0.0.0:80
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: npm ci
       - name: Create CLI binary
-        run: yarn build.binary
+        run: npm run build.binary
       - name: Run Harness
-        run: yarn test.harness
+        run: npm run test.harness
 
   harness-docker:
     name: Harness tests (Docker)
@@ -84,7 +84,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
+          cache: npm
       - name: Install Python and required packages
         run: |
           sudo apt-get update
@@ -112,11 +112,11 @@ jobs:
           sleep 15
           curl -I http://0.0.0.0:80
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: npm ci
       - name: Create CLI binary
-        run: yarn build.binary
+        run: npm run build.binary
       - name: Run Harness
-        run: yarn test.harness
+        run: npm run test.harness
 
   release:
     name: Release
@@ -134,13 +134,13 @@ jobs:
         with:
           node-version-file: .nvmrc
           registry-url: https://registry.npmjs.org
-          cache: yarn
+          cache: npm
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: npm ci
 
       - name: Build
-        run: yarn build
+        run: npm run build
 
       - name: Version bump & GitHub release
         run: |
@@ -173,7 +173,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
+          cache: npm
 
       - name: Sync lockfile
         run: |
@@ -181,8 +181,8 @@ jobs:
           git config user.name "swagger-bot"
           git fetch origin
           git checkout -B master origin/master
-          yarn install
-          git add yarn.lock
+          npm install
+          git add package-lock.json
           git diff --cached --quiet || git commit -m "chore: sync lockfile [skip ci]"
           git push origin master
 
@@ -202,13 +202,13 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
+          cache: npm
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: npm ci
 
       - name: Build
-        run: yarn build
+        run: npm run build
 
       - name: Create CLI binaries
         run: npx @yao-pkg/pkg --out-path ./cli-binaries --options max_old_space_size=4096 ./packages/cli/
