@@ -22,11 +22,6 @@
     "test.harness": "jest -c ./jest.harness.config.js",
     "prepare": "husky"
   },
-  "overrides": {
-    "sanitize-html": "2.12.1",
-    "jsonpath-plus": "10.3.0",
-    "lodash": "^4.17.23"
-  },
   "devDependencies": {
     "@stoplight/types": "^14.1.1",
     "@types/caseless": "^0.12.2",
@@ -55,7 +50,7 @@
     "eslint-plugin-prettier": "^5.5.5",
     "fast-xml-parser": "^5.5.7",
     "form-data": "^4.0.0",
-    "gavel": "^10.0.4",
+    "gavel": "10.0.3",
     "glob": "^7.2.0",
     "http-string-parser": "^0.0.6",
     "husky": "^9.1.7",
