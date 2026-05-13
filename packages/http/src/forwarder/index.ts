@@ -17,9 +17,8 @@ import { hopByHopHeaders } from './resources';
 import { createUnauthorisedResponse, createUnprocessableEntityResponse } from '../mocker';
 import { ProblemJsonError } from '../types';
 import { PROXY_UNSUPPORTED_REQUEST_BODY, UPSTREAM_NOT_IMPLEMENTED } from './errors';
-import * as createHttpProxyAgent from 'http-proxy-agent';
-import * as createHttpsProxyAgent from 'https-proxy-agent';
-import type { Agent as HttpAgent } from 'http';
+import { HttpProxyAgent } from 'http-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { toURLSearchParams } from '../utils/url';
 import { logRequest, logResponse } from '../utils/logger';
 import * as chalk from 'chalk';
@@ -60,13 +59,11 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           let proxyAgent = undefined;
           if (upstreamProxy) {
             proxyAgent =
-              partialUrl.protocol === 'https:'
-                ? createHttpsProxyAgent(upstreamProxy)
-                : createHttpProxyAgent(upstreamProxy);
+              partialUrl.protocol === 'https:' ? new HttpsProxyAgent(upstreamProxy) : new HttpProxyAgent(upstreamProxy);
           }
 
           return fetch(url, {
-            agent: proxyAgent as HttpAgent | undefined,
+            agent: proxyAgent,
             body,
             method: input.method,
             headers: defaults(omit(input.headers, ['host']), {

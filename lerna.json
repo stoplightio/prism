@@ -1,6 +1,6 @@
 {
   "packages": ["packages/*"],
-  "npmClient": "yarn",
+  "npmClient": "npm",
   "version": "5.15.10",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "changelogPreset": "angular",

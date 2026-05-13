@@ -11,20 +11,16 @@
   },
   "scripts": {
     "lint": "eslint ./packages/**/src/*.ts",
-    "lint.fix": "yarn lint --fix",
+    "lint.fix": "eslint ./packages/**/src/*.ts --fix",
     "clean": "rm -rf ./packages/**/dist ./packages/**/*.tsbuildinfo",
     "build": "npm run clean && tsc --build --verbose ./packages/tsconfig.build.json",
-    "posttest": "yarn lint",
+    "posttest": "npm run lint",
     "test": "node --expose-gc ./node_modules/.bin/jest",
     "release": "lerna version",
-    "prebuild.binary": "yarn build",
+    "prebuild.binary": "npm run build",
     "build.binary": "npx @yao-pkg/pkg --output ./cli-binaries/prism-cli --options max_old_space_size=4096 ./packages/cli/",
-    "test.harness": "jest -c ./jest.harness.config.js"
-  },
-  "resolutions": {
-    "sanitize-html": "2.12.1",
-    "jsonpath-plus": "10.3.0",
-    "lodash": "^4.17.23"
+    "test.harness": "jest -c ./jest.harness.config.js",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@stoplight/types": "^14.1.1",
@@ -83,10 +79,5 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }

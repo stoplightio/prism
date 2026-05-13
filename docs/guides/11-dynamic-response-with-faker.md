@@ -50,10 +50,11 @@ Making the call `curl http://127.0.0.1:4010/pets/123 -H "Prefer: dynamic=true"`,
 The more descriptive your properties are, the better job Prism can do at creating a mock response.
 
 <!-- theme: info -->
+
 > **Tip:** If your team needs help creating better quality API description documents, take a look at [Spectral](https://stoplight.io/spectral/). You could enforce the use of `example` properties, or similar.
 
 ## Faker Supported Methods
- 
+
 For a list of supported methods, you can check [Faker's v6 documentation portal](https://v6.fakerjs.dev/api/address.html).
 
 It's important to note that Faker's version, and how you're using Prism, can have an impact on the behavior you might see. The current version of Faker that Prism is using is set to `^6.0.0`, and can be found in Prism's [package.json file](https://github.com/stoplightio/prism/blob/master/packages/http/package.json#L19). That means that any Faker version between v6.0.0 and v6.3.1 is valid for running Prism. If a user has a local version of Faker installed that's v6.0.0, while another user has v6.3.1 installed, when running the same OpenAPI description through Prism they might see different responses.
@@ -61,14 +62,14 @@ It's important to note that Faker's version, and how you're using Prism, can hav
 You can check which version of Faker you have installed locally by running the following command and looking for `@faker-js/faker`:
 
 ```bash
-yarn list --depth 0
+npm list --depth 0
 ```
 
 It's also worth noting that JSON Schema Faker also uses its [own version of the Faker library](https://github.com/Shinigami92/json-schema-faker/blob/master/package.json#L87), so the behavior you might see from the fallback methods can also be affected by it.
 
 ## Control Generated Fakes for Individual Properties
 
-In the following example there are two properties, each with specific Faker parameters. [`datatype.number`](https://v6.fakerjs.dev/api/datatype.html#number) uses named parameters while [`helpers.slugify`](https://v6.fakerjs.dev/api/helpers.html#slugify) uses positional parameters. 
+In the following example there are two properties, each with specific Faker parameters. [`datatype.number`](https://v6.fakerjs.dev/api/datatype.html#number) uses named parameters while [`helpers.slugify`](https://v6.fakerjs.dev/api/helpers.html#slugify) uses positional parameters.
 
 ```yaml
 example:
@@ -85,7 +86,7 @@ example:
       type: string
       example: two-words
       x-faker:
-        helpers.slugify: [ "two words" ]
+        helpers.slugify: ['two words']
 ```
 
 Pay close attention to the Faker docs when configuring any methods you pass in to the `x-faker` property. Some methods, such as `datatype.number`, will take in named options parameters:
@@ -127,7 +128,7 @@ If you'd like to change the date string format, you can pass in `format` propert
 due_date:
   type: string
   x-faker: date.past
-  format: "date-time"
+  format: 'date-time'
 ```
 
 And the output will be:
@@ -166,9 +167,9 @@ x-json-schema-faker:
 
 ### Fill or Additional Properties
 
-By default, `fillProperties` (*additional properties* in OpenAPI) are enabled. When `fillProperties = true`, the JSON Schema Faker generates missing properties to fulfill the schema definition. 
+By default, `fillProperties` (_additional properties_ in OpenAPI) are enabled. When `fillProperties = true`, the JSON Schema Faker generates missing properties to fulfill the schema definition.
 
-To set `fillProperties` to `false`, use one of the following options:  
+To set `fillProperties` to `false`, use one of the following options:
 
 - **CLI:** Run `prism mock -d --json-schema-faker-fillProperties=false api.oas3.yaml`. Setting this value with the CLI takes priority over the value set in `x-json-schema-faker`
 - **Schema:** Add a `x-json-schema-faker` object at the top level of your schema.
@@ -176,7 +177,7 @@ To set `fillProperties` to `false`, use one of the following options:
 ```yaml
 openapi: 3.1.0
 x-json-schema-faker:
-   min-items: 2
-   max-items: 3
-   fillProperties: false
+  min-items: 2
+  max-items: 3
+  fillProperties: false
 ```

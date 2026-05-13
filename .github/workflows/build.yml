@@ -12,21 +12,21 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version-file: .nvmrc
-        cache: 'yarn'
+        cache: 'npm'
     - name: restore_cache
       uses: actions/cache@v5
       with:
-        key: yarn-packages-${{ github.ref_name }}-${{ hashFiles('yarn.lock') }}
+        key: npm-packages-${{ github.ref_name }}-${{ hashFiles('package-lock.json') }}
         path: node_modules/
-        restore-keys: yarn-packages-${{ github.ref_name }}-
+        restore-keys: npm-packages-${{ github.ref_name }}-
     - name: Install Dependencies
-      run: yarn --frozen-lockfile
+      run: npm ci
     - name: Lint the codebase
-      run: yarn lint
+      run: npm run lint
     - name: Run tests
-      run: yarn test --colors --maxWorkers=2
+      run: npm test -- --colors --maxWorkers=2
     - name: Run build
-      run: yarn build
+      run: npm run build
   harness-macos:
     runs-on: macos-latest
     env:
@@ -40,7 +40,7 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version-file: .nvmrc
-        cache: 'yarn'
+        cache: 'npm'
     - uses: actions/setup-python@v6
       with:
         python-version: '3.12'
@@ -72,11 +72,11 @@ jobs:
         curl -I http://0.0.0.0:80
       if: env.install_manually
     - name: Install Dependencies
-      run: yarn --frozen-lockfile
+      run: npm ci
     - name: Create CLI binary
-      run: yarn build.binary
+      run: npm run build.binary
     - name: Run Harness
-      run: yarn test.harness
+      run: npm run test.harness
   harness-docker:
     runs-on: ubuntu-latest
     env:
@@ -87,7 +87,7 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version-file: .nvmrc
-        cache: 'yarn'
+        cache: 'npm'
     - name: Install Python and required packages
       run: |
         sudo apt-get update
@@ -120,8 +120,8 @@ jobs:
         curl -I http://0.0.0.0:80
       if: env.install_manually
     - name: Install Dependencies
-      run: yarn --frozen-lockfile
+      run: npm ci
     - name: Create CLI binary
-      run: yarn build.binary
+      run: npm run build.binary
     - name: Run Harness
-      run: yarn test.harness
+      run: npm run test.harness

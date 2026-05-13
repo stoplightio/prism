@@ -2,17 +2,17 @@ FROM node:24 AS compiler
 
 WORKDIR /usr/src/prism
 
-COPY package.json yarn.lock /usr/src/prism/
+COPY package.json package-lock.json /usr/src/prism/
 COPY packages/ /usr/src/prism/packages/
 
-RUN yarn && yarn build
+RUN npm ci && npm run build
 
 ###############################################################
 FROM node:24 AS dependencies
 
 WORKDIR /usr/src/prism/
 
-COPY package.json /usr/src/prism/
+COPY package.json package-lock.json /usr/src/prism/
 RUN mkdir -p /usr/src/prism/node_modules
 
 COPY packages/core/package.json /usr/src/prism/packages/core/
@@ -28,7 +28,7 @@ COPY packages/cli/package.json /usr/src/prism/packages/cli/
 RUN mkdir -p /usr/src/prism/packages/cli/node_modules
 
 ENV NODE_ENV production
-RUN yarn --production
+RUN npm ci --omit=dev
 
 RUN if [ $(uname -m) != "aarch64" ]; then curl -sfL https://gobinaries.com/tj/node-prune | bash; fi
 RUN if [ $(uname -m) != "aarch64" ]; then node-prune; fi
@@ -63,10 +63,10 @@ COPY --from=dependencies /usr/src/prism/packages/cli/node_modules/ /usr/src/pris
 WORKDIR /usr/src/prism/packages/cli/
 
 RUN if [ "$BUILD_TYPE" = "development" ] ; then \
-    cd /usr/src/prism/packages/core && yarn link && \
-    cd /usr/src/prism/packages/http && yarn link @stoplight/prism-core && yarn link && \
-    cd /usr/src/prism/packages/http-server && yarn link @stoplight/prism-core && yarn link @stoplight/prism-http && yarn link && \
-    cd /usr/src/prism/packages/cli && yarn link @stoplight/prism-core && yarn link @stoplight/prism-http && yarn link @stoplight/prism-http-server && yarn link ; \
+    cd /usr/src/prism/packages/core && npm link && \
+    cd /usr/src/prism/packages/http && npm link @stoplight/prism-core && npm link && \
+    cd /usr/src/prism/packages/http-server && npm link @stoplight/prism-core && npm link @stoplight/prism-http && npm link && \
+    cd /usr/src/prism/packages/cli && npm link @stoplight/prism-core && npm link @stoplight/prism-http && npm link @stoplight/prism-http-server && npm link ; \
 fi
 
 EXPOSE 4010

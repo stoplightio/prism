@@ -4,13 +4,11 @@ For many, the easiest way to install Prism is as a node module.
 
 ```bash
 npm install -g @stoplight/prism-cli
-# or
-yarn global add @stoplight/prism-cli
 ```
 
 ## Executable Binaries
 
-For users without Node.JS and/or npm/Yarn, standalone binaries are provided for [all major platforms](https://github.com/stoplightio/prism/releases). The quickest way to install the appropriate package for your operating system is via this shell script:
+For users without Node.JS and/or npm, standalone binaries are provided for [all major platforms](https://github.com/stoplightio/prism/releases). The quickest way to install the appropriate package for your operating system is via this shell script:
 
 ```bash
 curl -L https://raw.githack.com/stoplightio/prism/master/install | sh
