@@ -84,7 +84,17 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
   const handler: MicriHandler = async (request, reply) => {
     const { url, method, headers } = request;
 
-    const body = await parseRequestBody(request);
+    const body = await parseRequestBody(request).catch(async e => {
+      // Drain the request body so the client can receive our error response before connection close.
+      // Node.js 24 resets the TCP connection if there is unread data in the socket when the response is sent.
+      await new Promise<void>(resolve => {
+        request.resume();
+        request.once('end', resolve);
+        request.once('close', resolve);
+        request.once('error', resolve);
+      });
+      throw e;
+    });
 
     const { searchParams, pathname } = new URL(
       url!, // url can't be empty for HTTP request
