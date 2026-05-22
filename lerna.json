@@ -1,7 +1,7 @@
 {
   "packages": ["packages/*"],
   "npmClient": "npm",
-  "version": "5.15.11",
+  "version": "5.15.10",
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "changelogPreset": "angular",
   "command": {

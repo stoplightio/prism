@@ -3,12 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [5.15.11](https://github.com/stoplightio/prism/compare/v5.15.10...v5.15.11) (2026-05-20)
-
-### Bug Fixes
-
-- **deps:** bump @tootallnate/once, http-proxy-agent and https-proxy-agent ([#2795](https://github.com/stoplightio/prism/issues/2795)) ([f74e50c](https://github.com/stoplightio/prism/commit/f74e50cff30063a234f488287f19d4f270b6f923))
-
 ## [5.15.10](https://github.com/stoplightio/prism/compare/v5.15.9...v5.15.10) (2026-04-20)
 
 **Note:** Version bump only for package @stoplight/prism-http-server

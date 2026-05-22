@@ -3,15 +3,6 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [5.15.11](https://github.com/stoplightio/prism/compare/v5.15.10...v5.15.11) (2026-05-20)
-
-### Bug Fixes
-
-- **ci:** fix upload CLI binaries step ([#2785](https://github.com/stoplightio/prism/issues/2785)) ([528ba6e](https://github.com/stoplightio/prism/commit/528ba6e8ba1cf7b37d0cc9d0743bf4775a00a3f3))
-- **deps:** bump @tootallnate/once, http-proxy-agent and https-proxy-agent ([#2795](https://github.com/stoplightio/prism/issues/2795)) ([f74e50c](https://github.com/stoplightio/prism/commit/f74e50cff30063a234f488287f19d4f270b6f923))
-- **deps:** bump fast-uri from 3.1.0 to 3.1.2 ([#2793](https://github.com/stoplightio/prism/issues/2793)) ([937f6aa](https://github.com/stoplightio/prism/commit/937f6aa7d3c6c016fc0debf09d09ef311eea32f2))
-- **deps:** bump fast-xml-builder from 1.1.5 to 1.2.0 ([#2792](https://github.com/stoplightio/prism/issues/2792)) ([bb2a017](https://github.com/stoplightio/prism/commit/bb2a0170f7f29d9062ae0e0f17c8f2d9e430bdb3))
-
 ## [5.15.10](https://github.com/stoplightio/prism/compare/v5.15.9...v5.15.10) (2026-04-20)
 
 ### Bug Fixes
