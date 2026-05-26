@@ -87,3 +87,11 @@ test(`starts proxy server with default validate-request option to be overriden`,
     expect.objectContaining({ validateRequest: false, host: '0.0.0.0' })
   );
 });
+
+test(`starts mock server with default validate-request option to be overriden`, () => {
+  parser.parse(`mock /path/to -m -h 0.0.0.0 --validate-request=false`);
+
+  expect(createMultiProcessPrism).toHaveBeenLastCalledWith(
+    expect.objectContaining({ validateRequest: false, host: '0.0.0.0' })
+  );
+});
