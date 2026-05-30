@@ -11,7 +11,7 @@ export function deserializeSimpleStyle(
   const value = parameters[name];
 
   if (type === 'array') {
-    return deserializeArray(value);
+    return deserializeArray(value as string | string[]);
   } else if (type === 'object') {
     return explode ? deserializeImplodeObject(value) : deserializeObject(value);
   } else {
@@ -19,7 +19,8 @@ export function deserializeSimpleStyle(
   }
 }
 
-function deserializeArray(value: string) {
+function deserializeArray(value: string | string[]) {
+  if (Array.isArray(value)) return value;
   return value === '' ? [] : value.split(',');
 }
 
