@@ -15,7 +15,7 @@ const projectDefault = {
   transform: {
     '^.+\\.(ts)$': 'ts-jest',
   },
-  transformIgnorePatterns: ['node_modules/(?!@faker-js/faker)'],
+  transformIgnorePatterns: ['node_modules/(?!@faker-js/faker|http-proxy-agent|https-proxy-agent|agent-base)'],
 };
 
 module.exports = {

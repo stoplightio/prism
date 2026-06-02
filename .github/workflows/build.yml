@@ -12,21 +12,21 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version-file: .nvmrc
-        cache: 'yarn'
+        cache: 'npm'
     - name: restore_cache
       uses: actions/cache@v5
       with:
-        key: yarn-packages-${{ github.ref_name }}-${{ hashFiles('yarn.lock') }}
+        key: npm-packages-${{ github.ref_name }}-${{ hashFiles('package-lock.json') }}
         path: node_modules/
-        restore-keys: yarn-packages-${{ github.ref_name }}-
+        restore-keys: npm-packages-${{ github.ref_name }}-
     - name: Install Dependencies
-      run: yarn --frozen-lockfile
+      run: npm ci
     - name: Lint the codebase
-      run: yarn lint
+      run: npm run lint
     - name: Run tests
-      run: yarn test --colors --maxWorkers=2
+      run: npm test -- --colors --maxWorkers=2
     - name: Run build
-      run: yarn build
+      run: npm run build
   harness-macos:
     runs-on: macos-latest
     env:
@@ -40,8 +40,8 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version-file: .nvmrc
-        cache: 'yarn'
-    - uses: actions/setup-python@v5
+        cache: 'npm'
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.12'
     - name: Set up Python virtual environment
@@ -72,11 +72,11 @@ jobs:
         curl -I http://0.0.0.0:80
       if: env.install_manually
     - name: Install Dependencies
-      run: yarn --frozen-lockfile
+      run: npm ci
     - name: Create CLI binary
-      run: yarn build.binary
+      run: npm run build.binary
     - name: Run Harness
-      run: yarn test.harness
+      run: npm run test.harness
   harness-docker:
     runs-on: ubuntu-latest
     env:
@@ -87,7 +87,7 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version-file: .nvmrc
-        cache: 'yarn'
+        cache: 'npm'
     - name: Install Python and required packages
       run: |
         sudo apt-get update
@@ -120,51 +120,8 @@ jobs:
         curl -I http://0.0.0.0:80
       if: env.install_manually
     - name: Install Dependencies
-      run: yarn --frozen-lockfile
+      run: npm ci
     - name: Create CLI binary
-      run: yarn build.binary
+      run: npm run build.binary
     - name: Run Harness
-      run: yarn test.harness
-  publish:
-    if: "github.event_name == 'push' && startsWith(github.event.head_commit.message, 'chore: release master')"
-    runs-on: ubuntu-latest
-    needs:
-    - build
-    - harness-macos
-    - harness-docker
-    steps:
-    - uses: actions/checkout@v6
-    - uses: actions/setup-node@v6
-      with:
-        node-version-file: .nvmrc
-        cache: 'yarn'
-    - name: Set git identity
-      run: git config user.email "circle@circleci.com" && git config user.name "circleci"
-    - name: Install Dependencies
-      run: yarn --frozen-lockfile
-    - name: Build all code to JavaScript
-      run: yarn build
-    - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
-    - name: Publish
-      run: yarn lerna publish from-git --create-release=github --yes
-    - name: Create CLI binaries
-      run: npx @yao-pkg/pkg --out-path ./cli-binaries --options max_old_space_size=4096 ./packages/cli/
-    - uses: actions/upload-artifact@v7
-      with:
-        name: cli-binaries
-        path: "./cli-binaries"
-  upload_artifacts:
-    if: "github.event_name == 'push' && startsWith(github.event.head_commit.message, 'chore: release master')"
-    runs-on: ubuntu-latest
-    container:
-      image: golang:1.25
-    needs:
-    - publish
-    steps:
-    - uses: actions/download-artifact@v8
-      with:
-        path: "/tmp/"
-    - name: Download GitHub Release Utility
-      run: go install github.com/tcnksm/ghr@latest
-    - name: Publish Release artifacts on GitHub
-      run: ghr -t ${{github.token}} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} /tmp/cli-binaries
+      run: npm run test.harness

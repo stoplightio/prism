@@ -1,6 +1,6 @@
 {
   "name": "@stoplight/prism-cli",
-  "version": "5.15.6",
+  "version": "5.15.11",
   "author": "Stoplight <support@stoplight.io>",
   "bin": {
     "prism": "./dist/index.js"
@@ -9,14 +9,15 @@
   "dependencies": {
     "@stoplight/json": "3.21.7",
     "@stoplight/json-schema-ref-parser": "10.0.0",
-    "@stoplight/prism-core": "^5.15.0",
-    "@stoplight/prism-http": "5.15.4",
-    "@stoplight/prism-http-server": "^5.15.5",
+    "@stoplight/prism-core": "^5.15.11",
+    "@stoplight/prism-http": "^5.15.11",
+    "@stoplight/prism-http-server": "^5.15.11",
     "@stoplight/types": "^14.1.0",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "fp-ts": "^2.11.5",
     "json-schema-faker": "0.5.9",
+    "jsonrepair": "^3.12.0",
     "lodash": "^4.17.23",
     "node-fetch": "^2.6.5",
     "pino": "^6.13.3",
@@ -25,8 +26,7 @@
     "tslib": "^2.3.1",
     "uri-template-lite": "^22.9.0",
     "urijs": "^1.19.11",
-    "yargs": "^16.2.0",
-    "jsonrepair": "^3.12.0"
+    "yargs": "^16.2.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.4.0"

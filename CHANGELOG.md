@@ -1,3 +1,41 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [5.15.11](https://github.com/stoplightio/prism/compare/v5.15.10...v5.15.11) (2026-05-20)
+
+### Bug Fixes
+
+- **ci:** fix upload CLI binaries step ([#2785](https://github.com/stoplightio/prism/issues/2785)) ([528ba6e](https://github.com/stoplightio/prism/commit/528ba6e8ba1cf7b37d0cc9d0743bf4775a00a3f3))
+- **deps:** bump @tootallnate/once, http-proxy-agent and https-proxy-agent ([#2795](https://github.com/stoplightio/prism/issues/2795)) ([f74e50c](https://github.com/stoplightio/prism/commit/f74e50cff30063a234f488287f19d4f270b6f923))
+- **deps:** bump fast-uri from 3.1.0 to 3.1.2 ([#2793](https://github.com/stoplightio/prism/issues/2793)) ([937f6aa](https://github.com/stoplightio/prism/commit/937f6aa7d3c6c016fc0debf09d09ef311eea32f2))
+- **deps:** bump fast-xml-builder from 1.1.5 to 1.2.0 ([#2792](https://github.com/stoplightio/prism/issues/2792)) ([bb2a017](https://github.com/stoplightio/prism/commit/bb2a0170f7f29d9062ae0e0f17c8f2d9e430bdb3))
+
+## [5.15.10](https://github.com/stoplightio/prism/compare/v5.15.9...v5.15.10) (2026-04-20)
+
+### Bug Fixes
+
+- **ci:** run yarn build before publishing npm packages ([#2783](https://github.com/stoplightio/prism/issues/2783)) ([3662352](https://github.com/stoplightio/prism/commit/36623524aea29ac1edad2de3cdba753171fdda5e))
+
+## [5.15.9](https://github.com/stoplightio/prism/compare/v5.15.8...v5.15.9) (2026-04-17)
+
+### Bug Fixes
+
+- **ci:** fix upload CLI binaries step ([#2780](https://github.com/stoplightio/prism/issues/2780)) ([ea3af67](https://github.com/stoplightio/prism/commit/ea3af678b09b139353e47e8495254f4962011c7f))
+
+## [5.15.8](https://github.com/stoplightio/prism/compare/v5.15.7...v5.15.8) (2026-04-17)
+
+### Bug Fixes
+
+- **ci:** fix release binaries & sync lockfile steps ([#2779](https://github.com/stoplightio/prism/issues/2779)) ([9caed88](https://github.com/stoplightio/prism/commit/9caed880491a5987987cb25b511dd515ebfd0436))
+
+## [5.15.7](https://github.com/stoplightio/prism/compare/v5.15.6...v5.15.7) (2026-04-17)
+
+### Bug Fixes
+
+- **deps:** bump axios from 1.13.6 to 1.15.0 ([#2773](https://github.com/stoplightio/prism/issues/2773)) ([4cd6ff4](https://github.com/stoplightio/prism/commit/4cd6ff4bd12e09962d3214c920bcb5837de5e883))
+
 # Changelog
 
 :warning: This changelog is deprecated in favor of individual changelogs for each package.
@@ -18,143 +56,129 @@ The format for this file is based on [Keep a Changelog](https://keepachangelog.c
 
 ## [5.15.1](https://github.com/stoplightio/prism/compare/v5.15.0...v5.15.1) (2026-03-30)
 
-
 ### Bug Fixes
 
-* **ci:** fix build workflow ([#2736](https://github.com/stoplightio/prism/issues/2736)) ([0ec255f](https://github.com/stoplightio/prism/commit/0ec255ff5b03f9d38a471eb825eaf06835e4d3bc))
-* restore binary release assets by fixing CI workflow ([#2761](https://github.com/stoplightio/prism/issues/2761)) ([8980465](https://github.com/stoplightio/prism/commit/89804658185e0b9f084b5ba52d26aa99ce57e264))
-* upgrade json-schema-ref-parser to fix URL specs on Node.js 24 ([#2762](https://github.com/stoplightio/prism/issues/2762)) ([0ef7ee8](https://github.com/stoplightio/prism/commit/0ef7ee8550c3ce60a77d9a425eff977fa09726a4))
+- **ci:** fix build workflow ([#2736](https://github.com/stoplightio/prism/issues/2736)) ([0ec255f](https://github.com/stoplightio/prism/commit/0ec255ff5b03f9d38a471eb825eaf06835e4d3bc))
+- restore binary release assets by fixing CI workflow ([#2761](https://github.com/stoplightio/prism/issues/2761)) ([8980465](https://github.com/stoplightio/prism/commit/89804658185e0b9f084b5ba52d26aa99ce57e264))
+- upgrade json-schema-ref-parser to fix URL specs on Node.js 24 ([#2762](https://github.com/stoplightio/prism/issues/2762)) ([0ef7ee8](https://github.com/stoplightio/prism/commit/0ef7ee8550c3ce60a77d9a425eff977fa09726a4))
 
 ## [5.15.0](https://github.com/stoplightio/prism/compare/v5.14.3...v5.15.0) (2026-03-27)
 
-
 ### Features
 
-* converted circleci build job to gha workflow ([#2719](https://github.com/stoplightio/prism/issues/2719)) ([d7b6ce3](https://github.com/stoplightio/prism/commit/d7b6ce3992a4305c68ec26b02ffe7e54b2df9dd5))
-* **deps:** bump node from 18.20 to 24.14 ([#2752](https://github.com/stoplightio/prism/issues/2752)) ([3940161](https://github.com/stoplightio/prism/commit/39401611f00b997852dcf54fc52902720377034d))
-
+- converted circleci build job to gha workflow ([#2719](https://github.com/stoplightio/prism/issues/2719)) ([d7b6ce3](https://github.com/stoplightio/prism/commit/d7b6ce3992a4305c68ec26b02ffe7e54b2df9dd5))
+- **deps:** bump node from 18.20 to 24.14 ([#2752](https://github.com/stoplightio/prism/issues/2752)) ([3940161](https://github.com/stoplightio/prism/commit/39401611f00b997852dcf54fc52902720377034d))
 
 ### Bug Fixes
 
-* **deps:** update vulnerable lerna dependency ([#2753](https://github.com/stoplightio/prism/issues/2753)) ([8c6772c](https://github.com/stoplightio/prism/commit/8c6772cce05af29dcc8fd8a33b2979a90c11e1b3))
+- **deps:** update vulnerable lerna dependency ([#2753](https://github.com/stoplightio/prism/issues/2753)) ([8c6772c](https://github.com/stoplightio/prism/commit/8c6772cce05af29dcc8fd8a33b2979a90c11e1b3))
 
 ## [5.14.3](https://github.com/stoplightio/prism/compare/v5.14.2...v5.14.3) (2025-10-27)
 
-
 ### Bug Fixes
 
-* Fix vulnerability CVE-2025-1302 ([#2702](https://github.com/stoplightio/prism/issues/2702)) ([fdc55de](https://github.com/stoplightio/prism/commit/fdc55de8742ac1f47ac32a69700406a71774cd29))
+- Fix vulnerability CVE-2025-1302 ([#2702](https://github.com/stoplightio/prism/issues/2702)) ([fdc55de](https://github.com/stoplightio/prism/commit/fdc55de8742ac1f47ac32a69700406a71774cd29))
 
 ## [5.14.2](https://github.com/stoplightio/prism/compare/v5.14.1...v5.14.2) (2025-04-17)
 
-
 ### Bug Fixes
 
-* downgrade version of prism components to published ([#2692](https://github.com/stoplightio/prism/issues/2692)) ([083ac1e](https://github.com/stoplightio/prism/commit/083ac1ee57a3a445d887157f9dec81b4a18c9991))
+- downgrade version of prism components to published ([#2692](https://github.com/stoplightio/prism/issues/2692)) ([083ac1e](https://github.com/stoplightio/prism/commit/083ac1ee57a3a445d887157f9dec81b4a18c9991))
 
 ## [5.14.1](https://github.com/stoplightio/prism/compare/v5.14.0...v5.14.1) (2025-04-16)
 
-
 ### Bug Fixes
 
-* **cli:** put new library dependency into proper package.json ([#2688](https://github.com/stoplightio/prism/issues/2688)) ([#2690](https://github.com/stoplightio/prism/issues/2690)) ([98ab747](https://github.com/stoplightio/prism/commit/98ab7477023de599298795a6e6a664e4586beb6b))
+- **cli:** put new library dependency into proper package.json ([#2688](https://github.com/stoplightio/prism/issues/2688)) ([#2690](https://github.com/stoplightio/prism/issues/2690)) ([98ab747](https://github.com/stoplightio/prism/commit/98ab7477023de599298795a6e6a664e4586beb6b))
 
 ## [5.14.0](https://github.com/stoplightio/prism/compare/v5.13.0...v5.14.0) (2025-04-15)
 
-
 ### Features
 
-* 1813 start using 415 code for invalid content-types instead constantly inferring it ([df475fc](https://github.com/stoplightio/prism/commit/df475fcb67608428c143b3e6a988d95a1ef1fd3e))
-* add --seed CLI flag for deterministic generation of dynamic examples ([#2594](https://github.com/stoplightio/prism/issues/2594)) ([8edc1cc](https://github.com/stoplightio/prism/commit/8edc1cccd29e07e6f4a20642247189b4a1375cb2))
-* adds more standard compliant request body handling ([#2260](https://github.com/stoplightio/prism/issues/2260)) ([3b56cb7](https://github.com/stoplightio/prism/commit/3b56cb72f41d106cbcc95bb7c27711a3c05c6298))
-* Allow JSON Schema Faker configuration in specification ([b72dd03](https://github.com/stoplightio/prism/commit/b72dd03e24bea4a7178c824eb0d83c68715f1503))
-* better validation for optional auth ([#2401](https://github.com/stoplightio/prism/issues/2401)) ([e2d9f0f](https://github.com/stoplightio/prism/commit/e2d9f0f23884c73a8dad371e3497a0956c00ee11))
-* **deps:** bump node from 16 to 18.20 ([#2520](https://github.com/stoplightio/prism/issues/2520)) ([4b175a6](https://github.com/stoplightio/prism/commit/4b175a614a7d1f184863d741c8cbec494b37b57f))
-* **deps:** bump xcode version ([#2522](https://github.com/stoplightio/prism/issues/2522)) ([939f749](https://github.com/stoplightio/prism/commit/939f749100ed2a1d36bf0e62c37190ac192ea209))
-* **http:** added support to Deprecation header for deprecated operations [#1563](https://github.com/stoplightio/prism/issues/1563) ([1415319](https://github.com/stoplightio/prism/commit/14153193c69bccd960e62bc2b86ec23470d66921))
-* **http:** detect complex schema error, improve error message ([#2327](https://github.com/stoplightio/prism/issues/2327)) ([07af511](https://github.com/stoplightio/prism/commit/07af51120ecb8593bc7c0892bc79f5ad5258a67c))
-* prevent crashing on parsing malformed JSONs ([#2679](https://github.com/stoplightio/prism/issues/2679)) ([a4cf04b](https://github.com/stoplightio/prism/commit/a4cf04beb2172570cde513b66679663d4f79e369))
-* **proxy:** add a flag to skip request validation ([71d04c8](https://github.com/stoplightio/prism/commit/71d04c8e19fef64f1354a17e51cf48a0d8b4bee7))
-* STOP-243 - create prism instance with full spec ([#2501](https://github.com/stoplightio/prism/issues/2501)) ([ed41dca](https://github.com/stoplightio/prism/commit/ed41dca89e5ad673f1a0d813b403a44de7e367b2))
-
+- 1813 start using 415 code for invalid content-types instead constantly inferring it ([df475fc](https://github.com/stoplightio/prism/commit/df475fcb67608428c143b3e6a988d95a1ef1fd3e))
+- add --seed CLI flag for deterministic generation of dynamic examples ([#2594](https://github.com/stoplightio/prism/issues/2594)) ([8edc1cc](https://github.com/stoplightio/prism/commit/8edc1cccd29e07e6f4a20642247189b4a1375cb2))
+- adds more standard compliant request body handling ([#2260](https://github.com/stoplightio/prism/issues/2260)) ([3b56cb7](https://github.com/stoplightio/prism/commit/3b56cb72f41d106cbcc95bb7c27711a3c05c6298))
+- Allow JSON Schema Faker configuration in specification ([b72dd03](https://github.com/stoplightio/prism/commit/b72dd03e24bea4a7178c824eb0d83c68715f1503))
+- better validation for optional auth ([#2401](https://github.com/stoplightio/prism/issues/2401)) ([e2d9f0f](https://github.com/stoplightio/prism/commit/e2d9f0f23884c73a8dad371e3497a0956c00ee11))
+- **deps:** bump node from 16 to 18.20 ([#2520](https://github.com/stoplightio/prism/issues/2520)) ([4b175a6](https://github.com/stoplightio/prism/commit/4b175a614a7d1f184863d741c8cbec494b37b57f))
+- **deps:** bump xcode version ([#2522](https://github.com/stoplightio/prism/issues/2522)) ([939f749](https://github.com/stoplightio/prism/commit/939f749100ed2a1d36bf0e62c37190ac192ea209))
+- **http:** added support to Deprecation header for deprecated operations [#1563](https://github.com/stoplightio/prism/issues/1563) ([1415319](https://github.com/stoplightio/prism/commit/14153193c69bccd960e62bc2b86ec23470d66921))
+- **http:** detect complex schema error, improve error message ([#2327](https://github.com/stoplightio/prism/issues/2327)) ([07af511](https://github.com/stoplightio/prism/commit/07af51120ecb8593bc7c0892bc79f5ad5258a67c))
+- prevent crashing on parsing malformed JSONs ([#2679](https://github.com/stoplightio/prism/issues/2679)) ([a4cf04b](https://github.com/stoplightio/prism/commit/a4cf04beb2172570cde513b66679663d4f79e369))
+- **proxy:** add a flag to skip request validation ([71d04c8](https://github.com/stoplightio/prism/commit/71d04c8e19fef64f1354a17e51cf48a0d8b4bee7))
+- STOP-243 - create prism instance with full spec ([#2501](https://github.com/stoplightio/prism/issues/2501)) ([ed41dca](https://github.com/stoplightio/prism/commit/ed41dca89e5ad673f1a0d813b403a44de7e367b2))
 
 ### Bug Fixes
 
-* [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([931fc0f](https://github.com/stoplightio/prism/commit/931fc0fe47b4ff4ec58f8ba3369d50f8d1bf47c3))
-* [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([bfc258a](https://github.com/stoplightio/prism/commit/bfc258aa98e49c46fa5116ca1e7b49b8a3117ce9))
-* [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([1a05283](https://github.com/stoplightio/prism/commit/1a0528365251043d041c487ebeb905a51310e420))
-* [#7839](https://github.com/stoplightio/prism/issues/7839) fixed handling of number with format: double ([e10a1e5](https://github.com/stoplightio/prism/commit/e10a1e54995bd0a0c325412de63041835023f5d5))
-* 1917 fixed handling of example request for invalid requests ([444012b](https://github.com/stoplightio/prism/commit/444012bf1d9675abb2628727d4c5b39de486eb43))
-* another fix for memory leak of schema validation ([ded2a9b](https://github.com/stoplightio/prism/commit/ded2a9b110459b7c15e00115e5a600f6f8cd8438))
-* **ci:** release please simpler config ([#2489](https://github.com/stoplightio/prism/issues/2489)) ([b6be539](https://github.com/stoplightio/prism/commit/b6be539ff987194fda497d6b08c3671a7beed63f))
-* **ci:** release please with checkout ([#2492](https://github.com/stoplightio/prism/issues/2492)) ([ea378fc](https://github.com/stoplightio/prism/commit/ea378fc9187989b7eea42eb2d2f24e31bacf08a4))
-* **ci:** release please with root ([#2497](https://github.com/stoplightio/prism/issues/2497)) ([6043a9b](https://github.com/stoplightio/prism/commit/6043a9b792c6838acfa3d48c1bfe34ca8b7ba094))
-* **ci:** remove root from release please ([#2494](https://github.com/stoplightio/prism/issues/2494)) ([ad1743e](https://github.com/stoplightio/prism/commit/ad1743ee0387a13c85e5d37628bc2ba1236f83fb))
-* **ci:** STOP-267 add release please manifest ([#2484](https://github.com/stoplightio/prism/issues/2484)) ([82fe01e](https://github.com/stoplightio/prism/commit/82fe01e3a868863ba2854b7a14e8c10666b4f4a3))
-* **ci:** STOP-267 automate release branch creation ([#2479](https://github.com/stoplightio/prism/issues/2479)) ([182e4f9](https://github.com/stoplightio/prism/commit/182e4f96917d4967b9d363657ef65528ce3e33ae))
-* **ci:** STOP-267 improve auto-release config ([#2481](https://github.com/stoplightio/prism/issues/2481)) ([bb29592](https://github.com/stoplightio/prism/commit/bb29592ded13f2ec248236a564b46b6180f5e100))
-* decode path before matching it ([ed5bce8](https://github.com/stoplightio/prism/commit/ed5bce837fb0cf83d15fb1a085227986f063aee7))
-* **Docker:** use tini to handle kernel signals ([#2622](https://github.com/stoplightio/prism/issues/2622)) ([c55d633](https://github.com/stoplightio/prism/commit/c55d633486e57a1d67f7260a847d1d8f3a281208))
-* fixed [#1860](https://github.com/stoplightio/prism/issues/1860) performance regression ([fe6345d](https://github.com/stoplightio/prism/commit/fe6345dc8a78dc0a0a30774c0175422c9cc93139))
-* **http-negotiator:** [#2381](https://github.com/stoplightio/prism/issues/2381) add additional warn log message ([#2550](https://github.com/stoplightio/prism/issues/2550)) ([64a23fc](https://github.com/stoplightio/prism/commit/64a23fc530ff1e01c186f01e77a5906c0251f394))
-* **http-server:** discard request body if the content-length header i… ([#2103](https://github.com/stoplightio/prism/issues/2103)) ([c172f42](https://github.com/stoplightio/prism/commit/c172f42c89d67c3963eb9962d0550d5126756d34))
-* **http:** add explicit dependency on chalk ([#2263](https://github.com/stoplightio/prism/issues/2263)) ([55b07c9](https://github.com/stoplightio/prism/commit/55b07c98145799faf0aae47a023a34a6e22e714b))
-* **http:** update json-path plus in http ([551a23f](https://github.com/stoplightio/prism/commit/551a23f6ea889803fe7b7b9db497dd94ddca54c9))
-* json schema faker fillProperties not working ([#2398](https://github.com/stoplightio/prism/issues/2398)) ([e8acebd](https://github.com/stoplightio/prism/commit/e8acebd430dfe3cfc9db7bda3228256153346488))
-* keep encoded value if uri decoding fails. ([#2387](https://github.com/stoplightio/prism/issues/2387)) ([aba9bee](https://github.com/stoplightio/prism/commit/aba9bee0dae442da8364c327bd3d2e560e7de4cc))
-* mock issue resolve for similar templated requests ([#2564](https://github.com/stoplightio/prism/issues/2564)) ([b8e9fd8](https://github.com/stoplightio/prism/commit/b8e9fd815f0f612664b36704e4200d5473875fbe))
-* readOnly objects in arrays are handled correctly ([#2513](https://github.com/stoplightio/prism/issues/2513)) ([7670236](https://github.com/stoplightio/prism/commit/767023681f481d5e9d8c46203613faa635541eab))
-* remove deprecated usage of parse ([#1959](https://github.com/stoplightio/prism/issues/1959)) ([ea5b445](https://github.com/stoplightio/prism/commit/ea5b44555435424c2743fd3cde9bea75a408c6b8))
-* replace date-time validator with our bug fixed version ([#1856](https://github.com/stoplightio/prism/issues/1856)) ([44186db](https://github.com/stoplightio/prism/commit/44186dbf6eba6ad506fd9f08e473edf891cdbf3c))
-* reverted changes and bump the JSON version ([#2598](https://github.com/stoplightio/prism/issues/2598)) ([4acb898](https://github.com/stoplightio/prism/commit/4acb8980b31c3902ff01cabef06a4fb6f9a6cd48))
-* testing circle ci build ([0d2deb0](https://github.com/stoplightio/prism/commit/0d2deb0cee73d73b301b5839103f2f50cbbc880b))
-* update http-spec ([#2037](https://github.com/stoplightio/prism/issues/2037)) ([72d6882](https://github.com/stoplightio/prism/commit/72d6882bc39a673e65b1fc10ff88d3581b838dca))
-* upgrade dependencies and resolve breaking http spec changes ([#2105](https://github.com/stoplightio/prism/issues/2105)) ([ebbc6c1](https://github.com/stoplightio/prism/commit/ebbc6c1546aced8db0f492dd80651d2459c9bae0))
-* upgrade deps to clean up last security vulnerabilities ([#2076](https://github.com/stoplightio/prism/issues/2076)) ([b1ac6f4](https://github.com/stoplightio/prism/commit/b1ac6f4c47a256c653965ebcd66f4693889ae157))
-* upgrade jsrp to 9.2.4 to allow basic auth ([#2279](https://github.com/stoplightio/prism/issues/2279)) ([2148a2b](https://github.com/stoplightio/prism/commit/2148a2bc9c43d2897900ffe5838d7bc76fd8a3d1))
-* use proper client call in memory leak tests ([c223192](https://github.com/stoplightio/prism/commit/c223192750c2edde958e43da8bffe639f2672952))
-* validateOutput() when schema contains internal reference ([#2363](https://github.com/stoplightio/prism/issues/2363)) ([8e143e6](https://github.com/stoplightio/prism/commit/8e143e6622bdc8098a5c86c399831a12858612d5))
-* version update and bundled_issue changes ([#2577](https://github.com/stoplightio/prism/issues/2577)) ([c4074fa](https://github.com/stoplightio/prism/commit/c4074fa24438079e659061ee32d08464a688c17c))
+- [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([931fc0f](https://github.com/stoplightio/prism/commit/931fc0fe47b4ff4ec58f8ba3369d50f8d1bf47c3))
+- [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([bfc258a](https://github.com/stoplightio/prism/commit/bfc258aa98e49c46fa5116ca1e7b49b8a3117ce9))
+- [#1881](https://github.com/stoplightio/prism/issues/1881) fixed memory leak for validation ([1a05283](https://github.com/stoplightio/prism/commit/1a0528365251043d041c487ebeb905a51310e420))
+- [#7839](https://github.com/stoplightio/prism/issues/7839) fixed handling of number with format: double ([e10a1e5](https://github.com/stoplightio/prism/commit/e10a1e54995bd0a0c325412de63041835023f5d5))
+- 1917 fixed handling of example request for invalid requests ([444012b](https://github.com/stoplightio/prism/commit/444012bf1d9675abb2628727d4c5b39de486eb43))
+- another fix for memory leak of schema validation ([ded2a9b](https://github.com/stoplightio/prism/commit/ded2a9b110459b7c15e00115e5a600f6f8cd8438))
+- **ci:** release please simpler config ([#2489](https://github.com/stoplightio/prism/issues/2489)) ([b6be539](https://github.com/stoplightio/prism/commit/b6be539ff987194fda497d6b08c3671a7beed63f))
+- **ci:** release please with checkout ([#2492](https://github.com/stoplightio/prism/issues/2492)) ([ea378fc](https://github.com/stoplightio/prism/commit/ea378fc9187989b7eea42eb2d2f24e31bacf08a4))
+- **ci:** release please with root ([#2497](https://github.com/stoplightio/prism/issues/2497)) ([6043a9b](https://github.com/stoplightio/prism/commit/6043a9b792c6838acfa3d48c1bfe34ca8b7ba094))
+- **ci:** remove root from release please ([#2494](https://github.com/stoplightio/prism/issues/2494)) ([ad1743e](https://github.com/stoplightio/prism/commit/ad1743ee0387a13c85e5d37628bc2ba1236f83fb))
+- **ci:** STOP-267 add release please manifest ([#2484](https://github.com/stoplightio/prism/issues/2484)) ([82fe01e](https://github.com/stoplightio/prism/commit/82fe01e3a868863ba2854b7a14e8c10666b4f4a3))
+- **ci:** STOP-267 automate release branch creation ([#2479](https://github.com/stoplightio/prism/issues/2479)) ([182e4f9](https://github.com/stoplightio/prism/commit/182e4f96917d4967b9d363657ef65528ce3e33ae))
+- **ci:** STOP-267 improve auto-release config ([#2481](https://github.com/stoplightio/prism/issues/2481)) ([bb29592](https://github.com/stoplightio/prism/commit/bb29592ded13f2ec248236a564b46b6180f5e100))
+- decode path before matching it ([ed5bce8](https://github.com/stoplightio/prism/commit/ed5bce837fb0cf83d15fb1a085227986f063aee7))
+- **Docker:** use tini to handle kernel signals ([#2622](https://github.com/stoplightio/prism/issues/2622)) ([c55d633](https://github.com/stoplightio/prism/commit/c55d633486e57a1d67f7260a847d1d8f3a281208))
+- fixed [#1860](https://github.com/stoplightio/prism/issues/1860) performance regression ([fe6345d](https://github.com/stoplightio/prism/commit/fe6345dc8a78dc0a0a30774c0175422c9cc93139))
+- **http-negotiator:** [#2381](https://github.com/stoplightio/prism/issues/2381) add additional warn log message ([#2550](https://github.com/stoplightio/prism/issues/2550)) ([64a23fc](https://github.com/stoplightio/prism/commit/64a23fc530ff1e01c186f01e77a5906c0251f394))
+- **http-server:** discard request body if the content-length header i… ([#2103](https://github.com/stoplightio/prism/issues/2103)) ([c172f42](https://github.com/stoplightio/prism/commit/c172f42c89d67c3963eb9962d0550d5126756d34))
+- **http:** add explicit dependency on chalk ([#2263](https://github.com/stoplightio/prism/issues/2263)) ([55b07c9](https://github.com/stoplightio/prism/commit/55b07c98145799faf0aae47a023a34a6e22e714b))
+- **http:** update json-path plus in http ([551a23f](https://github.com/stoplightio/prism/commit/551a23f6ea889803fe7b7b9db497dd94ddca54c9))
+- json schema faker fillProperties not working ([#2398](https://github.com/stoplightio/prism/issues/2398)) ([e8acebd](https://github.com/stoplightio/prism/commit/e8acebd430dfe3cfc9db7bda3228256153346488))
+- keep encoded value if uri decoding fails. ([#2387](https://github.com/stoplightio/prism/issues/2387)) ([aba9bee](https://github.com/stoplightio/prism/commit/aba9bee0dae442da8364c327bd3d2e560e7de4cc))
+- mock issue resolve for similar templated requests ([#2564](https://github.com/stoplightio/prism/issues/2564)) ([b8e9fd8](https://github.com/stoplightio/prism/commit/b8e9fd815f0f612664b36704e4200d5473875fbe))
+- readOnly objects in arrays are handled correctly ([#2513](https://github.com/stoplightio/prism/issues/2513)) ([7670236](https://github.com/stoplightio/prism/commit/767023681f481d5e9d8c46203613faa635541eab))
+- remove deprecated usage of parse ([#1959](https://github.com/stoplightio/prism/issues/1959)) ([ea5b445](https://github.com/stoplightio/prism/commit/ea5b44555435424c2743fd3cde9bea75a408c6b8))
+- replace date-time validator with our bug fixed version ([#1856](https://github.com/stoplightio/prism/issues/1856)) ([44186db](https://github.com/stoplightio/prism/commit/44186dbf6eba6ad506fd9f08e473edf891cdbf3c))
+- reverted changes and bump the JSON version ([#2598](https://github.com/stoplightio/prism/issues/2598)) ([4acb898](https://github.com/stoplightio/prism/commit/4acb8980b31c3902ff01cabef06a4fb6f9a6cd48))
+- testing circle ci build ([0d2deb0](https://github.com/stoplightio/prism/commit/0d2deb0cee73d73b301b5839103f2f50cbbc880b))
+- update http-spec ([#2037](https://github.com/stoplightio/prism/issues/2037)) ([72d6882](https://github.com/stoplightio/prism/commit/72d6882bc39a673e65b1fc10ff88d3581b838dca))
+- upgrade dependencies and resolve breaking http spec changes ([#2105](https://github.com/stoplightio/prism/issues/2105)) ([ebbc6c1](https://github.com/stoplightio/prism/commit/ebbc6c1546aced8db0f492dd80651d2459c9bae0))
+- upgrade deps to clean up last security vulnerabilities ([#2076](https://github.com/stoplightio/prism/issues/2076)) ([b1ac6f4](https://github.com/stoplightio/prism/commit/b1ac6f4c47a256c653965ebcd66f4693889ae157))
+- upgrade jsrp to 9.2.4 to allow basic auth ([#2279](https://github.com/stoplightio/prism/issues/2279)) ([2148a2b](https://github.com/stoplightio/prism/commit/2148a2bc9c43d2897900ffe5838d7bc76fd8a3d1))
+- use proper client call in memory leak tests ([c223192](https://github.com/stoplightio/prism/commit/c223192750c2edde958e43da8bffe639f2672952))
+- validateOutput() when schema contains internal reference ([#2363](https://github.com/stoplightio/prism/issues/2363)) ([8e143e6](https://github.com/stoplightio/prism/commit/8e143e6622bdc8098a5c86c399831a12858612d5))
+- version update and bundled_issue changes ([#2577](https://github.com/stoplightio/prism/issues/2577)) ([c4074fa](https://github.com/stoplightio/prism/commit/c4074fa24438079e659061ee32d08464a688c17c))
 
 ## [5.13.0](https://github.com/stoplightio/prism/compare/v5.12.1...v5.13.0) (2025-04-15)
 
-
 ### Features
 
-* prevent crashing on parsing malformed JSONs ([#2679](https://github.com/stoplightio/prism/issues/2679)) ([a4cf04b](https://github.com/stoplightio/prism/commit/a4cf04beb2172570cde513b66679663d4f79e369))
-
+- prevent crashing on parsing malformed JSONs ([#2679](https://github.com/stoplightio/prism/issues/2679)) ([a4cf04b](https://github.com/stoplightio/prism/commit/a4cf04beb2172570cde513b66679663d4f79e369))
 
 ### Bug Fixes
 
-* **Docker:** use tini to handle kernel signals ([#2622](https://github.com/stoplightio/prism/issues/2622)) ([c55d633](https://github.com/stoplightio/prism/commit/c55d633486e57a1d67f7260a847d1d8f3a281208))
+- **Docker:** use tini to handle kernel signals ([#2622](https://github.com/stoplightio/prism/issues/2622)) ([c55d633](https://github.com/stoplightio/prism/commit/c55d633486e57a1d67f7260a847d1d8f3a281208))
 
 ## [5.12.1](https://github.com/stoplightio/prism/compare/v5.12.0...v5.12.1) (2024-11-13)
 
-
 ### Bug Fixes
 
-* **http:** update json-path plus in http ([551a23f](https://github.com/stoplightio/prism/commit/551a23f6ea889803fe7b7b9db497dd94ddca54c9))
+- **http:** update json-path plus in http ([551a23f](https://github.com/stoplightio/prism/commit/551a23f6ea889803fe7b7b9db497dd94ddca54c9))
 
 ## [5.12.0](https://github.com/stoplightio/prism/compare/v5.11.2...v5.12.0) (2024-11-13)
 
-
 ### Features
 
-* add --seed CLI flag for deterministic generation of dynamic examples ([#2594](https://github.com/stoplightio/prism/issues/2594)) ([8edc1cc](https://github.com/stoplightio/prism/commit/8edc1cccd29e07e6f4a20642247189b4a1375cb2))
+- add --seed CLI flag for deterministic generation of dynamic examples ([#2594](https://github.com/stoplightio/prism/issues/2594)) ([8edc1cc](https://github.com/stoplightio/prism/commit/8edc1cccd29e07e6f4a20642247189b4a1375cb2))
 
 ## [5.11.2](https://github.com/stoplightio/prism/compare/v5.11.1...v5.11.2) (2024-09-12)
 
-
 ### Bug Fixes
 
-* reverted changes and bump the JSON version ([#2598](https://github.com/stoplightio/prism/issues/2598)) ([4acb898](https://github.com/stoplightio/prism/commit/4acb8980b31c3902ff01cabef06a4fb6f9a6cd48))
+- reverted changes and bump the JSON version ([#2598](https://github.com/stoplightio/prism/issues/2598)) ([4acb898](https://github.com/stoplightio/prism/commit/4acb8980b31c3902ff01cabef06a4fb6f9a6cd48))
 
 ## [5.11.1](https://github.com/stoplightio/prism/compare/v5.11.0...v5.11.1) (2024-08-09)
 
-
 ### Bug Fixes
 
-* version update and bundled_issue changes ([#2577](https://github.com/stoplightio/prism/issues/2577)) ([c4074fa](https://github.com/stoplightio/prism/commit/c4074fa24438079e659061ee32d08464a688c17c))
+- version update and bundled_issue changes ([#2577](https://github.com/stoplightio/prism/issues/2577)) ([c4074fa](https://github.com/stoplightio/prism/commit/c4074fa24438079e659061ee32d08464a688c17c))
 
 ## [5.8.0](https://github.com/stoplightio/prism/compare/v5.7.0...v5.8.0) (2024-04-29)
 

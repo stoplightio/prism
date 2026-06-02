@@ -1,30 +1,231 @@
 name: Release
 on:
-  push:
+  workflow_dispatch:
     branches:
       - master
-      
-permissions:
-  contents: write
-  pull-requests: write
+    inputs:
+      dry_run:
+        description: 'Dry run — lint, test, and build; version bump is local only, nothing is pushed or published'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  HUSKY: 0
 
 jobs:
-  # Create release PR
-  release-please:
-    name: Release Please
+  validate:
+    name: Lint, test & build
     runs-on: ubuntu-latest
-    if: github.repository == 'stoplightio/prism'
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - name: Checkout Repository
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test -- --colors --maxWorkers=2
+      - name: Build
+        run: npm run build
+
+  harness-macos:
+    name: Harness tests (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: maxim-lobanov/setup-xcode@v1.7.0
+        with:
+          xcode-version: latest-stable
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Set up Python virtual environment
+        run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install --upgrade pip
+          pip install pipenv gunicorn
+          pipenv --version
+          gunicorn --version
+      - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+      - run: git clone https://github.com/stoplightio/httpbin httpbin
+      - run: |
+          cd httpbin
+          . ../venv/bin/activate
+          pipenv requirements > requirements.txt
+          pip install --no-cache-dir -r requirements.txt
+          pip install --no-cache-dir ./
+      - run: |
+          cd httpbin
+          . ../venv/bin/activate
+          gunicorn -b 0.0.0.0:80 httpbin:app -k gevent &
+          sleep 15
+          curl -I http://0.0.0.0:80
+      - name: Install dependencies
+        run: npm ci
+      - name: Create CLI binary
+        run: npm run build.binary
+      - name: Run Harness
+        run: npm run test.harness
+
+  harness-docker:
+    name: Harness tests (Docker)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install Python and required packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip python3-venv
+      - name: Set up Python virtual environment
+        run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install --upgrade pip
+          pip install pipenv gunicorn
+          pipenv --version
+          gunicorn --version
+      - run: sudo bash -c 'echo "0.0.0.0 httpbin.org" >> /etc/hosts'
+      - run: git clone https://github.com/stoplightio/httpbin httpbin
+      - run: |
+          cd httpbin
+          . ../venv/bin/activate
+          pipenv requirements > requirements.txt
+          pip3 install --no-cache-dir -r requirements.txt
+          pip3 install --no-cache-dir ./
+      - run: |
+          cd httpbin
+          . ../venv/bin/activate
+          sudo $(which gunicorn) -b 0.0.0.0:80 httpbin:app -k gevent &
+          sleep 15
+          curl -I http://0.0.0.0:80
+      - name: Install dependencies
+        run: npm ci
+      - name: Create CLI binary
+        run: npm run build.binary
+      - name: Run Harness
+        run: npm run test.harness
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [validate, harness-macos, harness-docker]
+    steps:
+      - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
-      - uses: google-github-actions/release-please-action@v4
-        id: release
-        with:
           token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
-          target-branch: master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Version bump & GitHub release
+        run: |
+          git config user.email "swagger-bot@smartbear.com"
+          git config user.name "swagger-bot"
+          npx lerna version --no-private --yes --force-publish ${{ inputs.dry_run && '--no-push' || '' }}
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish npm packages
+        if: ${{ !inputs.dry_run }}
+        run: npx lerna publish from-package --no-private --yes
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  sync-lockfile:
+    name: Sync lockfile
+    runs-on: ubuntu-latest
+    needs: release
+    if: ${{ !inputs.dry_run }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Sync lockfile
+        run: |
+          git config user.email "swagger-bot@smartbear.com"
+          git config user.name "swagger-bot"
+          git fetch origin
+          git checkout -B master origin/master
+          npm install
+          git add package-lock.json
+          git diff --cached --quiet || git commit -m "chore: sync lockfile [skip ci]"
+          git push origin master
+
+  build-binaries:
+    name: Build & publish CLI binaries
+    runs-on: ubuntu-latest
+    needs: release
+    if: ${{ !inputs.dry_run }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLEASE_GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Create CLI binaries
+        run: npx @yao-pkg/pkg --out-path ./cli-binaries --options max_old_space_size=4096 ./packages/cli/
+
+      - name: Upload CLI binaries artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: cli-binaries
+          path: ./cli-binaries
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+
+      - name: Download GitHub Release Utility
+        run: go install github.com/tcnksm/ghr@latest
+
+      - name: Publish Release artifacts on GitHub
+        run: ghr -t ${{ github.token }} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} ./cli-binaries

@@ -2,12 +2,12 @@
 
 ## Prerequisites
 
-- Install the project dependencies with `yarn`
-- Generate the binary for your platform with `yarn build.binary`. This will _also_ compile the project from TS -> JS
+- Install the project dependencies with `npm ci`
+- Generate the binary for your platform with `npm run build.binary`. This will _also_ compile the project from TS -> JS
 
 ## Running the suite
 
-Run `yarn test.harness` from your terminal
+Run `npm run test.harness` from your terminal
 
 ### Running a selected tests
 
@@ -15,7 +15,7 @@ You can run one or selected tests using `TESTS` env variable.
 If you want multiple test files to be run separate them with commas.
 Use paths relative to the `./spec` directory.
 
-E.g. run `TESTS=parameters-ac1.oas2.txt,validate-body-params/form-byte-format-fail.oas2.txt yarn test.harness`
+E.g. run `TESTS=parameters-ac1.oas2.txt,validate-body-params/form-byte-format-fail.oas2.txt npm run test.harness`
 
 ### Matching test files
 

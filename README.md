@@ -46,10 +46,6 @@ Prism requires
 
 ```bash
 npm install -g @stoplight/prism-cli
-
-# OR
-
-yarn global add @stoplight/prism-cli
 ```
 
 For more installation options, see our [installation documentation](./docs/getting-started/01-installation.md).

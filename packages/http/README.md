@@ -34,7 +34,7 @@ If you're a regular user and not a PRO, you might to want to use the [User facin
 # Installation
 
 ```bash
-yarn add @stoplight/prism-http
+npm install @stoplight/prism-http
 ```
 
 # Basic Usages

@@ -12,7 +12,7 @@ Read me about the [Prism CLI](../../docs/getting-started/03-cli.md).
 
 ### Debugging
 
-1. `yarn cli:debug mock file.oas.yml`
+1. `npm run cli:debug -- mock file.oas.yml`
 2. Run your preferred debugger on the newly created process. If you're into VS Code, you can create `.vscode/launch.json` and put this content inside:
 
 ```json
