@@ -1,0 +1,31 @@
+====test====
+Send repeated keys to fulfill array validation in multipart/form-data.
+====spec====
+openapi: '3.1.0'
+paths:
+  /path:
+    post:
+      responses:
+        200:
+          content:
+            text/plain:
+              example: ok
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                array:
+                  type: array
+                  items:
+                    type: string
+====server====
+mock -p 4010 ${document}
+====command====
+curl -i -X POST http://localhost:4010/path -H "Content-Type: multipart/form-data" -F "array=value1" -F "array=value2"
+====expect====
+HTTP/1.1 200 OK
+content-type: text/plain
+
+ok
