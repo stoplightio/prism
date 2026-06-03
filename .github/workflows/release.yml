@@ -228,4 +228,6 @@ jobs:
         run: go install github.com/tcnksm/ghr@latest
 
       - name: Publish Release artifacts on GitHub
-        run: ghr -t ${{ github.token }} -u ${{ github.actor }} -r ${{ github.repository }} -c ${{ github.sha }} ${{ github.ref }} ./cli-binaries
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          ghr -t ${{ github.token }} -u ${{ github.actor }} -r ${{ github.repository }} -c $(git rev-list -n 1 $TAG) $TAG ./cli-binaries
