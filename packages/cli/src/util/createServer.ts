@@ -1,6 +1,6 @@
 import { createLogger } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
-import { createServer as createHttpServer } from '@stoplight/prism-http-server';
+import { createServer as createHttpServer, initTelemetry, ITelemetry } from '@stoplight/prism-http-server';
 import * as chalk from 'chalk';
 import cluster from 'node:cluster';
 import * as E from 'fp-ts/Either';
@@ -100,10 +100,21 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
       }
     : { ...shared, isProxy: false };
 
+  const telemetryEnabled = options.telemetry || process.env.PRISM_TELEMETRY === 'true';
+  if (telemetryEnabled) {
+    const telemetry = initTelemetry({
+      enabled: true,
+      exporterUrl: options.otelExporterUrl,
+      serviceName: options.otelServiceName,
+    });
+    registerTelemetryShutdown(telemetry, logInstance);
+  }
+
   const server = createHttpServer(operations, {
     cors: options.cors,
     config,
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
+    telemetry: telemetryEnabled,
   });
 
   const address = await server.listen(options.port, options.host);
@@ -139,8 +150,8 @@ function pipeOutputToSignale(stream: Readable) {
         try {
           const repairedJson = jsonrepair(chunk);
           return JSON.parse(repairedJson);
-        } catch (error) {
-          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Invalid JSON and unable to correct'});
+        } catch {
+          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Invalid JSON and unable to correct' });
         }
       })
     )
@@ -151,6 +162,31 @@ function pipeOutputToSignale(stream: Readable) {
 
 function isProxyServerOptions(options: CreateBaseServerOptions): options is CreateProxyServerOptions {
   return 'upstream' in options;
+}
+
+/**
+ * Flushes and shuts down the OpenTelemetry SDK on process termination so that spans buffered by
+ * the BatchSpanProcessor are exported instead of being dropped when Prism exits. The `exit`
+ * callback is injectable so the shutdown sequence can be unit-tested without terminating the
+ * test process.
+ */
+export function registerTelemetryShutdown(
+  telemetry: ITelemetry,
+  logInstance: pino.Logger,
+  exit: (code: number) => void = code => process.exit(code)
+): void {
+  let shuttingDown = false;
+  const flushAndExit = () => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    return telemetry
+      .shutdown()
+      .catch((e: Error) => logInstance.error(`Error shutting down OpenTelemetry: ${e.message}`))
+      .finally(() => exit(0));
+  };
+
+  process.once('SIGINT', flushAndExit);
+  process.once('SIGTERM', flushAndExit);
 }
 
 /**
@@ -168,6 +204,9 @@ type CreateBaseServerOptions = {
   ignoreExamples: boolean;
   seed: string;
   jsonSchemaFakerFillProperties: boolean;
+  telemetry: boolean;
+  otelExporterUrl?: string;
+  otelServiceName?: string;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {

@@ -5,6 +5,8 @@ export interface IPrismHttpServerOpts {
   components: PickRequired<Partial<PrismHttpComponents>, 'logger'>;
   config: IHttpConfig;
   cors: boolean;
+  /** When true, the request handler is wrapped in an OpenTelemetry server span. */
+  telemetry?: boolean;
 }
 
 export interface IPrismHttpServer {
