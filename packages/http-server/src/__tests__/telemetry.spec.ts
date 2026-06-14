@@ -19,11 +19,22 @@ describe('initTelemetry', () => {
       }
     });
 
-    it('starts the SDK and returns a shutdown handle', () => {
+    it('starts the SDK with the default (http/protobuf) exporter and returns a shutdown handle', () => {
       telemetry = initTelemetry({
         enabled: true,
         exporterUrl: 'http://localhost:4318/v1/traces',
         serviceName: 'prism-test',
+      });
+
+      expect(typeof telemetry.shutdown).toBe('function');
+    });
+
+    it('starts the SDK with the gRPC exporter when protocol is "grpc"', () => {
+      telemetry = initTelemetry({
+        enabled: true,
+        exporterUrl: 'http://localhost:4317',
+        serviceName: 'prism-test',
+        protocol: 'grpc',
       });
 
       expect(typeof telemetry.shutdown).toBe('function');

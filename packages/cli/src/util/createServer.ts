@@ -1,6 +1,6 @@
 import { createLogger } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
-import { createServer as createHttpServer, initTelemetry, ITelemetry } from '@stoplight/prism-http-server';
+import { createServer as createHttpServer, initTelemetry, ITelemetry, OtlpProtocol } from '@stoplight/prism-http-server';
 import * as chalk from 'chalk';
 // `@types/node` models node:cluster's API as the module's default export, but at runtime (CJS,
 // without esModuleInterop) the API lives on the module object itself. Import-equals gives the
@@ -48,6 +48,15 @@ const createMultiProcessPrism: CreatePrism = async options => {
     if (worker.process.stdout) {
       pipeOutputToSignale(worker.process.stdout);
     }
+
+    // The worker is where telemetry is initialized and where spans are buffered. On shutdown,
+    // forward a graceful SIGTERM to the worker so it can flush spans, then exit once it is gone.
+    const shutdownWorker = () => {
+      worker.once('exit', () => process.exit(0));
+      worker.kill('SIGTERM');
+    };
+    process.once('SIGINT', shutdownWorker);
+    process.once('SIGTERM', shutdownWorker);
 
     return;
   } else {
@@ -110,6 +119,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
       enabled: true,
       exporterUrl: options.otelExporterUrl,
       serviceName: options.otelServiceName,
+      protocol: options.otelExporterProtocol,
     });
     registerTelemetryShutdown(telemetry, logInstance);
   }
@@ -211,6 +221,7 @@ type CreateBaseServerOptions = {
   telemetry: boolean;
   otelExporterUrl?: string;
   otelServiceName?: string;
+  otelExporterProtocol?: OtlpProtocol;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {

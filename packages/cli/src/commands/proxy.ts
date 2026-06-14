@@ -41,6 +41,7 @@ const proxyCommand: CommandModule = {
     parsedArgs.validateRequest = parsedArgs['validate-request'];
     parsedArgs.otelExporterUrl = parsedArgs['otel-exporter-url'];
     parsedArgs.otelServiceName = parsedArgs['otel-service-name'];
+    parsedArgs.otelExporterProtocol = parsedArgs['otel-exporter-protocol'];
     const p: CreateProxyServerOptions = pick(
       parsedArgs as unknown as CreateProxyServerOptions,
       'dynamic',
@@ -59,7 +60,8 @@ const proxyCommand: CommandModule = {
       'jsonSchemaFakerFillProperties',
       'telemetry',
       'otelExporterUrl',
-      'otelServiceName'
+      'otelServiceName',
+      'otelExporterProtocol'
     );
 
     const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;

@@ -45,6 +45,7 @@ const mockCommand: CommandModule = {
     parsedArgs.jsonSchemaFakerFillProperties = parsedArgs['json-schema-faker-fillProperties'];
     parsedArgs.otelExporterUrl = parsedArgs['otel-exporter-url'];
     parsedArgs.otelServiceName = parsedArgs['otel-service-name'];
+    parsedArgs.otelExporterProtocol = parsedArgs['otel-exporter-protocol'];
     const {
       multiprocess,
       dynamic,
@@ -60,6 +61,7 @@ const mockCommand: CommandModule = {
       telemetry,
       otelExporterUrl,
       otelServiceName,
+      otelExporterProtocol,
     } = parsedArgs as unknown as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
@@ -78,6 +80,7 @@ const mockCommand: CommandModule = {
       telemetry,
       otelExporterUrl,
       otelServiceName,
+      otelExporterProtocol,
     };
 
     await runPrismAndSetupWatcher(createPrism, options);

@@ -66,6 +66,14 @@ const sharedOptions: Dictionary<Options> = {
     string: true,
     default: 'prism',
   },
+
+  'otel-exporter-protocol': {
+    description:
+      'OTLP transport for traces. Falls back to the OTEL_EXPORTER_OTLP_PROTOCOL env var, then "http/protobuf".',
+    string: true,
+    choices: ['http/protobuf', 'grpc'],
+    default: 'http/protobuf',
+  },
 };
 
 export default sharedOptions;
