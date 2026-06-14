@@ -39,5 +39,28 @@ describe('initTelemetry', () => {
 
       expect(typeof telemetry.shutdown).toBe('function');
     });
+
+    it('starts the SDK with a metric reader when metrics are enabled', () => {
+      telemetry = initTelemetry({
+        enabled: true,
+        exporterUrl: 'http://localhost:4318/v1/traces',
+        serviceName: 'prism-test',
+        metrics: true,
+      });
+
+      expect(typeof telemetry.shutdown).toBe('function');
+    });
+
+    it('starts the SDK with metrics over gRPC', () => {
+      telemetry = initTelemetry({
+        enabled: true,
+        exporterUrl: 'http://localhost:4317',
+        serviceName: 'prism-test',
+        protocol: 'grpc',
+        metrics: true,
+      });
+
+      expect(typeof telemetry.shutdown).toBe('function');
+    });
   });
 });

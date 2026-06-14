@@ -42,6 +42,7 @@ const proxyCommand: CommandModule = {
     parsedArgs.otelExporterUrl = parsedArgs['otel-exporter-url'];
     parsedArgs.otelServiceName = parsedArgs['otel-service-name'];
     parsedArgs.otelExporterProtocol = parsedArgs['otel-exporter-protocol'];
+    parsedArgs.otelMetrics = parsedArgs['otel-metrics'];
     const p: CreateProxyServerOptions = pick(
       parsedArgs as unknown as CreateProxyServerOptions,
       'dynamic',
@@ -61,7 +62,8 @@ const proxyCommand: CommandModule = {
       'telemetry',
       'otelExporterUrl',
       'otelServiceName',
-      'otelExporterProtocol'
+      'otelExporterProtocol',
+      'otelMetrics'
     );
 
     const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;

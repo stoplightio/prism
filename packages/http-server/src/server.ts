@@ -21,7 +21,7 @@ import { pipe } from 'fp-ts/function';
 import * as TE from 'fp-ts/TaskEither';
 import * as E from 'fp-ts/Either';
 import * as IOE from 'fp-ts/IOEither';
-import { SpanStatusCode, trace, type Span } from '@opentelemetry/api';
+import { SpanStatusCode, trace, metrics, type Span } from '@opentelemetry/api';
 
 const tracer = trace.getTracer('@stoplight/prism-http-server');
 
@@ -83,6 +83,17 @@ function parseRequestBody(request: IncomingMessage) {
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
+
+  // Created here (not at module load) so the global MeterProvider registered by initTelemetry is
+  // already in place. These are no-ops unless telemetry+metrics are enabled, so always safe to record.
+  const meter = metrics.getMeter('@stoplight/prism-http-server');
+  const requestCounter = meter.createCounter('http.server.request.count', {
+    description: 'Number of HTTP requests handled by Prism',
+  });
+  const requestDuration = meter.createHistogram('http.server.request.duration', {
+    description: 'Duration of HTTP requests handled by Prism',
+    unit: 'ms',
+  });
 
   const handleRequest = async (request: IncomingMessage, reply: ServerResponse, span?: Span) => {
     const { url, method, headers } = request;
@@ -212,11 +223,25 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       return handleRequest(request, reply);
     }
 
+    const startTime = Date.now();
+    const recordMetrics = () => {
+      const method = (request.method || 'GET').toUpperCase();
+      const path = new URL(request.url!, 'http://example.com').pathname;
+      const attributes = {
+        'http.request.method': method,
+        'url.path': path,
+        'http.response.status_code': reply.statusCode,
+      };
+      requestCounter.add(1, attributes);
+      requestDuration.record(Date.now() - startTime, attributes);
+    };
+
     return tracer.startActiveSpan('prism.request', async span => {
       try {
         return await handleRequest(request, reply, span);
       } finally {
         span.end();
+        recordMetrics();
       }
     });
   };

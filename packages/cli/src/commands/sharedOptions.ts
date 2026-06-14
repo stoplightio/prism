@@ -74,6 +74,13 @@ const sharedOptions: Dictionary<Options> = {
     choices: ['http/protobuf', 'grpc'],
     default: 'http/protobuf',
   },
+
+  'otel-metrics': {
+    description:
+      'Export metrics alongside traces: request count + latency, and Node.js VM metrics (event loop, GC, heap). Requires --telemetry.',
+    boolean: true,
+    default: false,
+  },
 };
 
 export default sharedOptions;

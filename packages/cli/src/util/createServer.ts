@@ -120,6 +120,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
       exporterUrl: options.otelExporterUrl,
       serviceName: options.otelServiceName,
       protocol: options.otelExporterProtocol,
+      metrics: options.otelMetrics,
     });
     registerTelemetryShutdown(telemetry, logInstance);
   }
@@ -222,6 +223,7 @@ type CreateBaseServerOptions = {
   otelExporterUrl?: string;
   otelServiceName?: string;
   otelExporterProtocol?: OtlpProtocol;
+  otelMetrics?: boolean;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {
