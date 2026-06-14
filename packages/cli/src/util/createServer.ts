@@ -2,7 +2,11 @@ import { createLogger } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
 import { createServer as createHttpServer, initTelemetry, ITelemetry } from '@stoplight/prism-http-server';
 import * as chalk from 'chalk';
-import cluster from 'node:cluster';
+// `@types/node` models node:cluster's API as the module's default export, but at runtime (CJS,
+// without esModuleInterop) the API lives on the module object itself. Import-equals gives the
+// correct runtime object; `.default ?? clusterModule` reconciles the typings with runtime.
+import clusterModule = require('node:cluster');
+const cluster = (clusterModule as typeof clusterModule & { default?: typeof clusterModule }).default ?? clusterModule;
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 import * as pino from 'pino';
