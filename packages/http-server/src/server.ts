@@ -84,8 +84,6 @@ function parseRequestBody(request: IncomingMessage) {
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
-  // Created here (not at module load) so the global MeterProvider registered by initTelemetry is
-  // already in place. These are no-ops unless telemetry+metrics are enabled, so always safe to record.
   const meter = metrics.getMeter('@stoplight/prism-http-server');
   const requestCounter = meter.createCounter('http.server.request.count', {
     description: 'Number of HTTP requests handled by Prism',
@@ -139,9 +137,6 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       E.map(operationSpecificConfig => ({ ...config, mock: merge(config.mock, operationSpecificConfig) }))
     );
 
-    // The pipeline writes the response via `send()` itself and resolves to an Either<Error, void>.
-    // We await it (so the span can stay open until the response is written) but intentionally do not
-    // return the resolved value, otherwise Micri would try to send it as a second response body.
     await pipe(
       TE.fromEither(requestConfig),
       TE.chain(requestConfig => prism.request(input, operations, requestConfig)),
