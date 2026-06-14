@@ -21,6 +21,9 @@ import { pipe } from 'fp-ts/function';
 import * as TE from 'fp-ts/TaskEither';
 import * as E from 'fp-ts/Either';
 import * as IOE from 'fp-ts/IOEither';
+import { SpanStatusCode, trace, metrics, type Span } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('@stoplight/prism-http-server');
 
 function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValues {
   const params = {};
@@ -81,7 +84,16 @@ function parseRequestBody(request: IncomingMessage) {
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
   const { components, config } = opts;
 
-  const handler: MicriHandler = async (request, reply) => {
+  const meter = metrics.getMeter('@stoplight/prism-http-server');
+  const requestCounter = meter.createCounter('http.server.request.count', {
+    description: 'Number of HTTP requests handled by Prism',
+  });
+  const requestDuration = meter.createHistogram('http.server.request.duration', {
+    description: 'Duration of HTTP requests handled by Prism',
+    unit: 'ms',
+  });
+
+  const handleRequest = async (request: IncomingMessage, reply: ServerResponse, span?: Span) => {
     const { url, method, headers } = request;
 
     const body = await parseRequestBody(request).catch(async e => {
@@ -112,6 +124,12 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       body,
     };
 
+    if (span) {
+      span.updateName(`${input.method.toUpperCase()} ${input.url.path}`);
+      span.setAttribute('http.request.method', input.method.toUpperCase());
+      span.setAttribute('url.path', input.url.path);
+    }
+
     components.logger.info({ input }, 'Request received');
 
     const requestConfig: E.Either<Error, IHttpConfig> = pipe(
@@ -119,7 +137,7 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
       E.map(operationSpecificConfig => ({ ...config, mock: merge(config.mock, operationSpecificConfig) }))
     );
 
-    pipe(
+    await pipe(
       TE.fromEither(requestConfig),
       TE.chain(requestConfig => prism.request(input, operations, requestConfig)),
       TE.chainIOEitherK(response => {
@@ -167,6 +185,8 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
               output.statusCode,
               serialize(output.body, reply.getHeader('content-type') as string | undefined)
             );
+
+            if (span) span.setAttribute('http.response.status_code', output.statusCode);
           }, E.toError)
         );
       }),
@@ -182,9 +202,43 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
           reply.end();
         }
 
+        if (span) {
+          span.setAttribute('http.response.status_code', e.status || 500);
+          span.recordException(e);
+          span.setStatus({ code: SpanStatusCode.ERROR, message: e.message });
+        }
+
         components.logger.error({ input }, `Request terminated with error: ${e}`);
       })
     )();
+  };
+
+  const handler: MicriHandler = (request, reply) => {
+    if (!opts.telemetry) {
+      return handleRequest(request, reply);
+    }
+
+    const startTime = Date.now();
+    const recordMetrics = () => {
+      const method = (request.method || 'GET').toUpperCase();
+      const path = new URL(request.url!, 'http://example.com').pathname;
+      const attributes = {
+        'http.request.method': method,
+        'url.path': path,
+        'http.response.status_code': reply.statusCode,
+      };
+      requestCounter.add(1, attributes);
+      requestDuration.record(Date.now() - startTime, attributes);
+    };
+
+    return tracer.startActiveSpan('prism.request', async span => {
+      try {
+        return await handleRequest(request, reply, span);
+      } finally {
+        span.end();
+        recordMetrics();
+      }
+    });
   };
 
   function setCommonCORSHeaders(incomingHeaders: IncomingHttpHeaders, res: ServerResponse) {

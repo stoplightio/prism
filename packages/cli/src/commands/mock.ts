@@ -38,13 +38,32 @@ const mockCommand: CommandModule = {
           description: `Provide a seed so that Prism generates dynamic examples deterministically`,
           string: true,
           demandOption: true,
-          default: null
+          default: null,
         },
       }),
   handler: async parsedArgs => {
     parsedArgs.jsonSchemaFakerFillProperties = parsedArgs['json-schema-faker-fillProperties'];
-    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, ignoreExamples, seed, jsonSchemaFakerFillProperties } =
-      parsedArgs as unknown as CreateMockServerOptions;
+    parsedArgs.otelTelemetry = parsedArgs['otel-telemetry'];
+    parsedArgs.otelExporterUrl = parsedArgs['otel-exporter-url'];
+    parsedArgs.otelServiceName = parsedArgs['otel-service-name'];
+    parsedArgs.otelExporterProtocol = parsedArgs['otel-exporter-protocol'];
+    const {
+      multiprocess,
+      dynamic,
+      port,
+      host,
+      cors,
+      document,
+      errors,
+      verboseLevel,
+      ignoreExamples,
+      seed,
+      jsonSchemaFakerFillProperties,
+      otelTelemetry,
+      otelExporterUrl,
+      otelServiceName,
+      otelExporterProtocol,
+    } = parsedArgs as unknown as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
     const options = {
@@ -59,6 +78,10 @@ const mockCommand: CommandModule = {
       ignoreExamples,
       seed,
       jsonSchemaFakerFillProperties,
+      otelTelemetry,
+      otelExporterUrl,
+      otelServiceName,
+      otelExporterProtocol,
     };
 
     await runPrismAndSetupWatcher(createPrism, options);
