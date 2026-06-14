@@ -49,8 +49,9 @@ const sharedOptions: Dictionary<Options> = {
     choices: Object.keys(pino.levels.values).concat('silent'),
   },
 
-  telemetry: {
-    description: 'Enable OpenTelemetry tracing. Can also be enabled with the PRISM_TELEMETRY env var.',
+  'otel-telemetry': {
+    description:
+      'Enable OpenTelemetry: exports traces and metrics (request count + latency, and Node.js VM metrics: event loop, GC, heap). Can also be enabled with the PRISM_TELEMETRY env var.',
     boolean: true,
     default: false,
   },
@@ -69,17 +70,10 @@ const sharedOptions: Dictionary<Options> = {
 
   'otel-exporter-protocol': {
     description:
-      'OTLP transport for traces. Falls back to the OTEL_EXPORTER_OTLP_PROTOCOL env var, then "http/protobuf".',
+      'OTLP transport for traces and metrics. Falls back to the OTEL_EXPORTER_OTLP_PROTOCOL env var, then "http/protobuf".',
     string: true,
     choices: ['http/protobuf', 'grpc'],
     default: 'http/protobuf',
-  },
-
-  'otel-metrics': {
-    description:
-      'Export metrics alongside traces: request count + latency, and Node.js VM metrics (event loop, GC, heap). Requires --telemetry.',
-    boolean: true,
-    default: false,
   },
 };
 

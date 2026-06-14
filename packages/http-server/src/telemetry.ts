@@ -58,7 +58,7 @@ function buildMetricExporter(protocol: OtlpProtocol, exporterUrl?: string): Push
 /**
  * Initializes the OpenTelemetry Node SDK with an OTLP trace exporter (HTTP/protobuf or gRPC,
  * per config.protocol), optional request metrics, and HTTP auto-instrumentation. Returns a
- * no-op handle when disabled.
+ * no-op handle when disabled. (Log<->trace correlation is added by createLogger's pino mixin.)
  *
  * For auto-instrumentation of outbound calls (proxy mode) to patch reliably, this must run
  * before the instrumented modules (`http`, `node-fetch`) are first required.
@@ -84,6 +84,8 @@ export function initTelemetry(config: ITelemetryConfig): ITelemetry {
     ? new PeriodicExportingMetricReader({ exporter: buildMetricExporter(protocol, config.exporterUrl) })
     : undefined;
 
+  // Log <-> trace correlation is handled by a pino mixin in @stoplight/prism-core's createLogger
+  // (instrumentation-pino can't patch pino here: pino is required at module load, before this runs).
   const instrumentations: Instrumentation[] = [new HttpInstrumentation()];
   // When metrics are enabled, also collect Node.js VM metrics: event loop delay/utilization,
   // garbage collection duration, and V8 heap usage. Emitted through the same metric reader.

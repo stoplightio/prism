@@ -25,6 +25,8 @@ type PrismLogDescriptor = pino.LogDescriptor & {
   name: keyof typeof LOG_COLOR_MAP;
   offset?: number;
   input: IHttpRequest;
+  // Injected by the OpenTelemetry Pino instrumentation when a request is traced.
+  trace_id?: string;
 };
 
 signale.config({ displayTimestamp: true });
@@ -36,6 +38,25 @@ const cliSpecificLoggerOptions: pino.LoggerOptions = {
     level: level => ({ level }),
   },
 };
+
+/**
+ * Initializes OpenTelemetry if enabled. Must run BEFORE the CLI logger (pino) is created so the
+ * Pino instrumentation can patch pino and inject trace_id/span_id into log records. Returns the
+ * telemetry handle (for shutdown flush) or undefined when disabled.
+ */
+function initTelemetryFromOptions(options: CreateBaseServerOptions): ITelemetry | undefined {
+  const telemetryEnabled = options.otelTelemetry || process.env.PRISM_TELEMETRY === 'true';
+  if (!telemetryEnabled) return undefined;
+
+  return initTelemetry({
+    enabled: true,
+    exporterUrl: options.otelExporterUrl,
+    serviceName: options.otelServiceName,
+    protocol: options.otelExporterProtocol,
+    // A single flag enables the full pipeline: traces and metrics together.
+    metrics: true,
+  });
+}
 
 const createMultiProcessPrism: CreatePrism = async options => {
   if (cluster.isPrimary) {
@@ -60,9 +81,11 @@ const createMultiProcessPrism: CreatePrism = async options => {
 
     return;
   } else {
+    // Init telemetry before creating the logger so pino is instrumented for trace correlation.
+    const telemetry = initTelemetryFromOptions(options);
     const logInstance = createLogger('CLI', { ...cliSpecificLoggerOptions, level: options.verboseLevel });
 
-    return createPrismServerWithLogger(options, logInstance).catch((e: Error) => {
+    return createPrismServerWithLogger(options, logInstance, telemetry).catch((e: Error) => {
       logInstance.fatal(e.message);
       cluster.worker!.kill();
       throw e;
@@ -73,17 +96,23 @@ const createMultiProcessPrism: CreatePrism = async options => {
 const createSingleProcessPrism: CreatePrism = options => {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
+  // Init telemetry before creating the logger so pino is instrumented for trace correlation.
+  const telemetry = initTelemetryFromOptions(options);
   const logStream = new PassThrough();
   const logInstance = createLogger('CLI', { ...cliSpecificLoggerOptions, level: options.verboseLevel }, logStream);
   pipeOutputToSignale(logStream);
 
-  return createPrismServerWithLogger(options, logInstance).catch((e: Error) => {
+  return createPrismServerWithLogger(options, logInstance, telemetry).catch((e: Error) => {
     logInstance.fatal(e.message);
     throw e;
   });
 };
 
-async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: pino.Logger) {
+async function createPrismServerWithLogger(
+  options: CreateBaseServerOptions,
+  logInstance: pino.Logger,
+  telemetry?: ITelemetry
+) {
   const operations = await getHttpOperationsFromSpec(options.document);
   const jsonSchemaFakerCliParams: { [option: string]: any } = {
     ['fillProperties']: options.jsonSchemaFakerFillProperties,
@@ -113,15 +142,9 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
       }
     : { ...shared, isProxy: false };
 
-  const telemetryEnabled = options.telemetry || process.env.PRISM_TELEMETRY === 'true';
-  if (telemetryEnabled) {
-    const telemetry = initTelemetry({
-      enabled: true,
-      exporterUrl: options.otelExporterUrl,
-      serviceName: options.otelServiceName,
-      protocol: options.otelExporterProtocol,
-      metrics: options.otelMetrics,
-    });
+  // Telemetry was already initialized (before the logger) by the caller; here we just register
+  // the shutdown flush, now that we have a logger to report errors through.
+  if (telemetry) {
     registerTelemetryShutdown(telemetry, logInstance);
   }
 
@@ -129,7 +152,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
     cors: options.cors,
     config,
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
-    telemetry: telemetryEnabled,
+    telemetry: !!telemetry,
   });
 
   const address = await server.listen(options.port, options.host);
@@ -171,7 +194,10 @@ function pipeOutputToSignale(stream: Readable) {
       })
     )
     .on('data', (logLine: PrismLogDescriptor) => {
-      signale[logLine.level]({ prefix: constructPrefix(logLine), message: logLine.msg });
+      // Surface the OpenTelemetry trace id (when present) so terminal logs can be correlated
+      // with traces in the backend.
+      const traceSuffix = logLine.trace_id ? chalk.grey(` [trace=${logLine.trace_id}]`) : '';
+      signale[logLine.level]({ prefix: constructPrefix(logLine), message: `${logLine.msg}${traceSuffix}` });
     });
 }
 
@@ -219,11 +245,10 @@ type CreateBaseServerOptions = {
   ignoreExamples: boolean;
   seed: string;
   jsonSchemaFakerFillProperties: boolean;
-  telemetry: boolean;
+  otelTelemetry: boolean;
   otelExporterUrl?: string;
   otelServiceName?: string;
   otelExporterProtocol?: OtlpProtocol;
-  otelMetrics?: boolean;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {

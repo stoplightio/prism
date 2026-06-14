@@ -39,10 +39,10 @@ const proxyCommand: CommandModule = {
       }),
   handler: async parsedArgs => {
     parsedArgs.validateRequest = parsedArgs['validate-request'];
+    parsedArgs.otelTelemetry = parsedArgs['otel-telemetry'];
     parsedArgs.otelExporterUrl = parsedArgs['otel-exporter-url'];
     parsedArgs.otelServiceName = parsedArgs['otel-service-name'];
     parsedArgs.otelExporterProtocol = parsedArgs['otel-exporter-protocol'];
-    parsedArgs.otelMetrics = parsedArgs['otel-metrics'];
     const p: CreateProxyServerOptions = pick(
       parsedArgs as unknown as CreateProxyServerOptions,
       'dynamic',
@@ -59,11 +59,10 @@ const proxyCommand: CommandModule = {
       'seed',
       'upstreamProxy',
       'jsonSchemaFakerFillProperties',
-      'telemetry',
+      'otelTelemetry',
       'otelExporterUrl',
       'otelServiceName',
-      'otelExporterProtocol',
-      'otelMetrics'
+      'otelExporterProtocol'
     );
 
     const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
