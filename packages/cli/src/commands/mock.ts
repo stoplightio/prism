@@ -43,8 +43,32 @@ const mockCommand: CommandModule = {
       }),
   handler: async parsedArgs => {
     parsedArgs.jsonSchemaFakerFillProperties = parsedArgs['json-schema-faker-fillProperties'];
-    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, ignoreExamples, seed, jsonSchemaFakerFillProperties } =
-      parsedArgs as unknown as CreateMockServerOptions;
+    parsedArgs.tlsKey = parsedArgs['tls-key'];
+    parsedArgs.tlsCert = parsedArgs['tls-cert'];
+    parsedArgs.tlsPassphrase = parsedArgs['tls-passphrase'];
+    parsedArgs.tlsCa = parsedArgs['tls-ca'];
+    parsedArgs.tlsForwardClientCert = parsedArgs['tls-forward-client-cert'];
+    parsedArgs.tlsHttp2 = parsedArgs['tls-http2'];
+    const {
+      multiprocess,
+      dynamic,
+      port,
+      host,
+      cors,
+      document,
+      errors,
+      verboseLevel,
+      ignoreExamples,
+      seed,
+      jsonSchemaFakerFillProperties,
+      tlsKey,
+      tlsCert,
+      tlsPassphrase,
+      tlsCa,
+      mtls,
+      tlsForwardClientCert,
+      tlsHttp2,
+    } = parsedArgs as unknown as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
     const options = {
@@ -59,6 +83,13 @@ const mockCommand: CommandModule = {
       ignoreExamples,
       seed,
       jsonSchemaFakerFillProperties,
+      tlsKey,
+      tlsCert,
+      tlsPassphrase,
+      tlsCa,
+      mtls,
+      tlsForwardClientCert,
+      tlsHttp2,
     };
 
     await runPrismAndSetupWatcher(createPrism, options);
