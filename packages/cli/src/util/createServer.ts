@@ -2,9 +2,6 @@ import { createLogger } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
 import { createServer as createHttpServer, initTelemetry, ITelemetry, OtlpProtocol } from '@stoplight/prism-http-server';
 import * as chalk from 'chalk';
-// `@types/node` models node:cluster's API as the module's default export, but at runtime (CJS,
-// without esModuleInterop) the API lives on the module object itself. Import-equals gives the
-// correct runtime object; `.default ?? clusterModule` reconciles the typings with runtime.
 import clusterModule = require('node:cluster');
 const cluster = (clusterModule as typeof clusterModule & { default?: typeof clusterModule }).default ?? clusterModule;
 import * as E from 'fp-ts/Either';
@@ -25,7 +22,6 @@ type PrismLogDescriptor = pino.LogDescriptor & {
   name: keyof typeof LOG_COLOR_MAP;
   offset?: number;
   input: IHttpRequest;
-  // Injected by the OpenTelemetry Pino instrumentation when a request is traced.
   trace_id?: string;
 };
 
@@ -39,11 +35,6 @@ const cliSpecificLoggerOptions: pino.LoggerOptions = {
   },
 };
 
-/**
- * Initializes OpenTelemetry if enabled. Must run BEFORE the CLI logger (pino) is created so the
- * Pino instrumentation can patch pino and inject trace_id/span_id into log records. Returns the
- * telemetry handle (for shutdown flush) or undefined when disabled.
- */
 function initTelemetryFromOptions(options: CreateBaseServerOptions): ITelemetry | undefined {
   const telemetryEnabled = options.otelTelemetry || process.env.PRISM_TELEMETRY === 'true';
   if (!telemetryEnabled) return undefined;
@@ -53,7 +44,6 @@ function initTelemetryFromOptions(options: CreateBaseServerOptions): ITelemetry 
     exporterUrl: options.otelExporterUrl,
     serviceName: options.otelServiceName,
     protocol: options.otelExporterProtocol,
-    // A single flag enables the full pipeline: traces and metrics together.
     metrics: true,
   });
 }
@@ -70,8 +60,6 @@ const createMultiProcessPrism: CreatePrism = async options => {
       pipeOutputToSignale(worker.process.stdout);
     }
 
-    // The worker is where telemetry is initialized and where spans are buffered. On shutdown,
-    // forward a graceful SIGTERM to the worker so it can flush spans, then exit once it is gone.
     const shutdownWorker = () => {
       worker.once('exit', () => process.exit(0));
       worker.kill('SIGTERM');
@@ -81,7 +69,6 @@ const createMultiProcessPrism: CreatePrism = async options => {
 
     return;
   } else {
-    // Init telemetry before creating the logger so pino is instrumented for trace correlation.
     const telemetry = initTelemetryFromOptions(options);
     const logInstance = createLogger('CLI', { ...cliSpecificLoggerOptions, level: options.verboseLevel });
 
@@ -96,7 +83,6 @@ const createMultiProcessPrism: CreatePrism = async options => {
 const createSingleProcessPrism: CreatePrism = options => {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
-  // Init telemetry before creating the logger so pino is instrumented for trace correlation.
   const telemetry = initTelemetryFromOptions(options);
   const logStream = new PassThrough();
   const logInstance = createLogger('CLI', { ...cliSpecificLoggerOptions, level: options.verboseLevel }, logStream);
@@ -142,8 +128,6 @@ async function createPrismServerWithLogger(
       }
     : { ...shared, isProxy: false };
 
-  // Telemetry was already initialized (before the logger) by the caller; here we just register
-  // the shutdown flush, now that we have a logger to report errors through.
   if (telemetry) {
     registerTelemetryShutdown(telemetry, logInstance);
   }
@@ -194,8 +178,6 @@ function pipeOutputToSignale(stream: Readable) {
       })
     )
     .on('data', (logLine: PrismLogDescriptor) => {
-      // Surface the OpenTelemetry trace id (when present) so terminal logs can be correlated
-      // with traces in the backend.
       const traceSuffix = logLine.trace_id ? chalk.grey(` [trace=${logLine.trace_id}]`) : '';
       signale[logLine.level]({ prefix: constructPrefix(logLine), message: `${logLine.msg}${traceSuffix}` });
     });
@@ -205,12 +187,6 @@ function isProxyServerOptions(options: CreateBaseServerOptions): options is Crea
   return 'upstream' in options;
 }
 
-/**
- * Flushes and shuts down the OpenTelemetry SDK on process termination so that spans buffered by
- * the BatchSpanProcessor are exported instead of being dropped when Prism exits. The `exit`
- * callback is injectable so the shutdown sequence can be unit-tested without terminating the
- * test process.
- */
 export function registerTelemetryShutdown(
   telemetry: ITelemetry,
   logInstance: pino.Logger,
@@ -230,9 +206,6 @@ export function registerTelemetryShutdown(
   process.once('SIGTERM', flushAndExit);
 }
 
-/**
- * @property {boolean} jsonSchemaFakerFillProperties - Used to override the default json-schema-faker extension value
- */
 type CreateBaseServerOptions = {
   dynamic: boolean;
   cors: boolean;

@@ -1,5 +1,5 @@
 ====test====
-When prism is started with the --telemetry flag, OpenTelemetry tracing is enabled but
+When prism is started with the --otel-telemetry flag, OpenTelemetry is enabled but
 responses are still served normally (the server span wraps the handler transparently).
 ====spec====
 openapi: 3.0.2
@@ -13,7 +13,7 @@ paths:
             'application/json':
               example: hello
 ====server====
-mock -p 4010 --telemetry ${document}
+mock -p 4010 --otel-telemetry ${document}
 ====command====
 curl -i -X GET http://localhost:4010/todos -H "accept: application/json"
 ====expect-loose====
