@@ -5,9 +5,9 @@ import { faker } from '@faker-js/faker';
 
 describe('createExamplePath()', () => {
   describe('path parameters', () => {
-    it('generates simple style', () => {
+    it('generates simple style', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path/{p}',
           method: 'get',
@@ -27,9 +27,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates simple style with hyphens', () => {
+    it('generates simple style with hyphens', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path-path/{p-id}',
           method: 'get',
@@ -49,9 +49,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates label style', () => {
+    it('generates label style', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path/{p}',
           method: 'get',
@@ -71,9 +71,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates label style with hyphens', () => {
+    it('generates label style with hyphens', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path-path/{p-id}',
           method: 'get',
@@ -93,9 +93,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates matrix style', () => {
+    it('generates matrix style', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path/{p}',
           method: 'get',
@@ -115,9 +115,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates matrix style with hyphens', () => {
+    it('generates matrix style with hyphens', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path-path/{p-a}',
           method: 'get',
@@ -139,9 +139,9 @@ describe('createExamplePath()', () => {
   });
 
   describe('query parameters', () => {
-    it('generates form style', () => {
+    it('generates form style', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path',
           method: 'get',
@@ -161,9 +161,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates form style with hyphens', () => {
+    it('generates form style with hyphens', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path-path',
           method: 'get',
@@ -183,9 +183,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates deepObject style', () => {
+    it('generates deepObject style', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path',
           method: 'get',
@@ -205,9 +205,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates deepObject style with hyphens', () => {
+    it('generates deepObject style with hyphens', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path-path',
           method: 'get',
@@ -227,13 +227,13 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates deepObject style with null values', () => {
+    it('generates deepObject style with null values', async () => {
       const exampleValue = { a: { aa: 1, ab: 2 }, b: null };
       const p_a_aa = encodeURIComponent('p[a][aa]');
       const p_a_ab = encodeURIComponent('p[a][ab]');
       const expected = `/path?${p_a_aa}=1&${p_a_ab}=2`;
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path',
           method: 'get',
@@ -253,9 +253,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates deepObject style with only null values', () => {
+    it('generates deepObject style with only null values', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path',
           method: 'get',
@@ -275,9 +275,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates pipeDelimited style', () => {
+    it('generates pipeDelimited style', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path',
           method: 'get',
@@ -297,9 +297,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates pipeDelimited style with hyphens', () => {
+    it('generates pipeDelimited style with hyphens', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path-path',
           method: 'get',
@@ -319,9 +319,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates spaceDelimited style', () => {
+    it('generates spaceDelimited style', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path',
           method: 'get',
@@ -341,9 +341,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('generates spaceDelimited style with hyphens', () => {
+    it('generates spaceDelimited style with hyphens', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path-path',
           method: 'get',
@@ -363,9 +363,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('fails when invalid example provided for pipeDelimited style', () => {
+    it('fails when invalid example provided for pipeDelimited style', async () => {
       assertLeft(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path',
           method: 'get',
@@ -385,9 +385,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('fails when invalid example provided for spaceDelimited style', () => {
+    it('fails when invalid example provided for spaceDelimited style', async () => {
       assertLeft(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path',
           method: 'get',
@@ -407,9 +407,9 @@ describe('createExamplePath()', () => {
       );
     });
 
-    it('encodes params with special characters', () => {
+    it('encodes params with special characters', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path',
           method: 'get',
@@ -431,9 +431,9 @@ describe('createExamplePath()', () => {
   });
 
   describe('mixed parameters', () => {
-    it('generates correct path', () => {
+    it('generates correct path', async () => {
       assertRight(
-        createExamplePath({
+        await createExamplePath({
           id: '123',
           path: '/path/{p1}/{p2}/{p3}',
           method: 'get',

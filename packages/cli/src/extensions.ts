@@ -1,9 +1,8 @@
 import * as $RefParser from '@stoplight/json-schema-ref-parser';
 import { decycle } from '@stoplight/json';
 import { get, camelCase, forOwn } from 'lodash';
-import { JSONSchemaFaker } from 'json-schema-faker';
-import type { JSONSchemaFakerOptions } from 'json-schema-faker';
-import { resetJSONSchemaGenerator } from '@stoplight/prism-http';
+import { faker } from '@faker-js/faker';
+import { resetJSONSchemaGenerator, setJSONSchemaGeneratorOption } from '@stoplight/prism-http';
 
 export async function configureExtensionsUserProvided(
   specFilePathOrObject: string | object,
@@ -27,11 +26,8 @@ export async function configureExtensionsUserProvided(
 
 function setFakerValue(option: string, value: any) {
   if (option === 'locale') {
-    // necessary as workaround broken types in json-schema-faker
-    // @ts-ignore
-    return JSONSchemaFaker.locate('faker').setLocale(value);
+    faker.locale = value;
+    return;
   }
-  // necessary as workaround broken types in json-schema-faker
-  // @ts-ignore
-  JSONSchemaFaker.option(camelCase(option) as keyof JSONSchemaFakerOptions, value);
+  setJSONSchemaGeneratorOption(camelCase(option), value);
 }

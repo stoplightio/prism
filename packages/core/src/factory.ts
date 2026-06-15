@@ -62,12 +62,11 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
     config: Config,
     validations: IPrismDiagnostic[]
   ): TE.TaskEither<Error, ResourceAndValidation & { output: Output }> => {
-    const mockCall = () =>
-      components.mock({
-        resource,
-        input: { data, validations },
-        config: config.mock || {},
-      })(components.logger.child({ name: 'NEGOTIATOR' }));
+    const mockCall = components.mock({
+      resource,
+      input: { data, validations },
+      config: config.mock || {},
+    })(components.logger.child({ name: 'NEGOTIATOR' }));
 
     const forwardCall = (config: IPrismProxyConfig) =>
       components.forward(
@@ -86,12 +85,12 @@ export function factory<Resource, Input, Output, Config extends IPrismConfig>(
           TE.orElse(error => {
             if (error.name === 'https://stoplight.io/prism/errors#UPSTREAM_NOT_IMPLEMENTED') {
               components.logger.info('Remocking the call');
-              return TE.fromIOEither(mockCall);
+              return mockCall;
             }
             return TE.left(error);
           })
         )
-      : TE.fromIOEither(mockCall);
+      : mockCall;
 
     return pipe(
       produceOutput,

@@ -107,16 +107,17 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
   });
 
   const address = await server.listen(options.port, options.host);
-  operations.forEach(resource => {
+  for (const resource of operations) {
+    const pathResult = await createExamplePath(resource, attachTagsToParamsValues);
     const path = pipe(
-      createExamplePath(resource, attachTagsToParamsValues),
+      pathResult,
       E.getOrElse(() => resource.path)
     );
 
     logInstance.info(
       `${resource.method.toUpperCase().padEnd(10)} ${address}${transformPathParamsValues(path, chalk.bold.cyan)}`
     );
-  });
+  }
   logInstance.start(`Prism is listening on ${address}`);
 
   return server;
@@ -139,8 +140,8 @@ function pipeOutputToSignale(stream: Readable) {
         try {
           const repairedJson = jsonrepair(chunk);
           return JSON.parse(repairedJson);
-        } catch (error) {
-          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Invalid JSON and unable to correct'});
+        } catch {
+          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Invalid JSON and unable to correct' });
         }
       })
     )

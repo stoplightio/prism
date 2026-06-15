@@ -41,16 +41,20 @@ function pickStaticExample(examples: O.Option<Array<INodeExample | INodeExternal
   );
 }
 
-export function generate(param: IHttpParam | IHttpContent): O.Option<unknown> {
-  return pipe(
-    O.fromNullable(param.examples),
-    pickStaticExample,
-    O.alt(() =>
-      pipe(
-        O.fromNullable(param.schema),
-        O.map(improveSchema),
-        O.chain(schema => O.fromEither(generateDynamicExample(param, {}, schema)))
-      )
-    )
-  );
+export async function generate(param: IHttpParam | IHttpContent): Promise<O.Option<unknown>> {
+  const staticExample = pipe(O.fromNullable(param.examples), pickStaticExample);
+
+  if (O.isSome(staticExample)) {
+    return staticExample;
+  }
+
+  if (param.schema) {
+    const schema = improveSchema(param.schema);
+    const result = await generateDynamicExample(param, {}, schema)();
+    if (result._tag === 'Right') {
+      return O.some(result.right);
+    }
+  }
+
+  return O.none;
 }

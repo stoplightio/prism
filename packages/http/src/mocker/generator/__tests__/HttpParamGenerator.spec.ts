@@ -5,18 +5,21 @@ import { faker } from '@faker-js/faker/locale/en';
 describe('HttpParamGenerator', () => {
   describe('generate()', () => {
     describe('example is present', () => {
-      it('uses static example', () => {
+      it('uses static example', async () => {
         assertSome(
-          generate({ id: faker.word.sample(), examples: [{ id: faker.word.sample(), key: 'foo', value: 'test' }] }),
+          await generate({
+            id: faker.word.sample(),
+            examples: [{ id: faker.word.sample(), key: 'foo', value: 'test' }],
+          }),
           v => expect(v).toEqual('test')
         );
       });
     });
 
     describe('schema and example is present', () => {
-      it('prefers static example', () => {
+      it('prefers static example', async () => {
         assertSome(
-          generate({
+          await generate({
             id: faker.word.sample(),
             schema: { type: 'string' },
             examples: [{ id: faker.word.sample(), key: 'foo', value: 'test' }],
@@ -27,16 +30,16 @@ describe('HttpParamGenerator', () => {
     });
 
     describe('schema is present', () => {
-      it('generates example from schema', () => {
-        assertSome(generate({ id: faker.word.sample(), schema: { type: 'string', format: 'email' } }), v =>
+      it('generates example from schema', async () => {
+        assertSome(await generate({ id: faker.word.sample(), schema: { type: 'string', format: 'email' } }), v =>
           expect(v).toEqual(expect.stringMatching(/@/))
         );
       });
     });
 
     describe('no schema and no examples', () => {
-      it('returns none', () => {
-        assertNone(generate({ id: faker.word.sample() }));
+      it('returns none', async () => {
+        assertNone(await generate({ id: faker.word.sample() }));
       });
     });
   });

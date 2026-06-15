@@ -1,6 +1,5 @@
 import { IDiagnostic } from '@stoplight/types';
 import { Either } from 'fp-ts/Either';
-import { ReaderEither } from 'fp-ts/ReaderEither';
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither';
 import { TaskEither } from 'fp-ts/TaskEither';
 import { Logger } from 'pino';
@@ -50,7 +49,7 @@ export type IPrismComponents<Resource, Input, Output, Config extends IPrismConfi
     resource: Resource;
     input: IPrismInput<Input>;
     config: Config['mock'];
-  }) => ReaderEither<Logger, Error, Output>;
+  }) => ReaderTaskEither<Logger, Error, Output>;
   logger: Logger;
 };
 
