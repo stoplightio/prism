@@ -2,7 +2,7 @@ import { IPrism, IPrismComponents, IPrismProxyConfig, IPrismMockConfig } from '@
 import { Overwrite } from 'utility-types';
 import { Dictionary, HttpMethod, IHttpOperation, INodeExample, INodeExternalExample } from '@stoplight/types';
 import type { JSONSchema7 } from 'json-schema';
-import { Either } from 'fp-ts/Either';
+import { TaskEither } from 'fp-ts/TaskEither';
 
 export type PrismHttpInstance = IPrism<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig>;
 
@@ -90,7 +90,7 @@ export class ProblemJsonError extends Error {
 }
 
 export type ContentExample = INodeExample | INodeExternalExample;
-export type PayloadGenerator = (f: JSONSchema) => Either<Error, unknown>;
+export type PayloadGenerator = (f: JSONSchema) => TaskEither<Error, unknown>;
 
 export type PickRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 export type JSONSchema = JSONSchema7;

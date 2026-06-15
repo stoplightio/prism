@@ -9,7 +9,6 @@ import * as A from 'fp-ts/Array';
 import * as TE from 'fp-ts/TaskEither';
 import * as RTE from 'fp-ts/ReaderTaskEither';
 import * as J from 'fp-ts/Json';
-import { head } from 'fp-ts/Array';
 import { pipe } from 'fp-ts/function';
 import { pick } from 'lodash';
 import { generate as generateHttpParam } from '../generator/HttpParamGenerator';
@@ -28,21 +27,28 @@ export function runCallback({
   response: IHttpResponse;
 }): RTE.ReaderTaskEither<Logger, void, unknown> {
   return logger => {
-    const { url, requestData } = assembleRequest({ resource: callback, request, response });
     const logViolation = violationLogger(logger);
 
-    logCallbackRequest({ logger, callbackName: callback.key, url, requestData });
-
     return pipe(
-      TE.tryCatch(() => fetch(url, requestData), E.toError),
-      TE.chain(parseResponse),
-      TE.map(callbackResponseLogger({ logger, callbackName: callback.key })),
-      TE.mapLeft(error => logger.error(`${chalk.blueBright(callback.key + ':')} Request failed: ${error.message}`)),
-      TE.chainEitherK(element => {
+      TE.tryCatch(
+        () => assembleRequest({ resource: callback, request, response }),
+        (): void => undefined
+      ),
+      TE.chain(({ url, requestData }) => {
+        logCallbackRequest({ logger, callbackName: callback.key, url, requestData });
+
         return pipe(
-          validateOutput({ resource: callback, element }),
-          E.mapLeft(violations => {
-            pipe(violations, A.map(logViolation));
+          TE.tryCatch(() => fetch(url, requestData), E.toError),
+          TE.chain(parseResponse),
+          TE.map(callbackResponseLogger({ logger, callbackName: callback.key })),
+          TE.mapLeft(error => logger.error(`${chalk.blueBright(callback.key + ':')} Request failed: ${error.message}`)),
+          TE.chainEitherK(element => {
+            return pipe(
+              validateOutput({ resource: callback, element }),
+              E.mapLeft(violations => {
+                pipe(violations, A.map(logViolation));
+              })
+            );
           })
         );
       })
@@ -76,7 +82,7 @@ function callbackResponseLogger({ logger, callbackName }: { logger: Logger; call
   };
 }
 
-function assembleRequest({
+async function assembleRequest({
   resource,
   request,
   response,
@@ -85,48 +91,56 @@ function assembleRequest({
   request: IHttpRequest;
   response: IHttpResponse;
 }) {
-  const bodyAndMediaType = O.toUndefined(assembleBody(resource.request));
+  const bodyAndMediaType = await assembleBody(resource.request);
   return {
     url: resolveRuntimeExpressions(resource.path, request, response),
     requestData: {
-      headers: O.toUndefined(assembleHeaders(resource.request, bodyAndMediaType?.mediaType)),
-      body: bodyAndMediaType?.body,
+      headers: await assembleHeaders(
+        resource.request,
+        O.isSome(bodyAndMediaType) ? bodyAndMediaType.value.mediaType : undefined
+      ),
+      body: O.isSome(bodyAndMediaType) ? bodyAndMediaType.value.body : undefined,
       method: resource.method,
     },
   };
 }
 
-function assembleBody(request?: IHttpOperationRequest): O.Option<{ body: string; mediaType: string }> {
-  return pipe(
-    O.fromNullable(request?.body?.contents),
-    O.bind('content', contents => head(contents)),
-    O.bind('body', ({ content }) => generateHttpParam(content)),
-    O.chain(({ body, content: { mediaType } }) =>
-      pipe(
-        J.stringify(body),
-        E.map(body => ({ body, mediaType })),
-        O.fromEither
-      )
-    )
-  );
+async function assembleBody(request?: IHttpOperationRequest): Promise<O.Option<{ body: string; mediaType: string }>> {
+  const contents = request?.body?.contents;
+  if (!contents) return O.none;
+
+  const content = contents[0];
+  if (!content) return O.none;
+
+  const body = await generateHttpParam(content);
+  if (O.isNone(body)) return O.none;
+
+  const stringified = J.stringify(body.value);
+  if (E.isLeft(stringified)) return O.none;
+
+  return O.some({ body: stringified.right, mediaType: content.mediaType });
 }
 
-const assembleHeaders = (request?: IHttpOperationRequest, bodyMediaType?: string): O.Option<Dictionary<string>> =>
-  pipe(
-    O.fromNullable(request?.headers),
-    O.chain(
-      O.traverseArray(param =>
-        pipe(
-          generateHttpParam(param),
-          O.map(value => [param.name, value])
-        )
-      )
-    ),
-    O.reduce(
-      pipe(
-        O.fromNullable(bodyMediaType),
-        O.map(mediaType => ({ 'content-type': mediaType }))
-      ),
-      (mediaTypeHeader, headers) => ({ ...headers, ...mediaTypeHeader })
-    )
-  );
+async function assembleHeaders(
+  request?: IHttpOperationRequest,
+  bodyMediaType?: string
+): Promise<Dictionary<string> | undefined> {
+  const headers = request?.headers;
+  if (!headers) {
+    return bodyMediaType ? { 'content-type': bodyMediaType } : undefined;
+  }
+
+  const result: Dictionary<string> = {};
+  for (const param of headers) {
+    const value = await generateHttpParam(param);
+    if (O.isSome(value)) {
+      result[param.name] = value.value as string;
+    }
+  }
+
+  if (bodyMediaType) {
+    result['content-type'] = bodyMediaType;
+  }
+
+  return Object.keys(result).length > 0 ? result : bodyMediaType ? { 'content-type': bodyMediaType } : undefined;
+}

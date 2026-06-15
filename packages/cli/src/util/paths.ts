@@ -12,106 +12,92 @@ import {
   IHttpPathParam,
   IHttpQueryParam,
 } from '@stoplight/types';
-import * as A from 'fp-ts/Array';
 import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
-import * as ROA from 'fp-ts/ReadonlyArray';
 import { pipe } from 'fp-ts/function';
 import { fromPairs, identity } from 'lodash';
 import { URI } from 'uri-template-lite';
 import { sequenceSEither } from '../combinators';
 import { ValuesTransformer } from './colorizer';
 
-export function createExamplePath(
+export async function createExamplePath(
   operation: IHttpOperation,
   transformValues: ValuesTransformer = identity
-): E.Either<Error, string> {
-  return pipe(
-    E.Do,
-    E.bind('pathData', () => generateTemplateAndValuesForPathParams(operation)),
-    E.bind('queryData', ({ pathData }) => generateTemplateAndValuesForQueryParams(pathData.template, operation)),
-    E.map(({ pathData, queryData }) =>
-      URI.expand(queryData.template, transformValues({ ...pathData.values, ...queryData.values }))
-    ),
-    E.map(path => path.replace(/\?$/, ''))
-  );
+): Promise<E.Either<Error, string>> {
+  const pathDataResult = await generateTemplateAndValuesForPathParams(operation);
+  if (E.isLeft(pathDataResult)) return pathDataResult;
+  const pathData = pathDataResult.right;
+
+  const queryDataResult = await generateTemplateAndValuesForQueryParams(pathData.template, operation);
+  if (E.isLeft(queryDataResult)) return queryDataResult;
+  const queryData = queryDataResult.right;
+
+  const expanded = URI.expand(queryData.template, transformValues({ ...pathData.values, ...queryData.values }));
+  return E.right(expanded.replace(/\?$/, ''));
 }
 
-function generateParamValue(spec: IHttpParam): E.Either<Error, unknown> {
-  return pipe(
-    generateHttpParam(spec),
-    E.fromOption(() => new Error(`Cannot generate value for: ${spec.name}`)),
-    E.chain(value => {
-      switch (spec.style) {
-        case HttpParamStyles.DeepObject:
-          return pipe(
-            value,
-            E.fromPredicate(
-              (value: unknown): value is string | Dictionary<unknown, string> =>
-                typeof value === 'string' || typeof value === 'object',
-              () => new Error('Expected string parameter')
-            ),
-            E.map(value => serializeWithDeepObjectStyle(spec.name, value))
-          );
+async function generateParamValue(spec: IHttpParam): Promise<E.Either<Error, unknown>> {
+  const optionResult = await generateHttpParam(spec);
 
-        case HttpParamStyles.PipeDelimited:
-          return pipe(
-            value,
-            E.fromPredicate(
-              Array.isArray,
-              () => new Error('Pipe delimited style is only applicable to array parameter')
-            ),
-            E.map(v => serializeWithPipeDelimitedStyle(spec.name, v, spec.explode))
-          );
+  if (O.isNone(optionResult)) {
+    return E.left(new Error(`Cannot generate value for: ${spec.name}`));
+  }
 
-        case HttpParamStyles.SpaceDelimited:
-          return pipe(
-            value,
-            E.fromPredicate(
-              Array.isArray,
-              () => new Error('Space delimited style is only applicable to array parameter')
-            ),
-            E.map(v => serializeWithSpaceDelimitedStyle(spec.name, v, spec.explode))
-          );
+  const value = optionResult.value;
 
-        default:
-          return E.right(value);
+  switch (spec.style) {
+    case HttpParamStyles.DeepObject:
+      if (typeof value === 'string' || typeof value === 'object') {
+        return E.right(serializeWithDeepObjectStyle(spec.name, value as string | Dictionary<unknown, string>));
       }
-    })
-  );
+      return E.left(new Error('Expected string parameter'));
+
+    case HttpParamStyles.PipeDelimited:
+      if (Array.isArray(value)) {
+        return E.right(serializeWithPipeDelimitedStyle(spec.name, value, spec.explode));
+      }
+      return E.left(new Error('Pipe delimited style is only applicable to array parameter'));
+
+    case HttpParamStyles.SpaceDelimited:
+      if (Array.isArray(value)) {
+        return E.right(serializeWithSpaceDelimitedStyle(spec.name, value, spec.explode));
+      }
+      return E.left(new Error('Space delimited style is only applicable to array parameter'));
+
+    default:
+      return E.right(value);
+  }
 }
 
-function generateParamValues(specs: IHttpParam[]): E.Either<Error, Dictionary<unknown>> {
-  return pipe(
-    specs,
-    A.map(O.fromNullable),
-    A.compact,
-    E.traverseArray(spec =>
-      pipe(
-        generateParamValue(spec),
-        E.map(value => [encodeURI(spec.name), value]),
-        E.map(O.fromPredicate(([_, value]) => value !== null))
-      )
-    ),
-    E.map(ROA.compact),
-    E.map(fromPairs)
-  );
+async function generateParamValues(specs: IHttpParam[]): Promise<E.Either<Error, Dictionary<unknown>>> {
+  const results: Array<[string, unknown]> = [];
+
+  for (const spec of specs) {
+    if (spec == null) continue;
+    const valueResult = await generateParamValue(spec);
+    if (E.isLeft(valueResult)) return valueResult;
+    const value = valueResult.right;
+    if (value !== null) {
+      results.push([encodeURI(spec.name), value]);
+    }
+  }
+
+  return E.right(fromPairs(results));
 }
 
-function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
+async function generateTemplateAndValuesForPathParams(operation: IHttpOperation) {
   const specs = operation.request?.path || [];
+  const values = await generateParamValues(specs);
+  const template = createPathUriTemplate(operation.path, specs);
 
-  return sequenceSEither({
-    values: generateParamValues(specs),
-    template: createPathUriTemplate(operation.path, specs),
-  });
+  return sequenceSEither({ values, template });
 }
 
-function generateTemplateAndValuesForQueryParams(template: string, operation: IHttpOperation) {
+async function generateTemplateAndValuesForQueryParams(template: string, operation: IHttpOperation) {
   const specs = operation.request?.query || [];
 
   return pipe(
-    generateParamValues(specs),
+    await generateParamValues(specs),
     E.map(values => ({ template: createQueryUriTemplate(template, specs), values }))
   );
 }

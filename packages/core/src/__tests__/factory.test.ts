@@ -1,9 +1,7 @@
 // @ts-ignore
 import logger from 'abstract-logging';
 import * as E from 'fp-ts/Either';
-import { asks } from 'fp-ts/ReaderEither';
 import * as TE from 'fp-ts/TaskEither';
-import { Logger } from 'pino';
 import { factory, IPrismConfig } from '..';
 
 describe('validation', () => {
@@ -20,7 +18,7 @@ describe('validation', () => {
       })
     ),
     logger: { ...logger, child: jest.fn().mockReturnValue(logger) },
-    mock: jest.fn().mockReturnValue(asks<Logger, string, string>(() => 'hey')),
+    mock: jest.fn().mockReturnValue(() => TE.right('hey')),
   };
 
   const prismInstance = factory<string, string, string, IPrismConfig>(

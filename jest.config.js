@@ -10,12 +10,13 @@ const tsJestOptions = {
 const projectDefault = {
   moduleNameMapper: {
     ...mapValues(pathsToModuleNameMapper(compilerOptions.paths), v => path.resolve(path.join('packages', v))),
+    '^json-schema-faker$': '<rootDir>/node_modules/json-schema-faker/dist/index.js',
   },
   testEnvironment: 'node',
   transform: {
     '^.+\\.(ts)$': 'ts-jest',
   },
-  transformIgnorePatterns: ['node_modules/(?!@faker-js/faker|http-proxy-agent|https-proxy-agent|agent-base)'],
+  transformIgnorePatterns: ['node_modules/(?!@faker-js/faker|json-schema-faker|http-proxy-agent|https-proxy-agent|agent-base)'],
 };
 
 module.exports = {
