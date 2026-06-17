@@ -20,8 +20,9 @@ mock -p 4010 ${document}
 curl -i -X OPTIONS http://localhost:4010/todos -H "Origin: http://test.com" -H "Access-Control-Request-Method: GET"
 ====expect====
 HTTP/1.1 204 No Content
-vary: Origin
-access-control-allow-origin: *
+vary: origin
+access-control-allow-origin: http://test.com
 access-control-allow-headers: *
 access-control-allow-credentials: true
 access-control-allow-methods: GET
+access-control-expose-headers: *

@@ -56,7 +56,7 @@ mock -p 4010 ${document}
 ====command====
 curl -i --location --request POST 'http://127.0.0.1:4010/cats?__example=usernameIsEmpty&__code=422' --header "Content-Type: application/json" --data '{"name":"very_long_name"}'
 ====expect====
-HTTP/1.1 422 OK
+HTTP/1.1 422 Unprocessable Entity
 content-type: application/json
 
 {"message":"A username MUST be provided"}

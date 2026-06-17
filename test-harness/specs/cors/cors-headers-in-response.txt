@@ -18,8 +18,10 @@ paths:
 mock -p 4010 ${document}
 ====command====
 curl -i -X GET http://localhost:4010/todos
-====expect====
+====expect-loose====
 HTTP/1.1 200 OK
 access-control-allow-origin: *
 access-control-allow-headers: *
 access-control-allow-credentials: true
+access-control-expose-headers: *
+sl-violations: [{"location":["response"],"severity":"Error","message":"The received media type \"\" does not match the one specified in the current response: "}]

@@ -47,7 +47,7 @@ mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos?__code=201
 ====expect====
-HTTP/1.1 201 OK
+HTTP/1.1 201 Created
 content-type: application/json
 
 "even more ok"

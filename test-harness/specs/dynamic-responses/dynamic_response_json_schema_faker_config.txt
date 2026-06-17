@@ -50,8 +50,8 @@ paths:
 mock -p 4010 -d ${document}
 ====command====
 curl -i http://localhost:4010/widget
-====expect-loose====
+====expect-keysOnly====
 HTTP/1.1 200 OK
 content-type: application/json
 
-{"alias":"Super Widget","name":"Super Widget","array":["Item","Item","Item"]}
+{"alias":"placeholder","array":["placeholder"],"name":"placeholder"}

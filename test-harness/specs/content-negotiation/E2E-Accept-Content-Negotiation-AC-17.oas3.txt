@@ -17,4 +17,4 @@ mock -p 4010 ${document}
 ====command====
 curl -i http://127.0.0.1:4010/test -X DELETE -H 'Accept: application/json'
 ====expect====
-HTTP/1.1 204 OK
+HTTP/1.1 204 No Content

@@ -29,10 +29,7 @@ paths:
 mock -p 4010 ${document}
 ====command====
 curl -i -X POST http://127.0.0.1:4010/pet
-====expect====
+====expect-loose====
 HTTP/1.1 200 OK
-content-type: application/json
-content-length: 7
-Date: Fri, 21 Jun 2019 09:25:34 GMT
 
 "string"

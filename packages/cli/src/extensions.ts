@@ -34,4 +34,9 @@ function setFakerValue(option: string, value: any) {
   // necessary as workaround broken types in json-schema-faker
   // @ts-ignore
   JSONSchemaFaker.option(camelCase(option) as keyof JSONSchemaFakerOptions, value);
+  if (camelCase(option) === 'fillProperties' && value === false) {
+    // When fillProperties is disabled, use schema default values instead of random generation
+    // @ts-ignore
+    JSONSchemaFaker.option('useDefaultValue', true);
+  }
 }

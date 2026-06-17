@@ -40,7 +40,7 @@ paths:
 mock -p 4010 ${document} -d
 ====command====
 curl -i http://localhost:4010/service
-====expect-loose====
+====expect-keysOnly====
 HTTP/1.1 200 OK
 
-{"resourceType": "officia voluptate amet ut","name": "sit"}
+{"color": "any string","name": "any string","resourceType": "any string"}

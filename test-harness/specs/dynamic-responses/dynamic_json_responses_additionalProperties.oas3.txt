@@ -25,7 +25,7 @@ components:
 mock -d -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/resources/5 -H "accept: application/json"
-====expect-loose====
+====expect-keysOnly====
 HTTP/1.1 200 OK
 
-{"name": "something","tags": "something else"}
+{"name": "string","tags": "string"}

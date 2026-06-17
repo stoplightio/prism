@@ -60,6 +60,14 @@ describe('harness', () => {
         const output: any = parseResponse(clientCommandHandle.stdout.trim());
         const expected: any = parseResponse((parsed.expect || parsed.expectLoose || parsed.expectKeysOnly).trim());
 
+        // HTTP header names are case-insensitive; normalize to lowercase so comparisons don't fail on casing differences
+        if (output.headers) {
+          output.headers = Object.fromEntries(Object.entries(output.headers as Record<string, string>).map(([k, v]) => [k.toLowerCase(), v]));
+        }
+        if (expected.headers) {
+          expected.headers = Object.fromEntries(Object.entries(expected.headers as Record<string, string>).map(([k, v]) => [k.toLowerCase(), v]));
+        }
+
         const isXml = xmlValidator.test(get(output, ['header', 'content-type'], ''), expected.body);
 
         if (isXml) {
@@ -71,7 +79,9 @@ describe('harness', () => {
           return;
         }
 
-        expect(output).toMatchObject(expected);
+        // For expectKeysOnly, skip the body in toMatchObject since we only verify keys below
+        const expectedForMatch = parsed.expectKeysOnly ? { ...expected, body: undefined } : expected;
+        expect(output).toMatchObject(expectedForMatch);
         if (parsed.expect) {
           expect(output.body).toStrictEqual(expected.body);
         } else if (parsed.expectKeysOnly) {

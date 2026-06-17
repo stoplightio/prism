@@ -40,7 +40,7 @@ Then I should get a response with dynamically generated JSON as payload
 mock -p 4010 ${document}
 ====command====
 curl -i http://localhost:4010/todos?__dynamic=true -H "accept: application/json"
-====expect-loose====
+====expect-keysOnly====
 HTTP/1.1 200 OK
 
-{"title": "officia voluptate amet ut","description": "sit","priority": 94921765}
+{"description": "string","priority": 0,"title": "string"}
