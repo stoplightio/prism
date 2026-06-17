@@ -1,6 +1,5 @@
 import { ChildProcess, spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
-import { validate } from 'gavel';
 import glob = require('glob');
 import { parseResponse } from 'http-string-parser';
 import { get } from 'lodash';
@@ -68,19 +67,11 @@ describe('harness', () => {
           expect(res).toStrictEqual([]);
           delete expected.body;
           delete output.body;
-
-          const isValid = validate(expected, output).valid;
-          expect(isValid).toBeTruthy();
+          expect(output).toMatchObject(expected);
           return;
         }
 
-        const isValid = validate(expected, output).valid;
-
-        if (!!isValid) {
-          expect(isValid).toBeTruthy();
-        } else {
-          expect(output).toMatchObject(expected);
-        }
+        expect(output).toMatchObject(expected);
         if (parsed.expect) {
           expect(output.body).toStrictEqual(expected.body);
         } else if (parsed.expectKeysOnly) {
