@@ -32,7 +32,7 @@
     "@faker-js/faker": "^10.4.0"
   },
   "engines": {
-    "node": ">=24.14.0"
+    "node": ">=24.17.0"
   },
   "files": [
     "/dist"
