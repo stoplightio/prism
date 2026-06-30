@@ -55,7 +55,7 @@ For more installation options, see our [installation documentation](./docs/getti
 Prism can help you create a fake "mock" based off an OpenAPI document, which helps people see how your API will work before you even have it built. Run it locally with the `prism mock` command to run your API on a HTTP server you can interact with.
 
 ```bash
-prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml
+prism mock https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/_archive_/schemas/v3.0/pass/petstore-expanded.yaml
 ```
 
 Learn more about [how the mock server works](docs/guides/01-mocking.md).
