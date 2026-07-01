@@ -53,6 +53,40 @@ describe('validate()', () => {
           )
       );
     });
+
+    it('selects an exact response media type before a wildcard match', () => {
+      const specs: IMediaTypeContent[] = [
+        {
+          id: faker.word.sample(),
+          mediaType: 'application/*+json',
+          schema: {
+            type: 'object',
+            required: ['v2Only'],
+            properties: {
+              version: { type: 'string' },
+              v2Only: { type: 'boolean' },
+            },
+          },
+          examples: [],
+          encodings: [],
+        },
+        {
+          id: faker.word.sample(),
+          mediaType: 'application/vnd.stuff.v1+json',
+          schema: {
+            type: 'object',
+            required: ['version'],
+            properties: {
+              version: { type: 'string' },
+            },
+          },
+          examples: [],
+          encodings: [],
+        },
+      ];
+
+      assertRight(validate({ version: 'v1' }, specs, ValidationContext.Output, 'application/vnd.stuff.v1+json'));
+    });
   });
 
   describe('body is form-urlencoded with deep object style', () => {
