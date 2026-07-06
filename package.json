@@ -22,6 +22,7 @@
     "test.harness": "jest -c ./jest.harness.config.js",
     "prepare": "husky"
   },
+ 
   "devDependencies": {
     "@stoplight/types": "^14.1.1",
     "@types/caseless": "^0.12.2",
@@ -71,6 +72,9 @@
     "type-is": "^1.6.18",
     "typescript": "5.4.5",
     "typescript-eslint": "^8.57.2"
+  },
+  "overrides": {
+    "tar": ">=7.5.16"
   },
   "lint-staged": {
     "**/packages/**/*.ts": [
