@@ -1,8 +1,9 @@
 import { createLogger } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
-import { createServer as createHttpServer } from '@stoplight/prism-http-server';
+import { createServer as createHttpServer, initTelemetry, ITelemetry, OtlpProtocol } from '@stoplight/prism-http-server';
 import * as chalk from 'chalk';
-import cluster from 'node:cluster';
+import clusterModule = require('node:cluster');
+const cluster = (clusterModule as typeof clusterModule & { default?: typeof clusterModule }).default ?? clusterModule;
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 import * as pino from 'pino';
@@ -21,6 +22,7 @@ type PrismLogDescriptor = pino.LogDescriptor & {
   name: keyof typeof LOG_COLOR_MAP;
   offset?: number;
   input: IHttpRequest;
+  trace_id?: string;
 };
 
 signale.config({ displayTimestamp: true });
@@ -32,6 +34,19 @@ const cliSpecificLoggerOptions: pino.LoggerOptions = {
     level: level => ({ level }),
   },
 };
+
+function initTelemetryFromOptions(options: CreateBaseServerOptions): ITelemetry | undefined {
+  const telemetryEnabled = options.otelTelemetry || process.env.PRISM_TELEMETRY === 'true';
+  if (!telemetryEnabled) return undefined;
+
+  return initTelemetry({
+    enabled: true,
+    exporterUrl: options.otelExporterUrl,
+    serviceName: options.otelServiceName,
+    protocol: options.otelExporterProtocol,
+    metrics: true,
+  });
+}
 
 const createMultiProcessPrism: CreatePrism = async options => {
   if (cluster.isPrimary) {
@@ -45,11 +60,19 @@ const createMultiProcessPrism: CreatePrism = async options => {
       pipeOutputToSignale(worker.process.stdout);
     }
 
+    const shutdownWorker = () => {
+      worker.once('exit', () => process.exit(0));
+      worker.kill('SIGTERM');
+    };
+    process.once('SIGINT', shutdownWorker);
+    process.once('SIGTERM', shutdownWorker);
+
     return;
   } else {
+    const telemetry = initTelemetryFromOptions(options);
     const logInstance = createLogger('CLI', { ...cliSpecificLoggerOptions, level: options.verboseLevel });
 
-    return createPrismServerWithLogger(options, logInstance).catch((e: Error) => {
+    return createPrismServerWithLogger(options, logInstance, telemetry).catch((e: Error) => {
       logInstance.fatal(e.message);
       cluster.worker!.kill();
       throw e;
@@ -60,17 +83,22 @@ const createMultiProcessPrism: CreatePrism = async options => {
 const createSingleProcessPrism: CreatePrism = options => {
   signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Starting Prism…' });
 
+  const telemetry = initTelemetryFromOptions(options);
   const logStream = new PassThrough();
   const logInstance = createLogger('CLI', { ...cliSpecificLoggerOptions, level: options.verboseLevel }, logStream);
   pipeOutputToSignale(logStream);
 
-  return createPrismServerWithLogger(options, logInstance).catch((e: Error) => {
+  return createPrismServerWithLogger(options, logInstance, telemetry).catch((e: Error) => {
     logInstance.fatal(e.message);
     throw e;
   });
 };
 
-async function createPrismServerWithLogger(options: CreateBaseServerOptions, logInstance: pino.Logger) {
+async function createPrismServerWithLogger(
+  options: CreateBaseServerOptions,
+  logInstance: pino.Logger,
+  telemetry?: ITelemetry
+) {
   const operations = await getHttpOperationsFromSpec(options.document);
   const jsonSchemaFakerCliParams: { [option: string]: any } = {
     ['fillProperties']: options.jsonSchemaFakerFillProperties,
@@ -100,10 +128,15 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
       }
     : { ...shared, isProxy: false };
 
+  if (telemetry) {
+    registerTelemetryShutdown(telemetry, logInstance);
+  }
+
   const server = createHttpServer(operations, {
     cors: options.cors,
     config,
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
+    telemetry: !!telemetry,
   });
 
   const address = await server.listen(options.port, options.host);
@@ -139,13 +172,14 @@ function pipeOutputToSignale(stream: Readable) {
         try {
           const repairedJson = jsonrepair(chunk);
           return JSON.parse(repairedJson);
-        } catch (error) {
-          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Invalid JSON and unable to correct'});
+        } catch {
+          signale.await({ prefix: chalk.bgWhiteBright.black('[CLI]'), message: 'Invalid JSON and unable to correct' });
         }
       })
     )
     .on('data', (logLine: PrismLogDescriptor) => {
-      signale[logLine.level]({ prefix: constructPrefix(logLine), message: logLine.msg });
+      const traceSuffix = logLine.trace_id ? chalk.grey(` [trace=${logLine.trace_id}]`) : '';
+      signale[logLine.level]({ prefix: constructPrefix(logLine), message: `${logLine.msg}${traceSuffix}` });
     });
 }
 
@@ -153,9 +187,25 @@ function isProxyServerOptions(options: CreateBaseServerOptions): options is Crea
   return 'upstream' in options;
 }
 
-/**
- * @property {boolean} jsonSchemaFakerFillProperties - Used to override the default json-schema-faker extension value
- */
+export function registerTelemetryShutdown(
+  telemetry: ITelemetry,
+  logInstance: pino.Logger,
+  exit: (code: number) => void = code => process.exit(code)
+): void {
+  let shuttingDown = false;
+  const flushAndExit = () => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    return telemetry
+      .shutdown()
+      .catch((e: Error) => logInstance.error(`Error shutting down OpenTelemetry: ${e.message}`))
+      .finally(() => exit(0));
+  };
+
+  process.once('SIGINT', flushAndExit);
+  process.once('SIGTERM', flushAndExit);
+}
+
 type CreateBaseServerOptions = {
   dynamic: boolean;
   cors: boolean;
@@ -168,6 +218,10 @@ type CreateBaseServerOptions = {
   ignoreExamples: boolean;
   seed: string;
   jsonSchemaFakerFillProperties: boolean;
+  otelTelemetry: boolean;
+  otelExporterUrl?: string;
+  otelServiceName?: string;
+  otelExporterProtocol?: OtlpProtocol;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {
