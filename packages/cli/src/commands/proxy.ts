@@ -20,7 +20,7 @@ const proxyCommand: CommandModule = {
       .coerce('upstream', (value: string) => {
         try {
           return new URL(value);
-        } catch (e) {
+        } catch {
           throw new Error(`Invalid upstream URL provided: ${value}`);
         }
       })
@@ -39,6 +39,8 @@ const proxyCommand: CommandModule = {
       }),
   handler: async parsedArgs => {
     parsedArgs.validateRequest = parsedArgs['validate-request'];
+    parsedArgs.otelExporterUrl = parsedArgs['otel-exporter-url'];
+    parsedArgs.otelServiceName = parsedArgs['otel-service-name'];
     const p: CreateProxyServerOptions = pick(
       parsedArgs as unknown as CreateProxyServerOptions,
       'dynamic',
@@ -54,7 +56,10 @@ const proxyCommand: CommandModule = {
       'ignoreExamples',
       'seed',
       'upstreamProxy',
-      'jsonSchemaFakerFillProperties'
+      'jsonSchemaFakerFillProperties',
+      'telemetry',
+      'otelExporterUrl',
+      'otelServiceName'
     );
 
     const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
