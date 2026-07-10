@@ -13,6 +13,90 @@ jest.setTimeout(15000);
 const WAIT_FOR_LINE = 'Prism is listening';
 const WAIT_FOR_LINE_TIMEOUT = 10000;
 
+// HTTP headers that legitimately vary between runs (timestamps, transport-level metadata, etc.).
+// Gavel used to ignore these automatically; Jest's toMatchObject does not, so we filter them out.
+const VOLATILE_HEADERS = new Set([
+  'date',
+  'content-length',
+  'connection',
+  'keep-alive',
+  'transfer-encoding',
+]);
+
+/**
+ * Normalizes header names to lowercase so casing differences do not cause spurious mismatches.
+ * HTTP header names are case-insensitive per RFC 7230.
+ */
+function normalizeHeaders(response: any) {
+  if (!response || !response.headers) return response;
+
+  return {
+    ...response,
+    headers: Object.fromEntries(
+      Object.entries(response.headers as Record<string, string>).map(([k, v]) => [
+        k.toLowerCase(),
+        v,
+      ])
+    ),
+  };
+}
+
+/**
+ * Removes headers whose values are expected to change between runs
+ * (e.g. `date`, `content-length`) so they don't cause matcher failures.
+ */
+function removeVolatileHeaders(headers: Record<string, string> = {}) {
+  return Object.fromEntries(
+    Object.entries(headers)
+      .filter(([key]) => !VOLATILE_HEADERS.has(key.toLowerCase()))
+      .map(([key, value]) => [key, resolveJestMatcher(value)])
+  );
+}
+
+/**
+ * Allows spec files to embed Jest asymmetric matchers via simple placeholders:
+ *   <anyString>            -> expect.any(String)
+ *   <anyNumber>            -> expect.any(Number)
+ *   <stringContaining:foo> -> expect.stringContaining('foo')
+ *   <stringMatching:^foo$> -> expect.stringMatching(/^foo$/)
+ */
+function resolveJestMatcher(value: unknown) {
+  if (typeof value !== 'string') return value;
+
+  if (value === '<anyString>') return expect.any(String);
+  if (value === '<anyNumber>') return expect.any(Number);
+
+  const stringContaining = value.match(/^<stringContaining:(.*)>$/);
+  if (stringContaining) return expect.stringContaining(stringContaining[1]);
+
+  const stringMatching = value.match(/^<stringMatching:(.*)>$/);
+  if (stringMatching) return expect.stringMatching(new RegExp(stringMatching[1]));
+
+  return value;
+}
+
+/**
+ * Builds the object passed to `toMatchObject`, mimicking Gavel's behavior:
+ * - volatile headers are removed
+ * - header comparison is loose via `expect.objectContaining`
+ * - the body is only included for strict `expect` assertions
+ *   (`expect-loose` and `expect-keysOnly` handle bodies separately)
+ */
+function buildExpectedForMatch(parsed: any, expected: any) {
+  const { body, headers, ...rest } = expected;
+  const expectedForMatch: any = { ...rest };
+
+  if (headers) {
+    expectedForMatch.headers = expect.objectContaining(removeVolatileHeaders(headers));
+  }
+
+  if (parsed.expect && body !== undefined) {
+    expectedForMatch.body = body;
+  }
+
+  return expectedForMatch;
+}
+
 describe('harness', () => {
   const files = process.env.TESTS
     ? String(process.env.TESTS).split(',')
@@ -39,8 +123,10 @@ describe('harness', () => {
     });
 
     afterAll(() => tmpFileHandle.removeCallback(undefined, undefined, undefined, undefined));
+
     describe(file, () => {
       let prismHandle: ChildProcess;
+
       beforeEach(async () => {
         prismHandle = await startPrism(parsed.server, tmpFileHandle.name);
       });
@@ -57,35 +143,32 @@ describe('harness', () => {
           encoding: 'utf8',
           windowsVerbatimArguments: false,
         });
-        const output: any = parseResponse(clientCommandHandle.stdout.trim());
-        const expected: any = parseResponse((parsed.expect || parsed.expectLoose || parsed.expectKeysOnly).trim());
 
-        // HTTP header names are case-insensitive; normalize to lowercase so comparisons don't fail on casing differences
-        if (output.headers) {
-          output.headers = Object.fromEntries(Object.entries(output.headers as Record<string, string>).map(([k, v]) => [k.toLowerCase(), v]));
-        }
-        if (expected.headers) {
-          expected.headers = Object.fromEntries(Object.entries(expected.headers as Record<string, string>).map(([k, v]) => [k.toLowerCase(), v]));
-        }
+        // Parse and normalize both actual and expected responses.
+        const output: any = normalizeHeaders(parseResponse(clientCommandHandle.stdout.trim()));
+        const expected: any = normalizeHeaders(
+          parseResponse((parsed.expect || parsed.expectLoose || parsed.expectKeysOnly).trim())
+        );
 
-        const isXml = xmlValidator.test(get(output, ['header', 'content-type'], ''), expected.body);
+        const isXml = xmlValidator.test(
+          get(output, ['headers', 'content-type'], ''),
+          expected.body
+        );
 
         if (isXml) {
           const res = await xmlValidator.validate(expected, output);
           expect(res).toStrictEqual([]);
           delete expected.body;
           delete output.body;
-          expect(output).toMatchObject(expected);
+          expect(output).toMatchObject(buildExpectedForMatch(parsed, expected));
           return;
         }
 
-        // For expectKeysOnly and expectLoose, skip the body in toMatchObject and handle separately.
-        // With gavel, expect-loose used tv4 treating the expected body as a JSON Schema; since plain
-        // JSON objects have no schema keywords, tv4 passed any valid body — so only status/headers
-        // were effectively validated.  Replicate that by omitting the body from toMatchObject.
-        const { body: _expectedBody, ...expectedWithoutBody } = expected;
-        const expectedForMatch = (parsed.expectKeysOnly || parsed.expectLoose) ? expectedWithoutBody : expected;
-        expect(output).toMatchObject(expectedForMatch);
+        // For expectKeysOnly and expectLoose, the body is verified separately (or intentionally
+        // skipped for expect-loose to mirror the old gavel/tv4 behavior where plain JSON
+        // objects had no schema keywords and therefore matched any valid body).
+        expect(output).toMatchObject(buildExpectedForMatch(parsed, expected));
+
         if (parsed.expect) {
           expect(output.body).toStrictEqual(expected.body);
         } else if (parsed.expectKeysOnly) {
@@ -93,40 +176,205 @@ describe('harness', () => {
           const jsonExpected = JSON.parse(expected.body);
           const actualKeys = Object.keys(jsonOutput);
           const expectedKeys = Object.keys(jsonExpected);
-          // All expected keys must be present in actual (actual may have extra keys when
-          // additionalProperties is set to a schema; relative order of expected keys must match).
+
+          // All expected keys must be present in the actual output (extra keys are allowed
+          // when additionalProperties is set to a schema), and the relative order of the
+          // expected keys must match.
           expect(actualKeys).toEqual(expect.arrayContaining(expectedKeys));
           expect(actualKeys.filter(k => expectedKeys.includes(k))).toStrictEqual(expectedKeys);
         }
+        // expect-loose: no additional body check (mirrors gavel/tv4 behavior).
       });
     });
   });
 });
 
+/* -------------------------------------------------------------------------- */
+/*                Unit tests for the Jest-matcher based helpers               */
+/* -------------------------------------------------------------------------- */
+
+describe('harness Jest matcher compatibility', () => {
+  it('ignores volatile headers while matching response metadata', () => {
+    const output = {
+      statusCode: 200,
+      statusMessage: 'OK',
+      headers: {
+        'content-type': 'application/json',
+        date: 'Fri, 10 Jul 2026 10:00:00 GMT',
+        'content-length': '123',
+        connection: 'keep-alive',
+      },
+      body: '{"id":1}',
+    };
+
+    const expected = {
+      statusCode: 200,
+      statusMessage: 'OK',
+      headers: {
+        'content-type': 'application/json',
+        date: 'Some old date',
+        'content-length': '999',
+      },
+      body: '{"id":1}',
+    };
+
+    expect(output).toMatchObject(buildExpectedForMatch({ expect: true }, expected));
+  });
+
+  it('allows extra actual headers beyond those declared as expected', () => {
+    const output = {
+      statusCode: 200,
+      headers: {
+        'content-type': 'application/json',
+        'x-extra-header': 'extra',
+      },
+    };
+
+    const expected = {
+      statusCode: 200,
+      headers: {
+        'content-type': 'application/json',
+      },
+    };
+
+    expect(output).toMatchObject(buildExpectedForMatch({ expect: true }, expected));
+  });
+
+  it('does not include body in matcher for expect-loose', () => {
+    const output = {
+      statusCode: 200,
+      headers: { 'content-type': 'application/json' },
+      body: '{"actual":"value"}',
+    };
+
+    const expected = {
+      statusCode: 200,
+      headers: { 'content-type': 'application/json' },
+      body: '{"expected":"different"}',
+    };
+
+    expect(output).toMatchObject(buildExpectedForMatch({ expectLoose: true }, expected));
+  });
+
+  it('supports asymmetric string matchers via placeholders in expected headers', () => {
+    const output = {
+      statusCode: 200,
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'x-request-id': 'abc-123',
+      },
+    };
+
+    const expected = {
+      statusCode: 200,
+      headers: {
+        'content-type': '<stringContaining:application/json>',
+        'x-request-id': '<anyString>',
+      },
+    };
+
+    expect(output).toMatchObject(buildExpectedForMatch({ expect: true }, expected));
+  });
+
+  it('validates keys presence and order for expect-keysOnly', () => {
+    const output = {
+      statusCode: 200,
+      headers: { 'content-type': 'application/json' },
+      body: '{"id":1,"name":"test","extra":true}',
+    };
+
+    const expected = {
+      statusCode: 200,
+      headers: { 'content-type': 'application/json' },
+      body: '{"id":1,"name":"test"}',
+    };
+
+    expect(output).toMatchObject(buildExpectedForMatch({ expectKeysOnly: true }, expected));
+
+    const jsonOutput = JSON.parse(output.body);
+    const jsonExpected = JSON.parse(expected.body);
+    const actualKeys = Object.keys(jsonOutput);
+    const expectedKeys = Object.keys(jsonExpected);
+
+    expect(actualKeys).toEqual(expect.arrayContaining(expectedKeys));
+    expect(actualKeys.filter(k => expectedKeys.includes(k))).toStrictEqual(expectedKeys);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/*                          Prism lifecycle helpers                           */
+/* -------------------------------------------------------------------------- */
+
 function startPrism(server: string, filename: string): Promise<ChildProcess> {
   return new Promise((resolve, reject) => {
-    const serverArgs = server.split(/ +/).map(t => t.trim().replace('${document}', filename));
+    let settled = false;
+    const stderrChunks: string[] = [];
+    const stdoutChunks: string[] = [];
+
+    const finalizeError = (message: string) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+
+      const stdoutTail = stdoutChunks.join('').trim().slice(-1000);
+      const stderrTail = stderrChunks.join('').trim().slice(-1000);
+      const details = [
+        stdoutTail ? `stdout tail:\n${stdoutTail}` : '',
+        stderrTail ? `stderr tail:\n${stderrTail}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n\n');
+
+      reject(new Error(details ? `${message}\n\n${details}` : message));
+    };
+
+    const serverArgs = server.split(/ +/).map(t =>
+      t
+        .trim()
+        .replace('${document}', filename)
+    );
     const prismMockProcessHandle = spawn(path.join(__dirname, '../cli-binaries/prism-cli'), serverArgs);
 
     const timeout = setTimeout(() => {
       shutdownPrism(prismMockProcessHandle);
-      reject(new Error(`Timeout while waiting for "${WAIT_FOR_LINE}" log line`));
+      finalizeError(`Timeout while waiting for "${WAIT_FOR_LINE}" log line`);
     }, WAIT_FOR_LINE_TIMEOUT);
 
     if (process.env.DEBUG) {
       prismMockProcessHandle.stderr.pipe(process.stderr);
     }
 
+    prismMockProcessHandle.on('error', err => {
+      finalizeError(`Failed to start Prism process: ${err.message}`);
+    });
+
+    prismMockProcessHandle.on('exit', (code, signal) => {
+      if (settled) return;
+      const reason =
+        code !== null ? `exit code ${code}` : signal ? `signal ${signal}` : 'unknown reason';
+      finalizeError(`Prism process exited before readiness with ${reason}`);
+    });
+
     prismMockProcessHandle.stdout.pipe(split2()).on('data', (line: string) => {
+      stdoutChunks.push(`${line}\n`);
       if (line.includes(WAIT_FOR_LINE)) {
+        settled = true;
         clearTimeout(timeout);
         resolve(prismMockProcessHandle);
       }
     });
+
+    prismMockProcessHandle.stderr.pipe(split2()).on('data', (line: string) => {
+      stderrChunks.push(`${line}\n`);
+    });
   });
 }
 
-function shutdownPrism(processHandle: ChildProcess): Promise<void> {
+function shutdownPrism(processHandle?: ChildProcess): Promise<void> {
+  if (!processHandle || !processHandle.pid || processHandle.killed) {
+    return Promise.resolve();
+  }
+
   processHandle.kill();
   return new Promise(resolve => {
     processHandle.on('exit', resolve);
