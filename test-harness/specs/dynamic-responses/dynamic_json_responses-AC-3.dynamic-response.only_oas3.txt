@@ -43,4 +43,4 @@ curl -i http://localhost:4010/service
 ====expect-keysOnly====
 HTTP/1.1 200 OK
 
-{"color": "any string","name": "any string","resourceType": "any string"}
+{"name": "any string","resourceType": "any string"}

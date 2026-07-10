@@ -79,15 +79,24 @@ describe('harness', () => {
           return;
         }
 
-        // For expectKeysOnly, skip the body in toMatchObject since we only verify keys below
-        const expectedForMatch = parsed.expectKeysOnly ? { ...expected, body: undefined } : expected;
+        // For expectKeysOnly and expectLoose, skip the body in toMatchObject and handle separately.
+        // With gavel, expect-loose used tv4 treating the expected body as a JSON Schema; since plain
+        // JSON objects have no schema keywords, tv4 passed any valid body — so only status/headers
+        // were effectively validated.  Replicate that by omitting the body from toMatchObject.
+        const { body: _expectedBody, ...expectedWithoutBody } = expected;
+        const expectedForMatch = (parsed.expectKeysOnly || parsed.expectLoose) ? expectedWithoutBody : expected;
         expect(output).toMatchObject(expectedForMatch);
         if (parsed.expect) {
           expect(output.body).toStrictEqual(expected.body);
         } else if (parsed.expectKeysOnly) {
           const jsonOutput = JSON.parse(output.body);
           const jsonExpected = JSON.parse(expected.body);
-          expect(Object.keys(jsonOutput)).toStrictEqual(Object.keys(jsonExpected));
+          const actualKeys = Object.keys(jsonOutput);
+          const expectedKeys = Object.keys(jsonExpected);
+          // All expected keys must be present in actual (actual may have extra keys when
+          // additionalProperties is set to a schema; relative order of expected keys must match).
+          expect(actualKeys).toEqual(expect.arrayContaining(expectedKeys));
+          expect(actualKeys.filter(k => expectedKeys.includes(k))).toStrictEqual(expectedKeys);
         }
       });
     });
