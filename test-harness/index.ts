@@ -64,9 +64,16 @@ function removeVolatileHeaders(headers: Record<string, string> = {}) {
  *   <anyNumber>            -> expect.any(Number)
  *   <stringContaining:foo> -> expect.stringContaining('foo')
  *   <stringMatching:^foo$> -> expect.stringMatching(/^foo$/)
+ *   truncated[...]         -> expect.stringContaining('truncated')
  */
 function resolveJestMatcher(value: unknown) {
   if (typeof value !== 'string') return value;
+
+  // Allow truncated expected strings in spec fixtures, e.g. long headers ending with `[...]`.
+  // This preserves the old loose matching behavior for oversized values like sl-violations.
+  if (value.includes('[...]')) {
+    return expect.stringContaining(value.split('[...]')[0]);
+  }
 
   if (value === '<anyString>') return expect.any(String);
   if (value === '<anyNumber>') return expect.any(Number);
@@ -303,6 +310,26 @@ describe('harness Jest matcher compatibility', () => {
 
     expect(actualKeys).toEqual(expect.arrayContaining(expectedKeys));
     expect(actualKeys.filter(k => expectedKeys.includes(k))).toStrictEqual(expectedKeys);
+  });
+
+  it('supports truncated expected header values via ellipsis placeholder', () => {
+    const output = {
+      statusCode: 200,
+      headers: {
+        'sl-violations':
+          'Too many violations! [{"location":["response","body"],"severity":"Error","code":"required","message":"Response body must have required property long_field_name_1"},{"location":["response","body"],"severity":"Error","code":"required","message":"Response body must have required property long_field_name_2"}]',
+      },
+    };
+
+    const expected = {
+      statusCode: 200,
+      headers: {
+        'sl-violations':
+          'Too many violations! [{"location":["response","body"],"severity":"Error","code":"required","message":"Response body must have required property long_field_name_1"[...]',
+      },
+    };
+
+    expect(output).toMatchObject(buildExpectedForMatch({ expect: true }, expected));
   });
 });
 
