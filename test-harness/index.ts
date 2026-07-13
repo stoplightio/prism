@@ -21,6 +21,11 @@ const VOLATILE_HEADERS = new Set([
   'connection',
   'keep-alive',
   'transfer-encoding',
+  'access-control-allow-credentials',
+  'access-control-allow-headers',
+  'access-control-allow-origin',
+  'access-control-expose-headers',
+  'server',
 ]);
 
 /**
