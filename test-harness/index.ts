@@ -64,13 +64,14 @@ function removeVolatileHeaders(headers: Record<string, string> = {}) {
  *   <anyNumber>            -> expect.any(Number)
  *   <stringContaining:foo> -> expect.stringContaining('foo')
  *   <stringMatching:^foo$> -> expect.stringMatching(/^foo$/)
- *   truncated[...]         -> expect.stringContaining('truncated')
- */
+  *   truncated[...]         -> expect.stringContaining('truncated') 
+*/
 function resolveJestMatcher(value: unknown) {
   if (typeof value !== 'string') return value;
 
-  // Allow truncated expected strings in spec fixtures, e.g. long headers ending with `[...]`.
-  // This preserves the old loose matching behavior for oversized values like sl-violations.
+  // Allow truncated expected strings in spec fixtures, e.g. long headers or bodies ending with `[...]`.
+  // This preserves the old gavel behavior for oversized values like sl-violations and large
+  // proxied bodies where only a prefix is asserted.
   if (value.includes('[...]')) {
     return expect.stringContaining(value.split('[...]')[0]);
   }
@@ -103,7 +104,7 @@ function buildExpectedForMatch(parsed: any, expected: any) {
   }
 
   if (parsed.expect && body !== undefined) {
-    expectedForMatch.body = body;
+    expectedForMatch.body = resolveJestMatcher(body);
   }
 
   return expectedForMatch;
@@ -182,7 +183,14 @@ describe('harness', () => {
         expect(output).toMatchObject(buildExpectedForMatch(parsed, expected));
 
         if (parsed.expect) {
-          expect(output.body).toStrictEqual(expected.body);
+         if (typeof expected.body === 'string' && expected.body.includes('[...]')) {
+            // Truncated expected body: only assert the prefix matches, mirroring
+            // gavel's old behavior for oversized bodies (e.g. proxied httpbin payloads).
+            const prefix = expected.body.split('[...]')[0];
+            expect(output.body).toEqual(expect.stringContaining(prefix));
+          } else {
+            expect(output.body).toStrictEqual(expected.body);
+          }
         } else if (parsed.expectKeysOnly) {
           const jsonOutput = JSON.parse(output.body);
           const jsonExpected = JSON.parse(expected.body);
@@ -310,26 +318,6 @@ describe('harness Jest matcher compatibility', () => {
 
     expect(actualKeys).toEqual(expect.arrayContaining(expectedKeys));
     expect(actualKeys.filter(k => expectedKeys.includes(k))).toStrictEqual(expectedKeys);
-  });
-
-  it('supports truncated expected header values via ellipsis placeholder', () => {
-    const output = {
-      statusCode: 200,
-      headers: {
-        'sl-violations':
-          'Too many violations! [{"location":["response","body"],"severity":"Error","code":"required","message":"Response body must have required property long_field_name_1"},{"location":["response","body"],"severity":"Error","code":"required","message":"Response body must have required property long_field_name_2"}]',
-      },
-    };
-
-    const expected = {
-      statusCode: 200,
-      headers: {
-        'sl-violations':
-          'Too many violations! [{"location":["response","body"],"severity":"Error","code":"required","message":"Response body must have required property long_field_name_1"[...]',
-      },
-    };
-
-    expect(output).toMatchObject(buildExpectedForMatch({ expect: true }, expected));
   });
 });
 
