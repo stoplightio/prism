@@ -65,15 +65,6 @@ function removeVolatileHeaders(headers: Record<string, string> = {}) {
  *   <stringContaining:foo> -> expect.stringContaining('foo')
  *   <stringMatching:^foo$> -> expect.stringMatching(/^foo$/)
  *   any value containing `[...]` -> expect.stringContaining(prefix_before_[...])
- *
- * Order matters:
- *   1. explicit placeholders (so `<stringContaining:...[...]>` is not shadowed
- *      by the bare truncation shortcut),
- *   2. `<stringContaining:...>` / `<stringMatching:...>`,
- *   3. bare `[...]` truncation fallback.
- *
- * [\s\S] is used instead of `.` so embedded CR/LF or control characters
- * inside header/body values do not silently break the match.
  */
 function resolveJestMatcher(value: unknown) {
   if (typeof value !== 'string') return value;
@@ -212,9 +203,6 @@ describe('harness', () => {
         expect(output).toMatchObject(buildExpectedForMatch(parsed, expected));
 
         if (parsed.expect) {
-          // Honour matcher placeholders (<stringContaining:...>, [...], etc.) on the body.
-          // `toStrictEqual` does not support asymmetric matchers on primitive strings,
-          // so switch to `toEqual` whenever a matcher was actually produced.
           const expectedBody = resolveJestMatcher(expected.body);
 
           if (expectedBody === expected.body) {
