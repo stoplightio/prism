@@ -66,11 +66,21 @@ function resolveJestMatcher(value: unknown) {
   if (value === '<anyString>') return expect.any(String);
   if (value === '<anyNumber>') return expect.any(Number);
 
-  const stringContaining = value.match(/^<stringContaining:(.*)>$/);
-  if (stringContaining) return expect.stringContaining(stringContaining[1]);
+  const stringContaining = value.match(/^<stringContaining:([\s\S]*)>$/);
+  if (stringContaining) {
+    const inner = stringContaining[1];
+    // Honour `[...]` inside the matcher: only require the prefix before it.
+    const prefix = inner.includes('[...]') ? inner.split('[...]')[0] : inner;
+    return expect.stringContaining(prefix);
+  }
 
-  const stringMatching = value.match(/^<stringMatching:(.*)>$/);
+  const stringMatching = value.match(/^<stringMatching:([\s\S]*)>$/);
   if (stringMatching) return expect.stringMatching(new RegExp(stringMatching[1]));
+
+  // Bare truncation marker fallback (no <stringContaining:> wrapper).
+  if (value.includes('[...]')) {
+    return expect.stringContaining(value.split('[...]')[0]);
+  }
 
   return value;
 }
@@ -150,6 +160,23 @@ describe('harness', () => {
           parseResponse((parsed.expect || parsed.expectLoose || parsed.expectKeysOnly).trim())
         );
 
+        // Optional diagnostic: warn when a value looks like a matcher placeholder
+        // but was NOT resolved (usually indicates a typo in the spec file).
+        if (process.env.DEBUG_MATCHERS && expected.headers) {
+          for (const [k, v] of Object.entries(expected.headers)) {
+            if (typeof v === 'string' && v.startsWith('<') && v.endsWith('>')) {
+              const resolved = resolveJestMatcher(v);
+              if (resolved === v) {
+                // eslint-disable-next-line no-console
+                console.warn(
+                  `[harness] header "${k}" looks like a matcher placeholder but was not resolved:`,
+                  v
+                );
+              }
+            }
+          }
+        }
+
         const isXml = xmlValidator.test(
           get(output, ['headers', 'content-type'], ''),
           expected.body
@@ -170,7 +197,17 @@ describe('harness', () => {
         expect(output).toMatchObject(buildExpectedForMatch(parsed, expected));
 
         if (parsed.expect) {
-          expect(output.body).toStrictEqual(expected.body);
+          // Honour matcher placeholders (<stringContaining:...>, [...], etc.) on the body.
+          // `toStrictEqual` does not support asymmetric matchers on primitive strings,
+          // so switch to `toEqual` whenever a matcher was actually produced.
+          const expectedBody = resolveJestMatcher(expected.body);
+
+          if (expectedBody === expected.body) {
+            // No matcher resolved – strict exact-string comparison, as before.
+            expect(output.body).toStrictEqual(expected.body);
+          } else {
+            expect(output.body).toEqual(expectedBody);
+          }
         } else if (parsed.expectKeysOnly) {
           const jsonOutput = JSON.parse(output.body);
           const jsonExpected = JSON.parse(expected.body);
@@ -203,6 +240,8 @@ describe('harness Jest matcher compatibility', () => {
         date: 'Fri, 10 Jul 2026 10:00:00 GMT',
         'content-length': '123',
         connection: 'keep-alive',
+        server: 'gunicorn',
+        'access-control-allow-origin': '*',
       },
       body: '{"id":1}',
     };
@@ -276,6 +315,26 @@ describe('harness Jest matcher compatibility', () => {
     expect(output).toMatchObject(buildExpectedForMatch({ expect: true }, expected));
   });
 
+  it('honours <stringContaining:...> and [...] on the body', () => {
+    const output = {
+      statusCode: 200,
+      headers: { 'content-type': 'application/json' },
+      body: '{"slideshow":{"author":"Yours Truly","title":"Sample Slide Show"}}',
+    };
+
+    const expected = {
+      statusCode: 200,
+      headers: { 'content-type': 'application/json' },
+      body: '<stringContaining:"slideshow"[...]>',
+    };
+
+    const expectedForMatch = buildExpectedForMatch({ expect: true }, expected);
+    expect(output).toMatchObject(expectedForMatch);
+
+    const expectedBody = resolveJestMatcher(expected.body);
+    expect(output.body).toEqual(expectedBody);
+  });
+
   it('validates keys presence and order for expect-keysOnly', () => {
     const output = {
       statusCode: 200,
@@ -329,11 +388,12 @@ function startPrism(server: string, filename: string): Promise<ChildProcess> {
     };
 
     const serverArgs = server.split(/ +/).map(t =>
-      t
-        .trim()
-        .replace('${document}', filename)
+      t.trim().replace('${document}', filename)
     );
-    const prismMockProcessHandle = spawn(path.join(__dirname, '../cli-binaries/prism-cli'), serverArgs);
+    const prismMockProcessHandle = spawn(
+      path.join(__dirname, '../cli-binaries/prism-cli'),
+      serverArgs
+    );
 
     const timeout = setTimeout(() => {
       shutdownPrism(prismMockProcessHandle);
