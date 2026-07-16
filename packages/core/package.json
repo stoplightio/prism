@@ -16,6 +16,7 @@
     "node": ">=24.18.0"
   },
   "dependencies": {
+    "@scarf/scarf": "^1.4.0",
     "fp-ts": "^2.11.5",
     "lodash": "^4.17.21",
     "pino": "^6.13.3",

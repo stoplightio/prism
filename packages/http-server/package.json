@@ -19,6 +19,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@scarf/scarf": "^1.4.0",
     "@stoplight/prism-core": "^5.15.11",
     "@stoplight/prism-http": "^5.15.11",
     "@stoplight/types": "^14.1.0",
