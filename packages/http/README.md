@@ -30,6 +30,7 @@ If you're a regular user and not a PRO, you might to want to use the [User facin
     - [Server Validation](#server-validation)
   - [Understanding response](#understanding-response)
   - [Prism Decision Flow Diagram](#prism-decision-flow-diagram)
+- [Anonymized analytics](#anonymized-analytics)
 
 # Installation
 
@@ -365,3 +366,22 @@ You would get this in response
 The below diagram represents all logical decision we make to figure out the best HTTP response to the specific request.
 
 ![Decision Flow Diagram](./docs/images/mock-server-dfd.jpeg)
+
+## Anonymized analytics
+
+Prism uses [Scarf](https://scarf.sh/) to collect [anonymized installation analytics](https://github.com/scarf-sh/scarf-js?tab=readme-ov-file#as-a-user-of-a-package-using-scarf-js-what-information-does-scarf-js-send-about-me). These analytics help support the maintainers of this library and ONLY run during installation. To [opt out](https://github.com/scarf-sh/scarf-js?tab=readme-ov-file#as-a-user-of-a-package-using-scarf-js-how-can-i-opt-out-of-analytics), you can set the `scarfSettings.enabled` field to `false` in your project's `package.json`:
+
+```
+// package.json
+{
+  // ...
+  "scarfSettings": {
+    "enabled": false
+  }
+  // ...
+}
+```
+
+Alternatively, you can set the environment variable `SCARF_ANALYTICS` to `false` as part of the environment that installs your npm packages, e.g., `SCARF_ANALYTICS=false npm install`.
+
+<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=872f5d30-d243-4e27-9afc-e21416a841be&page=README.md" />

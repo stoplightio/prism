@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.16.0](https://github.com/stoplightio/prism/compare/v5.15.11...v5.16.0) (2026-07-17)
+
+### Features
+
+- add scarf analytics ([#2830](https://github.com/stoplightio/prism/issues/2830)) ([fd3481e](https://github.com/stoplightio/prism/commit/fd3481ef0f04594115aca9e143c197d6a316f5c7))
+
 ## [5.15.11](https://github.com/stoplightio/prism/compare/v5.15.10...v5.15.11) (2026-06-03)
 
 ### Bug Fixes

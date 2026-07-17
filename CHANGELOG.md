@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [5.16.0](https://github.com/stoplightio/prism/compare/v5.15.11...v5.16.0) (2026-07-17)
+
+### Bug Fixes
+
+- **deps-dev:** bump sigstore from 4.1.0 to 4.1.1 ([#2825](https://github.com/stoplightio/prism/issues/2825)) ([b1d5e92](https://github.com/stoplightio/prism/commit/b1d5e928a5704495a5b1819fac8a929b6fb75e53))
+
+### Features
+
+- add scarf analytics ([#2830](https://github.com/stoplightio/prism/issues/2830)) ([fd3481e](https://github.com/stoplightio/prism/commit/fd3481ef0f04594115aca9e143c197d6a316f5c7))
+
 ## [5.15.11](https://github.com/stoplightio/prism/compare/v5.15.10...v5.15.11) (2026-06-03)
 
 ### Bug Fixes
