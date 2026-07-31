@@ -54,7 +54,7 @@
     "http-string-parser": "^0.0.6",
     "husky": "^9.1.7",
     "jest": "^30.3.0",
-    "lerna": "^9.0.7",
+    "lerna": "=10.0.0",
     "lint-staged": "^10.5.4",
     "lodash": "^4.17.23",
     "nock": "^13.1.3",
