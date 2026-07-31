@@ -11,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "module": "commonjs",
     "strict": true,
-    "target": "es2018",
+    "target": "esnext",
     "noEmitHelpers": true,
     "importHelpers": true
   }
