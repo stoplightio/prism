@@ -11,7 +11,7 @@ npm install -g @stoplight/prism-cli
 For users without Node.JS and/or npm, standalone binaries are provided for [all major platforms](https://github.com/stoplightio/prism/releases). The quickest way to install the appropriate package for your operating system is via this shell script:
 
 ```bash
-curl -L https://raw.githack.com/stoplightio/prism/master/install | sh
+curl -L https://raw.githack.com/stoplightio/prism/main/install | sh
 ```
 
 <!-- theme: info -->

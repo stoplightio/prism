@@ -59,13 +59,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 For up-to-date changelogs for this repository, see the following:
 
-#### [Prism CLI](https://github.com/stoplightio/prism/blob/master/packages/cli/CHANGELOG.md)
+#### [Prism CLI](https://github.com/stoplightio/prism/blob/main/packages/cli/CHANGELOG.md)
 
-#### [Prism Core](https://github.com/stoplightio/prism/blob/master/packages/core/CHANGELOG.md)
+#### [Prism Core](https://github.com/stoplightio/prism/blob/main/packages/core/CHANGELOG.md)
 
-#### [Prism Http Server](https://github.com/stoplightio/prism/blob/master/packages/http-server/CHANGELOG.md)
+#### [Prism Http Server](https://github.com/stoplightio/prism/blob/main/packages/http-server/CHANGELOG.md)
 
-#### [Prism Http](https://github.com/stoplightio/prism/blob/master/packages/http/CHANGELOG.md)
+#### [Prism Http](https://github.com/stoplightio/prism/blob/main/packages/http/CHANGELOG.md)
 
 The format for this file is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to Semantic Versioning.
 

@@ -6,7 +6,7 @@
   "changelogPreset": "angular",
   "command": {
     "version": {
-      "allowBranch": ["master"],
+      "allowBranch": ["main"],
       "conventionalCommits": true,
       "createRelease": "github",
       "message": "chore(release): cut the %s release [skip ci]",

@@ -2,7 +2,7 @@ name: Release
 on:
   workflow_dispatch:
     branches:
-      - master
+      - main
     inputs:
       dry_run:
         description: 'Dry run — lint, test, and build; version bump is local only, nothing is pushed or published'
@@ -180,11 +180,11 @@ jobs:
           git config user.email "swagger-bot@smartbear.com"
           git config user.name "swagger-bot"
           git fetch origin
-          git checkout -B master origin/master
+          git checkout -B main origin/main
           npm install
           git add package-lock.json
           git diff --cached --quiet || git commit -m "chore: sync lockfile [skip ci]"
-          git push origin master
+          git push origin main
 
   build-binaries:
     name: Build & publish CLI binaries

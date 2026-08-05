@@ -7,7 +7,7 @@ on:
 
 jobs:
   call-workflow:
-    uses: stoplightio/.github/.github/workflows/jira-issue-label-added.yaml@master
+    uses: stoplightio/.github/.github/workflows/jira-issue-label-added.yaml@main
     with:
       team-name: ${{ contains(github.event.pull_request.labels.*.name, 'team/bad-news-bears') && 'Bad News Bears' || contains(github.event.pull_request.labels.*.name, 'team/maintenance') && 'Maintenance' || '' }}
     secrets: inherit

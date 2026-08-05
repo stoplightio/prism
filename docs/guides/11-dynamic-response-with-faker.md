@@ -57,7 +57,7 @@ The more descriptive your properties are, the better job Prism can do at creatin
 
 For a list of supported methods, you can check [Faker's v6 documentation portal](https://v6.fakerjs.dev/api/address.html).
 
-It's important to note that Faker's version, and how you're using Prism, can have an impact on the behavior you might see. The current version of Faker that Prism is using is set to `^6.0.0`, and can be found in Prism's [package.json file](https://github.com/stoplightio/prism/blob/master/packages/http/package.json#L19). That means that any Faker version between v6.0.0 and v6.3.1 is valid for running Prism. If a user has a local version of Faker installed that's v6.0.0, while another user has v6.3.1 installed, when running the same OpenAPI description through Prism they might see different responses.
+It's important to note that Faker's version, and how you're using Prism, can have an impact on the behavior you might see. The current version of Faker that Prism is using is set to `^6.0.0`, and can be found in Prism's [package.json file](https://github.com/stoplightio/prism/blob/main/packages/http/package.json#L19). That means that any Faker version between v6.0.0 and v6.3.1 is valid for running Prism. If a user has a local version of Faker installed that's v6.0.0, while another user has v6.3.1 installed, when running the same OpenAPI description through Prism they might see different responses.
 
 You can check which version of Faker you have installed locally by running the following command and looking for `@faker-js/faker`:
 
