@@ -146,8 +146,6 @@ If you would like to thank us for creating Prism, we ask that you [**buy the wor
 [2.x]: https://github.com/stoplightio/prism/tree/2.x
 [http-docs]: packages/http/README.md
 [mocking_landing_page]: https://stoplight.io/api-mocking?utm_source=github.com&utm_medium=referral&utm_campaign=github_repo_prism
-[circle_ci]: https://circleci.com/gh/stoplightio/prism
-[circle_ci_image]: https://img.shields.io/circleci/build/github/stoplightio/prism/master
 [npm]: https://www.npmjs.com/package/@stoplight/prism-cli
 [npm_image]: https://img.shields.io/npm/dw/@stoplight/prism-http?color=blue
 [stoplight_forest]: https://ecologi.com/stoplightinc
