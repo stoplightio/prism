@@ -78,5 +78,10 @@
     "*.{json,md}": [
       "prettier --write"
     ]
+  },
+  "allowScripts": {
+    "nx@23.1.1": true,
+    "@scarf/scarf": false,
+    "unrs-resolver": false
   }
 }
