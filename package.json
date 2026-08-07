@@ -43,6 +43,7 @@
     "@types/whatwg-mimetype": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^8.57.2",
     "@typescript-eslint/parser": "^8.57.2",
+    "@yao-pkg/pkg": "^6.22.0",
     "abstract-logging": "^2.0.1",
     "diff-js-xml": "^1.0.5",
     "eslint": "^10.1.0",
@@ -81,6 +82,7 @@
   },
   "allowScripts": {
     "nx@23.1.1": true,
+    "esbuild@0.28.1": true,
     "@scarf/scarf": false,
     "unrs-resolver": false
   }
