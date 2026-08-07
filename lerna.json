@@ -13,7 +13,7 @@
       "ignoreChanges": ["**/test/**", "**/__tests__/**"]
     },
     "publish": {
-      "registry": "https://registry.npmjs.org"
+      "registry": "https://registry.npmjs.org/"
     }
   }
 }
