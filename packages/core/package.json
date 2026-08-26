@@ -13,7 +13,7 @@
     "/dist"
   ],
   "engines": {
-    "node": ">=24.18.0"
+    "node": ">=24.19.0"
   },
   "dependencies": {
     "@scarf/scarf": "^1.4.0",
