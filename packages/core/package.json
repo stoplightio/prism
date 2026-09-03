@@ -18,7 +18,7 @@
   "dependencies": {
     "@scarf/scarf": "^1.4.0",
     "fp-ts": "^2.11.5",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.1",
     "pino": "^6.13.3",
     "tslib": "^2.3.1"
   },
