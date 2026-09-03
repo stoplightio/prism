@@ -19,7 +19,7 @@ import { sequenceT } from 'fp-ts/Apply';
 import * as R from 'fp-ts/Reader';
 import * as O from 'fp-ts/Option';
 import * as RE from 'fp-ts/ReaderEither';
-import { get, groupBy, isNumber, isString, keyBy, mapValues, partial, pick } from 'lodash';
+import { get, groupBy, isNumber, isString, keyBy, mapValues, pick } from 'lodash';
 import { Logger } from 'pino';
 import { is } from 'type-is';
 import {
@@ -52,6 +52,7 @@ export { resetGenerator as resetJSONSchemaGenerator } from './generator/JSONSche
 
 const eitherRecordSequence = Record.sequence(E.Applicative);
 const eitherSequence = sequenceT(E.Apply);
+const mockedHeaderDenylist = new Set(['content-encoding']);
 
 const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpMockConfig>['mock'] = ({
   resource,
@@ -61,8 +62,8 @@ const mock: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpM
   function createPayloadGenerator(config: IHttpOperationConfig, resource: IHttpOperation): PayloadGenerator {
     return (source: JSONSchema) => {
       return config.dynamic
-      ? generate(resource, resource['__bundled__'], source, config.seed)
-      : generateStatic(resource, source);
+        ? generate(resource, resource['__bundled__'], source, config.seed)
+        : generateStatic(resource, source);
     };
   }
   const payloadGenerator = createPayloadGenerator(config, resource);
@@ -163,7 +164,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
     mediaType === 'multipart/form-data'
       ? parseMultipartFormDataParams(requestBody, multipartBoundary)
       : splitUriParams(requestBody),
-    E.getOrElse<IPrismDiagnostic[], Dictionary<string>>(() => ({} as Dictionary<string>))
+    E.getOrElse<IPrismDiagnostic[], Dictionary<string>>(() => ({}) as Dictionary<string>)
   );
 
   if (specs.length < 1) {
@@ -362,7 +363,10 @@ function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is
 function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: PayloadGenerator) {
   return eitherRecordSequence(
     mapValues(
-      keyBy(headers, h => h.name),
+      keyBy(
+        headers.filter(header => !mockedHeaderDenylist.has(header.name.toLowerCase())),
+        h => h.name
+      ),
       header => {
         if (header.schema) {
           if (header.examples && header.examples.length > 0) {
