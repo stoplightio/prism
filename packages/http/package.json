@@ -47,6 +47,9 @@
     "uri-template-lite": "^22.9.0",
     "whatwg-mimetype": "^3.0.0"
   },
+  "overrides": {
+    "lodash": "^4.18.1"
+  },
   "publishConfig": {
     "access": "public"
   }
