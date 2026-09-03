@@ -27,7 +27,7 @@ Extending the basic `docker-compose.yml` from the installation guide to include 
 version: '3.9'
 services:
   prism:
-    image: stoplight/prism:4
+    image: stoplight/prism:5
     command: 'mock -h 0.0.0.0 /tmp/api.oas3.yml'
     volumes:
       - ./api.oas3.yml:/tmp/api.oas3.yml:ro

@@ -21,12 +21,12 @@ services:
       - prism_1
       - prism_2
   prism_1:
-    image: stoplight/prism:4
+    image: stoplight/prism:5
     command: >
       mock -p 4010 --host 0.0.0.0
       https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/yaml/petstore.yaml
   prism_2:
-    image: stoplight/prism:4
+    image: stoplight/prism:5
     command: >
       mock -p 4010 --host 0.0.0.0
       https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml
@@ -87,7 +87,7 @@ Under `services`, you can add:
 
 ```yaml
 prism_3:
-  image: stoplight/prism:4
+  image: stoplight/prism:5
   command: >
     mock -p 4010 --host 0.0.0.0
     https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml

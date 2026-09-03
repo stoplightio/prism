@@ -23,19 +23,19 @@ curl -L https://raw.githack.com/stoplightio/prism/main/install | sh
 Prism is available as a Docker image. You should specify the major version you'd like to use as a tag:
 
 ```bash
-docker run --init -p 4010:4010 stoplight/prism:4 mock -h 0.0.0.0 api.oas2.yml
+docker run --init -p 4010:4010 stoplight/prism:5 mock -h 0.0.0.0 api.oas2.yml
 ```
 
 If the document you want to mock is on your computer, you'll need to mount the directory where the file resides as a volume:
 
 ```bash
-docker run --init --rm -v $(pwd):/tmp -p 4010:4010 stoplight/prism:4 mock -h 0.0.0.0 "/tmp/file.yaml"
+docker run --init --rm -v $(pwd):/tmp -p 4010:4010 stoplight/prism:5 mock -h 0.0.0.0 "/tmp/file.yaml"
 ```
 
 If you want to start the proxy server, you can run a command like this:
 
 ```bash
-docker run --init --rm -d -p 4010:4010 -v $(pwd):/tmp -P stoplight/prism:4 proxy -h 0.0.0.0 "/tmp/file.yml" http://host.docker.internal:8080 --errors
+docker run --init --rm -d -p 4010:4010 -v $(pwd):/tmp -P stoplight/prism:5 proxy -h 0.0.0.0 "/tmp/file.yml" http://host.docker.internal:8080 --errors
 ```
 
 ## Docker Compose
@@ -47,7 +47,7 @@ Alternatively, you may wish to use prism as part of a docker compose file to aid
 version: '3.9'
 services:
   prism:
-    image: stoplight/prism:4
+    image: stoplight/prism:5
     command: 'mock -h 0.0.0.0 /tmp/api.oas3.yml'
     volumes:
       - ./api.oas3.yml:/tmp/api.oas3.yml:ro
