@@ -13,7 +13,7 @@
     "@stoplight/prism-core": "^5.16.0",
     "@stoplight/prism-http": "^5.16.0",
     "@stoplight/prism-http-server": "^5.16.0",
-    "@stoplight/types": "^14.1.0",
+    "@stoplight/types": "^14.1.1",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.2",
     "fp-ts": "^2.11.5",
@@ -30,7 +30,7 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "^10.4.0"
+    "@faker-js/faker": "^10.6.0"
   },
   "engines": {
     "node": ">=24.19.0"

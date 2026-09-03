@@ -27,7 +27,7 @@
     "@types/caseless": "^0.12.2",
     "@types/content-type": "^1.1.5",
     "@types/jest": "^30.0.0",
-    "@types/json-schema": "^7.0.9",
+    "@types/json-schema": "^7.0.15",
     "@types/lodash": "^4.17.24",
     "@types/node": "^24.12.0",
     "@types/node-fetch": "^2.6.13",

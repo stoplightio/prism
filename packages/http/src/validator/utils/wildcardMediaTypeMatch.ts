@@ -1,4 +1,4 @@
-import { parse, ParsedMediaType } from 'content-type';
+import { parse, ContentType } from 'content-type';
 import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 
@@ -22,7 +22,7 @@ const CONTENT_TYPE_REGEXP = /^(.+)\/(?:(.+)\+)?(.+)$/;
 
 function parseContentType(contentType: string): O.Option<ParsedContentType> {
   return pipe(
-    O.tryCatch<ParsedMediaType>(() => parse(contentType)),
+    O.tryCatch<ContentType>(() => parse(contentType)),
     O.chain(({ type }) => {
       const match = CONTENT_TYPE_REGEXP.exec(type.toLowerCase());
 
