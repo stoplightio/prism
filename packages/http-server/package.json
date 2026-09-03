@@ -22,7 +22,7 @@
     "@scarf/scarf": "^1.4.0",
     "@stoplight/prism-core": "^5.16.0",
     "@stoplight/prism-http": "^5.16.0",
-    "@stoplight/types": "^14.1.0",
+    "@stoplight/types": "^14.1.1",
     "fast-xml-parser": "^5.5.7",
     "fp-ts": "^2.11.5",
     "io-ts": "^2.2.16",
