@@ -73,6 +73,42 @@ describe('HttpValidator', () => {
           );
         });
       });
+
+      describe('content-type header is invalid', () => {
+        it('returns an unsupported media type diagnostic', () => {
+          assertLeft(
+            validator.validateInput({
+              resource: {
+                method: 'post',
+                path: '/',
+                id: '1',
+                request: {
+                  body: {
+                    id: faker.word.sample(),
+                    required: true,
+                    contents: [{ id: faker.word.sample(), mediaType: 'application/json' }],
+                  },
+                },
+                responses: [{ id: faker.word.sample(), code: '200' }],
+              },
+              element: {
+                method: 'post',
+                url: { path: '/', query: {} },
+                headers: { 'content-type': 'undefined', 'content-length': '2' },
+                body: '{}',
+              },
+            }),
+            error =>
+              expect(error).toEqual([
+                {
+                  message: 'Invalid content type: undefined',
+                  code: 415,
+                  severity: DiagnosticSeverity.Error,
+                },
+              ])
+          );
+        });
+      });
     });
 
     describe('headers validation in enabled', () => {
