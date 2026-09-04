@@ -1,5 +1,5 @@
 import { DiagnosticSeverity } from '@stoplight/types';
-import { logBody, logHeaders, logRequest, logResponse, violationLogger } from '../logger';
+import { logBody, logHeaders, logQuery, logRequest, logResponse, violationLogger } from '../logger';
 
   const logger: any = {
     error: jest.fn(),
@@ -91,16 +91,38 @@ import { logBody, logHeaders, logRequest, logResponse, violationLogger } from '.
       });
     });
   });
+
+  describe('logQuery()', () => {
+    beforeEach(() => jest.clearAllMocks());
+  
+    describe('when query supplied', () => {
+      it('logs with debug level', () => {
+        logQuery({ logger, query: { a: 'a', b: ['b1', 'b2'] } });
+        expect(logger.debug).toHaveBeenNthCalledWith(1, expect.stringContaining('Query'));
+        expect(logger.debug).toHaveBeenNthCalledWith(2, expect.stringContaining('a: a'));
+        expect(logger.debug).toHaveBeenNthCalledWith(3, expect.stringContaining('b: ["b1","b2"]'));
+      });
+    });
+  
+    describe('when query not supplied', () => {
+      it('logs nothing', () => {
+        logQuery({ logger , query: {} });
+        expect(logger.debug).not.toHaveBeenCalled();
+      });
+    });
+  });
   
   describe('logRequest()', () => {
     beforeEach(() => jest.clearAllMocks());
   
     describe('when both body and headers are supplied', () => {
       it('logs', () => {
-        logRequest({ logger, prefix: 'The ', body: 'of an American', headers: { the: 'Pogues' } });
+        logRequest({ logger, prefix: 'The ', body: 'of an American', headers: { the: 'Pogues' }, url: { path: '/', query: { q: 'search' } } });
         expect(logger.debug).toHaveBeenNthCalledWith(1, expect.stringMatching(/The .*Headers:/));
         expect(logger.debug).toHaveBeenNthCalledWith(2, expect.stringContaining('the: Pogues'));
         expect(logger.debug).toHaveBeenNthCalledWith(3, expect.stringMatching(/The .*Body:.* of an American/));
+        expect(logger.debug).toHaveBeenNthCalledWith(4, expect.stringMatching(/The .*Query:/));
+        expect(logger.debug).toHaveBeenNthCalledWith(5, expect.stringContaining('q: search'));
       });
     });
   
