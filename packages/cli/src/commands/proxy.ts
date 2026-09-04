@@ -39,6 +39,12 @@ const proxyCommand: CommandModule = {
       }),
   handler: async parsedArgs => {
     parsedArgs.validateRequest = parsedArgs['validate-request'];
+    parsedArgs.tlsKey = parsedArgs['tls-key'];
+    parsedArgs.tlsCert = parsedArgs['tls-cert'];
+    parsedArgs.tlsPassphrase = parsedArgs['tls-passphrase'];
+    parsedArgs.tlsCa = parsedArgs['tls-ca'];
+    parsedArgs.tlsForwardClientCert = parsedArgs['tls-forward-client-cert'];
+    parsedArgs.tlsHttp2 = parsedArgs['tls-http2'];
     const p: CreateProxyServerOptions = pick(
       parsedArgs as unknown as CreateProxyServerOptions,
       'dynamic',
@@ -54,7 +60,14 @@ const proxyCommand: CommandModule = {
       'ignoreExamples',
       'seed',
       'upstreamProxy',
-      'jsonSchemaFakerFillProperties'
+      'jsonSchemaFakerFillProperties',
+      'tlsKey',
+      'tlsCert',
+      'tlsPassphrase',
+      'tlsCa',
+      'mtls',
+      'tlsForwardClientCert',
+      'tlsHttp2'
     );
 
     const createPrism = p.multiprocess ? createMultiProcessPrism : createSingleProcessPrism;

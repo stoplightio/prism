@@ -48,6 +48,46 @@ const sharedOptions: Dictionary<Options> = {
     // custom levels like "success" and "start" are set to the same severity value as "info"
     choices: Object.keys(pino.levels.values).concat('silent'),
   },
+
+  'tls-key': {
+    description: 'Path to a PEM private key. Enables HTTPS (TLS termination) when set with --tls-cert.',
+    string: true,
+  },
+
+  'tls-cert': {
+    description: 'Path to a PEM server certificate (may include the chain). Required with --tls-key.',
+    string: true,
+  },
+
+  'tls-passphrase': {
+    description: 'Passphrase for an encrypted --tls-key.',
+    string: true,
+  },
+
+  'tls-ca': {
+    description: 'Path to a PEM CA bundle used to verify client certificates. Enables mTLS.',
+    string: true,
+  },
+
+  mtls: {
+    description:
+      'Require and verify a client certificate (mTLS); connections without a valid client cert are rejected. Requires --tls-ca.',
+    boolean: true,
+    default: false,
+  },
+
+  'tls-forward-client-cert': {
+    description:
+      'Inject the verified client certificate identity (subject, SAN, fingerprint) as x-client-cert-* request headers.',
+    boolean: true,
+    default: false,
+  },
+
+  'tls-http2': {
+    description: 'Serve over HTTP/2 (with HTTPS/1.1 fallback) instead of HTTPS/1.1. Requires --tls-key/--tls-cert.',
+    boolean: true,
+    default: false,
+  },
 };
 
 export default sharedOptions;

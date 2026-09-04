@@ -1,10 +1,22 @@
 import { IHttpConfig, PickRequired, PrismHttpComponents, PrismHttpInstance } from '@stoplight/prism-http';
 import { Logger } from 'pino';
 
+export interface ITlsOptions {
+  key: Buffer | string;
+  cert: Buffer | string;
+  passphrase?: string;
+  ca?: Buffer | string;
+  requestCert?: boolean;
+  rejectUnauthorized?: boolean;
+  forwardClientCertHeaders?: boolean;
+  http2?: boolean;
+}
+
 export interface IPrismHttpServerOpts {
   components: PickRequired<Partial<PrismHttpComponents>, 'logger'>;
   config: IHttpConfig;
   cors: boolean;
+  tls?: ITlsOptions;
 }
 
 export interface IPrismHttpServer {
