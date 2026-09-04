@@ -11,11 +11,11 @@ export function deserializeMatrixStyle(
 ): unknown {
   const type = schema ? schema.type : 'undefined';
 
-  if (!parameters[name].startsWith(';')) {
+  if (!parameters[name].toString().startsWith(';')) {
     throw new Error('Matrix serialization style requires parameter to be prefixed with ";"');
   }
 
-  const value = parameters[name].substr(1);
+  const value = parameters[name].substring(1);
 
   if (type === 'array') {
     return explode ? deserializeImplodeArray(name, value) : deserializeArray(name, value);
@@ -28,11 +28,11 @@ export function deserializeMatrixStyle(
 
 function deserializePrimitive(name: string, value: string) {
   const prefix = name + '=';
-  if (!value.startsWith(prefix)) {
+  if (!value.toLowerCase().startsWith(prefix)) {
     throw new Error('Matrix serialization style requires parameter to be prefixed with name');
   }
 
-  return value.substr(prefix.length);
+  return value.substring(prefix.length);
 }
 
 function deserializeArray(name: string, value: string) {
