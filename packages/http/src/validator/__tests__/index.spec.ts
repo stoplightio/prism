@@ -291,6 +291,62 @@ describe('HttpValidator', () => {
       });
     });
 
+    describe('when media type is found', () => {
+      it('should validate the output of the found media type', () => {
+        assertLeft(
+          validator.validateOutput({
+            resource: {
+              method: 'get',
+              path: '/',
+              id: '1',
+              request: {},
+              responses: [
+                {
+                  id: faker.random.word(),
+                  code: '200',
+                  contents: [
+                    {
+                      id: faker.random.word(),
+                      mediaType: 'application/json',
+                    },
+                    {
+                      id: faker.random.word(),
+                      mediaType: 'application/required+json',
+                      schema: {
+                        type: 'object',
+                        description: '',
+                        additionalProperties: false,
+                        properties: {
+                          required_property: {
+                            type: 'boolean',
+                          },
+                        },
+                        required: ['required_property'],
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            element: {
+              statusCode: 200,
+              headers: { 'content-type': 'application/required+json' },
+              body: {},
+            },
+          }),
+          e =>
+            expect(e).toEqual([
+              {
+                code: 'required',
+                message: "Response body must have required property 'required_property'",
+                path: ['body'],
+                severity: 0,
+              },
+            ])
+        );
+      });
+    });
+
     describe('cannot match status code with responses', () => {
       beforeEach(() => {
         jest.spyOn(validators, 'validateBody').mockReturnValue(E.right({}));
