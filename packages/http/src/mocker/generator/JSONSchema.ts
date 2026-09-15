@@ -46,6 +46,8 @@ const JSON_SCHEMA_FAKER_DEFAULT_OPTIONS = Object.fromEntries([
   ['omitNulls', false],
 ]);
 
+let useDefaultValueSetExplicitly = false;
+
 // Options must be set through this module: a second json-schema-faker copy installed for another
 // package (e.g. a version skew with prism-cli) is a separate instance the generator never reads.
 export function setGeneratorOption(option: string, value: unknown) {
@@ -55,13 +57,17 @@ export function setGeneratorOption(option: string, value: unknown) {
     // @ts-ignore
     return JSONSchemaFaker.locate('faker').setLocale(value);
   }
+  if (name === 'useDefaultValue') {
+    useDefaultValueSetExplicitly = true;
+  }
   // necessary as workaround broken types in json-schema-faker
   // @ts-ignore
   JSONSchemaFaker.option(name, value);
-  if (name === 'fillProperties' && value === false) {
-    // When fillProperties is disabled, use schema default values instead of random generation
+  // Without fillProperties nothing is invented for missing values, so fall back to schema defaults
+  // unless the user configured useDefaultValue themselves.
+  if (name === 'fillProperties' && !useDefaultValueSetExplicitly) {
     // @ts-ignore
-    JSONSchemaFaker.option('useDefaultValue', true);
+    JSONSchemaFaker.option('useDefaultValue', value === false);
   }
 }
 
@@ -77,6 +83,7 @@ export function resetGenerator() {
     fixedProbabilities: true,
     ignoreMissingRefs: true,
   });
+  useDefaultValueSetExplicitly = false;
 }
 
 resetGenerator();

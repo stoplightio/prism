@@ -25,6 +25,45 @@ describe('configureExtensionsUserProvided()', () => {
     }
   }
 
+  describe('useDefaultValue coupling to fillProperties', () => {
+    const schemaWithDefault: JSONSchema = {
+      type: 'object',
+      required: ['name'],
+      properties: { name: { type: 'string', default: 'from-default' } },
+    };
+
+    const generatedName = () => {
+      let name: unknown;
+      assertRight(generate(operation, {}, schemaWithDefault), instance => {
+        name = (instance as { name: unknown }).name;
+      });
+      return name;
+    };
+
+    it('uses schema defaults while fillProperties is disabled', async () => {
+      await configureExtensionsUserProvided(spec({}), { fillProperties: false });
+
+      expect(generatedName()).toBe('from-default');
+    });
+
+    it('stops using schema defaults when the CLI re-enables fillProperties', async () => {
+      await configureExtensionsUserProvided(spec({ 'x-json-schema-faker': { fillProperties: false } }), {
+        fillProperties: true,
+      });
+
+      expect(generatedName()).not.toBe('from-default');
+    });
+
+    it('keeps an explicit useDefaultValue when fillProperties changes', async () => {
+      await configureExtensionsUserProvided(
+        spec({ 'x-json-schema-faker': { useDefaultValue: true, fillProperties: false } }),
+        { fillProperties: true }
+      );
+
+      expect(generatedName()).toBe('from-default');
+    });
+  });
+
   it('applies x-json-schema-faker options to the generator prism-http uses', async () => {
     await configureExtensionsUserProvided(spec({ 'x-json-schema-faker': { fillProperties: false } }), {});
 
