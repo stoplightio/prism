@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { cloneDeep } from 'lodash';
+import { camelCase, cloneDeep } from 'lodash';
 import { JSONSchema } from '../../types';
 
 import { JSONSchemaFaker } from 'json-schema-faker';
@@ -45,6 +45,25 @@ const JSON_SCHEMA_FAKER_DEFAULT_OPTIONS = Object.fromEntries([
   ['replaceEmptyByRandomValue', false],
   ['omitNulls', false],
 ]);
+
+// Options must be set through this module: a second json-schema-faker copy installed for another
+// package (e.g. a version skew with prism-cli) is a separate instance the generator never reads.
+export function setGeneratorOption(option: string, value: unknown) {
+  const name = camelCase(option);
+  if (name === 'locale') {
+    // necessary as workaround broken types in json-schema-faker
+    // @ts-ignore
+    return JSONSchemaFaker.locate('faker').setLocale(value);
+  }
+  // necessary as workaround broken types in json-schema-faker
+  // @ts-ignore
+  JSONSchemaFaker.option(name, value);
+  if (name === 'fillProperties' && value === false) {
+    // When fillProperties is disabled, use schema default values instead of random generation
+    // @ts-ignore
+    JSONSchemaFaker.option('useDefaultValue', true);
+  }
+}
 
 export function resetGenerator() {
   // necessary as workaround broken types in json-schema-faker
