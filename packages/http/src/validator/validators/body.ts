@@ -19,6 +19,7 @@ import * as mergeAllOf from '@stoplight/json-schema-merge-allof';
 import { stripReadOnlyProperties, stripWriteOnlyProperties } from '../../utils/filterRequiredProperties';
 import { JSONSchema7 } from 'json-schema';
 import { wildcardMediaTypeMatch } from '../utils/wildcardMediaTypeMatch';
+import { parse as parseContentType } from 'content-type';
 
 export function deserializeFormBody(
   schema: JSONSchema,
@@ -156,10 +157,24 @@ export function decodeUriEntities(target: Dictionary<string>, mediaType: string)
 export function findContentByMediaTypeOrFirst(specs: IMediaTypeContent[], mediaType: string) {
   return pipe(
     specs,
-    A.findFirst(spec => wildcardMediaTypeMatch(mediaType, spec.mediaType)),
+    A.findFirst(spec => mediaTypesMatchExactly(mediaType, spec.mediaType)),
+    O.alt(() =>
+      pipe(
+        specs,
+        A.findFirst(spec => wildcardMediaTypeMatch(mediaType, spec.mediaType))
+      )
+    ),
     O.alt(() => A.head(specs)),
     O.map(content => ({ mediaType, content }))
   );
+}
+
+function mediaTypesMatchExactly(mediaTypeA: string, mediaTypeB: string): boolean {
+  try {
+    return parseContentType(mediaTypeA).type.toLowerCase() === parseContentType(mediaTypeB).type.toLowerCase();
+  } catch {
+    return false;
+  }
 }
 
 function deserializeAndValidate(
