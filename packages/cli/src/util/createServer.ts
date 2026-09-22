@@ -2,7 +2,7 @@ import { createLogger } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
 import { createServer as createHttpServer } from '@stoplight/prism-http-server';
 import * as chalk from 'chalk';
-import cluster from 'node:cluster';
+import * as clusterNS from 'node:cluster';
 import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 import * as pino from 'pino';
@@ -32,6 +32,15 @@ const cliSpecificLoggerOptions: pino.LoggerOptions = {
     level: level => ({ level }),
   },
 };
+
+// The namespace import is required for correct runtime behavior: under `module: commonjs`
+// and `esModuleInterop: false`, a default import (`import cluster from 'node:cluster'`)
+// compiles to `cluster.default.isPrimary`, but `cluster.default` is `undefined` at runtime
+// because the cluster module has no default export. The namespace import compiles to
+// `cluster.isPrimary`, which works because the module IS the singleton Cluster instance.
+// The cast restores the Cluster type, which @types/node 24+ only exposes via the default
+// export of "node:cluster".
+const cluster = clusterNS as unknown as typeof import('node:cluster').default;
 
 const createMultiProcessPrism: CreatePrism = async options => {
   if (cluster.isPrimary) {
