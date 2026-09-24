@@ -163,7 +163,7 @@ function parseBodyIfUrlEncoded(request: IHttpRequest, resource: IHttpOperation) 
     mediaType === 'multipart/form-data'
       ? parseMultipartFormDataParams(requestBody, multipartBoundary)
       : splitUriParams(requestBody),
-    E.getOrElse<IPrismDiagnostic[], Dictionary<string>>(() => ({} as Dictionary<string>))
+    E.getOrElse<IPrismDiagnostic[], Dictionary<string | string[]>>(() => ({} as Dictionary<string | string[]>))
   );
 
   if (specs.length < 1) {
