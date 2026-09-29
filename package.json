@@ -92,7 +92,7 @@
     ]
   },
   "allowScripts": {
-    "nx@23.1.1": true,
+    "nx@23.2.1": true,
     "esbuild@0.28.1": true,
     "@scarf/scarf": false,
     "unrs-resolver": false
