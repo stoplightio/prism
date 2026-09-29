@@ -54,6 +54,35 @@ describe('HttpValidator', () => {
             'does not try to validate the body',
             validate({ request: { body: { id: faker.word.sample(), required: false, contents: [] } } }, undefined, 0)
           );
+
+          it('does not try to validate an explicit zero-length JSON body', () => {
+            const validationResult = validator.validateInput({
+              resource: {
+                method: 'delete',
+                path: '/',
+                id: '1',
+                request: {
+                  body: {
+                    id: faker.word.sample(),
+                    required: false,
+                    contents: [{ id: faker.word.sample(), mediaType: 'application/json' }],
+                  },
+                },
+                responses: [{ id: faker.word.sample(), code: '204' }],
+              },
+              element: {
+                method: 'delete',
+                url: { path: '/', query: {} },
+                headers: {
+                  'content-type': 'application/json',
+                  'content-length': '0',
+                },
+                body: '',
+              },
+            });
+
+            assertRight(validationResult);
+          });
         });
 
         describe('request body is required', () => {

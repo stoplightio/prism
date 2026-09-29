@@ -86,7 +86,7 @@ const validateInputBody = (
       const contentLength = parseInt(headers.get('content-length')) || 0;
       if (contentLength === 0) {
         // generously allow this content type if there isn't a body actually provided
-        return E.right([requestBody, body, mediaType, multipartBoundary] as const);
+        return E.right([requestBody, O.none as O.Option<unknown>, mediaType, multipartBoundary] as const);
       }
 
       let errorMessage = 'No supported content types, but request included a non-empty body';
