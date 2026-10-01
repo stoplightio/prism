@@ -219,7 +219,7 @@ describe('harness', () => {
 
           // All expected keys must be present in the actual output (extra keys are allowed
           // when additionalProperties is set to a schema), and the relative order of the
-          // expected keys must match.
+          // expected keys must match test.
           expect(actualKeys).toEqual(expect.arrayContaining(expectedKeys));
           expect(actualKeys.filter(k => expectedKeys.includes(k))).toStrictEqual(expectedKeys);
         }
