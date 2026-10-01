@@ -214,7 +214,7 @@ This class of errors is returned when the current request isn't satisfying the s
 
 **Returned Status Code: `401`**
 
-**Explanation:** This error occurs when the security scheme for the current resource doesn't match the one that the one that the request being processed has provided.
+**Explanation:** This error occurs when the security scheme for the current resource doesn't match the one that the request being processed has provided.
 
 ---
 
