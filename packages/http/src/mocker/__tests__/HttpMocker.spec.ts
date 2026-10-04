@@ -1,5 +1,5 @@
 import { createLogger, IPrismInput } from '@stoplight/prism-core';
-import { IHttpOperation, INodeExample, DiagnosticSeverity } from '@stoplight/types';
+import { IHttpOperation, INodeExample, DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
 import { right } from 'fp-ts/ReaderEither';
 import * as E from 'fp-ts/Either';
 import { flatMap } from 'lodash';
@@ -673,6 +673,78 @@ describe('mocker', () => {
         assertRight(mockResult, result => {
           expect(result.body).toHaveProperty('name');
           expect(result.body).toHaveProperty('surname');
+        });
+      });
+    });
+
+    describe('transport-level headers', () => {
+      it('does not include Content-Encoding in mocked response headers', () => {
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          right({
+            code: '200',
+            mediaType: 'application/json',
+            bodyExample: { id: 'test', key: 'test', value: { message: 'ok' } },
+            headers: [
+              {
+                id: 'Content-Encoding',
+                name: 'Content-Encoding',
+                style: HttpParamStyles.Simple,
+                schema: { type: 'string' as const, enum: ['gzip', 'deflate', 'br'] },
+              },
+              {
+                id: 'X-Request-Id',
+                name: 'X-Request-Id',
+                style: HttpParamStyles.Simple,
+                schema: { type: 'string' as const },
+              },
+            ],
+          })
+        );
+
+        const mockResult = mock({
+          config: { dynamic: false },
+          resource: mockResource,
+          input: mockInput,
+        })(logger);
+
+        assertRight(mockResult, result => {
+          expect(result.headers).not.toHaveProperty('Content-Encoding');
+          expect(result.headers).toHaveProperty('X-Request-Id');
+        });
+      });
+
+      it('does not include Transfer-Encoding or Content-Length in mocked response headers', () => {
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          right({
+            code: '200',
+            mediaType: 'application/json',
+            bodyExample: { id: 'test', key: 'test', value: { message: 'ok' } },
+            headers: [
+              {
+                id: 'Transfer-Encoding',
+                name: 'Transfer-Encoding',
+                style: HttpParamStyles.Simple,
+                schema: { type: 'string' as const, enum: ['chunked'] },
+              },
+              {
+                id: 'Content-Length',
+                name: 'Content-Length',
+                style: HttpParamStyles.Simple,
+                schema: { type: 'integer' as const },
+              },
+            ],
+          })
+        );
+
+        const mockResult = mock({
+          config: { dynamic: false },
+          resource: mockResource,
+          input: mockInput,
+        })(logger);
+
+        assertRight(mockResult, result => {
+          expect(result.headers).not.toHaveProperty('Transfer-Encoding');
+          expect(result.headers).not.toHaveProperty('Content-Length');
         });
       });
     });
