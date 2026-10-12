@@ -79,9 +79,21 @@ const validateInputBody = (
     E.map(b => [...b, caseless(headers || {})] as const),
     E.chain(([requestBody, body, headers]) => {
       const contentTypeHeader = headers.get('content-type');
-      const [multipartBoundary, mediaType] = contentTypeHeader
-        ? parseMIMEHeader(contentTypeHeader)
-        : [undefined, undefined];
+      let multipartBoundary: string | undefined;
+      let mediaType: string | undefined;
+      if (contentTypeHeader) {
+        try {
+          [multipartBoundary, mediaType] = parseMIMEHeader(contentTypeHeader);
+        } catch {
+          return E.left<NonEmptyArray<IPrismDiagnostic>>([
+            {
+              message: `Invalid content type: ${contentTypeHeader}`,
+              code: 415,
+              severity: DiagnosticSeverity.Error,
+            },
+          ]);
+        }
+      }
 
       const contentLength = parseInt(headers.get('content-length')) || 0;
       if (contentLength === 0) {
