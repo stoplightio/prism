@@ -10,6 +10,7 @@ import * as J from 'fp-ts/Json';
 import { defaults, omit, pick } from 'lodash';
 import { format } from 'url';
 import { posix } from 'path';
+import { Agent } from 'http';
 import { Logger } from 'pino';
 import { IHttpConfig, IHttpRequest, IHttpResponse } from '../types';
 import { parseResponse } from '../utils/parseResponse';
@@ -56,10 +57,12 @@ const forward: IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHt
           );
 
           logForwardRequest({ logger, url, request: input });
-          let proxyAgent = undefined;
+          let proxyAgent: Agent | undefined = undefined;
           if (upstreamProxy) {
             proxyAgent =
-              partialUrl.protocol === 'https:' ? new HttpsProxyAgent(upstreamProxy) : new HttpProxyAgent(upstreamProxy);
+              partialUrl.protocol === 'https:'
+                ? (new HttpsProxyAgent(upstreamProxy) as unknown as Agent)
+                : (new HttpProxyAgent(upstreamProxy) as unknown as Agent);
           }
 
           return fetch(url, {
