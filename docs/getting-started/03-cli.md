@@ -7,7 +7,7 @@ Prism CLI has two commands: `mock` and `proxy`.
 [Mocking](../guides/01-mocking.md) is available through the CLI mock command.
 
 ```bash
-prism mock https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml
+prism mock https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/_archive_/schemas/v3.0/pass/petstore-expanded.yaml
 ✔  success   Prism is listening on http://127.0.0.1:4010
 ●  note      GET        http://127.0.0.1:4010/pets
 ●  note      POST       http://127.0.0.1:4010/pets
