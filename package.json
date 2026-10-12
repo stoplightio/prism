@@ -55,7 +55,7 @@
     "http-string-parser": "^0.0.6",
     "husky": "^9.1.7",
     "jest": "^30.3.0",
-    "lerna": "=10.0.1",
+    "lerna": "=10.1.0",
     "lint-staged": "^10.5.4",
     "lodash": "4.18.1",
     "nock": "^13.1.3",
@@ -73,16 +73,6 @@
     "typescript-eslint": "^8.57.2",
     "uuid": "11.1.1"
   },
-  "overrides": {
-    "lodash": "4.18.1",
-    "uuid": "11.1.1",
-    "lerna": {
-      "js-yaml": "4.3.2"
-    },
-    "nx": {
-      "smol-toml": "1.8.0"
-    }
-  },
   "lint-staged": {
     "**/packages/**/*.ts": [
       "eslint --fix"
@@ -92,8 +82,9 @@
     ]
   },
   "allowScripts": {
-    "nx@23.2.1": true,
+    "nx@23.3.0": true,
     "esbuild@0.28.1": true,
+    "@parcel/watcher@2.6.0": false,
     "@scarf/scarf": false,
     "unrs-resolver": false
   }
