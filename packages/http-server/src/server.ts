@@ -7,12 +7,15 @@ import {
   IHttpConfig,
 } from '@stoplight/prism-http';
 import { DiagnosticSeverity, HttpMethod, IHttpOperation, Dictionary } from '@stoplight/types';
-import { IncomingMessage, ServerResponse, IncomingHttpHeaders } from 'http';
+import { IncomingMessage, ServerResponse, IncomingHttpHeaders, Server as HttpServer } from 'http';
+import { createServer as createHttpsServer } from 'https';
+import { createSecureServer as createHttp2SecureServer } from 'http2';
+import { TLSSocket, PeerCertificate } from 'tls';
 import { AddressInfo } from 'net';
-import { IPrismHttpServer, IPrismHttpServerOpts } from './types';
+import { IPrismHttpServer, IPrismHttpServerOpts, ITlsOptions } from './types';
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { MicriHandler } from 'micri';
-import micri, { Router, json, send, text } from 'micri';
+import micri, { Router, json, send, text, run as micriRun } from 'micri';
 import * as typeIs from 'type-is';
 import { getHttpConfigFromRequest } from './getHttpConfigFromRequest';
 import { serialize } from './serialize';
@@ -31,10 +34,11 @@ function searchParamsToNameValues(searchParams: URLSearchParams): IHttpNameValue
   return params;
 }
 
-function addressInfoToString(addressInfo: AddressInfo | string | null) {
+function addressInfoToString(addressInfo: AddressInfo | string | null, secure: boolean) {
   if (!addressInfo) return '';
   if (typeof addressInfo === 'string') return addressInfo;
-  return `http://${addressInfo.address}:${addressInfo.port}`;
+  const scheme = secure ? 'https' : 'http';
+  return `${scheme}://${addressInfo.address}:${addressInfo.port}`;
 }
 
 type ValidationError = {
@@ -76,6 +80,24 @@ function parseRequestBody(request: IncomingMessage) {
   } else {
     return text(request, { limit: '10mb' });
   }
+}
+
+function sha256Fingerprint(cert: PeerCertificate): string | undefined {
+  return cert.fingerprint256 ? cert.fingerprint256.replace(/:/g, '').toLowerCase() : undefined;
+}
+
+function injectClientCertHeaders(request: IncomingMessage): void {
+  const socket = request.socket;
+  if (!(socket instanceof TLSSocket)) return;
+
+  const cert = socket.getPeerCertificate();
+  if (!cert || Object.keys(cert).length === 0) return;
+
+  request.headers['x-client-cert-verified'] = String(socket.authorized === true);
+  if (cert.subject && cert.subject.CN) request.headers['x-client-cert-subject'] = cert.subject.CN;
+  if (cert.subjectaltname) request.headers['x-client-cert-san'] = cert.subjectaltname;
+  const fingerprint = sha256Fingerprint(cert);
+  if (fingerprint) request.headers['x-client-cert-fingerprint'] = fingerprint;
 }
 
 export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServerOpts): IPrismHttpServer => {
@@ -194,38 +216,38 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
     res.setHeader('Access-Control-Expose-Headers', incomingHeaders['access-control-expose-headers'] || '*');
   }
 
-  const server = micri(
-    Router.router(
-      Router.on.options(
-        () => opts.cors,
-        (req: IncomingMessage, res: ServerResponse) => {
-          setCommonCORSHeaders(req.headers, res);
+  const routerHandler = Router.router(
+    Router.on.options(
+      () => opts.cors,
+      (req: IncomingMessage, res: ServerResponse) => {
+        setCommonCORSHeaders(req.headers, res);
 
-          if (!!req.headers['origin'] && !!req.headers['access-control-request-method']) {
-            // This is a preflight request, so we'll respond with the appropriate CORS response
-            res.setHeader(
-              'Access-Control-Allow-Methods',
-              req.headers['access-control-request-method'] || 'GET,DELETE,HEAD,PATCH,POST,PUT,OPTIONS'
-            );
+        if (!!req.headers['origin'] && !!req.headers['access-control-request-method']) {
+          // This is a preflight request, so we'll respond with the appropriate CORS response
+          res.setHeader(
+            'Access-Control-Allow-Methods',
+            req.headers['access-control-request-method'] || 'GET,DELETE,HEAD,PATCH,POST,PUT,OPTIONS'
+          );
 
-            res.setHeader('Vary', 'origin');
+          res.setHeader('Vary', 'origin');
 
-            // This should not be required since we're responding with a 204, which has no content by definition. However
-            // Safari does not really understand that and throws a Network Error. Explicit is better than implicit.
-            res.setHeader('Content-Length', '0');
-            return send(res, 204);
-          }
-
-          return handler(req, res);
+          // This should not be required since we're responding with a 204, which has no content by definition. However
+          // Safari does not really understand that and throws a Network Error. Explicit is better than implicit.
+          res.setHeader('Content-Length', '0');
+          return send(res, 204);
         }
-      ),
-      Router.otherwise((req, res, options) => {
-        if (opts.cors) setCommonCORSHeaders(req.headers, res);
 
-        return handler(req, res, options);
-      })
-    )
+        return handler(req, res);
+      }
+    ),
+    Router.otherwise((req, res, options) => {
+      if (opts.cors) setCommonCORSHeaders(req.headers, res);
+
+      return handler(req, res, options);
+    })
   );
+
+  const server = createUnderlyingServer(opts.tls, routerHandler);
 
   const prism = createInstance(config, components);
 
@@ -256,11 +278,38 @@ export const createServer = (operations: IHttpOperation[], opts: IPrismHttpServe
         server.once('error', e => reject(e.message));
         server.listen(port, ...args, (err: unknown) => {
           if (err) return reject(err);
-          return resolve(addressInfoToString(server.address()));
+          return resolve(addressInfoToString(server.address(), !!opts.tls));
         });
       }),
   };
 };
+
+function createUnderlyingServer(tls: ITlsOptions | undefined, routerHandler: MicriHandler): HttpServer {
+  if (!tls) {
+    return micri(routerHandler);
+  }
+
+  const tlsServerOptions = {
+    key: tls.key,
+    cert: tls.cert,
+    passphrase: tls.passphrase,
+    ca: tls.ca,
+    requestCert: tls.requestCert ?? !!tls.ca,
+    rejectUnauthorized: tls.rejectUnauthorized ?? !!tls.ca,
+  };
+
+  const bridge = (req: IncomingMessage, res: ServerResponse) => {
+    if (tls.forwardClientCertHeaders) injectClientCertHeaders(req);
+    return micriRun(req, res, routerHandler);
+  };
+
+  if (tls.http2) {
+    // ALPN negotiates h2/http1.1; allowHTTP1 keeps HTTPS/1.1 clients working.
+    return createHttp2SecureServer({ ...tlsServerOptions, allowHTTP1: true }, bridge as never) as unknown as HttpServer;
+  }
+
+  return createHttpsServer(tlsServerOptions, bridge);
+}
 
 const createErrorObjectWithPrefix = (locationPrefix: string) => (detail: IPrismDiagnostic) => ({
   location: [locationPrefix].concat(detail.path || []),
