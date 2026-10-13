@@ -51,17 +51,19 @@ describe('convertAjvErrors()', () => {
     it('converts properly', () => {
       expect(
         convertAjvErrors(
-          [Object.assign({}, errorObjectFixture, {
-            params: { unevaluatedProperty: 'd' },
-            keyword: 'unevaluatedProperties',
-            message: 'must NOT have unevaluated propertes',
-          })],
+          [
+            Object.assign({}, errorObjectFixture, {
+              params: { unevaluatedProperty: 'd' },
+              keyword: 'unevaluatedProperties',
+              message: 'must NOT have unevaluated propertes',
+            }),
+          ],
           DiagnosticSeverity.Error,
           ValidationContext.Input
         )[0]
       ).toHaveProperty('message', "Request parameter a.b must NOT have unevaluated propertes: 'd'");
     });
-   });
+  });
 });
 
 describe('validateAgainstSchema()', () => {
@@ -221,6 +223,63 @@ describe('validateAgainstSchema()', () => {
           }),
         ]);
       });
+    });
+  });
+
+  describe('uses OpenAPI 3.1 JSON Schema dialect defaults', () => {
+    const schemaWithUnevaluatedProperties = {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+      },
+      unevaluatedProperties: false,
+    } as JSONSchema7;
+
+    it('uses the document-level jsonSchemaDialect when a schema has no $schema URI', () => {
+      assertSome(
+        validateAgainstSchema(
+          { name: 'Ada', extra: true },
+          schemaWithUnevaluatedProperties,
+          false,
+          ValidationContext.Output,
+          'body',
+          { openapi: '3.1.0', jsonSchemaDialect: 'https://json-schema.org/draft/2020-12/schema' }
+        ),
+        error =>
+          expect(error).toContainEqual(
+            expect.objectContaining({
+              code: 'unevaluatedProperties',
+              message: "Response body must NOT have unevaluated properties: 'extra'",
+              path: ['body'],
+            })
+          )
+      );
+    });
+
+    it('defaults OpenAPI 3.1 documents to JSON Schema 2020-12', () => {
+      assertSome(
+        validateAgainstSchema(
+          { name: 'Ada', extra: true },
+          schemaWithUnevaluatedProperties,
+          false,
+          ValidationContext.Output,
+          'body',
+          { openapi: '3.1.0' }
+        ),
+        error => expect(error).toContainEqual(expect.objectContaining({ code: 'unevaluatedProperties' }))
+      );
+    });
+
+    it('keeps using draft-07 when neither $schema nor OpenAPI 3.1 dialect information is available', () => {
+      assertNone(
+        validateAgainstSchema(
+          { name: 'Ada', extra: true },
+          schemaWithUnevaluatedProperties,
+          false,
+          ValidationContext.Output,
+          'body'
+        )
+      );
     });
   });
 

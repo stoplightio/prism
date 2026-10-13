@@ -57,18 +57,42 @@ const ajvInstances = {
 
 const JSON_SCHEMA_DRAFT_2019_09 = /^https?:\/\/json-schema.org\/draft\/2019-09\/schema#?$/;
 const JSON_SCHEMA_DRAFT_2020_12 = /^https?:\/\/json-schema.org\/draft\/2020-12\/schema#?$/;
+const OAS_3_1 = /^3\.1(?:\.|$)/;
 
-function assignAjvInstance($schema: string, coerce: boolean): AjvCore {
-  const member = coerce ? 'coerce' : 'noCoerce';
-  let draft: keyof typeof ajvInstances = 'default';
+type JsonSchemaDraft = keyof typeof ajvInstances;
 
-  if (JSON_SCHEMA_DRAFT_2019_09.test($schema)) {
-    draft = 'draft2019_09';
-  } else if (JSON_SCHEMA_DRAFT_2020_12.test($schema)) {
-    draft = 'draft2020_12';
+function selectJsonSchemaDraft($schema?: string, bundle?: unknown): JsonSchemaDraft {
+  if ($schema) {
+    if (JSON_SCHEMA_DRAFT_2019_09.test($schema)) {
+      return 'draft2019_09';
+    }
+
+    if (JSON_SCHEMA_DRAFT_2020_12.test($schema)) {
+      return 'draft2020_12';
+    }
+
+    return 'default';
   }
 
-  return ajvInstances[draft][member];
+  if (typeof bundle === 'object' && bundle !== null) {
+    const { jsonSchemaDialect, openapi } = bundle as { jsonSchemaDialect?: unknown; openapi?: unknown };
+
+    if (typeof jsonSchemaDialect === 'string') {
+      return selectJsonSchemaDraft(jsonSchemaDialect);
+    }
+
+    if (typeof openapi === 'string' && OAS_3_1.test(openapi)) {
+      return 'draft2020_12';
+    }
+  }
+
+  return 'default';
+}
+
+function assignAjvInstance($schema: string | undefined, coerce: boolean, bundle?: unknown): AjvCore {
+  const member = coerce ? 'coerce' : 'noCoerce';
+
+  return ajvInstances[selectJsonSchemaDraft($schema, bundle)][member];
 }
 
 export const convertAjvErrors = (
@@ -139,7 +163,7 @@ export const validateAgainstSchema = (
   bundle?: unknown
 ): O.Option<NonEmptyArray<IPrismDiagnostic>> =>
   pipe(
-    O.tryCatch(() => getValidationFunction(assignAjvInstance(String(schema.$schema), coerce), schema, bundle)),
+    O.tryCatch(() => getValidationFunction(assignAjvInstance(schema.$schema, coerce, bundle), schema, bundle)),
     O.chainFirst(validateFn => O.tryCatch(() => validateFn(value))),
     O.chain(validateFn => pipe(O.fromNullable(validateFn.errors), O.chain(fromArray))),
     O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, context, prefix))
