@@ -7,7 +7,7 @@ import { pipe } from 'fp-ts/lib/function';
 import * as Option from 'fp-ts/lib/Option';
 import * as chalk from 'chalk';
 
-import { IHttpRequest, IHttpResponse } from '../types';
+import { IHttpNameValues, IHttpRequest, IHttpResponse, IHttpUrl } from '../types';
 import { serializeBody } from '../forwarder';
 
 export const violationLogger = withLogger(logger => {
@@ -26,6 +26,7 @@ export const violationLogger = withLogger(logger => {
 
 type HeadersInput = RequestInit['headers'] | Response['headers'] | IHttpRequest['headers'] | IHttpResponse['headers'];
 type BodyInput = RequestInit['body'] | Response['body'] | IHttpRequest['body'] | IHttpResponse['body'];
+type UrlInput = IHttpUrl;
 
 export function logHeaders({
   logger,
@@ -60,16 +61,32 @@ export function logBody({ logger, prefix = '', body }: { logger: Logger; prefix?
   );
 }
 
+export function logQuery({ logger, prefix = '', query }: { logger: Logger; prefix?: string; query: IHttpNameValues }) {
+  pipe(
+    Option.fromNullable(query),
+    Option.filter(q => Object.keys(q).length > 0),
+    Option.map(query => {
+      logger.debug(`${prefix}${chalk.grey('Query:')}`);
+      Object.entries(query).forEach(([name, value]) => {
+        const out = Array.isArray(value) ? JSON.stringify(value) : value;
+        logger.debug(`${prefix}\t${name}: ${out}`);
+      });
+    })
+  );
+}
+
 export function logRequest({
   logger,
   prefix = '',
   headers,
   body,
+  url,  
 }: {
   logger: Logger;
   prefix?: string;
   body?: BodyInput;
   headers?: HeadersInput;
+  url?: UrlInput;
 }) {
   pipe(
     Option.fromNullable(headers),
@@ -89,6 +106,17 @@ export function logRequest({
         logger,
         prefix,
         body,
+      })
+    )
+  );
+
+  pipe(
+    Option.fromNullable(url?.query), 
+    Option.map(query => 
+      logQuery({
+        logger,
+        prefix,
+        query,
       })
     )
   );
