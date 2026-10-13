@@ -1,3 +1,8 @@
+FROM golang:1-alpine AS nodeprune
+
+RUN go install -trimpath -ldflags "-s -w" github.com/tj/node-prune@latest
+
+###############################################################
 FROM node:24 AS compiler
 
 WORKDIR /usr/src/prism
@@ -11,6 +16,8 @@ RUN npm ci && npm run build
 FROM node:24 AS dependencies
 
 WORKDIR /usr/src/prism/
+
+COPY --from=nodeprune /go/bin/node-prune /bin/
 
 COPY package.json package-lock.json /usr/src/prism/
 RUN mkdir -p /usr/src/prism/node_modules
@@ -30,8 +37,7 @@ RUN mkdir -p /usr/src/prism/packages/cli/node_modules
 ENV NODE_ENV production
 RUN npm ci --omit=dev
 
-RUN if [ $(uname -m) != "aarch64" ]; then curl -sfL https://gobinaries.com/tj/node-prune | bash; fi
-RUN if [ $(uname -m) != "aarch64" ]; then node-prune; fi
+RUN node-prune
 
 ###############################################################
 FROM node:24-alpine
@@ -41,7 +47,7 @@ RUN apk add --no-cache tini
 
 WORKDIR /usr/src/prism
 ARG BUILD_TYPE=development
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 COPY package.json /usr/src/prism/
 COPY packages/core/package.json /usr/src/prism/packages/core/
