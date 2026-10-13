@@ -359,10 +359,18 @@ function isINodeExample(nodeExample: ContentExample | undefined): nodeExample is
   return !!nodeExample && 'value' in nodeExample;
 }
 
+const TRANSPORT_HEADERS = new Set([
+  'content-encoding',
+  'content-length',
+  'transfer-encoding',
+  'content-md5',
+]);
+
 function computeMockedHeaders(headers: IHttpHeaderParam[], payloadGenerator: PayloadGenerator) {
+  const filteredHeaders = headers.filter(h => !TRANSPORT_HEADERS.has(h.name.toLowerCase()));
   return eitherRecordSequence(
     mapValues(
-      keyBy(headers, h => h.name),
+      keyBy(filteredHeaders, h => h.name),
       header => {
         if (header.schema) {
           if (header.examples && header.examples.length > 0) {
