@@ -1,5 +1,5 @@
 import { createLogger, IPrismInput } from '@stoplight/prism-core';
-import { IHttpOperation, INodeExample, DiagnosticSeverity } from '@stoplight/types';
+import { IHttpOperation, INodeExample, DiagnosticSeverity, HttpParamStyles } from '@stoplight/types';
 import { right } from 'fp-ts/ReaderEither';
 import * as E from 'fp-ts/Either';
 import { flatMap } from 'lodash';
@@ -150,6 +150,41 @@ describe('mocker', () => {
         })(logger);
 
         assertRight(mockResult, result => expect(result).toMatchSnapshot());
+      });
+
+      it('does not include generated Content-Encoding headers in mock responses', () => {
+        jest.spyOn(helpers, 'negotiateOptionsForValidRequest').mockReturnValue(
+          right({
+            code: '202',
+            mediaType: 'application/json',
+            bodyExample: mockResource.responses[0].contents![0].examples![0],
+            headers: [
+              {
+                id: 'content-encoding',
+                name: 'Content-Encoding',
+                style: HttpParamStyles.Simple,
+                schema: { type: 'string', enum: ['gzip'] },
+              },
+              {
+                id: 'x-mocked-header',
+                name: 'x-mocked-header',
+                style: HttpParamStyles.Simple,
+                schema: { type: 'string', enum: ['mocked'] },
+              },
+            ],
+          })
+        );
+
+        const mockResult = mock({
+          config: { dynamic: false },
+          resource: mockResource,
+          input: mockInput,
+        })(logger);
+
+        assertRight(mockResult, result => {
+          expect(result.headers).toHaveProperty('x-mocked-header', 'mocked');
+          expect(result.headers).not.toHaveProperty('Content-Encoding');
+        });
       });
 
       it('returns dynamic example', () => {
