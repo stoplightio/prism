@@ -12,7 +12,7 @@ const bearerHandler = (msg: string, input: Pick<IHttpRequest, 'headers' | 'url'>
 function isBearerToken(inputHeaders: Dictionary<string>) {
   return pipe(
     fromNullable(get(inputHeaders, 'authorization')),
-    map(authorization => !!/^Bearer\s.+$/.exec(authorization)),
+    map(authorization => !!/^Bearer\s.+$/i.exec(authorization)),
     getOrElse(() => false)
   );
 }
