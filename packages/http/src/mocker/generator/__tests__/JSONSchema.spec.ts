@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import { JSONSchema } from '../../../types';
-import { generate, sortSchemaAlphabetically } from '../JSONSchema';
+import { generate, resetGenerator, setGeneratorOption, sortSchemaAlphabetically } from '../JSONSchema';
 import { assertRight, assertLeft } from '@stoplight/prism-core/src/__tests__/utils';
 import { IHttpOperation } from '@stoplight/types';
 
@@ -196,6 +196,26 @@ describe('JSONSchema generator', () => {
             id: expect.any(String),
           });
         });
+      });
+    });
+
+    describe('when fillProperties is disabled', () => {
+      const schema: JSONSchema = {
+        type: 'object',
+        properties: {
+          status: { type: 'string' },
+        },
+      };
+
+      beforeEach(() => setGeneratorOption('fillProperties', false));
+      afterEach(() => resetGenerator());
+
+      it('will not add properties that are not declared in the schema', () => {
+        for (let i = 0; i < 25; i++) {
+          assertRight(generate(operation, {}, schema), instance => {
+            expect(Object.keys(instance as object)).toEqual(['status']);
+          });
+        }
       });
     });
 
