@@ -522,6 +522,24 @@ describe('mocker', () => {
             it('should return the example key', () =>
               assertRight(eitherResponse, response => expect(response.body).toHaveProperty('name', 'Clark')));
 
+            describe('when the property has anyOf and an examples value', () => {
+              const eitherResponseWithAnyOfExample = mockResponseWithSchema({
+                type: 'object',
+                properties: {
+                  title: {
+                    anyOf: [{ type: 'string' }, { type: 'null' }],
+                    title: 'Title',
+                    examples: ['Some kind of title'],
+                  },
+                },
+              });
+
+              it('should use the property example', () =>
+                assertRight(eitherResponseWithAnyOfExample, response =>
+                  expect(response.body).toHaveProperty('title', 'Some kind of title')
+                ));
+            });
+
             describe('and also a default key', () => {
               const eitherResponseWithDefault = mockResponseWithSchema({
                 type: 'object',
