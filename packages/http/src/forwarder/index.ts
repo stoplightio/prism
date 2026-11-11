@@ -122,7 +122,7 @@ export function serializeBody(body: unknown): E.Either<Error, string | undefined
 function logForwardRequest({ logger, url, request }: { logger: Logger; url: string; request: IHttpRequest }) {
   const prefix = `${chalk.grey('> ')}`;
   logger.info(`${prefix}Forwarding "${request.method}" request to ${url}...`);
-  logRequest({ logger, prefix, ...pick(request, 'body', 'headers') });
+  logRequest({ logger, prefix, ...pick(request, 'body', 'headers', 'url') });
 }
 
 function forwardResponseLogger(logger: Logger) {

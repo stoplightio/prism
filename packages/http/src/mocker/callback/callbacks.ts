@@ -63,7 +63,7 @@ function logCallbackRequest({
 }) {
   const prefix = `${chalk.blueBright(callbackName + ':')} ${chalk.grey('> ')}`;
   logger.info(`${prefix}Executing "${requestData.method}" callback to ${url}...`);
-  logRequest({ logger, prefix, ...pick(requestData, 'body', 'headers') });
+  logRequest({ logger, prefix, ...pick(requestData, 'body', 'headers', 'url') });
 }
 
 function callbackResponseLogger({ logger, callbackName }: { logger: Logger; callbackName: string }) {
