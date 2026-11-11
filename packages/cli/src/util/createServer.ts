@@ -1,6 +1,7 @@
 import { createLogger } from '@stoplight/prism-core';
 import { IHttpConfig, IHttpRequest } from '@stoplight/prism-http';
-import { createServer as createHttpServer } from '@stoplight/prism-http-server';
+import { createServer as createHttpServer, ITlsOptions } from '@stoplight/prism-http-server';
+import * as fs from 'fs';
 import * as chalk from 'chalk';
 import cluster from 'node:cluster';
 import * as E from 'fp-ts/Either';
@@ -104,6 +105,7 @@ async function createPrismServerWithLogger(options: CreateBaseServerOptions, log
     cors: options.cors,
     config,
     components: { logger: logInstance.child({ name: 'HTTP SERVER' }) },
+    tls: buildTlsOptions(options),
   });
 
   const address = await server.listen(options.port, options.host);
@@ -153,6 +155,41 @@ function isProxyServerOptions(options: CreateBaseServerOptions): options is Crea
   return 'upstream' in options;
 }
 
+function readPemFile(label: string, filePath: string): Buffer {
+  try {
+    return fs.readFileSync(filePath);
+  } catch (e) {
+    throw new Error(`Unable to read ${label} from "${filePath}": ${(e as Error).message}`);
+  }
+}
+
+function buildTlsOptions(options: CreateBaseServerOptions): ITlsOptions | undefined {
+  if (!options.tlsKey && !options.tlsCert && !options.tlsCa && !options.mtls && !options.tlsHttp2) {
+    return undefined;
+  }
+
+  if (!options.tlsKey || !options.tlsCert) {
+    throw new Error('TLS requires both --tls-key and --tls-cert.');
+  }
+
+  if (options.mtls && !options.tlsCa) {
+    throw new Error('--mtls requires --tls-ca to verify client certificates.');
+  }
+
+  const ca = options.tlsCa ? readPemFile('TLS CA bundle', options.tlsCa) : undefined;
+
+  return {
+    key: readPemFile('TLS key', options.tlsKey),
+    cert: readPemFile('TLS certificate', options.tlsCert),
+    passphrase: options.tlsPassphrase,
+    ca,
+    requestCert: options.mtls || !!ca,
+    rejectUnauthorized: options.mtls,
+    forwardClientCertHeaders: options.tlsForwardClientCert,
+    http2: options.tlsHttp2,
+  };
+}
+
 /**
  * @property {boolean} jsonSchemaFakerFillProperties - Used to override the default json-schema-faker extension value
  */
@@ -168,6 +205,13 @@ type CreateBaseServerOptions = {
   ignoreExamples: boolean;
   seed: string;
   jsonSchemaFakerFillProperties: boolean;
+  tlsKey?: string;
+  tlsCert?: string;
+  tlsPassphrase?: string;
+  tlsCa?: string;
+  mtls?: boolean;
+  tlsForwardClientCert?: boolean;
+  tlsHttp2?: boolean;
 };
 
 export interface CreateProxyServerOptions extends CreateBaseServerOptions {
