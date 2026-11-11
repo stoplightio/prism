@@ -43,7 +43,8 @@ const mockCommand: CommandModule = {
       }),
   handler: async parsedArgs => {
     parsedArgs.jsonSchemaFakerFillProperties = parsedArgs['json-schema-faker-fillProperties'];
-    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, ignoreExamples, seed, jsonSchemaFakerFillProperties } =
+    parsedArgs.validateRequest = parsedArgs['validate-request'];
+    const { multiprocess, dynamic, port, host, cors, document, errors, verboseLevel, ignoreExamples, seed, jsonSchemaFakerFillProperties, validateRequest } =
       parsedArgs as unknown as CreateMockServerOptions;
 
     const createPrism = multiprocess ? createMultiProcessPrism : createSingleProcessPrism;
@@ -59,6 +60,7 @@ const mockCommand: CommandModule = {
       ignoreExamples,
       seed,
       jsonSchemaFakerFillProperties,
+      validateRequest,
     };
 
     await runPrismAndSetupWatcher(createPrism, options);
