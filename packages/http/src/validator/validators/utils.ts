@@ -1,5 +1,6 @@
 import { IPrismDiagnostic } from '@stoplight/prism-core';
 import { DiagnosticSeverity } from '@stoplight/types';
+import * as E from 'fp-ts/Either';
 import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/function';
 import { NonEmptyArray, fromArray, map } from 'fp-ts/NonEmptyArray';
@@ -139,8 +140,33 @@ export const validateAgainstSchema = (
   bundle?: unknown
 ): O.Option<NonEmptyArray<IPrismDiagnostic>> =>
   pipe(
-    O.tryCatch(() => getValidationFunction(assignAjvInstance(String(schema.$schema), coerce), schema, bundle)),
-    O.chainFirst(validateFn => O.tryCatch(() => validateFn(value))),
-    O.chain(validateFn => pipe(O.fromNullable(validateFn.errors), O.chain(fromArray))),
-    O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, context, prefix))
+    E.tryCatch(
+      () => getValidationFunction(assignAjvInstance(String(schema.$schema), coerce), schema, bundle),
+      err => err
+    ),
+    E.chain(validateFn =>
+      E.tryCatch(
+        () => {
+          validateFn(value);
+          return validateFn.errors;
+        },
+        err => err
+      )
+    ),
+    E.fold(
+      err =>
+        O.some<NonEmptyArray<IPrismDiagnostic>>([
+          {
+            message: `Prism encountered an error processing the schema: ${err instanceof Error ? err.message : String(err)}`,
+            code: 500,
+            severity: DiagnosticSeverity.Error,
+          },
+        ]),
+      errors =>
+        pipe(
+          O.fromNullable(errors),
+          O.chain(fromArray),
+          O.map(errors => convertAjvErrors(errors, DiagnosticSeverity.Error, context, prefix))
+        )
+    )
   );
