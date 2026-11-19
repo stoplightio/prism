@@ -13,7 +13,7 @@
     "/dist"
   ],
   "engines": {
-    "node": ">=24.22.0"
+    "node": ">=26.13"
   },
   "dependencies": {
     "@faker-js/faker": "^10.4.0",
