@@ -108,6 +108,8 @@ jobs:
         cd httpbin
         . ../venv/bin/activate
         pipenv requirements > requirements.txt
+        # meinheld 0.5 misses <sys/uio.h>; newer GCC treats implicit declarations as errors
+        export CFLAGS="-Wno-error=implicit-function-declaration"
         pip3 install --no-cache-dir -r requirements.txt
         pip3 install --no-cache-dir ./
       if: env.install_manually
