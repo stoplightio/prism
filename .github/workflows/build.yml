@@ -88,10 +88,9 @@ jobs:
       with:
         node-version-file: .nvmrc
         cache: 'npm'
-    - name: Install Python and required packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3 python3-pip python3-venv
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
     - name: Set up Python virtual environment
       run: |
         python3 -m venv venv
