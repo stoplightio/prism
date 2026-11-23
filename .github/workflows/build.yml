@@ -88,10 +88,9 @@ jobs:
       with:
         node-version-file: .nvmrc
         cache: 'npm'
-    - name: Install Python and required packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3 python3-pip python3-venv
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
     - name: Set up Python virtual environment
       run: |
         python3 -m venv venv
@@ -109,6 +108,8 @@ jobs:
         cd httpbin
         . ../venv/bin/activate
         pipenv requirements > requirements.txt
+        # meinheld 0.5 misses <sys/uio.h>; newer GCC treats implicit declarations as errors
+        export CFLAGS="-Wno-error=implicit-function-declaration"
         pip3 install --no-cache-dir -r requirements.txt
         pip3 install --no-cache-dir ./
       if: env.install_manually
