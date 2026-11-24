@@ -194,7 +194,7 @@ curl http://localhost:4010/todos -H "accept: application/json"`
 
 **Returned Status Code: `500`**
 
-**Explanation:** This error occurs when you're run Prism with the `--errors` flag and the request or the response has at least one violation marked as an error.
+**Explanation:** This error occurs when you've run Prism with the `--errors` flag and the request or the response has at least one violation marked as an error.
 
 **Message #2: response.body Request body must match exactly one schema in oneOf**
 
