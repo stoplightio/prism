@@ -9,11 +9,11 @@ export function deserializeLabelStyle(
 ): unknown {
   const type = schema ? schema.type : 'undefined';
 
-  if (!parameters[name].startsWith('.')) {
+  if (!parameters[name].toString().startsWith('.')) {
     throw new Error('Label serialization style requires parameter to be prefixed with "."');
   }
 
-  const value = parameters[name].substr(1);
+  const value = parameters[name].toString().substring(1);
 
   if (type === 'array') {
     return deserializeArray(value, explode);
