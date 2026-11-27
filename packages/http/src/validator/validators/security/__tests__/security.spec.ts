@@ -141,6 +141,15 @@ describe('validateSecurity', () => {
       );
     });
 
+    it('passes the validation with lowercase scheme', () => {
+      assertRight(
+        validateSecurity({
+          element: { ...baseRequest, headers: { authorization: 'bearer abc123' } },
+          resource: { security: securityScheme },
+        })
+      );
+    });
+
     it('fails with an invalid security scheme error', () => {
       assertLeft(
         validateSecurity({
