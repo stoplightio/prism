@@ -51,23 +51,41 @@ describe('convertAjvErrors()', () => {
     it('converts properly', () => {
       expect(
         convertAjvErrors(
-          [Object.assign({}, errorObjectFixture, {
-            params: { unevaluatedProperty: 'd' },
-            keyword: 'unevaluatedProperties',
-            message: 'must NOT have unevaluated propertes',
-          })],
+          [
+            Object.assign({}, errorObjectFixture, {
+              params: { unevaluatedProperty: 'd' },
+              keyword: 'unevaluatedProperties',
+              message: 'must NOT have unevaluated propertes',
+            }),
+          ],
           DiagnosticSeverity.Error,
           ValidationContext.Input
         )[0]
       ).toHaveProperty('message', "Request parameter a.b must NOT have unevaluated propertes: 'd'");
     });
-   });
+  });
 });
 
 describe('validateAgainstSchema()', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(convertAjvErrorsModule, 'convertAjvErrors');
+  });
+
+  describe('when schema is invalid', () => {
+    it('returns an error with severity Error', () => {
+      assertSome(
+        validateAgainstSchema('test', { type: 'obj' } as unknown as JSONSchema7, true, ValidationContext.Input, 'pfx'),
+        error => {
+          expect(error).toContainEqual(
+            expect.objectContaining({
+              message: expect.stringContaining('Prism encountered an error processing the schema'),
+              severity: DiagnosticSeverity.Error,
+            })
+          );
+        }
+      );
+    });
   });
 
   describe('has no validation errors', () => {
